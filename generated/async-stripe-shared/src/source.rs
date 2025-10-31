@@ -202,7 +202,6 @@ const _: () = {
                 "type" => Deserialize::begin(&mut self.type_),
                 "usage" => Deserialize::begin(&mut self.usage),
                 "wechat" => Deserialize::begin(&mut self.wechat),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -437,7 +436,6 @@ const _: () = {
                     "type" => b.type_ = FromValueOpt::from_value(v),
                     "usage" => b.usage = FromValueOpt::from_value(v),
                     "wechat" => b.wechat = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

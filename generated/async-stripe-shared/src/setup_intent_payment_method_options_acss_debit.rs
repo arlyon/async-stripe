@@ -60,7 +60,6 @@ const _: () = {
                 "currency" => Deserialize::begin(&mut self.currency),
                 "mandate_options" => Deserialize::begin(&mut self.mandate_options),
                 "verification_method" => Deserialize::begin(&mut self.verification_method),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -109,7 +108,6 @@ const _: () = {
                     "currency" => b.currency = FromValueOpt::from_value(v),
                     "mandate_options" => b.mandate_options = FromValueOpt::from_value(v),
                     "verification_method" => b.verification_method = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

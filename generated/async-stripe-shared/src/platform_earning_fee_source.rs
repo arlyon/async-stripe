@@ -60,7 +60,6 @@ const _: () = {
                 "charge" => Deserialize::begin(&mut self.charge),
                 "payout" => Deserialize::begin(&mut self.payout),
                 "type" => Deserialize::begin(&mut self.type_),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -109,7 +108,6 @@ const _: () = {
                     "charge" => b.charge = FromValueOpt::from_value(v),
                     "payout" => b.payout = FromValueOpt::from_value(v),
                     "type" => b.type_ = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

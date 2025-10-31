@@ -20,6 +20,8 @@ pub struct TerminalConfigurationConfigurationResourceTipping {
         Option<stripe_terminal::TerminalConfigurationConfigurationResourceCurrencySpecificConfig>,
     pub gbp:
         Option<stripe_terminal::TerminalConfigurationConfigurationResourceCurrencySpecificConfig>,
+    pub gip:
+        Option<stripe_terminal::TerminalConfigurationConfigurationResourceCurrencySpecificConfig>,
     pub hkd:
         Option<stripe_terminal::TerminalConfigurationConfigurationResourceCurrencySpecificConfig>,
     pub huf:
@@ -72,6 +74,9 @@ pub struct TerminalConfigurationConfigurationResourceTippingBuilder {
         Option<stripe_terminal::TerminalConfigurationConfigurationResourceCurrencySpecificConfig>,
     >,
     gbp: Option<
+        Option<stripe_terminal::TerminalConfigurationConfigurationResourceCurrencySpecificConfig>,
+    >,
+    gip: Option<
         Option<stripe_terminal::TerminalConfigurationConfigurationResourceCurrencySpecificConfig>,
     >,
     hkd: Option<
@@ -161,6 +166,7 @@ const _: () = {
                 "dkk" => Deserialize::begin(&mut self.dkk),
                 "eur" => Deserialize::begin(&mut self.eur),
                 "gbp" => Deserialize::begin(&mut self.gbp),
+                "gip" => Deserialize::begin(&mut self.gip),
                 "hkd" => Deserialize::begin(&mut self.hkd),
                 "huf" => Deserialize::begin(&mut self.huf),
                 "jpy" => Deserialize::begin(&mut self.jpy),
@@ -173,7 +179,6 @@ const _: () = {
                 "sek" => Deserialize::begin(&mut self.sek),
                 "sgd" => Deserialize::begin(&mut self.sgd),
                 "usd" => Deserialize::begin(&mut self.usd),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -189,6 +194,7 @@ const _: () = {
                 dkk: Deserialize::default(),
                 eur: Deserialize::default(),
                 gbp: Deserialize::default(),
+                gip: Deserialize::default(),
                 hkd: Deserialize::default(),
                 huf: Deserialize::default(),
                 jpy: Deserialize::default(),
@@ -215,6 +221,7 @@ const _: () = {
                 Some(dkk),
                 Some(eur),
                 Some(gbp),
+                Some(gip),
                 Some(hkd),
                 Some(huf),
                 Some(jpy),
@@ -237,6 +244,7 @@ const _: () = {
                 self.dkk.take(),
                 self.eur.take(),
                 self.gbp.take(),
+                self.gip.take(),
                 self.hkd.take(),
                 self.huf.take(),
                 self.jpy.take(),
@@ -263,6 +271,7 @@ const _: () = {
                 dkk,
                 eur,
                 gbp,
+                gip,
                 hkd,
                 huf,
                 jpy,
@@ -311,6 +320,7 @@ const _: () = {
                     "dkk" => b.dkk = FromValueOpt::from_value(v),
                     "eur" => b.eur = FromValueOpt::from_value(v),
                     "gbp" => b.gbp = FromValueOpt::from_value(v),
+                    "gip" => b.gip = FromValueOpt::from_value(v),
                     "hkd" => b.hkd = FromValueOpt::from_value(v),
                     "huf" => b.huf = FromValueOpt::from_value(v),
                     "jpy" => b.jpy = FromValueOpt::from_value(v),
@@ -323,7 +333,6 @@ const _: () = {
                     "sek" => b.sek = FromValueOpt::from_value(v),
                     "sgd" => b.sgd = FromValueOpt::from_value(v),
                     "usd" => b.usd = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

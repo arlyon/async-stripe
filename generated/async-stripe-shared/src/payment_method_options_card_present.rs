@@ -63,7 +63,6 @@ const _: () = {
                     Deserialize::begin(&mut self.request_incremental_authorization_support)
                 }
                 "routing" => Deserialize::begin(&mut self.routing),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -127,7 +126,6 @@ const _: () = {
                         b.request_incremental_authorization_support = FromValueOpt::from_value(v)
                     }
                     "routing" => b.routing = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

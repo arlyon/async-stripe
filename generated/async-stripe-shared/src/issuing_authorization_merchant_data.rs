@@ -93,7 +93,6 @@ const _: () = {
                 "tax_id" => Deserialize::begin(&mut self.tax_id),
                 "terminal_id" => Deserialize::begin(&mut self.terminal_id),
                 "url" => Deserialize::begin(&mut self.url),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -193,7 +192,6 @@ const _: () = {
                     "tax_id" => b.tax_id = FromValueOpt::from_value(v),
                     "terminal_id" => b.terminal_id = FromValueOpt::from_value(v),
                     "url" => b.url = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

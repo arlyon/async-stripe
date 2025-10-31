@@ -55,7 +55,6 @@ const _: () = {
             Ok(match k {
                 "check_in_at" => Deserialize::begin(&mut self.check_in_at),
                 "nights" => Deserialize::begin(&mut self.nights),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -97,7 +96,6 @@ const _: () = {
                 match k.as_str() {
                     "check_in_at" => b.check_in_at = FromValueOpt::from_value(v),
                     "nights" => b.nights = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

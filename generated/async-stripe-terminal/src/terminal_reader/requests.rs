@@ -558,6 +558,7 @@ impl CancelActionTerminalReaderBuilder {
     }
 }
 /// Cancels the current reader action.
+/// See [Programmatic Cancellation](https://stripe.com/docs/terminal/payments/collect-card-payment?terminal-sdk-platform=server-driven#programmatic-cancellation) for more details.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CancelActionTerminalReader {
     inner: CancelActionTerminalReaderBuilder,
@@ -614,7 +615,7 @@ impl CollectInputsTerminalReaderBuilder {
         Self { expand: None, inputs: inputs.into(), metadata: None }
     }
 }
-/// List of inputs to be collected using the Reader
+/// List of inputs to be collected from the customer using the Reader. Maximum 5 inputs.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CollectInputsTerminalReaderInputs {
     /// Customize the text which will be displayed while collecting this input
@@ -652,10 +653,10 @@ pub struct CollectInputsTerminalReaderInputsCustomText {
     /// The description which will be displayed when collecting this input
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
-    /// The skip button text
+    /// Custom text for the skip button. Maximum 14 characters.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub skip_button: Option<String>,
-    /// The submit button text
+    /// Custom text for the submit button. Maximum 30 characters.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub submit_button: Option<String>,
     /// The title which will be displayed when collecting this input
@@ -682,7 +683,7 @@ impl CollectInputsTerminalReaderInputsSelection {
 pub struct CollectInputsTerminalReaderInputsSelectionChoices {
     /// The unique identifier for this choice
     pub id: String,
-    /// The style of the button which will be shown for this choice
+    /// The style of the button which will be shown for this choice. Can be `primary` or `secondary`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub style: Option<CollectInputsTerminalReaderInputsSelectionChoicesStyle>,
     /// The text which will be shown on the button for this choice
@@ -693,7 +694,7 @@ impl CollectInputsTerminalReaderInputsSelectionChoices {
         Self { id: id.into(), style: None, text: text.into() }
     }
 }
-/// The style of the button which will be shown for this choice
+/// The style of the button which will be shown for this choice. Can be `primary` or `secondary`.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CollectInputsTerminalReaderInputsSelectionChoicesStyle {
     Primary,
@@ -754,13 +755,17 @@ impl<'de> serde::Deserialize<'de> for CollectInputsTerminalReaderInputsSelection
 /// List of toggles to be displayed and customization for the toggles
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CollectInputsTerminalReaderInputsToggles {
-    /// The default value of the toggle
+    /// The default value of the toggle. Can be `enabled` or `disabled`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub default_value: Option<CollectInputsTerminalReaderInputsTogglesDefaultValue>,
-    /// The description which will be displayed for the toggle
+    /// The description which will be displayed for the toggle.
+    /// Maximum 50 characters.
+    /// At least one of title or description must be provided.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
-    /// The title which will be displayed for the toggle
+    /// The title which will be displayed for the toggle.
+    /// Maximum 50 characters.
+    /// At least one of title or description must be provided.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub title: Option<String>,
 }
@@ -774,7 +779,7 @@ impl Default for CollectInputsTerminalReaderInputsToggles {
         Self::new()
     }
 }
-/// The default value of the toggle
+/// The default value of the toggle. Can be `enabled` or `disabled`.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CollectInputsTerminalReaderInputsTogglesDefaultValue {
     Disabled,
@@ -900,7 +905,7 @@ impl<'de> serde::Deserialize<'de> for CollectInputsTerminalReaderInputsType {
         })
     }
 }
-/// Initiates an input collection flow on a Reader.
+/// Initiates an [input collection flow](https://stripe.com/docs/terminal/features/collect-inputs) on a Reader to display input forms and collect information from your customers.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CollectInputsTerminalReader {
     inner: CollectInputsTerminalReaderBuilder,
@@ -977,7 +982,7 @@ impl CollectPaymentMethodTerminalReaderBuilder {
         Self { collect_config: None, expand: None, payment_intent: payment_intent.into() }
     }
 }
-/// Configuration overrides.
+/// Configuration overrides for this collection, such as tipping, surcharging, and customer cancellation settings.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CollectPaymentMethodTerminalReaderCollectConfig {
     /// This field indicates whether this payment method can be shown again to its customer in a checkout flow.
@@ -1074,6 +1079,7 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Initiates a payment flow on a Reader and updates the PaymentIntent with card details before manual confirmation.
+/// See [Collecting a Payment method](https://stripe.com/docs/terminal/payments/collect-card-payment?terminal-sdk-platform=server-driven&process=inspect#collect-a-paymentmethod) for more details.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CollectPaymentMethodTerminalReader {
     inner: CollectPaymentMethodTerminalReaderBuilder,
@@ -1090,7 +1096,7 @@ impl CollectPaymentMethodTerminalReader {
             inner: CollectPaymentMethodTerminalReaderBuilder::new(payment_intent.into()),
         }
     }
-    /// Configuration overrides.
+    /// Configuration overrides for this collection, such as tipping, surcharging, and customer cancellation settings.
     pub fn collect_config(
         mut self,
         collect_config: impl Into<CollectPaymentMethodTerminalReaderCollectConfig>,
@@ -1147,7 +1153,7 @@ impl ConfirmPaymentIntentTerminalReaderBuilder {
         Self { confirm_config: None, expand: None, payment_intent: payment_intent.into() }
     }
 }
-/// Configuration overrides.
+/// Configuration overrides for this confirmation, such as surcharge settings and return URL.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct ConfirmPaymentIntentTerminalReaderConfirmConfig {
     /// The URL to redirect your customer back to after they authenticate or cancel their payment on the payment method's app or site.
@@ -1166,6 +1172,7 @@ impl Default for ConfirmPaymentIntentTerminalReaderConfirmConfig {
     }
 }
 /// Finalizes a payment on a Reader.
+/// See [Confirming a Payment](https://stripe.com/docs/terminal/payments/collect-card-payment?terminal-sdk-platform=server-driven&process=inspect#confirm-the-paymentintent) for more details.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct ConfirmPaymentIntentTerminalReader {
     inner: ConfirmPaymentIntentTerminalReaderBuilder,
@@ -1182,7 +1189,7 @@ impl ConfirmPaymentIntentTerminalReader {
             inner: ConfirmPaymentIntentTerminalReaderBuilder::new(payment_intent.into()),
         }
     }
-    /// Configuration overrides.
+    /// Configuration overrides for this confirmation, such as surcharge settings and return URL.
     pub fn confirm_config(
         mut self,
         confirm_config: impl Into<ConfirmPaymentIntentTerminalReaderConfirmConfig>,
@@ -1239,7 +1246,7 @@ impl ProcessPaymentIntentTerminalReaderBuilder {
         Self { expand: None, payment_intent: payment_intent.into(), process_config: None }
     }
 }
-/// Configuration overrides
+/// Configuration overrides for this transaction, such as tipping and customer cancellation settings.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct ProcessPaymentIntentTerminalReaderProcessConfig {
     /// This field indicates whether this payment method can be shown again to its customer in a checkout flow.
@@ -1341,6 +1348,7 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Initiates a payment flow on a Reader.
+/// See [process the payment](https://stripe.com/docs/terminal/payments/collect-card-payment?terminal-sdk-platform=server-driven&process=immediately#process-payment) for more details.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct ProcessPaymentIntentTerminalReader {
     inner: ProcessPaymentIntentTerminalReaderBuilder,
@@ -1362,7 +1370,7 @@ impl ProcessPaymentIntentTerminalReader {
         self.inner.expand = Some(expand.into());
         self
     }
-    /// Configuration overrides
+    /// Configuration overrides for this transaction, such as tipping and customer cancellation settings.
     pub fn process_config(
         mut self,
         process_config: impl Into<ProcessPaymentIntentTerminalReaderProcessConfig>,
@@ -1485,7 +1493,7 @@ impl<'de> serde::Deserialize<'de> for ProcessSetupIntentTerminalReaderAllowRedis
         })
     }
 }
-/// Configuration overrides
+/// Configuration overrides for this setup, such as MOTO and customer cancellation settings.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct ProcessSetupIntentTerminalReaderProcessConfig {
     /// Enables cancel button on transaction screens.
@@ -1502,7 +1510,8 @@ impl Default for ProcessSetupIntentTerminalReaderProcessConfig {
         Self::new()
     }
 }
-/// Initiates a setup intent flow on a Reader.
+/// Initiates a SetupIntent flow on a Reader.
+/// See [Save directly without charging](https://stripe.com/docs/terminal/features/saving-payment-details/save-directly) for more details.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct ProcessSetupIntentTerminalReader {
     inner: ProcessSetupIntentTerminalReaderBuilder,
@@ -1528,7 +1537,7 @@ impl ProcessSetupIntentTerminalReader {
         self.inner.expand = Some(expand.into());
         self
     }
-    /// Configuration overrides
+    /// Configuration overrides for this setup, such as MOTO and customer cancellation settings.
     pub fn process_config(
         mut self,
         process_config: impl Into<ProcessSetupIntentTerminalReaderProcessConfig>,
@@ -1600,7 +1609,7 @@ impl RefundPaymentTerminalReaderBuilder {
         }
     }
 }
-/// Configuration overrides
+/// Configuration overrides for this refund, such as customer cancellation settings.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct RefundPaymentTerminalReaderRefundPaymentConfig {
     /// Enables cancel button on transaction screens.
@@ -1617,7 +1626,8 @@ impl Default for RefundPaymentTerminalReaderRefundPaymentConfig {
         Self::new()
     }
 }
-/// Initiates a refund on a Reader
+/// Initiates an in-person refund on a Reader.
+/// See [Refund an Interac Payment](https://stripe.com/docs/terminal/payments/regional?integration-country=CA#refund-an-interac-payment) for more details.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct RefundPaymentTerminalReader {
     inner: RefundPaymentTerminalReaderBuilder,
@@ -1667,7 +1677,7 @@ impl RefundPaymentTerminalReader {
         self.inner.refund_application_fee = Some(refund_application_fee.into());
         self
     }
-    /// Configuration overrides
+    /// Configuration overrides for this refund, such as customer cancellation settings.
     pub fn refund_payment_config(
         mut self,
         refund_payment_config: impl Into<RefundPaymentTerminalReaderRefundPaymentConfig>,
@@ -1727,18 +1737,18 @@ impl SetReaderDisplayTerminalReaderBuilder {
         Self { cart: None, expand: None, type_: type_.into() }
     }
 }
-/// Cart
+/// Cart details to display on the reader screen, including line items, amounts, and currency.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct SetReaderDisplayTerminalReaderCart {
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub currency: stripe_types::Currency,
-    /// Array of line items that were purchased.
+    /// Array of line items to display.
     pub line_items: Vec<SetReaderDisplayTerminalReaderCartLineItems>,
-    /// The amount of tax in cents.
+    /// The amount of tax in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax: Option<i64>,
-    /// Total balance of cart due in cents.
+    /// Total balance of cart due in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
     pub total: i64,
 }
 impl SetReaderDisplayTerminalReaderCart {
@@ -1755,10 +1765,10 @@ impl SetReaderDisplayTerminalReaderCart {
         }
     }
 }
-/// Array of line items that were purchased.
+/// Array of line items to display.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct SetReaderDisplayTerminalReaderCartLineItems {
-    /// The price of the item in cents.
+    /// The price of the item in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
     pub amount: i64,
     /// The description or name of the item.
     pub description: String,
@@ -1774,7 +1784,7 @@ impl SetReaderDisplayTerminalReaderCartLineItems {
         Self { amount: amount.into(), description: description.into(), quantity: quantity.into() }
     }
 }
-/// Type
+/// Type of information to display. Only `cart` is currently supported.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum SetReaderDisplayTerminalReaderType {
     Cart,
@@ -1827,7 +1837,7 @@ impl<'de> serde::Deserialize<'de> for SetReaderDisplayTerminalReaderType {
         })
     }
 }
-/// Sets reader display to show cart details.
+/// Sets the reader display to show [cart details](https://stripe.com/docs/terminal/features/display).
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct SetReaderDisplayTerminalReader {
     inner: SetReaderDisplayTerminalReaderBuilder,
@@ -1844,7 +1854,7 @@ impl SetReaderDisplayTerminalReader {
             inner: SetReaderDisplayTerminalReaderBuilder::new(type_.into()),
         }
     }
-    /// Cart
+    /// Cart details to display on the reader screen, including line items, amounts, and currency.
     pub fn cart(mut self, cart: impl Into<SetReaderDisplayTerminalReaderCart>) -> Self {
         self.inner.cart = Some(cart.into());
         self
@@ -1960,7 +1970,7 @@ impl Default for PresentPaymentMethodTerminalReaderCardPresent {
 /// Simulated data for the interac_present payment method.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct PresentPaymentMethodTerminalReaderInteracPresent {
-    /// Card Number
+    /// The Interac card number.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub number: Option<String>,
 }

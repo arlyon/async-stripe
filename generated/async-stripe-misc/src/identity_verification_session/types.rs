@@ -147,7 +147,6 @@ const _: () = {
                 "url" => Deserialize::begin(&mut self.url),
                 "verification_flow" => Deserialize::begin(&mut self.verification_flow),
                 "verified_outputs" => Deserialize::begin(&mut self.verified_outputs),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -284,7 +283,6 @@ const _: () = {
                     "url" => b.url = FromValueOpt::from_value(v),
                     "verification_flow" => b.verification_flow = FromValueOpt::from_value(v),
                     "verified_outputs" => b.verified_outputs = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

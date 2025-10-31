@@ -96,7 +96,6 @@ const _: () = {
                 "preferences" => Deserialize::begin(&mut self.preferences),
                 "rejection_reasons" => Deserialize::begin(&mut self.rejection_reasons),
                 "status" => Deserialize::begin(&mut self.status),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -201,7 +200,6 @@ const _: () = {
                     "preferences" => b.preferences = FromValueOpt::from_value(v),
                     "rejection_reasons" => b.rejection_reasons = FromValueOpt::from_value(v),
                     "status" => b.status = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

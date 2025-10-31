@@ -233,10 +233,10 @@ pub struct CreateBillingPortalConfigurationFeatures {
     pub customer_update: Option<CreateBillingPortalConfigurationFeaturesCustomerUpdate>,
     /// Information about showing the billing history in the portal.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub invoice_history: Option<CreateBillingPortalConfigurationFeaturesInvoiceHistory>,
+    pub invoice_history: Option<InvoiceListParam>,
     /// Information about updating payment methods in the portal.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub payment_method_update: Option<CreateBillingPortalConfigurationFeaturesPaymentMethodUpdate>,
+    pub payment_method_update: Option<PaymentMethodUpdateParam>,
     /// Information about canceling subscriptions in the portal.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub subscription_cancel: Option<CreateBillingPortalConfigurationFeaturesSubscriptionCancel>,
@@ -341,28 +341,6 @@ impl<'de> serde::Deserialize<'de>
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateBillingPortalConfigurationFeaturesCustomerUpdateAllowedUpdates"))
-    }
-}
-/// Information about showing the billing history in the portal.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateBillingPortalConfigurationFeaturesInvoiceHistory {
-    /// Whether the feature is enabled.
-    pub enabled: bool,
-}
-impl CreateBillingPortalConfigurationFeaturesInvoiceHistory {
-    pub fn new(enabled: impl Into<bool>) -> Self {
-        Self { enabled: enabled.into() }
-    }
-}
-/// Information about updating payment methods in the portal.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct CreateBillingPortalConfigurationFeaturesPaymentMethodUpdate {
-    /// Whether the feature is enabled.
-    pub enabled: bool,
-}
-impl CreateBillingPortalConfigurationFeaturesPaymentMethodUpdate {
-    pub fn new(enabled: impl Into<bool>) -> Self {
-        Self { enabled: enabled.into() }
     }
 }
 /// Information about canceling subscriptions in the portal.
@@ -1125,10 +1103,10 @@ pub struct UpdateBillingPortalConfigurationFeatures {
     pub customer_update: Option<UpdateBillingPortalConfigurationFeaturesCustomerUpdate>,
     /// Information about showing the billing history in the portal.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub invoice_history: Option<UpdateBillingPortalConfigurationFeaturesInvoiceHistory>,
+    pub invoice_history: Option<InvoiceListParam>,
     /// Information about updating payment methods in the portal.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub payment_method_update: Option<UpdateBillingPortalConfigurationFeaturesPaymentMethodUpdate>,
+    pub payment_method_update: Option<PaymentMethodUpdateParam>,
     /// Information about canceling subscriptions in the portal.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub subscription_cancel: Option<UpdateBillingPortalConfigurationFeaturesSubscriptionCancel>,
@@ -1239,28 +1217,6 @@ impl<'de> serde::Deserialize<'de>
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
         Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdateBillingPortalConfigurationFeaturesCustomerUpdateAllowedUpdates"))
-    }
-}
-/// Information about showing the billing history in the portal.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpdateBillingPortalConfigurationFeaturesInvoiceHistory {
-    /// Whether the feature is enabled.
-    pub enabled: bool,
-}
-impl UpdateBillingPortalConfigurationFeaturesInvoiceHistory {
-    pub fn new(enabled: impl Into<bool>) -> Self {
-        Self { enabled: enabled.into() }
-    }
-}
-/// Information about updating payment methods in the portal.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
-pub struct UpdateBillingPortalConfigurationFeaturesPaymentMethodUpdate {
-    /// Whether the feature is enabled.
-    pub enabled: bool,
-}
-impl UpdateBillingPortalConfigurationFeaturesPaymentMethodUpdate {
-    pub fn new(enabled: impl Into<bool>) -> Self {
-        Self { enabled: enabled.into() }
     }
 }
 /// Information about canceling subscriptions in the portal.
@@ -1986,6 +1942,31 @@ impl StripeRequest for UpdateBillingPortalConfiguration {
     }
 }
 
+#[derive(Copy, Clone, Debug, serde::Serialize)]
+pub struct InvoiceListParam {
+    /// Whether the feature is enabled.
+    pub enabled: bool,
+}
+impl InvoiceListParam {
+    pub fn new(enabled: impl Into<bool>) -> Self {
+        Self { enabled: enabled.into() }
+    }
+}
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct PaymentMethodUpdateParam {
+    /// Whether the feature is enabled.
+    pub enabled: bool,
+    /// The [Payment Method Configuration](/api/payment_method_configurations) to use for this portal session.
+    /// When specified, customers will be able to update their payment method to one of the options specified by the payment method configuration.
+    /// If not set or set to an empty string, the default payment method configuration is used.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payment_method_configuration: Option<String>,
+}
+impl PaymentMethodUpdateParam {
+    pub fn new(enabled: impl Into<bool>) -> Self {
+        Self { enabled: enabled.into(), payment_method_configuration: None }
+    }
+}
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct SubscriptionUpdateProductAdjustableQuantityParam {
     /// Set to true if the quantity can be adjusted to any non-negative integer.

@@ -60,7 +60,6 @@ const _: () = {
                 "account_holder_type" => Deserialize::begin(&mut self.account_holder_type),
                 "bank" => Deserialize::begin(&mut self.bank),
                 "transaction_id" => Deserialize::begin(&mut self.transaction_id),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -109,7 +108,6 @@ const _: () = {
                     "account_holder_type" => b.account_holder_type = FromValueOpt::from_value(v),
                     "bank" => b.bank = FromValueOpt::from_value(v),
                     "transaction_id" => b.transaction_id = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

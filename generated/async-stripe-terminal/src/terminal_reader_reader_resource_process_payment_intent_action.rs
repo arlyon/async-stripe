@@ -56,7 +56,6 @@ const _: () = {
             Ok(match k {
                 "payment_intent" => Deserialize::begin(&mut self.payment_intent),
                 "process_config" => Deserialize::begin(&mut self.process_config),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -101,7 +100,6 @@ const _: () = {
                 match k.as_str() {
                     "payment_intent" => b.payment_intent = FromValueOpt::from_value(v),
                     "process_config" => b.process_config = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

@@ -105,7 +105,6 @@ const _: () = {
                 "request_details" => Deserialize::begin(&mut self.request_details),
                 "response_details" => Deserialize::begin(&mut self.response_details),
                 "url" => Deserialize::begin(&mut self.url),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -200,7 +199,6 @@ const _: () = {
                     "request_details" => b.request_details = FromValueOpt::from_value(v),
                     "response_details" => b.response_details = FromValueOpt::from_value(v),
                     "url" => b.url = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

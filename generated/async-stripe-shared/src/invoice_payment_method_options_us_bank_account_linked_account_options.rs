@@ -65,7 +65,6 @@ const _: () = {
                 "filters" => Deserialize::begin(&mut self.filters),
                 "permissions" => Deserialize::begin(&mut self.permissions),
                 "prefetch" => Deserialize::begin(&mut self.prefetch),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -116,7 +115,6 @@ const _: () = {
                     "filters" => b.filters = FromValueOpt::from_value(v),
                     "permissions" => b.permissions = FromValueOpt::from_value(v),
                     "prefetch" => b.prefetch = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

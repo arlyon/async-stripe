@@ -117,7 +117,6 @@ const _: () = {
                 "sofort" => Deserialize::begin(&mut self.sofort),
                 "type" => Deserialize::begin(&mut self.type_),
                 "us_bank_account" => Deserialize::begin(&mut self.us_bank_account),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -272,7 +271,6 @@ const _: () = {
                     "sofort" => b.sofort = FromValueOpt::from_value(v),
                     "type" => b.type_ = FromValueOpt::from_value(v),
                     "us_bank_account" => b.us_bank_account = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

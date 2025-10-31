@@ -73,7 +73,6 @@ const _: () = {
                 "exp_year" => Deserialize::begin(&mut self.exp_year),
                 "funding" => Deserialize::begin(&mut self.funding),
                 "last4" => Deserialize::begin(&mut self.last4),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -141,7 +140,6 @@ const _: () = {
                     "exp_year" => b.exp_year = FromValueOpt::from_value(v),
                     "funding" => b.funding = FromValueOpt::from_value(v),
                     "last4" => b.last4 = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

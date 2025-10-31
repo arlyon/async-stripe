@@ -56,7 +56,6 @@ const _: () = {
                 "data_string" => Deserialize::begin(&mut self.data_string),
                 "native_url" => Deserialize::begin(&mut self.native_url),
                 "statement_descriptor" => Deserialize::begin(&mut self.statement_descriptor),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -105,7 +104,6 @@ const _: () = {
                     "data_string" => b.data_string = FromValueOpt::from_value(v),
                     "native_url" => b.native_url = FromValueOpt::from_value(v),
                     "statement_descriptor" => b.statement_descriptor = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

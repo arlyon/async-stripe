@@ -69,7 +69,6 @@ const _: () = {
                     Deserialize::begin(&mut self.external_account_collection)
                 }
                 "instant_payouts" => Deserialize::begin(&mut self.instant_payouts),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -133,7 +132,6 @@ const _: () = {
                         b.external_account_collection = FromValueOpt::from_value(v)
                     }
                     "instant_payouts" => b.instant_payouts = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

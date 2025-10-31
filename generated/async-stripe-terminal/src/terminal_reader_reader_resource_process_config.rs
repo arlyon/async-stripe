@@ -65,7 +65,6 @@ const _: () = {
                 "return_url" => Deserialize::begin(&mut self.return_url),
                 "skip_tipping" => Deserialize::begin(&mut self.skip_tipping),
                 "tipping" => Deserialize::begin(&mut self.tipping),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -127,7 +126,6 @@ const _: () = {
                     "return_url" => b.return_url = FromValueOpt::from_value(v),
                     "skip_tipping" => b.skip_tipping = FromValueOpt::from_value(v),
                     "tipping" => b.tipping = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

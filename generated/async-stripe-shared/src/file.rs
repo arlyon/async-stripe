@@ -93,7 +93,6 @@ const _: () = {
                 "title" => Deserialize::begin(&mut self.title),
                 "type" => Deserialize::begin(&mut self.type_),
                 "url" => Deserialize::begin(&mut self.url),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -188,7 +187,6 @@ const _: () = {
                     "title" => b.title = FromValueOpt::from_value(v),
                     "type" => b.type_ = FromValueOpt::from_value(v),
                     "url" => b.url = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }
@@ -243,6 +241,7 @@ pub enum FilePurpose {
     IdentityDocumentDownloadable,
     IssuingRegulatoryReporting,
     PciDocument,
+    PlatformTermsOfService,
     Selfie,
     SigmaScheduledQuery,
     TaxDocumentUserUpload,
@@ -268,6 +267,7 @@ impl FilePurpose {
             IdentityDocumentDownloadable => "identity_document_downloadable",
             IssuingRegulatoryReporting => "issuing_regulatory_reporting",
             PciDocument => "pci_document",
+            PlatformTermsOfService => "platform_terms_of_service",
             Selfie => "selfie",
             SigmaScheduledQuery => "sigma_scheduled_query",
             TaxDocumentUserUpload => "tax_document_user_upload",
@@ -296,6 +296,7 @@ impl std::str::FromStr for FilePurpose {
             "identity_document_downloadable" => Ok(IdentityDocumentDownloadable),
             "issuing_regulatory_reporting" => Ok(IssuingRegulatoryReporting),
             "pci_document" => Ok(PciDocument),
+            "platform_terms_of_service" => Ok(PlatformTermsOfService),
             "selfie" => Ok(Selfie),
             "sigma_scheduled_query" => Ok(SigmaScheduledQuery),
             "tax_document_user_upload" => Ok(TaxDocumentUserUpload),

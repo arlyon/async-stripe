@@ -63,7 +63,6 @@ const _: () = {
                 "subscription_proration_date" => {
                     Deserialize::begin(&mut self.subscription_proration_date)
                 }
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -116,7 +115,6 @@ const _: () = {
                     "subscription_proration_date" => {
                         b.subscription_proration_date = FromValueOpt::from_value(v)
                     }
-
                     _ => {}
                 }
             }

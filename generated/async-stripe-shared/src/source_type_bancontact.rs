@@ -65,7 +65,6 @@ const _: () = {
                 "iban_last4" => Deserialize::begin(&mut self.iban_last4),
                 "preferred_language" => Deserialize::begin(&mut self.preferred_language),
                 "statement_descriptor" => Deserialize::begin(&mut self.statement_descriptor),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -140,7 +139,6 @@ const _: () = {
                     "iban_last4" => b.iban_last4 = FromValueOpt::from_value(v),
                     "preferred_language" => b.preferred_language = FromValueOpt::from_value(v),
                     "statement_descriptor" => b.statement_descriptor = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

@@ -67,7 +67,6 @@ const _: () = {
             Ok(match k {
                 "capture_method" => Deserialize::begin(&mut self.capture_method),
                 "setup_future_usage" => Deserialize::begin(&mut self.setup_future_usage),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -116,7 +115,6 @@ const _: () = {
                 match k.as_str() {
                     "capture_method" => b.capture_method = FromValueOpt::from_value(v),
                     "setup_future_usage" => b.setup_future_usage = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

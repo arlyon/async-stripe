@@ -68,7 +68,6 @@ const _: () = {
                 }
                 "discount" => Deserialize::begin(&mut self.discount),
                 "type" => Deserialize::begin(&mut self.type_),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -124,7 +123,6 @@ const _: () = {
                     }
                     "discount" => b.discount = FromValueOpt::from_value(v),
                     "type" => b.type_ = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

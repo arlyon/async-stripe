@@ -81,7 +81,6 @@ const _: () = {
                 "components" => Deserialize::begin(&mut self.components),
                 "expires_at" => Deserialize::begin(&mut self.expires_at),
                 "livemode" => Deserialize::begin(&mut self.livemode),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -145,7 +144,6 @@ const _: () = {
                     "components" => b.components = FromValueOpt::from_value(v),
                     "expires_at" => b.expires_at = FromValueOpt::from_value(v),
                     "livemode" => b.livemode = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

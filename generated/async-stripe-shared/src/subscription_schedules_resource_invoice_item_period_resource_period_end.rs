@@ -57,7 +57,6 @@ const _: () = {
             Ok(match k {
                 "timestamp" => Deserialize::begin(&mut self.timestamp),
                 "type" => Deserialize::begin(&mut self.type_),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -99,7 +98,6 @@ const _: () = {
                 match k.as_str() {
                     "timestamp" => b.timestamp = FromValueOpt::from_value(v),
                     "type" => b.type_ = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

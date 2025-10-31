@@ -185,7 +185,6 @@ const _: () = {
                     Deserialize::begin(&mut self.verified_by_fraud_challenge)
                 }
                 "wallet" => Deserialize::begin(&mut self.wallet),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -372,7 +371,6 @@ const _: () = {
                         b.verified_by_fraud_challenge = FromValueOpt::from_value(v)
                     }
                     "wallet" => b.wallet = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

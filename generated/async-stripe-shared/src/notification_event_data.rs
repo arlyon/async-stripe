@@ -66,7 +66,6 @@ const _: () = {
             Ok(match k {
                 "object" => Deserialize::begin(&mut self.object),
                 "previous_attributes" => Deserialize::begin(&mut self.previous_attributes),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -110,7 +109,6 @@ const _: () = {
                 match k.as_str() {
                     "object" => b.object = FromValueOpt::from_value(v),
                     "previous_attributes" => b.previous_attributes = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

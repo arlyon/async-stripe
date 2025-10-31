@@ -65,7 +65,6 @@ const _: () = {
                 "liability" => Deserialize::begin(&mut self.liability),
                 "provider" => Deserialize::begin(&mut self.provider),
                 "status" => Deserialize::begin(&mut self.status),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -116,7 +115,6 @@ const _: () = {
                     "liability" => b.liability = FromValueOpt::from_value(v),
                     "provider" => b.provider = FromValueOpt::from_value(v),
                     "status" => b.status = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

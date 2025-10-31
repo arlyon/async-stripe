@@ -76,7 +76,6 @@ const _: () = {
                 "first_time_transaction" => Deserialize::begin(&mut self.first_time_transaction),
                 "minimum_amount" => Deserialize::begin(&mut self.minimum_amount),
                 "minimum_amount_currency" => Deserialize::begin(&mut self.minimum_amount_currency),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -145,7 +144,6 @@ const _: () = {
                     "minimum_amount_currency" => {
                         b.minimum_amount_currency = FromValueOpt::from_value(v)
                     }
-
                     _ => {}
                 }
             }

@@ -58,7 +58,6 @@ const _: () = {
             Ok(match k {
                 "id" => Deserialize::begin(&mut self.id),
                 "idempotency_key" => Deserialize::begin(&mut self.idempotency_key),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -101,7 +100,6 @@ const _: () = {
                 match k.as_str() {
                     "id" => b.id = FromValueOpt::from_value(v),
                     "idempotency_key" => b.idempotency_key = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

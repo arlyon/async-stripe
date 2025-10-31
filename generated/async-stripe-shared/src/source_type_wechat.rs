@@ -56,7 +56,6 @@ const _: () = {
                 "prepay_id" => Deserialize::begin(&mut self.prepay_id),
                 "qr_code_url" => Deserialize::begin(&mut self.qr_code_url),
                 "statement_descriptor" => Deserialize::begin(&mut self.statement_descriptor),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -105,7 +104,6 @@ const _: () = {
                     "prepay_id" => b.prepay_id = FromValueOpt::from_value(v),
                     "qr_code_url" => b.qr_code_url = FromValueOpt::from_value(v),
                     "statement_descriptor" => b.statement_descriptor = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

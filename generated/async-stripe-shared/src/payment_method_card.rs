@@ -125,7 +125,6 @@ const _: () = {
                 "regulated_status" => Deserialize::begin(&mut self.regulated_status),
                 "three_d_secure_usage" => Deserialize::begin(&mut self.three_d_secure_usage),
                 "wallet" => Deserialize::begin(&mut self.wallet),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -255,7 +254,6 @@ const _: () = {
                     "regulated_status" => b.regulated_status = FromValueOpt::from_value(v),
                     "three_d_secure_usage" => b.three_d_secure_usage = FromValueOpt::from_value(v),
                     "wallet" => b.wallet = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

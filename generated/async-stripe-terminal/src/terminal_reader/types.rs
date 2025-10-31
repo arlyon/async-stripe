@@ -18,6 +18,8 @@ pub struct TerminalReader {
     pub ip_address: Option<String>,
     /// Custom label given to the reader for easier identification.
     pub label: String,
+    /// The last time this reader reported to Stripe backend.
+    pub last_seen_at: Option<stripe_types::Timestamp>,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
     /// The location identifier of the reader.
@@ -39,6 +41,7 @@ pub struct TerminalReaderBuilder {
     id: Option<stripe_terminal::TerminalReaderId>,
     ip_address: Option<Option<String>>,
     label: Option<String>,
+    last_seen_at: Option<Option<stripe_types::Timestamp>>,
     livemode: Option<bool>,
     location: Option<Option<stripe_types::Expandable<stripe_terminal::TerminalLocation>>>,
     metadata: Option<std::collections::HashMap<String, String>>,
@@ -92,12 +95,12 @@ const _: () = {
                 "id" => Deserialize::begin(&mut self.id),
                 "ip_address" => Deserialize::begin(&mut self.ip_address),
                 "label" => Deserialize::begin(&mut self.label),
+                "last_seen_at" => Deserialize::begin(&mut self.last_seen_at),
                 "livemode" => Deserialize::begin(&mut self.livemode),
                 "location" => Deserialize::begin(&mut self.location),
                 "metadata" => Deserialize::begin(&mut self.metadata),
                 "serial_number" => Deserialize::begin(&mut self.serial_number),
                 "status" => Deserialize::begin(&mut self.status),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -110,6 +113,7 @@ const _: () = {
                 id: Deserialize::default(),
                 ip_address: Deserialize::default(),
                 label: Deserialize::default(),
+                last_seen_at: Deserialize::default(),
                 livemode: Deserialize::default(),
                 location: Deserialize::default(),
                 metadata: Deserialize::default(),
@@ -126,6 +130,7 @@ const _: () = {
                 Some(id),
                 Some(ip_address),
                 Some(label),
+                Some(last_seen_at),
                 Some(livemode),
                 Some(location),
                 Some(metadata),
@@ -138,6 +143,7 @@ const _: () = {
                 self.id.take(),
                 self.ip_address.take(),
                 self.label.take(),
+                self.last_seen_at,
                 self.livemode,
                 self.location.take(),
                 self.metadata.take(),
@@ -154,6 +160,7 @@ const _: () = {
                 id,
                 ip_address,
                 label,
+                last_seen_at,
                 livemode,
                 location,
                 metadata,
@@ -192,12 +199,12 @@ const _: () = {
                     "id" => b.id = FromValueOpt::from_value(v),
                     "ip_address" => b.ip_address = FromValueOpt::from_value(v),
                     "label" => b.label = FromValueOpt::from_value(v),
+                    "last_seen_at" => b.last_seen_at = FromValueOpt::from_value(v),
                     "livemode" => b.livemode = FromValueOpt::from_value(v),
                     "location" => b.location = FromValueOpt::from_value(v),
                     "metadata" => b.metadata = FromValueOpt::from_value(v),
                     "serial_number" => b.serial_number = FromValueOpt::from_value(v),
                     "status" => b.status = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }
@@ -209,13 +216,14 @@ const _: () = {
 impl serde::Serialize for TerminalReader {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("TerminalReader", 12)?;
+        let mut s = s.serialize_struct("TerminalReader", 13)?;
         s.serialize_field("action", &self.action)?;
         s.serialize_field("device_sw_version", &self.device_sw_version)?;
         s.serialize_field("device_type", &self.device_type)?;
         s.serialize_field("id", &self.id)?;
         s.serialize_field("ip_address", &self.ip_address)?;
         s.serialize_field("label", &self.label)?;
+        s.serialize_field("last_seen_at", &self.last_seen_at)?;
         s.serialize_field("livemode", &self.livemode)?;
         s.serialize_field("location", &self.location)?;
         s.serialize_field("metadata", &self.metadata)?;

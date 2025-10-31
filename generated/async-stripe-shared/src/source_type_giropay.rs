@@ -59,7 +59,6 @@ const _: () = {
                 "bank_name" => Deserialize::begin(&mut self.bank_name),
                 "bic" => Deserialize::begin(&mut self.bic),
                 "statement_descriptor" => Deserialize::begin(&mut self.statement_descriptor),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -113,7 +112,6 @@ const _: () = {
                     "bank_name" => b.bank_name = FromValueOpt::from_value(v),
                     "bic" => b.bic = FromValueOpt::from_value(v),
                     "statement_descriptor" => b.statement_descriptor = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

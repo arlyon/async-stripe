@@ -268,7 +268,6 @@ const _: () = {
                 "transfer" => Deserialize::begin(&mut self.transfer),
                 "transfer_data" => Deserialize::begin(&mut self.transfer_data),
                 "transfer_group" => Deserialize::begin(&mut self.transfer_group),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -558,7 +557,6 @@ const _: () = {
                     "transfer" => b.transfer = FromValueOpt::from_value(v),
                     "transfer_data" => b.transfer_data = FromValueOpt::from_value(v),
                     "transfer_group" => b.transfer_group = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

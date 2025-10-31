@@ -64,7 +64,6 @@ const _: () = {
                 "last4" => Deserialize::begin(&mut self.last4),
                 "mandate" => Deserialize::begin(&mut self.mandate),
                 "sort_code" => Deserialize::begin(&mut self.sort_code),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -118,7 +117,6 @@ const _: () = {
                     "last4" => b.last4 = FromValueOpt::from_value(v),
                     "mandate" => b.mandate = FromValueOpt::from_value(v),
                     "sort_code" => b.sort_code = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

@@ -59,7 +59,6 @@ const _: () = {
                 "comment" => Deserialize::begin(&mut self.comment),
                 "feedback" => Deserialize::begin(&mut self.feedback),
                 "reason" => Deserialize::begin(&mut self.reason),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -108,7 +107,6 @@ const _: () = {
                     "comment" => b.comment = FromValueOpt::from_value(v),
                     "feedback" => b.feedback = FromValueOpt::from_value(v),
                     "reason" => b.reason = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

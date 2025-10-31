@@ -55,7 +55,6 @@ const _: () = {
             Ok(match k {
                 "is_revision" => Deserialize::begin(&mut self.is_revision),
                 "quote" => Deserialize::begin(&mut self.quote),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -97,7 +96,6 @@ const _: () = {
                 match k.as_str() {
                     "is_revision" => b.is_revision = FromValueOpt::from_value(v),
                     "quote" => b.quote = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

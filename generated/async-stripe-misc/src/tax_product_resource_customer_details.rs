@@ -67,7 +67,6 @@ const _: () = {
                 "ip_address" => Deserialize::begin(&mut self.ip_address),
                 "tax_ids" => Deserialize::begin(&mut self.tax_ids),
                 "taxability_override" => Deserialize::begin(&mut self.taxability_override),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -131,7 +130,6 @@ const _: () = {
                     "ip_address" => b.ip_address = FromValueOpt::from_value(v),
                     "tax_ids" => b.tax_ids = FromValueOpt::from_value(v),
                     "taxability_override" => b.taxability_override = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

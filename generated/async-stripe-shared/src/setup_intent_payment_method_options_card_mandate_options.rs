@@ -97,7 +97,6 @@ const _: () = {
                 "reference" => Deserialize::begin(&mut self.reference),
                 "start_date" => Deserialize::begin(&mut self.start_date),
                 "supported_types" => Deserialize::begin(&mut self.supported_types),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -192,7 +191,6 @@ const _: () = {
                     "reference" => b.reference = FromValueOpt::from_value(v),
                     "start_date" => b.start_date = FromValueOpt::from_value(v),
                     "supported_types" => b.supported_types = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

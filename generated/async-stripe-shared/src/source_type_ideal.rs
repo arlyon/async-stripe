@@ -59,7 +59,6 @@ const _: () = {
                 "bic" => Deserialize::begin(&mut self.bic),
                 "iban_last4" => Deserialize::begin(&mut self.iban_last4),
                 "statement_descriptor" => Deserialize::begin(&mut self.statement_descriptor),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -113,7 +112,6 @@ const _: () = {
                     "bic" => b.bic = FromValueOpt::from_value(v),
                     "iban_last4" => b.iban_last4 = FromValueOpt::from_value(v),
                     "statement_descriptor" => b.statement_descriptor = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

@@ -55,7 +55,6 @@ const _: () = {
             Ok(match k {
                 "race" => Deserialize::begin(&mut self.race),
                 "race_other" => Deserialize::begin(&mut self.race_other),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -97,7 +96,6 @@ const _: () = {
                 match k.as_str() {
                     "race" => b.race = FromValueOpt::from_value(v),
                     "race_other" => b.race_other = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

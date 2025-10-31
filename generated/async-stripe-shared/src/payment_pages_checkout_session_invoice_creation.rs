@@ -54,7 +54,6 @@ const _: () = {
             Ok(match k {
                 "enabled" => Deserialize::begin(&mut self.enabled),
                 "invoice_data" => Deserialize::begin(&mut self.invoice_data),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -97,7 +96,6 @@ const _: () = {
                 match k.as_str() {
                     "enabled" => b.enabled = FromValueOpt::from_value(v),
                     "invoice_data" => b.invoice_data = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

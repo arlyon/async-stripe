@@ -57,7 +57,6 @@ const _: () = {
             Ok(match k {
                 "interval" => Deserialize::begin(&mut self.interval),
                 "interval_count" => Deserialize::begin(&mut self.interval_count),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -100,7 +99,6 @@ const _: () = {
                 match k.as_str() {
                     "interval" => b.interval = FromValueOpt::from_value(v),
                     "interval_count" => b.interval_count = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

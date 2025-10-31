@@ -193,7 +193,6 @@ const _: () = {
                 "test_clock" => Deserialize::begin(&mut self.test_clock),
                 "total_details" => Deserialize::begin(&mut self.total_details),
                 "transfer_data" => Deserialize::begin(&mut self.transfer_data),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -414,7 +413,6 @@ const _: () = {
                     "test_clock" => b.test_clock = FromValueOpt::from_value(v),
                     "total_details" => b.total_details = FromValueOpt::from_value(v),
                     "transfer_data" => b.transfer_data = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

@@ -58,7 +58,6 @@ const _: () = {
                 "hosted_payment_method_save" => {
                     Deserialize::begin(&mut self.hosted_payment_method_save)
                 }
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -109,7 +108,6 @@ const _: () = {
                     "hosted_payment_method_save" => {
                         b.hosted_payment_method_save = FromValueOpt::from_value(v)
                     }
-
                     _ => {}
                 }
             }

@@ -105,7 +105,6 @@ const _: () = {
                 "on_behalf_of" => Deserialize::begin(&mut self.on_behalf_of),
                 "return_url" => Deserialize::begin(&mut self.return_url),
                 "url" => Deserialize::begin(&mut self.url),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -200,7 +199,6 @@ const _: () = {
                     "on_behalf_of" => b.on_behalf_of = FromValueOpt::from_value(v),
                     "return_url" => b.return_url = FromValueOpt::from_value(v),
                     "url" => b.url = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

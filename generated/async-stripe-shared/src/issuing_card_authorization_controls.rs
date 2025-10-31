@@ -90,7 +90,6 @@ const _: () = {
                 "spending_limits_currency" => {
                     Deserialize::begin(&mut self.spending_limits_currency)
                 }
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -171,7 +170,6 @@ const _: () = {
                     "spending_limits_currency" => {
                         b.spending_limits_currency = FromValueOpt::from_value(v)
                     }
-
                     _ => {}
                 }
             }

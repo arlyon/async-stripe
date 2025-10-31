@@ -66,7 +66,6 @@ const _: () = {
                 "capture_method" => Deserialize::begin(&mut self.capture_method),
                 "persistent_token" => Deserialize::begin(&mut self.persistent_token),
                 "setup_future_usage" => Deserialize::begin(&mut self.setup_future_usage),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -115,7 +114,6 @@ const _: () = {
                     "capture_method" => b.capture_method = FromValueOpt::from_value(v),
                     "persistent_token" => b.persistent_token = FromValueOpt::from_value(v),
                     "setup_future_usage" => b.setup_future_usage = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

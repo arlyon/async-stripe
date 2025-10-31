@@ -63,7 +63,6 @@ const _: () = {
                 "amount_total" => Deserialize::begin(&mut self.amount_total),
                 "fx_rate" => Deserialize::begin(&mut self.fx_rate),
                 "source_currency" => Deserialize::begin(&mut self.source_currency),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -117,7 +116,6 @@ const _: () = {
                     "amount_total" => b.amount_total = FromValueOpt::from_value(v),
                     "fx_rate" => b.fx_rate = FromValueOpt::from_value(v),
                     "source_currency" => b.source_currency = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

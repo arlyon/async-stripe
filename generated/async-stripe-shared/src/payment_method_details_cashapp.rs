@@ -59,7 +59,6 @@ const _: () = {
                 "buyer_id" => Deserialize::begin(&mut self.buyer_id),
                 "cashtag" => Deserialize::begin(&mut self.cashtag),
                 "transaction_id" => Deserialize::begin(&mut self.transaction_id),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -108,7 +107,6 @@ const _: () = {
                     "buyer_id" => b.buyer_id = FromValueOpt::from_value(v),
                     "cashtag" => b.cashtag = FromValueOpt::from_value(v),
                     "transaction_id" => b.transaction_id = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

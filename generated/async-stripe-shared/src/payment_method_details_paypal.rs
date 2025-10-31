@@ -75,7 +75,6 @@ const _: () = {
                 "payer_name" => Deserialize::begin(&mut self.payer_name),
                 "seller_protection" => Deserialize::begin(&mut self.seller_protection),
                 "transaction_id" => Deserialize::begin(&mut self.transaction_id),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -150,7 +149,6 @@ const _: () = {
                     "payer_name" => b.payer_name = FromValueOpt::from_value(v),
                     "seller_protection" => b.seller_protection = FromValueOpt::from_value(v),
                     "transaction_id" => b.transaction_id = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

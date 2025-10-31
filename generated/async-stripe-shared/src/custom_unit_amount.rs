@@ -60,7 +60,6 @@ const _: () = {
                 "maximum" => Deserialize::begin(&mut self.maximum),
                 "minimum" => Deserialize::begin(&mut self.minimum),
                 "preset" => Deserialize::begin(&mut self.preset),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -109,7 +108,6 @@ const _: () = {
                     "maximum" => b.maximum = FromValueOpt::from_value(v),
                     "minimum" => b.minimum = FromValueOpt::from_value(v),
                     "preset" => b.preset = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

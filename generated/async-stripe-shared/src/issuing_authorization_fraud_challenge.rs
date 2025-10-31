@@ -59,7 +59,6 @@ const _: () = {
                 "channel" => Deserialize::begin(&mut self.channel),
                 "status" => Deserialize::begin(&mut self.status),
                 "undeliverable_reason" => Deserialize::begin(&mut self.undeliverable_reason),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -108,7 +107,6 @@ const _: () = {
                     "channel" => b.channel = FromValueOpt::from_value(v),
                     "status" => b.status = FromValueOpt::from_value(v),
                     "undeliverable_reason" => b.undeliverable_reason = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

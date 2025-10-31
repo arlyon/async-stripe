@@ -64,7 +64,6 @@ const _: () = {
                 "reference" => Deserialize::begin(&mut self.reference),
                 "revocation_reason" => Deserialize::begin(&mut self.revocation_reason),
                 "url" => Deserialize::begin(&mut self.url),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -118,7 +117,6 @@ const _: () = {
                     "reference" => b.reference = FromValueOpt::from_value(v),
                     "revocation_reason" => b.revocation_reason = FromValueOpt::from_value(v),
                     "url" => b.url = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

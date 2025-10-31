@@ -67,7 +67,6 @@ const _: () = {
                     Deserialize::begin(&mut self.next_refresh_available_at)
                 }
                 "status" => Deserialize::begin(&mut self.status),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -123,7 +122,6 @@ const _: () = {
                         b.next_refresh_available_at = FromValueOpt::from_value(v)
                     }
                     "status" => b.status = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

@@ -57,7 +57,6 @@ const _: () = {
             Ok(match k {
                 "end_hour" => Deserialize::begin(&mut self.end_hour),
                 "start_hour" => Deserialize::begin(&mut self.start_hour),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -100,7 +99,6 @@ const _: () = {
                 match k.as_str() {
                     "end_hour" => b.end_hour = FromValueOpt::from_value(v),
                     "start_hour" => b.start_hour = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

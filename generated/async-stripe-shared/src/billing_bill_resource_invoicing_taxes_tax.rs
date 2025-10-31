@@ -74,7 +74,6 @@ const _: () = {
                 "taxability_reason" => Deserialize::begin(&mut self.taxability_reason),
                 "taxable_amount" => Deserialize::begin(&mut self.taxable_amount),
                 "type" => Deserialize::begin(&mut self.type_),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -149,7 +148,6 @@ const _: () = {
                     "taxability_reason" => b.taxability_reason = FromValueOpt::from_value(v),
                     "taxable_amount" => b.taxable_amount = FromValueOpt::from_value(v),
                     "type" => b.type_ = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

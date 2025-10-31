@@ -91,7 +91,6 @@ const _: () = {
                 "sex" => Deserialize::begin(&mut self.sex),
                 "unparsed_place_of_birth" => Deserialize::begin(&mut self.unparsed_place_of_birth),
                 "unparsed_sex" => Deserialize::begin(&mut self.unparsed_sex),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -193,7 +192,6 @@ const _: () = {
                         b.unparsed_place_of_birth = FromValueOpt::from_value(v)
                     }
                     "unparsed_sex" => b.unparsed_sex = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

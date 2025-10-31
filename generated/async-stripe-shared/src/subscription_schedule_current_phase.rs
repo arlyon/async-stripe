@@ -55,7 +55,6 @@ const _: () = {
             Ok(match k {
                 "end_date" => Deserialize::begin(&mut self.end_date),
                 "start_date" => Deserialize::begin(&mut self.start_date),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -97,7 +96,6 @@ const _: () = {
                 match k.as_str() {
                     "end_date" => b.end_date = FromValueOpt::from_value(v),
                     "start_date" => b.start_date = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

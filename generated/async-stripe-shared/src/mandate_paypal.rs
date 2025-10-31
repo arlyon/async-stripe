@@ -56,7 +56,6 @@ const _: () = {
             Ok(match k {
                 "billing_agreement_id" => Deserialize::begin(&mut self.billing_agreement_id),
                 "payer_id" => Deserialize::begin(&mut self.payer_id),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -100,7 +99,6 @@ const _: () = {
                 match k.as_str() {
                     "billing_agreement_id" => b.billing_agreement_id = FromValueOpt::from_value(v),
                     "payer_id" => b.payer_id = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

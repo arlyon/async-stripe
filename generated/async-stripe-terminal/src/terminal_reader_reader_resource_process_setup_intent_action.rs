@@ -61,7 +61,6 @@ const _: () = {
                 "generated_card" => Deserialize::begin(&mut self.generated_card),
                 "process_config" => Deserialize::begin(&mut self.process_config),
                 "setup_intent" => Deserialize::begin(&mut self.setup_intent),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -111,7 +110,6 @@ const _: () = {
                     "generated_card" => b.generated_card = FromValueOpt::from_value(v),
                     "process_config" => b.process_config = FromValueOpt::from_value(v),
                     "setup_intent" => b.setup_intent = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

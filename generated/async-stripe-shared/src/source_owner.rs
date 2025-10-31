@@ -87,7 +87,6 @@ const _: () = {
                 "verified_email" => Deserialize::begin(&mut self.verified_email),
                 "verified_name" => Deserialize::begin(&mut self.verified_name),
                 "verified_phone" => Deserialize::begin(&mut self.verified_phone),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -172,7 +171,6 @@ const _: () = {
                     "verified_email" => b.verified_email = FromValueOpt::from_value(v),
                     "verified_name" => b.verified_name = FromValueOpt::from_value(v),
                     "verified_phone" => b.verified_phone = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

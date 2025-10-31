@@ -58,7 +58,6 @@ const _: () = {
                 "currency" => Deserialize::begin(&mut self.currency),
                 "deleted" => Deserialize::begin(&mut self.deleted),
                 "id" => Deserialize::begin(&mut self.id),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -107,7 +106,6 @@ const _: () = {
                     "currency" => b.currency = FromValueOpt::from_value(v),
                     "deleted" => b.deleted = FromValueOpt::from_value(v),
                     "id" => b.id = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

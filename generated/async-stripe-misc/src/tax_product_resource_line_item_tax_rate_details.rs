@@ -60,7 +60,6 @@ const _: () = {
                 "display_name" => Deserialize::begin(&mut self.display_name),
                 "percentage_decimal" => Deserialize::begin(&mut self.percentage_decimal),
                 "tax_type" => Deserialize::begin(&mut self.tax_type),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -109,7 +108,6 @@ const _: () = {
                     "display_name" => b.display_name = FromValueOpt::from_value(v),
                     "percentage_decimal" => b.percentage_decimal = FromValueOpt::from_value(v),
                     "tax_type" => b.tax_type = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

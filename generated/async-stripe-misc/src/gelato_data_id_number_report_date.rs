@@ -60,7 +60,6 @@ const _: () = {
                 "day" => Deserialize::begin(&mut self.day),
                 "month" => Deserialize::begin(&mut self.month),
                 "year" => Deserialize::begin(&mut self.year),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -107,7 +106,6 @@ const _: () = {
                     "day" => b.day = FromValueOpt::from_value(v),
                     "month" => b.month = FromValueOpt::from_value(v),
                     "year" => b.year = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

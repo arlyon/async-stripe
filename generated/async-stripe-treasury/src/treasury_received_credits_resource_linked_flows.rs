@@ -75,7 +75,6 @@ const _: () = {
                 "source_flow" => Deserialize::begin(&mut self.source_flow),
                 "source_flow_details" => Deserialize::begin(&mut self.source_flow_details),
                 "source_flow_type" => Deserialize::begin(&mut self.source_flow_type),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -152,7 +151,6 @@ const _: () = {
                     "source_flow" => b.source_flow = FromValueOpt::from_value(v),
                     "source_flow_details" => b.source_flow_details = FromValueOpt::from_value(v),
                     "source_flow_type" => b.source_flow_type = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

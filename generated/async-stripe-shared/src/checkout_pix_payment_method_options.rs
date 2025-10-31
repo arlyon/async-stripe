@@ -66,7 +66,6 @@ const _: () = {
                 "amount_includes_iof" => Deserialize::begin(&mut self.amount_includes_iof),
                 "expires_after_seconds" => Deserialize::begin(&mut self.expires_after_seconds),
                 "setup_future_usage" => Deserialize::begin(&mut self.setup_future_usage),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -117,7 +116,6 @@ const _: () = {
                         b.expires_after_seconds = FromValueOpt::from_value(v)
                     }
                     "setup_future_usage" => b.setup_future_usage = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

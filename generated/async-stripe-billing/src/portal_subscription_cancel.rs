@@ -63,7 +63,6 @@ const _: () = {
                 "enabled" => Deserialize::begin(&mut self.enabled),
                 "mode" => Deserialize::begin(&mut self.mode),
                 "proration_behavior" => Deserialize::begin(&mut self.proration_behavior),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -114,7 +113,6 @@ const _: () = {
                     "enabled" => b.enabled = FromValueOpt::from_value(v),
                     "mode" => b.mode = FromValueOpt::from_value(v),
                     "proration_behavior" => b.proration_behavior = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

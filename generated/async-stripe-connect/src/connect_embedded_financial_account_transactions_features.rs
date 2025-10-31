@@ -54,7 +54,6 @@ const _: () = {
                 "card_spend_dispute_management" => {
                     Deserialize::begin(&mut self.card_spend_dispute_management)
                 }
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -98,7 +97,6 @@ const _: () = {
                     "card_spend_dispute_management" => {
                         b.card_spend_dispute_management = FromValueOpt::from_value(v)
                     }
-
                     _ => {}
                 }
             }

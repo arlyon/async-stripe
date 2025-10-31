@@ -51,7 +51,6 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "customer_notification" => Deserialize::begin(&mut self.customer_notification),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -94,7 +93,6 @@ const _: () = {
                     "customer_notification" => {
                         b.customer_notification = FromValueOpt::from_value(v)
                     }
-
                     _ => {}
                 }
             }

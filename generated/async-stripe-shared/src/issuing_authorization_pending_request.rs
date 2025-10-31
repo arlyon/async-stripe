@@ -79,7 +79,6 @@ const _: () = {
                 "merchant_amount" => Deserialize::begin(&mut self.merchant_amount),
                 "merchant_currency" => Deserialize::begin(&mut self.merchant_currency),
                 "network_risk_score" => Deserialize::begin(&mut self.network_risk_score),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -161,7 +160,6 @@ const _: () = {
                     "merchant_amount" => b.merchant_amount = FromValueOpt::from_value(v),
                     "merchant_currency" => b.merchant_currency = FromValueOpt::from_value(v),
                     "network_risk_score" => b.network_risk_score = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

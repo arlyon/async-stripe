@@ -56,7 +56,6 @@ const _: () = {
             Ok(match k {
                 "event_payload_key" => Deserialize::begin(&mut self.event_payload_key),
                 "type" => Deserialize::begin(&mut self.type_),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -100,7 +99,6 @@ const _: () = {
                 match k.as_str() {
                     "event_payload_key" => b.event_payload_key = FromValueOpt::from_value(v),
                     "type" => b.type_ = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

@@ -374,7 +374,6 @@ const _: () = {
                 "ui_mode" => Deserialize::begin(&mut self.ui_mode),
                 "url" => Deserialize::begin(&mut self.url),
                 "wallet_options" => Deserialize::begin(&mut self.wallet_options),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -761,7 +760,6 @@ const _: () = {
                     "ui_mode" => b.ui_mode = FromValueOpt::from_value(v),
                     "url" => b.url = FromValueOpt::from_value(v),
                     "wallet_options" => b.wallet_options = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

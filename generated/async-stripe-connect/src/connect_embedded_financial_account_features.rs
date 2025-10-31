@@ -72,7 +72,6 @@ const _: () = {
                 }
                 "send_money" => Deserialize::begin(&mut self.send_money),
                 "transfer_balance" => Deserialize::begin(&mut self.transfer_balance),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -141,7 +140,6 @@ const _: () = {
                     }
                     "send_money" => b.send_money = FromValueOpt::from_value(v),
                     "transfer_balance" => b.transfer_balance = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

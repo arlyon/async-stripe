@@ -67,7 +67,6 @@ const _: () = {
                 "terms_of_service_acceptance" => {
                     Deserialize::begin(&mut self.terms_of_service_acceptance)
                 }
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -129,7 +128,6 @@ const _: () = {
                     "terms_of_service_acceptance" => {
                         b.terms_of_service_acceptance = FromValueOpt::from_value(v)
                     }
-
                     _ => {}
                 }
             }

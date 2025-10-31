@@ -79,7 +79,6 @@ const _: () = {
                     Deserialize::begin(&mut self.statement_descriptor_suffix)
                 }
                 "transfer_group" => Deserialize::begin(&mut self.transfer_group),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -161,7 +160,6 @@ const _: () = {
                         b.statement_descriptor_suffix = FromValueOpt::from_value(v)
                     }
                     "transfer_group" => b.transfer_group = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

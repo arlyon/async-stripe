@@ -59,7 +59,6 @@ const _: () = {
                 "bank_account" => Deserialize::begin(&mut self.bank_account),
                 "card" => Deserialize::begin(&mut self.card),
                 "fpx" => Deserialize::begin(&mut self.fpx),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -108,7 +107,6 @@ const _: () = {
                     "bank_account" => b.bank_account = FromValueOpt::from_value(v),
                     "card" => b.card = FromValueOpt::from_value(v),
                     "fpx" => b.fpx = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

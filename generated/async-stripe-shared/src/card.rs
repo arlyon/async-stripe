@@ -206,7 +206,6 @@ const _: () = {
                 "regulated_status" => Deserialize::begin(&mut self.regulated_status),
                 "status" => Deserialize::begin(&mut self.status),
                 "tokenization_method" => Deserialize::begin(&mut self.tokenization_method),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -418,7 +417,6 @@ const _: () = {
                     "regulated_status" => b.regulated_status = FromValueOpt::from_value(v),
                     "status" => b.status = FromValueOpt::from_value(v),
                     "tokenization_method" => b.tokenization_method = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

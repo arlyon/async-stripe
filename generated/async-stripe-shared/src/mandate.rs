@@ -83,7 +83,6 @@ const _: () = {
                 "single_use" => Deserialize::begin(&mut self.single_use),
                 "status" => Deserialize::begin(&mut self.status),
                 "type" => Deserialize::begin(&mut self.type_),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -180,7 +179,6 @@ const _: () = {
                     "single_use" => b.single_use = FromValueOpt::from_value(v),
                     "status" => b.status = FromValueOpt::from_value(v),
                     "type" => b.type_ = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

@@ -68,7 +68,6 @@ const _: () = {
                 "bank_transfer" => Deserialize::begin(&mut self.bank_transfer),
                 "funding_type" => Deserialize::begin(&mut self.funding_type),
                 "setup_future_usage" => Deserialize::begin(&mut self.setup_future_usage),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -117,7 +116,6 @@ const _: () = {
                     "bank_transfer" => b.bank_transfer = FromValueOpt::from_value(v),
                     "funding_type" => b.funding_type = FromValueOpt::from_value(v),
                     "setup_future_usage" => b.setup_future_usage = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

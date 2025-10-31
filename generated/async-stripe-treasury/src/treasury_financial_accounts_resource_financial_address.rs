@@ -62,7 +62,6 @@ const _: () = {
                 "aba" => Deserialize::begin(&mut self.aba),
                 "supported_networks" => Deserialize::begin(&mut self.supported_networks),
                 "type" => Deserialize::begin(&mut self.type_),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -111,7 +110,6 @@ const _: () = {
                     "aba" => b.aba = FromValueOpt::from_value(v),
                     "supported_networks" => b.supported_networks = FromValueOpt::from_value(v),
                     "type" => b.type_ = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

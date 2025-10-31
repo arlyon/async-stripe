@@ -78,7 +78,6 @@ const _: () = {
                 "monthly_payout_days" => Deserialize::begin(&mut self.monthly_payout_days),
                 "weekly_anchor" => Deserialize::begin(&mut self.weekly_anchor),
                 "weekly_payout_days" => Deserialize::begin(&mut self.weekly_payout_days),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -153,7 +152,6 @@ const _: () = {
                     "monthly_payout_days" => b.monthly_payout_days = FromValueOpt::from_value(v),
                     "weekly_anchor" => b.weekly_anchor = FromValueOpt::from_value(v),
                     "weekly_payout_days" => b.weekly_payout_days = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

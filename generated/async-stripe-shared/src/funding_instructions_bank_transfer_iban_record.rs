@@ -70,7 +70,6 @@ const _: () = {
                 "bic" => Deserialize::begin(&mut self.bic),
                 "country" => Deserialize::begin(&mut self.country),
                 "iban" => Deserialize::begin(&mut self.iban),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -147,7 +146,6 @@ const _: () = {
                     "bic" => b.bic = FromValueOpt::from_value(v),
                     "country" => b.country = FromValueOpt::from_value(v),
                     "iban" => b.iban = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

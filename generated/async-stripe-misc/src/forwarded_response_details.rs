@@ -60,7 +60,6 @@ const _: () = {
                 "body" => Deserialize::begin(&mut self.body),
                 "headers" => Deserialize::begin(&mut self.headers),
                 "status" => Deserialize::begin(&mut self.status),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -109,7 +108,6 @@ const _: () = {
                     "body" => b.body = FromValueOpt::from_value(v),
                     "headers" => b.headers = FromValueOpt::from_value(v),
                     "status" => b.status = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

@@ -91,7 +91,6 @@ const _: () = {
                     Deserialize::begin(&mut self.refund_account_holder_name)
                 }
                 "refund_iban" => Deserialize::begin(&mut self.refund_iban),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -200,7 +199,6 @@ const _: () = {
                         b.refund_account_holder_name = FromValueOpt::from_value(v)
                     }
                     "refund_iban" => b.refund_iban = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

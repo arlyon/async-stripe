@@ -85,7 +85,6 @@ const _: () = {
                 "permissions" => Deserialize::begin(&mut self.permissions),
                 "prefetch" => Deserialize::begin(&mut self.prefetch),
                 "return_url" => Deserialize::begin(&mut self.return_url),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -175,7 +174,6 @@ const _: () = {
                     "permissions" => b.permissions = FromValueOpt::from_value(v),
                     "prefetch" => b.prefetch = FromValueOpt::from_value(v),
                     "return_url" => b.return_url = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

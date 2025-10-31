@@ -56,7 +56,6 @@ const _: () = {
             Ok(match k {
                 "ach" => Deserialize::begin(&mut self.ach),
                 "us_domestic_wire" => Deserialize::begin(&mut self.us_domestic_wire),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -100,7 +99,6 @@ const _: () = {
                 match k.as_str() {
                     "ach" => b.ach = FromValueOpt::from_value(v),
                     "us_domestic_wire" => b.us_domestic_wire = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

@@ -53,7 +53,6 @@ const _: () = {
             Ok(match k {
                 "business" => Deserialize::begin(&mut self.business),
                 "individual" => Deserialize::begin(&mut self.individual),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -95,7 +94,6 @@ const _: () = {
                 match k.as_str() {
                     "business" => b.business = FromValueOpt::from_value(v),
                     "individual" => b.individual = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

@@ -103,7 +103,6 @@ const _: () = {
                 "support_phone" => Deserialize::begin(&mut self.support_phone),
                 "support_url" => Deserialize::begin(&mut self.support_url),
                 "url" => Deserialize::begin(&mut self.url),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -214,7 +213,6 @@ const _: () = {
                     "support_phone" => b.support_phone = FromValueOpt::from_value(v),
                     "support_url" => b.support_url = FromValueOpt::from_value(v),
                     "url" => b.url = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

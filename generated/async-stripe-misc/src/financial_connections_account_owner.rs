@@ -75,7 +75,6 @@ const _: () = {
                 "phone" => Deserialize::begin(&mut self.phone),
                 "raw_address" => Deserialize::begin(&mut self.raw_address),
                 "refreshed_at" => Deserialize::begin(&mut self.refreshed_at),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -147,7 +146,6 @@ const _: () = {
                     "phone" => b.phone = FromValueOpt::from_value(v),
                     "raw_address" => b.raw_address = FromValueOpt::from_value(v),
                     "refreshed_at" => b.refreshed_at = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

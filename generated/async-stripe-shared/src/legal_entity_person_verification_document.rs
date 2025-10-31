@@ -65,7 +65,6 @@ const _: () = {
                 "details" => Deserialize::begin(&mut self.details),
                 "details_code" => Deserialize::begin(&mut self.details_code),
                 "front" => Deserialize::begin(&mut self.front),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -119,7 +118,6 @@ const _: () = {
                     "details" => b.details = FromValueOpt::from_value(v),
                     "details_code" => b.details_code = FromValueOpt::from_value(v),
                     "front" => b.front = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

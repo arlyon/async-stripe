@@ -127,7 +127,6 @@ const _: () = {
                 "status" => Deserialize::begin(&mut self.status),
                 "subscription" => Deserialize::begin(&mut self.subscription),
                 "test_clock" => Deserialize::begin(&mut self.test_clock),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -264,7 +263,6 @@ const _: () = {
                     "status" => b.status = FromValueOpt::from_value(v),
                     "subscription" => b.subscription = FromValueOpt::from_value(v),
                     "test_clock" => b.test_clock = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

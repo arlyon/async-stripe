@@ -105,7 +105,6 @@ const _: () = {
                 "tipping" => Deserialize::begin(&mut self.tipping),
                 "verifone_p400" => Deserialize::begin(&mut self.verifone_p400),
                 "wifi" => Deserialize::begin(&mut self.wifi),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -210,7 +209,6 @@ const _: () = {
                     "tipping" => b.tipping = FromValueOpt::from_value(v),
                     "verifone_p400" => b.verifone_p400 = FromValueOpt::from_value(v),
                     "wifi" => b.wifi = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

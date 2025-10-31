@@ -65,7 +65,6 @@ const _: () = {
                 "require_id_number" => Deserialize::begin(&mut self.require_id_number),
                 "require_live_capture" => Deserialize::begin(&mut self.require_live_capture),
                 "require_matching_selfie" => Deserialize::begin(&mut self.require_matching_selfie),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -132,7 +131,6 @@ const _: () = {
                     "require_matching_selfie" => {
                         b.require_matching_selfie = FromValueOpt::from_value(v)
                     }
-
                     _ => {}
                 }
             }

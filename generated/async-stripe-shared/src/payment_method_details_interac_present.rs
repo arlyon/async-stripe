@@ -135,7 +135,6 @@ const _: () = {
                 "preferred_locales" => Deserialize::begin(&mut self.preferred_locales),
                 "read_method" => Deserialize::begin(&mut self.read_method),
                 "receipt" => Deserialize::begin(&mut self.receipt),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -272,7 +271,6 @@ const _: () = {
                     "preferred_locales" => b.preferred_locales = FromValueOpt::from_value(v),
                     "read_method" => b.read_method = FromValueOpt::from_value(v),
                     "receipt" => b.receipt = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

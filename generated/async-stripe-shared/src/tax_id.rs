@@ -87,7 +87,6 @@ const _: () = {
                 "type" => Deserialize::begin(&mut self.type_),
                 "value" => Deserialize::begin(&mut self.value),
                 "verification" => Deserialize::begin(&mut self.verification),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -177,7 +176,6 @@ const _: () = {
                     "type" => b.type_ = FromValueOpt::from_value(v),
                     "value" => b.value = FromValueOpt::from_value(v),
                     "verification" => b.verification = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

@@ -86,7 +86,6 @@ const _: () = {
                 "networks" => Deserialize::begin(&mut self.networks),
                 "routing_number" => Deserialize::begin(&mut self.routing_number),
                 "status_details" => Deserialize::begin(&mut self.status_details),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -178,7 +177,6 @@ const _: () = {
                     "networks" => b.networks = FromValueOpt::from_value(v),
                     "routing_number" => b.routing_number = FromValueOpt::from_value(v),
                     "status_details" => b.status_details = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

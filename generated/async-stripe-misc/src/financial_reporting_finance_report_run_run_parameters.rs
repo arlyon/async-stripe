@@ -84,7 +84,6 @@ const _: () = {
                 "payout" => Deserialize::begin(&mut self.payout),
                 "reporting_category" => Deserialize::begin(&mut self.reporting_category),
                 "timezone" => Deserialize::begin(&mut self.timezone),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -169,7 +168,6 @@ const _: () = {
                     "payout" => b.payout = FromValueOpt::from_value(v),
                     "reporting_category" => b.reporting_category = FromValueOpt::from_value(v),
                     "timezone" => b.timezone = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

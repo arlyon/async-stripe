@@ -38,25 +38,30 @@ pub struct ListInvoicePaymentPayment {
     /// Only return invoice payments associated by this payment intent ID.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_intent: Option<String>,
+    /// Only return invoice payments associated by this payment record ID.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payment_record: Option<String>,
     /// Only return invoice payments associated by this payment type.
     #[serde(rename = "type")]
     pub type_: ListInvoicePaymentPaymentType,
 }
 impl ListInvoicePaymentPayment {
     pub fn new(type_: impl Into<ListInvoicePaymentPaymentType>) -> Self {
-        Self { payment_intent: None, type_: type_.into() }
+        Self { payment_intent: None, payment_record: None, type_: type_.into() }
     }
 }
 /// Only return invoice payments associated by this payment type.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum ListInvoicePaymentPaymentType {
     PaymentIntent,
+    PaymentRecord,
 }
 impl ListInvoicePaymentPaymentType {
     pub fn as_str(self) -> &'static str {
         use ListInvoicePaymentPaymentType::*;
         match self {
             PaymentIntent => "payment_intent",
+            PaymentRecord => "payment_record",
         }
     }
 }
@@ -67,6 +72,7 @@ impl std::str::FromStr for ListInvoicePaymentPaymentType {
         use ListInvoicePaymentPaymentType::*;
         match s {
             "payment_intent" => Ok(PaymentIntent),
+            "payment_record" => Ok(PaymentRecord),
             _ => Err(stripe_types::StripeParseError),
         }
     }

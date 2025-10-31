@@ -55,7 +55,6 @@ const _: () = {
             Ok(match k {
                 "alternative_fields_due" => Deserialize::begin(&mut self.alternative_fields_due),
                 "original_fields_due" => Deserialize::begin(&mut self.original_fields_due),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -104,7 +103,6 @@ const _: () = {
                         b.alternative_fields_due = FromValueOpt::from_value(v)
                     }
                     "original_fields_due" => b.original_fields_due = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

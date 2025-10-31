@@ -67,7 +67,6 @@ const _: () = {
                 "latitude" => Deserialize::begin(&mut self.latitude),
                 "longitude" => Deserialize::begin(&mut self.longitude),
                 "region" => Deserialize::begin(&mut self.region),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -124,7 +123,6 @@ const _: () = {
                     "latitude" => b.latitude = FromValueOpt::from_value(v),
                     "longitude" => b.longitude = FromValueOpt::from_value(v),
                     "region" => b.region = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

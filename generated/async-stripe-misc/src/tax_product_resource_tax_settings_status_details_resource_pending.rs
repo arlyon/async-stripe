@@ -56,7 +56,6 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "missing_fields" => Deserialize::begin(&mut self.missing_fields),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -98,7 +97,6 @@ const _: () = {
             for (k, v) in obj {
                 match k.as_str() {
                     "missing_fields" => b.missing_fields = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

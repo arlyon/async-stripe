@@ -62,7 +62,6 @@ const _: () = {
                 "amount" => Deserialize::begin(&mut self.amount),
                 "currency" => Deserialize::begin(&mut self.currency),
                 "fiscal_year_end" => Deserialize::begin(&mut self.fiscal_year_end),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -111,7 +110,6 @@ const _: () = {
                     "amount" => b.amount = FromValueOpt::from_value(v),
                     "currency" => b.currency = FromValueOpt::from_value(v),
                     "fiscal_year_end" => b.fiscal_year_end = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

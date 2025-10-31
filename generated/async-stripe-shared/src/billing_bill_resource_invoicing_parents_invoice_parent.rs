@@ -63,7 +63,6 @@ const _: () = {
                 "quote_details" => Deserialize::begin(&mut self.quote_details),
                 "subscription_details" => Deserialize::begin(&mut self.subscription_details),
                 "type" => Deserialize::begin(&mut self.type_),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -112,7 +111,6 @@ const _: () = {
                     "quote_details" => b.quote_details = FromValueOpt::from_value(v),
                     "subscription_details" => b.subscription_details = FromValueOpt::from_value(v),
                     "type" => b.type_ = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

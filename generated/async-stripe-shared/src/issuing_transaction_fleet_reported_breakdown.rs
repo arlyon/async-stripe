@@ -59,7 +59,6 @@ const _: () = {
                 "fuel" => Deserialize::begin(&mut self.fuel),
                 "non_fuel" => Deserialize::begin(&mut self.non_fuel),
                 "tax" => Deserialize::begin(&mut self.tax),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -108,7 +107,6 @@ const _: () = {
                     "fuel" => b.fuel = FromValueOpt::from_value(v),
                     "non_fuel" => b.non_fuel = FromValueOpt::from_value(v),
                     "tax" => b.tax = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

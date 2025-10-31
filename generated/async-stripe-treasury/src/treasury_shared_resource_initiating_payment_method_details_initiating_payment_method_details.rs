@@ -77,26 +77,23 @@ const _: () = {
     fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
         Ok(match k {
             "balance" => Deserialize::begin(&mut self.balance),
-"billing_details" => Deserialize::begin(&mut self.billing_details),
-"financial_account" => Deserialize::begin(&mut self.financial_account),
-"issuing_card" => Deserialize::begin(&mut self.issuing_card),
-"type" => Deserialize::begin(&mut self.type_),
-"us_bank_account" => Deserialize::begin(&mut self.us_bank_account),
-
+            "billing_details" => Deserialize::begin(&mut self.billing_details),
+            "financial_account" => Deserialize::begin(&mut self.financial_account),
+            "issuing_card" => Deserialize::begin(&mut self.issuing_card),
+            "type" => Deserialize::begin(&mut self.type_),
+            "us_bank_account" => Deserialize::begin(&mut self.us_bank_account),
             _ => <dyn Visitor>::ignore(),
         })
     }
 
     fn deser_default() -> Self {
-        Self {
-            balance: Deserialize::default(),
+        Self { balance: Deserialize::default(),
 billing_details: Deserialize::default(),
 financial_account: Deserialize::default(),
 issuing_card: Deserialize::default(),
 type_: Deserialize::default(),
 us_bank_account: Deserialize::default(),
-
-        }
+ }
     }
 
     fn take_out(&mut self) -> Option<Self::Out> {
@@ -152,7 +149,6 @@ self.us_bank_account.take(),
                     "issuing_card" => b.issuing_card = FromValueOpt::from_value(v),
                     "type" => b.type_ = FromValueOpt::from_value(v),
                     "us_bank_account" => b.us_bank_account = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

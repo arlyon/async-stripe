@@ -69,7 +69,6 @@ const _: () = {
                 "mandate_options" => Deserialize::begin(&mut self.mandate_options),
                 "setup_future_usage" => Deserialize::begin(&mut self.setup_future_usage),
                 "target_date" => Deserialize::begin(&mut self.target_date),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -118,7 +117,6 @@ const _: () = {
                     "mandate_options" => b.mandate_options = FromValueOpt::from_value(v),
                     "setup_future_usage" => b.setup_future_usage = FromValueOpt::from_value(v),
                     "target_date" => b.target_date = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

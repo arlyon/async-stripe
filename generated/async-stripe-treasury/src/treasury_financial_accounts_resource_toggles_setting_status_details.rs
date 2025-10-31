@@ -63,7 +63,6 @@ const _: () = {
                 "code" => Deserialize::begin(&mut self.code),
                 "resolution" => Deserialize::begin(&mut self.resolution),
                 "restriction" => Deserialize::begin(&mut self.restriction),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -114,7 +113,6 @@ const _: () = {
                     "code" => b.code = FromValueOpt::from_value(v),
                     "resolution" => b.resolution = FromValueOpt::from_value(v),
                     "restriction" => b.restriction = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

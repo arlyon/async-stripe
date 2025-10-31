@@ -61,7 +61,6 @@ const _: () = {
                 "country" => Deserialize::begin(&mut self.country),
                 "financial_addresses" => Deserialize::begin(&mut self.financial_addresses),
                 "type" => Deserialize::begin(&mut self.type_),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -110,7 +109,6 @@ const _: () = {
                     "country" => b.country = FromValueOpt::from_value(v),
                     "financial_addresses" => b.financial_addresses = FromValueOpt::from_value(v),
                     "type" => b.type_ = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

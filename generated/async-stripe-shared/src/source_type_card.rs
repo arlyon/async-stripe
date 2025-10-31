@@ -98,7 +98,6 @@ const _: () = {
                 "name" => Deserialize::begin(&mut self.name),
                 "three_d_secure" => Deserialize::begin(&mut self.three_d_secure),
                 "tokenization_method" => Deserialize::begin(&mut self.tokenization_method),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -228,7 +227,6 @@ const _: () = {
                     "name" => b.name = FromValueOpt::from_value(v),
                     "three_d_secure" => b.three_d_secure = FromValueOpt::from_value(v),
                     "tokenization_method" => b.tokenization_method = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

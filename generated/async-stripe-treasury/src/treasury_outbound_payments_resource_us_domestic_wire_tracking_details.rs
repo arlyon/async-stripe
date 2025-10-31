@@ -59,7 +59,6 @@ const _: () = {
                 "chips" => Deserialize::begin(&mut self.chips),
                 "imad" => Deserialize::begin(&mut self.imad),
                 "omad" => Deserialize::begin(&mut self.omad),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -110,7 +109,6 @@ const _: () = {
                     "chips" => b.chips = FromValueOpt::from_value(v),
                     "imad" => b.imad = FromValueOpt::from_value(v),
                     "omad" => b.omad = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

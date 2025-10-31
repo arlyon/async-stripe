@@ -55,7 +55,6 @@ const _: () = {
             Ok(match k {
                 "available" => Deserialize::begin(&mut self.available),
                 "pending" => Deserialize::begin(&mut self.pending),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -98,7 +97,6 @@ const _: () = {
                 match k.as_str() {
                     "available" => b.available = FromValueOpt::from_value(v),
                     "pending" => b.pending = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

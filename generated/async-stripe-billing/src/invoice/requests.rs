@@ -1597,6 +1597,7 @@ pub enum CreateInvoicePaymentSettingsPaymentMethodTypes {
     Card,
     Cashapp,
     Crypto,
+    Custom,
     CustomerBalance,
     Eps,
     Fpx,
@@ -1643,6 +1644,7 @@ impl CreateInvoicePaymentSettingsPaymentMethodTypes {
             Card => "card",
             Cashapp => "cashapp",
             Crypto => "crypto",
+            Custom => "custom",
             CustomerBalance => "customer_balance",
             Eps => "eps",
             Fpx => "fpx",
@@ -1692,6 +1694,7 @@ impl std::str::FromStr for CreateInvoicePaymentSettingsPaymentMethodTypes {
             "card" => Ok(Card),
             "cashapp" => Ok(Cashapp),
             "crypto" => Ok(Crypto),
+            "custom" => Ok(Custom),
             "customer_balance" => Ok(CustomerBalance),
             "eps" => Ok(Eps),
             "fpx" => Ok(Fpx),
@@ -3896,6 +3899,7 @@ pub enum UpdateInvoicePaymentSettingsPaymentMethodTypes {
     Card,
     Cashapp,
     Crypto,
+    Custom,
     CustomerBalance,
     Eps,
     Fpx,
@@ -3942,6 +3946,7 @@ impl UpdateInvoicePaymentSettingsPaymentMethodTypes {
             Card => "card",
             Cashapp => "cashapp",
             Crypto => "crypto",
+            Custom => "custom",
             CustomerBalance => "customer_balance",
             Eps => "eps",
             Fpx => "fpx",
@@ -3991,6 +3996,7 @@ impl std::str::FromStr for UpdateInvoicePaymentSettingsPaymentMethodTypes {
             "card" => Ok(Card),
             "cashapp" => Ok(Cashapp),
             "crypto" => Ok(Crypto),
+            "custom" => Ok(Custom),
             "customer_balance" => Ok(CustomerBalance),
             "eps" => Ok(Eps),
             "fpx" => Ok(Fpx),
@@ -5533,10 +5539,12 @@ struct AttachPaymentInvoiceBuilder {
     expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     payment_intent: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    payment_record: Option<String>,
 }
 impl AttachPaymentInvoiceBuilder {
     fn new() -> Self {
-        Self { expand: None, payment_intent: None }
+        Self { expand: None, payment_intent: None, payment_record: None }
     }
 }
 /// Attaches a PaymentIntent or an Out of Band Payment to the invoice, adding it to the list of `payments`.
@@ -5567,6 +5575,11 @@ impl AttachPaymentInvoice {
     /// The ID of the PaymentIntent to attach to the invoice.
     pub fn payment_intent(mut self, payment_intent: impl Into<String>) -> Self {
         self.inner.payment_intent = Some(payment_intent.into());
+        self
+    }
+    /// The ID of the PaymentRecord to attach to the invoice.
+    pub fn payment_record(mut self, payment_record: impl Into<String>) -> Self {
+        self.inner.payment_record = Some(payment_record.into());
         self
     }
 }

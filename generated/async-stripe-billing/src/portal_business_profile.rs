@@ -59,7 +59,6 @@ const _: () = {
                 "headline" => Deserialize::begin(&mut self.headline),
                 "privacy_policy_url" => Deserialize::begin(&mut self.privacy_policy_url),
                 "terms_of_service_url" => Deserialize::begin(&mut self.terms_of_service_url),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -110,7 +109,6 @@ const _: () = {
                     "headline" => b.headline = FromValueOpt::from_value(v),
                     "privacy_policy_url" => b.privacy_policy_url = FromValueOpt::from_value(v),
                     "terms_of_service_url" => b.terms_of_service_url = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

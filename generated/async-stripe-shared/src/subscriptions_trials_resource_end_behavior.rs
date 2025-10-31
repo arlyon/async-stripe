@@ -52,7 +52,6 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "missing_payment_method" => Deserialize::begin(&mut self.missing_payment_method),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -95,7 +94,6 @@ const _: () = {
                     "missing_payment_method" => {
                         b.missing_payment_method = FromValueOpt::from_value(v)
                     }
-
                     _ => {}
                 }
             }

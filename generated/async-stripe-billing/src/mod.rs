@@ -74,6 +74,7 @@ pub use stripe_shared::credit_note::*;
 pub mod credit_note_line_item;
 pub use stripe_shared::credit_note_line_item::*;
 pub use stripe_shared::credit_note_refund::*;
+pub use stripe_shared::credit_notes_payment_record_refund::*;
 pub use stripe_shared::credit_notes_pretax_credit_amount::*;
 pub use stripe_shared::deleted_invoice::*;
 #[doc(hidden)]
@@ -122,6 +123,8 @@ pub use stripe_shared::invoices_resource_shipping_cost::*;
 pub use stripe_shared::invoices_resource_status_transitions::*;
 pub mod invoice_line_item;
 pub use stripe_shared::invoice_line_item::*;
+pub mod payment_record;
+pub use stripe_shared::payment_record::*;
 pub mod plan;
 pub use stripe_shared::plan::*;
 pub use stripe_shared::plan_tier::*;

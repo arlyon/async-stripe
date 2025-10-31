@@ -60,7 +60,6 @@ const _: () = {
                 "debit_negative_balances" => Deserialize::begin(&mut self.debit_negative_balances),
                 "payouts" => Deserialize::begin(&mut self.payouts),
                 "settlement_timing" => Deserialize::begin(&mut self.settlement_timing),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -111,7 +110,6 @@ const _: () = {
                     }
                     "payouts" => b.payouts = FromValueOpt::from_value(v),
                     "settlement_timing" => b.settlement_timing = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

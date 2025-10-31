@@ -171,6 +171,7 @@ pub use stripe_shared::legal_entity_dob::*;
 pub use stripe_shared::legal_entity_person_verification::*;
 pub use stripe_shared::legal_entity_person_verification_document::*;
 pub use stripe_shared::legal_entity_registration_date::*;
+pub use stripe_shared::legal_entity_representative_declaration::*;
 pub use stripe_shared::legal_entity_ubo_declaration::*;
 pub mod login_link;
 pub mod person;

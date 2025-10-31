@@ -51,7 +51,6 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "requested_priority" => Deserialize::begin(&mut self.requested_priority),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -92,7 +91,6 @@ const _: () = {
             for (k, v) in obj {
                 match k.as_str() {
                     "requested_priority" => b.requested_priority = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

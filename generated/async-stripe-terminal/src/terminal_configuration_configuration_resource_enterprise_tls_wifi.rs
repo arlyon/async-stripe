@@ -69,7 +69,6 @@ const _: () = {
                     Deserialize::begin(&mut self.private_key_file_password)
                 }
                 "ssid" => Deserialize::begin(&mut self.ssid),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -144,7 +143,6 @@ const _: () = {
                         b.private_key_file_password = FromValueOpt::from_value(v)
                     }
                     "ssid" => b.ssid = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

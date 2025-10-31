@@ -223,7 +223,6 @@ const _: () = {
                 "wechat" => Deserialize::begin(&mut self.wechat),
                 "wechat_pay" => Deserialize::begin(&mut self.wechat_pay),
                 "zip" => Deserialize::begin(&mut self.zip),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -553,7 +552,6 @@ const _: () = {
                     "wechat" => b.wechat = FromValueOpt::from_value(v),
                     "wechat_pay" => b.wechat_pay = FromValueOpt::from_value(v),
                     "zip" => b.zip = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

@@ -59,7 +59,6 @@ const _: () = {
                 "network_decline_code" => Deserialize::begin(&mut self.network_decline_code),
                 "reference" => Deserialize::begin(&mut self.reference),
                 "reference_status" => Deserialize::begin(&mut self.reference_status),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -110,7 +109,6 @@ const _: () = {
                     "network_decline_code" => b.network_decline_code = FromValueOpt::from_value(v),
                     "reference" => b.reference = FromValueOpt::from_value(v),
                     "reference_status" => b.reference_status = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

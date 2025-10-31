@@ -56,18 +56,15 @@ const _: () = {
     fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
         Ok(match k {
             "network" => Deserialize::begin(&mut self.network),
-"sender_name" => Deserialize::begin(&mut self.sender_name),
-
+            "sender_name" => Deserialize::begin(&mut self.sender_name),
             _ => <dyn Visitor>::ignore(),
         })
     }
 
     fn deser_default() -> Self {
-        Self {
-            network: Deserialize::default(),
+        Self { network: Deserialize::default(),
 sender_name: Deserialize::default(),
-
-        }
+ }
     }
 
     fn take_out(&mut self) -> Option<Self::Out> {
@@ -105,9 +102,8 @@ self.sender_name.take(),
         let mut b = CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferResourceUsBankTransferBuilder::deser_default();
         for (k, v) in obj {
             match k.as_str() {
-                "network" => b.network = FromValueOpt::from_value(v),
-"sender_name" => b.sender_name = FromValueOpt::from_value(v),
-
+            "network" => b.network = FromValueOpt::from_value(v),
+            "sender_name" => b.sender_name = FromValueOpt::from_value(v),
                 _ => {}
             }
         }

@@ -55,7 +55,6 @@ const _: () = {
             Ok(match k {
                 "stripe_report" => Deserialize::begin(&mut self.stripe_report),
                 "user_report" => Deserialize::begin(&mut self.user_report),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -99,7 +98,6 @@ const _: () = {
                 match k.as_str() {
                     "stripe_report" => b.stripe_report = FromValueOpt::from_value(v),
                     "user_report" => b.user_report = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

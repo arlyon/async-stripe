@@ -101,7 +101,6 @@ const _: () = {
                 "sepa_debit" => Deserialize::begin(&mut self.sepa_debit),
                 "type" => Deserialize::begin(&mut self.type_),
                 "us_bank_account" => Deserialize::begin(&mut self.us_bank_account),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -231,7 +230,6 @@ const _: () = {
                     "sepa_debit" => b.sepa_debit = FromValueOpt::from_value(v),
                     "type" => b.type_ = FromValueOpt::from_value(v),
                     "us_bank_account" => b.us_bank_account = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

@@ -44,6 +44,7 @@ file = []
 file_link = []
 mandate = []
 payment_intent = []
+payment_intent_amount_details_line_item = []
 payment_source = []
 payout = []
 refund = []
@@ -66,6 +67,7 @@ full = ["balance",
 "file_link",
 "mandate",
 "payment_intent",
+"payment_intent_amount_details_line_item",
 "payment_source",
 "payout",
 "refund",

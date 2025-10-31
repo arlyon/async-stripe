@@ -59,7 +59,6 @@ const _: () = {
                 "mode" => Deserialize::begin(&mut self.mode),
                 "normalized_address" => Deserialize::begin(&mut self.normalized_address),
                 "result" => Deserialize::begin(&mut self.result),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -108,7 +107,6 @@ const _: () = {
                     "mode" => b.mode = FromValueOpt::from_value(v),
                     "normalized_address" => b.normalized_address = FromValueOpt::from_value(v),
                     "result" => b.result = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

@@ -126,7 +126,6 @@ const _: () = {
                 "source_transaction" => Deserialize::begin(&mut self.source_transaction),
                 "source_type" => Deserialize::begin(&mut self.source_type),
                 "transfer_group" => Deserialize::begin(&mut self.transfer_group),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -251,7 +250,6 @@ const _: () = {
                     "source_transaction" => b.source_transaction = FromValueOpt::from_value(v),
                     "source_type" => b.source_type = FromValueOpt::from_value(v),
                     "transfer_group" => b.transfer_group = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

@@ -1,4 +1,5 @@
-/// A portal configuration describes the functionality and behavior of a portal session.
+/// A portal configuration describes the functionality and behavior you embed in a portal session.
+/// Related guide: [Configure the customer portal](/customer-management/configure-portal).
 #[derive(Clone, Debug)]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct BillingPortalConfiguration {
@@ -99,7 +100,6 @@ const _: () = {
                 "metadata" => Deserialize::begin(&mut self.metadata),
                 "name" => Deserialize::begin(&mut self.name),
                 "updated" => Deserialize::begin(&mut self.updated),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -209,7 +209,6 @@ const _: () = {
                     "metadata" => b.metadata = FromValueOpt::from_value(v),
                     "name" => b.name = FromValueOpt::from_value(v),
                     "updated" => b.updated = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

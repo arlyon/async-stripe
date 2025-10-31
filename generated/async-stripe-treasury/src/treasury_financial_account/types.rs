@@ -118,7 +118,6 @@ const _: () = {
                 "status" => Deserialize::begin(&mut self.status),
                 "status_details" => Deserialize::begin(&mut self.status_details),
                 "supported_currencies" => Deserialize::begin(&mut self.supported_currencies),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -250,7 +249,6 @@ const _: () = {
                     "status" => b.status = FromValueOpt::from_value(v),
                     "status_details" => b.status_details = FromValueOpt::from_value(v),
                     "supported_currencies" => b.supported_currencies = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

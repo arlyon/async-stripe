@@ -64,7 +64,6 @@ const _: () = {
                 "return_url" => Deserialize::begin(&mut self.return_url),
                 "status" => Deserialize::begin(&mut self.status),
                 "url" => Deserialize::begin(&mut self.url),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -118,7 +117,6 @@ const _: () = {
                     "return_url" => b.return_url = FromValueOpt::from_value(v),
                     "status" => b.status = FromValueOpt::from_value(v),
                     "url" => b.url = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

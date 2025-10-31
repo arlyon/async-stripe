@@ -184,7 +184,6 @@ const _: () = {
                 "ssn_last_4_provided" => Deserialize::begin(&mut self.ssn_last_4_provided),
                 "us_cfpb_data" => Deserialize::begin(&mut self.us_cfpb_data),
                 "verification" => Deserialize::begin(&mut self.verification),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -388,7 +387,6 @@ const _: () = {
                     "ssn_last_4_provided" => b.ssn_last_4_provided = FromValueOpt::from_value(v),
                     "us_cfpb_data" => b.us_cfpb_data = FromValueOpt::from_value(v),
                     "verification" => b.verification = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

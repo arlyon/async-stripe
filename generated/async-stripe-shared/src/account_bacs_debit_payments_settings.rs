@@ -62,7 +62,6 @@ const _: () = {
             Ok(match k {
                 "display_name" => Deserialize::begin(&mut self.display_name),
                 "service_user_number" => Deserialize::begin(&mut self.service_user_number),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -109,7 +108,6 @@ const _: () = {
                 match k.as_str() {
                     "display_name" => b.display_name = FromValueOpt::from_value(v),
                     "service_user_number" => b.service_user_number = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

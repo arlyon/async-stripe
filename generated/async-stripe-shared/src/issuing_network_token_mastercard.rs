@@ -64,7 +64,6 @@ const _: () = {
                 "token_reference_id" => Deserialize::begin(&mut self.token_reference_id),
                 "token_requestor_id" => Deserialize::begin(&mut self.token_requestor_id),
                 "token_requestor_name" => Deserialize::begin(&mut self.token_requestor_name),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -129,7 +128,6 @@ const _: () = {
                     "token_reference_id" => b.token_reference_id = FromValueOpt::from_value(v),
                     "token_requestor_id" => b.token_requestor_id = FromValueOpt::from_value(v),
                     "token_requestor_name" => b.token_requestor_name = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

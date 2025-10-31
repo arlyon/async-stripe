@@ -57,7 +57,6 @@ const _: () = {
             Ok(match k {
                 "password" => Deserialize::begin(&mut self.password),
                 "ssid" => Deserialize::begin(&mut self.ssid),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -100,7 +99,6 @@ const _: () = {
                 match k.as_str() {
                     "password" => b.password = FromValueOpt::from_value(v),
                     "ssid" => b.ssid = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

@@ -87,7 +87,6 @@ const _: () = {
                 "iban_last4" => Deserialize::begin(&mut self.iban_last4),
                 "preferred_language" => Deserialize::begin(&mut self.preferred_language),
                 "verified_name" => Deserialize::begin(&mut self.verified_name),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -179,7 +178,6 @@ const _: () = {
                     "iban_last4" => b.iban_last4 = FromValueOpt::from_value(v),
                     "preferred_language" => b.preferred_language = FromValueOpt::from_value(v),
                     "verified_name" => b.verified_name = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

@@ -59,7 +59,6 @@ const _: () = {
                 "available_plans" => Deserialize::begin(&mut self.available_plans),
                 "enabled" => Deserialize::begin(&mut self.enabled),
                 "plan" => Deserialize::begin(&mut self.plan),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -108,7 +107,6 @@ const _: () = {
                     "available_plans" => b.available_plans = FromValueOpt::from_value(v),
                     "enabled" => b.enabled = FromValueOpt::from_value(v),
                     "plan" => b.plan = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

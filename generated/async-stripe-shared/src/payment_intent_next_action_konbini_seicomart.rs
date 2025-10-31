@@ -55,7 +55,6 @@ const _: () = {
             Ok(match k {
                 "confirmation_number" => Deserialize::begin(&mut self.confirmation_number),
                 "payment_code" => Deserialize::begin(&mut self.payment_code),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -102,7 +101,6 @@ const _: () = {
                 match k.as_str() {
                     "confirmation_number" => b.confirmation_number = FromValueOpt::from_value(v),
                     "payment_code" => b.payment_code = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

@@ -73,7 +73,6 @@ const _: () = {
                 "name" => Deserialize::begin(&mut self.name),
                 "phone_number" => Deserialize::begin(&mut self.phone_number),
                 "type" => Deserialize::begin(&mut self.type_),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -141,7 +140,6 @@ const _: () = {
                     "name" => b.name = FromValueOpt::from_value(v),
                     "phone_number" => b.phone_number = FromValueOpt::from_value(v),
                     "type" => b.type_ = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

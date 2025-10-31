@@ -59,7 +59,6 @@ const _: () = {
                 "code" => Deserialize::begin(&mut self.code),
                 "reason" => Deserialize::begin(&mut self.reason),
                 "requirement" => Deserialize::begin(&mut self.requirement),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -108,7 +107,6 @@ const _: () = {
                     "code" => b.code = FromValueOpt::from_value(v),
                     "reason" => b.reason = FromValueOpt::from_value(v),
                     "requirement" => b.requirement = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

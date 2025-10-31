@@ -81,7 +81,6 @@ const _: () = {
                 "expiry_check" => Deserialize::begin(&mut self.expiry_check),
                 "postal_code" => Deserialize::begin(&mut self.postal_code),
                 "three_d_secure" => Deserialize::begin(&mut self.three_d_secure),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -165,7 +164,6 @@ const _: () = {
                     "expiry_check" => b.expiry_check = FromValueOpt::from_value(v),
                     "postal_code" => b.postal_code = FromValueOpt::from_value(v),
                     "three_d_secure" => b.three_d_secure = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

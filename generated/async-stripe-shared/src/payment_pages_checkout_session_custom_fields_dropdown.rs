@@ -59,7 +59,6 @@ const _: () = {
                 "default_value" => Deserialize::begin(&mut self.default_value),
                 "options" => Deserialize::begin(&mut self.options),
                 "value" => Deserialize::begin(&mut self.value),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -108,7 +107,6 @@ const _: () = {
                     "default_value" => b.default_value = FromValueOpt::from_value(v),
                     "options" => b.options = FromValueOpt::from_value(v),
                     "value" => b.value = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

@@ -55,7 +55,6 @@ const _: () = {
             Ok(match k {
                 "order_id" => Deserialize::begin(&mut self.order_id),
                 "reference" => Deserialize::begin(&mut self.reference),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -98,7 +97,6 @@ const _: () = {
                 match k.as_str() {
                     "order_id" => b.order_id = FromValueOpt::from_value(v),
                     "reference" => b.reference = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

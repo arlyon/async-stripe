@@ -135,7 +135,6 @@ const _: () = {
                 "product" => Deserialize::begin(&mut self.product),
                 "product_substituted_at" => Deserialize::begin(&mut self.product_substituted_at),
                 "status" => Deserialize::begin(&mut self.status),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -289,7 +288,6 @@ const _: () = {
                         b.product_substituted_at = FromValueOpt::from_value(v)
                     }
                     "status" => b.status = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

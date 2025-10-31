@@ -94,7 +94,6 @@ const _: () = {
                 "network_updated_at" => Deserialize::begin(&mut self.network_updated_at),
                 "status" => Deserialize::begin(&mut self.status),
                 "wallet_provider" => Deserialize::begin(&mut self.wallet_provider),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -194,7 +193,6 @@ const _: () = {
                     "network_updated_at" => b.network_updated_at = FromValueOpt::from_value(v),
                     "status" => b.status = FromValueOpt::from_value(v),
                     "wallet_provider" => b.wallet_provider = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

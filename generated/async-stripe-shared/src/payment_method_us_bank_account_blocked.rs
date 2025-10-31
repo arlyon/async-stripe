@@ -55,7 +55,6 @@ const _: () = {
             Ok(match k {
                 "network_code" => Deserialize::begin(&mut self.network_code),
                 "reason" => Deserialize::begin(&mut self.reason),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -97,7 +96,6 @@ const _: () = {
                 match k.as_str() {
                     "network_code" => b.network_code = FromValueOpt::from_value(v),
                     "reason" => b.reason = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

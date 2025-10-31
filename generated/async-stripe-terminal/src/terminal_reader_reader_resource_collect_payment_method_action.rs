@@ -59,7 +59,6 @@ const _: () = {
                 "collect_config" => Deserialize::begin(&mut self.collect_config),
                 "payment_intent" => Deserialize::begin(&mut self.payment_intent),
                 "payment_method" => Deserialize::begin(&mut self.payment_method),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -109,7 +108,6 @@ const _: () = {
                     "collect_config" => b.collect_config = FromValueOpt::from_value(v),
                     "payment_intent" => b.payment_intent = FromValueOpt::from_value(v),
                     "payment_method" => b.payment_method = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

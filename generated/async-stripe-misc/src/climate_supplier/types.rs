@@ -71,7 +71,6 @@ const _: () = {
                 "locations" => Deserialize::begin(&mut self.locations),
                 "name" => Deserialize::begin(&mut self.name),
                 "removal_pathway" => Deserialize::begin(&mut self.removal_pathway),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -139,7 +138,6 @@ const _: () = {
                     "locations" => b.locations = FromValueOpt::from_value(v),
                     "name" => b.name = FromValueOpt::from_value(v),
                     "removal_pathway" => b.removal_pathway = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

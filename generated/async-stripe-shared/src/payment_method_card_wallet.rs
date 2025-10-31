@@ -80,7 +80,6 @@ const _: () = {
                 "samsung_pay" => Deserialize::begin(&mut self.samsung_pay),
                 "type" => Deserialize::begin(&mut self.type_),
                 "visa_checkout" => Deserialize::begin(&mut self.visa_checkout),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -172,7 +171,6 @@ const _: () = {
                     "samsung_pay" => b.samsung_pay = FromValueOpt::from_value(v),
                     "type" => b.type_ = FromValueOpt::from_value(v),
                     "visa_checkout" => b.visa_checkout = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

@@ -166,7 +166,6 @@ const _: () = {
                 "status_transitions" => Deserialize::begin(&mut self.status_transitions),
                 "tracking_details" => Deserialize::begin(&mut self.tracking_details),
                 "transaction" => Deserialize::begin(&mut self.transaction),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -324,7 +323,6 @@ const _: () = {
                     "status_transitions" => b.status_transitions = FromValueOpt::from_value(v),
                     "tracking_details" => b.tracking_details = FromValueOpt::from_value(v),
                     "transaction" => b.transaction = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

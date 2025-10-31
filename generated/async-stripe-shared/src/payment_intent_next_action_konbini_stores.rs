@@ -63,7 +63,6 @@ const _: () = {
                 "lawson" => Deserialize::begin(&mut self.lawson),
                 "ministop" => Deserialize::begin(&mut self.ministop),
                 "seicomart" => Deserialize::begin(&mut self.seicomart),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -117,7 +116,6 @@ const _: () = {
                     "lawson" => b.lawson = FromValueOpt::from_value(v),
                     "ministop" => b.ministop = FromValueOpt::from_value(v),
                     "seicomart" => b.seicomart = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

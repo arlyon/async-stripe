@@ -63,7 +63,6 @@ const _: () = {
                 "hosted_voucher_url" => Deserialize::begin(&mut self.hosted_voucher_url),
                 "number" => Deserialize::begin(&mut self.number),
                 "pdf" => Deserialize::begin(&mut self.pdf),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -117,7 +116,6 @@ const _: () = {
                     "hosted_voucher_url" => b.hosted_voucher_url = FromValueOpt::from_value(v),
                     "number" => b.number = FromValueOpt::from_value(v),
                     "pdf" => b.pdf = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

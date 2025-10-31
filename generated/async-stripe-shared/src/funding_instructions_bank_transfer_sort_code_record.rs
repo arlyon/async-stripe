@@ -66,7 +66,6 @@ const _: () = {
                 "account_number" => Deserialize::begin(&mut self.account_number),
                 "bank_address" => Deserialize::begin(&mut self.bank_address),
                 "sort_code" => Deserialize::begin(&mut self.sort_code),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -138,7 +137,6 @@ const _: () = {
                     "account_number" => b.account_number = FromValueOpt::from_value(v),
                     "bank_address" => b.bank_address = FromValueOpt::from_value(v),
                     "sort_code" => b.sort_code = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

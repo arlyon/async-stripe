@@ -64,7 +64,6 @@ const _: () = {
                 "reference_status" => Deserialize::begin(&mut self.reference_status),
                 "reference_type" => Deserialize::begin(&mut self.reference_type),
                 "type" => Deserialize::begin(&mut self.type_),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -118,7 +117,6 @@ const _: () = {
                     "reference_status" => b.reference_status = FromValueOpt::from_value(v),
                     "reference_type" => b.reference_type = FromValueOpt::from_value(v),
                     "type" => b.type_ = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

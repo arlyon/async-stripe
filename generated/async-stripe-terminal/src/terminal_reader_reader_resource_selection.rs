@@ -60,7 +60,6 @@ const _: () = {
                 "choices" => Deserialize::begin(&mut self.choices),
                 "id" => Deserialize::begin(&mut self.id),
                 "text" => Deserialize::begin(&mut self.text),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -109,7 +108,6 @@ const _: () = {
                     "choices" => b.choices = FromValueOpt::from_value(v),
                     "id" => b.id = FromValueOpt::from_value(v),
                     "text" => b.text = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

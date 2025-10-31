@@ -56,7 +56,6 @@ const _: () = {
             Ok(match k {
                 "recurring" => Deserialize::begin(&mut self.recurring),
                 "upfront" => Deserialize::begin(&mut self.upfront),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -99,7 +98,6 @@ const _: () = {
                 match k.as_str() {
                     "recurring" => b.recurring = FromValueOpt::from_value(v),
                     "upfront" => b.upfront = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

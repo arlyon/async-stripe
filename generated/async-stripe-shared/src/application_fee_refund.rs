@@ -84,7 +84,6 @@ const _: () = {
                 "fee" => Deserialize::begin(&mut self.fee),
                 "id" => Deserialize::begin(&mut self.id),
                 "metadata" => Deserialize::begin(&mut self.metadata),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -156,7 +155,6 @@ const _: () = {
                     "fee" => b.fee = FromValueOpt::from_value(v),
                     "id" => b.id = FromValueOpt::from_value(v),
                     "metadata" => b.metadata = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

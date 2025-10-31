@@ -53,7 +53,6 @@ const _: () = {
             Ok(match k {
                 "document" => Deserialize::begin(&mut self.document),
                 "id_number" => Deserialize::begin(&mut self.id_number),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -95,7 +94,6 @@ const _: () = {
                 match k.as_str() {
                     "document" => b.document = FromValueOpt::from_value(v),
                     "id_number" => b.id_number = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

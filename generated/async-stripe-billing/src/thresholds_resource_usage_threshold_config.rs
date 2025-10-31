@@ -65,7 +65,6 @@ const _: () = {
                 "gte" => Deserialize::begin(&mut self.gte),
                 "meter" => Deserialize::begin(&mut self.meter),
                 "recurrence" => Deserialize::begin(&mut self.recurrence),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -116,7 +115,6 @@ const _: () = {
                     "gte" => b.gte = FromValueOpt::from_value(v),
                     "meter" => b.meter = FromValueOpt::from_value(v),
                     "recurrence" => b.recurrence = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

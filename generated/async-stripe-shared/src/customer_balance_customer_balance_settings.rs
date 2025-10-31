@@ -55,7 +55,6 @@ const _: () = {
             Ok(match k {
                 "reconciliation_mode" => Deserialize::begin(&mut self.reconciliation_mode),
                 "using_merchant_default" => Deserialize::begin(&mut self.using_merchant_default),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -104,7 +103,6 @@ const _: () = {
                     "using_merchant_default" => {
                         b.using_merchant_default = FromValueOpt::from_value(v)
                     }
-
                     _ => {}
                 }
             }

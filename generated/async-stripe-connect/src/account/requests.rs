@@ -753,6 +753,9 @@ pub struct CreateAccountCompany {
     /// (Examples are the CIN for companies and LLP IN for partnerships in India, and the Company Registration Number in Hong Kong).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub registration_number: Option<String>,
+    /// This hash is used to attest that the representative is authorized to act as the representative of their legal entity.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub representative_declaration: Option<CompanyRepresentativeDeclaration>,
     /// The category identifying the legal structure of the company or legal entity.
     /// See [Business structure](/connect/identity-verification#business-structure) for more details.
     /// Pass an empty string to unset this value.
@@ -792,6 +795,7 @@ impl CreateAccountCompany {
             phone: None,
             registration_date: None,
             registration_number: None,
+            representative_declaration: None,
             structure: None,
             tax_id: None,
             tax_id_registrar: None,
@@ -2895,6 +2899,9 @@ pub struct UpdateAccountCompany {
     /// (Examples are the CIN for companies and LLP IN for partnerships in India, and the Company Registration Number in Hong Kong).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub registration_number: Option<String>,
+    /// This hash is used to attest that the representative is authorized to act as the representative of their legal entity.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub representative_declaration: Option<CompanyRepresentativeDeclaration>,
     /// The category identifying the legal structure of the company or legal entity.
     /// See [Business structure](/connect/identity-verification#business-structure) for more details.
     /// Pass an empty string to unset this value.
@@ -2934,6 +2941,7 @@ impl UpdateAccountCompany {
             phone: None,
             registration_date: None,
             registration_number: None,
+            representative_declaration: None,
             structure: None,
             tax_id: None,
             tax_id_registrar: None,
@@ -4544,6 +4552,28 @@ pub struct RegistrationDateSpecs {
 impl RegistrationDateSpecs {
     pub fn new(day: impl Into<i64>, month: impl Into<i64>, year: impl Into<i64>) -> Self {
         Self { day: day.into(), month: month.into(), year: year.into() }
+    }
+}
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CompanyRepresentativeDeclaration {
+    /// The Unix timestamp marking when the representative declaration attestation was made.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub date: Option<stripe_types::Timestamp>,
+    /// The IP address from which the representative declaration attestation was made.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ip: Option<String>,
+    /// The user agent of the browser from which the representative declaration attestation was made.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub user_agent: Option<String>,
+}
+impl CompanyRepresentativeDeclaration {
+    pub fn new() -> Self {
+        Self { date: None, ip: None, user_agent: None }
+    }
+}
+impl Default for CompanyRepresentativeDeclaration {
+    fn default() -> Self {
+        Self::new()
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]

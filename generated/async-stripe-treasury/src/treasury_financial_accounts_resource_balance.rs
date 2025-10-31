@@ -60,7 +60,6 @@ const _: () = {
                 "cash" => Deserialize::begin(&mut self.cash),
                 "inbound_pending" => Deserialize::begin(&mut self.inbound_pending),
                 "outbound_pending" => Deserialize::begin(&mut self.outbound_pending),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -109,7 +108,6 @@ const _: () = {
                     "cash" => b.cash = FromValueOpt::from_value(v),
                     "inbound_pending" => b.inbound_pending = FromValueOpt::from_value(v),
                     "outbound_pending" => b.outbound_pending = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

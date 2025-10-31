@@ -55,7 +55,6 @@ const _: () = {
             Ok(match k {
                 "disabled_reason" => Deserialize::begin(&mut self.disabled_reason),
                 "past_due" => Deserialize::begin(&mut self.past_due),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -99,7 +98,6 @@ const _: () = {
                 match k.as_str() {
                     "disabled_reason" => b.disabled_reason = FromValueOpt::from_value(v),
                     "past_due" => b.past_due = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

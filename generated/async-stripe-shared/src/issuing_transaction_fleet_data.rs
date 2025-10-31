@@ -65,7 +65,6 @@ const _: () = {
                 "purchase_type" => Deserialize::begin(&mut self.purchase_type),
                 "reported_breakdown" => Deserialize::begin(&mut self.reported_breakdown),
                 "service_type" => Deserialize::begin(&mut self.service_type),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -132,7 +131,6 @@ const _: () = {
                     "purchase_type" => b.purchase_type = FromValueOpt::from_value(v),
                     "reported_breakdown" => b.reported_breakdown = FromValueOpt::from_value(v),
                     "service_type" => b.service_type = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

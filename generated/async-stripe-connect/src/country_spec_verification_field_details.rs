@@ -55,7 +55,6 @@ const _: () = {
             Ok(match k {
                 "additional" => Deserialize::begin(&mut self.additional),
                 "minimum" => Deserialize::begin(&mut self.minimum),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -98,7 +97,6 @@ const _: () = {
                 match k.as_str() {
                     "additional" => b.additional = FromValueOpt::from_value(v),
                     "minimum" => b.minimum = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

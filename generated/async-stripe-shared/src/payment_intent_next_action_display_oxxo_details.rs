@@ -59,7 +59,6 @@ const _: () = {
                 "expires_after" => Deserialize::begin(&mut self.expires_after),
                 "hosted_voucher_url" => Deserialize::begin(&mut self.hosted_voucher_url),
                 "number" => Deserialize::begin(&mut self.number),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -108,7 +107,6 @@ const _: () = {
                     "expires_after" => b.expires_after = FromValueOpt::from_value(v),
                     "hosted_voucher_url" => b.hosted_voucher_url = FromValueOpt::from_value(v),
                     "number" => b.number = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

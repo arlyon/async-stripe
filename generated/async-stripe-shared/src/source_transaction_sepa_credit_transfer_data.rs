@@ -59,7 +59,6 @@ const _: () = {
                 "reference" => Deserialize::begin(&mut self.reference),
                 "sender_iban" => Deserialize::begin(&mut self.sender_iban),
                 "sender_name" => Deserialize::begin(&mut self.sender_name),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -108,7 +107,6 @@ const _: () = {
                     "reference" => b.reference = FromValueOpt::from_value(v),
                     "sender_iban" => b.sender_iban = FromValueOpt::from_value(v),
                     "sender_name" => b.sender_name = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

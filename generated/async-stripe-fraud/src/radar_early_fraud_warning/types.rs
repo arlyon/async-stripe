@@ -80,7 +80,6 @@ const _: () = {
                 "id" => Deserialize::begin(&mut self.id),
                 "livemode" => Deserialize::begin(&mut self.livemode),
                 "payment_intent" => Deserialize::begin(&mut self.payment_intent),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -160,7 +159,6 @@ const _: () = {
                     "id" => b.id = FromValueOpt::from_value(v),
                     "livemode" => b.livemode = FromValueOpt::from_value(v),
                     "payment_intent" => b.payment_intent = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

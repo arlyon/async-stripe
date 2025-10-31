@@ -74,7 +74,6 @@ const _: () = {
                 "requirement_collection" => Deserialize::begin(&mut self.requirement_collection),
                 "stripe_dashboard" => Deserialize::begin(&mut self.stripe_dashboard),
                 "type" => Deserialize::begin(&mut self.type_),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -151,7 +150,6 @@ const _: () = {
                     }
                     "stripe_dashboard" => b.stripe_dashboard = FromValueOpt::from_value(v),
                     "type" => b.type_ = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

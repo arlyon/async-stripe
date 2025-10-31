@@ -98,7 +98,6 @@ const _: () = {
                 "set_reader_display" => Deserialize::begin(&mut self.set_reader_display),
                 "status" => Deserialize::begin(&mut self.status),
                 "type" => Deserialize::begin(&mut self.type_),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -204,7 +203,6 @@ const _: () = {
                     "set_reader_display" => b.set_reader_display = FromValueOpt::from_value(v),
                     "status" => b.status = FromValueOpt::from_value(v),
                     "type" => b.type_ = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

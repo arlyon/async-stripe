@@ -65,7 +65,6 @@ const _: () = {
                     Deserialize::begin(&mut self.system_trace_audit_number)
                 }
                 "transaction_id" => Deserialize::begin(&mut self.transaction_id),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -125,7 +124,6 @@ const _: () = {
                         b.system_trace_audit_number = FromValueOpt::from_value(v)
                     }
                     "transaction_id" => b.transaction_id = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

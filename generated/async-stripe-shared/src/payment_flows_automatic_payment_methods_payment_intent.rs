@@ -58,7 +58,6 @@ const _: () = {
             Ok(match k {
                 "allow_redirects" => Deserialize::begin(&mut self.allow_redirects),
                 "enabled" => Deserialize::begin(&mut self.enabled),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -101,7 +100,6 @@ const _: () = {
                 match k.as_str() {
                     "allow_redirects" => b.allow_redirects = FromValueOpt::from_value(v),
                     "enabled" => b.enabled = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

@@ -62,7 +62,6 @@ const _: () = {
                 "default_mandate" => Deserialize::begin(&mut self.default_mandate),
                 "payment_method_options" => Deserialize::begin(&mut self.payment_method_options),
                 "payment_method_types" => Deserialize::begin(&mut self.payment_method_types),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -115,7 +114,6 @@ const _: () = {
                         b.payment_method_options = FromValueOpt::from_value(v)
                     }
                     "payment_method_types" => b.payment_method_types = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }
@@ -141,6 +139,7 @@ pub enum InvoicesPaymentSettingsPaymentMethodTypes {
     Card,
     Cashapp,
     Crypto,
+    Custom,
     CustomerBalance,
     Eps,
     Fpx,
@@ -187,6 +186,7 @@ impl InvoicesPaymentSettingsPaymentMethodTypes {
             Card => "card",
             Cashapp => "cashapp",
             Crypto => "crypto",
+            Custom => "custom",
             CustomerBalance => "customer_balance",
             Eps => "eps",
             Fpx => "fpx",
@@ -236,6 +236,7 @@ impl std::str::FromStr for InvoicesPaymentSettingsPaymentMethodTypes {
             "card" => Ok(Card),
             "cashapp" => Ok(Cashapp),
             "crypto" => Ok(Crypto),
+            "custom" => Ok(Custom),
             "customer_balance" => Ok(CustomerBalance),
             "eps" => Ok(Eps),
             "fpx" => Ok(Fpx),

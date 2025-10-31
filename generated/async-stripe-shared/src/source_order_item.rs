@@ -74,7 +74,6 @@ const _: () = {
                 "parent" => Deserialize::begin(&mut self.parent),
                 "quantity" => Deserialize::begin(&mut self.quantity),
                 "type" => Deserialize::begin(&mut self.type_),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -142,7 +141,6 @@ const _: () = {
                     "parent" => b.parent = FromValueOpt::from_value(v),
                     "quantity" => b.quantity = FromValueOpt::from_value(v),
                     "type" => b.type_ = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

@@ -133,7 +133,6 @@ const _: () = {
                 "unit_label" => Deserialize::begin(&mut self.unit_label),
                 "updated" => Deserialize::begin(&mut self.updated),
                 "url" => Deserialize::begin(&mut self.url),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -268,7 +267,6 @@ const _: () = {
                     "unit_label" => b.unit_label = FromValueOpt::from_value(v),
                     "updated" => b.updated = FromValueOpt::from_value(v),
                     "url" => b.url = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

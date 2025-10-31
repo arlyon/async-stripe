@@ -55,7 +55,6 @@ const _: () = {
             Ok(match k {
                 "retention" => Deserialize::begin(&mut self.retention),
                 "subscription" => Deserialize::begin(&mut self.subscription),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -99,7 +98,6 @@ const _: () = {
                 match k.as_str() {
                     "retention" => b.retention = FromValueOpt::from_value(v),
                     "subscription" => b.subscription = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

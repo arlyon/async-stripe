@@ -69,7 +69,6 @@ const _: () = {
                 "allow_redisplay_filters" => Deserialize::begin(&mut self.allow_redisplay_filters),
                 "payment_method_remove" => Deserialize::begin(&mut self.payment_method_remove),
                 "payment_method_save" => Deserialize::begin(&mut self.payment_method_save),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -130,7 +129,6 @@ const _: () = {
                         b.payment_method_remove = FromValueOpt::from_value(v)
                     }
                     "payment_method_save" => b.payment_method_save = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

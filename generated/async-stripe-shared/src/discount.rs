@@ -96,7 +96,6 @@ const _: () = {
                 "start" => Deserialize::begin(&mut self.start),
                 "subscription" => Deserialize::begin(&mut self.subscription),
                 "subscription_item" => Deserialize::begin(&mut self.subscription_item),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -196,7 +195,6 @@ const _: () = {
                     "start" => b.start = FromValueOpt::from_value(v),
                     "subscription" => b.subscription = FromValueOpt::from_value(v),
                     "subscription_item" => b.subscription_item = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

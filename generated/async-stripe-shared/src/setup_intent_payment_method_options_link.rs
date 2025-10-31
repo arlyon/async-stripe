@@ -51,7 +51,6 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "persistent_token" => Deserialize::begin(&mut self.persistent_token),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -92,7 +91,6 @@ const _: () = {
             for (k, v) in obj {
                 match k.as_str() {
                     "persistent_token" => b.persistent_token = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

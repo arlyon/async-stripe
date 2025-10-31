@@ -109,7 +109,6 @@ const _: () = {
                 "test_clock" => Deserialize::begin(&mut self.test_clock),
                 "updated" => Deserialize::begin(&mut self.updated),
                 "voided_at" => Deserialize::begin(&mut self.voided_at),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -229,7 +228,6 @@ const _: () = {
                     "test_clock" => b.test_clock = FromValueOpt::from_value(v),
                     "updated" => b.updated = FromValueOpt::from_value(v),
                     "voided_at" => b.voided_at = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

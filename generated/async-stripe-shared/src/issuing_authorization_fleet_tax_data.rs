@@ -57,7 +57,6 @@ const _: () = {
             Ok(match k {
                 "local_amount_decimal" => Deserialize::begin(&mut self.local_amount_decimal),
                 "national_amount_decimal" => Deserialize::begin(&mut self.national_amount_decimal),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -106,7 +105,6 @@ const _: () = {
                     "national_amount_decimal" => {
                         b.national_amount_decimal = FromValueOpt::from_value(v)
                     }
-
                     _ => {}
                 }
             }

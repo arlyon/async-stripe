@@ -61,7 +61,6 @@ const _: () = {
                     Deserialize::begin(&mut self.address_postal_code_check)
                 }
                 "cvc_check" => Deserialize::begin(&mut self.cvc_check),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -114,7 +113,6 @@ const _: () = {
                         b.address_postal_code_check = FromValueOpt::from_value(v)
                     }
                     "cvc_check" => b.cvc_check = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

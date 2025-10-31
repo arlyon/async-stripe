@@ -109,7 +109,6 @@ const _: () = {
                 "setup_intent" => Deserialize::begin(&mut self.setup_intent),
                 "source" => Deserialize::begin(&mut self.source),
                 "type" => Deserialize::begin(&mut self.type_),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -234,7 +233,6 @@ const _: () = {
                     "setup_intent" => b.setup_intent = FromValueOpt::from_value(v),
                     "source" => b.source = FromValueOpt::from_value(v),
                     "type" => b.type_ = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }
@@ -356,6 +354,7 @@ pub enum ApiErrorsCode {
     PaymentIntentMandateInvalid,
     PaymentIntentPaymentAttemptExpired,
     PaymentIntentPaymentAttemptFailed,
+    PaymentIntentRateLimitExceeded,
     PaymentIntentUnexpectedState,
     PaymentMethodBankAccountAlreadyVerified,
     PaymentMethodBankAccountBlocked,
@@ -553,6 +552,7 @@ impl ApiErrorsCode {
             PaymentIntentMandateInvalid => "payment_intent_mandate_invalid",
             PaymentIntentPaymentAttemptExpired => "payment_intent_payment_attempt_expired",
             PaymentIntentPaymentAttemptFailed => "payment_intent_payment_attempt_failed",
+            PaymentIntentRateLimitExceeded => "payment_intent_rate_limit_exceeded",
             PaymentIntentUnexpectedState => "payment_intent_unexpected_state",
             PaymentMethodBankAccountAlreadyVerified => {
                 "payment_method_bank_account_already_verified"
@@ -777,6 +777,7 @@ impl std::str::FromStr for ApiErrorsCode {
             "payment_intent_mandate_invalid" => Ok(PaymentIntentMandateInvalid),
             "payment_intent_payment_attempt_expired" => Ok(PaymentIntentPaymentAttemptExpired),
             "payment_intent_payment_attempt_failed" => Ok(PaymentIntentPaymentAttemptFailed),
+            "payment_intent_rate_limit_exceeded" => Ok(PaymentIntentRateLimitExceeded),
             "payment_intent_unexpected_state" => Ok(PaymentIntentUnexpectedState),
             "payment_method_bank_account_already_verified" => {
                 Ok(PaymentMethodBankAccountAlreadyVerified)

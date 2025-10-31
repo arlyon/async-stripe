@@ -68,7 +68,6 @@ const _: () = {
                 "errors" => Deserialize::begin(&mut self.errors),
                 "past_due" => Deserialize::begin(&mut self.past_due),
                 "pending_verification" => Deserialize::begin(&mut self.pending_verification),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -122,7 +121,6 @@ const _: () = {
                     "errors" => b.errors = FromValueOpt::from_value(v),
                     "past_due" => b.past_due = FromValueOpt::from_value(v),
                     "pending_verification" => b.pending_verification = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

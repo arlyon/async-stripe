@@ -91,7 +91,6 @@ const _: () = {
                 "sql" => Deserialize::begin(&mut self.sql),
                 "status" => Deserialize::begin(&mut self.status),
                 "title" => Deserialize::begin(&mut self.title),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -188,7 +187,6 @@ const _: () = {
                     "sql" => b.sql = FromValueOpt::from_value(v),
                     "status" => b.status = FromValueOpt::from_value(v),
                     "title" => b.title = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

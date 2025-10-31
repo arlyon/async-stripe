@@ -102,7 +102,6 @@ const _: () = {
                 "secret" => Deserialize::begin(&mut self.secret),
                 "status" => Deserialize::begin(&mut self.status),
                 "url" => Deserialize::begin(&mut self.url),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -202,7 +201,6 @@ const _: () = {
                     "secret" => b.secret = FromValueOpt::from_value(v),
                     "status" => b.status = FromValueOpt::from_value(v),
                     "url" => b.url = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

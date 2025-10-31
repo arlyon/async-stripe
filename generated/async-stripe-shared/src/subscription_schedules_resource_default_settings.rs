@@ -96,7 +96,6 @@ const _: () = {
                 "invoice_settings" => Deserialize::begin(&mut self.invoice_settings),
                 "on_behalf_of" => Deserialize::begin(&mut self.on_behalf_of),
                 "transfer_data" => Deserialize::begin(&mut self.transfer_data),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -195,7 +194,6 @@ const _: () = {
                     "invoice_settings" => b.invoice_settings = FromValueOpt::from_value(v),
                     "on_behalf_of" => b.on_behalf_of = FromValueOpt::from_value(v),
                     "transfer_data" => b.transfer_data = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

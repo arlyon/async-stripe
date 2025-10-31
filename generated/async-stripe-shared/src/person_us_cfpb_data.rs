@@ -59,7 +59,6 @@ const _: () = {
                 "ethnicity_details" => Deserialize::begin(&mut self.ethnicity_details),
                 "race_details" => Deserialize::begin(&mut self.race_details),
                 "self_identified_gender" => Deserialize::begin(&mut self.self_identified_gender),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -112,7 +111,6 @@ const _: () = {
                     "self_identified_gender" => {
                         b.self_identified_gender = FromValueOpt::from_value(v)
                     }
-
                     _ => {}
                 }
             }

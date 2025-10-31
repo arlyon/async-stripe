@@ -92,6 +92,7 @@ pub struct TaxProductRegistrationsResourceCountryOptions {
     pub th: Option<stripe_misc::TaxProductRegistrationsResourceCountryOptionsThailand>,
     pub tj: Option<stripe_misc::TaxProductRegistrationsResourceCountryOptionsSimplified>,
     pub tr: Option<stripe_misc::TaxProductRegistrationsResourceCountryOptionsSimplified>,
+    pub tw: Option<stripe_misc::TaxProductRegistrationsResourceCountryOptionsSimplified>,
     pub tz: Option<stripe_misc::TaxProductRegistrationsResourceCountryOptionsSimplified>,
     pub ua: Option<stripe_misc::TaxProductRegistrationsResourceCountryOptionsSimplified>,
     pub ug: Option<stripe_misc::TaxProductRegistrationsResourceCountryOptionsSimplified>,
@@ -210,6 +211,7 @@ pub struct TaxProductRegistrationsResourceCountryOptionsBuilder {
     th: Option<Option<stripe_misc::TaxProductRegistrationsResourceCountryOptionsThailand>>,
     tj: Option<Option<stripe_misc::TaxProductRegistrationsResourceCountryOptionsSimplified>>,
     tr: Option<Option<stripe_misc::TaxProductRegistrationsResourceCountryOptionsSimplified>>,
+    tw: Option<Option<stripe_misc::TaxProductRegistrationsResourceCountryOptionsSimplified>>,
     tz: Option<Option<stripe_misc::TaxProductRegistrationsResourceCountryOptionsSimplified>>,
     ua: Option<Option<stripe_misc::TaxProductRegistrationsResourceCountryOptionsSimplified>>,
     ug: Option<Option<stripe_misc::TaxProductRegistrationsResourceCountryOptionsSimplified>>,
@@ -351,6 +353,7 @@ const _: () = {
                 "th" => Deserialize::begin(&mut self.th),
                 "tj" => Deserialize::begin(&mut self.tj),
                 "tr" => Deserialize::begin(&mut self.tr),
+                "tw" => Deserialize::begin(&mut self.tw),
                 "tz" => Deserialize::begin(&mut self.tz),
                 "ua" => Deserialize::begin(&mut self.ua),
                 "ug" => Deserialize::begin(&mut self.ug),
@@ -361,7 +364,6 @@ const _: () = {
                 "za" => Deserialize::begin(&mut self.za),
                 "zm" => Deserialize::begin(&mut self.zm),
                 "zw" => Deserialize::begin(&mut self.zw),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -457,6 +459,7 @@ const _: () = {
                 th: Deserialize::default(),
                 tj: Deserialize::default(),
                 tr: Deserialize::default(),
+                tw: Deserialize::default(),
                 tz: Deserialize::default(),
                 ua: Deserialize::default(),
                 ug: Deserialize::default(),
@@ -561,6 +564,7 @@ const _: () = {
                 Some(th),
                 Some(tj),
                 Some(tr),
+                Some(tw),
                 Some(tz),
                 Some(ua),
                 Some(ug),
@@ -661,6 +665,7 @@ const _: () = {
                 self.th,
                 self.tj,
                 self.tr,
+                self.tw,
                 self.tz,
                 self.ua,
                 self.ug,
@@ -765,6 +770,7 @@ const _: () = {
                 th,
                 tj,
                 tr,
+                tw,
                 tz,
                 ua,
                 ug,
@@ -891,6 +897,7 @@ const _: () = {
                     "th" => b.th = FromValueOpt::from_value(v),
                     "tj" => b.tj = FromValueOpt::from_value(v),
                     "tr" => b.tr = FromValueOpt::from_value(v),
+                    "tw" => b.tw = FromValueOpt::from_value(v),
                     "tz" => b.tz = FromValueOpt::from_value(v),
                     "ua" => b.ua = FromValueOpt::from_value(v),
                     "ug" => b.ug = FromValueOpt::from_value(v),
@@ -901,7 +908,6 @@ const _: () = {
                     "za" => b.za = FromValueOpt::from_value(v),
                     "zm" => b.zm = FromValueOpt::from_value(v),
                     "zw" => b.zw = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

@@ -55,7 +55,6 @@ const _: () = {
             Ok(match k {
                 "maximum" => Deserialize::begin(&mut self.maximum),
                 "minimum" => Deserialize::begin(&mut self.minimum),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -97,7 +96,6 @@ const _: () = {
                 match k.as_str() {
                     "maximum" => b.maximum = FromValueOpt::from_value(v),
                     "minimum" => b.minimum = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

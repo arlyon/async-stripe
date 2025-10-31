@@ -86,7 +86,6 @@ const _: () = {
                 "merchandise_or_services" => Deserialize::begin(&mut self.merchandise_or_services),
                 "product_description" => Deserialize::begin(&mut self.product_description),
                 "shipping_address" => Deserialize::begin(&mut self.shipping_address),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -177,7 +176,6 @@ const _: () = {
                     }
                     "product_description" => b.product_description = FromValueOpt::from_value(v),
                     "shipping_address" => b.shipping_address = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

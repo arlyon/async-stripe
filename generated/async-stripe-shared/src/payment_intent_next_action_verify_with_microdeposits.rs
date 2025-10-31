@@ -61,7 +61,6 @@ const _: () = {
                 "arrival_date" => Deserialize::begin(&mut self.arrival_date),
                 "hosted_verification_url" => Deserialize::begin(&mut self.hosted_verification_url),
                 "microdeposit_type" => Deserialize::begin(&mut self.microdeposit_type),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -112,7 +111,6 @@ const _: () = {
                         b.hosted_verification_url = FromValueOpt::from_value(v)
                     }
                     "microdeposit_type" => b.microdeposit_type = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

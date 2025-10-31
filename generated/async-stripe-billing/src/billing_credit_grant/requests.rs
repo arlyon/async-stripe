@@ -162,7 +162,8 @@ impl StripeRequest for RetrieveBillingCreditGrant {
 struct CreateBillingCreditGrantBuilder {
     amount: CreateBillingCreditGrantAmount,
     applicability_config: CreateBillingCreditGrantApplicabilityConfig,
-    category: stripe_shared::BillingCreditGrantCategory,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    category: Option<stripe_shared::BillingCreditGrantCategory>,
     customer: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     effective_at: Option<stripe_types::Timestamp>,
@@ -181,13 +182,12 @@ impl CreateBillingCreditGrantBuilder {
     fn new(
         amount: impl Into<CreateBillingCreditGrantAmount>,
         applicability_config: impl Into<CreateBillingCreditGrantApplicabilityConfig>,
-        category: impl Into<stripe_shared::BillingCreditGrantCategory>,
         customer: impl Into<String>,
     ) -> Self {
         Self {
             amount: amount.into(),
             applicability_config: applicability_config.into(),
-            category: category.into(),
+            category: None,
             customer: customer.into(),
             effective_at: None,
             expand: None,
@@ -395,17 +395,23 @@ impl CreateBillingCreditGrant {
     pub fn new(
         amount: impl Into<CreateBillingCreditGrantAmount>,
         applicability_config: impl Into<CreateBillingCreditGrantApplicabilityConfig>,
-        category: impl Into<stripe_shared::BillingCreditGrantCategory>,
         customer: impl Into<String>,
     ) -> Self {
         Self {
             inner: CreateBillingCreditGrantBuilder::new(
                 amount.into(),
                 applicability_config.into(),
-                category.into(),
                 customer.into(),
             ),
         }
+    }
+    /// The category of this credit grant. It defaults to `paid` if not specified.
+    pub fn category(
+        mut self,
+        category: impl Into<stripe_shared::BillingCreditGrantCategory>,
+    ) -> Self {
+        self.inner.category = Some(category.into());
+        self
     }
     /// The time when the billing credits become effective-when they're eligible for use.
     /// It defaults to the current timestamp if not specified.

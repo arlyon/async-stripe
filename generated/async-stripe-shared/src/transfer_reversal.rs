@@ -102,7 +102,6 @@ const _: () = {
                 "metadata" => Deserialize::begin(&mut self.metadata),
                 "source_refund" => Deserialize::begin(&mut self.source_refund),
                 "transfer" => Deserialize::begin(&mut self.transfer),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -194,7 +193,6 @@ const _: () = {
                     "metadata" => b.metadata = FromValueOpt::from_value(v),
                     "source_refund" => b.source_refund = FromValueOpt::from_value(v),
                     "transfer" => b.transfer = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

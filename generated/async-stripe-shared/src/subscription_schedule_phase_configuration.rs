@@ -142,7 +142,6 @@ const _: () = {
                 "start_date" => Deserialize::begin(&mut self.start_date),
                 "transfer_data" => Deserialize::begin(&mut self.transfer_data),
                 "trial_end" => Deserialize::begin(&mut self.trial_end),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -291,7 +290,6 @@ const _: () = {
                     "start_date" => b.start_date = FromValueOpt::from_value(v),
                     "transfer_data" => b.transfer_data = FromValueOpt::from_value(v),
                     "trial_end" => b.trial_end = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

@@ -59,7 +59,6 @@ const _: () = {
                 "primary_account_identifier" => {
                     Deserialize::begin(&mut self.primary_account_identifier)
                 }
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -110,7 +109,6 @@ const _: () = {
                     "primary_account_identifier" => {
                         b.primary_account_identifier = FromValueOpt::from_value(v)
                     }
-
                     _ => {}
                 }
             }

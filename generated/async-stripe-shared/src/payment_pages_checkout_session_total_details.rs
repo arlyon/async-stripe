@@ -63,7 +63,6 @@ const _: () = {
                 "amount_shipping" => Deserialize::begin(&mut self.amount_shipping),
                 "amount_tax" => Deserialize::begin(&mut self.amount_tax),
                 "breakdown" => Deserialize::begin(&mut self.breakdown),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -114,7 +113,6 @@ const _: () = {
                     "amount_shipping" => b.amount_shipping = FromValueOpt::from_value(v),
                     "amount_tax" => b.amount_tax = FromValueOpt::from_value(v),
                     "breakdown" => b.breakdown = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

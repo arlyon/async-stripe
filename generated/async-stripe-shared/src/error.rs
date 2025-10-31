@@ -48,7 +48,6 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "error" => Deserialize::begin(&mut self.error),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -89,7 +88,6 @@ const _: () = {
             for (k, v) in obj {
                 match k.as_str() {
                     "error" => b.error = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

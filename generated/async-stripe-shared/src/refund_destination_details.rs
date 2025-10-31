@@ -12,6 +12,7 @@ pub struct RefundDestinationDetails {
     pub br_bank_transfer: Option<stripe_shared::RefundDestinationDetailsBrBankTransfer>,
     pub card: Option<stripe_shared::RefundDestinationDetailsCard>,
     pub cashapp: Option<stripe_shared::DestinationDetailsUnimplemented>,
+    pub crypto: Option<stripe_shared::RefundDestinationDetailsCrypto>,
     pub customer_cash_balance: Option<stripe_shared::DestinationDetailsUnimplemented>,
     pub eps: Option<stripe_shared::DestinationDetailsUnimplemented>,
     pub eu_bank_transfer: Option<stripe_shared::RefundDestinationDetailsEuBankTransfer>,
@@ -52,6 +53,7 @@ pub struct RefundDestinationDetailsBuilder {
     br_bank_transfer: Option<Option<stripe_shared::RefundDestinationDetailsBrBankTransfer>>,
     card: Option<Option<stripe_shared::RefundDestinationDetailsCard>>,
     cashapp: Option<Option<stripe_shared::DestinationDetailsUnimplemented>>,
+    crypto: Option<Option<stripe_shared::RefundDestinationDetailsCrypto>>,
     customer_cash_balance: Option<Option<stripe_shared::DestinationDetailsUnimplemented>>,
     eps: Option<Option<stripe_shared::DestinationDetailsUnimplemented>>,
     eu_bank_transfer: Option<Option<stripe_shared::RefundDestinationDetailsEuBankTransfer>>,
@@ -127,6 +129,7 @@ const _: () = {
                 "br_bank_transfer" => Deserialize::begin(&mut self.br_bank_transfer),
                 "card" => Deserialize::begin(&mut self.card),
                 "cashapp" => Deserialize::begin(&mut self.cashapp),
+                "crypto" => Deserialize::begin(&mut self.crypto),
                 "customer_cash_balance" => Deserialize::begin(&mut self.customer_cash_balance),
                 "eps" => Deserialize::begin(&mut self.eps),
                 "eu_bank_transfer" => Deserialize::begin(&mut self.eu_bank_transfer),
@@ -150,7 +153,6 @@ const _: () = {
                 "us_bank_transfer" => Deserialize::begin(&mut self.us_bank_transfer),
                 "wechat_pay" => Deserialize::begin(&mut self.wechat_pay),
                 "zip" => Deserialize::begin(&mut self.zip),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -167,6 +169,7 @@ const _: () = {
                 br_bank_transfer: Deserialize::default(),
                 card: Deserialize::default(),
                 cashapp: Deserialize::default(),
+                crypto: Deserialize::default(),
                 customer_cash_balance: Deserialize::default(),
                 eps: Deserialize::default(),
                 eu_bank_transfer: Deserialize::default(),
@@ -205,6 +208,7 @@ const _: () = {
                 Some(br_bank_transfer),
                 Some(card),
                 Some(cashapp),
+                Some(crypto),
                 Some(customer_cash_balance),
                 Some(eps),
                 Some(eu_bank_transfer),
@@ -239,6 +243,7 @@ const _: () = {
                 self.br_bank_transfer.take(),
                 self.card.take(),
                 self.cashapp,
+                self.crypto.take(),
                 self.customer_cash_balance,
                 self.eps,
                 self.eu_bank_transfer.take(),
@@ -277,6 +282,7 @@ const _: () = {
                 br_bank_transfer,
                 card,
                 cashapp,
+                crypto,
                 customer_cash_balance,
                 eps,
                 eu_bank_transfer,
@@ -337,6 +343,7 @@ const _: () = {
                     "br_bank_transfer" => b.br_bank_transfer = FromValueOpt::from_value(v),
                     "card" => b.card = FromValueOpt::from_value(v),
                     "cashapp" => b.cashapp = FromValueOpt::from_value(v),
+                    "crypto" => b.crypto = FromValueOpt::from_value(v),
                     "customer_cash_balance" => {
                         b.customer_cash_balance = FromValueOpt::from_value(v)
                     }
@@ -362,7 +369,6 @@ const _: () = {
                     "us_bank_transfer" => b.us_bank_transfer = FromValueOpt::from_value(v),
                     "wechat_pay" => b.wechat_pay = FromValueOpt::from_value(v),
                     "zip" => b.zip = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

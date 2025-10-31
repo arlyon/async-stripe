@@ -64,7 +64,6 @@ const _: () = {
                 "display_name" => Deserialize::begin(&mut self.display_name),
                 "level" => Deserialize::begin(&mut self.level),
                 "state" => Deserialize::begin(&mut self.state),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -115,7 +114,6 @@ const _: () = {
                     "display_name" => b.display_name = FromValueOpt::from_value(v),
                     "level" => b.level = FromValueOpt::from_value(v),
                     "state" => b.state = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

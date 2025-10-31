@@ -73,7 +73,6 @@ const _: () = {
                 "lookup_key" => Deserialize::begin(&mut self.lookup_key),
                 "metadata" => Deserialize::begin(&mut self.metadata),
                 "name" => Deserialize::begin(&mut self.name),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -141,7 +140,6 @@ const _: () = {
                     "lookup_key" => b.lookup_key = FromValueOpt::from_value(v),
                     "metadata" => b.metadata = FromValueOpt::from_value(v),
                     "name" => b.name = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

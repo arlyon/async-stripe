@@ -75,7 +75,6 @@ const _: () = {
                 "proration_behavior" => Deserialize::begin(&mut self.proration_behavior),
                 "schedule_at_period_end" => Deserialize::begin(&mut self.schedule_at_period_end),
                 "trial_update_behavior" => Deserialize::begin(&mut self.trial_update_behavior),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -156,7 +155,6 @@ const _: () = {
                     "trial_update_behavior" => {
                         b.trial_update_behavior = FromValueOpt::from_value(v)
                     }
-
                     _ => {}
                 }
             }

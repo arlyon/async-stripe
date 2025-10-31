@@ -74,7 +74,6 @@ const _: () = {
                 "state" => Deserialize::begin(&mut self.state),
                 "state_sales_tax" => Deserialize::begin(&mut self.state_sales_tax),
                 "type" => Deserialize::begin(&mut self.type_),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -139,7 +138,6 @@ const _: () = {
                     "state" => b.state = FromValueOpt::from_value(v),
                     "state_sales_tax" => b.state_sales_tax = FromValueOpt::from_value(v),
                     "type" => b.type_ = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

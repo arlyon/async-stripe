@@ -222,7 +222,6 @@ const _: () = {
                 "us_bank_account" => Deserialize::begin(&mut self.us_bank_account),
                 "wechat_pay" => Deserialize::begin(&mut self.wechat_pay),
                 "zip" => Deserialize::begin(&mut self.zip),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -542,7 +541,6 @@ const _: () = {
                     "us_bank_account" => b.us_bank_account = FromValueOpt::from_value(v),
                     "wechat_pay" => b.wechat_pay = FromValueOpt::from_value(v),
                     "zip" => b.zip = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }
@@ -658,6 +656,7 @@ pub enum ConfirmationTokensResourcePaymentMethodPreviewType {
     CardPresent,
     Cashapp,
     Crypto,
+    Custom,
     CustomerBalance,
     Eps,
     Fpx,
@@ -716,6 +715,7 @@ impl ConfirmationTokensResourcePaymentMethodPreviewType {
             CardPresent => "card_present",
             Cashapp => "cashapp",
             Crypto => "crypto",
+            Custom => "custom",
             CustomerBalance => "customer_balance",
             Eps => "eps",
             Fpx => "fpx",
@@ -777,6 +777,7 @@ impl std::str::FromStr for ConfirmationTokensResourcePaymentMethodPreviewType {
             "card_present" => Ok(CardPresent),
             "cashapp" => Ok(Cashapp),
             "crypto" => Ok(Crypto),
+            "custom" => Ok(Custom),
             "customer_balance" => Ok(CustomerBalance),
             "eps" => Ok(Eps),
             "fpx" => Ok(Fpx),

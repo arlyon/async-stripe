@@ -54,7 +54,6 @@ const _: () = {
             Ok(match k {
                 "email_sent" => Deserialize::begin(&mut self.email_sent),
                 "expires_at" => Deserialize::begin(&mut self.expires_at),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -97,7 +96,6 @@ const _: () = {
                 match k.as_str() {
                     "email_sent" => b.email_sent = FromValueOpt::from_value(v),
                     "expires_at" => b.expires_at = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

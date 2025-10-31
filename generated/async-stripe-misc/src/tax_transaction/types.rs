@@ -113,7 +113,6 @@ const _: () = {
                 "shipping_cost" => Deserialize::begin(&mut self.shipping_cost),
                 "tax_date" => Deserialize::begin(&mut self.tax_date),
                 "type" => Deserialize::begin(&mut self.type_),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -233,7 +232,6 @@ const _: () = {
                     "shipping_cost" => b.shipping_cost = FromValueOpt::from_value(v),
                     "tax_date" => b.tax_date = FromValueOpt::from_value(v),
                     "type" => b.type_ = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

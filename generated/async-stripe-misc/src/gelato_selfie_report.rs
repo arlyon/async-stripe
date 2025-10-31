@@ -64,7 +64,6 @@ const _: () = {
                 "error" => Deserialize::begin(&mut self.error),
                 "selfie" => Deserialize::begin(&mut self.selfie),
                 "status" => Deserialize::begin(&mut self.status),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -115,7 +114,6 @@ const _: () = {
                     "error" => b.error = FromValueOpt::from_value(v),
                     "selfie" => b.selfie = FromValueOpt::from_value(v),
                     "status" => b.status = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

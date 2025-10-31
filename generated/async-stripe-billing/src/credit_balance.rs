@@ -53,7 +53,6 @@ const _: () = {
             Ok(match k {
                 "available_balance" => Deserialize::begin(&mut self.available_balance),
                 "ledger_balance" => Deserialize::begin(&mut self.ledger_balance),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -100,7 +99,6 @@ const _: () = {
                 match k.as_str() {
                     "available_balance" => b.available_balance = FromValueOpt::from_value(v),
                     "ledger_balance" => b.ledger_balance = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

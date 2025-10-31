@@ -81,7 +81,6 @@ const _: () = {
                 "intra_stripe_flows" => Deserialize::begin(&mut self.intra_stripe_flows),
                 "outbound_payments" => Deserialize::begin(&mut self.outbound_payments),
                 "outbound_transfers" => Deserialize::begin(&mut self.outbound_transfers),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -161,7 +160,6 @@ const _: () = {
                     "intra_stripe_flows" => b.intra_stripe_flows = FromValueOpt::from_value(v),
                     "outbound_payments" => b.outbound_payments = FromValueOpt::from_value(v),
                     "outbound_transfers" => b.outbound_transfers = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

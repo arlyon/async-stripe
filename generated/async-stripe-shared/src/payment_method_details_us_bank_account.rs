@@ -80,7 +80,6 @@ const _: () = {
                 "mandate" => Deserialize::begin(&mut self.mandate),
                 "payment_reference" => Deserialize::begin(&mut self.payment_reference),
                 "routing_number" => Deserialize::begin(&mut self.routing_number),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -165,7 +164,6 @@ const _: () = {
                     "mandate" => b.mandate = FromValueOpt::from_value(v),
                     "payment_reference" => b.payment_reference = FromValueOpt::from_value(v),
                     "routing_number" => b.routing_number = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

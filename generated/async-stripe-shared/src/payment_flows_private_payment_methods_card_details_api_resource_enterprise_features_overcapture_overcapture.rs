@@ -56,18 +56,15 @@ const _: () = {
     fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
         Ok(match k {
             "maximum_amount_capturable" => Deserialize::begin(&mut self.maximum_amount_capturable),
-"status" => Deserialize::begin(&mut self.status),
-
+            "status" => Deserialize::begin(&mut self.status),
             _ => <dyn Visitor>::ignore(),
         })
     }
 
     fn deser_default() -> Self {
-        Self {
-            maximum_amount_capturable: Deserialize::default(),
+        Self { maximum_amount_capturable: Deserialize::default(),
 status: Deserialize::default(),
-
-        }
+ }
     }
 
     fn take_out(&mut self) -> Option<Self::Out> {
@@ -105,9 +102,8 @@ self.status,
         let mut b = PaymentFlowsPrivatePaymentMethodsCardDetailsApiResourceEnterpriseFeaturesOvercaptureOvercaptureBuilder::deser_default();
         for (k, v) in obj {
             match k.as_str() {
-                "maximum_amount_capturable" => b.maximum_amount_capturable = FromValueOpt::from_value(v),
-"status" => b.status = FromValueOpt::from_value(v),
-
+            "maximum_amount_capturable" => b.maximum_amount_capturable = FromValueOpt::from_value(v),
+            "status" => b.status = FromValueOpt::from_value(v),
                 _ => {}
             }
         }

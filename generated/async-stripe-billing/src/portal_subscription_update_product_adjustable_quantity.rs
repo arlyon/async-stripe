@@ -59,7 +59,6 @@ const _: () = {
                 "enabled" => Deserialize::begin(&mut self.enabled),
                 "maximum" => Deserialize::begin(&mut self.maximum),
                 "minimum" => Deserialize::begin(&mut self.minimum),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -108,7 +107,6 @@ const _: () = {
                     "enabled" => b.enabled = FromValueOpt::from_value(v),
                     "maximum" => b.maximum = FromValueOpt::from_value(v),
                     "minimum" => b.minimum = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

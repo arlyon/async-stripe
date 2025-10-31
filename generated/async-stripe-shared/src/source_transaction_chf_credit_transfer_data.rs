@@ -67,7 +67,6 @@ const _: () = {
                 "sender_address_line1" => Deserialize::begin(&mut self.sender_address_line1),
                 "sender_iban" => Deserialize::begin(&mut self.sender_iban),
                 "sender_name" => Deserialize::begin(&mut self.sender_name),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -139,7 +138,6 @@ const _: () = {
                     "sender_address_line1" => b.sender_address_line1 = FromValueOpt::from_value(v),
                     "sender_iban" => b.sender_iban = FromValueOpt::from_value(v),
                     "sender_name" => b.sender_name = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

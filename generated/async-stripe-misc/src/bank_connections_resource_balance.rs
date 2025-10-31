@@ -74,7 +74,6 @@ const _: () = {
                 "credit" => Deserialize::begin(&mut self.credit),
                 "current" => Deserialize::begin(&mut self.current),
                 "type" => Deserialize::begin(&mut self.type_),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -127,7 +126,6 @@ const _: () = {
                     "credit" => b.credit = FromValueOpt::from_value(v),
                     "current" => b.current = FromValueOpt::from_value(v),
                     "type" => b.type_ = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

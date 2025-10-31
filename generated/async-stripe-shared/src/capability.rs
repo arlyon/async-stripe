@@ -77,7 +77,6 @@ const _: () = {
                 "requested_at" => Deserialize::begin(&mut self.requested_at),
                 "requirements" => Deserialize::begin(&mut self.requirements),
                 "status" => Deserialize::begin(&mut self.status),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -157,7 +156,6 @@ const _: () = {
                     "requested_at" => b.requested_at = FromValueOpt::from_value(v),
                     "requirements" => b.requirements = FromValueOpt::from_value(v),
                     "status" => b.status = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

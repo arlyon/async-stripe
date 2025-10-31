@@ -56,7 +56,6 @@ const _: () = {
             Ok(match k {
                 "destination_duration" => Deserialize::begin(&mut self.destination_duration),
                 "destination_ip_address" => Deserialize::begin(&mut self.destination_ip_address),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -105,7 +104,6 @@ const _: () = {
                     "destination_ip_address" => {
                         b.destination_ip_address = FromValueOpt::from_value(v)
                     }
-
                     _ => {}
                 }
             }

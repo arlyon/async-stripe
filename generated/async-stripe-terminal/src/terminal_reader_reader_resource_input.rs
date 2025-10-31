@@ -87,7 +87,6 @@ const _: () = {
                 "text" => Deserialize::begin(&mut self.text),
                 "toggles" => Deserialize::begin(&mut self.toggles),
                 "type" => Deserialize::begin(&mut self.type_),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -187,7 +186,6 @@ const _: () = {
                     "text" => b.text = FromValueOpt::from_value(v),
                     "toggles" => b.toggles = FromValueOpt::from_value(v),
                     "type" => b.type_ = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

@@ -53,7 +53,6 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "amount_eligible" => Deserialize::begin(&mut self.amount_eligible),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -94,7 +93,6 @@ const _: () = {
             for (k, v) in obj {
                 match k.as_str() {
                     "amount_eligible" => b.amount_eligible = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

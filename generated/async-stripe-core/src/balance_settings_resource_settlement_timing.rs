@@ -56,7 +56,6 @@ const _: () = {
             Ok(match k {
                 "delay_days" => Deserialize::begin(&mut self.delay_days),
                 "delay_days_override" => Deserialize::begin(&mut self.delay_days_override),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -100,7 +99,6 @@ const _: () = {
                 match k.as_str() {
                     "delay_days" => b.delay_days = FromValueOpt::from_value(v),
                     "delay_days_override" => b.delay_days_override = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

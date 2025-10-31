@@ -104,7 +104,6 @@ const _: () = {
                 "tracking_number" => Deserialize::begin(&mut self.tracking_number),
                 "tracking_url" => Deserialize::begin(&mut self.tracking_url),
                 "type" => Deserialize::begin(&mut self.type_),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -214,7 +213,6 @@ const _: () = {
                     "tracking_number" => b.tracking_number = FromValueOpt::from_value(v),
                     "tracking_url" => b.tracking_url = FromValueOpt::from_value(v),
                     "type" => b.type_ = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

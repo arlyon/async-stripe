@@ -187,7 +187,6 @@ const _: () = {
                 "tax_exempt" => Deserialize::begin(&mut self.tax_exempt),
                 "tax_ids" => Deserialize::begin(&mut self.tax_ids),
                 "test_clock" => Deserialize::begin(&mut self.test_clock),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -381,7 +380,6 @@ const _: () = {
                     "tax_exempt" => b.tax_exempt = FromValueOpt::from_value(v),
                     "tax_ids" => b.tax_ids = FromValueOpt::from_value(v),
                     "test_clock" => b.test_clock = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

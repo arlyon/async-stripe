@@ -62,7 +62,6 @@ const _: () = {
                 "id_number" => Deserialize::begin(&mut self.id_number),
                 "matching" => Deserialize::begin(&mut self.matching),
                 "phone" => Deserialize::begin(&mut self.phone),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -115,7 +114,6 @@ const _: () = {
                     "id_number" => b.id_number = FromValueOpt::from_value(v),
                     "matching" => b.matching = FromValueOpt::from_value(v),
                     "phone" => b.phone = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

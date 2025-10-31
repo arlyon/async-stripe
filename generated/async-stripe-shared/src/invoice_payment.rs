@@ -101,7 +101,6 @@ const _: () = {
                 "payment" => Deserialize::begin(&mut self.payment),
                 "status" => Deserialize::begin(&mut self.status),
                 "status_transitions" => Deserialize::begin(&mut self.status_transitions),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -201,7 +200,6 @@ const _: () = {
                     "payment" => b.payment = FromValueOpt::from_value(v),
                     "status" => b.status = FromValueOpt::from_value(v),
                     "status_transitions" => b.status_transitions = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

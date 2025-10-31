@@ -145,7 +145,6 @@ const _: () = {
                 "settings" => Deserialize::begin(&mut self.settings),
                 "tos_acceptance" => Deserialize::begin(&mut self.tos_acceptance),
                 "type" => Deserialize::begin(&mut self.type_),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -300,7 +299,6 @@ const _: () = {
                     "settings" => b.settings = FromValueOpt::from_value(v),
                     "tos_acceptance" => b.tos_acceptance = FromValueOpt::from_value(v),
                     "type" => b.type_ = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

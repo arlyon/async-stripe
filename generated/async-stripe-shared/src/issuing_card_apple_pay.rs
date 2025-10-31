@@ -55,7 +55,6 @@ const _: () = {
             Ok(match k {
                 "eligible" => Deserialize::begin(&mut self.eligible),
                 "ineligible_reason" => Deserialize::begin(&mut self.ineligible_reason),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -98,7 +97,6 @@ const _: () = {
                 match k.as_str() {
                     "eligible" => b.eligible = FromValueOpt::from_value(v),
                     "ineligible_reason" => b.ineligible_reason = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

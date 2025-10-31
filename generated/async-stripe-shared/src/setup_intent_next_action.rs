@@ -80,7 +80,6 @@ const _: () = {
                 "verify_with_microdeposits" => {
                     Deserialize::begin(&mut self.verify_with_microdeposits)
                 }
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -154,7 +153,6 @@ const _: () = {
                     "verify_with_microdeposits" => {
                         b.verify_with_microdeposits = FromValueOpt::from_value(v)
                     }
-
                     _ => {}
                 }
             }

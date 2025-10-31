@@ -80,7 +80,6 @@ const _: () = {
                 "customer" => Deserialize::begin(&mut self.customer),
                 "expires_at" => Deserialize::begin(&mut self.expires_at),
                 "livemode" => Deserialize::begin(&mut self.livemode),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -148,7 +147,6 @@ const _: () = {
                     "customer" => b.customer = FromValueOpt::from_value(v),
                     "expires_at" => b.expires_at = FromValueOpt::from_value(v),
                     "livemode" => b.livemode = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

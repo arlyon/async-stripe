@@ -63,7 +63,6 @@ const _: () = {
                 "quantity" => Deserialize::begin(&mut self.quantity),
                 "total" => Deserialize::begin(&mut self.total),
                 "unit_cost" => Deserialize::begin(&mut self.unit_cost),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -114,7 +113,6 @@ const _: () = {
                     "quantity" => b.quantity = FromValueOpt::from_value(v),
                     "total" => b.total = FromValueOpt::from_value(v),
                     "unit_cost" => b.unit_cost = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

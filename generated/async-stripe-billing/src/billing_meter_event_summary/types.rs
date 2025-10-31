@@ -76,7 +76,6 @@ const _: () = {
                 "livemode" => Deserialize::begin(&mut self.livemode),
                 "meter" => Deserialize::begin(&mut self.meter),
                 "start_time" => Deserialize::begin(&mut self.start_time),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -144,7 +143,6 @@ const _: () = {
                     "livemode" => b.livemode = FromValueOpt::from_value(v),
                     "meter" => b.meter = FromValueOpt::from_value(v),
                     "start_time" => b.start_time = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

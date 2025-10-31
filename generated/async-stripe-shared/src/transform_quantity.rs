@@ -55,7 +55,6 @@ const _: () = {
             Ok(match k {
                 "divide_by" => Deserialize::begin(&mut self.divide_by),
                 "round" => Deserialize::begin(&mut self.round),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -97,7 +96,6 @@ const _: () = {
                 match k.as_str() {
                     "divide_by" => b.divide_by = FromValueOpt::from_value(v),
                     "round" => b.round = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

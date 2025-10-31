@@ -64,7 +64,6 @@ const _: () = {
                 "skip_button" => Deserialize::begin(&mut self.skip_button),
                 "submit_button" => Deserialize::begin(&mut self.submit_button),
                 "title" => Deserialize::begin(&mut self.title),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -118,7 +117,6 @@ const _: () = {
                     "skip_button" => b.skip_button = FromValueOpt::from_value(v),
                     "submit_button" => b.submit_button = FromValueOpt::from_value(v),
                     "title" => b.title = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

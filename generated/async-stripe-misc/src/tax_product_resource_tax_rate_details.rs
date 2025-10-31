@@ -75,7 +75,6 @@ const _: () = {
                 "rate_type" => Deserialize::begin(&mut self.rate_type),
                 "state" => Deserialize::begin(&mut self.state),
                 "tax_type" => Deserialize::begin(&mut self.tax_type),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -143,7 +142,6 @@ const _: () = {
                     "rate_type" => b.rate_type = FromValueOpt::from_value(v),
                     "state" => b.state = FromValueOpt::from_value(v),
                     "tax_type" => b.tax_type = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

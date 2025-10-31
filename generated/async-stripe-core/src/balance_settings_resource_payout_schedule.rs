@@ -63,7 +63,6 @@ const _: () = {
                 "interval" => Deserialize::begin(&mut self.interval),
                 "monthly_payout_days" => Deserialize::begin(&mut self.monthly_payout_days),
                 "weekly_payout_days" => Deserialize::begin(&mut self.weekly_payout_days),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -112,7 +111,6 @@ const _: () = {
                     "interval" => b.interval = FromValueOpt::from_value(v),
                     "monthly_payout_days" => b.monthly_payout_days = FromValueOpt::from_value(v),
                     "weekly_payout_days" => b.weekly_payout_days = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }

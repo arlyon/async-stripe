@@ -77,7 +77,6 @@ const _: () = {
                 "paypal" => Deserialize::begin(&mut self.paypal),
                 "sepa_debit" => Deserialize::begin(&mut self.sepa_debit),
                 "us_bank_account" => Deserialize::begin(&mut self.us_bank_account),
-
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -172,7 +171,6 @@ const _: () = {
                     "paypal" => b.paypal = FromValueOpt::from_value(v),
                     "sepa_debit" => b.sepa_debit = FromValueOpt::from_value(v),
                     "us_bank_account" => b.us_bank_account = FromValueOpt::from_value(v),
-
                     _ => {}
                 }
             }
