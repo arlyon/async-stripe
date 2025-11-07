@@ -17,7 +17,7 @@ impl CreateCustomerSessionBuilder {
         Self { components: components.into(), customer: customer.into(), expand: None }
     }
 }
-/// Configuration for each component. Exactly 1 component must be enabled.
+/// Configuration for each component. At least 1 component must be enabled.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateCustomerSessionComponents {
     /// Configuration for buy button.

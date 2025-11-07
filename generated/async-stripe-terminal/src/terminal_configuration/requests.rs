@@ -322,10 +322,10 @@ impl CreateTerminalConfigurationBuilder {
         }
     }
 }
-/// An object containing device type specific settings for BBPOS WisePad 3 readers
+/// An object containing device type specific settings for BBPOS WisePad 3 readers.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTerminalConfigurationBbposWisepad3 {
-    /// A File ID representing an image you would like displayed on the reader.
+    /// A File ID representing an image you want to display on the reader.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub splashscreen: Option<String>,
 }
@@ -339,10 +339,10 @@ impl Default for CreateTerminalConfigurationBbposWisepad3 {
         Self::new()
     }
 }
-/// An object containing device type specific settings for Stripe S700 readers
+/// An object containing device type specific settings for Stripe S700 readers.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTerminalConfigurationStripeS700 {
-    /// A File ID representing an image you would like displayed on the reader.
+    /// A File ID representing an image you want to display on the reader.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub splashscreen: Option<String>,
 }
@@ -356,10 +356,10 @@ impl Default for CreateTerminalConfigurationStripeS700 {
         Self::new()
     }
 }
-/// An object containing device type specific settings for Verifone P400 readers
+/// An object containing device type specific settings for Verifone P400 readers.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTerminalConfigurationVerifoneP400 {
-    /// A File ID representing an image you would like displayed on the reader.
+    /// A File ID representing an image you want to display on the reader.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub splashscreen: Option<String>,
 }
@@ -470,7 +470,7 @@ impl CreateTerminalConfiguration {
     pub fn new() -> Self {
         Self { inner: CreateTerminalConfigurationBuilder::new() }
     }
-    /// An object containing device type specific settings for BBPOS WisePad 3 readers
+    /// An object containing device type specific settings for BBPOS WisePad 3 readers.
     pub fn bbpos_wisepad3(
         mut self,
         bbpos_wisepad3: impl Into<CreateTerminalConfigurationBbposWisepad3>,
@@ -478,7 +478,7 @@ impl CreateTerminalConfiguration {
         self.inner.bbpos_wisepad3 = Some(bbpos_wisepad3.into());
         self
     }
-    /// An object containing device type specific settings for BBPOS WisePOS E readers
+    /// An object containing device type specific settings for BBPOS WisePOS E readers.
     pub fn bbpos_wisepos_e(mut self, bbpos_wisepos_e: impl Into<BbposWisePose>) -> Self {
         self.inner.bbpos_wisepos_e = Some(bbpos_wisepos_e.into());
         self
@@ -498,12 +498,12 @@ impl CreateTerminalConfiguration {
         self.inner.offline = Some(offline.into());
         self
     }
-    /// Reboot time settings for readers that support customized reboot time configuration.
+    /// Reboot time settings for readers. that support customized reboot time configuration.
     pub fn reboot_window(mut self, reboot_window: impl Into<RebootWindow>) -> Self {
         self.inner.reboot_window = Some(reboot_window.into());
         self
     }
-    /// An object containing device type specific settings for Stripe S700 readers
+    /// An object containing device type specific settings for Stripe S700 readers.
     pub fn stripe_s700(
         mut self,
         stripe_s700: impl Into<CreateTerminalConfigurationStripeS700>,
@@ -511,12 +511,12 @@ impl CreateTerminalConfiguration {
         self.inner.stripe_s700 = Some(stripe_s700.into());
         self
     }
-    /// Tipping configurations for readers supporting on-reader tips
+    /// Tipping configurations for readers. supporting on-reader tips
     pub fn tipping(mut self, tipping: impl Into<Tipping>) -> Self {
         self.inner.tipping = Some(tipping.into());
         self
     }
-    /// An object containing device type specific settings for Verifone P400 readers
+    /// An object containing device type specific settings for Verifone P400 readers.
     pub fn verifone_p400(
         mut self,
         verifone_p400: impl Into<CreateTerminalConfigurationVerifoneP400>,
@@ -599,10 +599,10 @@ impl UpdateTerminalConfigurationBuilder {
         }
     }
 }
-/// An object containing device type specific settings for BBPOS WisePad 3 readers
+/// An object containing device type specific settings for BBPOS WisePad 3 readers.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdateTerminalConfigurationBbposWisepad3 {
-    /// A File ID representing an image you would like displayed on the reader.
+    /// A File ID representing an image you want to display on the reader.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub splashscreen: Option<String>,
 }
@@ -616,10 +616,10 @@ impl Default for UpdateTerminalConfigurationBbposWisepad3 {
         Self::new()
     }
 }
-/// An object containing device type specific settings for Stripe S700 readers
+/// An object containing device type specific settings for Stripe S700 readers.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdateTerminalConfigurationStripeS700 {
-    /// A File ID representing an image you would like displayed on the reader.
+    /// A File ID representing an image you want to display on the reader.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub splashscreen: Option<String>,
 }
@@ -633,10 +633,10 @@ impl Default for UpdateTerminalConfigurationStripeS700 {
         Self::new()
     }
 }
-/// An object containing device type specific settings for Verifone P400 readers
+/// An object containing device type specific settings for Verifone P400 readers.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdateTerminalConfigurationVerifoneP400 {
-    /// A File ID representing an image you would like displayed on the reader.
+    /// A File ID representing an image you want to display on the reader.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub splashscreen: Option<String>,
 }
@@ -751,7 +751,7 @@ impl UpdateTerminalConfiguration {
             inner: UpdateTerminalConfigurationBuilder::new(),
         }
     }
-    /// An object containing device type specific settings for BBPOS WisePad 3 readers
+    /// An object containing device type specific settings for BBPOS WisePad 3 readers.
     pub fn bbpos_wisepad3(
         mut self,
         bbpos_wisepad3: impl Into<UpdateTerminalConfigurationBbposWisepad3>,
@@ -759,7 +759,7 @@ impl UpdateTerminalConfiguration {
         self.inner.bbpos_wisepad3 = Some(bbpos_wisepad3.into());
         self
     }
-    /// An object containing device type specific settings for BBPOS WisePOS E readers
+    /// An object containing device type specific settings for BBPOS WisePOS E readers.
     pub fn bbpos_wisepos_e(mut self, bbpos_wisepos_e: impl Into<BbposWisePose>) -> Self {
         self.inner.bbpos_wisepos_e = Some(bbpos_wisepos_e.into());
         self
@@ -779,12 +779,12 @@ impl UpdateTerminalConfiguration {
         self.inner.offline = Some(offline.into());
         self
     }
-    /// Reboot time settings for readers that support customized reboot time configuration.
+    /// Reboot time settings for readers. that support customized reboot time configuration.
     pub fn reboot_window(mut self, reboot_window: impl Into<RebootWindow>) -> Self {
         self.inner.reboot_window = Some(reboot_window.into());
         self
     }
-    /// An object containing device type specific settings for Stripe S700 readers
+    /// An object containing device type specific settings for Stripe S700 readers.
     pub fn stripe_s700(
         mut self,
         stripe_s700: impl Into<UpdateTerminalConfigurationStripeS700>,
@@ -792,12 +792,12 @@ impl UpdateTerminalConfiguration {
         self.inner.stripe_s700 = Some(stripe_s700.into());
         self
     }
-    /// Tipping configurations for readers supporting on-reader tips
+    /// Tipping configurations for readers. supporting on-reader tips
     pub fn tipping(mut self, tipping: impl Into<Tipping>) -> Self {
         self.inner.tipping = Some(tipping.into());
         self
     }
-    /// An object containing device type specific settings for Verifone P400 readers
+    /// An object containing device type specific settings for Verifone P400 readers.
     pub fn verifone_p400(
         mut self,
         verifone_p400: impl Into<UpdateTerminalConfigurationVerifoneP400>,

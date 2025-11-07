@@ -5807,6 +5807,13 @@ impl<'de> serde::Deserialize<'de>
 /// If this is a `card_present` PaymentMethod, this sub-hash contains details about the Card Present payment method options.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsCardPresent {
+    /// Controls when the funds are captured from the customer's account.
+    ///
+    /// If provided, this parameter overrides the behavior of the top-level [capture_method](/api/payment_intents/update#update_payment_intent-capture_method) for this payment method type when finalizing the payment with this payment method type.
+    ///
+    /// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter unsets the stored value for this payment method type.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub capture_method: Option<CreatePaymentIntentPaymentMethodOptionsCardPresentCaptureMethod>,
     /// Request ability to capture this payment beyond the standard [authorization validity window](https://stripe.com/docs/terminal/features/extended-authorizations#authorization-validity).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub request_extended_authorization: Option<bool>,
@@ -5821,6 +5828,7 @@ pub struct CreatePaymentIntentPaymentMethodOptionsCardPresent {
 impl CreatePaymentIntentPaymentMethodOptionsCardPresent {
     pub fn new() -> Self {
         Self {
+            capture_method: None,
             request_extended_authorization: None,
             request_incremental_authorization_support: None,
             routing: None,
@@ -5830,6 +5838,70 @@ impl CreatePaymentIntentPaymentMethodOptionsCardPresent {
 impl Default for CreatePaymentIntentPaymentMethodOptionsCardPresent {
     fn default() -> Self {
         Self::new()
+    }
+}
+/// Controls when the funds are captured from the customer's account.
+///
+/// If provided, this parameter overrides the behavior of the top-level [capture_method](/api/payment_intents/update#update_payment_intent-capture_method) for this payment method type when finalizing the payment with this payment method type.
+///
+/// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter unsets the stored value for this payment method type.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum CreatePaymentIntentPaymentMethodOptionsCardPresentCaptureMethod {
+    Manual,
+    ManualPreferred,
+}
+impl CreatePaymentIntentPaymentMethodOptionsCardPresentCaptureMethod {
+    pub fn as_str(self) -> &'static str {
+        use CreatePaymentIntentPaymentMethodOptionsCardPresentCaptureMethod::*;
+        match self {
+            Manual => "manual",
+            ManualPreferred => "manual_preferred",
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsCardPresentCaptureMethod {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreatePaymentIntentPaymentMethodOptionsCardPresentCaptureMethod::*;
+        match s {
+            "manual" => Ok(Manual),
+            "manual_preferred" => Ok(ManualPreferred),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsCardPresentCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsCardPresentCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsCardPresentCaptureMethod {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentIntentPaymentMethodOptionsCardPresentCaptureMethod
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for CreatePaymentIntentPaymentMethodOptionsCardPresentCaptureMethod",
+            )
+        })
     }
 }
 /// Network routing priority on co-branded EMV cards supporting domestic debit and international card schemes.
@@ -17024,6 +17096,13 @@ impl<'de> serde::Deserialize<'de>
 /// If this is a `card_present` PaymentMethod, this sub-hash contains details about the Card Present payment method options.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsCardPresent {
+    /// Controls when the funds are captured from the customer's account.
+    ///
+    /// If provided, this parameter overrides the behavior of the top-level [capture_method](/api/payment_intents/update#update_payment_intent-capture_method) for this payment method type when finalizing the payment with this payment method type.
+    ///
+    /// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter unsets the stored value for this payment method type.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub capture_method: Option<UpdatePaymentIntentPaymentMethodOptionsCardPresentCaptureMethod>,
     /// Request ability to capture this payment beyond the standard [authorization validity window](https://stripe.com/docs/terminal/features/extended-authorizations#authorization-validity).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub request_extended_authorization: Option<bool>,
@@ -17038,6 +17117,7 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsCardPresent {
 impl UpdatePaymentIntentPaymentMethodOptionsCardPresent {
     pub fn new() -> Self {
         Self {
+            capture_method: None,
             request_extended_authorization: None,
             request_incremental_authorization_support: None,
             routing: None,
@@ -17047,6 +17127,70 @@ impl UpdatePaymentIntentPaymentMethodOptionsCardPresent {
 impl Default for UpdatePaymentIntentPaymentMethodOptionsCardPresent {
     fn default() -> Self {
         Self::new()
+    }
+}
+/// Controls when the funds are captured from the customer's account.
+///
+/// If provided, this parameter overrides the behavior of the top-level [capture_method](/api/payment_intents/update#update_payment_intent-capture_method) for this payment method type when finalizing the payment with this payment method type.
+///
+/// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter unsets the stored value for this payment method type.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum UpdatePaymentIntentPaymentMethodOptionsCardPresentCaptureMethod {
+    Manual,
+    ManualPreferred,
+}
+impl UpdatePaymentIntentPaymentMethodOptionsCardPresentCaptureMethod {
+    pub fn as_str(self) -> &'static str {
+        use UpdatePaymentIntentPaymentMethodOptionsCardPresentCaptureMethod::*;
+        match self {
+            Manual => "manual",
+            ManualPreferred => "manual_preferred",
+        }
+    }
+}
+
+impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsCardPresentCaptureMethod {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdatePaymentIntentPaymentMethodOptionsCardPresentCaptureMethod::*;
+        match s {
+            "manual" => Ok(Manual),
+            "manual_preferred" => Ok(ManualPreferred),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsCardPresentCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsCardPresentCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsCardPresentCaptureMethod {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentIntentPaymentMethodOptionsCardPresentCaptureMethod
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| {
+            serde::de::Error::custom(
+                "Unknown value for UpdatePaymentIntentPaymentMethodOptionsCardPresentCaptureMethod",
+            )
+        })
     }
 }
 /// Network routing priority on co-branded EMV cards supporting domestic debit and international card schemes.
@@ -29014,6 +29158,13 @@ impl<'de> serde::Deserialize<'de>
 /// If this is a `card_present` PaymentMethod, this sub-hash contains details about the Card Present payment method options.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodOptionsCardPresent {
+    /// Controls when the funds are captured from the customer's account.
+    ///
+    /// If provided, this parameter overrides the behavior of the top-level [capture_method](/api/payment_intents/update#update_payment_intent-capture_method) for this payment method type when finalizing the payment with this payment method type.
+    ///
+    /// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter unsets the stored value for this payment method type.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub capture_method: Option<ConfirmPaymentIntentPaymentMethodOptionsCardPresentCaptureMethod>,
     /// Request ability to capture this payment beyond the standard [authorization validity window](https://stripe.com/docs/terminal/features/extended-authorizations#authorization-validity).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub request_extended_authorization: Option<bool>,
@@ -29028,6 +29179,7 @@ pub struct ConfirmPaymentIntentPaymentMethodOptionsCardPresent {
 impl ConfirmPaymentIntentPaymentMethodOptionsCardPresent {
     pub fn new() -> Self {
         Self {
+            capture_method: None,
             request_extended_authorization: None,
             request_incremental_authorization_support: None,
             routing: None,
@@ -29037,6 +29189,66 @@ impl ConfirmPaymentIntentPaymentMethodOptionsCardPresent {
 impl Default for ConfirmPaymentIntentPaymentMethodOptionsCardPresent {
     fn default() -> Self {
         Self::new()
+    }
+}
+/// Controls when the funds are captured from the customer's account.
+///
+/// If provided, this parameter overrides the behavior of the top-level [capture_method](/api/payment_intents/update#update_payment_intent-capture_method) for this payment method type when finalizing the payment with this payment method type.
+///
+/// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter unsets the stored value for this payment method type.
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum ConfirmPaymentIntentPaymentMethodOptionsCardPresentCaptureMethod {
+    Manual,
+    ManualPreferred,
+}
+impl ConfirmPaymentIntentPaymentMethodOptionsCardPresentCaptureMethod {
+    pub fn as_str(self) -> &'static str {
+        use ConfirmPaymentIntentPaymentMethodOptionsCardPresentCaptureMethod::*;
+        match self {
+            Manual => "manual",
+            ManualPreferred => "manual_preferred",
+        }
+    }
+}
+
+impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsCardPresentCaptureMethod {
+    type Err = stripe_types::StripeParseError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use ConfirmPaymentIntentPaymentMethodOptionsCardPresentCaptureMethod::*;
+        match s {
+            "manual" => Ok(Manual),
+            "manual_preferred" => Ok(ManualPreferred),
+            _ => Err(stripe_types::StripeParseError),
+        }
+    }
+}
+impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsCardPresentCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsCardPresentCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsCardPresentCaptureMethod {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for ConfirmPaymentIntentPaymentMethodOptionsCardPresentCaptureMethod
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for ConfirmPaymentIntentPaymentMethodOptionsCardPresentCaptureMethod"))
     }
 }
 /// Network routing priority on co-branded EMV cards supporting domestic debit and international card schemes.
