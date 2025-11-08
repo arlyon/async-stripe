@@ -21,7 +21,7 @@ hyper = { version = "1.5.2", default-features = false, features = ["http1", "htt
 hyper-util = {version = "0.1.10", features = ["client-legacy", "tokio", "http1", "http2"], optional = true}
 http-body-util = { version = "0.1.2", optional = true }
 hyper-tls = { version = "0.6", optional = true }
-hyper-rustls = { version = "0.27", default-features = false, features = ["http1", "http2", "tls12", "logging", "ring"], optional = true }
+hyper-rustls = { version = "0.27", default-features = false, features = ["http1", "http2", "tls12", "logging"], optional = true }
 thiserror = "2.0.11"
 miniserde.workspace = true
 bytes = "1.6.0"
@@ -42,6 +42,8 @@ default-tls = ["dep:hyper-tls", "__hyper"]
 native-tls = ["default-tls"]
 rustls-tls-webpki-roots = ["__rustls", "hyper-rustls/webpki-roots", "__hyper"]
 rustls-tls-native = ["__rustls", "hyper-rustls/rustls-native-certs", "__hyper"]
+rustls-aws-lc-rs = ["__rustls", "hyper-rustls/aws-lc-rs"]
+rustls-ring = ["__rustls", "hyper-rustls/ring"]
 __rustls = ["dep:hyper-rustls"]
 __hyper = ["dep:hyper", "dep:hyper-util", "dep:http-body-util"]
 

@@ -79,8 +79,10 @@ jobs:
         features:
           [
             default-tls,
-            rustls-tls-webpki-roots,
-            rustls-tls-native,
+            "rustls-tls-webpki-roots rustls-aws-lc-rs",
+            "rustls-tls-webpki-roots rustls-ring",
+            "rustls-tls-native rustls-aws-lc-rs",
+            "rustls-tls-native rustls-ring",
             async-std-surf,
           ]
 
@@ -107,8 +109,10 @@ jobs:
         features:
           [
             default-tls,
-            rustls-tls-webpki-roots,
-            rustls-tls-native,
+            "rustls-tls-webpki-roots rustls-aws-lc-rs",
+            "rustls-tls-webpki-roots rustls-ring",
+            "rustls-tls-native rustls-aws-lc-rs",
+            "rustls-tls-native rustls-ring",
             async-std-surf,
           ]
 
@@ -132,7 +136,14 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        features: [default-tls, rustls-tls-webpki-roots, rustls-tls-native]
+        features:
+          [
+            default-tls,
+            "rustls-tls-webpki-roots rustls-aws-lc-rs",
+            "rustls-tls-webpki-roots rustls-ring",
+            "rustls-tls-native rustls-aws-lc-rs",
+            "rustls-tls-native rustls-ring",
+          ]
     services:
       stripe-mock:
         image: stripe/stripe-mock:v0.197.0
@@ -149,7 +160,7 @@ jobs:
 
       - uses: Swatinem/rust-cache@v2
       - name: Run stripe mock tests
-        run: cargo test -p async-stripe-tests --no-default-features --features ${{ matrix.features }}
+        run: cargo test -p async-stripe-tests --no-default-features --features "${{ matrix.features }}"
 
   # Examples tested separately so that we can use crates which don't match our MSRV
   examples:
