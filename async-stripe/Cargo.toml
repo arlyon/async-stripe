@@ -21,7 +21,7 @@ hyper = { version = "1.5.2", default-features = false, features = ["http1", "htt
 hyper-util = {version = "0.1.10", features = ["client-legacy", "tokio", "http1", "http2"], optional = true}
 http-body-util = { version = "0.1.2", optional = true }
 hyper-tls = { version = "0.6", optional = true }
-hyper-rustls = { version = "0.27", default-features = false, features = ["http1", "http2", "tls12", "logging", "ring"], optional = true }
+hyper-rustls = { version = "0.27", default-features = false, features = ["http1", "http2", "tls12", "logging"], optional = true }
 thiserror = "2.0.11"
 miniserde.workspace = true
 bytes = "1.6.0"
