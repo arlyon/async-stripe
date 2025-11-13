@@ -1,13 +1,18 @@
-#[derive(Copy, Clone, Debug)]
+#[derive(Clone, Debug)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PortalPaymentMethodUpdate {
     /// Whether the feature is enabled.
     pub enabled: bool,
+    /// The [Payment Method Configuration](/api/payment_method_configurations) to use for this portal session.
+    /// When specified, customers will be able to update their payment method to one of the options specified by the payment method configuration.
+    /// If not set, the default payment method configuration is used.
+    pub payment_method_configuration: Option<String>,
 }
 #[doc(hidden)]
 pub struct PortalPaymentMethodUpdateBuilder {
     enabled: Option<bool>,
+    payment_method_configuration: Option<Option<String>>,
 }
 
 #[allow(
@@ -51,19 +56,27 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "enabled" => Deserialize::begin(&mut self.enabled),
+                "payment_method_configuration" => {
+                    Deserialize::begin(&mut self.payment_method_configuration)
+                }
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { enabled: Deserialize::default() }
+            Self {
+                enabled: Deserialize::default(),
+                payment_method_configuration: Deserialize::default(),
+            }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(enabled),) = (self.enabled,) else {
+            let (Some(enabled), Some(payment_method_configuration)) =
+                (self.enabled, self.payment_method_configuration.take())
+            else {
                 return None;
             };
-            Some(Self::Out { enabled })
+            Some(Self::Out { enabled, payment_method_configuration })
         }
     }
 
@@ -91,6 +104,9 @@ const _: () = {
             for (k, v) in obj {
                 match k.as_str() {
                     "enabled" => b.enabled = FromValueOpt::from_value(v),
+                    "payment_method_configuration" => {
+                        b.payment_method_configuration = FromValueOpt::from_value(v)
+                    }
                     _ => {}
                 }
             }

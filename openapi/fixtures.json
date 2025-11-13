@@ -687,7 +687,8 @@
           "enabled": true
         },
         "payment_method_update": {
-          "enabled": false
+          "enabled": false,
+          "payment_method_configuration": null
         },
         "subscription_cancel": {
           "cancellation_reason": {
@@ -2388,6 +2389,7 @@
         "customer": "cus_QXg1o8vcGmoR32",
         "type": "customer"
       },
+      "account_numbers": null,
       "balance": {
         "as_of": 93102340,
         "current": {
@@ -2964,6 +2966,10 @@
         "exp_year": 2030,
         "id": "ic_1Pgag5B7WZ01zgkWephORn8N",
         "last4": "4242",
+        "latest_fraud_warning": {
+          "started_at": null,
+          "type": null
+        },
         "livemode": false,
         "metadata": {},
         "object": "issuing.card",
@@ -3184,6 +3190,10 @@
       "exp_year": 2030,
       "id": "ic_1Pgag5B7WZ01zgkWephORn8N",
       "last4": "4242",
+      "latest_fraud_warning": {
+        "started_at": null,
+        "type": null
+      },
       "livemode": false,
       "metadata": {},
       "object": "issuing.card",
@@ -5493,6 +5503,13 @@
       "subscription": null,
       "test_clock": null
     },
+    "tax.association": {
+      "calculation": "calculation",
+      "id": "obj_123",
+      "object": "tax.association",
+      "payment_intent": "payment_intent",
+      "tax_transaction_attempts": null
+    },
     "tax.calculation": {
       "amount_total": 1947,
       "currency": "usd",
@@ -5786,6 +5803,18 @@
       "livemode": false,
       "metadata": {},
       "object": "terminal.location"
+    },
+    "terminal.onboarding_link": {
+      "link_options": {
+        "apple_terms_and_conditions": {
+          "allow_relinking": null,
+          "merchant_display_name": "merchant_display_name"
+        }
+      },
+      "link_type": "apple_terms_and_conditions",
+      "object": "terminal.onboarding_link",
+      "on_behalf_of": null,
+      "redirect_url": "redirect_url"
     },
     "terminal.reader": {
       "action": {
@@ -6454,5 +6483,5 @@
       "url": "https://example.com/my/webhook/endpoint"
     }
   },
-  "version": "v2113"
+  "version": "v2121"
 }

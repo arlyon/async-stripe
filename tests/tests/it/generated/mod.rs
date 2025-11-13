@@ -211,6 +211,7 @@ pub fn check_fixtures(resources: &serde_json::Value) {
     check_object::<stripe_billing::Subscription>(resources, "subscription");
     check_object::<stripe_billing::SubscriptionItem>(resources, "subscription_item");
     check_object::<stripe_billing::SubscriptionSchedule>(resources, "subscription_schedule");
+    check_object::<stripe_misc::TaxAssociation>(resources, "tax.association");
     check_object::<stripe_misc::TaxCalculation>(resources, "tax.calculation");
     check_object::<stripe_misc::TaxCalculationLineItem>(resources, "tax.calculation_line_item");
     check_object::<stripe_misc::TaxRegistration>(resources, "tax.registration");
@@ -227,6 +228,7 @@ pub fn check_fixtures(resources: &serde_json::Value) {
         "terminal.connection_token",
     );
     check_object::<stripe_terminal::TerminalLocation>(resources, "terminal.location");
+    check_object::<stripe_terminal::TerminalOnboardingLink>(resources, "terminal.onboarding_link");
     check_object::<stripe_terminal::TerminalReader>(resources, "terminal.reader");
     check_object::<stripe_billing::TestHelpersTestClock>(resources, "test_helpers.test_clock");
     check_object::<stripe_core::Token>(resources, "token");

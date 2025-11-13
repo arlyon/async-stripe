@@ -301,6 +301,7 @@ pub enum EventType {
     CustomerCashBalanceTransactionCreated,
     EntitlementsActiveEntitlementSummaryUpdated,
     FileCreated,
+    FinancialConnectionsAccountAccountNumbersUpdated,
     FinancialConnectionsAccountCreated,
     FinancialConnectionsAccountDeactivated,
     FinancialConnectionsAccountDisconnected,
@@ -308,6 +309,7 @@ pub enum EventType {
     FinancialConnectionsAccountRefreshedBalance,
     FinancialConnectionsAccountRefreshedOwnership,
     FinancialConnectionsAccountRefreshedTransactions,
+    FinancialConnectionsAccountUpcomingAccountNumberExpiry,
     IdentityVerificationSessionCanceled,
     IdentityVerificationSessionCreated,
     IdentityVerificationSessionProcessing,
@@ -558,6 +560,9 @@ impl EventType {
                 "entitlements.active_entitlement_summary.updated"
             }
             FileCreated => "file.created",
+            FinancialConnectionsAccountAccountNumbersUpdated => {
+                "financial_connections.account.account_numbers_updated"
+            }
             FinancialConnectionsAccountCreated => "financial_connections.account.created",
             FinancialConnectionsAccountDeactivated => "financial_connections.account.deactivated",
             FinancialConnectionsAccountDisconnected => "financial_connections.account.disconnected",
@@ -570,6 +575,9 @@ impl EventType {
             }
             FinancialConnectionsAccountRefreshedTransactions => {
                 "financial_connections.account.refreshed_transactions"
+            }
+            FinancialConnectionsAccountUpcomingAccountNumberExpiry => {
+                "financial_connections.account.upcoming_account_number_expiry"
             }
             IdentityVerificationSessionCanceled => "identity.verification_session.canceled",
             IdentityVerificationSessionCreated => "identity.verification_session.created",
@@ -842,6 +850,9 @@ impl std::str::FromStr for EventType {
                 Ok(EntitlementsActiveEntitlementSummaryUpdated)
             }
             "file.created" => Ok(FileCreated),
+            "financial_connections.account.account_numbers_updated" => {
+                Ok(FinancialConnectionsAccountAccountNumbersUpdated)
+            }
             "financial_connections.account.created" => Ok(FinancialConnectionsAccountCreated),
             "financial_connections.account.deactivated" => {
                 Ok(FinancialConnectionsAccountDeactivated)
@@ -860,6 +871,9 @@ impl std::str::FromStr for EventType {
             }
             "financial_connections.account.refreshed_transactions" => {
                 Ok(FinancialConnectionsAccountRefreshedTransactions)
+            }
+            "financial_connections.account.upcoming_account_number_expiry" => {
+                Ok(FinancialConnectionsAccountUpcomingAccountNumberExpiry)
             }
             "identity.verification_session.canceled" => Ok(IdentityVerificationSessionCanceled),
             "identity.verification_session.created" => Ok(IdentityVerificationSessionCreated),

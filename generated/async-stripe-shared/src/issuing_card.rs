@@ -28,6 +28,9 @@ pub struct IssuingCard {
     pub id: stripe_shared::IssuingCardId,
     /// The last 4 digits of the card number.
     pub last4: String,
+    /// Stripe’s assessment of whether this card’s details have been compromised.
+    /// If this property isn't null, cancel and reissue the card to prevent fraudulent activity risk.
+    pub latest_fraud_warning: Option<stripe_shared::IssuingCardFraudWarning>,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
@@ -74,6 +77,7 @@ pub struct IssuingCardBuilder {
     financial_account: Option<Option<String>>,
     id: Option<stripe_shared::IssuingCardId>,
     last4: Option<String>,
+    latest_fraud_warning: Option<Option<stripe_shared::IssuingCardFraudWarning>>,
     livemode: Option<bool>,
     metadata: Option<std::collections::HashMap<String, String>>,
     number: Option<Option<String>>,
@@ -141,6 +145,7 @@ const _: () = {
                 "financial_account" => Deserialize::begin(&mut self.financial_account),
                 "id" => Deserialize::begin(&mut self.id),
                 "last4" => Deserialize::begin(&mut self.last4),
+                "latest_fraud_warning" => Deserialize::begin(&mut self.latest_fraud_warning),
                 "livemode" => Deserialize::begin(&mut self.livemode),
                 "metadata" => Deserialize::begin(&mut self.metadata),
                 "number" => Deserialize::begin(&mut self.number),
@@ -171,6 +176,7 @@ const _: () = {
                 financial_account: Deserialize::default(),
                 id: Deserialize::default(),
                 last4: Deserialize::default(),
+                latest_fraud_warning: Deserialize::default(),
                 livemode: Deserialize::default(),
                 metadata: Deserialize::default(),
                 number: Deserialize::default(),
@@ -200,6 +206,7 @@ const _: () = {
                 Some(financial_account),
                 Some(id),
                 Some(last4),
+                Some(latest_fraud_warning),
                 Some(livemode),
                 Some(metadata),
                 Some(number),
@@ -225,6 +232,7 @@ const _: () = {
                 self.financial_account.take(),
                 self.id.take(),
                 self.last4.take(),
+                self.latest_fraud_warning,
                 self.livemode,
                 self.metadata.take(),
                 self.number.take(),
@@ -254,6 +262,7 @@ const _: () = {
                 financial_account,
                 id,
                 last4,
+                latest_fraud_warning,
                 livemode,
                 metadata,
                 number,
@@ -305,6 +314,7 @@ const _: () = {
                     "financial_account" => b.financial_account = FromValueOpt::from_value(v),
                     "id" => b.id = FromValueOpt::from_value(v),
                     "last4" => b.last4 = FromValueOpt::from_value(v),
+                    "latest_fraud_warning" => b.latest_fraud_warning = FromValueOpt::from_value(v),
                     "livemode" => b.livemode = FromValueOpt::from_value(v),
                     "metadata" => b.metadata = FromValueOpt::from_value(v),
                     "number" => b.number = FromValueOpt::from_value(v),
@@ -331,7 +341,7 @@ const _: () = {
 impl serde::Serialize for IssuingCard {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("IssuingCard", 25)?;
+        let mut s = s.serialize_struct("IssuingCard", 26)?;
         s.serialize_field("brand", &self.brand)?;
         s.serialize_field("cancellation_reason", &self.cancellation_reason)?;
         s.serialize_field("cardholder", &self.cardholder)?;
@@ -343,6 +353,7 @@ impl serde::Serialize for IssuingCard {
         s.serialize_field("financial_account", &self.financial_account)?;
         s.serialize_field("id", &self.id)?;
         s.serialize_field("last4", &self.last4)?;
+        s.serialize_field("latest_fraud_warning", &self.latest_fraud_warning)?;
         s.serialize_field("livemode", &self.livemode)?;
         s.serialize_field("metadata", &self.metadata)?;
         s.serialize_field("number", &self.number)?;

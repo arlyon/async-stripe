@@ -48,15 +48,17 @@ pub struct BankAccount {
     pub requirements: Option<stripe_shared::ExternalAccountRequirements>,
     /// The routing transit number for the bank account.
     pub routing_number: Option<String>,
-    /// For bank accounts, possible values are `new`, `validated`, `verified`, `verification_failed`, or `errored`.
+    /// For bank accounts, possible values are `new`, `validated`, `verified`, `verification_failed`, `tokenized_account_number_deactivated` or `errored`.
     /// A bank account that hasn't had any activity or validation performed is `new`.
     /// If Stripe can determine that the bank account exists, its status will be `validated`.
     /// Note that there often isn’t enough information to know (e.g., for smaller credit unions), and the validation is not always run.
     /// If customer bank account verification has succeeded, the bank account status will be `verified`.
     /// If the verification failed for any reason, such as microdeposit failure, the status will be `verification_failed`.
+    /// If the status is `tokenized_account_number_deactivated`, the account utilizes a tokenized account number which has been deactivated due to expiration or revocation.
+    /// This account will need to be reverified to continue using it for money movement.
     /// If a payout sent to this bank account fails, we'll set the status to `errored` and will not continue to send [scheduled payouts](https://stripe.com/docs/payouts#payout-schedule) until the bank details are updated.
     ///
-    /// For external accounts, possible values are `new`, `errored` and `verification_failed`.
+    /// For external accounts, possible values are `new`, `errored`, `verification_failed`, and `tokenized_account_number_deactivated`.
     /// If a payout fails, the status is set to `errored` and scheduled payouts are stopped until account details are updated.
     /// In the US and India, if we can't [verify the owner of the bank account](https://support.stripe.com/questions/bank-account-ownership-verification), we'll set the status to `verification_failed`.
     /// Other validations aren't run against external accounts because they're only used for payouts.

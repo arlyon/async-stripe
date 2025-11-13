@@ -131,6 +131,7 @@ const _: () = {
 pub enum InvoicesPaymentsInvoicePaymentAssociatedPaymentType {
     Charge,
     PaymentIntent,
+    PaymentRecord,
 }
 impl InvoicesPaymentsInvoicePaymentAssociatedPaymentType {
     pub fn as_str(self) -> &'static str {
@@ -138,6 +139,7 @@ impl InvoicesPaymentsInvoicePaymentAssociatedPaymentType {
         match self {
             Charge => "charge",
             PaymentIntent => "payment_intent",
+            PaymentRecord => "payment_record",
         }
     }
 }
@@ -149,6 +151,7 @@ impl std::str::FromStr for InvoicesPaymentsInvoicePaymentAssociatedPaymentType {
         match s {
             "charge" => Ok(Charge),
             "payment_intent" => Ok(PaymentIntent),
+            "payment_record" => Ok(PaymentRecord),
             _ => Err(stripe_types::StripeParseError),
         }
     }

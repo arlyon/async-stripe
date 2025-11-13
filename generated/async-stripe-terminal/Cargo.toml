@@ -32,11 +32,13 @@ deserialize = ["async-stripe-types/deserialize","async-stripe-shared/deserialize
 terminal_configuration = []
 terminal_connection_token = []
 terminal_location = []
+terminal_onboarding_link = []
 terminal_reader = []
 
 full = ["terminal_configuration",
 "terminal_connection_token",
 "terminal_location",
+"terminal_onboarding_link",
 "terminal_reader"]
 
 

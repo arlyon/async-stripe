@@ -84,6 +84,7 @@
 | ExchangeRate                                                                                     | async-stripe-misc     | exchange_rate                           |
 | FinancialConnectionsTransaction                                                                  | async-stripe-misc     | financial_connections_transaction       |
 | ForwardingRequest                                                                                | async-stripe-misc     | forwarding_request                      |
+| TaxAssociation                                                                                   | async-stripe-misc     | tax_association                         |
 | TaxRegistration                                                                                  | async-stripe-misc     | tax_registration                        |
 | [FinancialConnectionsAccount](https://stripe.com/docs/api/financial_connections/accounts/object) | async-stripe-misc     | financial_connections_account           |
 | [FinancialConnectionsSession](https://stripe.com/docs/api/financial_connections/sessions/object) | async-stripe-misc     | financial_connections_session           |
@@ -113,6 +114,7 @@
 | [ShippingRate](https://stripe.com/docs/api/shipping_rates/object)                                | async-stripe-product  | shipping_rate                           |
 | [TaxCode](https://stripe.com/docs/api/tax_codes/object)                                          | async-stripe-product  | tax_code                                |
 | [TaxRate](https://stripe.com/docs/api/tax_rates/object)                                          | async-stripe-product  | tax_rate                                |
+| TerminalOnboardingLink                                                                           | async-stripe-terminal | terminal_onboarding_link                |
 | [TerminalConfiguration](https://stripe.com/docs/api/terminal/configuration/object)               | async-stripe-terminal | terminal_configuration                  |
 | [TerminalConnectionToken](https://stripe.com/docs/api/terminal/connection_tokens/object)         | async-stripe-terminal | terminal_connection_token               |
 | [TerminalLocation](https://stripe.com/docs/api/terminal/locations/object)                        | async-stripe-terminal | terminal_location                       |
