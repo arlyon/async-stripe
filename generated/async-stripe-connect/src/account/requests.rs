@@ -2012,7 +2012,7 @@ impl Default for CreateAccountSettings {
 /// Settings specific to the account’s use of Invoices.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateAccountSettingsInvoices {
-    /// Whether payment methods should be saved when a payment is completed for a one-time invoices on a hosted invoice page.
+    /// Whether to save the payment method after a payment is completed for a one-time invoice or a subscription invoice when the customer already has a default payment method on the hosted invoice page.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub hosted_payment_method_save: Option<CreateAccountSettingsInvoicesHostedPaymentMethodSave>,
 }
@@ -2026,7 +2026,7 @@ impl Default for CreateAccountSettingsInvoices {
         Self::new()
     }
 }
-/// Whether payment methods should be saved when a payment is completed for a one-time invoices on a hosted invoice page.
+/// Whether to save the payment method after a payment is completed for a one-time invoice or a subscription invoice when the customer already has a default payment method on the hosted invoice page.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum CreateAccountSettingsInvoicesHostedPaymentMethodSave {
     Always,
@@ -3845,7 +3845,7 @@ pub struct UpdateAccountSettingsInvoices {
     /// Account Tax IDs get added when an invoice is finalized.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub default_account_tax_ids: Option<Vec<String>>,
-    /// Whether payment methods should be saved when a payment is completed for a one-time invoices on a hosted invoice page.
+    /// Whether to save the payment method after a payment is completed for a one-time invoice or a subscription invoice when the customer already has a default payment method on the hosted invoice page.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub hosted_payment_method_save: Option<UpdateAccountSettingsInvoicesHostedPaymentMethodSave>,
 }
@@ -3859,7 +3859,7 @@ impl Default for UpdateAccountSettingsInvoices {
         Self::new()
     }
 }
-/// Whether payment methods should be saved when a payment is completed for a one-time invoices on a hosted invoice page.
+/// Whether to save the payment method after a payment is completed for a one-time invoice or a subscription invoice when the customer already has a default payment method on the hosted invoice page.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum UpdateAccountSettingsInvoicesHostedPaymentMethodSave {
     Always,
