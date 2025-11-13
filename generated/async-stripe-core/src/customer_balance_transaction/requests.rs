@@ -5,6 +5,8 @@ use stripe_client_core::{
 #[derive(Clone, Debug, serde::Serialize)]
 struct ListCustomerCustomerBalanceTransactionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
+    created: Option<stripe_types::RangeQueryTs>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -15,7 +17,7 @@ struct ListCustomerCustomerBalanceTransactionBuilder {
 }
 impl ListCustomerCustomerBalanceTransactionBuilder {
     fn new() -> Self {
-        Self { ending_before: None, expand: None, limit: None, starting_after: None }
+        Self { created: None, ending_before: None, expand: None, limit: None, starting_after: None }
     }
 }
 /// Returns a list of transactions that updated the customer’s [balances](https://stripe.com/docs/billing/customer/balance).
@@ -31,6 +33,11 @@ impl ListCustomerCustomerBalanceTransaction {
             customer: customer.into(),
             inner: ListCustomerCustomerBalanceTransactionBuilder::new(),
         }
+    }
+    /// Only return customer balance transactions that were created during the given date interval.
+    pub fn created(mut self, created: impl Into<stripe_types::RangeQueryTs>) -> Self {
+        self.inner.created = Some(created.into());
+        self
     }
     /// A cursor for use in pagination.
     /// `ending_before` is an object ID that defines your place in the list.

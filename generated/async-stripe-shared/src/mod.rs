@@ -1129,6 +1129,10 @@ pub mod issuing_card_authorization_controls;
 #[doc(inline)]
 pub use issuing_card_authorization_controls::*;
 #[doc(hidden)]
+pub mod issuing_card_fraud_warning;
+#[doc(inline)]
+pub use issuing_card_fraud_warning::*;
+#[doc(hidden)]
 pub mod issuing_card_google_pay;
 #[doc(inline)]
 pub use issuing_card_google_pay::*;
@@ -1552,6 +1556,18 @@ pub use payment_flows_automatic_payment_methods_setup_intent::*;
 pub mod payment_flows_payment_details;
 #[doc(inline)]
 pub use payment_flows_payment_details::*;
+#[doc(hidden)]
+pub mod payment_flows_payment_intent_async_workflows;
+#[doc(inline)]
+pub use payment_flows_payment_intent_async_workflows::*;
+#[doc(hidden)]
+pub mod payment_flows_payment_intent_async_workflows_resource_inputs;
+#[doc(inline)]
+pub use payment_flows_payment_intent_async_workflows_resource_inputs::*;
+#[doc(hidden)]
+pub mod payment_flows_payment_intent_async_workflows_resource_inputs_resource_tax;
+#[doc(inline)]
+pub use payment_flows_payment_intent_async_workflows_resource_inputs_resource_tax::*;
 #[doc(hidden)]
 pub mod payment_flows_payment_intent_presentment_details;
 #[doc(inline)]
@@ -3040,6 +3056,10 @@ pub use refund_destination_details_gb_bank_transfer::*;
 pub mod refund_destination_details_jp_bank_transfer;
 #[doc(inline)]
 pub use refund_destination_details_jp_bank_transfer::*;
+#[doc(hidden)]
+pub mod refund_destination_details_mb_way;
+#[doc(inline)]
+pub use refund_destination_details_mb_way::*;
 #[doc(hidden)]
 pub mod refund_destination_details_multibanco;
 #[doc(inline)]

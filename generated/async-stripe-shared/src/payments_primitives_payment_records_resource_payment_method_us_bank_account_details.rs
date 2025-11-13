@@ -1,11 +1,12 @@
-/// Details of the US Bank Account used for this payment attempt.
 #[derive(Clone, Debug)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentsPrimitivesPaymentRecordsResourcePaymentMethodUsBankAccountDetails {
+    /// The type of entity that holds the account. This can be either 'individual' or 'company'.
     pub account_holder_type: Option<
         PaymentsPrimitivesPaymentRecordsResourcePaymentMethodUsBankAccountDetailsAccountHolderType,
     >,
+    /// The type of the bank account. This can be either 'checking' or 'savings'.
     pub account_type: Option<
         PaymentsPrimitivesPaymentRecordsResourcePaymentMethodUsBankAccountDetailsAccountType,
     >,
@@ -18,9 +19,9 @@ pub struct PaymentsPrimitivesPaymentRecordsResourcePaymentMethodUsBankAccountDet
     pub last4: Option<String>,
     /// ID of the mandate used to make this payment.
     pub mandate: Option<stripe_types::Expandable<stripe_shared::Mandate>>,
-    /// Reference number to locate ACH payments with customer’s bank.
+    /// The ACH payment reference for this transaction.
     pub payment_reference: Option<String>,
-    /// Routing number of the bank account.
+    /// The routing number for the bank account.
     pub routing_number: Option<String>,
 }
 #[doc(hidden)]
@@ -180,6 +181,7 @@ const _: () = {
         }
     }
 };
+/// The type of entity that holds the account. This can be either 'individual' or 'company'.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum PaymentsPrimitivesPaymentRecordsResourcePaymentMethodUsBankAccountDetailsAccountHolderType
 {
@@ -268,6 +270,7 @@ impl<'de> serde::Deserialize<'de>
         Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for PaymentsPrimitivesPaymentRecordsResourcePaymentMethodUsBankAccountDetailsAccountHolderType"))
     }
 }
+/// The type of the bank account. This can be either 'checking' or 'savings'.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum PaymentsPrimitivesPaymentRecordsResourcePaymentMethodUsBankAccountDetailsAccountType {
     Checking,

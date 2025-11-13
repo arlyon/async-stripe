@@ -858,6 +858,9 @@ pub enum EventObject {
     EntitlementsActiveEntitlementSummaryUpdated(stripe_misc::EntitlementsActiveEntitlementSummary),
     /// Occurs whenever a new Stripe-generated file is available for your account.
     FileCreated(stripe_shared::File),
+    /// Occurs when a Financial Connections account's account numbers are updated.
+    #[cfg(feature = "async-stripe-misc")]
+    FinancialConnectionsAccountAccountNumbersUpdated(stripe_misc::FinancialConnectionsAccount),
     /// Occurs when a new Financial Connections account is created.
     #[cfg(feature = "async-stripe-misc")]
     FinancialConnectionsAccountCreated(stripe_misc::FinancialConnectionsAccount),
@@ -879,6 +882,11 @@ pub enum EventObject {
     /// Occurs when an Account’s `transaction_refresh` status transitions from `pending` to either `succeeded` or `failed`.
     #[cfg(feature = "async-stripe-misc")]
     FinancialConnectionsAccountRefreshedTransactions(stripe_misc::FinancialConnectionsAccount),
+    /// Occurs when an Account’s tokenized account number is about to expire.
+    #[cfg(feature = "async-stripe-misc")]
+    FinancialConnectionsAccountUpcomingAccountNumberExpiry(
+        stripe_misc::FinancialConnectionsAccount,
+    ),
     /// Occurs whenever a VerificationSession is canceled
     #[cfg(feature = "async-stripe-misc")]
     IdentityVerificationSessionCanceled(stripe_misc::IdentityVerificationSession),
@@ -1540,6 +1548,11 @@ impl EventObject {
             return FromValueOpt::from_value(data).map(Self::FileCreated);
         }
         #[cfg(feature = "async-stripe-misc")]
+        if typ == "financial_connections.account.account_numbers_updated" {
+            return FromValueOpt::from_value(data)
+                .map(Self::FinancialConnectionsAccountAccountNumbersUpdated);
+        }
+        #[cfg(feature = "async-stripe-misc")]
         if typ == "financial_connections.account.created" {
             return FromValueOpt::from_value(data).map(Self::FinancialConnectionsAccountCreated);
         }
@@ -1572,6 +1585,11 @@ impl EventObject {
         if typ == "financial_connections.account.refreshed_transactions" {
             return FromValueOpt::from_value(data)
                 .map(Self::FinancialConnectionsAccountRefreshedTransactions);
+        }
+        #[cfg(feature = "async-stripe-misc")]
+        if typ == "financial_connections.account.upcoming_account_number_expiry" {
+            return FromValueOpt::from_value(data)
+                .map(Self::FinancialConnectionsAccountUpcomingAccountNumberExpiry);
         }
         #[cfg(feature = "async-stripe-misc")]
         if typ == "identity.verification_session.canceled" {

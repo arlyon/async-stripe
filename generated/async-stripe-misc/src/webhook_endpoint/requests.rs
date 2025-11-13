@@ -292,6 +292,7 @@ pub enum CreateWebhookEndpointEnabledEvents {
     CustomerCashBalanceTransactionCreated,
     EntitlementsActiveEntitlementSummaryUpdated,
     FileCreated,
+    FinancialConnectionsAccountAccountNumbersUpdated,
     FinancialConnectionsAccountCreated,
     FinancialConnectionsAccountDeactivated,
     FinancialConnectionsAccountDisconnected,
@@ -299,6 +300,7 @@ pub enum CreateWebhookEndpointEnabledEvents {
     FinancialConnectionsAccountRefreshedBalance,
     FinancialConnectionsAccountRefreshedOwnership,
     FinancialConnectionsAccountRefreshedTransactions,
+    FinancialConnectionsAccountUpcomingAccountNumberExpiry,
     IdentityVerificationSessionCanceled,
     IdentityVerificationSessionCreated,
     IdentityVerificationSessionProcessing,
@@ -550,6 +552,9 @@ impl CreateWebhookEndpointEnabledEvents {
                 "entitlements.active_entitlement_summary.updated"
             }
             FileCreated => "file.created",
+            FinancialConnectionsAccountAccountNumbersUpdated => {
+                "financial_connections.account.account_numbers_updated"
+            }
             FinancialConnectionsAccountCreated => "financial_connections.account.created",
             FinancialConnectionsAccountDeactivated => "financial_connections.account.deactivated",
             FinancialConnectionsAccountDisconnected => "financial_connections.account.disconnected",
@@ -562,6 +567,9 @@ impl CreateWebhookEndpointEnabledEvents {
             }
             FinancialConnectionsAccountRefreshedTransactions => {
                 "financial_connections.account.refreshed_transactions"
+            }
+            FinancialConnectionsAccountUpcomingAccountNumberExpiry => {
+                "financial_connections.account.upcoming_account_number_expiry"
             }
             IdentityVerificationSessionCanceled => "identity.verification_session.canceled",
             IdentityVerificationSessionCreated => "identity.verification_session.created",
@@ -835,6 +843,9 @@ impl std::str::FromStr for CreateWebhookEndpointEnabledEvents {
                 Ok(EntitlementsActiveEntitlementSummaryUpdated)
             }
             "file.created" => Ok(FileCreated),
+            "financial_connections.account.account_numbers_updated" => {
+                Ok(FinancialConnectionsAccountAccountNumbersUpdated)
+            }
             "financial_connections.account.created" => Ok(FinancialConnectionsAccountCreated),
             "financial_connections.account.deactivated" => {
                 Ok(FinancialConnectionsAccountDeactivated)
@@ -853,6 +864,9 @@ impl std::str::FromStr for CreateWebhookEndpointEnabledEvents {
             }
             "financial_connections.account.refreshed_transactions" => {
                 Ok(FinancialConnectionsAccountRefreshedTransactions)
+            }
+            "financial_connections.account.upcoming_account_number_expiry" => {
+                Ok(FinancialConnectionsAccountUpcomingAccountNumberExpiry)
             }
             "identity.verification_session.canceled" => Ok(IdentityVerificationSessionCanceled),
             "identity.verification_session.created" => Ok(IdentityVerificationSessionCreated),
@@ -1247,6 +1261,7 @@ pub enum UpdateWebhookEndpointEnabledEvents {
     CustomerCashBalanceTransactionCreated,
     EntitlementsActiveEntitlementSummaryUpdated,
     FileCreated,
+    FinancialConnectionsAccountAccountNumbersUpdated,
     FinancialConnectionsAccountCreated,
     FinancialConnectionsAccountDeactivated,
     FinancialConnectionsAccountDisconnected,
@@ -1254,6 +1269,7 @@ pub enum UpdateWebhookEndpointEnabledEvents {
     FinancialConnectionsAccountRefreshedBalance,
     FinancialConnectionsAccountRefreshedOwnership,
     FinancialConnectionsAccountRefreshedTransactions,
+    FinancialConnectionsAccountUpcomingAccountNumberExpiry,
     IdentityVerificationSessionCanceled,
     IdentityVerificationSessionCreated,
     IdentityVerificationSessionProcessing,
@@ -1505,6 +1521,9 @@ impl UpdateWebhookEndpointEnabledEvents {
                 "entitlements.active_entitlement_summary.updated"
             }
             FileCreated => "file.created",
+            FinancialConnectionsAccountAccountNumbersUpdated => {
+                "financial_connections.account.account_numbers_updated"
+            }
             FinancialConnectionsAccountCreated => "financial_connections.account.created",
             FinancialConnectionsAccountDeactivated => "financial_connections.account.deactivated",
             FinancialConnectionsAccountDisconnected => "financial_connections.account.disconnected",
@@ -1517,6 +1536,9 @@ impl UpdateWebhookEndpointEnabledEvents {
             }
             FinancialConnectionsAccountRefreshedTransactions => {
                 "financial_connections.account.refreshed_transactions"
+            }
+            FinancialConnectionsAccountUpcomingAccountNumberExpiry => {
+                "financial_connections.account.upcoming_account_number_expiry"
             }
             IdentityVerificationSessionCanceled => "identity.verification_session.canceled",
             IdentityVerificationSessionCreated => "identity.verification_session.created",
@@ -1790,6 +1812,9 @@ impl std::str::FromStr for UpdateWebhookEndpointEnabledEvents {
                 Ok(EntitlementsActiveEntitlementSummaryUpdated)
             }
             "file.created" => Ok(FileCreated),
+            "financial_connections.account.account_numbers_updated" => {
+                Ok(FinancialConnectionsAccountAccountNumbersUpdated)
+            }
             "financial_connections.account.created" => Ok(FinancialConnectionsAccountCreated),
             "financial_connections.account.deactivated" => {
                 Ok(FinancialConnectionsAccountDeactivated)
@@ -1808,6 +1833,9 @@ impl std::str::FromStr for UpdateWebhookEndpointEnabledEvents {
             }
             "financial_connections.account.refreshed_transactions" => {
                 Ok(FinancialConnectionsAccountRefreshedTransactions)
+            }
+            "financial_connections.account.upcoming_account_number_expiry" => {
+                Ok(FinancialConnectionsAccountUpcomingAccountNumberExpiry)
             }
             "identity.verification_session.canceled" => Ok(IdentityVerificationSessionCanceled),
             "identity.verification_session.created" => Ok(IdentityVerificationSessionCreated),

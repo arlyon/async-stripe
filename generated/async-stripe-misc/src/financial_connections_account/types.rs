@@ -6,6 +6,8 @@
 pub struct FinancialConnectionsAccount {
     /// The account holder that this account belongs to.
     pub account_holder: Option<stripe_misc::BankConnectionsResourceAccountholder>,
+    /// Details about the account numbers.
+    pub account_numbers: Option<Vec<stripe_misc::BankConnectionsResourceAccountNumberDetails>>,
     /// The most recent information about the account's balance.
     pub balance: Option<stripe_misc::BankConnectionsResourceBalance>,
     /// The state of the most recent attempt to refresh the account balance.
@@ -58,6 +60,7 @@ pub struct FinancialConnectionsAccount {
 #[doc(hidden)]
 pub struct FinancialConnectionsAccountBuilder {
     account_holder: Option<Option<stripe_misc::BankConnectionsResourceAccountholder>>,
+    account_numbers: Option<Option<Vec<stripe_misc::BankConnectionsResourceAccountNumberDetails>>>,
     balance: Option<Option<stripe_misc::BankConnectionsResourceBalance>>,
     balance_refresh: Option<Option<stripe_misc::BankConnectionsResourceBalanceRefresh>>,
     category: Option<FinancialConnectionsAccountCategory>,
@@ -120,6 +123,7 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "account_holder" => Deserialize::begin(&mut self.account_holder),
+                "account_numbers" => Deserialize::begin(&mut self.account_numbers),
                 "balance" => Deserialize::begin(&mut self.balance),
                 "balance_refresh" => Deserialize::begin(&mut self.balance_refresh),
                 "category" => Deserialize::begin(&mut self.category),
@@ -146,6 +150,7 @@ const _: () = {
         fn deser_default() -> Self {
             Self {
                 account_holder: Deserialize::default(),
+                account_numbers: Deserialize::default(),
                 balance: Deserialize::default(),
                 balance_refresh: Deserialize::default(),
                 category: Deserialize::default(),
@@ -169,6 +174,7 @@ const _: () = {
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
                 Some(account_holder),
+                Some(account_numbers),
                 Some(balance),
                 Some(balance_refresh),
                 Some(category),
@@ -188,6 +194,7 @@ const _: () = {
                 Some(transaction_refresh),
             ) = (
                 self.account_holder.take(),
+                self.account_numbers.take(),
                 self.balance.take(),
                 self.balance_refresh,
                 self.category,
@@ -211,6 +218,7 @@ const _: () = {
             };
             Some(Self::Out {
                 account_holder,
+                account_numbers,
                 balance,
                 balance_refresh,
                 category,
@@ -256,6 +264,7 @@ const _: () = {
             for (k, v) in obj {
                 match k.as_str() {
                     "account_holder" => b.account_holder = FromValueOpt::from_value(v),
+                    "account_numbers" => b.account_numbers = FromValueOpt::from_value(v),
                     "balance" => b.balance = FromValueOpt::from_value(v),
                     "balance_refresh" => b.balance_refresh = FromValueOpt::from_value(v),
                     "category" => b.category = FromValueOpt::from_value(v),
@@ -286,8 +295,9 @@ const _: () = {
 impl serde::Serialize for FinancialConnectionsAccount {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("FinancialConnectionsAccount", 19)?;
+        let mut s = s.serialize_struct("FinancialConnectionsAccount", 20)?;
         s.serialize_field("account_holder", &self.account_holder)?;
+        s.serialize_field("account_numbers", &self.account_numbers)?;
         s.serialize_field("balance", &self.balance)?;
         s.serialize_field("balance_refresh", &self.balance_refresh)?;
         s.serialize_field("category", &self.category)?;

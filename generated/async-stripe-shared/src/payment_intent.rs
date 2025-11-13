@@ -67,6 +67,7 @@ pub struct PaymentIntent {
     /// The list of payment method types to exclude from use with this payment.
     pub excluded_payment_method_types:
         Option<Vec<stripe_shared::PaymentIntentExcludedPaymentMethodTypes>>,
+    pub hooks: Option<stripe_shared::PaymentFlowsPaymentIntentAsyncWorkflows>,
     /// Unique identifier for the object.
     pub id: stripe_shared::PaymentIntentId,
     /// The payment error encountered in the previous PaymentIntent confirmation.
@@ -161,6 +162,7 @@ pub struct PaymentIntentBuilder {
     description: Option<Option<String>>,
     excluded_payment_method_types:
         Option<Option<Vec<stripe_shared::PaymentIntentExcludedPaymentMethodTypes>>>,
+    hooks: Option<Option<stripe_shared::PaymentFlowsPaymentIntentAsyncWorkflows>>,
     id: Option<stripe_shared::PaymentIntentId>,
     last_payment_error: Option<Option<Box<stripe_shared::ApiErrors>>>,
     latest_charge: Option<Option<stripe_types::Expandable<stripe_shared::Charge>>>,
@@ -249,6 +251,7 @@ const _: () = {
                 "excluded_payment_method_types" => {
                     Deserialize::begin(&mut self.excluded_payment_method_types)
                 }
+                "hooks" => Deserialize::begin(&mut self.hooks),
                 "id" => Deserialize::begin(&mut self.id),
                 "last_payment_error" => Deserialize::begin(&mut self.last_payment_error),
                 "latest_charge" => Deserialize::begin(&mut self.latest_charge),
@@ -300,6 +303,7 @@ const _: () = {
                 customer: Deserialize::default(),
                 description: Deserialize::default(),
                 excluded_payment_method_types: Deserialize::default(),
+                hooks: Deserialize::default(),
                 id: Deserialize::default(),
                 last_payment_error: Deserialize::default(),
                 latest_charge: Deserialize::default(),
@@ -346,6 +350,7 @@ const _: () = {
                 Some(customer),
                 Some(description),
                 Some(excluded_payment_method_types),
+                Some(hooks),
                 Some(id),
                 Some(last_payment_error),
                 Some(latest_charge),
@@ -388,6 +393,7 @@ const _: () = {
                 self.customer.take(),
                 self.description.take(),
                 self.excluded_payment_method_types.take(),
+                self.hooks.take(),
                 self.id.take(),
                 self.last_payment_error.take(),
                 self.latest_charge.take(),
@@ -434,6 +440,7 @@ const _: () = {
                 customer,
                 description,
                 excluded_payment_method_types,
+                hooks,
                 id,
                 last_payment_error,
                 latest_charge,
@@ -508,6 +515,7 @@ const _: () = {
                     "excluded_payment_method_types" => {
                         b.excluded_payment_method_types = FromValueOpt::from_value(v)
                     }
+                    "hooks" => b.hooks = FromValueOpt::from_value(v),
                     "id" => b.id = FromValueOpt::from_value(v),
                     "last_payment_error" => b.last_payment_error = FromValueOpt::from_value(v),
                     "latest_charge" => b.latest_charge = FromValueOpt::from_value(v),
@@ -549,7 +557,7 @@ const _: () = {
 impl serde::Serialize for PaymentIntent {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("PaymentIntent", 42)?;
+        let mut s = s.serialize_struct("PaymentIntent", 43)?;
         s.serialize_field("amount", &self.amount)?;
         s.serialize_field("amount_capturable", &self.amount_capturable)?;
         s.serialize_field("amount_details", &self.amount_details)?;
@@ -567,6 +575,7 @@ impl serde::Serialize for PaymentIntent {
         s.serialize_field("customer", &self.customer)?;
         s.serialize_field("description", &self.description)?;
         s.serialize_field("excluded_payment_method_types", &self.excluded_payment_method_types)?;
+        s.serialize_field("hooks", &self.hooks)?;
         s.serialize_field("id", &self.id)?;
         s.serialize_field("last_payment_error", &self.last_payment_error)?;
         s.serialize_field("latest_charge", &self.latest_charge)?;

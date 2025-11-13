@@ -291,6 +291,8 @@ struct CreatePaymentIntentBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    hooks: Option<AsyncWorkflowsParam>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     mandate: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     mandate_data: Option<CreatePaymentIntentMandateData>,
@@ -350,6 +352,7 @@ impl CreatePaymentIntentBuilder {
             error_on_requires_action: None,
             excluded_payment_method_types: None,
             expand: None,
+            hooks: None,
             mandate: None,
             mandate_data: None,
             metadata: None,
@@ -1635,6 +1638,7 @@ pub enum CreatePaymentIntentPaymentMethodDataIdealBank {
     AsnBank,
     Bunq,
     Buut,
+    Finom,
     Handelsbanken,
     Ing,
     Knab,
@@ -1659,6 +1663,7 @@ impl CreatePaymentIntentPaymentMethodDataIdealBank {
             AsnBank => "asn_bank",
             Bunq => "bunq",
             Buut => "buut",
+            Finom => "finom",
             Handelsbanken => "handelsbanken",
             Ing => "ing",
             Knab => "knab",
@@ -1686,6 +1691,7 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodDataIdealBank {
             "asn_bank" => Ok(AsnBank),
             "bunq" => Ok(Bunq),
             "buut" => Ok(Buut),
+            "finom" => Ok(Finom),
             "handelsbanken" => Ok(Handelsbanken),
             "ing" => Ok(Ing),
             "knab" => Ok(Knab),
@@ -11575,6 +11581,11 @@ impl CreatePaymentIntent {
         self.inner.expand = Some(expand.into());
         self
     }
+    /// Automations to be run during the PaymentIntent lifecycle
+    pub fn hooks(mut self, hooks: impl Into<AsyncWorkflowsParam>) -> Self {
+        self.inner.hooks = Some(hooks.into());
+        self
+    }
     /// ID of the mandate that's used for this payment.
     /// This parameter can only be used with [`confirm=true`](https://stripe.com/docs/api/payment_intents/create#create_payment_intent-confirm).
     pub fn mandate(mut self, mandate: impl Into<String>) -> Self {
@@ -11791,6 +11802,8 @@ struct UpdatePaymentIntentBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    hooks: Option<AsyncWorkflowsParam>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     metadata: Option<std::collections::HashMap<String, String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     payment_details: Option<UpdatePaymentIntentPaymentDetails>,
@@ -11831,6 +11844,7 @@ impl UpdatePaymentIntentBuilder {
             description: None,
             excluded_payment_method_types: None,
             expand: None,
+            hooks: None,
             metadata: None,
             payment_details: None,
             payment_method: None,
@@ -12924,6 +12938,7 @@ pub enum UpdatePaymentIntentPaymentMethodDataIdealBank {
     AsnBank,
     Bunq,
     Buut,
+    Finom,
     Handelsbanken,
     Ing,
     Knab,
@@ -12948,6 +12963,7 @@ impl UpdatePaymentIntentPaymentMethodDataIdealBank {
             AsnBank => "asn_bank",
             Bunq => "bunq",
             Buut => "buut",
+            Finom => "finom",
             Handelsbanken => "handelsbanken",
             Ing => "ing",
             Knab => "knab",
@@ -12975,6 +12991,7 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodDataIdealBank {
             "asn_bank" => Ok(AsnBank),
             "bunq" => Ok(Bunq),
             "buut" => Ok(Buut),
+            "finom" => Ok(Finom),
             "handelsbanken" => Ok(Handelsbanken),
             "ing" => Ok(Ing),
             "knab" => Ok(Knab),
@@ -22815,6 +22832,11 @@ impl UpdatePaymentIntent {
         self.inner.expand = Some(expand.into());
         self
     }
+    /// Automations to be run during the PaymentIntent lifecycle
+    pub fn hooks(mut self, hooks: impl Into<AsyncWorkflowsParam>) -> Self {
+        self.inner.hooks = Some(hooks.into());
+        self
+    }
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
@@ -23191,6 +23213,8 @@ struct CapturePaymentIntentBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     final_capture: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    hooks: Option<AsyncWorkflowsParam>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     metadata: Option<std::collections::HashMap<String, String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     payment_details: Option<CapturePaymentIntentPaymentDetails>,
@@ -23209,6 +23233,7 @@ impl CapturePaymentIntentBuilder {
             application_fee_amount: None,
             expand: None,
             final_capture: None,
+            hooks: None,
             metadata: None,
             payment_details: None,
             statement_descriptor: None,
@@ -23548,6 +23573,11 @@ impl CapturePaymentIntent {
         self.inner.final_capture = Some(final_capture.into());
         self
     }
+    /// Automations to be run during the PaymentIntent lifecycle
+    pub fn hooks(mut self, hooks: impl Into<AsyncWorkflowsParam>) -> Self {
+        self.inner.hooks = Some(hooks.into());
+        self
+    }
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
@@ -23640,6 +23670,8 @@ struct ConfirmPaymentIntentBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    hooks: Option<AsyncWorkflowsParam>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     mandate: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     mandate_data: Option<ConfirmPaymentIntentMandateData>,
@@ -23677,6 +23709,7 @@ impl ConfirmPaymentIntentBuilder {
             error_on_requires_action: None,
             excluded_payment_method_types: None,
             expand: None,
+            hooks: None,
             mandate: None,
             mandate_data: None,
             off_session: None,
@@ -24986,6 +25019,7 @@ pub enum ConfirmPaymentIntentPaymentMethodDataIdealBank {
     AsnBank,
     Bunq,
     Buut,
+    Finom,
     Handelsbanken,
     Ing,
     Knab,
@@ -25010,6 +25044,7 @@ impl ConfirmPaymentIntentPaymentMethodDataIdealBank {
             AsnBank => "asn_bank",
             Bunq => "bunq",
             Buut => "buut",
+            Finom => "finom",
             Handelsbanken => "handelsbanken",
             Ing => "ing",
             Knab => "knab",
@@ -25037,6 +25072,7 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodDataIdealBank {
             "asn_bank" => Ok(AsnBank),
             "bunq" => Ok(Bunq),
             "buut" => Ok(Buut),
+            "finom" => Ok(Finom),
             "handelsbanken" => Ok(Handelsbanken),
             "ing" => Ok(Ing),
             "knab" => Ok(Knab),
@@ -34883,6 +34919,11 @@ impl ConfirmPaymentIntent {
         self.inner.expand = Some(expand.into());
         self
     }
+    /// Automations to be run during the PaymentIntent lifecycle
+    pub fn hooks(mut self, hooks: impl Into<AsyncWorkflowsParam>) -> Self {
+        self.inner.hooks = Some(hooks.into());
+        self
+    }
     /// ID of the mandate that's used for this payment.
     pub fn mandate(mut self, mandate: impl Into<String>) -> Self {
         self.inner.mandate = Some(mandate.into());
@@ -35029,6 +35070,8 @@ struct IncrementAuthorizationPaymentIntentBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    hooks: Option<AsyncWorkflowsParam>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     metadata: Option<std::collections::HashMap<String, String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     payment_details: Option<IncrementAuthorizationPaymentIntentPaymentDetails>,
@@ -35045,6 +35088,7 @@ impl IncrementAuthorizationPaymentIntentBuilder {
             application_fee_amount: None,
             description: None,
             expand: None,
+            hooks: None,
             metadata: None,
             payment_details: None,
             statement_descriptor: None,
@@ -35406,6 +35450,11 @@ impl IncrementAuthorizationPaymentIntent {
         self.inner.expand = Some(expand.into());
         self
     }
+    /// Automations to be run during the PaymentIntent lifecycle
+    pub fn hooks(mut self, hooks: impl Into<AsyncWorkflowsParam>) -> Self {
+        self.inner.hooks = Some(hooks.into());
+        self
+    }
     /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
@@ -35624,6 +35673,16 @@ impl AmountDetailsTaxParam {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+pub struct AsyncWorkflowsInputsTaxParam {
+    /// The [TaxCalculation](https://stripe.com/docs/api/tax/calculations) id
+    pub calculation: String,
+}
+impl AsyncWorkflowsInputsTaxParam {
+    pub fn new(calculation: impl Into<String>) -> Self {
+        Self { calculation: calculation.into() }
+    }
+}
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct OnlineParam {
     /// The IP address from which the Mandate was accepted by the customer.
     pub ip_address: String,
@@ -35711,5 +35770,37 @@ pub struct SubscriptionNextBillingParam {
 impl SubscriptionNextBillingParam {
     pub fn new(amount: impl Into<i64>, date: impl Into<String>) -> Self {
         Self { amount: amount.into(), date: date.into() }
+    }
+}
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct AsyncWorkflowsInputsParam {
+    /// Tax arguments for automations
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax: Option<AsyncWorkflowsInputsTaxParam>,
+}
+impl AsyncWorkflowsInputsParam {
+    pub fn new() -> Self {
+        Self { tax: None }
+    }
+}
+impl Default for AsyncWorkflowsInputsParam {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct AsyncWorkflowsParam {
+    /// Arguments passed in automations
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub inputs: Option<AsyncWorkflowsInputsParam>,
+}
+impl AsyncWorkflowsParam {
+    pub fn new() -> Self {
+        Self { inputs: None }
+    }
+}
+impl Default for AsyncWorkflowsParam {
+    fn default() -> Self {
+        Self::new()
     }
 }

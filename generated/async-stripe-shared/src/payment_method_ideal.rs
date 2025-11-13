@@ -3,7 +3,7 @@
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentMethodIdeal {
     /// The customer's bank, if provided.
-    /// Can be one of `abn_amro`, `asn_bank`, `bunq`, `buut`, `handelsbanken`, `ing`, `knab`, `moneyou`, `n26`, `nn`, `rabobank`, `regiobank`, `revolut`, `sns_bank`, `triodos_bank`, `van_lanschot`, or `yoursafe`.
+    /// Can be one of `abn_amro`, `asn_bank`, `bunq`, `buut`, `finom`, `handelsbanken`, `ing`, `knab`, `moneyou`, `n26`, `nn`, `rabobank`, `regiobank`, `revolut`, `sns_bank`, `triodos_bank`, `van_lanschot`, or `yoursafe`.
     pub bank: Option<PaymentMethodIdealBank>,
     /// The Bank Identifier Code of the customer's bank, if the bank was provided.
     pub bic: Option<PaymentMethodIdealBic>,
@@ -105,7 +105,7 @@ const _: () = {
     }
 };
 /// The customer's bank, if provided.
-/// Can be one of `abn_amro`, `asn_bank`, `bunq`, `buut`, `handelsbanken`, `ing`, `knab`, `moneyou`, `n26`, `nn`, `rabobank`, `regiobank`, `revolut`, `sns_bank`, `triodos_bank`, `van_lanschot`, or `yoursafe`.
+/// Can be one of `abn_amro`, `asn_bank`, `bunq`, `buut`, `finom`, `handelsbanken`, `ing`, `knab`, `moneyou`, `n26`, `nn`, `rabobank`, `regiobank`, `revolut`, `sns_bank`, `triodos_bank`, `van_lanschot`, or `yoursafe`.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum PaymentMethodIdealBank {
@@ -113,6 +113,7 @@ pub enum PaymentMethodIdealBank {
     AsnBank,
     Bunq,
     Buut,
+    Finom,
     Handelsbanken,
     Ing,
     Knab,
@@ -137,6 +138,7 @@ impl PaymentMethodIdealBank {
             AsnBank => "asn_bank",
             Bunq => "bunq",
             Buut => "buut",
+            Finom => "finom",
             Handelsbanken => "handelsbanken",
             Ing => "ing",
             Knab => "knab",
@@ -164,6 +166,7 @@ impl std::str::FromStr for PaymentMethodIdealBank {
             "asn_bank" => Ok(AsnBank),
             "bunq" => Ok(Bunq),
             "buut" => Ok(Buut),
+            "finom" => Ok(Finom),
             "handelsbanken" => Ok(Handelsbanken),
             "ing" => Ok(Ing),
             "knab" => Ok(Knab),
@@ -233,6 +236,7 @@ pub enum PaymentMethodIdealBic {
     Bitsnl2a,
     Bunqnl2a,
     Buutnl2a,
+    Fnomnl22,
     Fvlbnl22,
     Handnl2a,
     Ingbnl2a,
@@ -258,6 +262,7 @@ impl PaymentMethodIdealBic {
             Bitsnl2a => "BITSNL2A",
             Bunqnl2a => "BUNQNL2A",
             Buutnl2a => "BUUTNL2A",
+            Fnomnl22 => "FNOMNL22",
             Fvlbnl22 => "FVLBNL22",
             Handnl2a => "HANDNL2A",
             Ingbnl2a => "INGBNL2A",
@@ -286,6 +291,7 @@ impl std::str::FromStr for PaymentMethodIdealBic {
             "BITSNL2A" => Ok(Bitsnl2a),
             "BUNQNL2A" => Ok(Bunqnl2a),
             "BUUTNL2A" => Ok(Buutnl2a),
+            "FNOMNL22" => Ok(Fnomnl22),
             "FVLBNL22" => Ok(Fvlbnl22),
             "HANDNL2A" => Ok(Handnl2a),
             "INGBNL2A" => Ok(Ingbnl2a),

@@ -86,7 +86,7 @@ const _: () = {
             ) = (
                 self.customer_update.take(),
                 self.invoice_history,
-                self.payment_method_update,
+                self.payment_method_update.take(),
                 self.subscription_cancel.take(),
                 self.subscription_update.take(),
             )

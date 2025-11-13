@@ -46,6 +46,7 @@ identity_verification_session = []
 reporting_report_run = []
 reporting_report_type = []
 scheduled_query_run = []
+tax_association = []
 tax_calculation = []
 tax_registration = []
 tax_settings = []
@@ -69,6 +70,7 @@ full = ["apple_pay_domain",
 "reporting_report_run",
 "reporting_report_type",
 "scheduled_query_run",
+"tax_association",
 "tax_calculation",
 "tax_registration",
 "tax_settings",
