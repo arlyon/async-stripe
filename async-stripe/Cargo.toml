@@ -17,7 +17,7 @@ edition.workspace = true
 name = "stripe"
 
 [dependencies]
-hyper = { version = "1.5.2", default-features = false, features = ["http1", "http2", "client"], optional = true }
+hyper = { version = "1.8.1", default-features = false, features = ["http1", "http2", "client"], optional = true }
 hyper-util = {version = "0.1.10", features = ["client-legacy", "tokio", "http1", "http2"], optional = true}
 http-body-util = { version = "0.1.2", optional = true }
 hyper-tls = { version = "0.6", optional = true }
@@ -53,4 +53,4 @@ uuid = ["async-stripe-client-core/uuid"]
 [dev-dependencies]
 serde.workspace = true
 serde_json.workspace = true
-httpmock = { version = "0.7.0", default-features = false }
+httpmock = { version = "0.8.2", default-features = false }
