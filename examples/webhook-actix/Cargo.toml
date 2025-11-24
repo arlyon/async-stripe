@@ -5,7 +5,7 @@ edition = "2024"
 publish = false
 
 [dependencies]
-actix-web = "4.2.1"
+actix-web = "4.12.0"
 async-stripe-webhook = { path = "../../async-stripe-webhook", features = ["async-stripe-checkout"] }
 async-stripe-checkout = { path = "../../generated/async-stripe-checkout" }
 async-stripe-connect = { path = "../../generated/async-stripe-connect" }
