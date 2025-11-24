@@ -134,6 +134,7 @@ impl Webhook {
         self.parse_payload(payload)
     }
 
+    #[tracing::instrument]
     fn parse_payload(self, payload: &str) -> Result<Event, WebhookError> {
         let base_evt: stripe_shared::Event = miniserde::json::from_str(payload)
             .map_err(|_| WebhookError::BadParse("could not deserialize webhook event".into()))?;
@@ -141,6 +142,21 @@ impl Webhook {
         let event_obj =
             EventObject::from_raw_data(base_evt.type_.as_str(), base_evt.data.object)
                 .ok_or_else(|| WebhookError::BadParse("could not parse event object".into()))?;
+
+        // Check for API version mismatch
+        let api_version = base_evt.api_version.as_ref().and_then(|s| ApiVersion::from_str(s).ok());
+
+        if let Some(event_version) = &api_version {
+            if event_version != &stripe_shared::version::VERSION {
+                tracing::warn!(
+                    event_version=?event_version,
+                    sdk_version=?stripe_shared::version::VERSION,
+                    "API version mismatch: SDK compiled with {:?}, but event received with {:?}",
+                    stripe_shared::version::VERSION,
+                    event_version
+                );
+            }
+        }
 
         Ok(Event {
             account: base_evt.account,
