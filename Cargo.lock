@@ -514,6 +514,7 @@ dependencies = [
  "serde",
  "serde_json",
  "smol_str",
+ "tracing",
 ]
 
 [[package]]
@@ -527,6 +528,7 @@ dependencies = [
  "serde",
  "serde_json",
  "smol_str",
+ "tracing",
 ]
 
 [[package]]
@@ -557,6 +559,7 @@ dependencies = [
  "serde",
  "serde_json",
  "smol_str",
+ "tracing",
 ]
 
 [[package]]
@@ -570,6 +573,7 @@ dependencies = [
  "serde",
  "serde_json",
  "smol_str",
+ "tracing",
 ]
 
 [[package]]
@@ -583,6 +587,7 @@ dependencies = [
  "serde",
  "serde_json",
  "smol_str",
+ "tracing",
 ]
 
 [[package]]
@@ -596,6 +601,7 @@ dependencies = [
  "serde",
  "serde_json",
  "smol_str",
+ "tracing",
 ]
 
 [[package]]
@@ -609,6 +615,7 @@ dependencies = [
  "serde",
  "serde_json",
  "smol_str",
+ "tracing",
 ]
 
 [[package]]
@@ -622,6 +629,7 @@ dependencies = [
  "serde",
  "serde_json",
  "smol_str",
+ "tracing",
 ]
 
 [[package]]
@@ -635,6 +643,7 @@ dependencies = [
  "serde",
  "serde_json",
  "smol_str",
+ "tracing",
 ]
 
 [[package]]
@@ -646,6 +655,7 @@ dependencies = [
  "serde",
  "serde_json",
  "smol_str",
+ "tracing",
 ]
 
 [[package]]
@@ -659,6 +669,7 @@ dependencies = [
  "serde",
  "serde_json",
  "smol_str",
+ "tracing",
 ]
 
 [[package]]
@@ -702,6 +713,7 @@ dependencies = [
  "serde",
  "serde_json",
  "smol_str",
+ "tracing",
 ]
 
 [[package]]
