@@ -16,7 +16,7 @@ fn enums_basic() {
     );
     assert_eq!(serde_json::from_str::<AccountType>(r#""express""#).unwrap(), AccountType::Express);
     assert_eq!(AccountType::Express.to_string(), "express");
-    assert!(AccountType::from_str("unknown").is_err());
+    assert_eq!(AccountType::from_str("unknown"), Ok(AccountType::Unknown(String::from("unknown"))));
 }
 
 #[test]
