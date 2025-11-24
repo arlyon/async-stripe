@@ -39,10 +39,10 @@ pub fn handle_webhook(req: HttpRequest, payload: web::Bytes) -> Result<(), Webho
     if let Ok(event) = Webhook::construct_event(payload_str, stripe_signature, "whsec_xxxxx") {
         match event.data.object {
             EventObject::AccountUpdated(account) => {
-                handle_account_updated(account)?;
+                handle_account_updated(*account)?;
             }
             EventObject::CheckoutSessionCompleted(session) => {
-                handle_checkout_session(session)?;
+                handle_checkout_session(*session)?;
             }
             _ => {
                 println!("Unknown event encountered in webhook: {:?}", event.type_);

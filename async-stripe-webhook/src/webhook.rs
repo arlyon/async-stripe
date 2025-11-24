@@ -340,10 +340,10 @@ mod tests {
             "status": "status",
         });
         let result = parse_mock_webhook_event(EventType::AccountExternalAccountCreated, object);
-        let EventObject::AccountExternalAccountCreated(AccountExternalAccountCreated::BankAccount(
-            bank_account,
-        )) = result
-        else {
+        let EventObject::AccountExternalAccountCreated(bank_account) = result else {
+            panic!("unexpected type parsed");
+        };
+        let AccountExternalAccountCreated::BankAccount(bank_account) = *bank_account else {
             panic!("unexpected type parsed");
         };
         assert_eq!(bank_account.id.as_str(), "ba_123");
