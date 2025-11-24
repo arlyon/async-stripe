@@ -192,7 +192,7 @@ mod tests {
     fn test_uuid_idempotency() {
         use uuid::Uuid;
         let strategy = RequestStrategy::Retry(3);
-        assert!(Uuid::parse_str(&strategy.get_key().unwrap().as_str()).is_ok());
+        assert!(Uuid::parse_str(strategy.get_key().unwrap().as_str()).is_ok());
     }
 
     #[test]

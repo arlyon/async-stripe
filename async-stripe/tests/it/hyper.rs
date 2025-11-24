@@ -148,7 +148,7 @@ async fn nice_serde_error() {
 
     match res {
         Err(StripeError::JSONDeserialize(_)) => {}
-        _ => panic!("Expected stripe error {:?}", res),
+        _ => panic!("Expected stripe error {res:?}"),
     }
 }
 
@@ -234,7 +234,7 @@ async fn user_error_transfers() {
                 )))
             );
         }
-        _ => panic!("Expected stripe error, got {:?}", res),
+        _ => panic!("Expected stripe error, got {res:?}"),
     }
 }
 
