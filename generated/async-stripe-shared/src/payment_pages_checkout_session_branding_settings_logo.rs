@@ -76,7 +76,7 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (Some(file), Some(type_), Some(url)) =
-                (self.file.take(), self.type_, self.url.take())
+                (self.file.take(), self.type_.take(), self.url.take())
             else {
                 return None;
             };
@@ -118,29 +118,40 @@ const _: () = {
     }
 };
 /// The type of image for the logo. Must be one of `file` or `url`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PaymentPagesCheckoutSessionBrandingSettingsLogoType {
     File,
     Url,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl PaymentPagesCheckoutSessionBrandingSettingsLogoType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PaymentPagesCheckoutSessionBrandingSettingsLogoType::*;
         match self {
             File => "file",
             Url => "url",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for PaymentPagesCheckoutSessionBrandingSettingsLogoType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentPagesCheckoutSessionBrandingSettingsLogoType::*;
         match s {
             "file" => Ok(File),
             "url" => Ok(Url),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PaymentPagesCheckoutSessionBrandingSettingsLogoType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -174,8 +185,7 @@ impl miniserde::de::Visitor for crate::Place<PaymentPagesCheckoutSessionBranding
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(
-            PaymentPagesCheckoutSessionBrandingSettingsLogoType::from_str(s)
-                .map_err(|_| miniserde::Error)?,
+            PaymentPagesCheckoutSessionBrandingSettingsLogoType::from_str(s).expect("infallible"),
         );
         Ok(())
     }
@@ -187,10 +197,6 @@ impl<'de> serde::Deserialize<'de> for PaymentPagesCheckoutSessionBrandingSetting
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for PaymentPagesCheckoutSessionBrandingSettingsLogoType",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

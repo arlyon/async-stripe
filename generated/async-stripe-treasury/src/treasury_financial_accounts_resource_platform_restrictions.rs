@@ -1,5 +1,5 @@
 /// Restrictions that a Connect Platform has placed on this FinancialAccount.
-#[derive(Copy, Clone, Debug)]
+#[derive(Clone, Debug)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TreasuryFinancialAccountsResourcePlatformRestrictions {
@@ -69,7 +69,7 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (Some(inbound_flows), Some(outbound_flows)) =
-                (self.inbound_flows, self.outbound_flows)
+                (self.inbound_flows.take(), self.outbound_flows.take())
             else {
                 return None;
             };
@@ -111,29 +111,40 @@ const _: () = {
     }
 };
 /// Restricts all inbound money movement.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum TreasuryFinancialAccountsResourcePlatformRestrictionsInboundFlows {
     Restricted,
     Unrestricted,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl TreasuryFinancialAccountsResourcePlatformRestrictionsInboundFlows {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use TreasuryFinancialAccountsResourcePlatformRestrictionsInboundFlows::*;
         match self {
             Restricted => "restricted",
             Unrestricted => "unrestricted",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for TreasuryFinancialAccountsResourcePlatformRestrictionsInboundFlows {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TreasuryFinancialAccountsResourcePlatformRestrictionsInboundFlows::*;
         match s {
             "restricted" => Ok(Restricted),
             "unrestricted" => Ok(Unrestricted),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "TreasuryFinancialAccountsResourcePlatformRestrictionsInboundFlows"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -170,7 +181,7 @@ impl miniserde::de::Visitor
         use std::str::FromStr;
         self.out = Some(
             TreasuryFinancialAccountsResourcePlatformRestrictionsInboundFlows::from_str(s)
-                .map_err(|_| miniserde::Error)?,
+                .expect("infallible"),
         );
         Ok(())
     }
@@ -186,33 +197,44 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for TreasuryFinancialAccountsResourcePlatformRestrictionsInboundFlows"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Restricts all outbound money movement.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum TreasuryFinancialAccountsResourcePlatformRestrictionsOutboundFlows {
     Restricted,
     Unrestricted,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl TreasuryFinancialAccountsResourcePlatformRestrictionsOutboundFlows {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use TreasuryFinancialAccountsResourcePlatformRestrictionsOutboundFlows::*;
         match self {
             Restricted => "restricted",
             Unrestricted => "unrestricted",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for TreasuryFinancialAccountsResourcePlatformRestrictionsOutboundFlows {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TreasuryFinancialAccountsResourcePlatformRestrictionsOutboundFlows::*;
         match s {
             "restricted" => Ok(Restricted),
             "unrestricted" => Ok(Unrestricted),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "TreasuryFinancialAccountsResourcePlatformRestrictionsOutboundFlows"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -249,7 +271,7 @@ impl miniserde::de::Visitor
         use std::str::FromStr;
         self.out = Some(
             TreasuryFinancialAccountsResourcePlatformRestrictionsOutboundFlows::from_str(s)
-                .map_err(|_| miniserde::Error)?,
+                .expect("infallible"),
         );
         Ok(())
     }
@@ -265,6 +287,6 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for TreasuryFinancialAccountsResourcePlatformRestrictionsOutboundFlows"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

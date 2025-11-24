@@ -139,7 +139,7 @@ const _: () = {
             ) = (
                 self.action.take(),
                 self.device_sw_version.take(),
-                self.device_type,
+                self.device_type.take(),
                 self.id.take(),
                 self.ip_address.take(),
                 self.label.take(),
@@ -148,7 +148,7 @@ const _: () = {
                 self.location.take(),
                 self.metadata.take(),
                 self.serial_number.take(),
-                self.status,
+                self.status.take(),
             )
             else {
                 return None;
@@ -245,7 +245,8 @@ impl stripe_types::Object for TerminalReader {
     }
 }
 stripe_types::def_id!(TerminalReaderId);
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum TerminalReaderDeviceType {
     BbposChipper2x,
     BbposWisepad3,
@@ -256,9 +257,11 @@ pub enum TerminalReaderDeviceType {
     StripeM2,
     StripeS700,
     VerifoneP400,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl TerminalReaderDeviceType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use TerminalReaderDeviceType::*;
         match self {
             BbposChipper2x => "bbpos_chipper2x",
@@ -270,12 +273,13 @@ impl TerminalReaderDeviceType {
             StripeM2 => "stripe_m2",
             StripeS700 => "stripe_s700",
             VerifoneP400 => "verifone_P400",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for TerminalReaderDeviceType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TerminalReaderDeviceType::*;
         match s {
@@ -288,7 +292,10 @@ impl std::str::FromStr for TerminalReaderDeviceType {
             "stripe_m2" => Ok(StripeM2),
             "stripe_s700" => Ok(StripeS700),
             "verifone_P400" => Ok(VerifoneP400),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "TerminalReaderDeviceType");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -320,7 +327,7 @@ impl miniserde::Deserialize for TerminalReaderDeviceType {
 impl miniserde::de::Visitor for crate::Place<TerminalReaderDeviceType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(TerminalReaderDeviceType::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(TerminalReaderDeviceType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -331,33 +338,39 @@ impl<'de> serde::Deserialize<'de> for TerminalReaderDeviceType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for TerminalReaderDeviceType"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum TerminalReaderStatus {
     Offline,
     Online,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl TerminalReaderStatus {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use TerminalReaderStatus::*;
         match self {
             Offline => "offline",
             Online => "online",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for TerminalReaderStatus {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TerminalReaderStatus::*;
         match s {
             "offline" => Ok(Offline),
             "online" => Ok(Online),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "TerminalReaderStatus");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -389,7 +402,7 @@ impl miniserde::Deserialize for TerminalReaderStatus {
 impl miniserde::de::Visitor for crate::Place<TerminalReaderStatus> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(TerminalReaderStatus::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(TerminalReaderStatus::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -400,7 +413,6 @@ impl<'de> serde::Deserialize<'de> for TerminalReaderStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for TerminalReaderStatus"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

@@ -173,17 +173,17 @@ const _: () = {
                 Some(statement_descriptor_suffix_kana),
                 Some(statement_descriptor_suffix_kanji),
             ) = (
-                self.capture_method,
+                self.capture_method.take(),
                 self.installments.take(),
                 self.mandate_options.take(),
                 self.network,
-                self.request_extended_authorization,
-                self.request_incremental_authorization,
-                self.request_multicapture,
-                self.request_overcapture,
-                self.request_three_d_secure,
+                self.request_extended_authorization.take(),
+                self.request_incremental_authorization.take(),
+                self.request_multicapture.take(),
+                self.request_overcapture.take(),
+                self.request_three_d_secure.take(),
                 self.require_cvc_recollection,
-                self.setup_future_usage,
+                self.setup_future_usage.take(),
                 self.statement_descriptor_suffix_kana.take(),
                 self.statement_descriptor_suffix_kanji.take(),
             )
@@ -264,26 +264,37 @@ const _: () = {
     }
 };
 /// Controls when the funds will be captured from the customer's account.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PaymentIntentPaymentMethodOptionsCardCaptureMethod {
     Manual,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl PaymentIntentPaymentMethodOptionsCardCaptureMethod {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PaymentIntentPaymentMethodOptionsCardCaptureMethod::*;
         match self {
             Manual => "manual",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for PaymentIntentPaymentMethodOptionsCardCaptureMethod {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentIntentPaymentMethodOptionsCardCaptureMethod::*;
         match s {
             "manual" => Ok(Manual),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PaymentIntentPaymentMethodOptionsCardCaptureMethod"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -317,8 +328,7 @@ impl miniserde::de::Visitor for crate::Place<PaymentIntentPaymentMethodOptionsCa
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(
-            PaymentIntentPaymentMethodOptionsCardCaptureMethod::from_str(s)
-                .map_err(|_| miniserde::Error)?,
+            PaymentIntentPaymentMethodOptionsCardCaptureMethod::from_str(s).expect("infallible"),
         );
         Ok(())
     }
@@ -330,11 +340,7 @@ impl<'de> serde::Deserialize<'de> for PaymentIntentPaymentMethodOptionsCardCaptu
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for PaymentIntentPaymentMethodOptionsCardCaptureMethod",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Selected network to process this payment intent on.
@@ -450,29 +456,40 @@ impl<'de> serde::Deserialize<'de> for PaymentIntentPaymentMethodOptionsCardNetwo
     }
 }
 /// Request ability to [capture beyond the standard authorization validity window](https://stripe.com/docs/payments/extended-authorization) for this PaymentIntent.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PaymentIntentPaymentMethodOptionsCardRequestExtendedAuthorization {
     IfAvailable,
     Never,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl PaymentIntentPaymentMethodOptionsCardRequestExtendedAuthorization {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PaymentIntentPaymentMethodOptionsCardRequestExtendedAuthorization::*;
         match self {
             IfAvailable => "if_available",
             Never => "never",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for PaymentIntentPaymentMethodOptionsCardRequestExtendedAuthorization {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentIntentPaymentMethodOptionsCardRequestExtendedAuthorization::*;
         match s {
             "if_available" => Ok(IfAvailable),
             "never" => Ok(Never),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PaymentIntentPaymentMethodOptionsCardRequestExtendedAuthorization"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -509,7 +526,7 @@ impl miniserde::de::Visitor
         use std::str::FromStr;
         self.out = Some(
             PaymentIntentPaymentMethodOptionsCardRequestExtendedAuthorization::from_str(s)
-                .map_err(|_| miniserde::Error)?,
+                .expect("infallible"),
         );
         Ok(())
     }
@@ -525,33 +542,44 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for PaymentIntentPaymentMethodOptionsCardRequestExtendedAuthorization"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Request ability to [increment the authorization](https://stripe.com/docs/payments/incremental-authorization) for this PaymentIntent.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PaymentIntentPaymentMethodOptionsCardRequestIncrementalAuthorization {
     IfAvailable,
     Never,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl PaymentIntentPaymentMethodOptionsCardRequestIncrementalAuthorization {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PaymentIntentPaymentMethodOptionsCardRequestIncrementalAuthorization::*;
         match self {
             IfAvailable => "if_available",
             Never => "never",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for PaymentIntentPaymentMethodOptionsCardRequestIncrementalAuthorization {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentIntentPaymentMethodOptionsCardRequestIncrementalAuthorization::*;
         match s {
             "if_available" => Ok(IfAvailable),
             "never" => Ok(Never),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PaymentIntentPaymentMethodOptionsCardRequestIncrementalAuthorization"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -590,7 +618,7 @@ impl miniserde::de::Visitor
         use std::str::FromStr;
         self.out = Some(
             PaymentIntentPaymentMethodOptionsCardRequestIncrementalAuthorization::from_str(s)
-                .map_err(|_| miniserde::Error)?,
+                .expect("infallible"),
         );
         Ok(())
     }
@@ -606,33 +634,44 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for PaymentIntentPaymentMethodOptionsCardRequestIncrementalAuthorization"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Request ability to make [multiple captures](https://stripe.com/docs/payments/multicapture) for this PaymentIntent.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PaymentIntentPaymentMethodOptionsCardRequestMulticapture {
     IfAvailable,
     Never,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl PaymentIntentPaymentMethodOptionsCardRequestMulticapture {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PaymentIntentPaymentMethodOptionsCardRequestMulticapture::*;
         match self {
             IfAvailable => "if_available",
             Never => "never",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for PaymentIntentPaymentMethodOptionsCardRequestMulticapture {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentIntentPaymentMethodOptionsCardRequestMulticapture::*;
         match s {
             "if_available" => Ok(IfAvailable),
             "never" => Ok(Never),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PaymentIntentPaymentMethodOptionsCardRequestMulticapture"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -669,7 +708,7 @@ impl miniserde::de::Visitor
         use std::str::FromStr;
         self.out = Some(
             PaymentIntentPaymentMethodOptionsCardRequestMulticapture::from_str(s)
-                .map_err(|_| miniserde::Error)?,
+                .expect("infallible"),
         );
         Ok(())
     }
@@ -683,37 +722,44 @@ impl<'de> serde::Deserialize<'de> for PaymentIntentPaymentMethodOptionsCardReque
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for PaymentIntentPaymentMethodOptionsCardRequestMulticapture",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Request ability to [overcapture](https://stripe.com/docs/payments/overcapture) for this PaymentIntent.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PaymentIntentPaymentMethodOptionsCardRequestOvercapture {
     IfAvailable,
     Never,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl PaymentIntentPaymentMethodOptionsCardRequestOvercapture {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PaymentIntentPaymentMethodOptionsCardRequestOvercapture::*;
         match self {
             IfAvailable => "if_available",
             Never => "never",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for PaymentIntentPaymentMethodOptionsCardRequestOvercapture {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentIntentPaymentMethodOptionsCardRequestOvercapture::*;
         match s {
             "if_available" => Ok(IfAvailable),
             "never" => Ok(Never),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PaymentIntentPaymentMethodOptionsCardRequestOvercapture"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -750,7 +796,7 @@ impl miniserde::de::Visitor
         use std::str::FromStr;
         self.out = Some(
             PaymentIntentPaymentMethodOptionsCardRequestOvercapture::from_str(s)
-                .map_err(|_| miniserde::Error)?,
+                .expect("infallible"),
         );
         Ok(())
     }
@@ -762,43 +808,50 @@ impl<'de> serde::Deserialize<'de> for PaymentIntentPaymentMethodOptionsCardReque
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for PaymentIntentPaymentMethodOptionsCardRequestOvercapture",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// We strongly recommend that you rely on our SCA Engine to automatically prompt your customers for authentication based on risk level and [other requirements](https://stripe.com/docs/strong-customer-authentication).
 /// However, if you wish to request 3D Secure based on logic from your own fraud engine, provide this option.
 /// If not provided, this value defaults to `automatic`.
 /// Read our guide on [manually requesting 3D Secure](https://stripe.com/docs/payments/3d-secure/authentication-flow#manual-three-ds) for more information on how this configuration interacts with Radar and our SCA Engine.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PaymentIntentPaymentMethodOptionsCardRequestThreeDSecure {
     Any,
     Automatic,
     Challenge,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl PaymentIntentPaymentMethodOptionsCardRequestThreeDSecure {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PaymentIntentPaymentMethodOptionsCardRequestThreeDSecure::*;
         match self {
             Any => "any",
             Automatic => "automatic",
             Challenge => "challenge",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for PaymentIntentPaymentMethodOptionsCardRequestThreeDSecure {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentIntentPaymentMethodOptionsCardRequestThreeDSecure::*;
         match s {
             "any" => Ok(Any),
             "automatic" => Ok(Automatic),
             "challenge" => Ok(Challenge),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PaymentIntentPaymentMethodOptionsCardRequestThreeDSecure"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -835,7 +888,7 @@ impl miniserde::de::Visitor
         use std::str::FromStr;
         self.out = Some(
             PaymentIntentPaymentMethodOptionsCardRequestThreeDSecure::from_str(s)
-                .map_err(|_| miniserde::Error)?,
+                .expect("infallible"),
         );
         Ok(())
     }
@@ -849,11 +902,7 @@ impl<'de> serde::Deserialize<'de> for PaymentIntentPaymentMethodOptionsCardReque
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for PaymentIntentPaymentMethodOptionsCardRequestThreeDSecure",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -864,32 +913,43 @@ impl<'de> serde::Deserialize<'de> for PaymentIntentPaymentMethodOptionsCardReque
 /// If the payment method is `card_present` and isn't a digital wallet, Stripe creates and attaches a [generated_card](/api/charges/object#charge_object-payment_method_details-card_present-generated_card) payment method representing the card to the Customer instead.
 ///
 /// When processing card payments, Stripe uses `setup_future_usage` to help you comply with regional legislation and network rules, such as [SCA](/strong-customer-authentication).
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PaymentIntentPaymentMethodOptionsCardSetupFutureUsage {
     None,
     OffSession,
     OnSession,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl PaymentIntentPaymentMethodOptionsCardSetupFutureUsage {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PaymentIntentPaymentMethodOptionsCardSetupFutureUsage::*;
         match self {
             None => "none",
             OffSession => "off_session",
             OnSession => "on_session",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for PaymentIntentPaymentMethodOptionsCardSetupFutureUsage {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentIntentPaymentMethodOptionsCardSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
             "on_session" => Ok(OnSession),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PaymentIntentPaymentMethodOptionsCardSetupFutureUsage"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -925,8 +985,7 @@ impl miniserde::de::Visitor
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(
-            PaymentIntentPaymentMethodOptionsCardSetupFutureUsage::from_str(s)
-                .map_err(|_| miniserde::Error)?,
+            PaymentIntentPaymentMethodOptionsCardSetupFutureUsage::from_str(s).expect("infallible"),
         );
         Ok(())
     }
@@ -938,10 +997,6 @@ impl<'de> serde::Deserialize<'de> for PaymentIntentPaymentMethodOptionsCardSetup
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for PaymentIntentPaymentMethodOptionsCardSetupFutureUsage",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

@@ -282,32 +282,43 @@ impl Default for CreateIdentityVerificationSessionOptionsDocument {
 }
 /// Array of strings of allowed identity document types.
 /// If the provided identity document isn’t one of the allowed types, the verification check will fail with a document_type_not_allowed error code.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateIdentityVerificationSessionOptionsDocumentAllowedTypes {
     DrivingLicense,
     IdCard,
     Passport,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateIdentityVerificationSessionOptionsDocumentAllowedTypes {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateIdentityVerificationSessionOptionsDocumentAllowedTypes::*;
         match self {
             DrivingLicense => "driving_license",
             IdCard => "id_card",
             Passport => "passport",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateIdentityVerificationSessionOptionsDocumentAllowedTypes {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateIdentityVerificationSessionOptionsDocumentAllowedTypes::*;
         match s {
             "driving_license" => Ok(DrivingLicense),
             "id_card" => Ok(IdCard),
             "passport" => Ok(Passport),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateIdentityVerificationSessionOptionsDocumentAllowedTypes"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -335,11 +346,7 @@ impl<'de> serde::Deserialize<'de> for CreateIdentityVerificationSessionOptionsDo
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for CreateIdentityVerificationSessionOptionsDocumentAllowedTypes",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Tokens referencing a Person resource and it's associated account.
@@ -358,29 +365,40 @@ impl CreateIdentityVerificationSessionRelatedPerson {
 }
 /// The type of [verification check](https://stripe.com/docs/identity/verification-checks) to be performed.
 /// You must provide a `type` if not passing `verification_flow`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateIdentityVerificationSessionType {
     Document,
     IdNumber,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateIdentityVerificationSessionType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateIdentityVerificationSessionType::*;
         match self {
             Document => "document",
             IdNumber => "id_number",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateIdentityVerificationSessionType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateIdentityVerificationSessionType::*;
         match s {
             "document" => Ok(Document),
             "id_number" => Ok(IdNumber),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateIdentityVerificationSessionType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -408,9 +426,7 @@ impl<'de> serde::Deserialize<'de> for CreateIdentityVerificationSessionType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateIdentityVerificationSessionType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Creates a VerificationSession object.
@@ -593,32 +609,43 @@ impl Default for UpdateIdentityVerificationSessionOptionsDocument {
 }
 /// Array of strings of allowed identity document types.
 /// If the provided identity document isn’t one of the allowed types, the verification check will fail with a document_type_not_allowed error code.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdateIdentityVerificationSessionOptionsDocumentAllowedTypes {
     DrivingLicense,
     IdCard,
     Passport,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdateIdentityVerificationSessionOptionsDocumentAllowedTypes {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdateIdentityVerificationSessionOptionsDocumentAllowedTypes::*;
         match self {
             DrivingLicense => "driving_license",
             IdCard => "id_card",
             Passport => "passport",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for UpdateIdentityVerificationSessionOptionsDocumentAllowedTypes {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateIdentityVerificationSessionOptionsDocumentAllowedTypes::*;
         match s {
             "driving_license" => Ok(DrivingLicense),
             "id_card" => Ok(IdCard),
             "passport" => Ok(Passport),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdateIdentityVerificationSessionOptionsDocumentAllowedTypes"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -646,37 +673,44 @@ impl<'de> serde::Deserialize<'de> for UpdateIdentityVerificationSessionOptionsDo
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for UpdateIdentityVerificationSessionOptionsDocumentAllowedTypes",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The type of [verification check](https://stripe.com/docs/identity/verification-checks) to be performed.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdateIdentityVerificationSessionType {
     Document,
     IdNumber,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdateIdentityVerificationSessionType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdateIdentityVerificationSessionType::*;
         match self {
             Document => "document",
             IdNumber => "id_number",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for UpdateIdentityVerificationSessionType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateIdentityVerificationSessionType::*;
         match s {
             "document" => Ok(Document),
             "id_number" => Ok(IdNumber),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdateIdentityVerificationSessionType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -704,9 +738,7 @@ impl<'de> serde::Deserialize<'de> for UpdateIdentityVerificationSessionType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for UpdateIdentityVerificationSessionType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Updates a VerificationSession object.

@@ -100,7 +100,7 @@ const _: () = {
                 self.livemode,
                 self.locations.take(),
                 self.name.take(),
-                self.removal_pathway,
+                self.removal_pathway.take(),
             )
             else {
                 return None;
@@ -162,32 +162,43 @@ impl serde::Serialize for ClimateSupplier {
     }
 }
 /// The scientific pathway used for carbon removal.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum ClimateSupplierRemovalPathway {
     BiomassCarbonRemovalAndStorage,
     DirectAirCapture,
     EnhancedWeathering,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl ClimateSupplierRemovalPathway {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use ClimateSupplierRemovalPathway::*;
         match self {
             BiomassCarbonRemovalAndStorage => "biomass_carbon_removal_and_storage",
             DirectAirCapture => "direct_air_capture",
             EnhancedWeathering => "enhanced_weathering",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for ClimateSupplierRemovalPathway {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ClimateSupplierRemovalPathway::*;
         match s {
             "biomass_carbon_removal_and_storage" => Ok(BiomassCarbonRemovalAndStorage),
             "direct_air_capture" => Ok(DirectAirCapture),
             "enhanced_weathering" => Ok(EnhancedWeathering),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "ClimateSupplierRemovalPathway"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -220,7 +231,7 @@ impl miniserde::Deserialize for ClimateSupplierRemovalPathway {
 impl miniserde::de::Visitor for crate::Place<ClimateSupplierRemovalPathway> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(ClimateSupplierRemovalPathway::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(ClimateSupplierRemovalPathway::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -231,9 +242,7 @@ impl<'de> serde::Deserialize<'de> for ClimateSupplierRemovalPathway {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for ClimateSupplierRemovalPathway")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 impl stripe_types::Object for ClimateSupplier {

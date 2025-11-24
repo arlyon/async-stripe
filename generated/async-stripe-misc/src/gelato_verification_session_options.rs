@@ -77,9 +77,13 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(document), Some(email), Some(id_number), Some(matching), Some(phone)) =
-                (self.document.take(), self.email, self.id_number, self.matching, self.phone)
-            else {
+            let (Some(document), Some(email), Some(id_number), Some(matching), Some(phone)) = (
+                self.document.take(),
+                self.email,
+                self.id_number,
+                self.matching.take(),
+                self.phone,
+            ) else {
                 return None;
             };
             Some(Self::Out { document, email, id_number, matching, phone })

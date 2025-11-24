@@ -114,7 +114,7 @@ const _: () = {
                 self.outbound_transfer.take(),
                 self.received_credit.take(),
                 self.received_debit.take(),
-                self.type_,
+                self.type_.take(),
             )
             else {
                 return None;
@@ -175,7 +175,8 @@ const _: () = {
     }
 };
 /// Type of the flow that created the Transaction. Set to the same value as `flow_type`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum TreasuryTransactionsResourceFlowDetailsType {
     CreditReversal,
     DebitReversal,
@@ -186,9 +187,11 @@ pub enum TreasuryTransactionsResourceFlowDetailsType {
     OutboundTransfer,
     ReceivedCredit,
     ReceivedDebit,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl TreasuryTransactionsResourceFlowDetailsType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use TreasuryTransactionsResourceFlowDetailsType::*;
         match self {
             CreditReversal => "credit_reversal",
@@ -200,12 +203,13 @@ impl TreasuryTransactionsResourceFlowDetailsType {
             OutboundTransfer => "outbound_transfer",
             ReceivedCredit => "received_credit",
             ReceivedDebit => "received_debit",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for TreasuryTransactionsResourceFlowDetailsType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TreasuryTransactionsResourceFlowDetailsType::*;
         match s {
@@ -218,7 +222,14 @@ impl std::str::FromStr for TreasuryTransactionsResourceFlowDetailsType {
             "outbound_transfer" => Ok(OutboundTransfer),
             "received_credit" => Ok(ReceivedCredit),
             "received_debit" => Ok(ReceivedDebit),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "TreasuryTransactionsResourceFlowDetailsType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -251,10 +262,8 @@ impl miniserde::Deserialize for TreasuryTransactionsResourceFlowDetailsType {
 impl miniserde::de::Visitor for crate::Place<TreasuryTransactionsResourceFlowDetailsType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            TreasuryTransactionsResourceFlowDetailsType::from_str(s)
-                .map_err(|_| miniserde::Error)?,
-        );
+        self.out =
+            Some(TreasuryTransactionsResourceFlowDetailsType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -265,10 +274,6 @@ impl<'de> serde::Deserialize<'de> for TreasuryTransactionsResourceFlowDetailsTyp
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for TreasuryTransactionsResourceFlowDetailsType",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

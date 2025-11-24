@@ -123,27 +123,31 @@ const _: () = {
     }
 };
 /// The list of permissions to request. The `payment_method` permission must be included.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPermissions {
     Balances,
     Ownership,
     PaymentMethod,
     Transactions,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPermissions {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPermissions::*;
         match self {
             Balances => "balances",
             Ownership => "ownership",
             PaymentMethod => "payment_method",
             Transactions => "transactions",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPermissions {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPermissions::*;
         match s {
@@ -151,7 +155,14 @@ impl std::str::FromStr for InvoicePaymentMethodOptionsUsBankAccountLinkedAccount
             "ownership" => Ok(Ownership),
             "payment_method" => Ok(PaymentMethod),
             "transactions" => Ok(Transactions),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPermissions"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -190,7 +201,7 @@ impl miniserde::de::Visitor
         use std::str::FromStr;
         self.out = Some(
             InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPermissions::from_str(s)
-                .map_err(|_| miniserde::Error)?,
+                .expect("infallible"),
         );
         Ok(())
     }
@@ -206,36 +217,47 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPermissions"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Data features requested to be retrieved upon account creation.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPrefetch {
     Balances,
     Ownership,
     Transactions,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPrefetch {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPrefetch::*;
         match self {
             Balances => "balances",
             Ownership => "ownership",
             Transactions => "transactions",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPrefetch {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPrefetch::*;
         match s {
             "balances" => Ok(Balances),
             "ownership" => Ok(Ownership),
             "transactions" => Ok(Transactions),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPrefetch"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -274,7 +296,7 @@ impl miniserde::de::Visitor
         use std::str::FromStr;
         self.out = Some(
             InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPrefetch::from_str(s)
-                .map_err(|_| miniserde::Error)?,
+                .expect("infallible"),
         );
         Ok(())
     }
@@ -290,6 +312,6 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptionsPrefetch"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

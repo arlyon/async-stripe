@@ -1,4 +1,4 @@
-#[derive(Copy, Clone, Debug)]
+#[derive(Clone, Debug)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentLinksResourceConsentCollection {
@@ -77,9 +77,11 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(payment_method_reuse_agreement), Some(promotions), Some(terms_of_service)) =
-                (self.payment_method_reuse_agreement, self.promotions, self.terms_of_service)
-            else {
+            let (Some(payment_method_reuse_agreement), Some(promotions), Some(terms_of_service)) = (
+                self.payment_method_reuse_agreement.take(),
+                self.promotions.take(),
+                self.terms_of_service.take(),
+            ) else {
                 return None;
             };
             Some(Self::Out { payment_method_reuse_agreement, promotions, terms_of_service })
@@ -122,29 +124,40 @@ const _: () = {
     }
 };
 /// If set to `auto`, enables the collection of customer consent for promotional communications.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PaymentLinksResourceConsentCollectionPromotions {
     Auto,
     None,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl PaymentLinksResourceConsentCollectionPromotions {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PaymentLinksResourceConsentCollectionPromotions::*;
         match self {
             Auto => "auto",
             None => "none",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for PaymentLinksResourceConsentCollectionPromotions {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentLinksResourceConsentCollectionPromotions::*;
         match s {
             "auto" => Ok(Auto),
             "none" => Ok(None),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PaymentLinksResourceConsentCollectionPromotions"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -177,10 +190,8 @@ impl miniserde::Deserialize for PaymentLinksResourceConsentCollectionPromotions 
 impl miniserde::de::Visitor for crate::Place<PaymentLinksResourceConsentCollectionPromotions> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            PaymentLinksResourceConsentCollectionPromotions::from_str(s)
-                .map_err(|_| miniserde::Error)?,
-        );
+        self.out =
+            Some(PaymentLinksResourceConsentCollectionPromotions::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -191,38 +202,45 @@ impl<'de> serde::Deserialize<'de> for PaymentLinksResourceConsentCollectionPromo
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for PaymentLinksResourceConsentCollectionPromotions",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// If set to `required`, it requires cutomers to accept the terms of service before being able to pay.
 /// If set to `none`, customers won't be shown a checkbox to accept the terms of service.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PaymentLinksResourceConsentCollectionTermsOfService {
     None,
     Required,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl PaymentLinksResourceConsentCollectionTermsOfService {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PaymentLinksResourceConsentCollectionTermsOfService::*;
         match self {
             None => "none",
             Required => "required",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for PaymentLinksResourceConsentCollectionTermsOfService {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentLinksResourceConsentCollectionTermsOfService::*;
         match s {
             "none" => Ok(None),
             "required" => Ok(Required),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PaymentLinksResourceConsentCollectionTermsOfService"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -256,8 +274,7 @@ impl miniserde::de::Visitor for crate::Place<PaymentLinksResourceConsentCollecti
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(
-            PaymentLinksResourceConsentCollectionTermsOfService::from_str(s)
-                .map_err(|_| miniserde::Error)?,
+            PaymentLinksResourceConsentCollectionTermsOfService::from_str(s).expect("infallible"),
         );
         Ok(())
     }
@@ -269,10 +286,6 @@ impl<'de> serde::Deserialize<'de> for PaymentLinksResourceConsentCollectionTerms
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for PaymentLinksResourceConsentCollectionTermsOfService",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

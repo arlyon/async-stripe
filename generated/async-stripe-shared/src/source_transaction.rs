@@ -307,7 +307,10 @@ impl std::str::FromStr for SourceTransactionType {
             "sofort" => Ok(Sofort),
             "three_d_secure" => Ok(ThreeDSecure),
             "wechat" => Ok(Wechat),
-            v => Ok(Unknown(v.to_owned())),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "SourceTransactionType");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -340,7 +343,7 @@ impl miniserde::Deserialize for SourceTransactionType {
 impl miniserde::de::Visitor for crate::Place<SourceTransactionType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(SourceTransactionType::from_str(s).unwrap());
+        self.out = Some(SourceTransactionType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -351,7 +354,7 @@ impl<'de> serde::Deserialize<'de> for SourceTransactionType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap())
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 impl stripe_types::Object for SourceTransaction {

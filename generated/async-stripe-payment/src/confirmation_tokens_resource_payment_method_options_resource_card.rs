@@ -68,7 +68,8 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(cvc_token), Some(installments)) = (self.cvc_token.take(), self.installments)
+            let (Some(cvc_token), Some(installments)) =
+                (self.cvc_token.take(), self.installments.take())
             else {
                 return None;
             };

@@ -376,7 +376,7 @@ const _: () = {
                 self.interac_present.take(),
                 self.kakao_pay.take(),
                 self.klarna.take(),
-                self.konbini,
+                self.konbini.take(),
                 self.kr_card.take(),
                 self.link.take(),
                 self.mb_way,

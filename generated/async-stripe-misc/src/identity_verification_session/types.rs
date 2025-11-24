@@ -205,11 +205,11 @@ const _: () = {
                 self.metadata.take(),
                 self.options.take(),
                 self.provided_details.take(),
-                self.redaction,
+                self.redaction.take(),
                 self.related_customer.take(),
                 self.related_person.take(),
-                self.status,
-                self.type_,
+                self.status.take(),
+                self.type_.take(),
                 self.url.take(),
                 self.verification_flow.take(),
                 self.verified_outputs.take(),
@@ -319,32 +319,43 @@ impl serde::Serialize for IdentityVerificationSession {
     }
 }
 /// The type of [verification check](https://stripe.com/docs/identity/verification-checks) to be performed.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum IdentityVerificationSessionType {
     Document,
     IdNumber,
     VerificationFlow,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl IdentityVerificationSessionType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use IdentityVerificationSessionType::*;
         match self {
             Document => "document",
             IdNumber => "id_number",
             VerificationFlow => "verification_flow",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for IdentityVerificationSessionType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use IdentityVerificationSessionType::*;
         match s {
             "document" => Ok(Document),
             "id_number" => Ok(IdNumber),
             "verification_flow" => Ok(VerificationFlow),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "IdentityVerificationSessionType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -377,8 +388,7 @@ impl miniserde::Deserialize for IdentityVerificationSessionType {
 impl miniserde::de::Visitor for crate::Place<IdentityVerificationSessionType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out =
-            Some(IdentityVerificationSessionType::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(IdentityVerificationSessionType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -389,9 +399,7 @@ impl<'de> serde::Deserialize<'de> for IdentityVerificationSessionType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for IdentityVerificationSessionType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 impl stripe_types::Object for IdentityVerificationSession {
@@ -405,27 +413,31 @@ impl stripe_types::Object for IdentityVerificationSession {
     }
 }
 stripe_types::def_id!(IdentityVerificationSessionId);
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum IdentityVerificationSessionStatus {
     Canceled,
     Processing,
     RequiresInput,
     Verified,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl IdentityVerificationSessionStatus {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use IdentityVerificationSessionStatus::*;
         match self {
             Canceled => "canceled",
             Processing => "processing",
             RequiresInput => "requires_input",
             Verified => "verified",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for IdentityVerificationSessionStatus {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use IdentityVerificationSessionStatus::*;
         match s {
@@ -433,7 +445,14 @@ impl std::str::FromStr for IdentityVerificationSessionStatus {
             "processing" => Ok(Processing),
             "requires_input" => Ok(RequiresInput),
             "verified" => Ok(Verified),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "IdentityVerificationSessionStatus"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -465,8 +484,7 @@ impl miniserde::Deserialize for IdentityVerificationSessionStatus {
 impl miniserde::de::Visitor for crate::Place<IdentityVerificationSessionStatus> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out =
-            Some(IdentityVerificationSessionStatus::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(IdentityVerificationSessionStatus::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -477,8 +495,6 @@ impl<'de> serde::Deserialize<'de> for IdentityVerificationSessionStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for IdentityVerificationSessionStatus")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

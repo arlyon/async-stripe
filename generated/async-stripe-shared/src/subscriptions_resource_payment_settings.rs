@@ -87,7 +87,7 @@ const _: () = {
             ) = (
                 self.payment_method_options.take(),
                 self.payment_method_types.take(),
-                self.save_default_payment_method,
+                self.save_default_payment_method.take(),
             )
             else {
                 return None;
@@ -279,7 +279,14 @@ impl std::str::FromStr for SubscriptionsResourcePaymentSettingsPaymentMethodType
             "swish" => Ok(Swish),
             "us_bank_account" => Ok(UsBankAccount),
             "wechat_pay" => Ok(WechatPay),
-            v => Ok(Unknown(v.to_owned())),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "SubscriptionsResourcePaymentSettingsPaymentMethodTypes"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -314,8 +321,10 @@ impl miniserde::de::Visitor
 {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out =
-            Some(SubscriptionsResourcePaymentSettingsPaymentMethodTypes::from_str(s).unwrap());
+        self.out = Some(
+            SubscriptionsResourcePaymentSettingsPaymentMethodTypes::from_str(s)
+                .expect("infallible"),
+        );
         Ok(())
     }
 }
@@ -326,34 +335,45 @@ impl<'de> serde::Deserialize<'de> for SubscriptionsResourcePaymentSettingsPaymen
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap())
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Configure whether Stripe updates `subscription.default_payment_method` when payment succeeds.
 /// Defaults to `off`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum SubscriptionsResourcePaymentSettingsSaveDefaultPaymentMethod {
     Off,
     OnSubscription,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl SubscriptionsResourcePaymentSettingsSaveDefaultPaymentMethod {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use SubscriptionsResourcePaymentSettingsSaveDefaultPaymentMethod::*;
         match self {
             Off => "off",
             OnSubscription => "on_subscription",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for SubscriptionsResourcePaymentSettingsSaveDefaultPaymentMethod {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use SubscriptionsResourcePaymentSettingsSaveDefaultPaymentMethod::*;
         match s {
             "off" => Ok(Off),
             "on_subscription" => Ok(OnSubscription),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "SubscriptionsResourcePaymentSettingsSaveDefaultPaymentMethod"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -390,7 +410,7 @@ impl miniserde::de::Visitor
         use std::str::FromStr;
         self.out = Some(
             SubscriptionsResourcePaymentSettingsSaveDefaultPaymentMethod::from_str(s)
-                .map_err(|_| miniserde::Error)?,
+                .expect("infallible"),
         );
         Ok(())
     }
@@ -404,10 +424,6 @@ impl<'de> serde::Deserialize<'de> for SubscriptionsResourcePaymentSettingsSaveDe
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for SubscriptionsResourcePaymentSettingsSaveDefaultPaymentMethod",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

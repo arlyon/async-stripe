@@ -78,9 +78,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(automatic_tax), Some(ip_address), Some(location), Some(provider)) =
-                (self.automatic_tax, self.ip_address.take(), self.location.take(), self.provider)
-            else {
+            let (Some(automatic_tax), Some(ip_address), Some(location), Some(provider)) = (
+                self.automatic_tax.take(),
+                self.ip_address.take(),
+                self.location.take(),
+                self.provider.take(),
+            ) else {
                 return None;
             };
             Some(Self::Out { automatic_tax, ip_address, location, provider })
@@ -122,27 +125,31 @@ const _: () = {
     }
 };
 /// Surfaces if automatic tax computation is possible given the current customer location information.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CustomerTaxAutomaticTax {
     Failed,
     NotCollecting,
     Supported,
     UnrecognizedLocation,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CustomerTaxAutomaticTax {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CustomerTaxAutomaticTax::*;
         match self {
             Failed => "failed",
             NotCollecting => "not_collecting",
             Supported => "supported",
             UnrecognizedLocation => "unrecognized_location",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CustomerTaxAutomaticTax {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CustomerTaxAutomaticTax::*;
         match s {
@@ -150,7 +157,10 @@ impl std::str::FromStr for CustomerTaxAutomaticTax {
             "not_collecting" => Ok(NotCollecting),
             "supported" => Ok(Supported),
             "unrecognized_location" => Ok(UnrecognizedLocation),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CustomerTaxAutomaticTax");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -183,7 +193,7 @@ impl miniserde::Deserialize for CustomerTaxAutomaticTax {
 impl miniserde::de::Visitor for crate::Place<CustomerTaxAutomaticTax> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(CustomerTaxAutomaticTax::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(CustomerTaxAutomaticTax::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -194,33 +204,36 @@ impl<'de> serde::Deserialize<'de> for CustomerTaxAutomaticTax {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for CustomerTaxAutomaticTax"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The tax calculation provider used for location resolution.
 /// Defaults to `stripe` when not using a [third-party provider](/tax/third-party-apps).
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CustomerTaxProvider {
     Anrok,
     Avalara,
     Sphere,
     Stripe,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CustomerTaxProvider {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CustomerTaxProvider::*;
         match self {
             Anrok => "anrok",
             Avalara => "avalara",
             Sphere => "sphere",
             Stripe => "stripe",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CustomerTaxProvider {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CustomerTaxProvider::*;
         match s {
@@ -228,7 +241,10 @@ impl std::str::FromStr for CustomerTaxProvider {
             "avalara" => Ok(Avalara),
             "sphere" => Ok(Sphere),
             "stripe" => Ok(Stripe),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CustomerTaxProvider");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -261,7 +277,7 @@ impl miniserde::Deserialize for CustomerTaxProvider {
 impl miniserde::de::Visitor for crate::Place<CustomerTaxProvider> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(CustomerTaxProvider::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(CustomerTaxProvider::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -272,7 +288,6 @@ impl<'de> serde::Deserialize<'de> for CustomerTaxProvider {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for CustomerTaxProvider"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

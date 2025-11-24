@@ -95,7 +95,7 @@ const _: () = {
                 self.expected_at,
                 self.explanation.take(),
                 self.product_description.take(),
-                self.product_type,
+                self.product_type.take(),
             )
             else {
                 return None;
@@ -148,29 +148,40 @@ const _: () = {
     }
 };
 /// Whether the product was a merchandise or service.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum IssuingDisputeNotReceivedEvidenceProductType {
     Merchandise,
     Service,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl IssuingDisputeNotReceivedEvidenceProductType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use IssuingDisputeNotReceivedEvidenceProductType::*;
         match self {
             Merchandise => "merchandise",
             Service => "service",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for IssuingDisputeNotReceivedEvidenceProductType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use IssuingDisputeNotReceivedEvidenceProductType::*;
         match s {
             "merchandise" => Ok(Merchandise),
             "service" => Ok(Service),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "IssuingDisputeNotReceivedEvidenceProductType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -203,10 +214,8 @@ impl miniserde::Deserialize for IssuingDisputeNotReceivedEvidenceProductType {
 impl miniserde::de::Visitor for crate::Place<IssuingDisputeNotReceivedEvidenceProductType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            IssuingDisputeNotReceivedEvidenceProductType::from_str(s)
-                .map_err(|_| miniserde::Error)?,
-        );
+        self.out =
+            Some(IssuingDisputeNotReceivedEvidenceProductType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -217,10 +226,6 @@ impl<'de> serde::Deserialize<'de> for IssuingDisputeNotReceivedEvidenceProductTy
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for IssuingDisputeNotReceivedEvidenceProductType",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

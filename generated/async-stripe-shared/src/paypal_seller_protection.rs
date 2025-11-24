@@ -65,7 +65,7 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (Some(dispute_categories), Some(status)) =
-                (self.dispute_categories.take(), self.status)
+                (self.dispute_categories.take(), self.status.take())
             else {
                 return None;
             };
@@ -106,29 +106,40 @@ const _: () = {
     }
 };
 /// An array of conditions that are covered for the transaction, if applicable.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PaypalSellerProtectionDisputeCategories {
     Fraudulent,
     ProductNotReceived,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl PaypalSellerProtectionDisputeCategories {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PaypalSellerProtectionDisputeCategories::*;
         match self {
             Fraudulent => "fraudulent",
             ProductNotReceived => "product_not_received",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for PaypalSellerProtectionDisputeCategories {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaypalSellerProtectionDisputeCategories::*;
         match s {
             "fraudulent" => Ok(Fraudulent),
             "product_not_received" => Ok(ProductNotReceived),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PaypalSellerProtectionDisputeCategories"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -161,9 +172,7 @@ impl miniserde::Deserialize for PaypalSellerProtectionDisputeCategories {
 impl miniserde::de::Visitor for crate::Place<PaypalSellerProtectionDisputeCategories> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            PaypalSellerProtectionDisputeCategories::from_str(s).map_err(|_| miniserde::Error)?,
-        );
+        self.out = Some(PaypalSellerProtectionDisputeCategories::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -174,38 +183,47 @@ impl<'de> serde::Deserialize<'de> for PaypalSellerProtectionDisputeCategories {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for PaypalSellerProtectionDisputeCategories")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Indicates whether the transaction is eligible for PayPal's seller protection.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PaypalSellerProtectionStatus {
     Eligible,
     NotEligible,
     PartiallyEligible,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl PaypalSellerProtectionStatus {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PaypalSellerProtectionStatus::*;
         match self {
             Eligible => "eligible",
             NotEligible => "not_eligible",
             PartiallyEligible => "partially_eligible",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for PaypalSellerProtectionStatus {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaypalSellerProtectionStatus::*;
         match s {
             "eligible" => Ok(Eligible),
             "not_eligible" => Ok(NotEligible),
             "partially_eligible" => Ok(PartiallyEligible),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PaypalSellerProtectionStatus"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -238,7 +256,7 @@ impl miniserde::Deserialize for PaypalSellerProtectionStatus {
 impl miniserde::de::Visitor for crate::Place<PaypalSellerProtectionStatus> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(PaypalSellerProtectionStatus::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(PaypalSellerProtectionStatus::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -249,7 +267,6 @@ impl<'de> serde::Deserialize<'de> for PaypalSellerProtectionStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for PaypalSellerProtectionStatus"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

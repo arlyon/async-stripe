@@ -174,32 +174,39 @@ impl UpdateIssuingTokenBuilder {
     }
 }
 /// Specifies which status the token should be updated to.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdateIssuingTokenStatus {
     Active,
     Deleted,
     Suspended,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdateIssuingTokenStatus {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdateIssuingTokenStatus::*;
         match self {
             Active => "active",
             Deleted => "deleted",
             Suspended => "suspended",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for UpdateIssuingTokenStatus {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateIssuingTokenStatus::*;
         match s {
             "active" => Ok(Active),
             "deleted" => Ok(Deleted),
             "suspended" => Ok(Suspended),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "UpdateIssuingTokenStatus");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -227,8 +234,7 @@ impl<'de> serde::Deserialize<'de> for UpdateIssuingTokenStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for UpdateIssuingTokenStatus"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Attempts to update the specified Issuing `Token` object to the status specified.

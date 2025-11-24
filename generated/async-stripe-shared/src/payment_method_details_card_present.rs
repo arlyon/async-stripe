@@ -247,10 +247,10 @@ const _: () = {
                 self.last4.take(),
                 self.network.take(),
                 self.network_transaction_id.take(),
-                self.offline,
+                self.offline.take(),
                 self.overcapture_supported,
                 self.preferred_locales.take(),
-                self.read_method,
+                self.read_method.take(),
                 self.receipt.take(),
                 self.wallet,
             )
@@ -349,16 +349,19 @@ const _: () = {
     }
 };
 /// How card details were read in this transaction.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PaymentMethodDetailsCardPresentReadMethod {
     ContactEmv,
     ContactlessEmv,
     ContactlessMagstripeMode,
     MagneticStripeFallback,
     MagneticStripeTrack2,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl PaymentMethodDetailsCardPresentReadMethod {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PaymentMethodDetailsCardPresentReadMethod::*;
         match self {
             ContactEmv => "contact_emv",
@@ -366,12 +369,13 @@ impl PaymentMethodDetailsCardPresentReadMethod {
             ContactlessMagstripeMode => "contactless_magstripe_mode",
             MagneticStripeFallback => "magnetic_stripe_fallback",
             MagneticStripeTrack2 => "magnetic_stripe_track2",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for PaymentMethodDetailsCardPresentReadMethod {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentMethodDetailsCardPresentReadMethod::*;
         match s {
@@ -380,7 +384,14 @@ impl std::str::FromStr for PaymentMethodDetailsCardPresentReadMethod {
             "contactless_magstripe_mode" => Ok(ContactlessMagstripeMode),
             "magnetic_stripe_fallback" => Ok(MagneticStripeFallback),
             "magnetic_stripe_track2" => Ok(MagneticStripeTrack2),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PaymentMethodDetailsCardPresentReadMethod"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -413,9 +424,8 @@ impl miniserde::Deserialize for PaymentMethodDetailsCardPresentReadMethod {
 impl miniserde::de::Visitor for crate::Place<PaymentMethodDetailsCardPresentReadMethod> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            PaymentMethodDetailsCardPresentReadMethod::from_str(s).map_err(|_| miniserde::Error)?,
-        );
+        self.out =
+            Some(PaymentMethodDetailsCardPresentReadMethod::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -426,8 +436,6 @@ impl<'de> serde::Deserialize<'de> for PaymentMethodDetailsCardPresentReadMethod 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for PaymentMethodDetailsCardPresentReadMethod")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

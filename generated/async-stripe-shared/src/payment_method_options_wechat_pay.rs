@@ -80,7 +80,7 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (Some(app_id), Some(client), Some(setup_future_usage)) =
-                (self.app_id.take(), self.client, self.setup_future_usage)
+                (self.app_id.take(), self.client.take(), self.setup_future_usage.take())
             else {
                 return None;
             };
@@ -122,32 +122,43 @@ const _: () = {
     }
 };
 /// The client type that the end customer will pay from
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PaymentMethodOptionsWechatPayClient {
     Android,
     Ios,
     Web,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl PaymentMethodOptionsWechatPayClient {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PaymentMethodOptionsWechatPayClient::*;
         match self {
             Android => "android",
             Ios => "ios",
             Web => "web",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for PaymentMethodOptionsWechatPayClient {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentMethodOptionsWechatPayClient::*;
         match s {
             "android" => Ok(Android),
             "ios" => Ok(Ios),
             "web" => Ok(Web),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PaymentMethodOptionsWechatPayClient"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -180,8 +191,7 @@ impl miniserde::Deserialize for PaymentMethodOptionsWechatPayClient {
 impl miniserde::de::Visitor for crate::Place<PaymentMethodOptionsWechatPayClient> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out =
-            Some(PaymentMethodOptionsWechatPayClient::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(PaymentMethodOptionsWechatPayClient::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -192,9 +202,7 @@ impl<'de> serde::Deserialize<'de> for PaymentMethodOptionsWechatPayClient {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for PaymentMethodOptionsWechatPayClient")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -205,26 +213,37 @@ impl<'de> serde::Deserialize<'de> for PaymentMethodOptionsWechatPayClient {
 /// If the payment method is `card_present` and isn't a digital wallet, Stripe creates and attaches a [generated_card](/api/charges/object#charge_object-payment_method_details-card_present-generated_card) payment method representing the card to the Customer instead.
 ///
 /// When processing card payments, Stripe uses `setup_future_usage` to help you comply with regional legislation and network rules, such as [SCA](/strong-customer-authentication).
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PaymentMethodOptionsWechatPaySetupFutureUsage {
     None,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl PaymentMethodOptionsWechatPaySetupFutureUsage {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PaymentMethodOptionsWechatPaySetupFutureUsage::*;
         match self {
             None => "none",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for PaymentMethodOptionsWechatPaySetupFutureUsage {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentMethodOptionsWechatPaySetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PaymentMethodOptionsWechatPaySetupFutureUsage"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -257,10 +276,8 @@ impl miniserde::Deserialize for PaymentMethodOptionsWechatPaySetupFutureUsage {
 impl miniserde::de::Visitor for crate::Place<PaymentMethodOptionsWechatPaySetupFutureUsage> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            PaymentMethodOptionsWechatPaySetupFutureUsage::from_str(s)
-                .map_err(|_| miniserde::Error)?,
-        );
+        self.out =
+            Some(PaymentMethodOptionsWechatPaySetupFutureUsage::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -271,10 +288,6 @@ impl<'de> serde::Deserialize<'de> for PaymentMethodOptionsWechatPaySetupFutureUs
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for PaymentMethodOptionsWechatPaySetupFutureUsage",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

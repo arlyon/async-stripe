@@ -69,7 +69,7 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (Some(province_standard), Some(type_)) =
-                (self.province_standard.take(), self.type_)
+                (self.province_standard.take(), self.type_.take())
             else {
                 return None;
             };
@@ -110,32 +110,43 @@ const _: () = {
     }
 };
 /// Type of registration in Canada.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum TaxProductRegistrationsResourceCountryOptionsCanadaType {
     ProvinceStandard,
     Simplified,
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl TaxProductRegistrationsResourceCountryOptionsCanadaType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use TaxProductRegistrationsResourceCountryOptionsCanadaType::*;
         match self {
             ProvinceStandard => "province_standard",
             Simplified => "simplified",
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for TaxProductRegistrationsResourceCountryOptionsCanadaType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TaxProductRegistrationsResourceCountryOptionsCanadaType::*;
         match s {
             "province_standard" => Ok(ProvinceStandard),
             "simplified" => Ok(Simplified),
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "TaxProductRegistrationsResourceCountryOptionsCanadaType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -172,7 +183,7 @@ impl miniserde::de::Visitor
         use std::str::FromStr;
         self.out = Some(
             TaxProductRegistrationsResourceCountryOptionsCanadaType::from_str(s)
-                .map_err(|_| miniserde::Error)?,
+                .expect("infallible"),
         );
         Ok(())
     }
@@ -184,10 +195,6 @@ impl<'de> serde::Deserialize<'de> for TaxProductRegistrationsResourceCountryOpti
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for TaxProductRegistrationsResourceCountryOptionsCanadaType",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

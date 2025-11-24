@@ -217,8 +217,8 @@ const _: () = {
                 self.purchase_details.take(),
                 self.token.take(),
                 self.treasury.take(),
-                self.type_,
-                self.wallet,
+                self.type_.take(),
+                self.wallet.take(),
             )
             else {
                 return None;
@@ -332,32 +332,39 @@ impl serde::Serialize for IssuingTransaction {
     }
 }
 /// The digital wallet used for this transaction. One of `apple_pay`, `google_pay`, or `samsung_pay`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum IssuingTransactionWallet {
     ApplePay,
     GooglePay,
     SamsungPay,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl IssuingTransactionWallet {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use IssuingTransactionWallet::*;
         match self {
             ApplePay => "apple_pay",
             GooglePay => "google_pay",
             SamsungPay => "samsung_pay",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for IssuingTransactionWallet {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use IssuingTransactionWallet::*;
         match s {
             "apple_pay" => Ok(ApplePay),
             "google_pay" => Ok(GooglePay),
             "samsung_pay" => Ok(SamsungPay),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "IssuingTransactionWallet");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -390,7 +397,7 @@ impl miniserde::Deserialize for IssuingTransactionWallet {
 impl miniserde::de::Visitor for crate::Place<IssuingTransactionWallet> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(IssuingTransactionWallet::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(IssuingTransactionWallet::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -401,8 +408,7 @@ impl<'de> serde::Deserialize<'de> for IssuingTransactionWallet {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for IssuingTransactionWallet"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 impl stripe_types::Object for IssuingTransaction {
@@ -416,29 +422,36 @@ impl stripe_types::Object for IssuingTransaction {
     }
 }
 stripe_types::def_id!(IssuingTransactionId);
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum IssuingTransactionType {
     Capture,
     Refund,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl IssuingTransactionType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use IssuingTransactionType::*;
         match self {
             Capture => "capture",
             Refund => "refund",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for IssuingTransactionType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use IssuingTransactionType::*;
         match s {
             "capture" => Ok(Capture),
             "refund" => Ok(Refund),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "IssuingTransactionType");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -470,7 +483,7 @@ impl miniserde::Deserialize for IssuingTransactionType {
 impl miniserde::de::Visitor for crate::Place<IssuingTransactionType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(IssuingTransactionType::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(IssuingTransactionType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -481,7 +494,6 @@ impl<'de> serde::Deserialize<'de> for IssuingTransactionType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for IssuingTransactionType"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

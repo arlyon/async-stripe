@@ -92,7 +92,7 @@ const _: () = {
                 self.minimum_balance_by_currency.take(),
                 self.schedule.take(),
                 self.statement_descriptor.take(),
-                self.status,
+                self.status.take(),
             )
             else {
                 return None;
@@ -138,29 +138,40 @@ const _: () = {
     }
 };
 /// Whether the funds in this account can be paid out.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum BalanceSettingsResourcePayoutsStatus {
     Disabled,
     Enabled,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl BalanceSettingsResourcePayoutsStatus {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use BalanceSettingsResourcePayoutsStatus::*;
         match self {
             Disabled => "disabled",
             Enabled => "enabled",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for BalanceSettingsResourcePayoutsStatus {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use BalanceSettingsResourcePayoutsStatus::*;
         match s {
             "disabled" => Ok(Disabled),
             "enabled" => Ok(Enabled),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "BalanceSettingsResourcePayoutsStatus"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -193,8 +204,7 @@ impl miniserde::Deserialize for BalanceSettingsResourcePayoutsStatus {
 impl miniserde::de::Visitor for crate::Place<BalanceSettingsResourcePayoutsStatus> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out =
-            Some(BalanceSettingsResourcePayoutsStatus::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(BalanceSettingsResourcePayoutsStatus::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -205,8 +215,6 @@ impl<'de> serde::Deserialize<'de> for BalanceSettingsResourcePayoutsStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for BalanceSettingsResourcePayoutsStatus")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

@@ -79,9 +79,11 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(bank_transfer), Some(funding_type), Some(setup_future_usage)) =
-                (self.bank_transfer.take(), self.funding_type, self.setup_future_usage)
-            else {
+            let (Some(bank_transfer), Some(funding_type), Some(setup_future_usage)) = (
+                self.bank_transfer.take(),
+                self.funding_type.take(),
+                self.setup_future_usage.take(),
+            ) else {
                 return None;
             };
             Some(Self::Out { bank_transfer, funding_type, setup_future_usage })
@@ -123,26 +125,37 @@ const _: () = {
 };
 /// The funding method type to be used when there are not enough funds in the customer balance.
 /// Permitted values include: `bank_transfer`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PaymentMethodOptionsCustomerBalanceFundingType {
     BankTransfer,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl PaymentMethodOptionsCustomerBalanceFundingType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PaymentMethodOptionsCustomerBalanceFundingType::*;
         match self {
             BankTransfer => "bank_transfer",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for PaymentMethodOptionsCustomerBalanceFundingType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentMethodOptionsCustomerBalanceFundingType::*;
         match s {
             "bank_transfer" => Ok(BankTransfer),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PaymentMethodOptionsCustomerBalanceFundingType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -175,10 +188,8 @@ impl miniserde::Deserialize for PaymentMethodOptionsCustomerBalanceFundingType {
 impl miniserde::de::Visitor for crate::Place<PaymentMethodOptionsCustomerBalanceFundingType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            PaymentMethodOptionsCustomerBalanceFundingType::from_str(s)
-                .map_err(|_| miniserde::Error)?,
-        );
+        self.out =
+            Some(PaymentMethodOptionsCustomerBalanceFundingType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -189,11 +200,7 @@ impl<'de> serde::Deserialize<'de> for PaymentMethodOptionsCustomerBalanceFunding
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for PaymentMethodOptionsCustomerBalanceFundingType",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -204,26 +211,37 @@ impl<'de> serde::Deserialize<'de> for PaymentMethodOptionsCustomerBalanceFunding
 /// If the payment method is `card_present` and isn't a digital wallet, Stripe creates and attaches a [generated_card](/api/charges/object#charge_object-payment_method_details-card_present-generated_card) payment method representing the card to the Customer instead.
 ///
 /// When processing card payments, Stripe uses `setup_future_usage` to help you comply with regional legislation and network rules, such as [SCA](/strong-customer-authentication).
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PaymentMethodOptionsCustomerBalanceSetupFutureUsage {
     None,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl PaymentMethodOptionsCustomerBalanceSetupFutureUsage {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PaymentMethodOptionsCustomerBalanceSetupFutureUsage::*;
         match self {
             None => "none",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for PaymentMethodOptionsCustomerBalanceSetupFutureUsage {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentMethodOptionsCustomerBalanceSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PaymentMethodOptionsCustomerBalanceSetupFutureUsage"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -257,8 +275,7 @@ impl miniserde::de::Visitor for crate::Place<PaymentMethodOptionsCustomerBalance
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(
-            PaymentMethodOptionsCustomerBalanceSetupFutureUsage::from_str(s)
-                .map_err(|_| miniserde::Error)?,
+            PaymentMethodOptionsCustomerBalanceSetupFutureUsage::from_str(s).expect("infallible"),
         );
         Ok(())
     }
@@ -270,10 +287,6 @@ impl<'de> serde::Deserialize<'de> for PaymentMethodOptionsCustomerBalanceSetupFu
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for PaymentMethodOptionsCustomerBalanceSetupFutureUsage",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

@@ -168,7 +168,14 @@ const _: () = {
                     Self::TransferReversal(FromValueOpt::from_value(Value::Object(o))?)
                 }
 
-                _ => return None,
+                _ => {
+                    tracing::warn!(
+                        "Unknown object type '{}' for enum '{}'",
+                        key,
+                        "BalanceTransactionSource"
+                    );
+                    return None;
+                }
             })
         }
     }

@@ -1,4 +1,4 @@
-#[derive(Copy, Clone, Debug)]
+#[derive(Clone, Debug)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TaxProductResourceTaxAssociationTransactionAttemptsResourceErrored {
@@ -60,7 +60,7 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(reason),) = (self.reason,) else {
+            let (Some(reason),) = (self.reason.take(),) else {
                 return None;
             };
             Some(Self::Out { reason })
@@ -99,16 +99,19 @@ const _: () = {
     }
 };
 /// Details on why we couldn't commit the tax transaction.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum TaxProductResourceTaxAssociationTransactionAttemptsResourceErroredReason {
     AnotherPaymentAssociatedWithCalculation,
     CalculationExpired,
     CurrencyMismatch,
     OriginalTransactionVoided,
     UniqueReferenceViolation,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl TaxProductResourceTaxAssociationTransactionAttemptsResourceErroredReason {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use TaxProductResourceTaxAssociationTransactionAttemptsResourceErroredReason::*;
         match self {
             AnotherPaymentAssociatedWithCalculation => {
@@ -118,6 +121,7 @@ impl TaxProductResourceTaxAssociationTransactionAttemptsResourceErroredReason {
             CurrencyMismatch => "currency_mismatch",
             OriginalTransactionVoided => "original_transaction_voided",
             UniqueReferenceViolation => "unique_reference_violation",
+            Unknown(v) => v,
         }
     }
 }
@@ -125,7 +129,7 @@ impl TaxProductResourceTaxAssociationTransactionAttemptsResourceErroredReason {
 impl std::str::FromStr
     for TaxProductResourceTaxAssociationTransactionAttemptsResourceErroredReason
 {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TaxProductResourceTaxAssociationTransactionAttemptsResourceErroredReason::*;
         match s {
@@ -136,7 +140,14 @@ impl std::str::FromStr
             "currency_mismatch" => Ok(CurrencyMismatch),
             "original_transaction_voided" => Ok(OriginalTransactionVoided),
             "unique_reference_violation" => Ok(UniqueReferenceViolation),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "TaxProductResourceTaxAssociationTransactionAttemptsResourceErroredReason"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -177,7 +188,7 @@ impl miniserde::de::Visitor
         use std::str::FromStr;
         self.out = Some(
             TaxProductResourceTaxAssociationTransactionAttemptsResourceErroredReason::from_str(s)
-                .map_err(|_| miniserde::Error)?,
+                .expect("infallible"),
         );
         Ok(())
     }
@@ -193,6 +204,6 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for TaxProductResourceTaxAssociationTransactionAttemptsResourceErroredReason"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

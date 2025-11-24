@@ -227,26 +227,37 @@ impl CreateBillingCreditGrantAmountMonetary {
     }
 }
 /// The type of this amount. We currently only support `monetary` billing credits.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateBillingCreditGrantAmountType {
     Monetary,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateBillingCreditGrantAmountType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateBillingCreditGrantAmountType::*;
         match self {
             Monetary => "monetary",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateBillingCreditGrantAmountType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateBillingCreditGrantAmountType::*;
         match s {
             "monetary" => Ok(Monetary),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateBillingCreditGrantAmountType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -274,9 +285,7 @@ impl<'de> serde::Deserialize<'de> for CreateBillingCreditGrantAmountType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateBillingCreditGrantAmountType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Configuration specifying what this credit grant applies to.
@@ -318,26 +327,37 @@ impl Default for CreateBillingCreditGrantApplicabilityConfigScope {
 /// The price type that credit grants can apply to.
 /// We currently only support the `metered` price type.
 /// Cannot be used in combination with `prices`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateBillingCreditGrantApplicabilityConfigScopePriceType {
     Metered,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateBillingCreditGrantApplicabilityConfigScopePriceType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateBillingCreditGrantApplicabilityConfigScopePriceType::*;
         match self {
             Metered => "metered",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateBillingCreditGrantApplicabilityConfigScopePriceType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateBillingCreditGrantApplicabilityConfigScopePriceType::*;
         match s {
             "metered" => Ok(Metered),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateBillingCreditGrantApplicabilityConfigScopePriceType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -365,11 +385,7 @@ impl<'de> serde::Deserialize<'de> for CreateBillingCreditGrantApplicabilityConfi
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for CreateBillingCreditGrantApplicabilityConfigScopePriceType",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// A list of prices that the credit grant can apply to.

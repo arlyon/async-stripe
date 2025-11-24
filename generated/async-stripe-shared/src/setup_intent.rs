@@ -267,8 +267,8 @@ const _: () = {
             ) = (
                 self.application.take(),
                 self.attach_to_self,
-                self.automatic_payment_methods,
-                self.cancellation_reason,
+                self.automatic_payment_methods.take(),
+                self.cancellation_reason.take(),
                 self.client_secret.take(),
                 self.created,
                 self.customer.take(),
@@ -288,7 +288,7 @@ const _: () = {
                 self.payment_method_options.take(),
                 self.payment_method_types.take(),
                 self.single_use_mandate.take(),
-                self.status,
+                self.status.take(),
                 self.usage.take(),
             )
             else {
@@ -426,7 +426,8 @@ impl serde::Serialize for SetupIntent {
     }
 }
 /// [Status](https://stripe.com/docs/payments/intents#intent-statuses) of this SetupIntent, one of `requires_payment_method`, `requires_confirmation`, `requires_action`, `processing`, `canceled`, or `succeeded`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum SetupIntentStatus {
     Canceled,
     Processing,
@@ -434,9 +435,11 @@ pub enum SetupIntentStatus {
     RequiresConfirmation,
     RequiresPaymentMethod,
     Succeeded,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl SetupIntentStatus {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use SetupIntentStatus::*;
         match self {
             Canceled => "canceled",
@@ -445,12 +448,13 @@ impl SetupIntentStatus {
             RequiresConfirmation => "requires_confirmation",
             RequiresPaymentMethod => "requires_payment_method",
             Succeeded => "succeeded",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for SetupIntentStatus {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use SetupIntentStatus::*;
         match s {
@@ -460,7 +464,10 @@ impl std::str::FromStr for SetupIntentStatus {
             "requires_confirmation" => Ok(RequiresConfirmation),
             "requires_payment_method" => Ok(RequiresPaymentMethod),
             "succeeded" => Ok(Succeeded),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "SetupIntentStatus");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -493,7 +500,7 @@ impl miniserde::Deserialize for SetupIntentStatus {
 impl miniserde::de::Visitor for crate::Place<SetupIntentStatus> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(SetupIntentStatus::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(SetupIntentStatus::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -504,8 +511,7 @@ impl<'de> serde::Deserialize<'de> for SetupIntentStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for SetupIntentStatus"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 impl stripe_types::Object for SetupIntent {
@@ -519,32 +525,43 @@ impl stripe_types::Object for SetupIntent {
     }
 }
 stripe_types::def_id!(SetupIntentId);
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum SetupIntentCancellationReason {
     Abandoned,
     Duplicate,
     RequestedByCustomer,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl SetupIntentCancellationReason {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use SetupIntentCancellationReason::*;
         match self {
             Abandoned => "abandoned",
             Duplicate => "duplicate",
             RequestedByCustomer => "requested_by_customer",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for SetupIntentCancellationReason {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use SetupIntentCancellationReason::*;
         match s {
             "abandoned" => Ok(Abandoned),
             "duplicate" => Ok(Duplicate),
             "requested_by_customer" => Ok(RequestedByCustomer),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "SetupIntentCancellationReason"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -576,7 +593,7 @@ impl miniserde::Deserialize for SetupIntentCancellationReason {
 impl miniserde::de::Visitor for crate::Place<SetupIntentCancellationReason> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(SetupIntentCancellationReason::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(SetupIntentCancellationReason::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -587,9 +604,7 @@ impl<'de> serde::Deserialize<'de> for SetupIntentCancellationReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for SetupIntentCancellationReason")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 #[derive(Clone, Eq, PartialEq)]
@@ -756,7 +771,14 @@ impl std::str::FromStr for SetupIntentExcludedPaymentMethodTypes {
             "us_bank_account" => Ok(UsBankAccount),
             "wechat_pay" => Ok(WechatPay),
             "zip" => Ok(Zip),
-            v => Ok(Unknown(v.to_owned())),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "SetupIntentExcludedPaymentMethodTypes"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -788,7 +810,7 @@ impl miniserde::Deserialize for SetupIntentExcludedPaymentMethodTypes {
 impl miniserde::de::Visitor for crate::Place<SetupIntentExcludedPaymentMethodTypes> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(SetupIntentExcludedPaymentMethodTypes::from_str(s).unwrap());
+        self.out = Some(SetupIntentExcludedPaymentMethodTypes::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -799,32 +821,39 @@ impl<'de> serde::Deserialize<'de> for SetupIntentExcludedPaymentMethodTypes {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap())
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum SetupIntentFlowDirections {
     Inbound,
     Outbound,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl SetupIntentFlowDirections {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use SetupIntentFlowDirections::*;
         match self {
             Inbound => "inbound",
             Outbound => "outbound",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for SetupIntentFlowDirections {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use SetupIntentFlowDirections::*;
         match s {
             "inbound" => Ok(Inbound),
             "outbound" => Ok(Outbound),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "SetupIntentFlowDirections");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -856,7 +885,7 @@ impl miniserde::Deserialize for SetupIntentFlowDirections {
 impl miniserde::de::Visitor for crate::Place<SetupIntentFlowDirections> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(SetupIntentFlowDirections::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(SetupIntentFlowDirections::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -867,7 +896,6 @@ impl<'de> serde::Deserialize<'de> for SetupIntentFlowDirections {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for SetupIntentFlowDirections"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

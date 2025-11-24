@@ -155,7 +155,7 @@ const _: () = {
                 self.options.take(),
                 self.phone.take(),
                 self.selfie.take(),
-                self.type_,
+                self.type_.take(),
                 self.verification_flow.take(),
                 self.verification_session.take(),
             )
@@ -247,32 +247,43 @@ impl serde::Serialize for IdentityVerificationReport {
     }
 }
 /// Type of report.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum IdentityVerificationReportType {
     Document,
     IdNumber,
     VerificationFlow,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl IdentityVerificationReportType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use IdentityVerificationReportType::*;
         match self {
             Document => "document",
             IdNumber => "id_number",
             VerificationFlow => "verification_flow",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for IdentityVerificationReportType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use IdentityVerificationReportType::*;
         match s {
             "document" => Ok(Document),
             "id_number" => Ok(IdNumber),
             "verification_flow" => Ok(VerificationFlow),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "IdentityVerificationReportType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -305,7 +316,7 @@ impl miniserde::Deserialize for IdentityVerificationReportType {
 impl miniserde::de::Visitor for crate::Place<IdentityVerificationReportType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(IdentityVerificationReportType::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(IdentityVerificationReportType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -316,9 +327,7 @@ impl<'de> serde::Deserialize<'de> for IdentityVerificationReportType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for IdentityVerificationReportType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 impl stripe_types::Object for IdentityVerificationReport {

@@ -118,7 +118,7 @@ const _: () = {
                 self.link,
                 self.masterpass.take(),
                 self.samsung_pay,
-                self.type_,
+                self.type_.take(),
                 self.visa_checkout.take(),
             )
             else {
@@ -182,7 +182,8 @@ const _: () = {
 /// The type of the card wallet, one of `amex_express_checkout`, `apple_pay`, `google_pay`, `masterpass`, `samsung_pay`, `visa_checkout`, or `link`.
 /// An additional hash is included on the Wallet subhash with a name matching this value.
 /// It contains additional information specific to the card wallet type.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PaymentMethodDetailsCardWalletType {
     AmexExpressCheckout,
     ApplePay,
@@ -191,9 +192,11 @@ pub enum PaymentMethodDetailsCardWalletType {
     Masterpass,
     SamsungPay,
     VisaCheckout,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl PaymentMethodDetailsCardWalletType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PaymentMethodDetailsCardWalletType::*;
         match self {
             AmexExpressCheckout => "amex_express_checkout",
@@ -203,12 +206,13 @@ impl PaymentMethodDetailsCardWalletType {
             Masterpass => "masterpass",
             SamsungPay => "samsung_pay",
             VisaCheckout => "visa_checkout",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for PaymentMethodDetailsCardWalletType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentMethodDetailsCardWalletType::*;
         match s {
@@ -219,7 +223,14 @@ impl std::str::FromStr for PaymentMethodDetailsCardWalletType {
             "masterpass" => Ok(Masterpass),
             "samsung_pay" => Ok(SamsungPay),
             "visa_checkout" => Ok(VisaCheckout),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PaymentMethodDetailsCardWalletType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -252,8 +263,7 @@ impl miniserde::Deserialize for PaymentMethodDetailsCardWalletType {
 impl miniserde::de::Visitor for crate::Place<PaymentMethodDetailsCardWalletType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out =
-            Some(PaymentMethodDetailsCardWalletType::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(PaymentMethodDetailsCardWalletType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -264,8 +274,6 @@ impl<'de> serde::Deserialize<'de> for PaymentMethodDetailsCardWalletType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for PaymentMethodDetailsCardWalletType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

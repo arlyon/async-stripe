@@ -71,9 +71,11 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(financial_connections), Some(mandate_options), Some(verification_method)) =
-                (self.financial_connections.take(), self.mandate_options, self.verification_method)
-            else {
+            let (Some(financial_connections), Some(mandate_options), Some(verification_method)) = (
+                self.financial_connections.take(),
+                self.mandate_options.take(),
+                self.verification_method.take(),
+            ) else {
                 return None;
             };
             Some(Self::Out { financial_connections, mandate_options, verification_method })
@@ -116,32 +118,43 @@ const _: () = {
     }
 };
 /// Bank account verification method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum SetupIntentPaymentMethodOptionsUsBankAccountVerificationMethod {
     Automatic,
     Instant,
     Microdeposits,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl SetupIntentPaymentMethodOptionsUsBankAccountVerificationMethod {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use SetupIntentPaymentMethodOptionsUsBankAccountVerificationMethod::*;
         match self {
             Automatic => "automatic",
             Instant => "instant",
             Microdeposits => "microdeposits",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for SetupIntentPaymentMethodOptionsUsBankAccountVerificationMethod {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use SetupIntentPaymentMethodOptionsUsBankAccountVerificationMethod::*;
         match s {
             "automatic" => Ok(Automatic),
             "instant" => Ok(Instant),
             "microdeposits" => Ok(Microdeposits),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "SetupIntentPaymentMethodOptionsUsBankAccountVerificationMethod"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -178,7 +191,7 @@ impl miniserde::de::Visitor
         use std::str::FromStr;
         self.out = Some(
             SetupIntentPaymentMethodOptionsUsBankAccountVerificationMethod::from_str(s)
-                .map_err(|_| miniserde::Error)?,
+                .expect("infallible"),
         );
         Ok(())
     }
@@ -194,10 +207,6 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for SetupIntentPaymentMethodOptionsUsBankAccountVerificationMethod",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

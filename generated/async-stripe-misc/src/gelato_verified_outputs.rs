@@ -130,7 +130,7 @@ const _: () = {
                 self.email.take(),
                 self.first_name.take(),
                 self.id_number.take(),
-                self.id_number_type,
+                self.id_number_type.take(),
                 self.last_name.take(),
                 self.phone.take(),
                 self.sex,
@@ -200,32 +200,43 @@ const _: () = {
     }
 };
 /// The user's verified id number type.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum GelatoVerifiedOutputsIdNumberType {
     BrCpf,
     SgNric,
     UsSsn,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl GelatoVerifiedOutputsIdNumberType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use GelatoVerifiedOutputsIdNumberType::*;
         match self {
             BrCpf => "br_cpf",
             SgNric => "sg_nric",
             UsSsn => "us_ssn",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for GelatoVerifiedOutputsIdNumberType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use GelatoVerifiedOutputsIdNumberType::*;
         match s {
             "br_cpf" => Ok(BrCpf),
             "sg_nric" => Ok(SgNric),
             "us_ssn" => Ok(UsSsn),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "GelatoVerifiedOutputsIdNumberType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -258,8 +269,7 @@ impl miniserde::Deserialize for GelatoVerifiedOutputsIdNumberType {
 impl miniserde::de::Visitor for crate::Place<GelatoVerifiedOutputsIdNumberType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out =
-            Some(GelatoVerifiedOutputsIdNumberType::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(GelatoVerifiedOutputsIdNumberType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -270,9 +280,7 @@ impl<'de> serde::Deserialize<'de> for GelatoVerifiedOutputsIdNumberType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for GelatoVerifiedOutputsIdNumberType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The user's verified sex.

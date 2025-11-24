@@ -79,8 +79,8 @@ const _: () = {
         fn take_out(&mut self) -> Option<Self::Out> {
             let (Some(buyer_address), Some(network), Some(token_currency), Some(transaction_hash)) = (
                 self.buyer_address.take(),
-                self.network,
-                self.token_currency,
+                self.network.take(),
+                self.token_currency.take(),
                 self.transaction_hash.take(),
             ) else {
                 return None;
@@ -124,27 +124,31 @@ const _: () = {
     }
 };
 /// The blockchain network that the transaction was sent on.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PaymentMethodDetailsCryptoNetwork {
     Base,
     Ethereum,
     Polygon,
     Solana,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl PaymentMethodDetailsCryptoNetwork {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PaymentMethodDetailsCryptoNetwork::*;
         match self {
             Base => "base",
             Ethereum => "ethereum",
             Polygon => "polygon",
             Solana => "solana",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for PaymentMethodDetailsCryptoNetwork {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentMethodDetailsCryptoNetwork::*;
         match s {
@@ -152,7 +156,14 @@ impl std::str::FromStr for PaymentMethodDetailsCryptoNetwork {
             "ethereum" => Ok(Ethereum),
             "polygon" => Ok(Polygon),
             "solana" => Ok(Solana),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PaymentMethodDetailsCryptoNetwork"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -185,8 +196,7 @@ impl miniserde::Deserialize for PaymentMethodDetailsCryptoNetwork {
 impl miniserde::de::Visitor for crate::Place<PaymentMethodDetailsCryptoNetwork> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out =
-            Some(PaymentMethodDetailsCryptoNetwork::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(PaymentMethodDetailsCryptoNetwork::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -197,38 +207,47 @@ impl<'de> serde::Deserialize<'de> for PaymentMethodDetailsCryptoNetwork {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for PaymentMethodDetailsCryptoNetwork")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The token currency that the transaction was sent with.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PaymentMethodDetailsCryptoTokenCurrency {
     Usdc,
     Usdg,
     Usdp,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl PaymentMethodDetailsCryptoTokenCurrency {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PaymentMethodDetailsCryptoTokenCurrency::*;
         match self {
             Usdc => "usdc",
             Usdg => "usdg",
             Usdp => "usdp",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for PaymentMethodDetailsCryptoTokenCurrency {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentMethodDetailsCryptoTokenCurrency::*;
         match s {
             "usdc" => Ok(Usdc),
             "usdg" => Ok(Usdg),
             "usdp" => Ok(Usdp),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PaymentMethodDetailsCryptoTokenCurrency"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -261,9 +280,7 @@ impl miniserde::Deserialize for PaymentMethodDetailsCryptoTokenCurrency {
 impl miniserde::de::Visitor for crate::Place<PaymentMethodDetailsCryptoTokenCurrency> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            PaymentMethodDetailsCryptoTokenCurrency::from_str(s).map_err(|_| miniserde::Error)?,
-        );
+        self.out = Some(PaymentMethodDetailsCryptoTokenCurrency::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -274,8 +291,6 @@ impl<'de> serde::Deserialize<'de> for PaymentMethodDetailsCryptoTokenCurrency {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for PaymentMethodDetailsCryptoTokenCurrency")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

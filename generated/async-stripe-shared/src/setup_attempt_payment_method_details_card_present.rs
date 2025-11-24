@@ -64,7 +64,8 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(generated_card), Some(offline)) = (self.generated_card.take(), self.offline)
+            let (Some(generated_card), Some(offline)) =
+                (self.generated_card.take(), self.offline.take())
             else {
                 return None;
             };

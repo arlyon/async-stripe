@@ -402,32 +402,43 @@ impl CreateTerminalConfigurationWifi {
 }
 /// Security type of the WiFi network.
 /// Fill out the hash with the corresponding name to provide the set of credentials for this security type.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTerminalConfigurationWifiType {
     EnterpriseEapPeap,
     EnterpriseEapTls,
     PersonalPsk,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTerminalConfigurationWifiType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTerminalConfigurationWifiType::*;
         match self {
             EnterpriseEapPeap => "enterprise_eap_peap",
             EnterpriseEapTls => "enterprise_eap_tls",
             PersonalPsk => "personal_psk",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTerminalConfigurationWifiType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTerminalConfigurationWifiType::*;
         match s {
             "enterprise_eap_peap" => Ok(EnterpriseEapPeap),
             "enterprise_eap_tls" => Ok(EnterpriseEapTls),
             "personal_psk" => Ok(PersonalPsk),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTerminalConfigurationWifiType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -455,9 +466,7 @@ impl<'de> serde::Deserialize<'de> for CreateTerminalConfigurationWifiType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTerminalConfigurationWifiType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Creates a new `Configuration` object.
@@ -679,32 +688,43 @@ impl UpdateTerminalConfigurationWifi {
 }
 /// Security type of the WiFi network.
 /// Fill out the hash with the corresponding name to provide the set of credentials for this security type.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdateTerminalConfigurationWifiType {
     EnterpriseEapPeap,
     EnterpriseEapTls,
     PersonalPsk,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdateTerminalConfigurationWifiType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdateTerminalConfigurationWifiType::*;
         match self {
             EnterpriseEapPeap => "enterprise_eap_peap",
             EnterpriseEapTls => "enterprise_eap_tls",
             PersonalPsk => "personal_psk",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for UpdateTerminalConfigurationWifiType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateTerminalConfigurationWifiType::*;
         match s {
             "enterprise_eap_peap" => Ok(EnterpriseEapPeap),
             "enterprise_eap_tls" => Ok(EnterpriseEapTls),
             "personal_psk" => Ok(PersonalPsk),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdateTerminalConfigurationWifiType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -732,9 +752,7 @@ impl<'de> serde::Deserialize<'de> for UpdateTerminalConfigurationWifiType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for UpdateTerminalConfigurationWifiType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Updates a new `Configuration` object.

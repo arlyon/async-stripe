@@ -1,4 +1,4 @@
-#[derive(Copy, Clone, Debug)]
+#[derive(Clone, Debug)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentMethodOptionsBancontact {
@@ -75,7 +75,7 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (Some(preferred_language), Some(setup_future_usage)) =
-                (self.preferred_language, self.setup_future_usage)
+                (self.preferred_language.take(), self.setup_future_usage.take())
             else {
                 return None;
             };
@@ -116,27 +116,31 @@ const _: () = {
     }
 };
 /// Preferred language of the Bancontact authorization page that the customer is redirected to.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PaymentMethodOptionsBancontactPreferredLanguage {
     De,
     En,
     Fr,
     Nl,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl PaymentMethodOptionsBancontactPreferredLanguage {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PaymentMethodOptionsBancontactPreferredLanguage::*;
         match self {
             De => "de",
             En => "en",
             Fr => "fr",
             Nl => "nl",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for PaymentMethodOptionsBancontactPreferredLanguage {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentMethodOptionsBancontactPreferredLanguage::*;
         match s {
@@ -144,7 +148,14 @@ impl std::str::FromStr for PaymentMethodOptionsBancontactPreferredLanguage {
             "en" => Ok(En),
             "fr" => Ok(Fr),
             "nl" => Ok(Nl),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PaymentMethodOptionsBancontactPreferredLanguage"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -177,10 +188,8 @@ impl miniserde::Deserialize for PaymentMethodOptionsBancontactPreferredLanguage 
 impl miniserde::de::Visitor for crate::Place<PaymentMethodOptionsBancontactPreferredLanguage> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            PaymentMethodOptionsBancontactPreferredLanguage::from_str(s)
-                .map_err(|_| miniserde::Error)?,
-        );
+        self.out =
+            Some(PaymentMethodOptionsBancontactPreferredLanguage::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -191,11 +200,7 @@ impl<'de> serde::Deserialize<'de> for PaymentMethodOptionsBancontactPreferredLan
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for PaymentMethodOptionsBancontactPreferredLanguage",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -206,29 +211,40 @@ impl<'de> serde::Deserialize<'de> for PaymentMethodOptionsBancontactPreferredLan
 /// If the payment method is `card_present` and isn't a digital wallet, Stripe creates and attaches a [generated_card](/api/charges/object#charge_object-payment_method_details-card_present-generated_card) payment method representing the card to the Customer instead.
 ///
 /// When processing card payments, Stripe uses `setup_future_usage` to help you comply with regional legislation and network rules, such as [SCA](/strong-customer-authentication).
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PaymentMethodOptionsBancontactSetupFutureUsage {
     None,
     OffSession,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl PaymentMethodOptionsBancontactSetupFutureUsage {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PaymentMethodOptionsBancontactSetupFutureUsage::*;
         match self {
             None => "none",
             OffSession => "off_session",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for PaymentMethodOptionsBancontactSetupFutureUsage {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentMethodOptionsBancontactSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PaymentMethodOptionsBancontactSetupFutureUsage"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -261,10 +277,8 @@ impl miniserde::Deserialize for PaymentMethodOptionsBancontactSetupFutureUsage {
 impl miniserde::de::Visitor for crate::Place<PaymentMethodOptionsBancontactSetupFutureUsage> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            PaymentMethodOptionsBancontactSetupFutureUsage::from_str(s)
-                .map_err(|_| miniserde::Error)?,
-        );
+        self.out =
+            Some(PaymentMethodOptionsBancontactSetupFutureUsage::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -275,10 +289,6 @@ impl<'de> serde::Deserialize<'de> for PaymentMethodOptionsBancontactSetupFutureU
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for PaymentMethodOptionsBancontactSetupFutureUsage",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

@@ -190,7 +190,10 @@ impl std::str::FromStr for PaymentMethodKrCardBrand {
             "suhyup" => Ok(Suhyup),
             "tossbank" => Ok(Tossbank),
             "woori" => Ok(Woori),
-            v => Ok(Unknown(v.to_owned())),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "PaymentMethodKrCardBrand");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -223,7 +226,7 @@ impl miniserde::Deserialize for PaymentMethodKrCardBrand {
 impl miniserde::de::Visitor for crate::Place<PaymentMethodKrCardBrand> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(PaymentMethodKrCardBrand::from_str(s).unwrap());
+        self.out = Some(PaymentMethodKrCardBrand::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -234,6 +237,6 @@ impl<'de> serde::Deserialize<'de> for PaymentMethodKrCardBrand {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap())
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

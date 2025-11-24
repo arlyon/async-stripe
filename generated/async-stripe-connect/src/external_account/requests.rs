@@ -63,29 +63,40 @@ impl ListAccountExternalAccountBuilder {
     }
 }
 /// Filter external accounts according to a particular object type.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum ListAccountExternalAccountObject {
     BankAccount,
     Card,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl ListAccountExternalAccountObject {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use ListAccountExternalAccountObject::*;
         match self {
             BankAccount => "bank_account",
             Card => "card",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for ListAccountExternalAccountObject {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ListAccountExternalAccountObject::*;
         match s {
             "bank_account" => Ok(BankAccount),
             "card" => Ok(Card),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "ListAccountExternalAccountObject"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -113,9 +124,7 @@ impl<'de> serde::Deserialize<'de> for ListAccountExternalAccountObject {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for ListAccountExternalAccountObject")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// List external accounts for an account.
@@ -405,29 +414,40 @@ impl UpdateExternalAccountBuilder {
     }
 }
 /// The type of entity that holds the account. This can be either `individual` or `company`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdateExternalAccountAccountHolderType {
     Company,
     Individual,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdateExternalAccountAccountHolderType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdateExternalAccountAccountHolderType::*;
         match self {
             Company => "company",
             Individual => "individual",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for UpdateExternalAccountAccountHolderType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateExternalAccountAccountHolderType::*;
         match s {
             "company" => Ok(Company),
             "individual" => Ok(Individual),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdateExternalAccountAccountHolderType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -455,35 +475,37 @@ impl<'de> serde::Deserialize<'de> for UpdateExternalAccountAccountHolderType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for UpdateExternalAccountAccountHolderType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The bank account type.
 /// This can only be `checking` or `savings` in most countries.
 /// In Japan, this can only be `futsu` or `toza`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdateExternalAccountAccountType {
     Checking,
     Futsu,
     Savings,
     Toza,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdateExternalAccountAccountType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdateExternalAccountAccountType::*;
         match self {
             Checking => "checking",
             Futsu => "futsu",
             Savings => "savings",
             Toza => "toza",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for UpdateExternalAccountAccountType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateExternalAccountAccountType::*;
         match s {
@@ -491,7 +513,14 @@ impl std::str::FromStr for UpdateExternalAccountAccountType {
             "futsu" => Ok(Futsu),
             "savings" => Ok(Savings),
             "toza" => Ok(Toza),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdateExternalAccountAccountType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -519,9 +548,7 @@ impl<'de> serde::Deserialize<'de> for UpdateExternalAccountAccountType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for UpdateExternalAccountAccountType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Documents that may be submitted to satisfy various informational requests.

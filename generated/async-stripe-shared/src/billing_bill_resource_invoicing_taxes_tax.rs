@@ -99,11 +99,11 @@ const _: () = {
                 Some(type_),
             ) = (
                 self.amount,
-                self.tax_behavior,
+                self.tax_behavior.take(),
                 self.tax_rate_details.take(),
                 self.taxability_reason.take(),
                 self.taxable_amount,
-                self.type_,
+                self.type_.take(),
             )
             else {
                 return None;
@@ -156,29 +156,40 @@ const _: () = {
     }
 };
 /// Whether this tax is inclusive or exclusive.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum BillingBillResourceInvoicingTaxesTaxTaxBehavior {
     Exclusive,
     Inclusive,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl BillingBillResourceInvoicingTaxesTaxTaxBehavior {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use BillingBillResourceInvoicingTaxesTaxTaxBehavior::*;
         match self {
             Exclusive => "exclusive",
             Inclusive => "inclusive",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for BillingBillResourceInvoicingTaxesTaxTaxBehavior {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use BillingBillResourceInvoicingTaxesTaxTaxBehavior::*;
         match s {
             "exclusive" => Ok(Exclusive),
             "inclusive" => Ok(Inclusive),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "BillingBillResourceInvoicingTaxesTaxTaxBehavior"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -211,10 +222,8 @@ impl miniserde::Deserialize for BillingBillResourceInvoicingTaxesTaxTaxBehavior 
 impl miniserde::de::Visitor for crate::Place<BillingBillResourceInvoicingTaxesTaxTaxBehavior> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            BillingBillResourceInvoicingTaxesTaxTaxBehavior::from_str(s)
-                .map_err(|_| miniserde::Error)?,
-        );
+        self.out =
+            Some(BillingBillResourceInvoicingTaxesTaxTaxBehavior::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -225,11 +234,7 @@ impl<'de> serde::Deserialize<'de> for BillingBillResourceInvoicingTaxesTaxTaxBeh
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for BillingBillResourceInvoicingTaxesTaxTaxBehavior",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The reasoning behind this tax, for example, if the product is tax exempt.
@@ -302,7 +307,14 @@ impl std::str::FromStr for BillingBillResourceInvoicingTaxesTaxTaxabilityReason 
             "standard_rated" => Ok(StandardRated),
             "taxable_basis_reduced" => Ok(TaxableBasisReduced),
             "zero_rated" => Ok(ZeroRated),
-            v => Ok(Unknown(v.to_owned())),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "BillingBillResourceInvoicingTaxesTaxTaxabilityReason"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -335,7 +347,9 @@ impl miniserde::Deserialize for BillingBillResourceInvoicingTaxesTaxTaxabilityRe
 impl miniserde::de::Visitor for crate::Place<BillingBillResourceInvoicingTaxesTaxTaxabilityReason> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(BillingBillResourceInvoicingTaxesTaxTaxabilityReason::from_str(s).unwrap());
+        self.out = Some(
+            BillingBillResourceInvoicingTaxesTaxTaxabilityReason::from_str(s).expect("infallible"),
+        );
         Ok(())
     }
 }
@@ -346,30 +360,41 @@ impl<'de> serde::Deserialize<'de> for BillingBillResourceInvoicingTaxesTaxTaxabi
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap())
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The type of tax information.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum BillingBillResourceInvoicingTaxesTaxType {
     TaxRateDetails,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl BillingBillResourceInvoicingTaxesTaxType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use BillingBillResourceInvoicingTaxesTaxType::*;
         match self {
             TaxRateDetails => "tax_rate_details",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for BillingBillResourceInvoicingTaxesTaxType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use BillingBillResourceInvoicingTaxesTaxType::*;
         match s {
             "tax_rate_details" => Ok(TaxRateDetails),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "BillingBillResourceInvoicingTaxesTaxType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -402,9 +427,7 @@ impl miniserde::Deserialize for BillingBillResourceInvoicingTaxesTaxType {
 impl miniserde::de::Visitor for crate::Place<BillingBillResourceInvoicingTaxesTaxType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            BillingBillResourceInvoicingTaxesTaxType::from_str(s).map_err(|_| miniserde::Error)?,
-        );
+        self.out = Some(BillingBillResourceInvoicingTaxesTaxType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -415,8 +438,6 @@ impl<'de> serde::Deserialize<'de> for BillingBillResourceInvoicingTaxesTaxType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for BillingBillResourceInvoicingTaxesTaxType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

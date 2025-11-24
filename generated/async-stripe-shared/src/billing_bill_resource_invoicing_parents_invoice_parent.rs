@@ -77,7 +77,7 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (Some(quote_details), Some(subscription_details), Some(type_)) =
-                (self.quote_details.take(), self.subscription_details.take(), self.type_)
+                (self.quote_details.take(), self.subscription_details.take(), self.type_.take())
             else {
                 return None;
             };
@@ -119,29 +119,40 @@ const _: () = {
     }
 };
 /// The type of parent that generated this invoice
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum BillingBillResourceInvoicingParentsInvoiceParentType {
     QuoteDetails,
     SubscriptionDetails,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl BillingBillResourceInvoicingParentsInvoiceParentType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use BillingBillResourceInvoicingParentsInvoiceParentType::*;
         match self {
             QuoteDetails => "quote_details",
             SubscriptionDetails => "subscription_details",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for BillingBillResourceInvoicingParentsInvoiceParentType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use BillingBillResourceInvoicingParentsInvoiceParentType::*;
         match s {
             "quote_details" => Ok(QuoteDetails),
             "subscription_details" => Ok(SubscriptionDetails),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "BillingBillResourceInvoicingParentsInvoiceParentType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -175,8 +186,7 @@ impl miniserde::de::Visitor for crate::Place<BillingBillResourceInvoicingParents
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(
-            BillingBillResourceInvoicingParentsInvoiceParentType::from_str(s)
-                .map_err(|_| miniserde::Error)?,
+            BillingBillResourceInvoicingParentsInvoiceParentType::from_str(s).expect("infallible"),
         );
         Ok(())
     }
@@ -188,10 +198,6 @@ impl<'de> serde::Deserialize<'de> for BillingBillResourceInvoicingParentsInvoice
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for BillingBillResourceInvoicingParentsInvoiceParentType",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

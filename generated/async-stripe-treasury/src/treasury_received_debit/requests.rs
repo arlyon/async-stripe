@@ -209,26 +209,37 @@ impl CreateTreasuryReceivedDebitInitiatingPaymentMethodDetails {
     }
 }
 /// The source type.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTreasuryReceivedDebitInitiatingPaymentMethodDetailsType {
     UsBankAccount,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTreasuryReceivedDebitInitiatingPaymentMethodDetailsType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTreasuryReceivedDebitInitiatingPaymentMethodDetailsType::*;
         match self {
             UsBankAccount => "us_bank_account",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTreasuryReceivedDebitInitiatingPaymentMethodDetailsType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTreasuryReceivedDebitInitiatingPaymentMethodDetailsType::*;
         match s {
             "us_bank_account" => Ok(UsBankAccount),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTreasuryReceivedDebitInitiatingPaymentMethodDetailsType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -258,11 +269,7 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for CreateTreasuryReceivedDebitInitiatingPaymentMethodDetailsType",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Optional fields for `us_bank_account`.
@@ -291,26 +298,37 @@ impl Default for CreateTreasuryReceivedDebitInitiatingPaymentMethodDetailsUsBank
 /// Specifies the network rails to be used.
 /// If not set, will default to the PaymentMethod's preferred network.
 /// See the [docs](https://stripe.com/docs/treasury/money-movement/timelines) to learn more about money movement timelines for each network type.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTreasuryReceivedDebitNetwork {
     Ach,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTreasuryReceivedDebitNetwork {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTreasuryReceivedDebitNetwork::*;
         match self {
             Ach => "ach",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTreasuryReceivedDebitNetwork {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTreasuryReceivedDebitNetwork::*;
         match s {
             "ach" => Ok(Ach),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTreasuryReceivedDebitNetwork"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -338,9 +356,7 @@ impl<'de> serde::Deserialize<'de> for CreateTreasuryReceivedDebitNetwork {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTreasuryReceivedDebitNetwork")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Use this endpoint to simulate a test mode ReceivedDebit initiated by a third party.

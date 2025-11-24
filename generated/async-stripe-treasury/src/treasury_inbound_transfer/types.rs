@@ -206,7 +206,7 @@ const _: () = {
                 self.origin_payment_method_details.take(),
                 self.returned,
                 self.statement_descriptor.take(),
-                self.status,
+                self.status.take(),
                 self.status_transitions,
                 self.transaction.take(),
             )
@@ -332,27 +332,31 @@ impl stripe_types::Object for TreasuryInboundTransfer {
     }
 }
 stripe_types::def_id!(TreasuryInboundTransferId);
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum TreasuryInboundTransferStatus {
     Canceled,
     Failed,
     Processing,
     Succeeded,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl TreasuryInboundTransferStatus {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use TreasuryInboundTransferStatus::*;
         match self {
             Canceled => "canceled",
             Failed => "failed",
             Processing => "processing",
             Succeeded => "succeeded",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for TreasuryInboundTransferStatus {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TreasuryInboundTransferStatus::*;
         match s {
@@ -360,7 +364,14 @@ impl std::str::FromStr for TreasuryInboundTransferStatus {
             "failed" => Ok(Failed),
             "processing" => Ok(Processing),
             "succeeded" => Ok(Succeeded),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "TreasuryInboundTransferStatus"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -392,7 +403,7 @@ impl miniserde::Deserialize for TreasuryInboundTransferStatus {
 impl miniserde::de::Visitor for crate::Place<TreasuryInboundTransferStatus> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(TreasuryInboundTransferStatus::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(TreasuryInboundTransferStatus::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -403,8 +414,6 @@ impl<'de> serde::Deserialize<'de> for TreasuryInboundTransferStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for TreasuryInboundTransferStatus")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

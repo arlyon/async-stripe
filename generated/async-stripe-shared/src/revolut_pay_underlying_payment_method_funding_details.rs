@@ -64,7 +64,7 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(card), Some(type_)) = (self.card.take(), self.type_) else {
+            let (Some(card), Some(type_)) = (self.card.take(), self.type_.take()) else {
                 return None;
             };
             Some(Self::Out { card, type_ })
@@ -104,26 +104,37 @@ const _: () = {
     }
 };
 /// funding type of the underlying payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum RevolutPayUnderlyingPaymentMethodFundingDetailsType {
     Card,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl RevolutPayUnderlyingPaymentMethodFundingDetailsType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use RevolutPayUnderlyingPaymentMethodFundingDetailsType::*;
         match self {
             Card => "card",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for RevolutPayUnderlyingPaymentMethodFundingDetailsType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use RevolutPayUnderlyingPaymentMethodFundingDetailsType::*;
         match s {
             "card" => Ok(Card),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "RevolutPayUnderlyingPaymentMethodFundingDetailsType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -157,8 +168,7 @@ impl miniserde::de::Visitor for crate::Place<RevolutPayUnderlyingPaymentMethodFu
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(
-            RevolutPayUnderlyingPaymentMethodFundingDetailsType::from_str(s)
-                .map_err(|_| miniserde::Error)?,
+            RevolutPayUnderlyingPaymentMethodFundingDetailsType::from_str(s).expect("infallible"),
         );
         Ok(())
     }
@@ -170,10 +180,6 @@ impl<'de> serde::Deserialize<'de> for RevolutPayUnderlyingPaymentMethodFundingDe
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for RevolutPayUnderlyingPaymentMethodFundingDetailsType",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

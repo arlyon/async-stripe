@@ -158,7 +158,7 @@ const _: () = {
                 self.quantity,
                 self.tax_rates.take(),
                 self.taxes.take(),
-                self.type_,
+                self.type_.take(),
                 self.unit_amount,
                 self.unit_amount_decimal.take(),
             )
@@ -256,29 +256,36 @@ impl serde::Serialize for CreditNoteLineItem {
 }
 /// The type of the credit note line item, one of `invoice_line_item` or `custom_line_item`.
 /// When the type is `invoice_line_item` there is an additional `invoice_line_item` property on the resource the value of which is the id of the credited line item on the invoice.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreditNoteLineItemType {
     CustomLineItem,
     InvoiceLineItem,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreditNoteLineItemType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreditNoteLineItemType::*;
         match self {
             CustomLineItem => "custom_line_item",
             InvoiceLineItem => "invoice_line_item",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreditNoteLineItemType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreditNoteLineItemType::*;
         match s {
             "custom_line_item" => Ok(CustomLineItem),
             "invoice_line_item" => Ok(InvoiceLineItem),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CreditNoteLineItemType");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -311,7 +318,7 @@ impl miniserde::Deserialize for CreditNoteLineItemType {
 impl miniserde::de::Visitor for crate::Place<CreditNoteLineItemType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(CreditNoteLineItemType::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(CreditNoteLineItemType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -322,8 +329,7 @@ impl<'de> serde::Deserialize<'de> for CreditNoteLineItemType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for CreditNoteLineItemType"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 impl stripe_types::Object for CreditNoteLineItem {

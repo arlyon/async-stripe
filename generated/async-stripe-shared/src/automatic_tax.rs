@@ -92,11 +92,11 @@ const _: () = {
                 Some(provider),
                 Some(status),
             ) = (
-                self.disabled_reason,
+                self.disabled_reason.take(),
                 self.enabled,
                 self.liability.take(),
                 self.provider.take(),
-                self.status,
+                self.status.take(),
             )
             else {
                 return None;
@@ -141,29 +141,36 @@ const _: () = {
     }
 };
 /// If Stripe disabled automatic tax, this enum describes why.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum AutomaticTaxDisabledReason {
     FinalizationRequiresLocationInputs,
     FinalizationSystemError,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl AutomaticTaxDisabledReason {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use AutomaticTaxDisabledReason::*;
         match self {
             FinalizationRequiresLocationInputs => "finalization_requires_location_inputs",
             FinalizationSystemError => "finalization_system_error",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for AutomaticTaxDisabledReason {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use AutomaticTaxDisabledReason::*;
         match s {
             "finalization_requires_location_inputs" => Ok(FinalizationRequiresLocationInputs),
             "finalization_system_error" => Ok(FinalizationSystemError),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "AutomaticTaxDisabledReason");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -196,7 +203,7 @@ impl miniserde::Deserialize for AutomaticTaxDisabledReason {
 impl miniserde::de::Visitor for crate::Place<AutomaticTaxDisabledReason> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(AutomaticTaxDisabledReason::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(AutomaticTaxDisabledReason::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -207,37 +214,43 @@ impl<'de> serde::Deserialize<'de> for AutomaticTaxDisabledReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for AutomaticTaxDisabledReason"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The status of the most recent automated tax calculation for this invoice.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum AutomaticTaxStatus {
     Complete,
     Failed,
     RequiresLocationInputs,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl AutomaticTaxStatus {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use AutomaticTaxStatus::*;
         match self {
             Complete => "complete",
             Failed => "failed",
             RequiresLocationInputs => "requires_location_inputs",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for AutomaticTaxStatus {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use AutomaticTaxStatus::*;
         match s {
             "complete" => Ok(Complete),
             "failed" => Ok(Failed),
             "requires_location_inputs" => Ok(RequiresLocationInputs),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "AutomaticTaxStatus");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -270,7 +283,7 @@ impl miniserde::Deserialize for AutomaticTaxStatus {
 impl miniserde::de::Visitor for crate::Place<AutomaticTaxStatus> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(AutomaticTaxStatus::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(AutomaticTaxStatus::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -281,7 +294,6 @@ impl<'de> serde::Deserialize<'de> for AutomaticTaxStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for AutomaticTaxStatus"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

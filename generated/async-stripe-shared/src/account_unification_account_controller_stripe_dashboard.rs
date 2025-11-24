@@ -1,4 +1,4 @@
-#[derive(Copy, Clone, Debug)]
+#[derive(Clone, Debug)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct AccountUnificationAccountControllerStripeDashboard {
@@ -61,7 +61,7 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(type_),) = (self.type_,) else {
+            let (Some(type_),) = (self.type_.take(),) else {
                 return None;
             };
             Some(Self::Out { type_ })
@@ -100,32 +100,43 @@ const _: () = {
     }
 };
 /// A value indicating the Stripe dashboard this account has access to independent of the Connect application.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum AccountUnificationAccountControllerStripeDashboardType {
     Express,
     Full,
     None,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl AccountUnificationAccountControllerStripeDashboardType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use AccountUnificationAccountControllerStripeDashboardType::*;
         match self {
             Express => "express",
             Full => "full",
             None => "none",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for AccountUnificationAccountControllerStripeDashboardType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use AccountUnificationAccountControllerStripeDashboardType::*;
         match s {
             "express" => Ok(Express),
             "full" => Ok(Full),
             "none" => Ok(None),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "AccountUnificationAccountControllerStripeDashboardType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -162,7 +173,7 @@ impl miniserde::de::Visitor
         use std::str::FromStr;
         self.out = Some(
             AccountUnificationAccountControllerStripeDashboardType::from_str(s)
-                .map_err(|_| miniserde::Error)?,
+                .expect("infallible"),
         );
         Ok(())
     }
@@ -174,10 +185,6 @@ impl<'de> serde::Deserialize<'de> for AccountUnificationAccountControllerStripeD
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for AccountUnificationAccountControllerStripeDashboardType",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

@@ -308,29 +308,40 @@ impl Default for CreateIssuingDisputeEvidenceCanceled {
     }
 }
 /// Whether the product was a merchandise or service.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateIssuingDisputeEvidenceCanceledProductType {
     Merchandise,
     Service,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateIssuingDisputeEvidenceCanceledProductType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateIssuingDisputeEvidenceCanceledProductType::*;
         match self {
             Merchandise => "merchandise",
             Service => "service",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateIssuingDisputeEvidenceCanceledProductType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateIssuingDisputeEvidenceCanceledProductType::*;
         match s {
             "merchandise" => Ok(Merchandise),
             "service" => Ok(Service),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateIssuingDisputeEvidenceCanceledProductType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -358,37 +369,44 @@ impl<'de> serde::Deserialize<'de> for CreateIssuingDisputeEvidenceCanceledProduc
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for CreateIssuingDisputeEvidenceCanceledProductType",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Result of cardholder's attempt to return the product.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateIssuingDisputeEvidenceCanceledReturnStatus {
     MerchantRejected,
     Successful,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateIssuingDisputeEvidenceCanceledReturnStatus {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateIssuingDisputeEvidenceCanceledReturnStatus::*;
         match self {
             MerchantRejected => "merchant_rejected",
             Successful => "successful",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateIssuingDisputeEvidenceCanceledReturnStatus {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateIssuingDisputeEvidenceCanceledReturnStatus::*;
         match s {
             "merchant_rejected" => Ok(MerchantRejected),
             "successful" => Ok(Successful),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateIssuingDisputeEvidenceCanceledReturnStatus"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -416,11 +434,7 @@ impl<'de> serde::Deserialize<'de> for CreateIssuingDisputeEvidenceCanceledReturn
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for CreateIssuingDisputeEvidenceCanceledReturnStatus",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Evidence provided when `reason` is 'fraudulent'.
@@ -483,29 +497,40 @@ impl Default for CreateIssuingDisputeEvidenceMerchandiseNotAsDescribed {
     }
 }
 /// Result of cardholder's attempt to return the product.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateIssuingDisputeEvidenceMerchandiseNotAsDescribedReturnStatus {
     MerchantRejected,
     Successful,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateIssuingDisputeEvidenceMerchandiseNotAsDescribedReturnStatus {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateIssuingDisputeEvidenceMerchandiseNotAsDescribedReturnStatus::*;
         match self {
             MerchantRejected => "merchant_rejected",
             Successful => "successful",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateIssuingDisputeEvidenceMerchandiseNotAsDescribedReturnStatus {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateIssuingDisputeEvidenceMerchandiseNotAsDescribedReturnStatus::*;
         match s {
             "merchant_rejected" => Ok(MerchantRejected),
             "successful" => Ok(Successful),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateIssuingDisputeEvidenceMerchandiseNotAsDescribedReturnStatus"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -535,7 +560,7 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateIssuingDisputeEvidenceMerchandiseNotAsDescribedReturnStatus"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Evidence provided when `reason` is 'no_valid_authorization'.
@@ -594,29 +619,40 @@ impl Default for CreateIssuingDisputeEvidenceNotReceived {
     }
 }
 /// Whether the product was a merchandise or service.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateIssuingDisputeEvidenceNotReceivedProductType {
     Merchandise,
     Service,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateIssuingDisputeEvidenceNotReceivedProductType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateIssuingDisputeEvidenceNotReceivedProductType::*;
         match self {
             Merchandise => "merchandise",
             Service => "service",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateIssuingDisputeEvidenceNotReceivedProductType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateIssuingDisputeEvidenceNotReceivedProductType::*;
         match s {
             "merchandise" => Ok(Merchandise),
             "service" => Ok(Service),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateIssuingDisputeEvidenceNotReceivedProductType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -644,11 +680,7 @@ impl<'de> serde::Deserialize<'de> for CreateIssuingDisputeEvidenceNotReceivedPro
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for CreateIssuingDisputeEvidenceNotReceivedProductType",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Evidence provided when `reason` is 'other'.
@@ -683,29 +715,40 @@ impl Default for CreateIssuingDisputeEvidenceOther {
     }
 }
 /// Whether the product was a merchandise or service.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateIssuingDisputeEvidenceOtherProductType {
     Merchandise,
     Service,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateIssuingDisputeEvidenceOtherProductType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateIssuingDisputeEvidenceOtherProductType::*;
         match self {
             Merchandise => "merchandise",
             Service => "service",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateIssuingDisputeEvidenceOtherProductType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateIssuingDisputeEvidenceOtherProductType::*;
         match s {
             "merchandise" => Ok(Merchandise),
             "service" => Ok(Service),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateIssuingDisputeEvidenceOtherProductType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -733,15 +776,12 @@ impl<'de> serde::Deserialize<'de> for CreateIssuingDisputeEvidenceOtherProductTy
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for CreateIssuingDisputeEvidenceOtherProductType",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The reason for filing the dispute. The evidence should be submitted in the field of the same name.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateIssuingDisputeEvidenceReason {
     Canceled,
     Duplicate,
@@ -751,9 +791,11 @@ pub enum CreateIssuingDisputeEvidenceReason {
     NotReceived,
     Other,
     ServiceNotAsDescribed,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateIssuingDisputeEvidenceReason {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateIssuingDisputeEvidenceReason::*;
         match self {
             Canceled => "canceled",
@@ -764,12 +806,13 @@ impl CreateIssuingDisputeEvidenceReason {
             NotReceived => "not_received",
             Other => "other",
             ServiceNotAsDescribed => "service_not_as_described",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateIssuingDisputeEvidenceReason {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateIssuingDisputeEvidenceReason::*;
         match s {
@@ -781,7 +824,14 @@ impl std::str::FromStr for CreateIssuingDisputeEvidenceReason {
             "not_received" => Ok(NotReceived),
             "other" => Ok(Other),
             "service_not_as_described" => Ok(ServiceNotAsDescribed),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateIssuingDisputeEvidenceReason"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -809,9 +859,7 @@ impl<'de> serde::Deserialize<'de> for CreateIssuingDisputeEvidenceReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateIssuingDisputeEvidenceReason")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Params for disputes related to Treasury FinancialAccounts
@@ -1030,29 +1078,40 @@ impl Default for UpdateIssuingDisputeEvidenceCanceled {
     }
 }
 /// Whether the product was a merchandise or service.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdateIssuingDisputeEvidenceCanceledProductType {
     Merchandise,
     Service,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdateIssuingDisputeEvidenceCanceledProductType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdateIssuingDisputeEvidenceCanceledProductType::*;
         match self {
             Merchandise => "merchandise",
             Service => "service",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for UpdateIssuingDisputeEvidenceCanceledProductType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateIssuingDisputeEvidenceCanceledProductType::*;
         match s {
             "merchandise" => Ok(Merchandise),
             "service" => Ok(Service),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdateIssuingDisputeEvidenceCanceledProductType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -1080,37 +1139,44 @@ impl<'de> serde::Deserialize<'de> for UpdateIssuingDisputeEvidenceCanceledProduc
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for UpdateIssuingDisputeEvidenceCanceledProductType",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Result of cardholder's attempt to return the product.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdateIssuingDisputeEvidenceCanceledReturnStatus {
     MerchantRejected,
     Successful,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdateIssuingDisputeEvidenceCanceledReturnStatus {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdateIssuingDisputeEvidenceCanceledReturnStatus::*;
         match self {
             MerchantRejected => "merchant_rejected",
             Successful => "successful",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for UpdateIssuingDisputeEvidenceCanceledReturnStatus {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateIssuingDisputeEvidenceCanceledReturnStatus::*;
         match s {
             "merchant_rejected" => Ok(MerchantRejected),
             "successful" => Ok(Successful),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdateIssuingDisputeEvidenceCanceledReturnStatus"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -1138,11 +1204,7 @@ impl<'de> serde::Deserialize<'de> for UpdateIssuingDisputeEvidenceCanceledReturn
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for UpdateIssuingDisputeEvidenceCanceledReturnStatus",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Evidence provided when `reason` is 'fraudulent'.
@@ -1205,29 +1267,40 @@ impl Default for UpdateIssuingDisputeEvidenceMerchandiseNotAsDescribed {
     }
 }
 /// Result of cardholder's attempt to return the product.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdateIssuingDisputeEvidenceMerchandiseNotAsDescribedReturnStatus {
     MerchantRejected,
     Successful,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdateIssuingDisputeEvidenceMerchandiseNotAsDescribedReturnStatus {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdateIssuingDisputeEvidenceMerchandiseNotAsDescribedReturnStatus::*;
         match self {
             MerchantRejected => "merchant_rejected",
             Successful => "successful",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for UpdateIssuingDisputeEvidenceMerchandiseNotAsDescribedReturnStatus {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateIssuingDisputeEvidenceMerchandiseNotAsDescribedReturnStatus::*;
         match s {
             "merchant_rejected" => Ok(MerchantRejected),
             "successful" => Ok(Successful),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdateIssuingDisputeEvidenceMerchandiseNotAsDescribedReturnStatus"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -1257,7 +1330,7 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdateIssuingDisputeEvidenceMerchandiseNotAsDescribedReturnStatus"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Evidence provided when `reason` is 'no_valid_authorization'.
@@ -1316,29 +1389,40 @@ impl Default for UpdateIssuingDisputeEvidenceNotReceived {
     }
 }
 /// Whether the product was a merchandise or service.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdateIssuingDisputeEvidenceNotReceivedProductType {
     Merchandise,
     Service,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdateIssuingDisputeEvidenceNotReceivedProductType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdateIssuingDisputeEvidenceNotReceivedProductType::*;
         match self {
             Merchandise => "merchandise",
             Service => "service",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for UpdateIssuingDisputeEvidenceNotReceivedProductType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateIssuingDisputeEvidenceNotReceivedProductType::*;
         match s {
             "merchandise" => Ok(Merchandise),
             "service" => Ok(Service),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdateIssuingDisputeEvidenceNotReceivedProductType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -1366,11 +1450,7 @@ impl<'de> serde::Deserialize<'de> for UpdateIssuingDisputeEvidenceNotReceivedPro
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for UpdateIssuingDisputeEvidenceNotReceivedProductType",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Evidence provided when `reason` is 'other'.
@@ -1405,29 +1485,40 @@ impl Default for UpdateIssuingDisputeEvidenceOther {
     }
 }
 /// Whether the product was a merchandise or service.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdateIssuingDisputeEvidenceOtherProductType {
     Merchandise,
     Service,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdateIssuingDisputeEvidenceOtherProductType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdateIssuingDisputeEvidenceOtherProductType::*;
         match self {
             Merchandise => "merchandise",
             Service => "service",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for UpdateIssuingDisputeEvidenceOtherProductType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateIssuingDisputeEvidenceOtherProductType::*;
         match s {
             "merchandise" => Ok(Merchandise),
             "service" => Ok(Service),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdateIssuingDisputeEvidenceOtherProductType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -1455,15 +1546,12 @@ impl<'de> serde::Deserialize<'de> for UpdateIssuingDisputeEvidenceOtherProductTy
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for UpdateIssuingDisputeEvidenceOtherProductType",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The reason for filing the dispute. The evidence should be submitted in the field of the same name.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdateIssuingDisputeEvidenceReason {
     Canceled,
     Duplicate,
@@ -1473,9 +1561,11 @@ pub enum UpdateIssuingDisputeEvidenceReason {
     NotReceived,
     Other,
     ServiceNotAsDescribed,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdateIssuingDisputeEvidenceReason {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdateIssuingDisputeEvidenceReason::*;
         match self {
             Canceled => "canceled",
@@ -1486,12 +1576,13 @@ impl UpdateIssuingDisputeEvidenceReason {
             NotReceived => "not_received",
             Other => "other",
             ServiceNotAsDescribed => "service_not_as_described",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for UpdateIssuingDisputeEvidenceReason {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateIssuingDisputeEvidenceReason::*;
         match s {
@@ -1503,7 +1594,14 @@ impl std::str::FromStr for UpdateIssuingDisputeEvidenceReason {
             "not_received" => Ok(NotReceived),
             "other" => Ok(Other),
             "service_not_as_described" => Ok(ServiceNotAsDescribed),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdateIssuingDisputeEvidenceReason"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -1531,9 +1629,7 @@ impl<'de> serde::Deserialize<'de> for UpdateIssuingDisputeEvidenceReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for UpdateIssuingDisputeEvidenceReason")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Updates the specified Issuing `Dispute` object by setting the values of the parameters passed.

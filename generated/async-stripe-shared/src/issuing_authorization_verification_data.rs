@@ -107,13 +107,13 @@ const _: () = {
                 Some(postal_code),
                 Some(three_d_secure),
             ) = (
-                self.address_line1_check,
-                self.address_postal_code_check,
-                self.authentication_exemption,
-                self.cvc_check,
-                self.expiry_check,
+                self.address_line1_check.take(),
+                self.address_postal_code_check.take(),
+                self.authentication_exemption.take(),
+                self.cvc_check.take(),
+                self.expiry_check.take(),
                 self.postal_code.take(),
-                self.three_d_secure,
+                self.three_d_secure.take(),
             )
             else {
                 return None;
@@ -172,32 +172,43 @@ const _: () = {
     }
 };
 /// Whether the cardholder provided an address first line and if it matched the cardholder’s `billing.address.line1`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum IssuingAuthorizationVerificationDataAddressLine1Check {
     Match,
     Mismatch,
     NotProvided,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl IssuingAuthorizationVerificationDataAddressLine1Check {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use IssuingAuthorizationVerificationDataAddressLine1Check::*;
         match self {
             Match => "match",
             Mismatch => "mismatch",
             NotProvided => "not_provided",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for IssuingAuthorizationVerificationDataAddressLine1Check {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use IssuingAuthorizationVerificationDataAddressLine1Check::*;
         match s {
             "match" => Ok(Match),
             "mismatch" => Ok(Mismatch),
             "not_provided" => Ok(NotProvided),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "IssuingAuthorizationVerificationDataAddressLine1Check"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -233,8 +244,7 @@ impl miniserde::de::Visitor
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(
-            IssuingAuthorizationVerificationDataAddressLine1Check::from_str(s)
-                .map_err(|_| miniserde::Error)?,
+            IssuingAuthorizationVerificationDataAddressLine1Check::from_str(s).expect("infallible"),
         );
         Ok(())
     }
@@ -246,40 +256,47 @@ impl<'de> serde::Deserialize<'de> for IssuingAuthorizationVerificationDataAddres
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for IssuingAuthorizationVerificationDataAddressLine1Check",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Whether the cardholder provided a postal code and if it matched the cardholder’s `billing.address.postal_code`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum IssuingAuthorizationVerificationDataAddressPostalCodeCheck {
     Match,
     Mismatch,
     NotProvided,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl IssuingAuthorizationVerificationDataAddressPostalCodeCheck {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use IssuingAuthorizationVerificationDataAddressPostalCodeCheck::*;
         match self {
             Match => "match",
             Mismatch => "mismatch",
             NotProvided => "not_provided",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for IssuingAuthorizationVerificationDataAddressPostalCodeCheck {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use IssuingAuthorizationVerificationDataAddressPostalCodeCheck::*;
         match s {
             "match" => Ok(Match),
             "mismatch" => Ok(Mismatch),
             "not_provided" => Ok(NotProvided),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "IssuingAuthorizationVerificationDataAddressPostalCodeCheck"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -316,7 +333,7 @@ impl miniserde::de::Visitor
         use std::str::FromStr;
         self.out = Some(
             IssuingAuthorizationVerificationDataAddressPostalCodeCheck::from_str(s)
-                .map_err(|_| miniserde::Error)?,
+                .expect("infallible"),
         );
         Ok(())
     }
@@ -330,40 +347,47 @@ impl<'de> serde::Deserialize<'de> for IssuingAuthorizationVerificationDataAddres
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for IssuingAuthorizationVerificationDataAddressPostalCodeCheck",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Whether the cardholder provided a CVC and if it matched Stripe’s record.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum IssuingAuthorizationVerificationDataCvcCheck {
     Match,
     Mismatch,
     NotProvided,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl IssuingAuthorizationVerificationDataCvcCheck {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use IssuingAuthorizationVerificationDataCvcCheck::*;
         match self {
             Match => "match",
             Mismatch => "mismatch",
             NotProvided => "not_provided",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for IssuingAuthorizationVerificationDataCvcCheck {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use IssuingAuthorizationVerificationDataCvcCheck::*;
         match s {
             "match" => Ok(Match),
             "mismatch" => Ok(Mismatch),
             "not_provided" => Ok(NotProvided),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "IssuingAuthorizationVerificationDataCvcCheck"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -396,10 +420,8 @@ impl miniserde::Deserialize for IssuingAuthorizationVerificationDataCvcCheck {
 impl miniserde::de::Visitor for crate::Place<IssuingAuthorizationVerificationDataCvcCheck> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            IssuingAuthorizationVerificationDataCvcCheck::from_str(s)
-                .map_err(|_| miniserde::Error)?,
-        );
+        self.out =
+            Some(IssuingAuthorizationVerificationDataCvcCheck::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -410,40 +432,47 @@ impl<'de> serde::Deserialize<'de> for IssuingAuthorizationVerificationDataCvcChe
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for IssuingAuthorizationVerificationDataCvcCheck",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Whether the cardholder provided an expiry date and if it matched Stripe’s record.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum IssuingAuthorizationVerificationDataExpiryCheck {
     Match,
     Mismatch,
     NotProvided,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl IssuingAuthorizationVerificationDataExpiryCheck {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use IssuingAuthorizationVerificationDataExpiryCheck::*;
         match self {
             Match => "match",
             Mismatch => "mismatch",
             NotProvided => "not_provided",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for IssuingAuthorizationVerificationDataExpiryCheck {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use IssuingAuthorizationVerificationDataExpiryCheck::*;
         match s {
             "match" => Ok(Match),
             "mismatch" => Ok(Mismatch),
             "not_provided" => Ok(NotProvided),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "IssuingAuthorizationVerificationDataExpiryCheck"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -476,10 +505,8 @@ impl miniserde::Deserialize for IssuingAuthorizationVerificationDataExpiryCheck 
 impl miniserde::de::Visitor for crate::Place<IssuingAuthorizationVerificationDataExpiryCheck> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            IssuingAuthorizationVerificationDataExpiryCheck::from_str(s)
-                .map_err(|_| miniserde::Error)?,
-        );
+        self.out =
+            Some(IssuingAuthorizationVerificationDataExpiryCheck::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -490,10 +517,6 @@ impl<'de> serde::Deserialize<'de> for IssuingAuthorizationVerificationDataExpiry
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for IssuingAuthorizationVerificationDataExpiryCheck",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

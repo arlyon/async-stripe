@@ -256,7 +256,7 @@ const _: () = {
                 self.amount,
                 self.amount_details,
                 self.approved,
-                self.authorization_method,
+                self.authorization_method.take(),
                 self.balance_transactions.take(),
                 self.card.take(),
                 self.cardholder.take(),
@@ -274,7 +274,7 @@ const _: () = {
                 self.network_data.take(),
                 self.pending_request.take(),
                 self.request_history.take(),
-                self.status,
+                self.status.take(),
                 self.token.take(),
                 self.transactions.take(),
                 self.treasury.take(),
@@ -427,16 +427,19 @@ impl stripe_types::Object for IssuingAuthorization {
     }
 }
 stripe_types::def_id!(IssuingAuthorizationId);
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum IssuingAuthorizationAuthorizationMethod {
     Chip,
     Contactless,
     KeyedIn,
     Online,
     Swipe,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl IssuingAuthorizationAuthorizationMethod {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use IssuingAuthorizationAuthorizationMethod::*;
         match self {
             Chip => "chip",
@@ -444,12 +447,13 @@ impl IssuingAuthorizationAuthorizationMethod {
             KeyedIn => "keyed_in",
             Online => "online",
             Swipe => "swipe",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for IssuingAuthorizationAuthorizationMethod {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use IssuingAuthorizationAuthorizationMethod::*;
         match s {
@@ -458,7 +462,14 @@ impl std::str::FromStr for IssuingAuthorizationAuthorizationMethod {
             "keyed_in" => Ok(KeyedIn),
             "online" => Ok(Online),
             "swipe" => Ok(Swipe),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "IssuingAuthorizationAuthorizationMethod"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -490,9 +501,7 @@ impl miniserde::Deserialize for IssuingAuthorizationAuthorizationMethod {
 impl miniserde::de::Visitor for crate::Place<IssuingAuthorizationAuthorizationMethod> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            IssuingAuthorizationAuthorizationMethod::from_str(s).map_err(|_| miniserde::Error)?,
-        );
+        self.out = Some(IssuingAuthorizationAuthorizationMethod::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -503,32 +512,34 @@ impl<'de> serde::Deserialize<'de> for IssuingAuthorizationAuthorizationMethod {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for IssuingAuthorizationAuthorizationMethod")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum IssuingAuthorizationStatus {
     Closed,
     Expired,
     Pending,
     Reversed,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl IssuingAuthorizationStatus {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use IssuingAuthorizationStatus::*;
         match self {
             Closed => "closed",
             Expired => "expired",
             Pending => "pending",
             Reversed => "reversed",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for IssuingAuthorizationStatus {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use IssuingAuthorizationStatus::*;
         match s {
@@ -536,7 +547,10 @@ impl std::str::FromStr for IssuingAuthorizationStatus {
             "expired" => Ok(Expired),
             "pending" => Ok(Pending),
             "reversed" => Ok(Reversed),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "IssuingAuthorizationStatus");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -568,7 +582,7 @@ impl miniserde::Deserialize for IssuingAuthorizationStatus {
 impl miniserde::de::Visitor for crate::Place<IssuingAuthorizationStatus> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(IssuingAuthorizationStatus::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(IssuingAuthorizationStatus::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -579,7 +593,6 @@ impl<'de> serde::Deserialize<'de> for IssuingAuthorizationStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for IssuingAuthorizationStatus"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

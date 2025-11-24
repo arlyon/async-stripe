@@ -79,7 +79,14 @@ const _: () = {
                 "bank_account" => Self::BankAccount(FromValueOpt::from_value(Value::Object(o))?),
                 "card" => Self::Card(FromValueOpt::from_value(Value::Object(o))?),
 
-                _ => return None,
+                _ => {
+                    tracing::warn!(
+                        "Unknown object type '{}' for enum '{}'",
+                        key,
+                        "ExternalAccount"
+                    );
+                    return None;
+                }
             })
         }
     }

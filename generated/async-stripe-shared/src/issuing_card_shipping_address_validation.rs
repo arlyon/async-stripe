@@ -73,7 +73,7 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (Some(mode), Some(normalized_address), Some(result)) =
-                (self.mode, self.normalized_address.take(), self.result)
+                (self.mode.take(), self.normalized_address.take(), self.result.take())
             else {
                 return None;
             };
@@ -115,32 +115,43 @@ const _: () = {
     }
 };
 /// The address validation capabilities to use.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum IssuingCardShippingAddressValidationMode {
     Disabled,
     NormalizationOnly,
     ValidationAndNormalization,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl IssuingCardShippingAddressValidationMode {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use IssuingCardShippingAddressValidationMode::*;
         match self {
             Disabled => "disabled",
             NormalizationOnly => "normalization_only",
             ValidationAndNormalization => "validation_and_normalization",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for IssuingCardShippingAddressValidationMode {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use IssuingCardShippingAddressValidationMode::*;
         match s {
             "disabled" => Ok(Disabled),
             "normalization_only" => Ok(NormalizationOnly),
             "validation_and_normalization" => Ok(ValidationAndNormalization),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "IssuingCardShippingAddressValidationMode"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -173,9 +184,7 @@ impl miniserde::Deserialize for IssuingCardShippingAddressValidationMode {
 impl miniserde::de::Visitor for crate::Place<IssuingCardShippingAddressValidationMode> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            IssuingCardShippingAddressValidationMode::from_str(s).map_err(|_| miniserde::Error)?,
-        );
+        self.out = Some(IssuingCardShippingAddressValidationMode::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -186,38 +195,47 @@ impl<'de> serde::Deserialize<'de> for IssuingCardShippingAddressValidationMode {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for IssuingCardShippingAddressValidationMode")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The validation result for the shipping address.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum IssuingCardShippingAddressValidationResult {
     Indeterminate,
     LikelyDeliverable,
     LikelyUndeliverable,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl IssuingCardShippingAddressValidationResult {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use IssuingCardShippingAddressValidationResult::*;
         match self {
             Indeterminate => "indeterminate",
             LikelyDeliverable => "likely_deliverable",
             LikelyUndeliverable => "likely_undeliverable",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for IssuingCardShippingAddressValidationResult {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use IssuingCardShippingAddressValidationResult::*;
         match s {
             "indeterminate" => Ok(Indeterminate),
             "likely_deliverable" => Ok(LikelyDeliverable),
             "likely_undeliverable" => Ok(LikelyUndeliverable),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "IssuingCardShippingAddressValidationResult"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -250,10 +268,8 @@ impl miniserde::Deserialize for IssuingCardShippingAddressValidationResult {
 impl miniserde::de::Visitor for crate::Place<IssuingCardShippingAddressValidationResult> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            IssuingCardShippingAddressValidationResult::from_str(s)
-                .map_err(|_| miniserde::Error)?,
-        );
+        self.out =
+            Some(IssuingCardShippingAddressValidationResult::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -264,8 +280,6 @@ impl<'de> serde::Deserialize<'de> for IssuingCardShippingAddressValidationResult
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for IssuingCardShippingAddressValidationResult")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

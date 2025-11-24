@@ -349,7 +349,14 @@ impl std::str::FromStr for CreateReportingReportRunParametersReportingCategory {
             "transfer" => Ok(Transfer),
             "transfer_reversal" => Ok(TransferReversal),
             "unreconciled_customer_funds" => Ok(UnreconciledCustomerFunds),
-            v => Ok(Unknown(v.to_owned())),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateReportingReportRunParametersReportingCategory"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -377,7 +384,7 @@ impl<'de> serde::Deserialize<'de> for CreateReportingReportRunParametersReportin
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap())
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Defaults to `Etc/UTC`.
@@ -2201,7 +2208,14 @@ impl std::str::FromStr for CreateReportingReportRunParametersTimezone {
             "W-SU" => Ok(WMinusSu),
             "WET" => Ok(Wet),
             "Zulu" => Ok(Zulu),
-            v => Ok(Unknown(v.to_owned())),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateReportingReportRunParametersTimezone"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -2229,7 +2243,7 @@ impl<'de> serde::Deserialize<'de> for CreateReportingReportRunParametersTimezone
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap())
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Creates a new object and begin running the report.

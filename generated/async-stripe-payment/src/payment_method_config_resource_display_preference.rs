@@ -1,4 +1,4 @@
-#[derive(Copy, Clone, Debug)]
+#[derive(Clone, Debug)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentMethodConfigResourceDisplayPreference {
@@ -74,7 +74,7 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (Some(overridable), Some(preference), Some(value)) =
-                (self.overridable, self.preference, self.value)
+                (self.overridable, self.preference.take(), self.value.take())
             else {
                 return None;
             };
@@ -116,32 +116,43 @@ const _: () = {
     }
 };
 /// The account's display preference.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PaymentMethodConfigResourceDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl PaymentMethodConfigResourceDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PaymentMethodConfigResourceDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for PaymentMethodConfigResourceDisplayPreferencePreference {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentMethodConfigResourceDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PaymentMethodConfigResourceDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -178,7 +189,7 @@ impl miniserde::de::Visitor
         use std::str::FromStr;
         self.out = Some(
             PaymentMethodConfigResourceDisplayPreferencePreference::from_str(s)
-                .map_err(|_| miniserde::Error)?,
+                .expect("infallible"),
         );
         Ok(())
     }
@@ -190,37 +201,44 @@ impl<'de> serde::Deserialize<'de> for PaymentMethodConfigResourceDisplayPreferen
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for PaymentMethodConfigResourceDisplayPreferencePreference",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The effective display preference value.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PaymentMethodConfigResourceDisplayPreferenceValue {
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl PaymentMethodConfigResourceDisplayPreferenceValue {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PaymentMethodConfigResourceDisplayPreferenceValue::*;
         match self {
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for PaymentMethodConfigResourceDisplayPreferenceValue {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentMethodConfigResourceDisplayPreferenceValue::*;
         match s {
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PaymentMethodConfigResourceDisplayPreferenceValue"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -254,8 +272,7 @@ impl miniserde::de::Visitor for crate::Place<PaymentMethodConfigResourceDisplayP
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(
-            PaymentMethodConfigResourceDisplayPreferenceValue::from_str(s)
-                .map_err(|_| miniserde::Error)?,
+            PaymentMethodConfigResourceDisplayPreferenceValue::from_str(s).expect("infallible"),
         );
         Ok(())
     }
@@ -267,10 +284,6 @@ impl<'de> serde::Deserialize<'de> for PaymentMethodConfigResourceDisplayPreferen
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for PaymentMethodConfigResourceDisplayPreferenceValue",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

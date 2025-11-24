@@ -21,27 +21,31 @@ impl ListTaxRegistrationBuilder {
     }
 }
 /// The status of the Tax Registration.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum ListTaxRegistrationStatus {
     Active,
     All,
     Expired,
     Scheduled,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl ListTaxRegistrationStatus {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use ListTaxRegistrationStatus::*;
         match self {
             Active => "active",
             All => "all",
             Expired => "expired",
             Scheduled => "scheduled",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for ListTaxRegistrationStatus {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ListTaxRegistrationStatus::*;
         match s {
@@ -49,7 +53,10 @@ impl std::str::FromStr for ListTaxRegistrationStatus {
             "all" => Ok(All),
             "expired" => Ok(Expired),
             "scheduled" => Ok(Scheduled),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "ListTaxRegistrationStatus");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -77,8 +84,7 @@ impl<'de> serde::Deserialize<'de> for ListTaxRegistrationStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for ListTaxRegistrationStatus"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Returns a list of Tax `Registration` objects.
@@ -663,7 +669,7 @@ impl Default for CreateTaxRegistrationCountryOptions {
     }
 }
 /// Options for the registration in AE.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsAe {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -678,7 +684,7 @@ impl CreateTaxRegistrationCountryOptionsAe {
     }
 }
 /// Options for the standard registration.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsAeStandard {
     /// Place of supply scheme used in an standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -696,29 +702,40 @@ impl Default for CreateTaxRegistrationCountryOptionsAeStandard {
     }
 }
 /// Place of supply scheme used in an standard registration.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsAeStandardPlaceOfSupplyScheme {
     InboundGoods,
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsAeStandardPlaceOfSupplyScheme {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsAeStandardPlaceOfSupplyScheme::*;
         match self {
             InboundGoods => "inbound_goods",
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsAeStandardPlaceOfSupplyScheme {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsAeStandardPlaceOfSupplyScheme::*;
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsAeStandardPlaceOfSupplyScheme"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -748,30 +765,41 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsAeStandardPlaceOfSupplyScheme"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Type of registration to be created in `country`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsAeType {
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsAeType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsAeType::*;
         match self {
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsAeType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsAeType::*;
         match s {
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsAeType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -799,13 +827,11 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsAeType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsAeType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in AL.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsAl {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -820,7 +846,7 @@ impl CreateTaxRegistrationCountryOptionsAl {
     }
 }
 /// Options for the standard registration.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsAlStandard {
     /// Place of supply scheme used in an standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -838,29 +864,40 @@ impl Default for CreateTaxRegistrationCountryOptionsAlStandard {
     }
 }
 /// Place of supply scheme used in an standard registration.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsAlStandardPlaceOfSupplyScheme {
     InboundGoods,
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsAlStandardPlaceOfSupplyScheme {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsAlStandardPlaceOfSupplyScheme::*;
         match self {
             InboundGoods => "inbound_goods",
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsAlStandardPlaceOfSupplyScheme {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsAlStandardPlaceOfSupplyScheme::*;
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsAlStandardPlaceOfSupplyScheme"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -890,30 +927,41 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsAlStandardPlaceOfSupplyScheme"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Type of registration to be created in `country`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsAlType {
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsAlType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsAlType::*;
         match self {
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsAlType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsAlType::*;
         match s {
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsAlType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -941,13 +989,11 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsAlType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsAlType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in AM.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsAm {
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
@@ -959,26 +1005,37 @@ impl CreateTaxRegistrationCountryOptionsAm {
     }
 }
 /// Type of registration to be created in `country`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsAmType {
     Simplified,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsAmType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsAmType::*;
         match self {
             Simplified => "simplified",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsAmType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsAmType::*;
         match s {
             "simplified" => Ok(Simplified),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsAmType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -1006,13 +1063,11 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsAmType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsAmType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in AO.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsAo {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1027,7 +1082,7 @@ impl CreateTaxRegistrationCountryOptionsAo {
     }
 }
 /// Options for the standard registration.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsAoStandard {
     /// Place of supply scheme used in an standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1045,29 +1100,40 @@ impl Default for CreateTaxRegistrationCountryOptionsAoStandard {
     }
 }
 /// Place of supply scheme used in an standard registration.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsAoStandardPlaceOfSupplyScheme {
     InboundGoods,
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsAoStandardPlaceOfSupplyScheme {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsAoStandardPlaceOfSupplyScheme::*;
         match self {
             InboundGoods => "inbound_goods",
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsAoStandardPlaceOfSupplyScheme {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsAoStandardPlaceOfSupplyScheme::*;
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsAoStandardPlaceOfSupplyScheme"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -1097,30 +1163,41 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsAoStandardPlaceOfSupplyScheme"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Type of registration to be created in `country`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsAoType {
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsAoType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsAoType::*;
         match self {
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsAoType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsAoType::*;
         match s {
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsAoType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -1148,13 +1225,11 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsAoType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsAoType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in AT.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsAt {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1169,7 +1244,7 @@ impl CreateTaxRegistrationCountryOptionsAt {
     }
 }
 /// Options for the standard registration.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsAtStandard {
     /// Place of supply scheme used in an EU standard registration.
     pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsAtStandardPlaceOfSupplyScheme,
@@ -1184,32 +1259,43 @@ impl CreateTaxRegistrationCountryOptionsAtStandard {
     }
 }
 /// Place of supply scheme used in an EU standard registration.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsAtStandardPlaceOfSupplyScheme {
     InboundGoods,
     SmallSeller,
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsAtStandardPlaceOfSupplyScheme {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsAtStandardPlaceOfSupplyScheme::*;
         match self {
             InboundGoods => "inbound_goods",
             SmallSeller => "small_seller",
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsAtStandardPlaceOfSupplyScheme {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsAtStandardPlaceOfSupplyScheme::*;
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsAtStandardPlaceOfSupplyScheme"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -1239,31 +1325,35 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsAtStandardPlaceOfSupplyScheme"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Type of registration to be created in an EU country.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsAtType {
     Ioss,
     OssNonUnion,
     OssUnion,
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsAtType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsAtType::*;
         match self {
             Ioss => "ioss",
             OssNonUnion => "oss_non_union",
             OssUnion => "oss_union",
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsAtType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsAtType::*;
         match s {
@@ -1271,7 +1361,14 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsAtType {
             "oss_non_union" => Ok(OssNonUnion),
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsAtType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -1299,13 +1396,11 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsAtType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsAtType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in AU.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsAu {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1320,7 +1415,7 @@ impl CreateTaxRegistrationCountryOptionsAu {
     }
 }
 /// Options for the standard registration.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsAuStandard {
     /// Place of supply scheme used in an standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1338,29 +1433,40 @@ impl Default for CreateTaxRegistrationCountryOptionsAuStandard {
     }
 }
 /// Place of supply scheme used in an standard registration.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsAuStandardPlaceOfSupplyScheme {
     InboundGoods,
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsAuStandardPlaceOfSupplyScheme {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsAuStandardPlaceOfSupplyScheme::*;
         match self {
             InboundGoods => "inbound_goods",
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsAuStandardPlaceOfSupplyScheme {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsAuStandardPlaceOfSupplyScheme::*;
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsAuStandardPlaceOfSupplyScheme"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -1390,30 +1496,41 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsAuStandardPlaceOfSupplyScheme"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Type of registration to be created in `country`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsAuType {
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsAuType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsAuType::*;
         match self {
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsAuType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsAuType::*;
         match s {
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsAuType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -1441,13 +1558,11 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsAuType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsAuType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in AW.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsAw {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1462,7 +1577,7 @@ impl CreateTaxRegistrationCountryOptionsAw {
     }
 }
 /// Options for the standard registration.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsAwStandard {
     /// Place of supply scheme used in an standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1480,29 +1595,40 @@ impl Default for CreateTaxRegistrationCountryOptionsAwStandard {
     }
 }
 /// Place of supply scheme used in an standard registration.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsAwStandardPlaceOfSupplyScheme {
     InboundGoods,
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsAwStandardPlaceOfSupplyScheme {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsAwStandardPlaceOfSupplyScheme::*;
         match self {
             InboundGoods => "inbound_goods",
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsAwStandardPlaceOfSupplyScheme {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsAwStandardPlaceOfSupplyScheme::*;
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsAwStandardPlaceOfSupplyScheme"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -1532,30 +1658,41 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsAwStandardPlaceOfSupplyScheme"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Type of registration to be created in `country`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsAwType {
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsAwType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsAwType::*;
         match self {
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsAwType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsAwType::*;
         match s {
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsAwType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -1583,13 +1720,11 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsAwType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsAwType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in AZ.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsAz {
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
@@ -1601,26 +1736,37 @@ impl CreateTaxRegistrationCountryOptionsAz {
     }
 }
 /// Type of registration to be created in `country`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsAzType {
     Simplified,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsAzType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsAzType::*;
         match self {
             Simplified => "simplified",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsAzType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsAzType::*;
         match s {
             "simplified" => Ok(Simplified),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsAzType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -1648,13 +1794,11 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsAzType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsAzType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in BA.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsBa {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1669,7 +1813,7 @@ impl CreateTaxRegistrationCountryOptionsBa {
     }
 }
 /// Options for the standard registration.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsBaStandard {
     /// Place of supply scheme used in an standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1687,29 +1831,40 @@ impl Default for CreateTaxRegistrationCountryOptionsBaStandard {
     }
 }
 /// Place of supply scheme used in an standard registration.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsBaStandardPlaceOfSupplyScheme {
     InboundGoods,
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsBaStandardPlaceOfSupplyScheme {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsBaStandardPlaceOfSupplyScheme::*;
         match self {
             InboundGoods => "inbound_goods",
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsBaStandardPlaceOfSupplyScheme {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsBaStandardPlaceOfSupplyScheme::*;
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsBaStandardPlaceOfSupplyScheme"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -1739,30 +1894,41 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsBaStandardPlaceOfSupplyScheme"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Type of registration to be created in `country`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsBaType {
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsBaType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsBaType::*;
         match self {
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsBaType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsBaType::*;
         match s {
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsBaType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -1790,13 +1956,11 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsBaType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsBaType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in BB.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsBb {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1811,7 +1975,7 @@ impl CreateTaxRegistrationCountryOptionsBb {
     }
 }
 /// Options for the standard registration.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsBbStandard {
     /// Place of supply scheme used in an standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1829,29 +1993,40 @@ impl Default for CreateTaxRegistrationCountryOptionsBbStandard {
     }
 }
 /// Place of supply scheme used in an standard registration.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsBbStandardPlaceOfSupplyScheme {
     InboundGoods,
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsBbStandardPlaceOfSupplyScheme {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsBbStandardPlaceOfSupplyScheme::*;
         match self {
             InboundGoods => "inbound_goods",
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsBbStandardPlaceOfSupplyScheme {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsBbStandardPlaceOfSupplyScheme::*;
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsBbStandardPlaceOfSupplyScheme"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -1881,30 +2056,41 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsBbStandardPlaceOfSupplyScheme"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Type of registration to be created in `country`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsBbType {
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsBbType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsBbType::*;
         match self {
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsBbType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsBbType::*;
         match s {
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsBbType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -1932,13 +2118,11 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsBbType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsBbType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in BD.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsBd {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1953,7 +2137,7 @@ impl CreateTaxRegistrationCountryOptionsBd {
     }
 }
 /// Options for the standard registration.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsBdStandard {
     /// Place of supply scheme used in an standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1971,29 +2155,40 @@ impl Default for CreateTaxRegistrationCountryOptionsBdStandard {
     }
 }
 /// Place of supply scheme used in an standard registration.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsBdStandardPlaceOfSupplyScheme {
     InboundGoods,
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsBdStandardPlaceOfSupplyScheme {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsBdStandardPlaceOfSupplyScheme::*;
         match self {
             InboundGoods => "inbound_goods",
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsBdStandardPlaceOfSupplyScheme {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsBdStandardPlaceOfSupplyScheme::*;
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsBdStandardPlaceOfSupplyScheme"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -2023,30 +2218,41 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsBdStandardPlaceOfSupplyScheme"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Type of registration to be created in `country`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsBdType {
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsBdType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsBdType::*;
         match self {
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsBdType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsBdType::*;
         match s {
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsBdType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -2074,13 +2280,11 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsBdType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsBdType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in BE.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsBe {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2095,7 +2299,7 @@ impl CreateTaxRegistrationCountryOptionsBe {
     }
 }
 /// Options for the standard registration.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsBeStandard {
     /// Place of supply scheme used in an EU standard registration.
     pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsBeStandardPlaceOfSupplyScheme,
@@ -2110,32 +2314,43 @@ impl CreateTaxRegistrationCountryOptionsBeStandard {
     }
 }
 /// Place of supply scheme used in an EU standard registration.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsBeStandardPlaceOfSupplyScheme {
     InboundGoods,
     SmallSeller,
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsBeStandardPlaceOfSupplyScheme {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsBeStandardPlaceOfSupplyScheme::*;
         match self {
             InboundGoods => "inbound_goods",
             SmallSeller => "small_seller",
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsBeStandardPlaceOfSupplyScheme {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsBeStandardPlaceOfSupplyScheme::*;
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsBeStandardPlaceOfSupplyScheme"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -2165,31 +2380,35 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsBeStandardPlaceOfSupplyScheme"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Type of registration to be created in an EU country.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsBeType {
     Ioss,
     OssNonUnion,
     OssUnion,
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsBeType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsBeType::*;
         match self {
             Ioss => "ioss",
             OssNonUnion => "oss_non_union",
             OssUnion => "oss_union",
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsBeType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsBeType::*;
         match s {
@@ -2197,7 +2416,14 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsBeType {
             "oss_non_union" => Ok(OssNonUnion),
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsBeType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -2225,13 +2451,11 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsBeType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsBeType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in BF.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsBf {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2246,7 +2470,7 @@ impl CreateTaxRegistrationCountryOptionsBf {
     }
 }
 /// Options for the standard registration.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsBfStandard {
     /// Place of supply scheme used in an standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2264,29 +2488,40 @@ impl Default for CreateTaxRegistrationCountryOptionsBfStandard {
     }
 }
 /// Place of supply scheme used in an standard registration.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsBfStandardPlaceOfSupplyScheme {
     InboundGoods,
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsBfStandardPlaceOfSupplyScheme {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsBfStandardPlaceOfSupplyScheme::*;
         match self {
             InboundGoods => "inbound_goods",
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsBfStandardPlaceOfSupplyScheme {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsBfStandardPlaceOfSupplyScheme::*;
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsBfStandardPlaceOfSupplyScheme"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -2316,30 +2551,41 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsBfStandardPlaceOfSupplyScheme"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Type of registration to be created in `country`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsBfType {
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsBfType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsBfType::*;
         match self {
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsBfType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsBfType::*;
         match s {
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsBfType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -2367,13 +2613,11 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsBfType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsBfType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in BG.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsBg {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2388,7 +2632,7 @@ impl CreateTaxRegistrationCountryOptionsBg {
     }
 }
 /// Options for the standard registration.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsBgStandard {
     /// Place of supply scheme used in an EU standard registration.
     pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsBgStandardPlaceOfSupplyScheme,
@@ -2403,32 +2647,43 @@ impl CreateTaxRegistrationCountryOptionsBgStandard {
     }
 }
 /// Place of supply scheme used in an EU standard registration.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsBgStandardPlaceOfSupplyScheme {
     InboundGoods,
     SmallSeller,
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsBgStandardPlaceOfSupplyScheme {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsBgStandardPlaceOfSupplyScheme::*;
         match self {
             InboundGoods => "inbound_goods",
             SmallSeller => "small_seller",
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsBgStandardPlaceOfSupplyScheme {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsBgStandardPlaceOfSupplyScheme::*;
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsBgStandardPlaceOfSupplyScheme"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -2458,31 +2713,35 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsBgStandardPlaceOfSupplyScheme"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Type of registration to be created in an EU country.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsBgType {
     Ioss,
     OssNonUnion,
     OssUnion,
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsBgType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsBgType::*;
         match self {
             Ioss => "ioss",
             OssNonUnion => "oss_non_union",
             OssUnion => "oss_union",
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsBgType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsBgType::*;
         match s {
@@ -2490,7 +2749,14 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsBgType {
             "oss_non_union" => Ok(OssNonUnion),
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsBgType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -2518,13 +2784,11 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsBgType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsBgType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in BH.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsBh {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2539,7 +2803,7 @@ impl CreateTaxRegistrationCountryOptionsBh {
     }
 }
 /// Options for the standard registration.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsBhStandard {
     /// Place of supply scheme used in an standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2557,29 +2821,40 @@ impl Default for CreateTaxRegistrationCountryOptionsBhStandard {
     }
 }
 /// Place of supply scheme used in an standard registration.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsBhStandardPlaceOfSupplyScheme {
     InboundGoods,
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsBhStandardPlaceOfSupplyScheme {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsBhStandardPlaceOfSupplyScheme::*;
         match self {
             InboundGoods => "inbound_goods",
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsBhStandardPlaceOfSupplyScheme {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsBhStandardPlaceOfSupplyScheme::*;
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsBhStandardPlaceOfSupplyScheme"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -2609,30 +2884,41 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsBhStandardPlaceOfSupplyScheme"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Type of registration to be created in `country`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsBhType {
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsBhType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsBhType::*;
         match self {
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsBhType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsBhType::*;
         match s {
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsBhType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -2660,13 +2946,11 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsBhType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsBhType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in BJ.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsBj {
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
@@ -2678,26 +2962,37 @@ impl CreateTaxRegistrationCountryOptionsBj {
     }
 }
 /// Type of registration to be created in `country`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsBjType {
     Simplified,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsBjType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsBjType::*;
         match self {
             Simplified => "simplified",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsBjType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsBjType::*;
         match s {
             "simplified" => Ok(Simplified),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsBjType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -2725,13 +3020,11 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsBjType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsBjType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in BS.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsBs {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2746,7 +3039,7 @@ impl CreateTaxRegistrationCountryOptionsBs {
     }
 }
 /// Options for the standard registration.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsBsStandard {
     /// Place of supply scheme used in an standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2764,29 +3057,40 @@ impl Default for CreateTaxRegistrationCountryOptionsBsStandard {
     }
 }
 /// Place of supply scheme used in an standard registration.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsBsStandardPlaceOfSupplyScheme {
     InboundGoods,
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsBsStandardPlaceOfSupplyScheme {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsBsStandardPlaceOfSupplyScheme::*;
         match self {
             InboundGoods => "inbound_goods",
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsBsStandardPlaceOfSupplyScheme {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsBsStandardPlaceOfSupplyScheme::*;
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsBsStandardPlaceOfSupplyScheme"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -2816,30 +3120,41 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsBsStandardPlaceOfSupplyScheme"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Type of registration to be created in `country`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsBsType {
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsBsType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsBsType::*;
         match self {
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsBsType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsBsType::*;
         match s {
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsBsType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -2867,13 +3182,11 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsBsType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsBsType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in BY.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsBy {
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
@@ -2885,26 +3198,37 @@ impl CreateTaxRegistrationCountryOptionsBy {
     }
 }
 /// Type of registration to be created in `country`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsByType {
     Simplified,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsByType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsByType::*;
         match self {
             Simplified => "simplified",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsByType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsByType::*;
         match s {
             "simplified" => Ok(Simplified),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsByType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -2932,9 +3256,7 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsByType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsByType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in CA.
@@ -2964,32 +3286,43 @@ impl CreateTaxRegistrationCountryOptionsCaProvinceStandard {
     }
 }
 /// Type of registration to be created in Canada.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsCaType {
     ProvinceStandard,
     Simplified,
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsCaType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsCaType::*;
         match self {
             ProvinceStandard => "province_standard",
             Simplified => "simplified",
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsCaType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsCaType::*;
         match s {
             "province_standard" => Ok(ProvinceStandard),
             "simplified" => Ok(Simplified),
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsCaType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -3017,13 +3350,11 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsCaType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsCaType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in CD.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsCd {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3038,7 +3369,7 @@ impl CreateTaxRegistrationCountryOptionsCd {
     }
 }
 /// Options for the standard registration.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsCdStandard {
     /// Place of supply scheme used in an standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3056,29 +3387,40 @@ impl Default for CreateTaxRegistrationCountryOptionsCdStandard {
     }
 }
 /// Place of supply scheme used in an standard registration.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsCdStandardPlaceOfSupplyScheme {
     InboundGoods,
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsCdStandardPlaceOfSupplyScheme {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsCdStandardPlaceOfSupplyScheme::*;
         match self {
             InboundGoods => "inbound_goods",
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsCdStandardPlaceOfSupplyScheme {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsCdStandardPlaceOfSupplyScheme::*;
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsCdStandardPlaceOfSupplyScheme"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -3108,30 +3450,41 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsCdStandardPlaceOfSupplyScheme"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Type of registration to be created in `country`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsCdType {
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsCdType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsCdType::*;
         match self {
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsCdType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsCdType::*;
         match s {
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsCdType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -3159,13 +3512,11 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsCdType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsCdType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in CH.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsCh {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3180,7 +3531,7 @@ impl CreateTaxRegistrationCountryOptionsCh {
     }
 }
 /// Options for the standard registration.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsChStandard {
     /// Place of supply scheme used in an standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3198,29 +3549,40 @@ impl Default for CreateTaxRegistrationCountryOptionsChStandard {
     }
 }
 /// Place of supply scheme used in an standard registration.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsChStandardPlaceOfSupplyScheme {
     InboundGoods,
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsChStandardPlaceOfSupplyScheme {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsChStandardPlaceOfSupplyScheme::*;
         match self {
             InboundGoods => "inbound_goods",
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsChStandardPlaceOfSupplyScheme {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsChStandardPlaceOfSupplyScheme::*;
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsChStandardPlaceOfSupplyScheme"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -3250,30 +3612,41 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsChStandardPlaceOfSupplyScheme"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Type of registration to be created in `country`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsChType {
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsChType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsChType::*;
         match self {
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsChType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsChType::*;
         match s {
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsChType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -3301,13 +3674,11 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsChType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsChType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in CL.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsCl {
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
@@ -3319,26 +3690,37 @@ impl CreateTaxRegistrationCountryOptionsCl {
     }
 }
 /// Type of registration to be created in `country`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsClType {
     Simplified,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsClType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsClType::*;
         match self {
             Simplified => "simplified",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsClType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsClType::*;
         match s {
             "simplified" => Ok(Simplified),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsClType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -3366,13 +3748,11 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsClType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsClType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in CM.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsCm {
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
@@ -3384,26 +3764,37 @@ impl CreateTaxRegistrationCountryOptionsCm {
     }
 }
 /// Type of registration to be created in `country`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsCmType {
     Simplified,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsCmType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsCmType::*;
         match self {
             Simplified => "simplified",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsCmType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsCmType::*;
         match s {
             "simplified" => Ok(Simplified),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsCmType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -3431,13 +3822,11 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsCmType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsCmType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in CO.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsCo {
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
@@ -3449,26 +3838,37 @@ impl CreateTaxRegistrationCountryOptionsCo {
     }
 }
 /// Type of registration to be created in `country`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsCoType {
     Simplified,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsCoType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsCoType::*;
         match self {
             Simplified => "simplified",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsCoType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsCoType::*;
         match s {
             "simplified" => Ok(Simplified),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsCoType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -3496,13 +3896,11 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsCoType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsCoType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in CR.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsCr {
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
@@ -3514,26 +3912,37 @@ impl CreateTaxRegistrationCountryOptionsCr {
     }
 }
 /// Type of registration to be created in `country`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsCrType {
     Simplified,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsCrType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsCrType::*;
         match self {
             Simplified => "simplified",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsCrType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsCrType::*;
         match s {
             "simplified" => Ok(Simplified),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsCrType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -3561,13 +3970,11 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsCrType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsCrType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in CV.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsCv {
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
@@ -3579,26 +3986,37 @@ impl CreateTaxRegistrationCountryOptionsCv {
     }
 }
 /// Type of registration to be created in `country`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsCvType {
     Simplified,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsCvType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsCvType::*;
         match self {
             Simplified => "simplified",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsCvType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsCvType::*;
         match s {
             "simplified" => Ok(Simplified),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsCvType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -3626,13 +4044,11 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsCvType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsCvType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in CY.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsCy {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3647,7 +4063,7 @@ impl CreateTaxRegistrationCountryOptionsCy {
     }
 }
 /// Options for the standard registration.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsCyStandard {
     /// Place of supply scheme used in an EU standard registration.
     pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsCyStandardPlaceOfSupplyScheme,
@@ -3662,32 +4078,43 @@ impl CreateTaxRegistrationCountryOptionsCyStandard {
     }
 }
 /// Place of supply scheme used in an EU standard registration.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsCyStandardPlaceOfSupplyScheme {
     InboundGoods,
     SmallSeller,
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsCyStandardPlaceOfSupplyScheme {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsCyStandardPlaceOfSupplyScheme::*;
         match self {
             InboundGoods => "inbound_goods",
             SmallSeller => "small_seller",
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsCyStandardPlaceOfSupplyScheme {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsCyStandardPlaceOfSupplyScheme::*;
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsCyStandardPlaceOfSupplyScheme"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -3717,31 +4144,35 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsCyStandardPlaceOfSupplyScheme"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Type of registration to be created in an EU country.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsCyType {
     Ioss,
     OssNonUnion,
     OssUnion,
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsCyType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsCyType::*;
         match self {
             Ioss => "ioss",
             OssNonUnion => "oss_non_union",
             OssUnion => "oss_union",
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsCyType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsCyType::*;
         match s {
@@ -3749,7 +4180,14 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsCyType {
             "oss_non_union" => Ok(OssNonUnion),
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsCyType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -3777,13 +4215,11 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsCyType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsCyType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in CZ.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsCz {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3798,7 +4234,7 @@ impl CreateTaxRegistrationCountryOptionsCz {
     }
 }
 /// Options for the standard registration.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsCzStandard {
     /// Place of supply scheme used in an EU standard registration.
     pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsCzStandardPlaceOfSupplyScheme,
@@ -3813,32 +4249,43 @@ impl CreateTaxRegistrationCountryOptionsCzStandard {
     }
 }
 /// Place of supply scheme used in an EU standard registration.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsCzStandardPlaceOfSupplyScheme {
     InboundGoods,
     SmallSeller,
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsCzStandardPlaceOfSupplyScheme {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsCzStandardPlaceOfSupplyScheme::*;
         match self {
             InboundGoods => "inbound_goods",
             SmallSeller => "small_seller",
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsCzStandardPlaceOfSupplyScheme {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsCzStandardPlaceOfSupplyScheme::*;
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsCzStandardPlaceOfSupplyScheme"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -3868,31 +4315,35 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsCzStandardPlaceOfSupplyScheme"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Type of registration to be created in an EU country.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsCzType {
     Ioss,
     OssNonUnion,
     OssUnion,
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsCzType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsCzType::*;
         match self {
             Ioss => "ioss",
             OssNonUnion => "oss_non_union",
             OssUnion => "oss_union",
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsCzType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsCzType::*;
         match s {
@@ -3900,7 +4351,14 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsCzType {
             "oss_non_union" => Ok(OssNonUnion),
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsCzType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -3928,13 +4386,11 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsCzType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsCzType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in DE.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsDe {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3949,7 +4405,7 @@ impl CreateTaxRegistrationCountryOptionsDe {
     }
 }
 /// Options for the standard registration.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsDeStandard {
     /// Place of supply scheme used in an EU standard registration.
     pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsDeStandardPlaceOfSupplyScheme,
@@ -3964,32 +4420,43 @@ impl CreateTaxRegistrationCountryOptionsDeStandard {
     }
 }
 /// Place of supply scheme used in an EU standard registration.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsDeStandardPlaceOfSupplyScheme {
     InboundGoods,
     SmallSeller,
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsDeStandardPlaceOfSupplyScheme {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsDeStandardPlaceOfSupplyScheme::*;
         match self {
             InboundGoods => "inbound_goods",
             SmallSeller => "small_seller",
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsDeStandardPlaceOfSupplyScheme {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsDeStandardPlaceOfSupplyScheme::*;
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsDeStandardPlaceOfSupplyScheme"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -4019,31 +4486,35 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsDeStandardPlaceOfSupplyScheme"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Type of registration to be created in an EU country.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsDeType {
     Ioss,
     OssNonUnion,
     OssUnion,
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsDeType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsDeType::*;
         match self {
             Ioss => "ioss",
             OssNonUnion => "oss_non_union",
             OssUnion => "oss_union",
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsDeType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsDeType::*;
         match s {
@@ -4051,7 +4522,14 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsDeType {
             "oss_non_union" => Ok(OssNonUnion),
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsDeType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -4079,13 +4557,11 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsDeType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsDeType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in DK.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsDk {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4100,7 +4576,7 @@ impl CreateTaxRegistrationCountryOptionsDk {
     }
 }
 /// Options for the standard registration.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsDkStandard {
     /// Place of supply scheme used in an EU standard registration.
     pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsDkStandardPlaceOfSupplyScheme,
@@ -4115,32 +4591,43 @@ impl CreateTaxRegistrationCountryOptionsDkStandard {
     }
 }
 /// Place of supply scheme used in an EU standard registration.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsDkStandardPlaceOfSupplyScheme {
     InboundGoods,
     SmallSeller,
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsDkStandardPlaceOfSupplyScheme {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsDkStandardPlaceOfSupplyScheme::*;
         match self {
             InboundGoods => "inbound_goods",
             SmallSeller => "small_seller",
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsDkStandardPlaceOfSupplyScheme {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsDkStandardPlaceOfSupplyScheme::*;
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsDkStandardPlaceOfSupplyScheme"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -4170,31 +4657,35 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsDkStandardPlaceOfSupplyScheme"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Type of registration to be created in an EU country.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsDkType {
     Ioss,
     OssNonUnion,
     OssUnion,
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsDkType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsDkType::*;
         match self {
             Ioss => "ioss",
             OssNonUnion => "oss_non_union",
             OssUnion => "oss_union",
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsDkType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsDkType::*;
         match s {
@@ -4202,7 +4693,14 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsDkType {
             "oss_non_union" => Ok(OssNonUnion),
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsDkType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -4230,13 +4728,11 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsDkType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsDkType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in EC.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsEc {
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
@@ -4248,26 +4744,37 @@ impl CreateTaxRegistrationCountryOptionsEc {
     }
 }
 /// Type of registration to be created in `country`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsEcType {
     Simplified,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsEcType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsEcType::*;
         match self {
             Simplified => "simplified",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsEcType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsEcType::*;
         match s {
             "simplified" => Ok(Simplified),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsEcType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -4295,13 +4802,11 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsEcType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsEcType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in EE.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsEe {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4316,7 +4821,7 @@ impl CreateTaxRegistrationCountryOptionsEe {
     }
 }
 /// Options for the standard registration.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsEeStandard {
     /// Place of supply scheme used in an EU standard registration.
     pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsEeStandardPlaceOfSupplyScheme,
@@ -4331,32 +4836,43 @@ impl CreateTaxRegistrationCountryOptionsEeStandard {
     }
 }
 /// Place of supply scheme used in an EU standard registration.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsEeStandardPlaceOfSupplyScheme {
     InboundGoods,
     SmallSeller,
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsEeStandardPlaceOfSupplyScheme {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsEeStandardPlaceOfSupplyScheme::*;
         match self {
             InboundGoods => "inbound_goods",
             SmallSeller => "small_seller",
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsEeStandardPlaceOfSupplyScheme {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsEeStandardPlaceOfSupplyScheme::*;
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsEeStandardPlaceOfSupplyScheme"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -4386,31 +4902,35 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsEeStandardPlaceOfSupplyScheme"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Type of registration to be created in an EU country.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsEeType {
     Ioss,
     OssNonUnion,
     OssUnion,
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsEeType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsEeType::*;
         match self {
             Ioss => "ioss",
             OssNonUnion => "oss_non_union",
             OssUnion => "oss_union",
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsEeType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsEeType::*;
         match s {
@@ -4418,7 +4938,14 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsEeType {
             "oss_non_union" => Ok(OssNonUnion),
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsEeType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -4446,13 +4973,11 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsEeType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsEeType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in EG.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsEg {
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
@@ -4464,26 +4989,37 @@ impl CreateTaxRegistrationCountryOptionsEg {
     }
 }
 /// Type of registration to be created in `country`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsEgType {
     Simplified,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsEgType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsEgType::*;
         match self {
             Simplified => "simplified",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsEgType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsEgType::*;
         match s {
             "simplified" => Ok(Simplified),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsEgType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -4511,13 +5047,11 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsEgType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsEgType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in ES.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsEs {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4532,7 +5066,7 @@ impl CreateTaxRegistrationCountryOptionsEs {
     }
 }
 /// Options for the standard registration.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsEsStandard {
     /// Place of supply scheme used in an EU standard registration.
     pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsEsStandardPlaceOfSupplyScheme,
@@ -4547,32 +5081,43 @@ impl CreateTaxRegistrationCountryOptionsEsStandard {
     }
 }
 /// Place of supply scheme used in an EU standard registration.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsEsStandardPlaceOfSupplyScheme {
     InboundGoods,
     SmallSeller,
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsEsStandardPlaceOfSupplyScheme {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsEsStandardPlaceOfSupplyScheme::*;
         match self {
             InboundGoods => "inbound_goods",
             SmallSeller => "small_seller",
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsEsStandardPlaceOfSupplyScheme {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsEsStandardPlaceOfSupplyScheme::*;
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsEsStandardPlaceOfSupplyScheme"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -4602,31 +5147,35 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsEsStandardPlaceOfSupplyScheme"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Type of registration to be created in an EU country.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsEsType {
     Ioss,
     OssNonUnion,
     OssUnion,
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsEsType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsEsType::*;
         match self {
             Ioss => "ioss",
             OssNonUnion => "oss_non_union",
             OssUnion => "oss_union",
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsEsType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsEsType::*;
         match s {
@@ -4634,7 +5183,14 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsEsType {
             "oss_non_union" => Ok(OssNonUnion),
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsEsType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -4662,13 +5218,11 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsEsType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsEsType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in ET.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsEt {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4683,7 +5237,7 @@ impl CreateTaxRegistrationCountryOptionsEt {
     }
 }
 /// Options for the standard registration.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsEtStandard {
     /// Place of supply scheme used in an standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4701,29 +5255,40 @@ impl Default for CreateTaxRegistrationCountryOptionsEtStandard {
     }
 }
 /// Place of supply scheme used in an standard registration.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsEtStandardPlaceOfSupplyScheme {
     InboundGoods,
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsEtStandardPlaceOfSupplyScheme {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsEtStandardPlaceOfSupplyScheme::*;
         match self {
             InboundGoods => "inbound_goods",
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsEtStandardPlaceOfSupplyScheme {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsEtStandardPlaceOfSupplyScheme::*;
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsEtStandardPlaceOfSupplyScheme"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -4753,30 +5318,41 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsEtStandardPlaceOfSupplyScheme"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Type of registration to be created in `country`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsEtType {
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsEtType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsEtType::*;
         match self {
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsEtType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsEtType::*;
         match s {
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsEtType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -4804,13 +5380,11 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsEtType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsEtType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in FI.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsFi {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4825,7 +5399,7 @@ impl CreateTaxRegistrationCountryOptionsFi {
     }
 }
 /// Options for the standard registration.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsFiStandard {
     /// Place of supply scheme used in an EU standard registration.
     pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsFiStandardPlaceOfSupplyScheme,
@@ -4840,32 +5414,43 @@ impl CreateTaxRegistrationCountryOptionsFiStandard {
     }
 }
 /// Place of supply scheme used in an EU standard registration.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsFiStandardPlaceOfSupplyScheme {
     InboundGoods,
     SmallSeller,
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsFiStandardPlaceOfSupplyScheme {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsFiStandardPlaceOfSupplyScheme::*;
         match self {
             InboundGoods => "inbound_goods",
             SmallSeller => "small_seller",
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsFiStandardPlaceOfSupplyScheme {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsFiStandardPlaceOfSupplyScheme::*;
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsFiStandardPlaceOfSupplyScheme"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -4895,31 +5480,35 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsFiStandardPlaceOfSupplyScheme"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Type of registration to be created in an EU country.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsFiType {
     Ioss,
     OssNonUnion,
     OssUnion,
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsFiType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsFiType::*;
         match self {
             Ioss => "ioss",
             OssNonUnion => "oss_non_union",
             OssUnion => "oss_union",
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsFiType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsFiType::*;
         match s {
@@ -4927,7 +5516,14 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsFiType {
             "oss_non_union" => Ok(OssNonUnion),
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsFiType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -4955,13 +5551,11 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsFiType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsFiType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in FR.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsFr {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4976,7 +5570,7 @@ impl CreateTaxRegistrationCountryOptionsFr {
     }
 }
 /// Options for the standard registration.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsFrStandard {
     /// Place of supply scheme used in an EU standard registration.
     pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsFrStandardPlaceOfSupplyScheme,
@@ -4991,32 +5585,43 @@ impl CreateTaxRegistrationCountryOptionsFrStandard {
     }
 }
 /// Place of supply scheme used in an EU standard registration.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsFrStandardPlaceOfSupplyScheme {
     InboundGoods,
     SmallSeller,
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsFrStandardPlaceOfSupplyScheme {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsFrStandardPlaceOfSupplyScheme::*;
         match self {
             InboundGoods => "inbound_goods",
             SmallSeller => "small_seller",
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsFrStandardPlaceOfSupplyScheme {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsFrStandardPlaceOfSupplyScheme::*;
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsFrStandardPlaceOfSupplyScheme"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -5046,31 +5651,35 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsFrStandardPlaceOfSupplyScheme"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Type of registration to be created in an EU country.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsFrType {
     Ioss,
     OssNonUnion,
     OssUnion,
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsFrType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsFrType::*;
         match self {
             Ioss => "ioss",
             OssNonUnion => "oss_non_union",
             OssUnion => "oss_union",
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsFrType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsFrType::*;
         match s {
@@ -5078,7 +5687,14 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsFrType {
             "oss_non_union" => Ok(OssNonUnion),
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsFrType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -5106,13 +5722,11 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsFrType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsFrType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in GB.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsGb {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5127,7 +5741,7 @@ impl CreateTaxRegistrationCountryOptionsGb {
     }
 }
 /// Options for the standard registration.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsGbStandard {
     /// Place of supply scheme used in an standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5145,29 +5759,40 @@ impl Default for CreateTaxRegistrationCountryOptionsGbStandard {
     }
 }
 /// Place of supply scheme used in an standard registration.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsGbStandardPlaceOfSupplyScheme {
     InboundGoods,
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsGbStandardPlaceOfSupplyScheme {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsGbStandardPlaceOfSupplyScheme::*;
         match self {
             InboundGoods => "inbound_goods",
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsGbStandardPlaceOfSupplyScheme {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsGbStandardPlaceOfSupplyScheme::*;
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsGbStandardPlaceOfSupplyScheme"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -5197,30 +5822,41 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsGbStandardPlaceOfSupplyScheme"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Type of registration to be created in `country`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsGbType {
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsGbType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsGbType::*;
         match self {
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsGbType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsGbType::*;
         match s {
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsGbType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -5248,13 +5884,11 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsGbType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsGbType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in GE.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsGe {
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
@@ -5266,26 +5900,37 @@ impl CreateTaxRegistrationCountryOptionsGe {
     }
 }
 /// Type of registration to be created in `country`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsGeType {
     Simplified,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsGeType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsGeType::*;
         match self {
             Simplified => "simplified",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsGeType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsGeType::*;
         match s {
             "simplified" => Ok(Simplified),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsGeType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -5313,13 +5958,11 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsGeType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsGeType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in GN.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsGn {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5334,7 +5977,7 @@ impl CreateTaxRegistrationCountryOptionsGn {
     }
 }
 /// Options for the standard registration.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsGnStandard {
     /// Place of supply scheme used in an standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5352,29 +5995,40 @@ impl Default for CreateTaxRegistrationCountryOptionsGnStandard {
     }
 }
 /// Place of supply scheme used in an standard registration.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsGnStandardPlaceOfSupplyScheme {
     InboundGoods,
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsGnStandardPlaceOfSupplyScheme {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsGnStandardPlaceOfSupplyScheme::*;
         match self {
             InboundGoods => "inbound_goods",
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsGnStandardPlaceOfSupplyScheme {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsGnStandardPlaceOfSupplyScheme::*;
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsGnStandardPlaceOfSupplyScheme"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -5404,30 +6058,41 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsGnStandardPlaceOfSupplyScheme"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Type of registration to be created in `country`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsGnType {
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsGnType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsGnType::*;
         match self {
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsGnType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsGnType::*;
         match s {
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsGnType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -5455,13 +6120,11 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsGnType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsGnType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in GR.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsGr {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5476,7 +6139,7 @@ impl CreateTaxRegistrationCountryOptionsGr {
     }
 }
 /// Options for the standard registration.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsGrStandard {
     /// Place of supply scheme used in an EU standard registration.
     pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsGrStandardPlaceOfSupplyScheme,
@@ -5491,32 +6154,43 @@ impl CreateTaxRegistrationCountryOptionsGrStandard {
     }
 }
 /// Place of supply scheme used in an EU standard registration.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsGrStandardPlaceOfSupplyScheme {
     InboundGoods,
     SmallSeller,
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsGrStandardPlaceOfSupplyScheme {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsGrStandardPlaceOfSupplyScheme::*;
         match self {
             InboundGoods => "inbound_goods",
             SmallSeller => "small_seller",
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsGrStandardPlaceOfSupplyScheme {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsGrStandardPlaceOfSupplyScheme::*;
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsGrStandardPlaceOfSupplyScheme"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -5546,31 +6220,35 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsGrStandardPlaceOfSupplyScheme"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Type of registration to be created in an EU country.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsGrType {
     Ioss,
     OssNonUnion,
     OssUnion,
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsGrType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsGrType::*;
         match self {
             Ioss => "ioss",
             OssNonUnion => "oss_non_union",
             OssUnion => "oss_union",
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsGrType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsGrType::*;
         match s {
@@ -5578,7 +6256,14 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsGrType {
             "oss_non_union" => Ok(OssNonUnion),
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsGrType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -5606,13 +6291,11 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsGrType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsGrType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in HR.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsHr {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5627,7 +6310,7 @@ impl CreateTaxRegistrationCountryOptionsHr {
     }
 }
 /// Options for the standard registration.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsHrStandard {
     /// Place of supply scheme used in an EU standard registration.
     pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsHrStandardPlaceOfSupplyScheme,
@@ -5642,32 +6325,43 @@ impl CreateTaxRegistrationCountryOptionsHrStandard {
     }
 }
 /// Place of supply scheme used in an EU standard registration.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsHrStandardPlaceOfSupplyScheme {
     InboundGoods,
     SmallSeller,
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsHrStandardPlaceOfSupplyScheme {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsHrStandardPlaceOfSupplyScheme::*;
         match self {
             InboundGoods => "inbound_goods",
             SmallSeller => "small_seller",
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsHrStandardPlaceOfSupplyScheme {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsHrStandardPlaceOfSupplyScheme::*;
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsHrStandardPlaceOfSupplyScheme"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -5697,31 +6391,35 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsHrStandardPlaceOfSupplyScheme"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Type of registration to be created in an EU country.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsHrType {
     Ioss,
     OssNonUnion,
     OssUnion,
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsHrType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsHrType::*;
         match self {
             Ioss => "ioss",
             OssNonUnion => "oss_non_union",
             OssUnion => "oss_union",
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsHrType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsHrType::*;
         match s {
@@ -5729,7 +6427,14 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsHrType {
             "oss_non_union" => Ok(OssNonUnion),
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsHrType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -5757,13 +6462,11 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsHrType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsHrType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in HU.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsHu {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5778,7 +6481,7 @@ impl CreateTaxRegistrationCountryOptionsHu {
     }
 }
 /// Options for the standard registration.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsHuStandard {
     /// Place of supply scheme used in an EU standard registration.
     pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsHuStandardPlaceOfSupplyScheme,
@@ -5793,32 +6496,43 @@ impl CreateTaxRegistrationCountryOptionsHuStandard {
     }
 }
 /// Place of supply scheme used in an EU standard registration.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsHuStandardPlaceOfSupplyScheme {
     InboundGoods,
     SmallSeller,
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsHuStandardPlaceOfSupplyScheme {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsHuStandardPlaceOfSupplyScheme::*;
         match self {
             InboundGoods => "inbound_goods",
             SmallSeller => "small_seller",
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsHuStandardPlaceOfSupplyScheme {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsHuStandardPlaceOfSupplyScheme::*;
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsHuStandardPlaceOfSupplyScheme"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -5848,31 +6562,35 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsHuStandardPlaceOfSupplyScheme"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Type of registration to be created in an EU country.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsHuType {
     Ioss,
     OssNonUnion,
     OssUnion,
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsHuType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsHuType::*;
         match self {
             Ioss => "ioss",
             OssNonUnion => "oss_non_union",
             OssUnion => "oss_union",
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsHuType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsHuType::*;
         match s {
@@ -5880,7 +6598,14 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsHuType {
             "oss_non_union" => Ok(OssNonUnion),
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsHuType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -5908,13 +6633,11 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsHuType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsHuType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in ID.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsId {
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
@@ -5926,26 +6649,37 @@ impl CreateTaxRegistrationCountryOptionsId {
     }
 }
 /// Type of registration to be created in `country`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsIdType {
     Simplified,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsIdType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsIdType::*;
         match self {
             Simplified => "simplified",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsIdType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsIdType::*;
         match s {
             "simplified" => Ok(Simplified),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsIdType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -5973,13 +6707,11 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsIdType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsIdType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in IE.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsIe {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5994,7 +6726,7 @@ impl CreateTaxRegistrationCountryOptionsIe {
     }
 }
 /// Options for the standard registration.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsIeStandard {
     /// Place of supply scheme used in an EU standard registration.
     pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsIeStandardPlaceOfSupplyScheme,
@@ -6009,32 +6741,43 @@ impl CreateTaxRegistrationCountryOptionsIeStandard {
     }
 }
 /// Place of supply scheme used in an EU standard registration.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsIeStandardPlaceOfSupplyScheme {
     InboundGoods,
     SmallSeller,
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsIeStandardPlaceOfSupplyScheme {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsIeStandardPlaceOfSupplyScheme::*;
         match self {
             InboundGoods => "inbound_goods",
             SmallSeller => "small_seller",
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsIeStandardPlaceOfSupplyScheme {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsIeStandardPlaceOfSupplyScheme::*;
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsIeStandardPlaceOfSupplyScheme"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -6064,31 +6807,35 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsIeStandardPlaceOfSupplyScheme"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Type of registration to be created in an EU country.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsIeType {
     Ioss,
     OssNonUnion,
     OssUnion,
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsIeType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsIeType::*;
         match self {
             Ioss => "ioss",
             OssNonUnion => "oss_non_union",
             OssUnion => "oss_union",
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsIeType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsIeType::*;
         match s {
@@ -6096,7 +6843,14 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsIeType {
             "oss_non_union" => Ok(OssNonUnion),
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsIeType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -6124,13 +6878,11 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsIeType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsIeType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in IN.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsIn {
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
@@ -6142,26 +6894,37 @@ impl CreateTaxRegistrationCountryOptionsIn {
     }
 }
 /// Type of registration to be created in `country`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsInType {
     Simplified,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsInType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsInType::*;
         match self {
             Simplified => "simplified",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsInType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsInType::*;
         match s {
             "simplified" => Ok(Simplified),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsInType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -6189,13 +6952,11 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsInType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsInType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in IS.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsIs {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -6210,7 +6971,7 @@ impl CreateTaxRegistrationCountryOptionsIs {
     }
 }
 /// Options for the standard registration.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsIsStandard {
     /// Place of supply scheme used in an standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -6228,29 +6989,40 @@ impl Default for CreateTaxRegistrationCountryOptionsIsStandard {
     }
 }
 /// Place of supply scheme used in an standard registration.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsIsStandardPlaceOfSupplyScheme {
     InboundGoods,
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsIsStandardPlaceOfSupplyScheme {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsIsStandardPlaceOfSupplyScheme::*;
         match self {
             InboundGoods => "inbound_goods",
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsIsStandardPlaceOfSupplyScheme {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsIsStandardPlaceOfSupplyScheme::*;
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsIsStandardPlaceOfSupplyScheme"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -6280,30 +7052,41 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsIsStandardPlaceOfSupplyScheme"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Type of registration to be created in `country`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsIsType {
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsIsType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsIsType::*;
         match self {
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsIsType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsIsType::*;
         match s {
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsIsType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -6331,13 +7114,11 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsIsType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsIsType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in IT.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsIt {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -6352,7 +7133,7 @@ impl CreateTaxRegistrationCountryOptionsIt {
     }
 }
 /// Options for the standard registration.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsItStandard {
     /// Place of supply scheme used in an EU standard registration.
     pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsItStandardPlaceOfSupplyScheme,
@@ -6367,32 +7148,43 @@ impl CreateTaxRegistrationCountryOptionsItStandard {
     }
 }
 /// Place of supply scheme used in an EU standard registration.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsItStandardPlaceOfSupplyScheme {
     InboundGoods,
     SmallSeller,
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsItStandardPlaceOfSupplyScheme {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsItStandardPlaceOfSupplyScheme::*;
         match self {
             InboundGoods => "inbound_goods",
             SmallSeller => "small_seller",
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsItStandardPlaceOfSupplyScheme {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsItStandardPlaceOfSupplyScheme::*;
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsItStandardPlaceOfSupplyScheme"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -6422,31 +7214,35 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsItStandardPlaceOfSupplyScheme"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Type of registration to be created in an EU country.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsItType {
     Ioss,
     OssNonUnion,
     OssUnion,
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsItType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsItType::*;
         match self {
             Ioss => "ioss",
             OssNonUnion => "oss_non_union",
             OssUnion => "oss_union",
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsItType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsItType::*;
         match s {
@@ -6454,7 +7250,14 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsItType {
             "oss_non_union" => Ok(OssNonUnion),
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsItType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -6482,13 +7285,11 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsItType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsItType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in JP.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsJp {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -6503,7 +7304,7 @@ impl CreateTaxRegistrationCountryOptionsJp {
     }
 }
 /// Options for the standard registration.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsJpStandard {
     /// Place of supply scheme used in an standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -6521,29 +7322,40 @@ impl Default for CreateTaxRegistrationCountryOptionsJpStandard {
     }
 }
 /// Place of supply scheme used in an standard registration.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsJpStandardPlaceOfSupplyScheme {
     InboundGoods,
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsJpStandardPlaceOfSupplyScheme {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsJpStandardPlaceOfSupplyScheme::*;
         match self {
             InboundGoods => "inbound_goods",
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsJpStandardPlaceOfSupplyScheme {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsJpStandardPlaceOfSupplyScheme::*;
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsJpStandardPlaceOfSupplyScheme"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -6573,30 +7385,41 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsJpStandardPlaceOfSupplyScheme"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Type of registration to be created in `country`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsJpType {
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsJpType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsJpType::*;
         match self {
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsJpType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsJpType::*;
         match s {
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsJpType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -6624,13 +7447,11 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsJpType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsJpType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in KE.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsKe {
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
@@ -6642,26 +7463,37 @@ impl CreateTaxRegistrationCountryOptionsKe {
     }
 }
 /// Type of registration to be created in `country`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsKeType {
     Simplified,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsKeType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsKeType::*;
         match self {
             Simplified => "simplified",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsKeType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsKeType::*;
         match s {
             "simplified" => Ok(Simplified),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsKeType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -6689,13 +7521,11 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsKeType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsKeType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in KG.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsKg {
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
@@ -6707,26 +7537,37 @@ impl CreateTaxRegistrationCountryOptionsKg {
     }
 }
 /// Type of registration to be created in `country`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsKgType {
     Simplified,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsKgType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsKgType::*;
         match self {
             Simplified => "simplified",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsKgType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsKgType::*;
         match s {
             "simplified" => Ok(Simplified),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsKgType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -6754,13 +7595,11 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsKgType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsKgType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in KH.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsKh {
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
@@ -6772,26 +7611,37 @@ impl CreateTaxRegistrationCountryOptionsKh {
     }
 }
 /// Type of registration to be created in `country`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsKhType {
     Simplified,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsKhType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsKhType::*;
         match self {
             Simplified => "simplified",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsKhType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsKhType::*;
         match s {
             "simplified" => Ok(Simplified),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsKhType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -6819,13 +7669,11 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsKhType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsKhType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in KR.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsKr {
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
@@ -6837,26 +7685,37 @@ impl CreateTaxRegistrationCountryOptionsKr {
     }
 }
 /// Type of registration to be created in `country`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsKrType {
     Simplified,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsKrType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsKrType::*;
         match self {
             Simplified => "simplified",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsKrType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsKrType::*;
         match s {
             "simplified" => Ok(Simplified),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsKrType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -6884,13 +7743,11 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsKrType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsKrType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in KZ.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsKz {
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
@@ -6902,26 +7759,37 @@ impl CreateTaxRegistrationCountryOptionsKz {
     }
 }
 /// Type of registration to be created in `country`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsKzType {
     Simplified,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsKzType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsKzType::*;
         match self {
             Simplified => "simplified",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsKzType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsKzType::*;
         match s {
             "simplified" => Ok(Simplified),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsKzType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -6949,13 +7817,11 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsKzType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsKzType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in LA.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsLa {
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
@@ -6967,26 +7833,37 @@ impl CreateTaxRegistrationCountryOptionsLa {
     }
 }
 /// Type of registration to be created in `country`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsLaType {
     Simplified,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsLaType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsLaType::*;
         match self {
             Simplified => "simplified",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsLaType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsLaType::*;
         match s {
             "simplified" => Ok(Simplified),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsLaType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -7014,13 +7891,11 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsLaType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsLaType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in LT.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsLt {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -7035,7 +7910,7 @@ impl CreateTaxRegistrationCountryOptionsLt {
     }
 }
 /// Options for the standard registration.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsLtStandard {
     /// Place of supply scheme used in an EU standard registration.
     pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsLtStandardPlaceOfSupplyScheme,
@@ -7050,32 +7925,43 @@ impl CreateTaxRegistrationCountryOptionsLtStandard {
     }
 }
 /// Place of supply scheme used in an EU standard registration.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsLtStandardPlaceOfSupplyScheme {
     InboundGoods,
     SmallSeller,
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsLtStandardPlaceOfSupplyScheme {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsLtStandardPlaceOfSupplyScheme::*;
         match self {
             InboundGoods => "inbound_goods",
             SmallSeller => "small_seller",
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsLtStandardPlaceOfSupplyScheme {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsLtStandardPlaceOfSupplyScheme::*;
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsLtStandardPlaceOfSupplyScheme"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -7105,31 +7991,35 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsLtStandardPlaceOfSupplyScheme"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Type of registration to be created in an EU country.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsLtType {
     Ioss,
     OssNonUnion,
     OssUnion,
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsLtType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsLtType::*;
         match self {
             Ioss => "ioss",
             OssNonUnion => "oss_non_union",
             OssUnion => "oss_union",
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsLtType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsLtType::*;
         match s {
@@ -7137,7 +8027,14 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsLtType {
             "oss_non_union" => Ok(OssNonUnion),
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsLtType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -7165,13 +8062,11 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsLtType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsLtType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in LU.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsLu {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -7186,7 +8081,7 @@ impl CreateTaxRegistrationCountryOptionsLu {
     }
 }
 /// Options for the standard registration.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsLuStandard {
     /// Place of supply scheme used in an EU standard registration.
     pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsLuStandardPlaceOfSupplyScheme,
@@ -7201,32 +8096,43 @@ impl CreateTaxRegistrationCountryOptionsLuStandard {
     }
 }
 /// Place of supply scheme used in an EU standard registration.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsLuStandardPlaceOfSupplyScheme {
     InboundGoods,
     SmallSeller,
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsLuStandardPlaceOfSupplyScheme {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsLuStandardPlaceOfSupplyScheme::*;
         match self {
             InboundGoods => "inbound_goods",
             SmallSeller => "small_seller",
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsLuStandardPlaceOfSupplyScheme {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsLuStandardPlaceOfSupplyScheme::*;
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsLuStandardPlaceOfSupplyScheme"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -7256,31 +8162,35 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsLuStandardPlaceOfSupplyScheme"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Type of registration to be created in an EU country.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsLuType {
     Ioss,
     OssNonUnion,
     OssUnion,
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsLuType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsLuType::*;
         match self {
             Ioss => "ioss",
             OssNonUnion => "oss_non_union",
             OssUnion => "oss_union",
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsLuType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsLuType::*;
         match s {
@@ -7288,7 +8198,14 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsLuType {
             "oss_non_union" => Ok(OssNonUnion),
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsLuType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -7316,13 +8233,11 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsLuType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsLuType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in LV.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsLv {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -7337,7 +8252,7 @@ impl CreateTaxRegistrationCountryOptionsLv {
     }
 }
 /// Options for the standard registration.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsLvStandard {
     /// Place of supply scheme used in an EU standard registration.
     pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsLvStandardPlaceOfSupplyScheme,
@@ -7352,32 +8267,43 @@ impl CreateTaxRegistrationCountryOptionsLvStandard {
     }
 }
 /// Place of supply scheme used in an EU standard registration.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsLvStandardPlaceOfSupplyScheme {
     InboundGoods,
     SmallSeller,
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsLvStandardPlaceOfSupplyScheme {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsLvStandardPlaceOfSupplyScheme::*;
         match self {
             InboundGoods => "inbound_goods",
             SmallSeller => "small_seller",
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsLvStandardPlaceOfSupplyScheme {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsLvStandardPlaceOfSupplyScheme::*;
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsLvStandardPlaceOfSupplyScheme"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -7407,31 +8333,35 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsLvStandardPlaceOfSupplyScheme"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Type of registration to be created in an EU country.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsLvType {
     Ioss,
     OssNonUnion,
     OssUnion,
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsLvType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsLvType::*;
         match self {
             Ioss => "ioss",
             OssNonUnion => "oss_non_union",
             OssUnion => "oss_union",
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsLvType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsLvType::*;
         match s {
@@ -7439,7 +8369,14 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsLvType {
             "oss_non_union" => Ok(OssNonUnion),
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsLvType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -7467,13 +8404,11 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsLvType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsLvType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in MA.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsMa {
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
@@ -7485,26 +8420,37 @@ impl CreateTaxRegistrationCountryOptionsMa {
     }
 }
 /// Type of registration to be created in `country`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsMaType {
     Simplified,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsMaType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsMaType::*;
         match self {
             Simplified => "simplified",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsMaType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsMaType::*;
         match s {
             "simplified" => Ok(Simplified),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsMaType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -7532,13 +8478,11 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsMaType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsMaType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in MD.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsMd {
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
@@ -7550,26 +8494,37 @@ impl CreateTaxRegistrationCountryOptionsMd {
     }
 }
 /// Type of registration to be created in `country`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsMdType {
     Simplified,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsMdType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsMdType::*;
         match self {
             Simplified => "simplified",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsMdType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsMdType::*;
         match s {
             "simplified" => Ok(Simplified),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsMdType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -7597,13 +8552,11 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsMdType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsMdType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in ME.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsMe {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -7618,7 +8571,7 @@ impl CreateTaxRegistrationCountryOptionsMe {
     }
 }
 /// Options for the standard registration.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsMeStandard {
     /// Place of supply scheme used in an standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -7636,29 +8589,40 @@ impl Default for CreateTaxRegistrationCountryOptionsMeStandard {
     }
 }
 /// Place of supply scheme used in an standard registration.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsMeStandardPlaceOfSupplyScheme {
     InboundGoods,
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsMeStandardPlaceOfSupplyScheme {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsMeStandardPlaceOfSupplyScheme::*;
         match self {
             InboundGoods => "inbound_goods",
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsMeStandardPlaceOfSupplyScheme {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsMeStandardPlaceOfSupplyScheme::*;
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsMeStandardPlaceOfSupplyScheme"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -7688,30 +8652,41 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsMeStandardPlaceOfSupplyScheme"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Type of registration to be created in `country`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsMeType {
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsMeType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsMeType::*;
         match self {
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsMeType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsMeType::*;
         match s {
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsMeType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -7739,13 +8714,11 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsMeType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsMeType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in MK.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsMk {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -7760,7 +8733,7 @@ impl CreateTaxRegistrationCountryOptionsMk {
     }
 }
 /// Options for the standard registration.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsMkStandard {
     /// Place of supply scheme used in an standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -7778,29 +8751,40 @@ impl Default for CreateTaxRegistrationCountryOptionsMkStandard {
     }
 }
 /// Place of supply scheme used in an standard registration.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsMkStandardPlaceOfSupplyScheme {
     InboundGoods,
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsMkStandardPlaceOfSupplyScheme {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsMkStandardPlaceOfSupplyScheme::*;
         match self {
             InboundGoods => "inbound_goods",
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsMkStandardPlaceOfSupplyScheme {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsMkStandardPlaceOfSupplyScheme::*;
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsMkStandardPlaceOfSupplyScheme"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -7830,30 +8814,41 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsMkStandardPlaceOfSupplyScheme"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Type of registration to be created in `country`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsMkType {
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsMkType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsMkType::*;
         match self {
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsMkType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsMkType::*;
         match s {
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsMkType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -7881,13 +8876,11 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsMkType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsMkType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in MR.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsMr {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -7902,7 +8895,7 @@ impl CreateTaxRegistrationCountryOptionsMr {
     }
 }
 /// Options for the standard registration.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsMrStandard {
     /// Place of supply scheme used in an standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -7920,29 +8913,40 @@ impl Default for CreateTaxRegistrationCountryOptionsMrStandard {
     }
 }
 /// Place of supply scheme used in an standard registration.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsMrStandardPlaceOfSupplyScheme {
     InboundGoods,
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsMrStandardPlaceOfSupplyScheme {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsMrStandardPlaceOfSupplyScheme::*;
         match self {
             InboundGoods => "inbound_goods",
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsMrStandardPlaceOfSupplyScheme {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsMrStandardPlaceOfSupplyScheme::*;
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsMrStandardPlaceOfSupplyScheme"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -7972,30 +8976,41 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsMrStandardPlaceOfSupplyScheme"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Type of registration to be created in `country`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsMrType {
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsMrType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsMrType::*;
         match self {
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsMrType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsMrType::*;
         match s {
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsMrType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -8023,13 +9038,11 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsMrType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsMrType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in MT.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsMt {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -8044,7 +9057,7 @@ impl CreateTaxRegistrationCountryOptionsMt {
     }
 }
 /// Options for the standard registration.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsMtStandard {
     /// Place of supply scheme used in an EU standard registration.
     pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsMtStandardPlaceOfSupplyScheme,
@@ -8059,32 +9072,43 @@ impl CreateTaxRegistrationCountryOptionsMtStandard {
     }
 }
 /// Place of supply scheme used in an EU standard registration.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsMtStandardPlaceOfSupplyScheme {
     InboundGoods,
     SmallSeller,
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsMtStandardPlaceOfSupplyScheme {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsMtStandardPlaceOfSupplyScheme::*;
         match self {
             InboundGoods => "inbound_goods",
             SmallSeller => "small_seller",
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsMtStandardPlaceOfSupplyScheme {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsMtStandardPlaceOfSupplyScheme::*;
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsMtStandardPlaceOfSupplyScheme"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -8114,31 +9138,35 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsMtStandardPlaceOfSupplyScheme"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Type of registration to be created in an EU country.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsMtType {
     Ioss,
     OssNonUnion,
     OssUnion,
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsMtType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsMtType::*;
         match self {
             Ioss => "ioss",
             OssNonUnion => "oss_non_union",
             OssUnion => "oss_union",
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsMtType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsMtType::*;
         match s {
@@ -8146,7 +9174,14 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsMtType {
             "oss_non_union" => Ok(OssNonUnion),
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsMtType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -8174,13 +9209,11 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsMtType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsMtType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in MX.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsMx {
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
@@ -8192,26 +9225,37 @@ impl CreateTaxRegistrationCountryOptionsMx {
     }
 }
 /// Type of registration to be created in `country`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsMxType {
     Simplified,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsMxType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsMxType::*;
         match self {
             Simplified => "simplified",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsMxType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsMxType::*;
         match s {
             "simplified" => Ok(Simplified),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsMxType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -8239,13 +9283,11 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsMxType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsMxType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in MY.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsMy {
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
@@ -8257,26 +9299,37 @@ impl CreateTaxRegistrationCountryOptionsMy {
     }
 }
 /// Type of registration to be created in `country`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsMyType {
     Simplified,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsMyType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsMyType::*;
         match self {
             Simplified => "simplified",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsMyType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsMyType::*;
         match s {
             "simplified" => Ok(Simplified),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsMyType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -8304,13 +9357,11 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsMyType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsMyType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in NG.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsNg {
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
@@ -8322,26 +9373,37 @@ impl CreateTaxRegistrationCountryOptionsNg {
     }
 }
 /// Type of registration to be created in `country`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsNgType {
     Simplified,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsNgType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsNgType::*;
         match self {
             Simplified => "simplified",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsNgType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsNgType::*;
         match s {
             "simplified" => Ok(Simplified),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsNgType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -8369,13 +9431,11 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsNgType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsNgType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in NL.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsNl {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -8390,7 +9450,7 @@ impl CreateTaxRegistrationCountryOptionsNl {
     }
 }
 /// Options for the standard registration.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsNlStandard {
     /// Place of supply scheme used in an EU standard registration.
     pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsNlStandardPlaceOfSupplyScheme,
@@ -8405,32 +9465,43 @@ impl CreateTaxRegistrationCountryOptionsNlStandard {
     }
 }
 /// Place of supply scheme used in an EU standard registration.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsNlStandardPlaceOfSupplyScheme {
     InboundGoods,
     SmallSeller,
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsNlStandardPlaceOfSupplyScheme {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsNlStandardPlaceOfSupplyScheme::*;
         match self {
             InboundGoods => "inbound_goods",
             SmallSeller => "small_seller",
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsNlStandardPlaceOfSupplyScheme {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsNlStandardPlaceOfSupplyScheme::*;
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsNlStandardPlaceOfSupplyScheme"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -8460,31 +9531,35 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsNlStandardPlaceOfSupplyScheme"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Type of registration to be created in an EU country.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsNlType {
     Ioss,
     OssNonUnion,
     OssUnion,
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsNlType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsNlType::*;
         match self {
             Ioss => "ioss",
             OssNonUnion => "oss_non_union",
             OssUnion => "oss_union",
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsNlType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsNlType::*;
         match s {
@@ -8492,7 +9567,14 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsNlType {
             "oss_non_union" => Ok(OssNonUnion),
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsNlType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -8520,13 +9602,11 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsNlType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsNlType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in NO.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsNo {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -8541,7 +9621,7 @@ impl CreateTaxRegistrationCountryOptionsNo {
     }
 }
 /// Options for the standard registration.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsNoStandard {
     /// Place of supply scheme used in an standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -8559,29 +9639,40 @@ impl Default for CreateTaxRegistrationCountryOptionsNoStandard {
     }
 }
 /// Place of supply scheme used in an standard registration.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsNoStandardPlaceOfSupplyScheme {
     InboundGoods,
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsNoStandardPlaceOfSupplyScheme {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsNoStandardPlaceOfSupplyScheme::*;
         match self {
             InboundGoods => "inbound_goods",
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsNoStandardPlaceOfSupplyScheme {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsNoStandardPlaceOfSupplyScheme::*;
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsNoStandardPlaceOfSupplyScheme"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -8611,30 +9702,41 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsNoStandardPlaceOfSupplyScheme"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Type of registration to be created in `country`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsNoType {
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsNoType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsNoType::*;
         match self {
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsNoType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsNoType::*;
         match s {
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsNoType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -8662,13 +9764,11 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsNoType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsNoType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in NP.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsNp {
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
@@ -8680,26 +9780,37 @@ impl CreateTaxRegistrationCountryOptionsNp {
     }
 }
 /// Type of registration to be created in `country`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsNpType {
     Simplified,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsNpType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsNpType::*;
         match self {
             Simplified => "simplified",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsNpType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsNpType::*;
         match s {
             "simplified" => Ok(Simplified),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsNpType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -8727,13 +9838,11 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsNpType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsNpType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in NZ.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsNz {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -8748,7 +9857,7 @@ impl CreateTaxRegistrationCountryOptionsNz {
     }
 }
 /// Options for the standard registration.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsNzStandard {
     /// Place of supply scheme used in an standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -8766,29 +9875,40 @@ impl Default for CreateTaxRegistrationCountryOptionsNzStandard {
     }
 }
 /// Place of supply scheme used in an standard registration.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsNzStandardPlaceOfSupplyScheme {
     InboundGoods,
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsNzStandardPlaceOfSupplyScheme {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsNzStandardPlaceOfSupplyScheme::*;
         match self {
             InboundGoods => "inbound_goods",
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsNzStandardPlaceOfSupplyScheme {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsNzStandardPlaceOfSupplyScheme::*;
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsNzStandardPlaceOfSupplyScheme"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -8818,30 +9938,41 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsNzStandardPlaceOfSupplyScheme"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Type of registration to be created in `country`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsNzType {
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsNzType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsNzType::*;
         match self {
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsNzType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsNzType::*;
         match s {
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsNzType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -8869,13 +10000,11 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsNzType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsNzType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in OM.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsOm {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -8890,7 +10019,7 @@ impl CreateTaxRegistrationCountryOptionsOm {
     }
 }
 /// Options for the standard registration.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsOmStandard {
     /// Place of supply scheme used in an standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -8908,29 +10037,40 @@ impl Default for CreateTaxRegistrationCountryOptionsOmStandard {
     }
 }
 /// Place of supply scheme used in an standard registration.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsOmStandardPlaceOfSupplyScheme {
     InboundGoods,
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsOmStandardPlaceOfSupplyScheme {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsOmStandardPlaceOfSupplyScheme::*;
         match self {
             InboundGoods => "inbound_goods",
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsOmStandardPlaceOfSupplyScheme {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsOmStandardPlaceOfSupplyScheme::*;
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsOmStandardPlaceOfSupplyScheme"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -8960,30 +10100,41 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsOmStandardPlaceOfSupplyScheme"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Type of registration to be created in `country`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsOmType {
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsOmType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsOmType::*;
         match self {
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsOmType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsOmType::*;
         match s {
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsOmType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -9011,13 +10162,11 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsOmType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsOmType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in PE.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsPe {
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
@@ -9029,26 +10178,37 @@ impl CreateTaxRegistrationCountryOptionsPe {
     }
 }
 /// Type of registration to be created in `country`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsPeType {
     Simplified,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsPeType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsPeType::*;
         match self {
             Simplified => "simplified",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsPeType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsPeType::*;
         match s {
             "simplified" => Ok(Simplified),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsPeType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -9076,13 +10236,11 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsPeType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsPeType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in PH.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsPh {
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
@@ -9094,26 +10252,37 @@ impl CreateTaxRegistrationCountryOptionsPh {
     }
 }
 /// Type of registration to be created in `country`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsPhType {
     Simplified,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsPhType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsPhType::*;
         match self {
             Simplified => "simplified",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsPhType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsPhType::*;
         match s {
             "simplified" => Ok(Simplified),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsPhType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -9141,13 +10310,11 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsPhType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsPhType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in PL.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsPl {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -9162,7 +10329,7 @@ impl CreateTaxRegistrationCountryOptionsPl {
     }
 }
 /// Options for the standard registration.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsPlStandard {
     /// Place of supply scheme used in an EU standard registration.
     pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsPlStandardPlaceOfSupplyScheme,
@@ -9177,32 +10344,43 @@ impl CreateTaxRegistrationCountryOptionsPlStandard {
     }
 }
 /// Place of supply scheme used in an EU standard registration.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsPlStandardPlaceOfSupplyScheme {
     InboundGoods,
     SmallSeller,
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsPlStandardPlaceOfSupplyScheme {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsPlStandardPlaceOfSupplyScheme::*;
         match self {
             InboundGoods => "inbound_goods",
             SmallSeller => "small_seller",
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsPlStandardPlaceOfSupplyScheme {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsPlStandardPlaceOfSupplyScheme::*;
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsPlStandardPlaceOfSupplyScheme"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -9232,31 +10410,35 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsPlStandardPlaceOfSupplyScheme"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Type of registration to be created in an EU country.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsPlType {
     Ioss,
     OssNonUnion,
     OssUnion,
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsPlType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsPlType::*;
         match self {
             Ioss => "ioss",
             OssNonUnion => "oss_non_union",
             OssUnion => "oss_union",
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsPlType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsPlType::*;
         match s {
@@ -9264,7 +10446,14 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsPlType {
             "oss_non_union" => Ok(OssNonUnion),
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsPlType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -9292,13 +10481,11 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsPlType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsPlType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in PT.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsPt {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -9313,7 +10500,7 @@ impl CreateTaxRegistrationCountryOptionsPt {
     }
 }
 /// Options for the standard registration.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsPtStandard {
     /// Place of supply scheme used in an EU standard registration.
     pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsPtStandardPlaceOfSupplyScheme,
@@ -9328,32 +10515,43 @@ impl CreateTaxRegistrationCountryOptionsPtStandard {
     }
 }
 /// Place of supply scheme used in an EU standard registration.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsPtStandardPlaceOfSupplyScheme {
     InboundGoods,
     SmallSeller,
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsPtStandardPlaceOfSupplyScheme {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsPtStandardPlaceOfSupplyScheme::*;
         match self {
             InboundGoods => "inbound_goods",
             SmallSeller => "small_seller",
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsPtStandardPlaceOfSupplyScheme {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsPtStandardPlaceOfSupplyScheme::*;
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsPtStandardPlaceOfSupplyScheme"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -9383,31 +10581,35 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsPtStandardPlaceOfSupplyScheme"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Type of registration to be created in an EU country.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsPtType {
     Ioss,
     OssNonUnion,
     OssUnion,
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsPtType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsPtType::*;
         match self {
             Ioss => "ioss",
             OssNonUnion => "oss_non_union",
             OssUnion => "oss_union",
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsPtType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsPtType::*;
         match s {
@@ -9415,7 +10617,14 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsPtType {
             "oss_non_union" => Ok(OssNonUnion),
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsPtType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -9443,13 +10652,11 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsPtType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsPtType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in RO.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsRo {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -9464,7 +10671,7 @@ impl CreateTaxRegistrationCountryOptionsRo {
     }
 }
 /// Options for the standard registration.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsRoStandard {
     /// Place of supply scheme used in an EU standard registration.
     pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsRoStandardPlaceOfSupplyScheme,
@@ -9479,32 +10686,43 @@ impl CreateTaxRegistrationCountryOptionsRoStandard {
     }
 }
 /// Place of supply scheme used in an EU standard registration.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsRoStandardPlaceOfSupplyScheme {
     InboundGoods,
     SmallSeller,
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsRoStandardPlaceOfSupplyScheme {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsRoStandardPlaceOfSupplyScheme::*;
         match self {
             InboundGoods => "inbound_goods",
             SmallSeller => "small_seller",
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsRoStandardPlaceOfSupplyScheme {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsRoStandardPlaceOfSupplyScheme::*;
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsRoStandardPlaceOfSupplyScheme"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -9534,31 +10752,35 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsRoStandardPlaceOfSupplyScheme"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Type of registration to be created in an EU country.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsRoType {
     Ioss,
     OssNonUnion,
     OssUnion,
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsRoType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsRoType::*;
         match self {
             Ioss => "ioss",
             OssNonUnion => "oss_non_union",
             OssUnion => "oss_union",
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsRoType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsRoType::*;
         match s {
@@ -9566,7 +10788,14 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsRoType {
             "oss_non_union" => Ok(OssNonUnion),
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsRoType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -9594,13 +10823,11 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsRoType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsRoType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in RS.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsRs {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -9615,7 +10842,7 @@ impl CreateTaxRegistrationCountryOptionsRs {
     }
 }
 /// Options for the standard registration.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsRsStandard {
     /// Place of supply scheme used in an standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -9633,29 +10860,40 @@ impl Default for CreateTaxRegistrationCountryOptionsRsStandard {
     }
 }
 /// Place of supply scheme used in an standard registration.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsRsStandardPlaceOfSupplyScheme {
     InboundGoods,
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsRsStandardPlaceOfSupplyScheme {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsRsStandardPlaceOfSupplyScheme::*;
         match self {
             InboundGoods => "inbound_goods",
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsRsStandardPlaceOfSupplyScheme {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsRsStandardPlaceOfSupplyScheme::*;
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsRsStandardPlaceOfSupplyScheme"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -9685,30 +10923,41 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsRsStandardPlaceOfSupplyScheme"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Type of registration to be created in `country`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsRsType {
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsRsType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsRsType::*;
         match self {
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsRsType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsRsType::*;
         match s {
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsRsType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -9736,13 +10985,11 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsRsType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsRsType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in RU.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsRu {
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
@@ -9754,26 +11001,37 @@ impl CreateTaxRegistrationCountryOptionsRu {
     }
 }
 /// Type of registration to be created in `country`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsRuType {
     Simplified,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsRuType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsRuType::*;
         match self {
             Simplified => "simplified",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsRuType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsRuType::*;
         match s {
             "simplified" => Ok(Simplified),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsRuType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -9801,13 +11059,11 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsRuType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsRuType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in SA.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsSa {
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
@@ -9819,26 +11075,37 @@ impl CreateTaxRegistrationCountryOptionsSa {
     }
 }
 /// Type of registration to be created in `country`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsSaType {
     Simplified,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsSaType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsSaType::*;
         match self {
             Simplified => "simplified",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsSaType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsSaType::*;
         match s {
             "simplified" => Ok(Simplified),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsSaType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -9866,13 +11133,11 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsSaType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsSaType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in SE.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsSe {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -9887,7 +11152,7 @@ impl CreateTaxRegistrationCountryOptionsSe {
     }
 }
 /// Options for the standard registration.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsSeStandard {
     /// Place of supply scheme used in an EU standard registration.
     pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsSeStandardPlaceOfSupplyScheme,
@@ -9902,32 +11167,43 @@ impl CreateTaxRegistrationCountryOptionsSeStandard {
     }
 }
 /// Place of supply scheme used in an EU standard registration.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsSeStandardPlaceOfSupplyScheme {
     InboundGoods,
     SmallSeller,
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsSeStandardPlaceOfSupplyScheme {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsSeStandardPlaceOfSupplyScheme::*;
         match self {
             InboundGoods => "inbound_goods",
             SmallSeller => "small_seller",
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsSeStandardPlaceOfSupplyScheme {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsSeStandardPlaceOfSupplyScheme::*;
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsSeStandardPlaceOfSupplyScheme"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -9957,31 +11233,35 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsSeStandardPlaceOfSupplyScheme"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Type of registration to be created in an EU country.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsSeType {
     Ioss,
     OssNonUnion,
     OssUnion,
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsSeType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsSeType::*;
         match self {
             Ioss => "ioss",
             OssNonUnion => "oss_non_union",
             OssUnion => "oss_union",
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsSeType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsSeType::*;
         match s {
@@ -9989,7 +11269,14 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsSeType {
             "oss_non_union" => Ok(OssNonUnion),
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsSeType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -10017,13 +11304,11 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsSeType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsSeType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in SG.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsSg {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -10038,7 +11323,7 @@ impl CreateTaxRegistrationCountryOptionsSg {
     }
 }
 /// Options for the standard registration.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsSgStandard {
     /// Place of supply scheme used in an standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -10056,29 +11341,40 @@ impl Default for CreateTaxRegistrationCountryOptionsSgStandard {
     }
 }
 /// Place of supply scheme used in an standard registration.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsSgStandardPlaceOfSupplyScheme {
     InboundGoods,
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsSgStandardPlaceOfSupplyScheme {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsSgStandardPlaceOfSupplyScheme::*;
         match self {
             InboundGoods => "inbound_goods",
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsSgStandardPlaceOfSupplyScheme {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsSgStandardPlaceOfSupplyScheme::*;
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsSgStandardPlaceOfSupplyScheme"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -10108,30 +11404,41 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsSgStandardPlaceOfSupplyScheme"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Type of registration to be created in `country`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsSgType {
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsSgType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsSgType::*;
         match self {
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsSgType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsSgType::*;
         match s {
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsSgType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -10159,13 +11466,11 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsSgType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsSgType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in SI.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsSi {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -10180,7 +11485,7 @@ impl CreateTaxRegistrationCountryOptionsSi {
     }
 }
 /// Options for the standard registration.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsSiStandard {
     /// Place of supply scheme used in an EU standard registration.
     pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsSiStandardPlaceOfSupplyScheme,
@@ -10195,32 +11500,43 @@ impl CreateTaxRegistrationCountryOptionsSiStandard {
     }
 }
 /// Place of supply scheme used in an EU standard registration.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsSiStandardPlaceOfSupplyScheme {
     InboundGoods,
     SmallSeller,
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsSiStandardPlaceOfSupplyScheme {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsSiStandardPlaceOfSupplyScheme::*;
         match self {
             InboundGoods => "inbound_goods",
             SmallSeller => "small_seller",
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsSiStandardPlaceOfSupplyScheme {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsSiStandardPlaceOfSupplyScheme::*;
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsSiStandardPlaceOfSupplyScheme"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -10250,31 +11566,35 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsSiStandardPlaceOfSupplyScheme"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Type of registration to be created in an EU country.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsSiType {
     Ioss,
     OssNonUnion,
     OssUnion,
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsSiType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsSiType::*;
         match self {
             Ioss => "ioss",
             OssNonUnion => "oss_non_union",
             OssUnion => "oss_union",
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsSiType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsSiType::*;
         match s {
@@ -10282,7 +11602,14 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsSiType {
             "oss_non_union" => Ok(OssNonUnion),
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsSiType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -10310,13 +11637,11 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsSiType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsSiType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in SK.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsSk {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -10331,7 +11656,7 @@ impl CreateTaxRegistrationCountryOptionsSk {
     }
 }
 /// Options for the standard registration.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsSkStandard {
     /// Place of supply scheme used in an EU standard registration.
     pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsSkStandardPlaceOfSupplyScheme,
@@ -10346,32 +11671,43 @@ impl CreateTaxRegistrationCountryOptionsSkStandard {
     }
 }
 /// Place of supply scheme used in an EU standard registration.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsSkStandardPlaceOfSupplyScheme {
     InboundGoods,
     SmallSeller,
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsSkStandardPlaceOfSupplyScheme {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsSkStandardPlaceOfSupplyScheme::*;
         match self {
             InboundGoods => "inbound_goods",
             SmallSeller => "small_seller",
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsSkStandardPlaceOfSupplyScheme {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsSkStandardPlaceOfSupplyScheme::*;
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "small_seller" => Ok(SmallSeller),
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsSkStandardPlaceOfSupplyScheme"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -10401,31 +11737,35 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsSkStandardPlaceOfSupplyScheme"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Type of registration to be created in an EU country.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsSkType {
     Ioss,
     OssNonUnion,
     OssUnion,
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsSkType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsSkType::*;
         match self {
             Ioss => "ioss",
             OssNonUnion => "oss_non_union",
             OssUnion => "oss_union",
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsSkType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsSkType::*;
         match s {
@@ -10433,7 +11773,14 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsSkType {
             "oss_non_union" => Ok(OssNonUnion),
             "oss_union" => Ok(OssUnion),
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsSkType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -10461,13 +11808,11 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsSkType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsSkType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in SN.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsSn {
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
@@ -10479,26 +11824,37 @@ impl CreateTaxRegistrationCountryOptionsSn {
     }
 }
 /// Type of registration to be created in `country`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsSnType {
     Simplified,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsSnType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsSnType::*;
         match self {
             Simplified => "simplified",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsSnType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsSnType::*;
         match s {
             "simplified" => Ok(Simplified),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsSnType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -10526,13 +11882,11 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsSnType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsSnType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in SR.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsSr {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -10547,7 +11901,7 @@ impl CreateTaxRegistrationCountryOptionsSr {
     }
 }
 /// Options for the standard registration.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsSrStandard {
     /// Place of supply scheme used in an standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -10565,29 +11919,40 @@ impl Default for CreateTaxRegistrationCountryOptionsSrStandard {
     }
 }
 /// Place of supply scheme used in an standard registration.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsSrStandardPlaceOfSupplyScheme {
     InboundGoods,
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsSrStandardPlaceOfSupplyScheme {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsSrStandardPlaceOfSupplyScheme::*;
         match self {
             InboundGoods => "inbound_goods",
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsSrStandardPlaceOfSupplyScheme {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsSrStandardPlaceOfSupplyScheme::*;
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsSrStandardPlaceOfSupplyScheme"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -10617,30 +11982,41 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsSrStandardPlaceOfSupplyScheme"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Type of registration to be created in `country`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsSrType {
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsSrType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsSrType::*;
         match self {
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsSrType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsSrType::*;
         match s {
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsSrType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -10668,13 +12044,11 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsSrType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsSrType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in TH.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsTh {
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
@@ -10686,26 +12060,37 @@ impl CreateTaxRegistrationCountryOptionsTh {
     }
 }
 /// Type of registration to be created in `country`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsThType {
     Simplified,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsThType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsThType::*;
         match self {
             Simplified => "simplified",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsThType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsThType::*;
         match s {
             "simplified" => Ok(Simplified),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsThType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -10733,13 +12118,11 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsThType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsThType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in TJ.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsTj {
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
@@ -10751,26 +12134,37 @@ impl CreateTaxRegistrationCountryOptionsTj {
     }
 }
 /// Type of registration to be created in `country`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsTjType {
     Simplified,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsTjType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsTjType::*;
         match self {
             Simplified => "simplified",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsTjType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsTjType::*;
         match s {
             "simplified" => Ok(Simplified),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsTjType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -10798,13 +12192,11 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsTjType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsTjType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in TR.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsTr {
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
@@ -10816,26 +12208,37 @@ impl CreateTaxRegistrationCountryOptionsTr {
     }
 }
 /// Type of registration to be created in `country`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsTrType {
     Simplified,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsTrType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsTrType::*;
         match self {
             Simplified => "simplified",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsTrType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsTrType::*;
         match s {
             "simplified" => Ok(Simplified),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsTrType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -10863,13 +12266,11 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsTrType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsTrType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in TW.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsTw {
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
@@ -10881,26 +12282,37 @@ impl CreateTaxRegistrationCountryOptionsTw {
     }
 }
 /// Type of registration to be created in `country`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsTwType {
     Simplified,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsTwType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsTwType::*;
         match self {
             Simplified => "simplified",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsTwType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsTwType::*;
         match s {
             "simplified" => Ok(Simplified),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsTwType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -10928,13 +12340,11 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsTwType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsTwType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in TZ.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsTz {
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
@@ -10946,26 +12356,37 @@ impl CreateTaxRegistrationCountryOptionsTz {
     }
 }
 /// Type of registration to be created in `country`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsTzType {
     Simplified,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsTzType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsTzType::*;
         match self {
             Simplified => "simplified",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsTzType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsTzType::*;
         match s {
             "simplified" => Ok(Simplified),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsTzType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -10993,13 +12414,11 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsTzType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsTzType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in UA.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsUa {
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
@@ -11011,26 +12430,37 @@ impl CreateTaxRegistrationCountryOptionsUa {
     }
 }
 /// Type of registration to be created in `country`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsUaType {
     Simplified,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsUaType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsUaType::*;
         match self {
             Simplified => "simplified",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsUaType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsUaType::*;
         match s {
             "simplified" => Ok(Simplified),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsUaType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -11058,13 +12488,11 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsUaType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsUaType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in UG.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsUg {
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
@@ -11076,26 +12504,37 @@ impl CreateTaxRegistrationCountryOptionsUg {
     }
 }
 /// Type of registration to be created in `country`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsUgType {
     Simplified,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsUgType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsUgType::*;
         match self {
             Simplified => "simplified",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsUgType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsUgType::*;
         match s {
             "simplified" => Ok(Simplified),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsUgType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -11123,9 +12562,7 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsUgType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsUgType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in US.
@@ -11216,32 +12653,43 @@ impl CreateTaxRegistrationCountryOptionsUsStateSalesTaxElections {
     }
 }
 /// The type of the election for the state sales tax registration.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsUsStateSalesTaxElectionsType {
     LocalUseTax,
     SimplifiedSellersUseTax,
     SingleLocalUseTax,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsUsStateSalesTaxElectionsType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsUsStateSalesTaxElectionsType::*;
         match self {
             LocalUseTax => "local_use_tax",
             SimplifiedSellersUseTax => "simplified_sellers_use_tax",
             SingleLocalUseTax => "single_local_use_tax",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsUsStateSalesTaxElectionsType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsUsStateSalesTaxElectionsType::*;
         match s {
             "local_use_tax" => Ok(LocalUseTax),
             "simplified_sellers_use_tax" => Ok(SimplifiedSellersUseTax),
             "single_local_use_tax" => Ok(SingleLocalUseTax),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsUsStateSalesTaxElectionsType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -11271,24 +12719,23 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for CreateTaxRegistrationCountryOptionsUsStateSalesTaxElectionsType",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Type of registration to be created in the US.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsUsType {
     LocalAmusementTax,
     LocalLeaseTax,
     StateCommunicationsTax,
     StateRetailDeliveryFee,
     StateSalesTax,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsUsType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsUsType::*;
         match self {
             LocalAmusementTax => "local_amusement_tax",
@@ -11296,12 +12743,13 @@ impl CreateTaxRegistrationCountryOptionsUsType {
             StateCommunicationsTax => "state_communications_tax",
             StateRetailDeliveryFee => "state_retail_delivery_fee",
             StateSalesTax => "state_sales_tax",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsUsType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsUsType::*;
         match s {
@@ -11310,7 +12758,14 @@ impl std::str::FromStr for CreateTaxRegistrationCountryOptionsUsType {
             "state_communications_tax" => Ok(StateCommunicationsTax),
             "state_retail_delivery_fee" => Ok(StateRetailDeliveryFee),
             "state_sales_tax" => Ok(StateSalesTax),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsUsType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -11338,13 +12793,11 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsUsType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsUsType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in UY.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsUy {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -11359,7 +12812,7 @@ impl CreateTaxRegistrationCountryOptionsUy {
     }
 }
 /// Options for the standard registration.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsUyStandard {
     /// Place of supply scheme used in an standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -11377,29 +12830,40 @@ impl Default for CreateTaxRegistrationCountryOptionsUyStandard {
     }
 }
 /// Place of supply scheme used in an standard registration.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsUyStandardPlaceOfSupplyScheme {
     InboundGoods,
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsUyStandardPlaceOfSupplyScheme {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsUyStandardPlaceOfSupplyScheme::*;
         match self {
             InboundGoods => "inbound_goods",
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsUyStandardPlaceOfSupplyScheme {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsUyStandardPlaceOfSupplyScheme::*;
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsUyStandardPlaceOfSupplyScheme"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -11429,30 +12893,41 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsUyStandardPlaceOfSupplyScheme"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Type of registration to be created in `country`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsUyType {
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsUyType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsUyType::*;
         match self {
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsUyType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsUyType::*;
         match s {
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsUyType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -11480,13 +12955,11 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsUyType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsUyType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in UZ.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsUz {
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
@@ -11498,26 +12971,37 @@ impl CreateTaxRegistrationCountryOptionsUz {
     }
 }
 /// Type of registration to be created in `country`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsUzType {
     Simplified,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsUzType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsUzType::*;
         match self {
             Simplified => "simplified",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsUzType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsUzType::*;
         match s {
             "simplified" => Ok(Simplified),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsUzType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -11545,13 +13029,11 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsUzType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsUzType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in VN.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsVn {
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
@@ -11563,26 +13045,37 @@ impl CreateTaxRegistrationCountryOptionsVn {
     }
 }
 /// Type of registration to be created in `country`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsVnType {
     Simplified,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsVnType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsVnType::*;
         match self {
             Simplified => "simplified",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsVnType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsVnType::*;
         match s {
             "simplified" => Ok(Simplified),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsVnType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -11610,13 +13103,11 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsVnType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsVnType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in ZA.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsZa {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -11631,7 +13122,7 @@ impl CreateTaxRegistrationCountryOptionsZa {
     }
 }
 /// Options for the standard registration.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsZaStandard {
     /// Place of supply scheme used in an standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -11649,29 +13140,40 @@ impl Default for CreateTaxRegistrationCountryOptionsZaStandard {
     }
 }
 /// Place of supply scheme used in an standard registration.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsZaStandardPlaceOfSupplyScheme {
     InboundGoods,
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsZaStandardPlaceOfSupplyScheme {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsZaStandardPlaceOfSupplyScheme::*;
         match self {
             InboundGoods => "inbound_goods",
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsZaStandardPlaceOfSupplyScheme {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsZaStandardPlaceOfSupplyScheme::*;
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsZaStandardPlaceOfSupplyScheme"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -11701,30 +13203,41 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsZaStandardPlaceOfSupplyScheme"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Type of registration to be created in `country`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsZaType {
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsZaType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsZaType::*;
         match self {
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsZaType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsZaType::*;
         match s {
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsZaType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -11752,13 +13265,11 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsZaType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsZaType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in ZM.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsZm {
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
@@ -11770,26 +13281,37 @@ impl CreateTaxRegistrationCountryOptionsZm {
     }
 }
 /// Type of registration to be created in `country`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsZmType {
     Simplified,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsZmType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsZmType::*;
         match self {
             Simplified => "simplified",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsZmType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsZmType::*;
         match s {
             "simplified" => Ok(Simplified),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsZmType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -11817,13 +13339,11 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsZmType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsZmType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options for the registration in ZW.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsZw {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -11838,7 +13358,7 @@ impl CreateTaxRegistrationCountryOptionsZw {
     }
 }
 /// Options for the standard registration.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsZwStandard {
     /// Place of supply scheme used in an standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -11856,29 +13376,40 @@ impl Default for CreateTaxRegistrationCountryOptionsZwStandard {
     }
 }
 /// Place of supply scheme used in an standard registration.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsZwStandardPlaceOfSupplyScheme {
     InboundGoods,
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsZwStandardPlaceOfSupplyScheme {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsZwStandardPlaceOfSupplyScheme::*;
         match self {
             InboundGoods => "inbound_goods",
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsZwStandardPlaceOfSupplyScheme {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsZwStandardPlaceOfSupplyScheme::*;
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsZwStandardPlaceOfSupplyScheme"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -11908,30 +13439,41 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsZwStandardPlaceOfSupplyScheme"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Type of registration to be created in `country`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxRegistrationCountryOptionsZwType {
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxRegistrationCountryOptionsZwType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxRegistrationCountryOptionsZwType::*;
         match self {
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxRegistrationCountryOptionsZwType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxRegistrationCountryOptionsZwType::*;
         match s {
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsZwType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -11959,9 +13501,7 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsZwType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxRegistrationCountryOptionsZwType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Creates a new Tax `Registration` object.

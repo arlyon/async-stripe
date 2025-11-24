@@ -141,8 +141,8 @@ const _: () = {
                 self.process_setup_intent.take(),
                 self.refund_payment.take(),
                 self.set_reader_display.take(),
-                self.status,
-                self.type_,
+                self.status.take(),
+                self.type_.take(),
             )
             else {
                 return None;
@@ -211,32 +211,43 @@ const _: () = {
     }
 };
 /// Status of the action performed by the reader.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum TerminalReaderReaderResourceReaderActionStatus {
     Failed,
     InProgress,
     Succeeded,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl TerminalReaderReaderResourceReaderActionStatus {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use TerminalReaderReaderResourceReaderActionStatus::*;
         match self {
             Failed => "failed",
             InProgress => "in_progress",
             Succeeded => "succeeded",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for TerminalReaderReaderResourceReaderActionStatus {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TerminalReaderReaderResourceReaderActionStatus::*;
         match s {
             "failed" => Ok(Failed),
             "in_progress" => Ok(InProgress),
             "succeeded" => Ok(Succeeded),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "TerminalReaderReaderResourceReaderActionStatus"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -269,10 +280,8 @@ impl miniserde::Deserialize for TerminalReaderReaderResourceReaderActionStatus {
 impl miniserde::de::Visitor for crate::Place<TerminalReaderReaderResourceReaderActionStatus> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            TerminalReaderReaderResourceReaderActionStatus::from_str(s)
-                .map_err(|_| miniserde::Error)?,
-        );
+        self.out =
+            Some(TerminalReaderReaderResourceReaderActionStatus::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -283,15 +292,12 @@ impl<'de> serde::Deserialize<'de> for TerminalReaderReaderResourceReaderActionSt
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for TerminalReaderReaderResourceReaderActionStatus",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Type of action performed by the reader.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum TerminalReaderReaderResourceReaderActionType {
     CollectInputs,
     CollectPaymentMethod,
@@ -300,9 +306,11 @@ pub enum TerminalReaderReaderResourceReaderActionType {
     ProcessSetupIntent,
     RefundPayment,
     SetReaderDisplay,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl TerminalReaderReaderResourceReaderActionType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use TerminalReaderReaderResourceReaderActionType::*;
         match self {
             CollectInputs => "collect_inputs",
@@ -312,12 +320,13 @@ impl TerminalReaderReaderResourceReaderActionType {
             ProcessSetupIntent => "process_setup_intent",
             RefundPayment => "refund_payment",
             SetReaderDisplay => "set_reader_display",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for TerminalReaderReaderResourceReaderActionType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TerminalReaderReaderResourceReaderActionType::*;
         match s {
@@ -328,7 +337,14 @@ impl std::str::FromStr for TerminalReaderReaderResourceReaderActionType {
             "process_setup_intent" => Ok(ProcessSetupIntent),
             "refund_payment" => Ok(RefundPayment),
             "set_reader_display" => Ok(SetReaderDisplay),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "TerminalReaderReaderResourceReaderActionType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -361,10 +377,8 @@ impl miniserde::Deserialize for TerminalReaderReaderResourceReaderActionType {
 impl miniserde::de::Visitor for crate::Place<TerminalReaderReaderResourceReaderActionType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            TerminalReaderReaderResourceReaderActionType::from_str(s)
-                .map_err(|_| miniserde::Error)?,
-        );
+        self.out =
+            Some(TerminalReaderReaderResourceReaderActionType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -375,10 +389,6 @@ impl<'de> serde::Deserialize<'de> for TerminalReaderReaderResourceReaderActionTy
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for TerminalReaderReaderResourceReaderActionType",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

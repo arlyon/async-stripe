@@ -101,9 +101,9 @@ const _: () = {
                 Some(sepa_debit),
                 Some(us_bank_account),
             ) = (
-                self.acss_debit,
-                self.bancontact,
-                self.card,
+                self.acss_debit.take(),
+                self.bancontact.take(),
+                self.card.take(),
                 self.customer_balance.take(),
                 self.konbini,
                 self.sepa_debit,

@@ -32,29 +32,36 @@ impl CreateAccountLinkBuilder {
     }
 }
 /// The collect parameter is deprecated. Use `collection_options` instead.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateAccountLinkCollect {
     CurrentlyDue,
     EventuallyDue,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateAccountLinkCollect {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateAccountLinkCollect::*;
         match self {
             CurrentlyDue => "currently_due",
             EventuallyDue => "eventually_due",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateAccountLinkCollect {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateAccountLinkCollect::*;
         match s {
             "currently_due" => Ok(CurrentlyDue),
             "eventually_due" => Ok(EventuallyDue),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CreateAccountLinkCollect");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -82,12 +89,11 @@ impl<'de> serde::Deserialize<'de> for CreateAccountLinkCollect {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for CreateAccountLinkCollect"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Specifies the requirements that Stripe collects from connected accounts in the Connect Onboarding flow.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateAccountLinkCollectionOptions {
     /// Specifies whether the platform collects only currently_due requirements (`currently_due`) or both currently_due and eventually_due requirements (`eventually_due`).
     /// If you don't specify `collection_options`, the default value is `currently_due`.
@@ -110,29 +116,40 @@ impl Default for CreateAccountLinkCollectionOptions {
 }
 /// Specifies whether the platform collects only currently_due requirements (`currently_due`) or both currently_due and eventually_due requirements (`eventually_due`).
 /// If you don't specify `collection_options`, the default value is `currently_due`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateAccountLinkCollectionOptionsFields {
     CurrentlyDue,
     EventuallyDue,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateAccountLinkCollectionOptionsFields {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateAccountLinkCollectionOptionsFields::*;
         match self {
             CurrentlyDue => "currently_due",
             EventuallyDue => "eventually_due",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateAccountLinkCollectionOptionsFields {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateAccountLinkCollectionOptionsFields::*;
         match s {
             "currently_due" => Ok(CurrentlyDue),
             "eventually_due" => Ok(EventuallyDue),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateAccountLinkCollectionOptionsFields"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -160,36 +177,45 @@ impl<'de> serde::Deserialize<'de> for CreateAccountLinkCollectionOptionsFields {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateAccountLinkCollectionOptionsFields")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Specifies whether the platform collects future_requirements in addition to requirements in Connect Onboarding.
 /// The default value is `omit`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateAccountLinkCollectionOptionsFutureRequirements {
     Include,
     Omit,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateAccountLinkCollectionOptionsFutureRequirements {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateAccountLinkCollectionOptionsFutureRequirements::*;
         match self {
             Include => "include",
             Omit => "omit",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateAccountLinkCollectionOptionsFutureRequirements {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateAccountLinkCollectionOptionsFutureRequirements::*;
         match s {
             "include" => Ok(Include),
             "omit" => Ok(Omit),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateAccountLinkCollectionOptionsFutureRequirements"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -217,11 +243,7 @@ impl<'de> serde::Deserialize<'de> for CreateAccountLinkCollectionOptionsFutureRe
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for CreateAccountLinkCollectionOptionsFutureRequirements",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The type of account link the user is requesting.
@@ -230,29 +252,36 @@ impl<'de> serde::Deserialize<'de> for CreateAccountLinkCollectionOptionsFutureRe
 /// You can't create them for accounts that have access to a Stripe-hosted Dashboard.
 /// If you use [Connect embedded components](/connect/get-started-connect-embedded-components), you can include components that allow your connected accounts to update their own information.
 /// For an account without Stripe-hosted Dashboard access where Stripe is liable for negative balances, you must use embedded components.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateAccountLinkType {
     AccountOnboarding,
     AccountUpdate,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateAccountLinkType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateAccountLinkType::*;
         match self {
             AccountOnboarding => "account_onboarding",
             AccountUpdate => "account_update",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateAccountLinkType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateAccountLinkType::*;
         match s {
             "account_onboarding" => Ok(AccountOnboarding),
             "account_update" => Ok(AccountUpdate),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CreateAccountLinkType");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -280,8 +309,7 @@ impl<'de> serde::Deserialize<'de> for CreateAccountLinkType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for CreateAccountLinkType"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Creates an AccountLink object that includes a single-use Stripe URL that the platform can redirect their user to in order to take them through the Connect Onboarding flow.

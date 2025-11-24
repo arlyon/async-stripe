@@ -1,4 +1,4 @@
-#[derive(Copy, Clone, Debug)]
+#[derive(Clone, Debug)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentMethodUsBankAccountBlocked {
@@ -64,7 +64,8 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(network_code), Some(reason)) = (self.network_code, self.reason) else {
+            let (Some(network_code), Some(reason)) = (self.network_code.take(), self.reason.take())
+            else {
                 return None;
             };
             Some(Self::Out { network_code, reason })
@@ -104,7 +105,8 @@ const _: () = {
     }
 };
 /// The ACH network code that resulted in this block.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PaymentMethodUsBankAccountBlockedNetworkCode {
     R02,
     R03,
@@ -118,9 +120,11 @@ pub enum PaymentMethodUsBankAccountBlockedNetworkCode {
     R20,
     R29,
     R31,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl PaymentMethodUsBankAccountBlockedNetworkCode {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PaymentMethodUsBankAccountBlockedNetworkCode::*;
         match self {
             R02 => "R02",
@@ -135,12 +139,13 @@ impl PaymentMethodUsBankAccountBlockedNetworkCode {
             R20 => "R20",
             R29 => "R29",
             R31 => "R31",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for PaymentMethodUsBankAccountBlockedNetworkCode {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentMethodUsBankAccountBlockedNetworkCode::*;
         match s {
@@ -156,7 +161,14 @@ impl std::str::FromStr for PaymentMethodUsBankAccountBlockedNetworkCode {
             "R20" => Ok(R20),
             "R29" => Ok(R29),
             "R31" => Ok(R31),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PaymentMethodUsBankAccountBlockedNetworkCode"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -189,10 +201,8 @@ impl miniserde::Deserialize for PaymentMethodUsBankAccountBlockedNetworkCode {
 impl miniserde::de::Visitor for crate::Place<PaymentMethodUsBankAccountBlockedNetworkCode> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            PaymentMethodUsBankAccountBlockedNetworkCode::from_str(s)
-                .map_err(|_| miniserde::Error)?,
-        );
+        self.out =
+            Some(PaymentMethodUsBankAccountBlockedNetworkCode::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -203,15 +213,12 @@ impl<'de> serde::Deserialize<'de> for PaymentMethodUsBankAccountBlockedNetworkCo
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for PaymentMethodUsBankAccountBlockedNetworkCode",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The reason why this PaymentMethod's fingerprint has been blocked
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PaymentMethodUsBankAccountBlockedReason {
     BankAccountClosed,
     BankAccountFrozen,
@@ -220,9 +227,11 @@ pub enum PaymentMethodUsBankAccountBlockedReason {
     BankAccountUnusable,
     DebitNotAuthorized,
     TokenizedAccountNumberDeactivated,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl PaymentMethodUsBankAccountBlockedReason {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PaymentMethodUsBankAccountBlockedReason::*;
         match self {
             BankAccountClosed => "bank_account_closed",
@@ -232,12 +241,13 @@ impl PaymentMethodUsBankAccountBlockedReason {
             BankAccountUnusable => "bank_account_unusable",
             DebitNotAuthorized => "debit_not_authorized",
             TokenizedAccountNumberDeactivated => "tokenized_account_number_deactivated",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for PaymentMethodUsBankAccountBlockedReason {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentMethodUsBankAccountBlockedReason::*;
         match s {
@@ -248,7 +258,14 @@ impl std::str::FromStr for PaymentMethodUsBankAccountBlockedReason {
             "bank_account_unusable" => Ok(BankAccountUnusable),
             "debit_not_authorized" => Ok(DebitNotAuthorized),
             "tokenized_account_number_deactivated" => Ok(TokenizedAccountNumberDeactivated),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PaymentMethodUsBankAccountBlockedReason"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -281,9 +298,7 @@ impl miniserde::Deserialize for PaymentMethodUsBankAccountBlockedReason {
 impl miniserde::de::Visitor for crate::Place<PaymentMethodUsBankAccountBlockedReason> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            PaymentMethodUsBankAccountBlockedReason::from_str(s).map_err(|_| miniserde::Error)?,
-        );
+        self.out = Some(PaymentMethodUsBankAccountBlockedReason::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -294,8 +309,6 @@ impl<'de> serde::Deserialize<'de> for PaymentMethodUsBankAccountBlockedReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for PaymentMethodUsBankAccountBlockedReason")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

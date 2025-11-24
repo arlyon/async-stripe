@@ -37,29 +37,40 @@ impl ListIdentityVerificationReportBuilder {
     }
 }
 /// Only return VerificationReports of this type
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum ListIdentityVerificationReportType {
     Document,
     IdNumber,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl ListIdentityVerificationReportType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use ListIdentityVerificationReportType::*;
         match self {
             Document => "document",
             IdNumber => "id_number",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for ListIdentityVerificationReportType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ListIdentityVerificationReportType::*;
         match s {
             "document" => Ok(Document),
             "id_number" => Ok(IdNumber),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "ListIdentityVerificationReportType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -87,9 +98,7 @@ impl<'de> serde::Deserialize<'de> for ListIdentityVerificationReportType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for ListIdentityVerificationReportType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// List all verification reports.

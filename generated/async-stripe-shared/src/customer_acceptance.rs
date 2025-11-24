@@ -77,7 +77,7 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (Some(accepted_at), Some(offline), Some(online), Some(type_)) =
-                (self.accepted_at, self.offline, self.online.take(), self.type_)
+                (self.accepted_at, self.offline, self.online.take(), self.type_.take())
             else {
                 return None;
             };
@@ -120,29 +120,36 @@ const _: () = {
     }
 };
 /// The mandate includes the type of customer acceptance information, such as: `online` or `offline`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CustomerAcceptanceType {
     Offline,
     Online,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CustomerAcceptanceType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CustomerAcceptanceType::*;
         match self {
             Offline => "offline",
             Online => "online",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CustomerAcceptanceType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CustomerAcceptanceType::*;
         match s {
             "offline" => Ok(Offline),
             "online" => Ok(Online),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CustomerAcceptanceType");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -175,7 +182,7 @@ impl miniserde::Deserialize for CustomerAcceptanceType {
 impl miniserde::de::Visitor for crate::Place<CustomerAcceptanceType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(CustomerAcceptanceType::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(CustomerAcceptanceType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -186,7 +193,6 @@ impl<'de> serde::Deserialize<'de> for CustomerAcceptanceType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for CustomerAcceptanceType"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

@@ -65,7 +65,7 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(code), Some(reason)) = (self.code, self.reason.take()) else {
+            let (Some(code), Some(reason)) = (self.code.take(), self.reason.take()) else {
                 return None;
             };
             Some(Self::Out { code, reason })
@@ -105,27 +105,31 @@ const _: () = {
     }
 };
 /// A short machine-readable string giving the reason for the verification failure.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum GelatoSelfieReportErrorCode {
     SelfieDocumentMissingPhoto,
     SelfieFaceMismatch,
     SelfieManipulated,
     SelfieUnverifiedOther,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl GelatoSelfieReportErrorCode {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use GelatoSelfieReportErrorCode::*;
         match self {
             SelfieDocumentMissingPhoto => "selfie_document_missing_photo",
             SelfieFaceMismatch => "selfie_face_mismatch",
             SelfieManipulated => "selfie_manipulated",
             SelfieUnverifiedOther => "selfie_unverified_other",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for GelatoSelfieReportErrorCode {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use GelatoSelfieReportErrorCode::*;
         match s {
@@ -133,7 +137,14 @@ impl std::str::FromStr for GelatoSelfieReportErrorCode {
             "selfie_face_mismatch" => Ok(SelfieFaceMismatch),
             "selfie_manipulated" => Ok(SelfieManipulated),
             "selfie_unverified_other" => Ok(SelfieUnverifiedOther),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "GelatoSelfieReportErrorCode"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -166,7 +177,7 @@ impl miniserde::Deserialize for GelatoSelfieReportErrorCode {
 impl miniserde::de::Visitor for crate::Place<GelatoSelfieReportErrorCode> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(GelatoSelfieReportErrorCode::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(GelatoSelfieReportErrorCode::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -177,7 +188,6 @@ impl<'de> serde::Deserialize<'de> for GelatoSelfieReportErrorCode {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for GelatoSelfieReportErrorCode"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

@@ -1,5 +1,5 @@
 /// Configures how this subscription behaves during the trial period.
-#[derive(Copy, Clone, Debug)]
+#[derive(Clone, Debug)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct SubscriptionsTrialsResourceTrialSettings {
@@ -60,7 +60,7 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(end_behavior),) = (self.end_behavior,) else {
+            let (Some(end_behavior),) = (self.end_behavior.take(),) else {
                 return None;
             };
             Some(Self::Out { end_behavior })

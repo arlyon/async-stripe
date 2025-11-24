@@ -841,7 +841,14 @@ impl std::str::FromStr for PaymentPagesCheckoutSessionShippingAddressCollectionA
             "ZM" => Ok(Zm),
             "ZW" => Ok(Zw),
             "ZZ" => Ok(Zz),
-            v => Ok(Unknown(v.to_owned())),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -880,7 +887,7 @@ impl miniserde::de::Visitor
         use std::str::FromStr;
         self.out = Some(
             PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries::from_str(s)
-                .unwrap(),
+                .expect("infallible"),
         );
         Ok(())
     }
@@ -896,6 +903,6 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap())
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

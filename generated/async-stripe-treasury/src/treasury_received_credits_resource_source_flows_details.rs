@@ -90,7 +90,7 @@ const _: () = {
                 self.outbound_payment.take(),
                 self.outbound_transfer.take(),
                 self.payout.take(),
-                self.type_,
+                self.type_.take(),
             )
             else {
                 return None;
@@ -135,16 +135,19 @@ const _: () = {
     }
 };
 /// The type of the source flow that originated the ReceivedCredit.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum TreasuryReceivedCreditsResourceSourceFlowsDetailsType {
     CreditReversal,
     Other,
     OutboundPayment,
     OutboundTransfer,
     Payout,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl TreasuryReceivedCreditsResourceSourceFlowsDetailsType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use TreasuryReceivedCreditsResourceSourceFlowsDetailsType::*;
         match self {
             CreditReversal => "credit_reversal",
@@ -152,12 +155,13 @@ impl TreasuryReceivedCreditsResourceSourceFlowsDetailsType {
             OutboundPayment => "outbound_payment",
             OutboundTransfer => "outbound_transfer",
             Payout => "payout",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for TreasuryReceivedCreditsResourceSourceFlowsDetailsType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TreasuryReceivedCreditsResourceSourceFlowsDetailsType::*;
         match s {
@@ -166,7 +170,14 @@ impl std::str::FromStr for TreasuryReceivedCreditsResourceSourceFlowsDetailsType
             "outbound_payment" => Ok(OutboundPayment),
             "outbound_transfer" => Ok(OutboundTransfer),
             "payout" => Ok(Payout),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "TreasuryReceivedCreditsResourceSourceFlowsDetailsType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -202,8 +213,7 @@ impl miniserde::de::Visitor
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(
-            TreasuryReceivedCreditsResourceSourceFlowsDetailsType::from_str(s)
-                .map_err(|_| miniserde::Error)?,
+            TreasuryReceivedCreditsResourceSourceFlowsDetailsType::from_str(s).expect("infallible"),
         );
         Ok(())
     }
@@ -215,10 +225,6 @@ impl<'de> serde::Deserialize<'de> for TreasuryReceivedCreditsResourceSourceFlows
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for TreasuryReceivedCreditsResourceSourceFlowsDetailsType",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

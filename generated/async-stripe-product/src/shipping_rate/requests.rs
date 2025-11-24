@@ -212,7 +212,7 @@ impl CreateShippingRateBuilder {
 }
 /// The estimated range for how long shipping will take, meant to be displayable to the customer.
 /// This will appear on CheckoutSessions.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateShippingRateDeliveryEstimate {
     /// The upper bound of the estimated range. If empty, represents no upper bound i.e., infinite.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -232,7 +232,7 @@ impl Default for CreateShippingRateDeliveryEstimate {
     }
 }
 /// The upper bound of the estimated range. If empty, represents no upper bound i.e., infinite.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateShippingRateDeliveryEstimateMaximum {
     /// A unit of time.
     pub unit: CreateShippingRateDeliveryEstimateMaximumUnit,
@@ -248,16 +248,19 @@ impl CreateShippingRateDeliveryEstimateMaximum {
     }
 }
 /// A unit of time.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateShippingRateDeliveryEstimateMaximumUnit {
     BusinessDay,
     Day,
     Hour,
     Month,
     Week,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateShippingRateDeliveryEstimateMaximumUnit {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateShippingRateDeliveryEstimateMaximumUnit::*;
         match self {
             BusinessDay => "business_day",
@@ -265,12 +268,13 @@ impl CreateShippingRateDeliveryEstimateMaximumUnit {
             Hour => "hour",
             Month => "month",
             Week => "week",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateShippingRateDeliveryEstimateMaximumUnit {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateShippingRateDeliveryEstimateMaximumUnit::*;
         match s {
@@ -279,7 +283,14 @@ impl std::str::FromStr for CreateShippingRateDeliveryEstimateMaximumUnit {
             "hour" => Ok(Hour),
             "month" => Ok(Month),
             "week" => Ok(Week),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateShippingRateDeliveryEstimateMaximumUnit"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -307,15 +318,11 @@ impl<'de> serde::Deserialize<'de> for CreateShippingRateDeliveryEstimateMaximumU
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for CreateShippingRateDeliveryEstimateMaximumUnit",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The lower bound of the estimated range. If empty, represents no lower bound.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateShippingRateDeliveryEstimateMinimum {
     /// A unit of time.
     pub unit: CreateShippingRateDeliveryEstimateMinimumUnit,
@@ -331,16 +338,19 @@ impl CreateShippingRateDeliveryEstimateMinimum {
     }
 }
 /// A unit of time.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateShippingRateDeliveryEstimateMinimumUnit {
     BusinessDay,
     Day,
     Hour,
     Month,
     Week,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateShippingRateDeliveryEstimateMinimumUnit {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateShippingRateDeliveryEstimateMinimumUnit::*;
         match self {
             BusinessDay => "business_day",
@@ -348,12 +358,13 @@ impl CreateShippingRateDeliveryEstimateMinimumUnit {
             Hour => "hour",
             Month => "month",
             Week => "week",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateShippingRateDeliveryEstimateMinimumUnit {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateShippingRateDeliveryEstimateMinimumUnit::*;
         match s {
@@ -362,7 +373,14 @@ impl std::str::FromStr for CreateShippingRateDeliveryEstimateMinimumUnit {
             "hour" => Ok(Hour),
             "month" => Ok(Month),
             "week" => Ok(Week),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateShippingRateDeliveryEstimateMinimumUnit"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -390,11 +408,7 @@ impl<'de> serde::Deserialize<'de> for CreateShippingRateDeliveryEstimateMinimumU
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for CreateShippingRateDeliveryEstimateMinimumUnit",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Describes a fixed amount to charge for shipping. Must be present if type is `fixed_amount`.
@@ -422,7 +436,7 @@ impl CreateShippingRateFixedAmount {
 }
 /// Shipping rates defined in each available currency option.
 /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateShippingRateFixedAmountCurrencyOptions {
     /// A non-negative integer in cents representing how much to charge.
     pub amount: i64,
@@ -565,7 +579,7 @@ impl Default for UpdateShippingRateFixedAmount {
 }
 /// Shipping rates defined in each available currency option.
 /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdateShippingRateFixedAmountCurrencyOptions {
     /// A non-negative integer in cents representing how much to charge.
     #[serde(skip_serializing_if = "Option::is_none")]

@@ -96,7 +96,7 @@ Some(us_bank_transfer),
 self.gb_bank_transfer.take(),
 self.jp_bank_transfer.take(),
 self.reference.take(),
-self.type_,
+self.type_.take(),
 self.us_bank_transfer.take(),
 ) else {
             return None;
@@ -143,7 +143,8 @@ self.us_bank_transfer.take(),
 };
 /// The funding method type used to fund the customer balance.
 /// Permitted values include: `eu_bank_transfer`, `gb_bank_transfer`, `jp_bank_transfer`, `mx_bank_transfer`, or `us_bank_transfer`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferType
 {
     EuBankTransfer,
@@ -151,11 +152,13 @@ pub enum CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionR
     JpBankTransfer,
     MxBankTransfer,
     UsBankTransfer,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl
     CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferType
 {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferType::*;
         match self {
             EuBankTransfer => "eu_bank_transfer",
@@ -163,12 +166,13 @@ impl
             JpBankTransfer => "jp_bank_transfer",
             MxBankTransfer => "mx_bank_transfer",
             UsBankTransfer => "us_bank_transfer",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferType::*;
         match s {
@@ -177,7 +181,7 @@ impl std::str::FromStr for CustomerBalanceResourceCashBalanceTransactionResource
 "jp_bank_transfer" => Ok(JpBankTransfer),
 "mx_bank_transfer" => Ok(MxBankTransfer),
 "us_bank_transfer" => Ok(UsBankTransfer),
-_ => Err(stripe_types::StripeParseError)
+v => { tracing::warn!("Unknown value '{}' for enum '{}'", v, "CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferType"); Ok(Unknown(v.to_owned())) }
 
         }
     }
@@ -208,7 +212,7 @@ impl miniserde::Deserialize for CustomerBalanceResourceCashBalanceTransactionRes
 impl miniserde::de::Visitor for crate::Place<CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferType::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -221,6 +225,6 @@ impl<'de> serde::Deserialize<'de> for CustomerBalanceResourceCashBalanceTransact
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferType"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

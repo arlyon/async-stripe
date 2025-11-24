@@ -75,7 +75,7 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (Some(amount), Some(categories), Some(interval)) =
-                (self.amount, self.categories.take(), self.interval)
+                (self.amount, self.categories.take(), self.interval.take())
             else {
                 return None;
             };
@@ -1115,7 +1115,14 @@ impl std::str::FromStr for IssuingCardholderSpendingLimitCategories {
             "womens_accessory_and_specialty_shops" => Ok(WomensAccessoryAndSpecialtyShops),
             "womens_ready_to_wear_stores" => Ok(WomensReadyToWearStores),
             "wrecking_and_salvage_yards" => Ok(WreckingAndSalvageYards),
-            v => Ok(Unknown(v.to_owned())),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "IssuingCardholderSpendingLimitCategories"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -1148,7 +1155,7 @@ impl miniserde::Deserialize for IssuingCardholderSpendingLimitCategories {
 impl miniserde::de::Visitor for crate::Place<IssuingCardholderSpendingLimitCategories> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(IssuingCardholderSpendingLimitCategories::from_str(s).unwrap());
+        self.out = Some(IssuingCardholderSpendingLimitCategories::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -1159,11 +1166,12 @@ impl<'de> serde::Deserialize<'de> for IssuingCardholderSpendingLimitCategories {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap())
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Interval (or event) to which the amount applies.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum IssuingCardholderSpendingLimitInterval {
     AllTime,
     Daily,
@@ -1171,9 +1179,11 @@ pub enum IssuingCardholderSpendingLimitInterval {
     PerAuthorization,
     Weekly,
     Yearly,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl IssuingCardholderSpendingLimitInterval {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use IssuingCardholderSpendingLimitInterval::*;
         match self {
             AllTime => "all_time",
@@ -1182,12 +1192,13 @@ impl IssuingCardholderSpendingLimitInterval {
             PerAuthorization => "per_authorization",
             Weekly => "weekly",
             Yearly => "yearly",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for IssuingCardholderSpendingLimitInterval {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use IssuingCardholderSpendingLimitInterval::*;
         match s {
@@ -1197,7 +1208,14 @@ impl std::str::FromStr for IssuingCardholderSpendingLimitInterval {
             "per_authorization" => Ok(PerAuthorization),
             "weekly" => Ok(Weekly),
             "yearly" => Ok(Yearly),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "IssuingCardholderSpendingLimitInterval"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -1230,9 +1248,7 @@ impl miniserde::Deserialize for IssuingCardholderSpendingLimitInterval {
 impl miniserde::de::Visitor for crate::Place<IssuingCardholderSpendingLimitInterval> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            IssuingCardholderSpendingLimitInterval::from_str(s).map_err(|_| miniserde::Error)?,
-        );
+        self.out = Some(IssuingCardholderSpendingLimitInterval::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -1243,8 +1259,6 @@ impl<'de> serde::Deserialize<'de> for IssuingCardholderSpendingLimitInterval {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for IssuingCardholderSpendingLimitInterval")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

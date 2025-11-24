@@ -71,7 +71,7 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (Some(default_account_tax_ids), Some(hosted_payment_method_save)) =
-                (self.default_account_tax_ids.take(), self.hosted_payment_method_save)
+                (self.default_account_tax_ids.take(), self.hosted_payment_method_save.take())
             else {
                 return None;
             };
@@ -116,32 +116,43 @@ const _: () = {
     }
 };
 /// Whether to save the payment method after a payment is completed for a one-time invoice or a subscription invoice when the customer already has a default payment method on the hosted invoice page.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum AccountInvoicesSettingsHostedPaymentMethodSave {
     Always,
     Never,
     Offer,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl AccountInvoicesSettingsHostedPaymentMethodSave {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use AccountInvoicesSettingsHostedPaymentMethodSave::*;
         match self {
             Always => "always",
             Never => "never",
             Offer => "offer",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for AccountInvoicesSettingsHostedPaymentMethodSave {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use AccountInvoicesSettingsHostedPaymentMethodSave::*;
         match s {
             "always" => Ok(Always),
             "never" => Ok(Never),
             "offer" => Ok(Offer),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "AccountInvoicesSettingsHostedPaymentMethodSave"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -174,10 +185,8 @@ impl miniserde::Deserialize for AccountInvoicesSettingsHostedPaymentMethodSave {
 impl miniserde::de::Visitor for crate::Place<AccountInvoicesSettingsHostedPaymentMethodSave> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            AccountInvoicesSettingsHostedPaymentMethodSave::from_str(s)
-                .map_err(|_| miniserde::Error)?,
-        );
+        self.out =
+            Some(AccountInvoicesSettingsHostedPaymentMethodSave::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -188,10 +197,6 @@ impl<'de> serde::Deserialize<'de> for AccountInvoicesSettingsHostedPaymentMethod
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for AccountInvoicesSettingsHostedPaymentMethodSave",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

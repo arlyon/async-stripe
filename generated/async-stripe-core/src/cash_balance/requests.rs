@@ -69,7 +69,7 @@ impl UpdateCashBalanceBuilder {
     }
 }
 /// A hash of settings for this cash balance.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdateCashBalanceSettings {
     /// Controls how funds transferred by the customer are applied to payment intents and invoices.
     /// Valid options are `automatic`, `manual`, or `merchant_default`.
@@ -90,32 +90,43 @@ impl Default for UpdateCashBalanceSettings {
 /// Controls how funds transferred by the customer are applied to payment intents and invoices.
 /// Valid options are `automatic`, `manual`, or `merchant_default`.
 /// For more information about these reconciliation modes, see [Reconciliation](https://stripe.com/docs/payments/customer-balance/reconciliation).
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdateCashBalanceSettingsReconciliationMode {
     Automatic,
     Manual,
     MerchantDefault,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdateCashBalanceSettingsReconciliationMode {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdateCashBalanceSettingsReconciliationMode::*;
         match self {
             Automatic => "automatic",
             Manual => "manual",
             MerchantDefault => "merchant_default",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for UpdateCashBalanceSettingsReconciliationMode {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateCashBalanceSettingsReconciliationMode::*;
         match s {
             "automatic" => Ok(Automatic),
             "manual" => Ok(Manual),
             "merchant_default" => Ok(MerchantDefault),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdateCashBalanceSettingsReconciliationMode"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -143,11 +154,7 @@ impl<'de> serde::Deserialize<'de> for UpdateCashBalanceSettingsReconciliationMod
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for UpdateCashBalanceSettingsReconciliationMode",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Changes the settings on a customer’s cash balance.

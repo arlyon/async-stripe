@@ -266,29 +266,36 @@ impl serde::Serialize for SetupAttempt {
 /// Include `inbound` if you intend to use the payment method as the origin to pull funds from.
 /// Include `outbound` if you intend to use the payment method as the destination to send funds to.
 /// You can include both if you intend to use the payment method for both purposes.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum SetupAttemptFlowDirections {
     Inbound,
     Outbound,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl SetupAttemptFlowDirections {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use SetupAttemptFlowDirections::*;
         match self {
             Inbound => "inbound",
             Outbound => "outbound",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for SetupAttemptFlowDirections {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use SetupAttemptFlowDirections::*;
         match s {
             "inbound" => Ok(Inbound),
             "outbound" => Ok(Outbound),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "SetupAttemptFlowDirections");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -321,7 +328,7 @@ impl miniserde::Deserialize for SetupAttemptFlowDirections {
 impl miniserde::de::Visitor for crate::Place<SetupAttemptFlowDirections> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(SetupAttemptFlowDirections::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(SetupAttemptFlowDirections::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -332,8 +339,7 @@ impl<'de> serde::Deserialize<'de> for SetupAttemptFlowDirections {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for SetupAttemptFlowDirections"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 impl stripe_types::Object for SetupAttempt {

@@ -99,8 +99,8 @@ const _: () = {
                 self.custom_mandate_url.take(),
                 self.default_for.take(),
                 self.interval_description.take(),
-                self.payment_schedule,
-                self.transaction_type,
+                self.payment_schedule.take(),
+                self.transaction_type.take(),
             )
             else {
                 return None;
@@ -152,29 +152,40 @@ const _: () = {
     }
 };
 /// List of Stripe products where this mandate can be selected automatically.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum SetupIntentPaymentMethodOptionsMandateOptionsAcssDebitDefaultFor {
     Invoice,
     Subscription,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl SetupIntentPaymentMethodOptionsMandateOptionsAcssDebitDefaultFor {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use SetupIntentPaymentMethodOptionsMandateOptionsAcssDebitDefaultFor::*;
         match self {
             Invoice => "invoice",
             Subscription => "subscription",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for SetupIntentPaymentMethodOptionsMandateOptionsAcssDebitDefaultFor {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use SetupIntentPaymentMethodOptionsMandateOptionsAcssDebitDefaultFor::*;
         match s {
             "invoice" => Ok(Invoice),
             "subscription" => Ok(Subscription),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "SetupIntentPaymentMethodOptionsMandateOptionsAcssDebitDefaultFor"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -211,7 +222,7 @@ impl miniserde::de::Visitor
         use std::str::FromStr;
         self.out = Some(
             SetupIntentPaymentMethodOptionsMandateOptionsAcssDebitDefaultFor::from_str(s)
-                .map_err(|_| miniserde::Error)?,
+                .expect("infallible"),
         );
         Ok(())
     }
@@ -227,36 +238,47 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for SetupIntentPaymentMethodOptionsMandateOptionsAcssDebitDefaultFor"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Payment schedule for the mandate.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum SetupIntentPaymentMethodOptionsMandateOptionsAcssDebitPaymentSchedule {
     Combined,
     Interval,
     Sporadic,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl SetupIntentPaymentMethodOptionsMandateOptionsAcssDebitPaymentSchedule {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use SetupIntentPaymentMethodOptionsMandateOptionsAcssDebitPaymentSchedule::*;
         match self {
             Combined => "combined",
             Interval => "interval",
             Sporadic => "sporadic",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for SetupIntentPaymentMethodOptionsMandateOptionsAcssDebitPaymentSchedule {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use SetupIntentPaymentMethodOptionsMandateOptionsAcssDebitPaymentSchedule::*;
         match s {
             "combined" => Ok(Combined),
             "interval" => Ok(Interval),
             "sporadic" => Ok(Sporadic),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "SetupIntentPaymentMethodOptionsMandateOptionsAcssDebitPaymentSchedule"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -295,7 +317,7 @@ impl miniserde::de::Visitor
         use std::str::FromStr;
         self.out = Some(
             SetupIntentPaymentMethodOptionsMandateOptionsAcssDebitPaymentSchedule::from_str(s)
-                .map_err(|_| miniserde::Error)?,
+                .expect("infallible"),
         );
         Ok(())
     }
@@ -311,33 +333,44 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for SetupIntentPaymentMethodOptionsMandateOptionsAcssDebitPaymentSchedule"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Transaction type of the mandate.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum SetupIntentPaymentMethodOptionsMandateOptionsAcssDebitTransactionType {
     Business,
     Personal,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl SetupIntentPaymentMethodOptionsMandateOptionsAcssDebitTransactionType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use SetupIntentPaymentMethodOptionsMandateOptionsAcssDebitTransactionType::*;
         match self {
             Business => "business",
             Personal => "personal",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for SetupIntentPaymentMethodOptionsMandateOptionsAcssDebitTransactionType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use SetupIntentPaymentMethodOptionsMandateOptionsAcssDebitTransactionType::*;
         match s {
             "business" => Ok(Business),
             "personal" => Ok(Personal),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "SetupIntentPaymentMethodOptionsMandateOptionsAcssDebitTransactionType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -376,7 +409,7 @@ impl miniserde::de::Visitor
         use std::str::FromStr;
         self.out = Some(
             SetupIntentPaymentMethodOptionsMandateOptionsAcssDebitTransactionType::from_str(s)
-                .map_err(|_| miniserde::Error)?,
+                .expect("infallible"),
         );
         Ok(())
     }
@@ -392,6 +425,6 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for SetupIntentPaymentMethodOptionsMandateOptionsAcssDebitTransactionType"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

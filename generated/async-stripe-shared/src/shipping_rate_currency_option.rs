@@ -1,4 +1,4 @@
-#[derive(Copy, Clone, Debug)]
+#[derive(Clone, Debug)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct ShippingRateCurrencyOption {
@@ -65,7 +65,7 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(amount), Some(tax_behavior)) = (self.amount, self.tax_behavior) else {
+            let (Some(amount), Some(tax_behavior)) = (self.amount, self.tax_behavior.take()) else {
                 return None;
             };
             Some(Self::Out { amount, tax_behavior })
@@ -106,32 +106,43 @@ const _: () = {
 };
 /// Specifies whether the rate is considered inclusive of taxes or exclusive of taxes.
 /// One of `inclusive`, `exclusive`, or `unspecified`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum ShippingRateCurrencyOptionTaxBehavior {
     Exclusive,
     Inclusive,
     Unspecified,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl ShippingRateCurrencyOptionTaxBehavior {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use ShippingRateCurrencyOptionTaxBehavior::*;
         match self {
             Exclusive => "exclusive",
             Inclusive => "inclusive",
             Unspecified => "unspecified",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for ShippingRateCurrencyOptionTaxBehavior {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ShippingRateCurrencyOptionTaxBehavior::*;
         match s {
             "exclusive" => Ok(Exclusive),
             "inclusive" => Ok(Inclusive),
             "unspecified" => Ok(Unspecified),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "ShippingRateCurrencyOptionTaxBehavior"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -164,8 +175,7 @@ impl miniserde::Deserialize for ShippingRateCurrencyOptionTaxBehavior {
 impl miniserde::de::Visitor for crate::Place<ShippingRateCurrencyOptionTaxBehavior> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out =
-            Some(ShippingRateCurrencyOptionTaxBehavior::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(ShippingRateCurrencyOptionTaxBehavior::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -176,8 +186,6 @@ impl<'de> serde::Deserialize<'de> for ShippingRateCurrencyOptionTaxBehavior {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for ShippingRateCurrencyOptionTaxBehavior")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

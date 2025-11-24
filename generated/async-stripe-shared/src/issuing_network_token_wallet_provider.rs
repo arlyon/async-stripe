@@ -125,13 +125,13 @@ const _: () = {
             ) = (
                 self.account_id.take(),
                 self.account_trust_score,
-                self.card_number_source,
+                self.card_number_source.take(),
                 self.cardholder_address.take(),
                 self.cardholder_name.take(),
                 self.device_trust_score,
                 self.hashed_account_email_address.take(),
                 self.reason_codes.take(),
-                self.suggested_decision,
+                self.suggested_decision.take(),
                 self.suggested_decision_version.take(),
             )
             else {
@@ -197,27 +197,31 @@ const _: () = {
     }
 };
 /// The method used for tokenizing a card.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum IssuingNetworkTokenWalletProviderCardNumberSource {
     App,
     Manual,
     OnFile,
     Other,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl IssuingNetworkTokenWalletProviderCardNumberSource {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use IssuingNetworkTokenWalletProviderCardNumberSource::*;
         match self {
             App => "app",
             Manual => "manual",
             OnFile => "on_file",
             Other => "other",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for IssuingNetworkTokenWalletProviderCardNumberSource {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use IssuingNetworkTokenWalletProviderCardNumberSource::*;
         match s {
@@ -225,7 +229,14 @@ impl std::str::FromStr for IssuingNetworkTokenWalletProviderCardNumberSource {
             "manual" => Ok(Manual),
             "on_file" => Ok(OnFile),
             "other" => Ok(Other),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "IssuingNetworkTokenWalletProviderCardNumberSource"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -259,8 +270,7 @@ impl miniserde::de::Visitor for crate::Place<IssuingNetworkTokenWalletProviderCa
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(
-            IssuingNetworkTokenWalletProviderCardNumberSource::from_str(s)
-                .map_err(|_| miniserde::Error)?,
+            IssuingNetworkTokenWalletProviderCardNumberSource::from_str(s).expect("infallible"),
         );
         Ok(())
     }
@@ -272,11 +282,7 @@ impl<'de> serde::Deserialize<'de> for IssuingNetworkTokenWalletProviderCardNumbe
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for IssuingNetworkTokenWalletProviderCardNumberSource",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The reasons for suggested tokenization given by the card network.
@@ -392,7 +398,14 @@ impl std::str::FromStr for IssuingNetworkTokenWalletProviderReasonCodes {
             "too_many_different_cardholders" => Ok(TooManyDifferentCardholders),
             "too_many_recent_attempts" => Ok(TooManyRecentAttempts),
             "too_many_recent_tokens" => Ok(TooManyRecentTokens),
-            v => Ok(Unknown(v.to_owned())),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "IssuingNetworkTokenWalletProviderReasonCodes"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -425,7 +438,8 @@ impl miniserde::Deserialize for IssuingNetworkTokenWalletProviderReasonCodes {
 impl miniserde::de::Visitor for crate::Place<IssuingNetworkTokenWalletProviderReasonCodes> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(IssuingNetworkTokenWalletProviderReasonCodes::from_str(s).unwrap());
+        self.out =
+            Some(IssuingNetworkTokenWalletProviderReasonCodes::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -436,36 +450,47 @@ impl<'de> serde::Deserialize<'de> for IssuingNetworkTokenWalletProviderReasonCod
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap())
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The recommendation on responding to the tokenization request.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum IssuingNetworkTokenWalletProviderSuggestedDecision {
     Approve,
     Decline,
     RequireAuth,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl IssuingNetworkTokenWalletProviderSuggestedDecision {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use IssuingNetworkTokenWalletProviderSuggestedDecision::*;
         match self {
             Approve => "approve",
             Decline => "decline",
             RequireAuth => "require_auth",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for IssuingNetworkTokenWalletProviderSuggestedDecision {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use IssuingNetworkTokenWalletProviderSuggestedDecision::*;
         match s {
             "approve" => Ok(Approve),
             "decline" => Ok(Decline),
             "require_auth" => Ok(RequireAuth),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "IssuingNetworkTokenWalletProviderSuggestedDecision"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -499,8 +524,7 @@ impl miniserde::de::Visitor for crate::Place<IssuingNetworkTokenWalletProviderSu
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(
-            IssuingNetworkTokenWalletProviderSuggestedDecision::from_str(s)
-                .map_err(|_| miniserde::Error)?,
+            IssuingNetworkTokenWalletProviderSuggestedDecision::from_str(s).expect("infallible"),
         );
         Ok(())
     }
@@ -512,10 +536,6 @@ impl<'de> serde::Deserialize<'de> for IssuingNetworkTokenWalletProviderSuggested
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for IssuingNetworkTokenWalletProviderSuggestedDecision",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

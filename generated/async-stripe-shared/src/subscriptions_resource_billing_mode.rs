@@ -1,5 +1,5 @@
 /// The billing mode of the subscription.
-#[derive(Copy, Clone, Debug)]
+#[derive(Clone, Debug)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct SubscriptionsResourceBillingMode {
@@ -75,7 +75,7 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (Some(flexible), Some(type_), Some(updated_at)) =
-                (self.flexible, self.type_, self.updated_at)
+                (self.flexible.take(), self.type_.take(), self.updated_at)
             else {
                 return None;
             };
@@ -117,29 +117,40 @@ const _: () = {
     }
 };
 /// Controls how prorations and invoices for subscriptions are calculated and orchestrated.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum SubscriptionsResourceBillingModeType {
     Classic,
     Flexible,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl SubscriptionsResourceBillingModeType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use SubscriptionsResourceBillingModeType::*;
         match self {
             Classic => "classic",
             Flexible => "flexible",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for SubscriptionsResourceBillingModeType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use SubscriptionsResourceBillingModeType::*;
         match s {
             "classic" => Ok(Classic),
             "flexible" => Ok(Flexible),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "SubscriptionsResourceBillingModeType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -172,8 +183,7 @@ impl miniserde::Deserialize for SubscriptionsResourceBillingModeType {
 impl miniserde::de::Visitor for crate::Place<SubscriptionsResourceBillingModeType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out =
-            Some(SubscriptionsResourceBillingModeType::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(SubscriptionsResourceBillingModeType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -184,8 +194,6 @@ impl<'de> serde::Deserialize<'de> for SubscriptionsResourceBillingModeType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for SubscriptionsResourceBillingModeType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

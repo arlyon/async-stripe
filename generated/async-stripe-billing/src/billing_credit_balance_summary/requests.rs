@@ -67,15 +67,19 @@ impl Default for RetrieveForMyAccountBillingCreditBalanceSummaryFilterApplicabil
 /// The price type that credit grants can apply to.
 /// We currently only support the `metered` price type.
 /// Cannot be used in combination with `prices`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum RetrieveForMyAccountBillingCreditBalanceSummaryFilterApplicabilityScopePriceType {
     Metered,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl RetrieveForMyAccountBillingCreditBalanceSummaryFilterApplicabilityScopePriceType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use RetrieveForMyAccountBillingCreditBalanceSummaryFilterApplicabilityScopePriceType::*;
         match self {
             Metered => "metered",
+            Unknown(v) => v,
         }
     }
 }
@@ -83,12 +87,19 @@ impl RetrieveForMyAccountBillingCreditBalanceSummaryFilterApplicabilityScopePric
 impl std::str::FromStr
     for RetrieveForMyAccountBillingCreditBalanceSummaryFilterApplicabilityScopePriceType
 {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use RetrieveForMyAccountBillingCreditBalanceSummaryFilterApplicabilityScopePriceType::*;
         match s {
             "metered" => Ok(Metered),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "RetrieveForMyAccountBillingCreditBalanceSummaryFilterApplicabilityScopePriceType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -124,7 +135,7 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for RetrieveForMyAccountBillingCreditBalanceSummaryFilterApplicabilityScopePriceType"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// A list of prices that the credit grant can apply to.
@@ -141,29 +152,40 @@ impl RetrieveForMyAccountBillingCreditBalanceSummaryFilterApplicabilityScopePric
     }
 }
 /// Specify the type of this filter.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum RetrieveForMyAccountBillingCreditBalanceSummaryFilterType {
     ApplicabilityScope,
     CreditGrant,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl RetrieveForMyAccountBillingCreditBalanceSummaryFilterType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use RetrieveForMyAccountBillingCreditBalanceSummaryFilterType::*;
         match self {
             ApplicabilityScope => "applicability_scope",
             CreditGrant => "credit_grant",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for RetrieveForMyAccountBillingCreditBalanceSummaryFilterType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use RetrieveForMyAccountBillingCreditBalanceSummaryFilterType::*;
         match s {
             "applicability_scope" => Ok(ApplicabilityScope),
             "credit_grant" => Ok(CreditGrant),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "RetrieveForMyAccountBillingCreditBalanceSummaryFilterType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -191,11 +213,7 @@ impl<'de> serde::Deserialize<'de> for RetrieveForMyAccountBillingCreditBalanceSu
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for RetrieveForMyAccountBillingCreditBalanceSummaryFilterType",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Retrieves the credit balance summary for a customer.

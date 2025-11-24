@@ -223,29 +223,36 @@ impl PreviewCreditNoteBuilder {
     }
 }
 /// Type of email to send to the customer, one of `credit_note` or `none` and the default is `credit_note`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PreviewCreditNoteEmailType {
     CreditNote,
     None,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl PreviewCreditNoteEmailType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PreviewCreditNoteEmailType::*;
         match self {
             CreditNote => "credit_note",
             None => "none",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for PreviewCreditNoteEmailType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PreviewCreditNoteEmailType::*;
         match s {
             "credit_note" => Ok(CreditNote),
             "none" => Ok(None),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "PreviewCreditNoteEmailType");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -273,8 +280,7 @@ impl<'de> serde::Deserialize<'de> for PreviewCreditNoteEmailType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for PreviewCreditNoteEmailType"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Line items that make up the credit note.
@@ -331,29 +337,36 @@ impl PreviewCreditNoteLines {
     }
 }
 /// Type of the credit note line item, one of `invoice_line_item` or `custom_line_item`
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PreviewCreditNoteLinesType {
     CustomLineItem,
     InvoiceLineItem,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl PreviewCreditNoteLinesType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PreviewCreditNoteLinesType::*;
         match self {
             CustomLineItem => "custom_line_item",
             InvoiceLineItem => "invoice_line_item",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for PreviewCreditNoteLinesType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PreviewCreditNoteLinesType::*;
         match s {
             "custom_line_item" => Ok(CustomLineItem),
             "invoice_line_item" => Ok(InvoiceLineItem),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "PreviewCreditNoteLinesType");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -381,8 +394,7 @@ impl<'de> serde::Deserialize<'de> for PreviewCreditNoteLinesType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for PreviewCreditNoteLinesType"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Refunds to link to this credit note.
@@ -415,29 +427,40 @@ impl Default for PreviewCreditNoteRefunds {
     }
 }
 /// Type of the refund, one of `refund` or `payment_record_refund`. Defaults to `refund`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PreviewCreditNoteRefundsType {
     PaymentRecordRefund,
     Refund,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl PreviewCreditNoteRefundsType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PreviewCreditNoteRefundsType::*;
         match self {
             PaymentRecordRefund => "payment_record_refund",
             Refund => "refund",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for PreviewCreditNoteRefundsType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PreviewCreditNoteRefundsType::*;
         match s {
             "payment_record_refund" => Ok(PaymentRecordRefund),
             "refund" => Ok(Refund),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PreviewCreditNoteRefundsType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -465,8 +488,7 @@ impl<'de> serde::Deserialize<'de> for PreviewCreditNoteRefundsType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for PreviewCreditNoteRefundsType"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Get a preview of a credit note without creating it.
@@ -642,29 +664,40 @@ impl PreviewLinesCreditNoteBuilder {
     }
 }
 /// Type of email to send to the customer, one of `credit_note` or `none` and the default is `credit_note`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PreviewLinesCreditNoteEmailType {
     CreditNote,
     None,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl PreviewLinesCreditNoteEmailType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PreviewLinesCreditNoteEmailType::*;
         match self {
             CreditNote => "credit_note",
             None => "none",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for PreviewLinesCreditNoteEmailType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PreviewLinesCreditNoteEmailType::*;
         match s {
             "credit_note" => Ok(CreditNote),
             "none" => Ok(None),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PreviewLinesCreditNoteEmailType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -692,9 +725,7 @@ impl<'de> serde::Deserialize<'de> for PreviewLinesCreditNoteEmailType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for PreviewLinesCreditNoteEmailType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Line items that make up the credit note.
@@ -751,29 +782,40 @@ impl PreviewLinesCreditNoteLines {
     }
 }
 /// Type of the credit note line item, one of `invoice_line_item` or `custom_line_item`
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PreviewLinesCreditNoteLinesType {
     CustomLineItem,
     InvoiceLineItem,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl PreviewLinesCreditNoteLinesType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PreviewLinesCreditNoteLinesType::*;
         match self {
             CustomLineItem => "custom_line_item",
             InvoiceLineItem => "invoice_line_item",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for PreviewLinesCreditNoteLinesType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PreviewLinesCreditNoteLinesType::*;
         match s {
             "custom_line_item" => Ok(CustomLineItem),
             "invoice_line_item" => Ok(InvoiceLineItem),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PreviewLinesCreditNoteLinesType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -801,9 +843,7 @@ impl<'de> serde::Deserialize<'de> for PreviewLinesCreditNoteLinesType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for PreviewLinesCreditNoteLinesType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Refunds to link to this credit note.
@@ -836,29 +876,40 @@ impl Default for PreviewLinesCreditNoteRefunds {
     }
 }
 /// Type of the refund, one of `refund` or `payment_record_refund`. Defaults to `refund`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PreviewLinesCreditNoteRefundsType {
     PaymentRecordRefund,
     Refund,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl PreviewLinesCreditNoteRefundsType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PreviewLinesCreditNoteRefundsType::*;
         match self {
             PaymentRecordRefund => "payment_record_refund",
             Refund => "refund",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for PreviewLinesCreditNoteRefundsType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PreviewLinesCreditNoteRefundsType::*;
         match s {
             "payment_record_refund" => Ok(PaymentRecordRefund),
             "refund" => Ok(Refund),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PreviewLinesCreditNoteRefundsType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -886,9 +937,7 @@ impl<'de> serde::Deserialize<'de> for PreviewLinesCreditNoteRefundsType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for PreviewLinesCreditNoteRefundsType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// When retrieving a credit note preview, you’ll get a **lines** property containing the first handful of those items.
@@ -1083,29 +1132,36 @@ impl CreateCreditNoteBuilder {
     }
 }
 /// Type of email to send to the customer, one of `credit_note` or `none` and the default is `credit_note`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateCreditNoteEmailType {
     CreditNote,
     None,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateCreditNoteEmailType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateCreditNoteEmailType::*;
         match self {
             CreditNote => "credit_note",
             None => "none",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateCreditNoteEmailType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateCreditNoteEmailType::*;
         match s {
             "credit_note" => Ok(CreditNote),
             "none" => Ok(None),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CreateCreditNoteEmailType");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -1133,8 +1189,7 @@ impl<'de> serde::Deserialize<'de> for CreateCreditNoteEmailType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for CreateCreditNoteEmailType"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Line items that make up the credit note.
@@ -1191,29 +1246,36 @@ impl CreateCreditNoteLines {
     }
 }
 /// Type of the credit note line item, one of `invoice_line_item` or `custom_line_item`
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateCreditNoteLinesType {
     CustomLineItem,
     InvoiceLineItem,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateCreditNoteLinesType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateCreditNoteLinesType::*;
         match self {
             CustomLineItem => "custom_line_item",
             InvoiceLineItem => "invoice_line_item",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateCreditNoteLinesType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateCreditNoteLinesType::*;
         match s {
             "custom_line_item" => Ok(CustomLineItem),
             "invoice_line_item" => Ok(InvoiceLineItem),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CreateCreditNoteLinesType");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -1241,8 +1303,7 @@ impl<'de> serde::Deserialize<'de> for CreateCreditNoteLinesType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for CreateCreditNoteLinesType"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Refunds to link to this credit note.
@@ -1275,29 +1336,40 @@ impl Default for CreateCreditNoteRefunds {
     }
 }
 /// Type of the refund, one of `refund` or `payment_record_refund`. Defaults to `refund`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateCreditNoteRefundsType {
     PaymentRecordRefund,
     Refund,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateCreditNoteRefundsType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateCreditNoteRefundsType::*;
         match self {
             PaymentRecordRefund => "payment_record_refund",
             Refund => "refund",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateCreditNoteRefundsType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateCreditNoteRefundsType::*;
         match s {
             "payment_record_refund" => Ok(PaymentRecordRefund),
             "refund" => Ok(Refund),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateCreditNoteRefundsType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -1325,8 +1397,7 @@ impl<'de> serde::Deserialize<'de> for CreateCreditNoteRefundsType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for CreateCreditNoteRefundsType"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Issue a credit note to adjust the amount of a finalized invoice.

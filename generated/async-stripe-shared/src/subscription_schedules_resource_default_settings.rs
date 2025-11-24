@@ -130,9 +130,9 @@ const _: () = {
             ) = (
                 self.application_fee_percent,
                 self.automatic_tax.take(),
-                self.billing_cycle_anchor,
+                self.billing_cycle_anchor.take(),
                 self.billing_thresholds,
-                self.collection_method,
+                self.collection_method.take(),
                 self.default_payment_method.take(),
                 self.description.take(),
                 self.invoice_settings.take(),
@@ -205,29 +205,40 @@ const _: () = {
 /// If `phase_start` then billing cycle anchor of the subscription is set to the start of the phase when entering the phase.
 /// If `automatic` then the billing cycle anchor is automatically modified as needed when entering the phase.
 /// For more information, see the billing cycle [documentation](https://stripe.com/docs/billing/subscriptions/billing-cycle).
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum SubscriptionSchedulesResourceDefaultSettingsBillingCycleAnchor {
     Automatic,
     PhaseStart,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl SubscriptionSchedulesResourceDefaultSettingsBillingCycleAnchor {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use SubscriptionSchedulesResourceDefaultSettingsBillingCycleAnchor::*;
         match self {
             Automatic => "automatic",
             PhaseStart => "phase_start",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for SubscriptionSchedulesResourceDefaultSettingsBillingCycleAnchor {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use SubscriptionSchedulesResourceDefaultSettingsBillingCycleAnchor::*;
         match s {
             "automatic" => Ok(Automatic),
             "phase_start" => Ok(PhaseStart),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "SubscriptionSchedulesResourceDefaultSettingsBillingCycleAnchor"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -264,7 +275,7 @@ impl miniserde::de::Visitor
         use std::str::FromStr;
         self.out = Some(
             SubscriptionSchedulesResourceDefaultSettingsBillingCycleAnchor::from_str(s)
-                .map_err(|_| miniserde::Error)?,
+                .expect("infallible"),
         );
         Ok(())
     }
@@ -280,39 +291,46 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for SubscriptionSchedulesResourceDefaultSettingsBillingCycleAnchor",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Either `charge_automatically`, or `send_invoice`.
 /// When charging automatically, Stripe will attempt to pay the underlying subscription at the end of each billing cycle using the default source attached to the customer.
 /// When sending an invoice, Stripe will email your customer an invoice with payment instructions and mark the subscription as `active`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum SubscriptionSchedulesResourceDefaultSettingsCollectionMethod {
     ChargeAutomatically,
     SendInvoice,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl SubscriptionSchedulesResourceDefaultSettingsCollectionMethod {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use SubscriptionSchedulesResourceDefaultSettingsCollectionMethod::*;
         match self {
             ChargeAutomatically => "charge_automatically",
             SendInvoice => "send_invoice",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for SubscriptionSchedulesResourceDefaultSettingsCollectionMethod {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use SubscriptionSchedulesResourceDefaultSettingsCollectionMethod::*;
         match s {
             "charge_automatically" => Ok(ChargeAutomatically),
             "send_invoice" => Ok(SendInvoice),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "SubscriptionSchedulesResourceDefaultSettingsCollectionMethod"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -349,7 +367,7 @@ impl miniserde::de::Visitor
         use std::str::FromStr;
         self.out = Some(
             SubscriptionSchedulesResourceDefaultSettingsCollectionMethod::from_str(s)
-                .map_err(|_| miniserde::Error)?,
+                .expect("infallible"),
         );
         Ok(())
     }
@@ -363,10 +381,6 @@ impl<'de> serde::Deserialize<'de> for SubscriptionSchedulesResourceDefaultSettin
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for SubscriptionSchedulesResourceDefaultSettingsCollectionMethod",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

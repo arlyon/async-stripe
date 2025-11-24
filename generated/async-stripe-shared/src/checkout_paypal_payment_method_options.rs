@@ -91,10 +91,10 @@ const _: () = {
                 Some(reference),
                 Some(setup_future_usage),
             ) = (
-                self.capture_method,
+                self.capture_method.take(),
                 self.preferred_locale.take(),
                 self.reference.take(),
-                self.setup_future_usage,
+                self.setup_future_usage.take(),
             )
             else {
                 return None;
@@ -138,26 +138,37 @@ const _: () = {
     }
 };
 /// Controls when the funds will be captured from the customer's account.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CheckoutPaypalPaymentMethodOptionsCaptureMethod {
     Manual,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CheckoutPaypalPaymentMethodOptionsCaptureMethod {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CheckoutPaypalPaymentMethodOptionsCaptureMethod::*;
         match self {
             Manual => "manual",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CheckoutPaypalPaymentMethodOptionsCaptureMethod {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CheckoutPaypalPaymentMethodOptionsCaptureMethod::*;
         match s {
             "manual" => Ok(Manual),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CheckoutPaypalPaymentMethodOptionsCaptureMethod"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -190,10 +201,8 @@ impl miniserde::Deserialize for CheckoutPaypalPaymentMethodOptionsCaptureMethod 
 impl miniserde::de::Visitor for crate::Place<CheckoutPaypalPaymentMethodOptionsCaptureMethod> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            CheckoutPaypalPaymentMethodOptionsCaptureMethod::from_str(s)
-                .map_err(|_| miniserde::Error)?,
-        );
+        self.out =
+            Some(CheckoutPaypalPaymentMethodOptionsCaptureMethod::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -204,11 +213,7 @@ impl<'de> serde::Deserialize<'de> for CheckoutPaypalPaymentMethodOptionsCaptureM
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for CheckoutPaypalPaymentMethodOptionsCaptureMethod",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -219,29 +224,40 @@ impl<'de> serde::Deserialize<'de> for CheckoutPaypalPaymentMethodOptionsCaptureM
 /// If the payment method is `card_present` and isn't a digital wallet, Stripe creates and attaches a [generated_card](/api/charges/object#charge_object-payment_method_details-card_present-generated_card) payment method representing the card to the Customer instead.
 ///
 /// When processing card payments, Stripe uses `setup_future_usage` to help you comply with regional legislation and network rules, such as [SCA](/strong-customer-authentication).
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CheckoutPaypalPaymentMethodOptionsSetupFutureUsage {
     None,
     OffSession,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CheckoutPaypalPaymentMethodOptionsSetupFutureUsage {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CheckoutPaypalPaymentMethodOptionsSetupFutureUsage::*;
         match self {
             None => "none",
             OffSession => "off_session",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CheckoutPaypalPaymentMethodOptionsSetupFutureUsage {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CheckoutPaypalPaymentMethodOptionsSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CheckoutPaypalPaymentMethodOptionsSetupFutureUsage"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -275,8 +291,7 @@ impl miniserde::de::Visitor for crate::Place<CheckoutPaypalPaymentMethodOptionsS
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(
-            CheckoutPaypalPaymentMethodOptionsSetupFutureUsage::from_str(s)
-                .map_err(|_| miniserde::Error)?,
+            CheckoutPaypalPaymentMethodOptionsSetupFutureUsage::from_str(s).expect("infallible"),
         );
         Ok(())
     }
@@ -288,10 +303,6 @@ impl<'de> serde::Deserialize<'de> for CheckoutPaypalPaymentMethodOptionsSetupFut
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for CheckoutPaypalPaymentMethodOptionsSetupFutureUsage",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

@@ -115,16 +115,19 @@ const _: () = {
 };
 /// Restricts the Session to subcategories of accounts that can be linked.
 /// Valid subcategories are: `checking`, `savings`, `mortgage`, `line_of_credit`, `credit_card`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum BankConnectionsResourceLinkAccountSessionFiltersAccountSubcategories {
     Checking,
     CreditCard,
     LineOfCredit,
     Mortgage,
     Savings,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl BankConnectionsResourceLinkAccountSessionFiltersAccountSubcategories {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use BankConnectionsResourceLinkAccountSessionFiltersAccountSubcategories::*;
         match self {
             Checking => "checking",
@@ -132,12 +135,13 @@ impl BankConnectionsResourceLinkAccountSessionFiltersAccountSubcategories {
             LineOfCredit => "line_of_credit",
             Mortgage => "mortgage",
             Savings => "savings",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for BankConnectionsResourceLinkAccountSessionFiltersAccountSubcategories {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use BankConnectionsResourceLinkAccountSessionFiltersAccountSubcategories::*;
         match s {
@@ -146,7 +150,14 @@ impl std::str::FromStr for BankConnectionsResourceLinkAccountSessionFiltersAccou
             "line_of_credit" => Ok(LineOfCredit),
             "mortgage" => Ok(Mortgage),
             "savings" => Ok(Savings),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "BankConnectionsResourceLinkAccountSessionFiltersAccountSubcategories"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -185,7 +196,7 @@ impl miniserde::de::Visitor
         use std::str::FromStr;
         self.out = Some(
             BankConnectionsResourceLinkAccountSessionFiltersAccountSubcategories::from_str(s)
-                .map_err(|_| miniserde::Error)?,
+                .expect("infallible"),
         );
         Ok(())
     }
@@ -201,6 +212,6 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for BankConnectionsResourceLinkAccountSessionFiltersAccountSubcategories"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

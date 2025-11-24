@@ -195,7 +195,7 @@ const _: () = {
                 self.shippable,
                 self.statement_descriptor.take(),
                 self.tax_code.take(),
-                self.type_,
+                self.type_.take(),
                 self.unit_label.take(),
                 self.updated,
                 self.url.take(),
@@ -313,29 +313,36 @@ impl stripe_types::Object for Product {
     }
 }
 stripe_types::def_id!(ProductId);
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum ProductType {
     Good,
     Service,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl ProductType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use ProductType::*;
         match self {
             Good => "good",
             Service => "service",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for ProductType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ProductType::*;
         match s {
             "good" => Ok(Good),
             "service" => Ok(Service),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "ProductType");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -367,7 +374,7 @@ impl miniserde::Deserialize for ProductType {
 impl miniserde::de::Visitor for crate::Place<ProductType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(ProductType::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(ProductType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -378,6 +385,6 @@ impl<'de> serde::Deserialize<'de> for ProductType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for ProductType"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

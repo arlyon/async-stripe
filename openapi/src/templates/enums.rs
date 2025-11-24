@@ -78,6 +78,10 @@ impl ObjectWriter<'_> {
         }
         if self.provide_unknown_variant {
             serde_derive.maybe_write_tag(&mut enum_body, "other");
+            let _ = writeln!(
+                enum_body,
+                "/// An unrecognized object type from Stripe. Should not be used as a request parameter."
+            );
             let _ = writeln!(enum_body, "Unknown");
         }
 
@@ -142,7 +146,10 @@ impl ObjectWriter<'_> {
         }
 
         let from_str_err = if self.provide_unknown_variant {
-            let _ = writeln!(from_str_body, "v => Ok(Unknown(v.to_owned()))");
+            let _ = writeln!(
+                from_str_body,
+                r#"v => {{ tracing::warn!("Unknown value '{{}}' for enum '{{}}'", v, "{enum_name}"); Ok(Unknown(v.to_owned())) }}"#
+            );
             "std::convert::Infallible"
         } else {
             let _ = writeln!(from_str_body, "_ => Err(stripe_types::StripeParseError)");
@@ -184,7 +191,7 @@ impl ObjectWriter<'_> {
                     f.write_str(self.as_str())
                 }}
             }}
-            
+
             impl std::fmt::Debug for {enum_name} {{
                 fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {{
                     f.write_str(self.as_str())
@@ -208,7 +215,7 @@ impl ObjectWriter<'_> {
         );
 
         let miniserde_assign_line = if self.provide_unknown_variant {
-            format!("Some({enum_name}::from_str(s).unwrap())")
+            format!("Some({enum_name}::from_str(s).expect(\"infallible\"))")
         } else {
             format!("Some({enum_name}::from_str(s).map_err(|_| miniserde::Error)?)")
         };
@@ -237,7 +244,7 @@ impl ObjectWriter<'_> {
         }
 
         let serde_ret_line = if self.provide_unknown_variant {
-            "Ok(Self::from_str(&s).unwrap())".into()
+            "Ok(Self::from_str(&s).expect(\"infallible\"))".into()
         } else {
             format!(
                 r#"Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for {enum_name}"))"#

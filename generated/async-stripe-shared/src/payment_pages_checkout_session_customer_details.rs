@@ -116,7 +116,7 @@ const _: () = {
                 self.individual_name.take(),
                 self.name.take(),
                 self.phone.take(),
-                self.tax_exempt,
+                self.tax_exempt.take(),
                 self.tax_ids.take(),
             )
             else {
@@ -174,32 +174,43 @@ const _: () = {
     }
 };
 /// The customer’s tax exempt status after a completed Checkout Session.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PaymentPagesCheckoutSessionCustomerDetailsTaxExempt {
     Exempt,
     None,
     Reverse,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl PaymentPagesCheckoutSessionCustomerDetailsTaxExempt {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PaymentPagesCheckoutSessionCustomerDetailsTaxExempt::*;
         match self {
             Exempt => "exempt",
             None => "none",
             Reverse => "reverse",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for PaymentPagesCheckoutSessionCustomerDetailsTaxExempt {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentPagesCheckoutSessionCustomerDetailsTaxExempt::*;
         match s {
             "exempt" => Ok(Exempt),
             "none" => Ok(None),
             "reverse" => Ok(Reverse),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PaymentPagesCheckoutSessionCustomerDetailsTaxExempt"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -233,8 +244,7 @@ impl miniserde::de::Visitor for crate::Place<PaymentPagesCheckoutSessionCustomer
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(
-            PaymentPagesCheckoutSessionCustomerDetailsTaxExempt::from_str(s)
-                .map_err(|_| miniserde::Error)?,
+            PaymentPagesCheckoutSessionCustomerDetailsTaxExempt::from_str(s).expect("infallible"),
         );
         Ok(())
     }
@@ -246,10 +256,6 @@ impl<'de> serde::Deserialize<'de> for PaymentPagesCheckoutSessionCustomerDetails
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for PaymentPagesCheckoutSessionCustomerDetailsTaxExempt",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

@@ -169,7 +169,7 @@ const _: () = {
                 self.ship_from_details.take(),
                 self.shipping_cost.take(),
                 self.tax_date,
-                self.type_,
+                self.type_.take(),
             )
             else {
                 return None;
@@ -265,29 +265,36 @@ impl serde::Serialize for TaxTransaction {
     }
 }
 /// If `reversal`, this transaction reverses an earlier transaction.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum TaxTransactionType {
     Reversal,
     Transaction,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl TaxTransactionType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use TaxTransactionType::*;
         match self {
             Reversal => "reversal",
             Transaction => "transaction",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for TaxTransactionType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TaxTransactionType::*;
         match s {
             "reversal" => Ok(Reversal),
             "transaction" => Ok(Transaction),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "TaxTransactionType");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -320,7 +327,7 @@ impl miniserde::Deserialize for TaxTransactionType {
 impl miniserde::de::Visitor for crate::Place<TaxTransactionType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(TaxTransactionType::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(TaxTransactionType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -331,8 +338,7 @@ impl<'de> serde::Deserialize<'de> for TaxTransactionType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for TaxTransactionType"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 impl stripe_types::Object for TaxTransaction {

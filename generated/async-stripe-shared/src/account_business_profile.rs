@@ -221,16 +221,19 @@ const _: () = {
     }
 };
 /// Whether the business is a minority-owned, women-owned, and/or LGBTQI+ -owned business.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum AccountBusinessProfileMinorityOwnedBusinessDesignation {
     LgbtqiOwnedBusiness,
     MinorityOwnedBusiness,
     NoneOfTheseApply,
     PreferNotToAnswer,
     WomenOwnedBusiness,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl AccountBusinessProfileMinorityOwnedBusinessDesignation {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use AccountBusinessProfileMinorityOwnedBusinessDesignation::*;
         match self {
             LgbtqiOwnedBusiness => "lgbtqi_owned_business",
@@ -238,12 +241,13 @@ impl AccountBusinessProfileMinorityOwnedBusinessDesignation {
             NoneOfTheseApply => "none_of_these_apply",
             PreferNotToAnswer => "prefer_not_to_answer",
             WomenOwnedBusiness => "women_owned_business",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for AccountBusinessProfileMinorityOwnedBusinessDesignation {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use AccountBusinessProfileMinorityOwnedBusinessDesignation::*;
         match s {
@@ -252,7 +256,14 @@ impl std::str::FromStr for AccountBusinessProfileMinorityOwnedBusinessDesignatio
             "none_of_these_apply" => Ok(NoneOfTheseApply),
             "prefer_not_to_answer" => Ok(PreferNotToAnswer),
             "women_owned_business" => Ok(WomenOwnedBusiness),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "AccountBusinessProfileMinorityOwnedBusinessDesignation"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -289,7 +300,7 @@ impl miniserde::de::Visitor
         use std::str::FromStr;
         self.out = Some(
             AccountBusinessProfileMinorityOwnedBusinessDesignation::from_str(s)
-                .map_err(|_| miniserde::Error)?,
+                .expect("infallible"),
         );
         Ok(())
     }
@@ -301,10 +312,6 @@ impl<'de> serde::Deserialize<'de> for AccountBusinessProfileMinorityOwnedBusines
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for AccountBusinessProfileMinorityOwnedBusinessDesignation",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

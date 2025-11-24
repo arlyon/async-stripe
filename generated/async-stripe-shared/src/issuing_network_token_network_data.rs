@@ -83,7 +83,7 @@ const _: () = {
             let (Some(device), Some(mastercard), Some(type_), Some(visa), Some(wallet_provider)) = (
                 self.device.take(),
                 self.mastercard.take(),
-                self.type_,
+                self.type_.take(),
                 self.visa.take(),
                 self.wallet_provider.take(),
             ) else {
@@ -130,29 +130,40 @@ const _: () = {
 };
 /// The network that the token is associated with.
 /// An additional hash is included with a name matching this value, containing tokenization data specific to the card network.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum IssuingNetworkTokenNetworkDataType {
     Mastercard,
     Visa,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl IssuingNetworkTokenNetworkDataType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use IssuingNetworkTokenNetworkDataType::*;
         match self {
             Mastercard => "mastercard",
             Visa => "visa",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for IssuingNetworkTokenNetworkDataType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use IssuingNetworkTokenNetworkDataType::*;
         match s {
             "mastercard" => Ok(Mastercard),
             "visa" => Ok(Visa),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "IssuingNetworkTokenNetworkDataType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -185,8 +196,7 @@ impl miniserde::Deserialize for IssuingNetworkTokenNetworkDataType {
 impl miniserde::de::Visitor for crate::Place<IssuingNetworkTokenNetworkDataType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out =
-            Some(IssuingNetworkTokenNetworkDataType::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(IssuingNetworkTokenNetworkDataType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -197,8 +207,6 @@ impl<'de> serde::Deserialize<'de> for IssuingNetworkTokenNetworkDataType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for IssuingNetworkTokenNetworkDataType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

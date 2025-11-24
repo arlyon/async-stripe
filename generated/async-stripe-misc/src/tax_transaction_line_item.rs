@@ -144,9 +144,9 @@ const _: () = {
                 self.quantity,
                 self.reference.take(),
                 self.reversal.take(),
-                self.tax_behavior,
+                self.tax_behavior.take(),
                 self.tax_code.take(),
-                self.type_,
+                self.type_.take(),
             )
             else {
                 return None;
@@ -234,29 +234,40 @@ impl serde::Serialize for TaxTransactionLineItem {
 }
 /// Specifies whether the `amount` includes taxes.
 /// If `tax_behavior=inclusive`, then the amount includes taxes.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum TaxTransactionLineItemTaxBehavior {
     Exclusive,
     Inclusive,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl TaxTransactionLineItemTaxBehavior {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use TaxTransactionLineItemTaxBehavior::*;
         match self {
             Exclusive => "exclusive",
             Inclusive => "inclusive",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for TaxTransactionLineItemTaxBehavior {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TaxTransactionLineItemTaxBehavior::*;
         match s {
             "exclusive" => Ok(Exclusive),
             "inclusive" => Ok(Inclusive),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "TaxTransactionLineItemTaxBehavior"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -289,8 +300,7 @@ impl miniserde::Deserialize for TaxTransactionLineItemTaxBehavior {
 impl miniserde::de::Visitor for crate::Place<TaxTransactionLineItemTaxBehavior> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out =
-            Some(TaxTransactionLineItemTaxBehavior::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(TaxTransactionLineItemTaxBehavior::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -301,35 +311,40 @@ impl<'de> serde::Deserialize<'de> for TaxTransactionLineItemTaxBehavior {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for TaxTransactionLineItemTaxBehavior")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// If `reversal`, this line item reverses an earlier transaction.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum TaxTransactionLineItemType {
     Reversal,
     Transaction,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl TaxTransactionLineItemType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use TaxTransactionLineItemType::*;
         match self {
             Reversal => "reversal",
             Transaction => "transaction",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for TaxTransactionLineItemType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TaxTransactionLineItemType::*;
         match s {
             "reversal" => Ok(Reversal),
             "transaction" => Ok(Transaction),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "TaxTransactionLineItemType");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -362,7 +377,7 @@ impl miniserde::Deserialize for TaxTransactionLineItemType {
 impl miniserde::de::Visitor for crate::Place<TaxTransactionLineItemType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(TaxTransactionLineItemType::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(TaxTransactionLineItemType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -373,8 +388,7 @@ impl<'de> serde::Deserialize<'de> for TaxTransactionLineItemType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for TaxTransactionLineItemType"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 impl stripe_types::Object for TaxTransactionLineItem {

@@ -417,7 +417,7 @@ const _: () = {
                 self.source_transfer.take(),
                 self.statement_descriptor.take(),
                 self.statement_descriptor_suffix.take(),
-                self.status,
+                self.status.take(),
                 self.transfer.take(),
                 self.transfer_data.take(),
                 self.transfer_group.take(),
@@ -625,32 +625,39 @@ impl serde::Serialize for Charge {
     }
 }
 /// The status of the payment is either `succeeded`, `pending`, or `failed`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum ChargeStatus {
     Failed,
     Pending,
     Succeeded,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl ChargeStatus {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use ChargeStatus::*;
         match self {
             Failed => "failed",
             Pending => "pending",
             Succeeded => "succeeded",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for ChargeStatus {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ChargeStatus::*;
         match s {
             "failed" => Ok(Failed),
             "pending" => Ok(Pending),
             "succeeded" => Ok(Succeeded),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "ChargeStatus");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -683,7 +690,7 @@ impl miniserde::Deserialize for ChargeStatus {
 impl miniserde::de::Visitor for crate::Place<ChargeStatus> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(ChargeStatus::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(ChargeStatus::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -694,7 +701,7 @@ impl<'de> serde::Deserialize<'de> for ChargeStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for ChargeStatus"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 impl stripe_types::Object for Charge {

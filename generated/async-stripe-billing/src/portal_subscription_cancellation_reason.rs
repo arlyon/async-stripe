@@ -104,7 +104,8 @@ const _: () = {
     }
 };
 /// Which cancellation reasons will be given as options to the customer.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PortalSubscriptionCancellationReasonOptions {
     CustomerService,
     LowQuality,
@@ -114,9 +115,11 @@ pub enum PortalSubscriptionCancellationReasonOptions {
     TooComplex,
     TooExpensive,
     Unused,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl PortalSubscriptionCancellationReasonOptions {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PortalSubscriptionCancellationReasonOptions::*;
         match self {
             CustomerService => "customer_service",
@@ -127,12 +130,13 @@ impl PortalSubscriptionCancellationReasonOptions {
             TooComplex => "too_complex",
             TooExpensive => "too_expensive",
             Unused => "unused",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for PortalSubscriptionCancellationReasonOptions {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PortalSubscriptionCancellationReasonOptions::*;
         match s {
@@ -144,7 +148,14 @@ impl std::str::FromStr for PortalSubscriptionCancellationReasonOptions {
             "too_complex" => Ok(TooComplex),
             "too_expensive" => Ok(TooExpensive),
             "unused" => Ok(Unused),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PortalSubscriptionCancellationReasonOptions"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -177,10 +188,8 @@ impl miniserde::Deserialize for PortalSubscriptionCancellationReasonOptions {
 impl miniserde::de::Visitor for crate::Place<PortalSubscriptionCancellationReasonOptions> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            PortalSubscriptionCancellationReasonOptions::from_str(s)
-                .map_err(|_| miniserde::Error)?,
-        );
+        self.out =
+            Some(PortalSubscriptionCancellationReasonOptions::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -191,10 +200,6 @@ impl<'de> serde::Deserialize<'de> for PortalSubscriptionCancellationReasonOption
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for PortalSubscriptionCancellationReasonOptions",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

@@ -65,7 +65,8 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(jurisdiction), Some(type_)) = (self.jurisdiction.take(), self.type_) else {
+            let (Some(jurisdiction), Some(type_)) = (self.jurisdiction.take(), self.type_.take())
+            else {
                 return None;
             };
             Some(Self::Out { jurisdiction, type_ })
@@ -105,19 +106,23 @@ const _: () = {
     }
 };
 /// The type of the election for the state sales tax registration.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum TaxProductRegistrationsResourceCountryOptionsUsStateSalesTaxElectionType {
     LocalUseTax,
     SimplifiedSellersUseTax,
     SingleLocalUseTax,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl TaxProductRegistrationsResourceCountryOptionsUsStateSalesTaxElectionType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use TaxProductRegistrationsResourceCountryOptionsUsStateSalesTaxElectionType::*;
         match self {
             LocalUseTax => "local_use_tax",
             SimplifiedSellersUseTax => "simplified_sellers_use_tax",
             SingleLocalUseTax => "single_local_use_tax",
+            Unknown(v) => v,
         }
     }
 }
@@ -125,14 +130,21 @@ impl TaxProductRegistrationsResourceCountryOptionsUsStateSalesTaxElectionType {
 impl std::str::FromStr
     for TaxProductRegistrationsResourceCountryOptionsUsStateSalesTaxElectionType
 {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TaxProductRegistrationsResourceCountryOptionsUsStateSalesTaxElectionType::*;
         match s {
             "local_use_tax" => Ok(LocalUseTax),
             "simplified_sellers_use_tax" => Ok(SimplifiedSellersUseTax),
             "single_local_use_tax" => Ok(SingleLocalUseTax),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "TaxProductRegistrationsResourceCountryOptionsUsStateSalesTaxElectionType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -173,7 +185,7 @@ impl miniserde::de::Visitor
         use std::str::FromStr;
         self.out = Some(
             TaxProductRegistrationsResourceCountryOptionsUsStateSalesTaxElectionType::from_str(s)
-                .map_err(|_| miniserde::Error)?,
+                .expect("infallible"),
         );
         Ok(())
     }
@@ -189,6 +201,6 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for TaxProductRegistrationsResourceCountryOptionsUsStateSalesTaxElectionType"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

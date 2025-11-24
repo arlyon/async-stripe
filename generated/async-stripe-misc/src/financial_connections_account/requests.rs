@@ -372,32 +372,43 @@ impl RefreshFinancialConnectionsAccountBuilder {
     }
 }
 /// The list of account features that you would like to refresh.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum RefreshFinancialConnectionsAccountFeatures {
     Balance,
     Ownership,
     Transactions,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl RefreshFinancialConnectionsAccountFeatures {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use RefreshFinancialConnectionsAccountFeatures::*;
         match self {
             Balance => "balance",
             Ownership => "ownership",
             Transactions => "transactions",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for RefreshFinancialConnectionsAccountFeatures {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use RefreshFinancialConnectionsAccountFeatures::*;
         match s {
             "balance" => Ok(Balance),
             "ownership" => Ok(Ownership),
             "transactions" => Ok(Transactions),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "RefreshFinancialConnectionsAccountFeatures"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -425,9 +436,7 @@ impl<'de> serde::Deserialize<'de> for RefreshFinancialConnectionsAccountFeatures
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for RefreshFinancialConnectionsAccountFeatures")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Refreshes the data associated with a Financial Connections `Account`.
@@ -495,26 +504,37 @@ impl SubscribeFinancialConnectionsAccountBuilder {
     }
 }
 /// The list of account features to which you would like to subscribe.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum SubscribeFinancialConnectionsAccountFeatures {
     Transactions,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl SubscribeFinancialConnectionsAccountFeatures {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use SubscribeFinancialConnectionsAccountFeatures::*;
         match self {
             Transactions => "transactions",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for SubscribeFinancialConnectionsAccountFeatures {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use SubscribeFinancialConnectionsAccountFeatures::*;
         match s {
             "transactions" => Ok(Transactions),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "SubscribeFinancialConnectionsAccountFeatures"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -542,11 +562,7 @@ impl<'de> serde::Deserialize<'de> for SubscribeFinancialConnectionsAccountFeatur
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for SubscribeFinancialConnectionsAccountFeatures",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Subscribes to periodic refreshes of data associated with a Financial Connections `Account`.
@@ -615,26 +631,37 @@ impl UnsubscribeFinancialConnectionsAccountBuilder {
     }
 }
 /// The list of account features from which you would like to unsubscribe.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UnsubscribeFinancialConnectionsAccountFeatures {
     Transactions,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UnsubscribeFinancialConnectionsAccountFeatures {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UnsubscribeFinancialConnectionsAccountFeatures::*;
         match self {
             Transactions => "transactions",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for UnsubscribeFinancialConnectionsAccountFeatures {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UnsubscribeFinancialConnectionsAccountFeatures::*;
         match s {
             "transactions" => Ok(Transactions),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UnsubscribeFinancialConnectionsAccountFeatures"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -662,11 +689,7 @@ impl<'de> serde::Deserialize<'de> for UnsubscribeFinancialConnectionsAccountFeat
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for UnsubscribeFinancialConnectionsAccountFeatures",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Unsubscribes from periodic refreshes of data associated with a Financial Connections `Account`.

@@ -105,29 +105,40 @@ const _: () = {
     }
 };
 /// All supported networks.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UsBankAccountNetworksSupported {
     Ach,
     UsDomesticWire,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UsBankAccountNetworksSupported {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UsBankAccountNetworksSupported::*;
         match self {
             Ach => "ach",
             UsDomesticWire => "us_domestic_wire",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for UsBankAccountNetworksSupported {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UsBankAccountNetworksSupported::*;
         match s {
             "ach" => Ok(Ach),
             "us_domestic_wire" => Ok(UsDomesticWire),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UsBankAccountNetworksSupported"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -160,7 +171,7 @@ impl miniserde::Deserialize for UsBankAccountNetworksSupported {
 impl miniserde::de::Visitor for crate::Place<UsBankAccountNetworksSupported> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(UsBankAccountNetworksSupported::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(UsBankAccountNetworksSupported::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -171,8 +182,6 @@ impl<'de> serde::Deserialize<'de> for UsBankAccountNetworksSupported {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for UsBankAccountNetworksSupported")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

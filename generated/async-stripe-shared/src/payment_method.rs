@@ -388,7 +388,7 @@ const _: () = {
                 self.affirm,
                 self.afterpay_clearpay,
                 self.alipay,
-                self.allow_redisplay,
+                self.allow_redisplay.take(),
                 self.alma,
                 self.amazon_pay,
                 self.au_becs_debit.take(),
@@ -856,7 +856,10 @@ impl std::str::FromStr for PaymentMethodType {
             "us_bank_account" => Ok(UsBankAccount),
             "wechat_pay" => Ok(WechatPay),
             "zip" => Ok(Zip),
-            v => Ok(Unknown(v.to_owned())),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "PaymentMethodType");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -889,7 +892,7 @@ impl miniserde::Deserialize for PaymentMethodType {
 impl miniserde::de::Visitor for crate::Place<PaymentMethodType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(PaymentMethodType::from_str(s).unwrap());
+        self.out = Some(PaymentMethodType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -900,7 +903,7 @@ impl<'de> serde::Deserialize<'de> for PaymentMethodType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap())
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 impl stripe_types::Object for PaymentMethod {
@@ -914,32 +917,43 @@ impl stripe_types::Object for PaymentMethod {
     }
 }
 stripe_types::def_id!(PaymentMethodId);
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PaymentMethodAllowRedisplay {
     Always,
     Limited,
     Unspecified,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl PaymentMethodAllowRedisplay {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PaymentMethodAllowRedisplay::*;
         match self {
             Always => "always",
             Limited => "limited",
             Unspecified => "unspecified",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for PaymentMethodAllowRedisplay {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentMethodAllowRedisplay::*;
         match s {
             "always" => Ok(Always),
             "limited" => Ok(Limited),
             "unspecified" => Ok(Unspecified),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PaymentMethodAllowRedisplay"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -971,7 +985,7 @@ impl miniserde::Deserialize for PaymentMethodAllowRedisplay {
 impl miniserde::de::Visitor for crate::Place<PaymentMethodAllowRedisplay> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(PaymentMethodAllowRedisplay::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(PaymentMethodAllowRedisplay::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -982,7 +996,6 @@ impl<'de> serde::Deserialize<'de> for PaymentMethodAllowRedisplay {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for PaymentMethodAllowRedisplay"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

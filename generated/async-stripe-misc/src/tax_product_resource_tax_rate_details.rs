@@ -102,7 +102,7 @@ const _: () = {
                 self.country.take(),
                 self.flat_amount.take(),
                 self.percentage_decimal.take(),
-                self.rate_type,
+                self.rate_type.take(),
                 self.state.take(),
                 self.tax_type.take(),
             )
@@ -152,29 +152,40 @@ const _: () = {
 /// Indicates the type of tax rate applied to the taxable amount.
 /// This value can be `null` when no tax applies to the location.
 /// This field is only present for TaxRates created by Stripe Tax.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum TaxProductResourceTaxRateDetailsRateType {
     FlatAmount,
     Percentage,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl TaxProductResourceTaxRateDetailsRateType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use TaxProductResourceTaxRateDetailsRateType::*;
         match self {
             FlatAmount => "flat_amount",
             Percentage => "percentage",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for TaxProductResourceTaxRateDetailsRateType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TaxProductResourceTaxRateDetailsRateType::*;
         match s {
             "flat_amount" => Ok(FlatAmount),
             "percentage" => Ok(Percentage),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "TaxProductResourceTaxRateDetailsRateType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -207,9 +218,7 @@ impl miniserde::Deserialize for TaxProductResourceTaxRateDetailsRateType {
 impl miniserde::de::Visitor for crate::Place<TaxProductResourceTaxRateDetailsRateType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            TaxProductResourceTaxRateDetailsRateType::from_str(s).map_err(|_| miniserde::Error)?,
-        );
+        self.out = Some(TaxProductResourceTaxRateDetailsRateType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -220,9 +229,7 @@ impl<'de> serde::Deserialize<'de> for TaxProductResourceTaxRateDetailsRateType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for TaxProductResourceTaxRateDetailsRateType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The tax type, such as `vat` or `sales_tax`.
@@ -288,7 +295,14 @@ impl std::str::FromStr for TaxProductResourceTaxRateDetailsTaxType {
             "sales_tax" => Ok(SalesTax),
             "service_tax" => Ok(ServiceTax),
             "vat" => Ok(Vat),
-            v => Ok(Unknown(v.to_owned())),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "TaxProductResourceTaxRateDetailsTaxType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -321,7 +335,7 @@ impl miniserde::Deserialize for TaxProductResourceTaxRateDetailsTaxType {
 impl miniserde::de::Visitor for crate::Place<TaxProductResourceTaxRateDetailsTaxType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(TaxProductResourceTaxRateDetailsTaxType::from_str(s).unwrap());
+        self.out = Some(TaxProductResourceTaxRateDetailsTaxType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -332,6 +346,6 @@ impl<'de> serde::Deserialize<'de> for TaxProductResourceTaxRateDetailsTaxType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap())
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

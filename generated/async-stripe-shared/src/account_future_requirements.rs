@@ -244,7 +244,14 @@ impl std::str::FromStr for AccountFutureRequirementsDisabledReason {
             "requirements.past_due" => Ok(RequirementsPastDue),
             "requirements.pending_verification" => Ok(RequirementsPendingVerification),
             "under_review" => Ok(UnderReview),
-            v => Ok(Unknown(v.to_owned())),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "AccountFutureRequirementsDisabledReason"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -277,7 +284,7 @@ impl miniserde::Deserialize for AccountFutureRequirementsDisabledReason {
 impl miniserde::de::Visitor for crate::Place<AccountFutureRequirementsDisabledReason> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(AccountFutureRequirementsDisabledReason::from_str(s).unwrap());
+        self.out = Some(AccountFutureRequirementsDisabledReason::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -288,6 +295,6 @@ impl<'de> serde::Deserialize<'de> for AccountFutureRequirementsDisabledReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap())
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

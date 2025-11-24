@@ -96,10 +96,10 @@ const _: () = {
                 Some(title),
                 Some(usage_threshold),
             ) = (
-                self.alert_type,
+                self.alert_type.take(),
                 self.id.take(),
                 self.livemode,
-                self.status,
+                self.status.take(),
                 self.title.take(),
                 self.usage_threshold.take(),
             )
@@ -163,32 +163,39 @@ impl serde::Serialize for BillingAlert {
     }
 }
 /// Status of the alert. This can be active, inactive or archived.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum BillingAlertStatus {
     Active,
     Archived,
     Inactive,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl BillingAlertStatus {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use BillingAlertStatus::*;
         match self {
             Active => "active",
             Archived => "archived",
             Inactive => "inactive",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for BillingAlertStatus {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use BillingAlertStatus::*;
         match s {
             "active" => Ok(Active),
             "archived" => Ok(Archived),
             "inactive" => Ok(Inactive),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "BillingAlertStatus");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -221,7 +228,7 @@ impl miniserde::Deserialize for BillingAlertStatus {
 impl miniserde::de::Visitor for crate::Place<BillingAlertStatus> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(BillingAlertStatus::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(BillingAlertStatus::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -232,8 +239,7 @@ impl<'de> serde::Deserialize<'de> for BillingAlertStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for BillingAlertStatus"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 impl stripe_types::Object for BillingAlert {
@@ -247,26 +253,33 @@ impl stripe_types::Object for BillingAlert {
     }
 }
 stripe_types::def_id!(BillingAlertId);
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum BillingAlertAlertType {
     UsageThreshold,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl BillingAlertAlertType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use BillingAlertAlertType::*;
         match self {
             UsageThreshold => "usage_threshold",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for BillingAlertAlertType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use BillingAlertAlertType::*;
         match s {
             "usage_threshold" => Ok(UsageThreshold),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "BillingAlertAlertType");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -298,7 +311,7 @@ impl miniserde::Deserialize for BillingAlertAlertType {
 impl miniserde::de::Visitor for crate::Place<BillingAlertAlertType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(BillingAlertAlertType::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(BillingAlertAlertType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -309,7 +322,6 @@ impl<'de> serde::Deserialize<'de> for BillingAlertAlertType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for BillingAlertAlertType"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

@@ -8,8 +8,6 @@ use crate::rust_type::RustType;
 use crate::types::{ComponentPath, RustIdent};
 use crate::visitor::{Visit, VisitMut};
 
-const ADD_UNKNOWN_VARIANT_THRESHOLD: usize = 12;
-
 #[derive(Debug, Clone, Eq, PartialEq, Hash)]
 pub enum RustObject {
     /// A struct definition
@@ -72,8 +70,7 @@ impl RustObject {
     pub fn provide_unknown_variant(&self) -> bool {
         match self {
             Self::FieldlessEnum(variants) => {
-                variants.len() > ADD_UNKNOWN_VARIANT_THRESHOLD
-                    && !variants.iter().any(|v| v.variant_name.as_ref() == "Unknown")
+                !variants.iter().any(|v| v.variant_name.as_ref() == "Unknown")
             }
             _ => false,
         }

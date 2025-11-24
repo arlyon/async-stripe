@@ -80,11 +80,11 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (Some(amazon_pay), Some(card), Some(klarna), Some(paypal), Some(type_)) = (
-                self.amazon_pay,
+                self.amazon_pay.take(),
                 self.card.take(),
                 self.klarna.take(),
                 self.paypal.take(),
-                self.type_,
+                self.type_.take(),
             ) else {
                 return None;
             };
@@ -128,27 +128,31 @@ const _: () = {
     }
 };
 /// Payment method type.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum DisputePaymentMethodDetailsType {
     AmazonPay,
     Card,
     Klarna,
     Paypal,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl DisputePaymentMethodDetailsType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use DisputePaymentMethodDetailsType::*;
         match self {
             AmazonPay => "amazon_pay",
             Card => "card",
             Klarna => "klarna",
             Paypal => "paypal",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for DisputePaymentMethodDetailsType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use DisputePaymentMethodDetailsType::*;
         match s {
@@ -156,7 +160,14 @@ impl std::str::FromStr for DisputePaymentMethodDetailsType {
             "card" => Ok(Card),
             "klarna" => Ok(Klarna),
             "paypal" => Ok(Paypal),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "DisputePaymentMethodDetailsType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -189,8 +200,7 @@ impl miniserde::Deserialize for DisputePaymentMethodDetailsType {
 impl miniserde::de::Visitor for crate::Place<DisputePaymentMethodDetailsType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out =
-            Some(DisputePaymentMethodDetailsType::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(DisputePaymentMethodDetailsType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -201,8 +211,6 @@ impl<'de> serde::Deserialize<'de> for DisputePaymentMethodDetailsType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for DisputePaymentMethodDetailsType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

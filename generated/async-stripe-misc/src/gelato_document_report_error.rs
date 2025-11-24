@@ -65,7 +65,7 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(code), Some(reason)) = (self.code, self.reason.take()) else {
+            let (Some(code), Some(reason)) = (self.code.take(), self.reason.take()) else {
                 return None;
             };
             Some(Self::Out { code, reason })
@@ -105,32 +105,43 @@ const _: () = {
     }
 };
 /// A short machine-readable string giving the reason for the verification failure.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum GelatoDocumentReportErrorCode {
     DocumentExpired,
     DocumentTypeNotSupported,
     DocumentUnverifiedOther,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl GelatoDocumentReportErrorCode {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use GelatoDocumentReportErrorCode::*;
         match self {
             DocumentExpired => "document_expired",
             DocumentTypeNotSupported => "document_type_not_supported",
             DocumentUnverifiedOther => "document_unverified_other",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for GelatoDocumentReportErrorCode {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use GelatoDocumentReportErrorCode::*;
         match s {
             "document_expired" => Ok(DocumentExpired),
             "document_type_not_supported" => Ok(DocumentTypeNotSupported),
             "document_unverified_other" => Ok(DocumentUnverifiedOther),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "GelatoDocumentReportErrorCode"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -163,7 +174,7 @@ impl miniserde::Deserialize for GelatoDocumentReportErrorCode {
 impl miniserde::de::Visitor for crate::Place<GelatoDocumentReportErrorCode> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(GelatoDocumentReportErrorCode::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(GelatoDocumentReportErrorCode::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -174,8 +185,6 @@ impl<'de> serde::Deserialize<'de> for GelatoDocumentReportErrorCode {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for GelatoDocumentReportErrorCode")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

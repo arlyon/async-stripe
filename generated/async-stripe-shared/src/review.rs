@@ -144,14 +144,14 @@ const _: () = {
             ) = (
                 self.billing_zip.take(),
                 self.charge.take(),
-                self.closed_reason,
+                self.closed_reason.take(),
                 self.created,
                 self.id.take(),
                 self.ip_address.take(),
                 self.ip_address_location.take(),
                 self.livemode,
                 self.open,
-                self.opened_reason,
+                self.opened_reason.take(),
                 self.payment_intent.take(),
                 self.reason.take(),
                 self.session.take(),
@@ -245,7 +245,8 @@ impl serde::Serialize for Review {
 }
 /// The reason the review was closed, or null if it has not yet been closed.
 /// One of `approved`, `refunded`, `refunded_as_fraud`, `disputed`, `redacted`, `canceled`, `payment_never_settled`, or `acknowledged`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum ReviewClosedReason {
     Acknowledged,
     Approved,
@@ -255,9 +256,11 @@ pub enum ReviewClosedReason {
     Redacted,
     Refunded,
     RefundedAsFraud,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl ReviewClosedReason {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use ReviewClosedReason::*;
         match self {
             Acknowledged => "acknowledged",
@@ -268,12 +271,13 @@ impl ReviewClosedReason {
             Redacted => "redacted",
             Refunded => "refunded",
             RefundedAsFraud => "refunded_as_fraud",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for ReviewClosedReason {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ReviewClosedReason::*;
         match s {
@@ -285,7 +289,10 @@ impl std::str::FromStr for ReviewClosedReason {
             "redacted" => Ok(Redacted),
             "refunded" => Ok(Refunded),
             "refunded_as_fraud" => Ok(RefundedAsFraud),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "ReviewClosedReason");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -318,7 +325,7 @@ impl miniserde::Deserialize for ReviewClosedReason {
 impl miniserde::de::Visitor for crate::Place<ReviewClosedReason> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(ReviewClosedReason::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(ReviewClosedReason::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -329,34 +336,40 @@ impl<'de> serde::Deserialize<'de> for ReviewClosedReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for ReviewClosedReason"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The reason the review was opened. One of `rule` or `manual`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum ReviewOpenedReason {
     Manual,
     Rule,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl ReviewOpenedReason {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use ReviewOpenedReason::*;
         match self {
             Manual => "manual",
             Rule => "rule",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for ReviewOpenedReason {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ReviewOpenedReason::*;
         match s {
             "manual" => Ok(Manual),
             "rule" => Ok(Rule),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "ReviewOpenedReason");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -389,7 +402,7 @@ impl miniserde::Deserialize for ReviewOpenedReason {
 impl miniserde::de::Visitor for crate::Place<ReviewOpenedReason> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(ReviewOpenedReason::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(ReviewOpenedReason::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -400,8 +413,7 @@ impl<'de> serde::Deserialize<'de> for ReviewOpenedReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for ReviewOpenedReason"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 impl stripe_types::Object for Review {

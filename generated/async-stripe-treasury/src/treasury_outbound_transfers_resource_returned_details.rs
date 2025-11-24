@@ -64,7 +64,8 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(code), Some(transaction)) = (self.code, self.transaction.take()) else {
+            let (Some(code), Some(transaction)) = (self.code.take(), self.transaction.take())
+            else {
                 return None;
             };
             Some(Self::Out { code, transaction })
@@ -104,7 +105,8 @@ const _: () = {
     }
 };
 /// Reason for the return.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum TreasuryOutboundTransfersResourceReturnedDetailsCode {
     AccountClosed,
     AccountFrozen,
@@ -116,9 +118,11 @@ pub enum TreasuryOutboundTransfersResourceReturnedDetailsCode {
     InvalidCurrency,
     NoAccount,
     Other,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl TreasuryOutboundTransfersResourceReturnedDetailsCode {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use TreasuryOutboundTransfersResourceReturnedDetailsCode::*;
         match self {
             AccountClosed => "account_closed",
@@ -131,12 +135,13 @@ impl TreasuryOutboundTransfersResourceReturnedDetailsCode {
             InvalidCurrency => "invalid_currency",
             NoAccount => "no_account",
             Other => "other",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for TreasuryOutboundTransfersResourceReturnedDetailsCode {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TreasuryOutboundTransfersResourceReturnedDetailsCode::*;
         match s {
@@ -150,7 +155,14 @@ impl std::str::FromStr for TreasuryOutboundTransfersResourceReturnedDetailsCode 
             "invalid_currency" => Ok(InvalidCurrency),
             "no_account" => Ok(NoAccount),
             "other" => Ok(Other),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "TreasuryOutboundTransfersResourceReturnedDetailsCode"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -184,8 +196,7 @@ impl miniserde::de::Visitor for crate::Place<TreasuryOutboundTransfersResourceRe
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(
-            TreasuryOutboundTransfersResourceReturnedDetailsCode::from_str(s)
-                .map_err(|_| miniserde::Error)?,
+            TreasuryOutboundTransfersResourceReturnedDetailsCode::from_str(s).expect("infallible"),
         );
         Ok(())
     }
@@ -197,10 +208,6 @@ impl<'de> serde::Deserialize<'de> for TreasuryOutboundTransfersResourceReturnedD
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for TreasuryOutboundTransfersResourceReturnedDetailsCode",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

@@ -155,27 +155,31 @@ impl Default for UpdateBalanceSettingsPaymentsPayoutsSchedule {
 /// How frequently available funds are paid out.
 /// One of: `daily`, `manual`, `weekly`, or `monthly`.
 /// Default is `daily`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdateBalanceSettingsPaymentsPayoutsScheduleInterval {
     Daily,
     Manual,
     Monthly,
     Weekly,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdateBalanceSettingsPaymentsPayoutsScheduleInterval {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdateBalanceSettingsPaymentsPayoutsScheduleInterval::*;
         match self {
             Daily => "daily",
             Manual => "manual",
             Monthly => "monthly",
             Weekly => "weekly",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for UpdateBalanceSettingsPaymentsPayoutsScheduleInterval {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateBalanceSettingsPaymentsPayoutsScheduleInterval::*;
         match s {
@@ -183,7 +187,14 @@ impl std::str::FromStr for UpdateBalanceSettingsPaymentsPayoutsScheduleInterval 
             "manual" => Ok(Manual),
             "monthly" => Ok(Monthly),
             "weekly" => Ok(Weekly),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdateBalanceSettingsPaymentsPayoutsScheduleInterval"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -211,25 +222,24 @@ impl<'de> serde::Deserialize<'de> for UpdateBalanceSettingsPaymentsPayoutsSchedu
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for UpdateBalanceSettingsPaymentsPayoutsScheduleInterval",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The days of the week when available funds are paid out, specified as an array, e.g., [`monday`, `tuesday`].
 /// Required and applicable only if `interval` is `weekly`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdateBalanceSettingsPaymentsPayoutsScheduleWeeklyPayoutDays {
     Friday,
     Monday,
     Thursday,
     Tuesday,
     Wednesday,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdateBalanceSettingsPaymentsPayoutsScheduleWeeklyPayoutDays {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdateBalanceSettingsPaymentsPayoutsScheduleWeeklyPayoutDays::*;
         match self {
             Friday => "friday",
@@ -237,12 +247,13 @@ impl UpdateBalanceSettingsPaymentsPayoutsScheduleWeeklyPayoutDays {
             Thursday => "thursday",
             Tuesday => "tuesday",
             Wednesday => "wednesday",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for UpdateBalanceSettingsPaymentsPayoutsScheduleWeeklyPayoutDays {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateBalanceSettingsPaymentsPayoutsScheduleWeeklyPayoutDays::*;
         match s {
@@ -251,7 +262,14 @@ impl std::str::FromStr for UpdateBalanceSettingsPaymentsPayoutsScheduleWeeklyPay
             "thursday" => Ok(Thursday),
             "tuesday" => Ok(Tuesday),
             "wednesday" => Ok(Wednesday),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdateBalanceSettingsPaymentsPayoutsScheduleWeeklyPayoutDays"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -279,11 +297,7 @@ impl<'de> serde::Deserialize<'de> for UpdateBalanceSettingsPaymentsPayoutsSchedu
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for UpdateBalanceSettingsPaymentsPayoutsScheduleWeeklyPayoutDays",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Settings related to the account's balance settlement timing.

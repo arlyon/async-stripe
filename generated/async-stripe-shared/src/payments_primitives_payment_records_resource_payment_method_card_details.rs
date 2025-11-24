@@ -163,7 +163,7 @@ const _: () = {
             ) = (
                 self.brand,
                 self.capture_before,
-                self.checks,
+                self.checks.take(),
                 self.country.take(),
                 self.exp_month,
                 self.exp_year,
@@ -174,7 +174,7 @@ const _: () = {
                 self.network,
                 self.network_token,
                 self.network_transaction_id.take(),
-                self.three_d_secure,
+                self.three_d_secure.take(),
                 self.wallet.take(),
             )
             else {

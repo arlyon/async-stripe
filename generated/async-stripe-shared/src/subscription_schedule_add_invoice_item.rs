@@ -98,7 +98,7 @@ const _: () = {
             ) = (
                 self.discounts.take(),
                 self.metadata.take(),
-                self.period,
+                self.period.take(),
                 self.price.take(),
                 self.quantity,
                 self.tax_rates.take(),

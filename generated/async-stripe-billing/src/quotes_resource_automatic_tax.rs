@@ -80,7 +80,7 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (Some(enabled), Some(liability), Some(provider), Some(status)) =
-                (self.enabled, self.liability.take(), self.provider.take(), self.status)
+                (self.enabled, self.liability.take(), self.provider.take(), self.status.take())
             else {
                 return None;
             };
@@ -123,32 +123,43 @@ const _: () = {
     }
 };
 /// The status of the most recent automated tax calculation for this quote.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum QuotesResourceAutomaticTaxStatus {
     Complete,
     Failed,
     RequiresLocationInputs,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl QuotesResourceAutomaticTaxStatus {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use QuotesResourceAutomaticTaxStatus::*;
         match self {
             Complete => "complete",
             Failed => "failed",
             RequiresLocationInputs => "requires_location_inputs",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for QuotesResourceAutomaticTaxStatus {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use QuotesResourceAutomaticTaxStatus::*;
         match s {
             "complete" => Ok(Complete),
             "failed" => Ok(Failed),
             "requires_location_inputs" => Ok(RequiresLocationInputs),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "QuotesResourceAutomaticTaxStatus"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -181,8 +192,7 @@ impl miniserde::Deserialize for QuotesResourceAutomaticTaxStatus {
 impl miniserde::de::Visitor for crate::Place<QuotesResourceAutomaticTaxStatus> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out =
-            Some(QuotesResourceAutomaticTaxStatus::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(QuotesResourceAutomaticTaxStatus::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -193,8 +203,6 @@ impl<'de> serde::Deserialize<'de> for QuotesResourceAutomaticTaxStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for QuotesResourceAutomaticTaxStatus")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

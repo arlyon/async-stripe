@@ -1,4 +1,4 @@
-#[derive(Copy, Clone, Debug)]
+#[derive(Clone, Debug)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct ShippingRateDeliveryEstimate {
@@ -64,7 +64,7 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(maximum), Some(minimum)) = (self.maximum, self.minimum) else {
+            let (Some(maximum), Some(minimum)) = (self.maximum.take(), self.minimum.take()) else {
                 return None;
             };
             Some(Self::Out { maximum, minimum })

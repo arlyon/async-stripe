@@ -92,8 +92,8 @@ const _: () = {
             ) = (
                 self.industry_product_code.take(),
                 self.quantity_decimal.take(),
-                self.type_,
-                self.unit,
+                self.type_.take(),
+                self.unit.take(),
                 self.unit_cost_decimal.take(),
             )
             else {
@@ -147,16 +147,19 @@ const _: () = {
     }
 };
 /// The type of fuel that was purchased.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum IssuingAuthorizationFuelDataType {
     Diesel,
     Other,
     UnleadedPlus,
     UnleadedRegular,
     UnleadedSuper,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl IssuingAuthorizationFuelDataType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use IssuingAuthorizationFuelDataType::*;
         match self {
             Diesel => "diesel",
@@ -164,12 +167,13 @@ impl IssuingAuthorizationFuelDataType {
             UnleadedPlus => "unleaded_plus",
             UnleadedRegular => "unleaded_regular",
             UnleadedSuper => "unleaded_super",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for IssuingAuthorizationFuelDataType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use IssuingAuthorizationFuelDataType::*;
         match s {
@@ -178,7 +182,14 @@ impl std::str::FromStr for IssuingAuthorizationFuelDataType {
             "unleaded_plus" => Ok(UnleadedPlus),
             "unleaded_regular" => Ok(UnleadedRegular),
             "unleaded_super" => Ok(UnleadedSuper),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "IssuingAuthorizationFuelDataType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -211,8 +222,7 @@ impl miniserde::Deserialize for IssuingAuthorizationFuelDataType {
 impl miniserde::de::Visitor for crate::Place<IssuingAuthorizationFuelDataType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out =
-            Some(IssuingAuthorizationFuelDataType::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(IssuingAuthorizationFuelDataType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -223,13 +233,12 @@ impl<'de> serde::Deserialize<'de> for IssuingAuthorizationFuelDataType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for IssuingAuthorizationFuelDataType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The units for `quantity_decimal`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum IssuingAuthorizationFuelDataUnit {
     ChargingMinute,
     ImperialGallon,
@@ -239,9 +248,11 @@ pub enum IssuingAuthorizationFuelDataUnit {
     Other,
     Pound,
     UsGallon,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl IssuingAuthorizationFuelDataUnit {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use IssuingAuthorizationFuelDataUnit::*;
         match self {
             ChargingMinute => "charging_minute",
@@ -252,12 +263,13 @@ impl IssuingAuthorizationFuelDataUnit {
             Other => "other",
             Pound => "pound",
             UsGallon => "us_gallon",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for IssuingAuthorizationFuelDataUnit {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use IssuingAuthorizationFuelDataUnit::*;
         match s {
@@ -269,7 +281,14 @@ impl std::str::FromStr for IssuingAuthorizationFuelDataUnit {
             "other" => Ok(Other),
             "pound" => Ok(Pound),
             "us_gallon" => Ok(UsGallon),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "IssuingAuthorizationFuelDataUnit"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -302,8 +321,7 @@ impl miniserde::Deserialize for IssuingAuthorizationFuelDataUnit {
 impl miniserde::de::Visitor for crate::Place<IssuingAuthorizationFuelDataUnit> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out =
-            Some(IssuingAuthorizationFuelDataUnit::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(IssuingAuthorizationFuelDataUnit::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -314,8 +332,6 @@ impl<'de> serde::Deserialize<'de> for IssuingAuthorizationFuelDataUnit {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for IssuingAuthorizationFuelDataUnit")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

@@ -93,7 +93,7 @@ const _: () = {
                 self.invoice_settings.take(),
                 self.metadata.take(),
                 self.trial_period_days,
-                self.trial_settings,
+                self.trial_settings.take(),
             )
             else {
                 return None;

@@ -82,9 +82,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(committed), Some(errored), Some(source), Some(status)) =
-                (self.committed.take(), self.errored, self.source.take(), self.status.take())
-            else {
+            let (Some(committed), Some(errored), Some(source), Some(status)) = (
+                self.committed.take(),
+                self.errored.take(),
+                self.source.take(),
+                self.status.take(),
+            ) else {
                 return None;
             };
             Some(Self::Out { committed, errored, source, status })

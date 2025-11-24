@@ -74,7 +74,7 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (Some(billing_details), Some(type_), Some(us_bank_account)) =
-                (self.billing_details.take(), self.type_, self.us_bank_account.take())
+                (self.billing_details.take(), self.type_.take(), self.us_bank_account.take())
             else {
                 return None;
             };
@@ -116,26 +116,33 @@ const _: () = {
     }
 };
 /// The type of the payment method used in the InboundTransfer.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum InboundTransfersType {
     UsBankAccount,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl InboundTransfersType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use InboundTransfersType::*;
         match self {
             UsBankAccount => "us_bank_account",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for InboundTransfersType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use InboundTransfersType::*;
         match s {
             "us_bank_account" => Ok(UsBankAccount),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "InboundTransfersType");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -168,7 +175,7 @@ impl miniserde::Deserialize for InboundTransfersType {
 impl miniserde::de::Visitor for crate::Place<InboundTransfersType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(InboundTransfersType::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(InboundTransfersType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -179,7 +186,6 @@ impl<'de> serde::Deserialize<'de> for InboundTransfersType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for InboundTransfersType"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

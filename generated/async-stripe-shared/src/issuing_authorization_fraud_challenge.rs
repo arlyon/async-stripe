@@ -1,4 +1,4 @@
-#[derive(Copy, Clone, Debug)]
+#[derive(Clone, Debug)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct IssuingAuthorizationFraudChallenge {
@@ -73,7 +73,7 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (Some(channel), Some(status), Some(undeliverable_reason)) =
-                (self.channel, self.status, self.undeliverable_reason)
+                (self.channel.take(), self.status.take(), self.undeliverable_reason.take())
             else {
                 return None;
             };
@@ -115,26 +115,37 @@ const _: () = {
     }
 };
 /// The method by which the fraud challenge was delivered to the cardholder.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum IssuingAuthorizationFraudChallengeChannel {
     Sms,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl IssuingAuthorizationFraudChallengeChannel {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use IssuingAuthorizationFraudChallengeChannel::*;
         match self {
             Sms => "sms",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for IssuingAuthorizationFraudChallengeChannel {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use IssuingAuthorizationFraudChallengeChannel::*;
         match s {
             "sms" => Ok(Sms),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "IssuingAuthorizationFraudChallengeChannel"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -167,9 +178,8 @@ impl miniserde::Deserialize for IssuingAuthorizationFraudChallengeChannel {
 impl miniserde::de::Visitor for crate::Place<IssuingAuthorizationFraudChallengeChannel> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            IssuingAuthorizationFraudChallengeChannel::from_str(s).map_err(|_| miniserde::Error)?,
-        );
+        self.out =
+            Some(IssuingAuthorizationFraudChallengeChannel::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -180,22 +190,23 @@ impl<'de> serde::Deserialize<'de> for IssuingAuthorizationFraudChallengeChannel 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for IssuingAuthorizationFraudChallengeChannel")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The status of the fraud challenge.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum IssuingAuthorizationFraudChallengeStatus {
     Expired,
     Pending,
     Rejected,
     Undeliverable,
     Verified,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl IssuingAuthorizationFraudChallengeStatus {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use IssuingAuthorizationFraudChallengeStatus::*;
         match self {
             Expired => "expired",
@@ -203,12 +214,13 @@ impl IssuingAuthorizationFraudChallengeStatus {
             Rejected => "rejected",
             Undeliverable => "undeliverable",
             Verified => "verified",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for IssuingAuthorizationFraudChallengeStatus {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use IssuingAuthorizationFraudChallengeStatus::*;
         match s {
@@ -217,7 +229,14 @@ impl std::str::FromStr for IssuingAuthorizationFraudChallengeStatus {
             "rejected" => Ok(Rejected),
             "undeliverable" => Ok(Undeliverable),
             "verified" => Ok(Verified),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "IssuingAuthorizationFraudChallengeStatus"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -250,9 +269,7 @@ impl miniserde::Deserialize for IssuingAuthorizationFraudChallengeStatus {
 impl miniserde::de::Visitor for crate::Place<IssuingAuthorizationFraudChallengeStatus> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            IssuingAuthorizationFraudChallengeStatus::from_str(s).map_err(|_| miniserde::Error)?,
-        );
+        self.out = Some(IssuingAuthorizationFraudChallengeStatus::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -263,35 +280,44 @@ impl<'de> serde::Deserialize<'de> for IssuingAuthorizationFraudChallengeStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for IssuingAuthorizationFraudChallengeStatus")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// If the challenge is not deliverable, the reason why.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum IssuingAuthorizationFraudChallengeUndeliverableReason {
     NoPhoneNumber,
     UnsupportedPhoneNumber,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl IssuingAuthorizationFraudChallengeUndeliverableReason {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use IssuingAuthorizationFraudChallengeUndeliverableReason::*;
         match self {
             NoPhoneNumber => "no_phone_number",
             UnsupportedPhoneNumber => "unsupported_phone_number",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for IssuingAuthorizationFraudChallengeUndeliverableReason {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use IssuingAuthorizationFraudChallengeUndeliverableReason::*;
         match s {
             "no_phone_number" => Ok(NoPhoneNumber),
             "unsupported_phone_number" => Ok(UnsupportedPhoneNumber),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "IssuingAuthorizationFraudChallengeUndeliverableReason"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -327,8 +353,7 @@ impl miniserde::de::Visitor
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(
-            IssuingAuthorizationFraudChallengeUndeliverableReason::from_str(s)
-                .map_err(|_| miniserde::Error)?,
+            IssuingAuthorizationFraudChallengeUndeliverableReason::from_str(s).expect("infallible"),
         );
         Ok(())
     }
@@ -340,10 +365,6 @@ impl<'de> serde::Deserialize<'de> for IssuingAuthorizationFraudChallengeUndelive
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for IssuingAuthorizationFraudChallengeUndeliverableReason",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

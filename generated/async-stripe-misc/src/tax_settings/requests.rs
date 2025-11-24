@@ -97,32 +97,43 @@ impl Default for UpdateTaxSettingsDefaults {
 /// Specifies the default [tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#tax-behavior) to be used when the item's price has unspecified tax behavior.
 /// One of inclusive, exclusive, or inferred_by_currency.
 /// Once specified, it cannot be changed back to null.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdateTaxSettingsDefaultsTaxBehavior {
     Exclusive,
     Inclusive,
     InferredByCurrency,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdateTaxSettingsDefaultsTaxBehavior {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdateTaxSettingsDefaultsTaxBehavior::*;
         match self {
             Exclusive => "exclusive",
             Inclusive => "inclusive",
             InferredByCurrency => "inferred_by_currency",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for UpdateTaxSettingsDefaultsTaxBehavior {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateTaxSettingsDefaultsTaxBehavior::*;
         match s {
             "exclusive" => Ok(Exclusive),
             "inclusive" => Ok(Inclusive),
             "inferred_by_currency" => Ok(InferredByCurrency),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdateTaxSettingsDefaultsTaxBehavior"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -150,9 +161,7 @@ impl<'de> serde::Deserialize<'de> for UpdateTaxSettingsDefaultsTaxBehavior {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for UpdateTaxSettingsDefaultsTaxBehavior")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The place where your business is located.

@@ -83,7 +83,7 @@ async fn user_error() {
             assert_eq!(x.type_, InvalidRequestError);
             assert!(x.message.unwrap().contains("Unrecognized"));
         }
-        _ => panic!("Expected stripe error, got {:?}", res),
+        _ => panic!("Expected stripe error, got {res:?}"),
     }
 }
 

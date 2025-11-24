@@ -1,5 +1,5 @@
 /// Defines how a subscription behaves when a free trial ends.
-#[derive(Copy, Clone, Debug)]
+#[derive(Clone, Debug)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct SubscriptionsTrialsResourceEndBehavior {
@@ -61,7 +61,7 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(missing_payment_method),) = (self.missing_payment_method,) else {
+            let (Some(missing_payment_method),) = (self.missing_payment_method.take(),) else {
                 return None;
             };
             Some(Self::Out { missing_payment_method })
@@ -102,32 +102,43 @@ const _: () = {
     }
 };
 /// Indicates how the subscription should change when the trial ends if the user did not provide a payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum SubscriptionsTrialsResourceEndBehaviorMissingPaymentMethod {
     Cancel,
     CreateInvoice,
     Pause,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl SubscriptionsTrialsResourceEndBehaviorMissingPaymentMethod {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use SubscriptionsTrialsResourceEndBehaviorMissingPaymentMethod::*;
         match self {
             Cancel => "cancel",
             CreateInvoice => "create_invoice",
             Pause => "pause",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for SubscriptionsTrialsResourceEndBehaviorMissingPaymentMethod {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use SubscriptionsTrialsResourceEndBehaviorMissingPaymentMethod::*;
         match s {
             "cancel" => Ok(Cancel),
             "create_invoice" => Ok(CreateInvoice),
             "pause" => Ok(Pause),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "SubscriptionsTrialsResourceEndBehaviorMissingPaymentMethod"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -164,7 +175,7 @@ impl miniserde::de::Visitor
         use std::str::FromStr;
         self.out = Some(
             SubscriptionsTrialsResourceEndBehaviorMissingPaymentMethod::from_str(s)
-                .map_err(|_| miniserde::Error)?,
+                .expect("infallible"),
         );
         Ok(())
     }
@@ -178,10 +189,6 @@ impl<'de> serde::Deserialize<'de> for SubscriptionsTrialsResourceEndBehaviorMiss
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for SubscriptionsTrialsResourceEndBehaviorMissingPaymentMethod",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

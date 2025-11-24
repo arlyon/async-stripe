@@ -79,7 +79,7 @@ const _: () = {
         fn take_out(&mut self) -> Option<Self::Out> {
             let (Some(amount_tax_display), Some(pdf), Some(template), Some(template_version)) = (
                 self.amount_tax_display.take(),
-                self.pdf,
+                self.pdf.take(),
                 self.template.take(),
                 self.template_version,
             ) else {

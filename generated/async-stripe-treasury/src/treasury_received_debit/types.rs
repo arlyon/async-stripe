@@ -162,16 +162,16 @@ const _: () = {
                 self.created,
                 self.currency.take(),
                 self.description.take(),
-                self.failure_code,
+                self.failure_code.take(),
                 self.financial_account.take(),
                 self.hosted_regulatory_receipt_url.take(),
                 self.id.take(),
                 self.initiating_payment_method_details.take(),
                 self.linked_flows.take(),
                 self.livemode,
-                self.network,
-                self.reversal_details,
-                self.status,
+                self.network.take(),
+                self.reversal_details.take(),
+                self.status.take(),
                 self.transaction.take(),
             )
             else {
@@ -276,16 +276,19 @@ impl serde::Serialize for TreasuryReceivedDebit {
 }
 /// Reason for the failure.
 /// A ReceivedDebit might fail because the FinancialAccount doesn't have sufficient funds, is closed, or is frozen.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum TreasuryReceivedDebitFailureCode {
     AccountClosed,
     AccountFrozen,
     InsufficientFunds,
     InternationalTransaction,
     Other,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl TreasuryReceivedDebitFailureCode {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use TreasuryReceivedDebitFailureCode::*;
         match self {
             AccountClosed => "account_closed",
@@ -293,12 +296,13 @@ impl TreasuryReceivedDebitFailureCode {
             InsufficientFunds => "insufficient_funds",
             InternationalTransaction => "international_transaction",
             Other => "other",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for TreasuryReceivedDebitFailureCode {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TreasuryReceivedDebitFailureCode::*;
         match s {
@@ -307,7 +311,14 @@ impl std::str::FromStr for TreasuryReceivedDebitFailureCode {
             "insufficient_funds" => Ok(InsufficientFunds),
             "international_transaction" => Ok(InternationalTransaction),
             "other" => Ok(Other),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "TreasuryReceivedDebitFailureCode"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -340,8 +351,7 @@ impl miniserde::Deserialize for TreasuryReceivedDebitFailureCode {
 impl miniserde::de::Visitor for crate::Place<TreasuryReceivedDebitFailureCode> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out =
-            Some(TreasuryReceivedDebitFailureCode::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(TreasuryReceivedDebitFailureCode::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -352,38 +362,47 @@ impl<'de> serde::Deserialize<'de> for TreasuryReceivedDebitFailureCode {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for TreasuryReceivedDebitFailureCode")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The network used for the ReceivedDebit.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum TreasuryReceivedDebitNetwork {
     Ach,
     Card,
     Stripe,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl TreasuryReceivedDebitNetwork {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use TreasuryReceivedDebitNetwork::*;
         match self {
             Ach => "ach",
             Card => "card",
             Stripe => "stripe",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for TreasuryReceivedDebitNetwork {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TreasuryReceivedDebitNetwork::*;
         match s {
             "ach" => Ok(Ach),
             "card" => Ok(Card),
             "stripe" => Ok(Stripe),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "TreasuryReceivedDebitNetwork"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -416,7 +435,7 @@ impl miniserde::Deserialize for TreasuryReceivedDebitNetwork {
 impl miniserde::de::Visitor for crate::Place<TreasuryReceivedDebitNetwork> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(TreasuryReceivedDebitNetwork::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(TreasuryReceivedDebitNetwork::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -427,8 +446,7 @@ impl<'de> serde::Deserialize<'de> for TreasuryReceivedDebitNetwork {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for TreasuryReceivedDebitNetwork"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 impl stripe_types::Object for TreasuryReceivedDebit {
@@ -442,29 +460,40 @@ impl stripe_types::Object for TreasuryReceivedDebit {
     }
 }
 stripe_types::def_id!(TreasuryReceivedDebitId);
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum TreasuryReceivedDebitStatus {
     Failed,
     Succeeded,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl TreasuryReceivedDebitStatus {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use TreasuryReceivedDebitStatus::*;
         match self {
             Failed => "failed",
             Succeeded => "succeeded",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for TreasuryReceivedDebitStatus {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TreasuryReceivedDebitStatus::*;
         match s {
             "failed" => Ok(Failed),
             "succeeded" => Ok(Succeeded),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "TreasuryReceivedDebitStatus"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -496,7 +525,7 @@ impl miniserde::Deserialize for TreasuryReceivedDebitStatus {
 impl miniserde::de::Visitor for crate::Place<TreasuryReceivedDebitStatus> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(TreasuryReceivedDebitStatus::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(TreasuryReceivedDebitStatus::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -507,7 +536,6 @@ impl<'de> serde::Deserialize<'de> for TreasuryReceivedDebitStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for TreasuryReceivedDebitStatus"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

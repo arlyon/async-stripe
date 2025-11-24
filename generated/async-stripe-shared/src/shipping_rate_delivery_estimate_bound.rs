@@ -1,4 +1,4 @@
-#[derive(Copy, Clone, Debug)]
+#[derive(Clone, Debug)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct ShippingRateDeliveryEstimateBound {
@@ -64,7 +64,7 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(unit), Some(value)) = (self.unit, self.value) else {
+            let (Some(unit), Some(value)) = (self.unit.take(), self.value) else {
                 return None;
             };
             Some(Self::Out { unit, value })
@@ -104,16 +104,19 @@ const _: () = {
     }
 };
 /// A unit of time.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum ShippingRateDeliveryEstimateBoundUnit {
     BusinessDay,
     Day,
     Hour,
     Month,
     Week,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl ShippingRateDeliveryEstimateBoundUnit {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use ShippingRateDeliveryEstimateBoundUnit::*;
         match self {
             BusinessDay => "business_day",
@@ -121,12 +124,13 @@ impl ShippingRateDeliveryEstimateBoundUnit {
             Hour => "hour",
             Month => "month",
             Week => "week",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for ShippingRateDeliveryEstimateBoundUnit {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ShippingRateDeliveryEstimateBoundUnit::*;
         match s {
@@ -135,7 +139,14 @@ impl std::str::FromStr for ShippingRateDeliveryEstimateBoundUnit {
             "hour" => Ok(Hour),
             "month" => Ok(Month),
             "week" => Ok(Week),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "ShippingRateDeliveryEstimateBoundUnit"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -168,8 +179,7 @@ impl miniserde::Deserialize for ShippingRateDeliveryEstimateBoundUnit {
 impl miniserde::de::Visitor for crate::Place<ShippingRateDeliveryEstimateBoundUnit> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out =
-            Some(ShippingRateDeliveryEstimateBoundUnit::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(ShippingRateDeliveryEstimateBoundUnit::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -180,8 +190,6 @@ impl<'de> serde::Deserialize<'de> for ShippingRateDeliveryEstimateBoundUnit {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for ShippingRateDeliveryEstimateBoundUnit")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

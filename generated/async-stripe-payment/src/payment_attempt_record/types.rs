@@ -194,7 +194,7 @@ const _: () = {
                 self.application.take(),
                 self.created,
                 self.customer_details.take(),
-                self.customer_presence,
+                self.customer_presence.take(),
                 self.description.take(),
                 self.id.take(),
                 self.livemode,
@@ -202,7 +202,7 @@ const _: () = {
                 self.payment_method_details.take(),
                 self.payment_record.take(),
                 self.processor_details.take(),
-                self.reported_by,
+                self.reported_by.take(),
                 self.shipping_details.take(),
             )
             else {
@@ -316,29 +316,40 @@ impl serde::Serialize for PaymentAttemptRecord {
     }
 }
 /// Indicates whether the customer was present in your checkout flow during this payment.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PaymentAttemptRecordCustomerPresence {
     OffSession,
     OnSession,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl PaymentAttemptRecordCustomerPresence {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PaymentAttemptRecordCustomerPresence::*;
         match self {
             OffSession => "off_session",
             OnSession => "on_session",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for PaymentAttemptRecordCustomerPresence {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentAttemptRecordCustomerPresence::*;
         match s {
             "off_session" => Ok(OffSession),
             "on_session" => Ok(OnSession),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PaymentAttemptRecordCustomerPresence"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -371,8 +382,7 @@ impl miniserde::Deserialize for PaymentAttemptRecordCustomerPresence {
 impl miniserde::de::Visitor for crate::Place<PaymentAttemptRecordCustomerPresence> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out =
-            Some(PaymentAttemptRecordCustomerPresence::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(PaymentAttemptRecordCustomerPresence::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -383,35 +393,44 @@ impl<'de> serde::Deserialize<'de> for PaymentAttemptRecordCustomerPresence {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for PaymentAttemptRecordCustomerPresence")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Indicates who reported the payment.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PaymentAttemptRecordReportedBy {
     Self_,
     Stripe,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl PaymentAttemptRecordReportedBy {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PaymentAttemptRecordReportedBy::*;
         match self {
             Self_ => "self",
             Stripe => "stripe",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for PaymentAttemptRecordReportedBy {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentAttemptRecordReportedBy::*;
         match s {
             "self" => Ok(Self_),
             "stripe" => Ok(Stripe),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PaymentAttemptRecordReportedBy"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -444,7 +463,7 @@ impl miniserde::Deserialize for PaymentAttemptRecordReportedBy {
 impl miniserde::de::Visitor for crate::Place<PaymentAttemptRecordReportedBy> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(PaymentAttemptRecordReportedBy::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(PaymentAttemptRecordReportedBy::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -455,9 +474,7 @@ impl<'de> serde::Deserialize<'de> for PaymentAttemptRecordReportedBy {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for PaymentAttemptRecordReportedBy")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 impl stripe_types::Object for PaymentAttemptRecord {

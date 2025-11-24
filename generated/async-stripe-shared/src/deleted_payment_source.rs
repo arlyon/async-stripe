@@ -81,7 +81,14 @@ const _: () = {
                 }
                 "card" => Self::DeletedCard(FromValueOpt::from_value(Value::Object(o))?),
 
-                _ => return None,
+                _ => {
+                    tracing::warn!(
+                        "Unknown object type '{}' for enum '{}'",
+                        key,
+                        "DeletedPaymentSource"
+                    );
+                    return None;
+                }
             })
         }
     }

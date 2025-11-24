@@ -120,7 +120,7 @@ const _: () = {
                 self.alternatives.take(),
                 self.current_deadline,
                 self.currently_due.take(),
-                self.disabled_reason,
+                self.disabled_reason.take(),
                 self.errors.take(),
                 self.eventually_due.take(),
                 self.past_due.take(),
@@ -182,7 +182,8 @@ const _: () = {
 };
 /// Description of why the capability is disabled.
 /// [Learn more about handling verification issues](https://stripe.com/docs/connect/handling-api-verification).
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum AccountCapabilityRequirementsDisabledReason {
     Other,
     PausedInactivity,
@@ -194,9 +195,11 @@ pub enum AccountCapabilityRequirementsDisabledReason {
     RejectedOther,
     RejectedUnsupportedBusiness,
     RequirementsFieldsNeeded,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl AccountCapabilityRequirementsDisabledReason {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use AccountCapabilityRequirementsDisabledReason::*;
         match self {
             Other => "other",
@@ -209,12 +212,13 @@ impl AccountCapabilityRequirementsDisabledReason {
             RejectedOther => "rejected.other",
             RejectedUnsupportedBusiness => "rejected.unsupported_business",
             RequirementsFieldsNeeded => "requirements.fields_needed",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for AccountCapabilityRequirementsDisabledReason {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use AccountCapabilityRequirementsDisabledReason::*;
         match s {
@@ -228,7 +232,14 @@ impl std::str::FromStr for AccountCapabilityRequirementsDisabledReason {
             "rejected.other" => Ok(RejectedOther),
             "rejected.unsupported_business" => Ok(RejectedUnsupportedBusiness),
             "requirements.fields_needed" => Ok(RequirementsFieldsNeeded),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "AccountCapabilityRequirementsDisabledReason"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -261,10 +272,8 @@ impl miniserde::Deserialize for AccountCapabilityRequirementsDisabledReason {
 impl miniserde::de::Visitor for crate::Place<AccountCapabilityRequirementsDisabledReason> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            AccountCapabilityRequirementsDisabledReason::from_str(s)
-                .map_err(|_| miniserde::Error)?,
-        );
+        self.out =
+            Some(AccountCapabilityRequirementsDisabledReason::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -275,10 +284,6 @@ impl<'de> serde::Deserialize<'de> for AccountCapabilityRequirementsDisabledReaso
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for AccountCapabilityRequirementsDisabledReason",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

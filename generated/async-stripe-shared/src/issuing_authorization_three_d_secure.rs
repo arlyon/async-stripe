@@ -1,4 +1,4 @@
-#[derive(Copy, Clone, Debug)]
+#[derive(Clone, Debug)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct IssuingAuthorizationThreeDSecure {
@@ -60,7 +60,7 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(result),) = (self.result,) else {
+            let (Some(result),) = (self.result.take(),) else {
                 return None;
             };
             Some(Self::Out { result })
@@ -99,27 +99,31 @@ const _: () = {
     }
 };
 /// The outcome of the 3D Secure authentication request.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum IssuingAuthorizationThreeDSecureResult {
     AttemptAcknowledged,
     Authenticated,
     Failed,
     Required,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl IssuingAuthorizationThreeDSecureResult {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use IssuingAuthorizationThreeDSecureResult::*;
         match self {
             AttemptAcknowledged => "attempt_acknowledged",
             Authenticated => "authenticated",
             Failed => "failed",
             Required => "required",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for IssuingAuthorizationThreeDSecureResult {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use IssuingAuthorizationThreeDSecureResult::*;
         match s {
@@ -127,7 +131,14 @@ impl std::str::FromStr for IssuingAuthorizationThreeDSecureResult {
             "authenticated" => Ok(Authenticated),
             "failed" => Ok(Failed),
             "required" => Ok(Required),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "IssuingAuthorizationThreeDSecureResult"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -160,9 +171,7 @@ impl miniserde::Deserialize for IssuingAuthorizationThreeDSecureResult {
 impl miniserde::de::Visitor for crate::Place<IssuingAuthorizationThreeDSecureResult> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            IssuingAuthorizationThreeDSecureResult::from_str(s).map_err(|_| miniserde::Error)?,
-        );
+        self.out = Some(IssuingAuthorizationThreeDSecureResult::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -173,8 +182,6 @@ impl<'de> serde::Deserialize<'de> for IssuingAuthorizationThreeDSecureResult {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for IssuingAuthorizationThreeDSecureResult")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

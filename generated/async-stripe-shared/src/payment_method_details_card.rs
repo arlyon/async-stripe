@@ -244,22 +244,22 @@ const _: () = {
                 self.description.take(),
                 self.exp_month,
                 self.exp_year,
-                self.extended_authorization,
+                self.extended_authorization.take(),
                 self.fingerprint.take(),
                 self.funding.take(),
                 self.iin.take(),
-                self.incremental_authorization,
-                self.installments,
+                self.incremental_authorization.take(),
+                self.installments.take(),
                 self.issuer.take(),
                 self.last4.take(),
                 self.mandate.take(),
                 self.moto,
-                self.multicapture,
+                self.multicapture.take(),
                 self.network.take(),
                 self.network_token,
                 self.network_transaction_id.take(),
-                self.overcapture,
-                self.regulated_status,
+                self.overcapture.take(),
+                self.regulated_status.take(),
                 self.three_d_secure.take(),
                 self.wallet.take(),
             )
@@ -362,29 +362,40 @@ const _: () = {
     }
 };
 /// Status of a card based on the card issuer.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PaymentMethodDetailsCardRegulatedStatus {
     Regulated,
     Unregulated,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl PaymentMethodDetailsCardRegulatedStatus {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PaymentMethodDetailsCardRegulatedStatus::*;
         match self {
             Regulated => "regulated",
             Unregulated => "unregulated",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for PaymentMethodDetailsCardRegulatedStatus {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentMethodDetailsCardRegulatedStatus::*;
         match s {
             "regulated" => Ok(Regulated),
             "unregulated" => Ok(Unregulated),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PaymentMethodDetailsCardRegulatedStatus"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -417,9 +428,7 @@ impl miniserde::Deserialize for PaymentMethodDetailsCardRegulatedStatus {
 impl miniserde::de::Visitor for crate::Place<PaymentMethodDetailsCardRegulatedStatus> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            PaymentMethodDetailsCardRegulatedStatus::from_str(s).map_err(|_| miniserde::Error)?,
-        );
+        self.out = Some(PaymentMethodDetailsCardRegulatedStatus::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -430,8 +439,6 @@ impl<'de> serde::Deserialize<'de> for PaymentMethodDetailsCardRegulatedStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for PaymentMethodDetailsCardRegulatedStatus")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

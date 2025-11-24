@@ -258,13 +258,13 @@ const _: () = {
                 self.method.take(),
                 self.original_payout.take(),
                 self.payout_method.take(),
-                self.reconciliation_status,
+                self.reconciliation_status.take(),
                 self.reversed_by.take(),
                 self.source_type.take(),
                 self.statement_descriptor.take(),
                 self.status.take(),
                 self.trace_id.take(),
-                self.type_,
+                self.type_.take(),
             )
             else {
                 return None;
@@ -399,32 +399,39 @@ impl serde::Serialize for Payout {
     }
 }
 /// If `completed`, you can use the [Balance Transactions API](https://stripe.com/docs/api/balance_transactions/list#balance_transaction_list-payout) to list all balance transactions that are paid out in this payout.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PayoutReconciliationStatus {
     Completed,
     InProgress,
     NotApplicable,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl PayoutReconciliationStatus {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PayoutReconciliationStatus::*;
         match self {
             Completed => "completed",
             InProgress => "in_progress",
             NotApplicable => "not_applicable",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for PayoutReconciliationStatus {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PayoutReconciliationStatus::*;
         match s {
             "completed" => Ok(Completed),
             "in_progress" => Ok(InProgress),
             "not_applicable" => Ok(NotApplicable),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "PayoutReconciliationStatus");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -457,7 +464,7 @@ impl miniserde::Deserialize for PayoutReconciliationStatus {
 impl miniserde::de::Visitor for crate::Place<PayoutReconciliationStatus> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(PayoutReconciliationStatus::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(PayoutReconciliationStatus::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -468,34 +475,40 @@ impl<'de> serde::Deserialize<'de> for PayoutReconciliationStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for PayoutReconciliationStatus"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Can be `bank_account` or `card`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PayoutType {
     BankAccount,
     Card,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl PayoutType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PayoutType::*;
         match self {
             BankAccount => "bank_account",
             Card => "card",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for PayoutType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PayoutType::*;
         match s {
             "bank_account" => Ok(BankAccount),
             "card" => Ok(Card),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "PayoutType");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -528,7 +541,7 @@ impl miniserde::Deserialize for PayoutType {
 impl miniserde::de::Visitor for crate::Place<PayoutType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(PayoutType::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(PayoutType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -539,7 +552,7 @@ impl<'de> serde::Deserialize<'de> for PayoutType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for PayoutType"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 impl stripe_types::Object for Payout {

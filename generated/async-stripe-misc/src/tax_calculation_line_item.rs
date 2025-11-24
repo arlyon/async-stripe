@@ -136,7 +136,7 @@ const _: () = {
                 self.product.take(),
                 self.quantity,
                 self.reference.take(),
-                self.tax_behavior,
+                self.tax_behavior.take(),
                 self.tax_breakdown.take(),
                 self.tax_code.take(),
             )
@@ -223,29 +223,40 @@ impl serde::Serialize for TaxCalculationLineItem {
 }
 /// Specifies whether the `amount` includes taxes.
 /// If `tax_behavior=inclusive`, then the amount includes taxes.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum TaxCalculationLineItemTaxBehavior {
     Exclusive,
     Inclusive,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl TaxCalculationLineItemTaxBehavior {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use TaxCalculationLineItemTaxBehavior::*;
         match self {
             Exclusive => "exclusive",
             Inclusive => "inclusive",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for TaxCalculationLineItemTaxBehavior {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TaxCalculationLineItemTaxBehavior::*;
         match s {
             "exclusive" => Ok(Exclusive),
             "inclusive" => Ok(Inclusive),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "TaxCalculationLineItemTaxBehavior"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -278,8 +289,7 @@ impl miniserde::Deserialize for TaxCalculationLineItemTaxBehavior {
 impl miniserde::de::Visitor for crate::Place<TaxCalculationLineItemTaxBehavior> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out =
-            Some(TaxCalculationLineItemTaxBehavior::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(TaxCalculationLineItemTaxBehavior::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -290,9 +300,7 @@ impl<'de> serde::Deserialize<'de> for TaxCalculationLineItemTaxBehavior {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for TaxCalculationLineItemTaxBehavior")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 impl stripe_types::Object for TaxCalculationLineItem {

@@ -163,7 +163,7 @@ const _: () = {
                 self.invoice.take(),
                 self.livemode,
                 self.metadata.take(),
-                self.type_,
+                self.type_.take(),
             )
             else {
                 return None;
@@ -254,7 +254,8 @@ impl serde::Serialize for CustomerBalanceTransaction {
 }
 /// Transaction type: `adjustment`, `applied_to_invoice`, `credit_note`, `initial`, `invoice_overpaid`, `invoice_too_large`, `invoice_too_small`, `unspent_receiver_credit`, `unapplied_from_invoice`, `checkout_session_subscription_payment`, or `checkout_session_subscription_payment_canceled`.
 /// See the [Customer Balance page](https://stripe.com/docs/billing/customer/balance#types) to learn more about transaction types.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CustomerBalanceTransactionType {
     Adjustment,
     AppliedToInvoice,
@@ -268,9 +269,11 @@ pub enum CustomerBalanceTransactionType {
     Migration,
     UnappliedFromInvoice,
     UnspentReceiverCredit,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CustomerBalanceTransactionType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CustomerBalanceTransactionType::*;
         match self {
             Adjustment => "adjustment",
@@ -287,12 +290,13 @@ impl CustomerBalanceTransactionType {
             Migration => "migration",
             UnappliedFromInvoice => "unapplied_from_invoice",
             UnspentReceiverCredit => "unspent_receiver_credit",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CustomerBalanceTransactionType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CustomerBalanceTransactionType::*;
         match s {
@@ -310,7 +314,14 @@ impl std::str::FromStr for CustomerBalanceTransactionType {
             "migration" => Ok(Migration),
             "unapplied_from_invoice" => Ok(UnappliedFromInvoice),
             "unspent_receiver_credit" => Ok(UnspentReceiverCredit),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CustomerBalanceTransactionType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -343,7 +354,7 @@ impl miniserde::Deserialize for CustomerBalanceTransactionType {
 impl miniserde::de::Visitor for crate::Place<CustomerBalanceTransactionType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(CustomerBalanceTransactionType::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(CustomerBalanceTransactionType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -354,9 +365,7 @@ impl<'de> serde::Deserialize<'de> for CustomerBalanceTransactionType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CustomerBalanceTransactionType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 impl stripe_types::Object for CustomerBalanceTransaction {

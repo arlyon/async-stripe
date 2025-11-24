@@ -163,7 +163,7 @@ const _: () = {
                 self.revolut_pay,
                 self.sepa_debit.take(),
                 self.type_.take(),
-                self.us_bank_account,
+                self.us_bank_account.take(),
             )
             else {
                 return None;

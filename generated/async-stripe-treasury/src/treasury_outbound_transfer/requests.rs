@@ -206,29 +206,40 @@ impl UpdateTreasuryOutboundTransferTrackingDetailsAch {
     }
 }
 /// The US bank account network used to send funds.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdateTreasuryOutboundTransferTrackingDetailsType {
     Ach,
     UsDomesticWire,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdateTreasuryOutboundTransferTrackingDetailsType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdateTreasuryOutboundTransferTrackingDetailsType::*;
         match self {
             Ach => "ach",
             UsDomesticWire => "us_domestic_wire",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for UpdateTreasuryOutboundTransferTrackingDetailsType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateTreasuryOutboundTransferTrackingDetailsType::*;
         match s {
             "ach" => Ok(Ach),
             "us_domestic_wire" => Ok(UsDomesticWire),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdateTreasuryOutboundTransferTrackingDetailsType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -256,11 +267,7 @@ impl<'de> serde::Deserialize<'de> for UpdateTreasuryOutboundTransferTrackingDeta
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for UpdateTreasuryOutboundTransferTrackingDetailsType",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// US domestic wire network tracking details.
@@ -475,7 +482,7 @@ impl ReturnOutboundTransferTreasuryOutboundTransferBuilder {
     }
 }
 /// Details about a returned OutboundTransfer.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct ReturnOutboundTransferTreasuryOutboundTransferReturnedDetails {
     /// Reason for the return.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -492,7 +499,8 @@ impl Default for ReturnOutboundTransferTreasuryOutboundTransferReturnedDetails {
     }
 }
 /// Reason for the return.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum ReturnOutboundTransferTreasuryOutboundTransferReturnedDetailsCode {
     AccountClosed,
     AccountFrozen,
@@ -504,9 +512,11 @@ pub enum ReturnOutboundTransferTreasuryOutboundTransferReturnedDetailsCode {
     InvalidCurrency,
     NoAccount,
     Other,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl ReturnOutboundTransferTreasuryOutboundTransferReturnedDetailsCode {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use ReturnOutboundTransferTreasuryOutboundTransferReturnedDetailsCode::*;
         match self {
             AccountClosed => "account_closed",
@@ -519,12 +529,13 @@ impl ReturnOutboundTransferTreasuryOutboundTransferReturnedDetailsCode {
             InvalidCurrency => "invalid_currency",
             NoAccount => "no_account",
             Other => "other",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for ReturnOutboundTransferTreasuryOutboundTransferReturnedDetailsCode {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ReturnOutboundTransferTreasuryOutboundTransferReturnedDetailsCode::*;
         match s {
@@ -538,7 +549,14 @@ impl std::str::FromStr for ReturnOutboundTransferTreasuryOutboundTransferReturne
             "invalid_currency" => Ok(InvalidCurrency),
             "no_account" => Ok(NoAccount),
             "other" => Ok(Other),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "ReturnOutboundTransferTreasuryOutboundTransferReturnedDetailsCode"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -568,7 +586,7 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for ReturnOutboundTransferTreasuryOutboundTransferReturnedDetailsCode"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Transitions a test mode created OutboundTransfer to the `returned` status.
@@ -691,26 +709,37 @@ impl CreateTreasuryOutboundTransferDestinationPaymentMethodData {
     }
 }
 /// The type of the destination.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTreasuryOutboundTransferDestinationPaymentMethodDataType {
     FinancialAccount,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTreasuryOutboundTransferDestinationPaymentMethodDataType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTreasuryOutboundTransferDestinationPaymentMethodDataType::*;
         match self {
             FinancialAccount => "financial_account",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTreasuryOutboundTransferDestinationPaymentMethodDataType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTreasuryOutboundTransferDestinationPaymentMethodDataType::*;
         match s {
             "financial_account" => Ok(FinancialAccount),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTreasuryOutboundTransferDestinationPaymentMethodDataType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -740,15 +769,11 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for CreateTreasuryOutboundTransferDestinationPaymentMethodDataType",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Hash describing payment method configuration details.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTreasuryOutboundTransferDestinationPaymentMethodOptions {
     /// Optional fields for `us_bank_account`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -766,7 +791,7 @@ impl Default for CreateTreasuryOutboundTransferDestinationPaymentMethodOptions {
     }
 }
 /// Optional fields for `us_bank_account`.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTreasuryOutboundTransferDestinationPaymentMethodOptionsUsBankAccount {
     /// Specifies the network rails to be used.
     /// If not set, will default to the PaymentMethod's preferred network.
@@ -788,17 +813,21 @@ impl Default for CreateTreasuryOutboundTransferDestinationPaymentMethodOptionsUs
 /// Specifies the network rails to be used.
 /// If not set, will default to the PaymentMethod's preferred network.
 /// See the [docs](https://stripe.com/docs/treasury/money-movement/timelines) to learn more about money movement timelines for each network type.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTreasuryOutboundTransferDestinationPaymentMethodOptionsUsBankAccountNetwork {
     Ach,
     UsDomesticWire,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTreasuryOutboundTransferDestinationPaymentMethodOptionsUsBankAccountNetwork {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTreasuryOutboundTransferDestinationPaymentMethodOptionsUsBankAccountNetwork::*;
         match self {
             Ach => "ach",
             UsDomesticWire => "us_domestic_wire",
+            Unknown(v) => v,
         }
     }
 }
@@ -806,13 +835,20 @@ impl CreateTreasuryOutboundTransferDestinationPaymentMethodOptionsUsBankAccountN
 impl std::str::FromStr
     for CreateTreasuryOutboundTransferDestinationPaymentMethodOptionsUsBankAccountNetwork
 {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTreasuryOutboundTransferDestinationPaymentMethodOptionsUsBankAccountNetwork::*;
         match s {
             "ach" => Ok(Ach),
             "us_domestic_wire" => Ok(UsDomesticWire),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTreasuryOutboundTransferDestinationPaymentMethodOptionsUsBankAccountNetwork"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -848,7 +884,7 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateTreasuryOutboundTransferDestinationPaymentMethodOptionsUsBankAccountNetwork"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Creates an OutboundTransfer.

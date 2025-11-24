@@ -131,7 +131,7 @@ const _: () = {
                 self.skipped,
                 self.text.take(),
                 self.toggles.take(),
-                self.type_,
+                self.type_.take(),
             )
             else {
                 return None;
@@ -194,7 +194,8 @@ const _: () = {
     }
 };
 /// Type of input being collected.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum TerminalReaderReaderResourceInputType {
     Email,
     Numeric,
@@ -202,9 +203,11 @@ pub enum TerminalReaderReaderResourceInputType {
     Selection,
     Signature,
     Text,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl TerminalReaderReaderResourceInputType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use TerminalReaderReaderResourceInputType::*;
         match self {
             Email => "email",
@@ -213,12 +216,13 @@ impl TerminalReaderReaderResourceInputType {
             Selection => "selection",
             Signature => "signature",
             Text => "text",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for TerminalReaderReaderResourceInputType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TerminalReaderReaderResourceInputType::*;
         match s {
@@ -228,7 +232,14 @@ impl std::str::FromStr for TerminalReaderReaderResourceInputType {
             "selection" => Ok(Selection),
             "signature" => Ok(Signature),
             "text" => Ok(Text),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "TerminalReaderReaderResourceInputType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -261,8 +272,7 @@ impl miniserde::Deserialize for TerminalReaderReaderResourceInputType {
 impl miniserde::de::Visitor for crate::Place<TerminalReaderReaderResourceInputType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out =
-            Some(TerminalReaderReaderResourceInputType::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(TerminalReaderReaderResourceInputType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -273,8 +283,6 @@ impl<'de> serde::Deserialize<'de> for TerminalReaderReaderResourceInputType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for TerminalReaderReaderResourceInputType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

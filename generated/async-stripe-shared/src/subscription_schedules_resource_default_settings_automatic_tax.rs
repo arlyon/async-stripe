@@ -78,7 +78,7 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (Some(disabled_reason), Some(enabled), Some(liability)) =
-                (self.disabled_reason, self.enabled, self.liability.take())
+                (self.disabled_reason.take(), self.enabled, self.liability.take())
             else {
                 return None;
             };
@@ -121,26 +121,37 @@ const _: () = {
     }
 };
 /// If Stripe disabled automatic tax, this enum describes why.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum SubscriptionSchedulesResourceDefaultSettingsAutomaticTaxDisabledReason {
     RequiresLocationInputs,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl SubscriptionSchedulesResourceDefaultSettingsAutomaticTaxDisabledReason {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use SubscriptionSchedulesResourceDefaultSettingsAutomaticTaxDisabledReason::*;
         match self {
             RequiresLocationInputs => "requires_location_inputs",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for SubscriptionSchedulesResourceDefaultSettingsAutomaticTaxDisabledReason {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use SubscriptionSchedulesResourceDefaultSettingsAutomaticTaxDisabledReason::*;
         match s {
             "requires_location_inputs" => Ok(RequiresLocationInputs),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "SubscriptionSchedulesResourceDefaultSettingsAutomaticTaxDisabledReason"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -179,7 +190,7 @@ impl miniserde::de::Visitor
         use std::str::FromStr;
         self.out = Some(
             SubscriptionSchedulesResourceDefaultSettingsAutomaticTaxDisabledReason::from_str(s)
-                .map_err(|_| miniserde::Error)?,
+                .expect("infallible"),
         );
         Ok(())
     }
@@ -195,6 +206,6 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for SubscriptionSchedulesResourceDefaultSettingsAutomaticTaxDisabledReason"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

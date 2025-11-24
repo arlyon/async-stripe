@@ -90,10 +90,10 @@ const _: () = {
                 Some(taxability_override),
             ) = (
                 self.address.take(),
-                self.address_source,
+                self.address_source.take(),
                 self.ip_address.take(),
                 self.tax_ids.take(),
-                self.taxability_override,
+                self.taxability_override.take(),
             )
             else {
                 return None;
@@ -138,29 +138,40 @@ const _: () = {
     }
 };
 /// The type of customer address provided.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum TaxProductResourceCustomerDetailsAddressSource {
     Billing,
     Shipping,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl TaxProductResourceCustomerDetailsAddressSource {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use TaxProductResourceCustomerDetailsAddressSource::*;
         match self {
             Billing => "billing",
             Shipping => "shipping",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for TaxProductResourceCustomerDetailsAddressSource {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TaxProductResourceCustomerDetailsAddressSource::*;
         match s {
             "billing" => Ok(Billing),
             "shipping" => Ok(Shipping),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "TaxProductResourceCustomerDetailsAddressSource"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -193,10 +204,8 @@ impl miniserde::Deserialize for TaxProductResourceCustomerDetailsAddressSource {
 impl miniserde::de::Visitor for crate::Place<TaxProductResourceCustomerDetailsAddressSource> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            TaxProductResourceCustomerDetailsAddressSource::from_str(s)
-                .map_err(|_| miniserde::Error)?,
-        );
+        self.out =
+            Some(TaxProductResourceCustomerDetailsAddressSource::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -207,40 +216,47 @@ impl<'de> serde::Deserialize<'de> for TaxProductResourceCustomerDetailsAddressSo
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for TaxProductResourceCustomerDetailsAddressSource",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The taxability override used for taxation.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum TaxProductResourceCustomerDetailsTaxabilityOverride {
     CustomerExempt,
     None,
     ReverseCharge,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl TaxProductResourceCustomerDetailsTaxabilityOverride {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use TaxProductResourceCustomerDetailsTaxabilityOverride::*;
         match self {
             CustomerExempt => "customer_exempt",
             None => "none",
             ReverseCharge => "reverse_charge",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for TaxProductResourceCustomerDetailsTaxabilityOverride {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TaxProductResourceCustomerDetailsTaxabilityOverride::*;
         match s {
             "customer_exempt" => Ok(CustomerExempt),
             "none" => Ok(None),
             "reverse_charge" => Ok(ReverseCharge),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "TaxProductResourceCustomerDetailsTaxabilityOverride"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -274,8 +290,7 @@ impl miniserde::de::Visitor for crate::Place<TaxProductResourceCustomerDetailsTa
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(
-            TaxProductResourceCustomerDetailsTaxabilityOverride::from_str(s)
-                .map_err(|_| miniserde::Error)?,
+            TaxProductResourceCustomerDetailsTaxabilityOverride::from_str(s).expect("infallible"),
         );
         Ok(())
     }
@@ -287,10 +302,6 @@ impl<'de> serde::Deserialize<'de> for TaxProductResourceCustomerDetailsTaxabilit
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for TaxProductResourceCustomerDetailsTaxabilityOverride",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

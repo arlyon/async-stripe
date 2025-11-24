@@ -695,29 +695,40 @@ impl CollectInputsTerminalReaderInputsSelectionChoices {
     }
 }
 /// The style of the button which will be shown for this choice. Can be `primary` or `secondary`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CollectInputsTerminalReaderInputsSelectionChoicesStyle {
     Primary,
     Secondary,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CollectInputsTerminalReaderInputsSelectionChoicesStyle {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CollectInputsTerminalReaderInputsSelectionChoicesStyle::*;
         match self {
             Primary => "primary",
             Secondary => "secondary",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CollectInputsTerminalReaderInputsSelectionChoicesStyle {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CollectInputsTerminalReaderInputsSelectionChoicesStyle::*;
         match s {
             "primary" => Ok(Primary),
             "secondary" => Ok(Secondary),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CollectInputsTerminalReaderInputsSelectionChoicesStyle"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -745,11 +756,7 @@ impl<'de> serde::Deserialize<'de> for CollectInputsTerminalReaderInputsSelection
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for CollectInputsTerminalReaderInputsSelectionChoicesStyle",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// List of toggles to be displayed and customization for the toggles
@@ -780,29 +787,40 @@ impl Default for CollectInputsTerminalReaderInputsToggles {
     }
 }
 /// The default value of the toggle. Can be `enabled` or `disabled`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CollectInputsTerminalReaderInputsTogglesDefaultValue {
     Disabled,
     Enabled,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CollectInputsTerminalReaderInputsTogglesDefaultValue {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CollectInputsTerminalReaderInputsTogglesDefaultValue::*;
         match self {
             Disabled => "disabled",
             Enabled => "enabled",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CollectInputsTerminalReaderInputsTogglesDefaultValue {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CollectInputsTerminalReaderInputsTogglesDefaultValue::*;
         match s {
             "disabled" => Ok(Disabled),
             "enabled" => Ok(Enabled),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CollectInputsTerminalReaderInputsTogglesDefaultValue"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -830,15 +848,12 @@ impl<'de> serde::Deserialize<'de> for CollectInputsTerminalReaderInputsTogglesDe
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for CollectInputsTerminalReaderInputsTogglesDefaultValue",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The type of input to collect
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CollectInputsTerminalReaderInputsType {
     Email,
     Numeric,
@@ -846,9 +861,11 @@ pub enum CollectInputsTerminalReaderInputsType {
     Selection,
     Signature,
     Text,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CollectInputsTerminalReaderInputsType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CollectInputsTerminalReaderInputsType::*;
         match self {
             Email => "email",
@@ -857,12 +874,13 @@ impl CollectInputsTerminalReaderInputsType {
             Selection => "selection",
             Signature => "signature",
             Text => "text",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CollectInputsTerminalReaderInputsType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CollectInputsTerminalReaderInputsType::*;
         match s {
@@ -872,7 +890,14 @@ impl std::str::FromStr for CollectInputsTerminalReaderInputsType {
             "selection" => Ok(Selection),
             "signature" => Ok(Signature),
             "text" => Ok(Text),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CollectInputsTerminalReaderInputsType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -900,9 +925,7 @@ impl<'de> serde::Deserialize<'de> for CollectInputsTerminalReaderInputsType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CollectInputsTerminalReaderInputsType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Initiates an [input collection flow](https://stripe.com/docs/terminal/features/collect-inputs) on a Reader to display input forms and collect information from your customers.
@@ -983,7 +1006,7 @@ impl CollectPaymentMethodTerminalReaderBuilder {
     }
 }
 /// Configuration overrides for this collection, such as tipping, surcharging, and customer cancellation settings.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CollectPaymentMethodTerminalReaderCollectConfig {
     /// This field indicates whether this payment method can be shown again to its customer in a checkout flow.
     /// Stripe products such as Checkout and Elements use this field to determine whether a payment method can be shown as a saved payment method in a checkout flow.
@@ -1016,32 +1039,43 @@ impl Default for CollectPaymentMethodTerminalReaderCollectConfig {
 }
 /// This field indicates whether this payment method can be shown again to its customer in a checkout flow.
 /// Stripe products such as Checkout and Elements use this field to determine whether a payment method can be shown as a saved payment method in a checkout flow.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CollectPaymentMethodTerminalReaderCollectConfigAllowRedisplay {
     Always,
     Limited,
     Unspecified,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CollectPaymentMethodTerminalReaderCollectConfigAllowRedisplay {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CollectPaymentMethodTerminalReaderCollectConfigAllowRedisplay::*;
         match self {
             Always => "always",
             Limited => "limited",
             Unspecified => "unspecified",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CollectPaymentMethodTerminalReaderCollectConfigAllowRedisplay {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CollectPaymentMethodTerminalReaderCollectConfigAllowRedisplay::*;
         match s {
             "always" => Ok(Always),
             "limited" => Ok(Limited),
             "unspecified" => Ok(Unspecified),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CollectPaymentMethodTerminalReaderCollectConfigAllowRedisplay"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -1071,11 +1105,7 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for CollectPaymentMethodTerminalReaderCollectConfigAllowRedisplay",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Initiates a payment flow on a Reader and updates the PaymentIntent with card details before manual confirmation.
@@ -1285,32 +1315,43 @@ impl Default for ProcessPaymentIntentTerminalReaderProcessConfig {
 }
 /// This field indicates whether this payment method can be shown again to its customer in a checkout flow.
 /// Stripe products such as Checkout and Elements use this field to determine whether a payment method can be shown as a saved payment method in a checkout flow.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum ProcessPaymentIntentTerminalReaderProcessConfigAllowRedisplay {
     Always,
     Limited,
     Unspecified,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl ProcessPaymentIntentTerminalReaderProcessConfigAllowRedisplay {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use ProcessPaymentIntentTerminalReaderProcessConfigAllowRedisplay::*;
         match self {
             Always => "always",
             Limited => "limited",
             Unspecified => "unspecified",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for ProcessPaymentIntentTerminalReaderProcessConfigAllowRedisplay {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ProcessPaymentIntentTerminalReaderProcessConfigAllowRedisplay::*;
         match s {
             "always" => Ok(Always),
             "limited" => Ok(Limited),
             "unspecified" => Ok(Unspecified),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "ProcessPaymentIntentTerminalReaderProcessConfigAllowRedisplay"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -1340,11 +1381,7 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for ProcessPaymentIntentTerminalReaderProcessConfigAllowRedisplay",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Initiates a payment flow on a Reader.
@@ -1433,32 +1470,43 @@ impl ProcessSetupIntentTerminalReaderBuilder {
 }
 /// This field indicates whether this payment method can be shown again to its customer in a checkout flow.
 /// Stripe products such as Checkout and Elements use this field to determine whether a payment method can be shown as a saved payment method in a checkout flow.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum ProcessSetupIntentTerminalReaderAllowRedisplay {
     Always,
     Limited,
     Unspecified,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl ProcessSetupIntentTerminalReaderAllowRedisplay {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use ProcessSetupIntentTerminalReaderAllowRedisplay::*;
         match self {
             Always => "always",
             Limited => "limited",
             Unspecified => "unspecified",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for ProcessSetupIntentTerminalReaderAllowRedisplay {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ProcessSetupIntentTerminalReaderAllowRedisplay::*;
         match s {
             "always" => Ok(Always),
             "limited" => Ok(Limited),
             "unspecified" => Ok(Unspecified),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "ProcessSetupIntentTerminalReaderAllowRedisplay"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -1486,11 +1534,7 @@ impl<'de> serde::Deserialize<'de> for ProcessSetupIntentTerminalReaderAllowRedis
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for ProcessSetupIntentTerminalReaderAllowRedisplay",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Configuration overrides for this setup, such as MOTO and customer cancellation settings.
@@ -1785,26 +1829,37 @@ impl SetReaderDisplayTerminalReaderCartLineItems {
     }
 }
 /// Type of information to display. Only `cart` is currently supported.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum SetReaderDisplayTerminalReaderType {
     Cart,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl SetReaderDisplayTerminalReaderType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use SetReaderDisplayTerminalReaderType::*;
         match self {
             Cart => "cart",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for SetReaderDisplayTerminalReaderType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use SetReaderDisplayTerminalReaderType::*;
         match s {
             "cart" => Ok(Cart),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "SetReaderDisplayTerminalReaderType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -1832,9 +1887,7 @@ impl<'de> serde::Deserialize<'de> for SetReaderDisplayTerminalReaderType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for SetReaderDisplayTerminalReaderType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Sets the reader display to show [cart details](https://stripe.com/docs/terminal/features/display).
@@ -1985,32 +2038,43 @@ impl Default for PresentPaymentMethodTerminalReaderInteracPresent {
     }
 }
 /// Simulated payment type.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PresentPaymentMethodTerminalReaderType {
     Card,
     CardPresent,
     InteracPresent,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl PresentPaymentMethodTerminalReaderType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PresentPaymentMethodTerminalReaderType::*;
         match self {
             Card => "card",
             CardPresent => "card_present",
             InteracPresent => "interac_present",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for PresentPaymentMethodTerminalReaderType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PresentPaymentMethodTerminalReaderType::*;
         match s {
             "card" => Ok(Card),
             "card_present" => Ok(CardPresent),
             "interac_present" => Ok(InteracPresent),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PresentPaymentMethodTerminalReaderType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -2038,9 +2102,7 @@ impl<'de> serde::Deserialize<'de> for PresentPaymentMethodTerminalReaderType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for PresentPaymentMethodTerminalReaderType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Presents a payment method on a simulated reader.
@@ -2135,29 +2197,40 @@ impl SucceedInputCollectionTerminalReaderBuilder {
     }
 }
 /// This parameter defines the skip behavior for input collection.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum SucceedInputCollectionTerminalReaderSkipNonRequiredInputs {
     All,
     None,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl SucceedInputCollectionTerminalReaderSkipNonRequiredInputs {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use SucceedInputCollectionTerminalReaderSkipNonRequiredInputs::*;
         match self {
             All => "all",
             None => "none",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for SucceedInputCollectionTerminalReaderSkipNonRequiredInputs {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use SucceedInputCollectionTerminalReaderSkipNonRequiredInputs::*;
         match s {
             "all" => Ok(All),
             "none" => Ok(None),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "SucceedInputCollectionTerminalReaderSkipNonRequiredInputs"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -2185,11 +2258,7 @@ impl<'de> serde::Deserialize<'de> for SucceedInputCollectionTerminalReaderSkipNo
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for SucceedInputCollectionTerminalReaderSkipNonRequiredInputs",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Use this endpoint to trigger a successful input collection on a simulated reader.

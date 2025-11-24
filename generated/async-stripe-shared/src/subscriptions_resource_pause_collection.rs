@@ -1,6 +1,6 @@
 /// The Pause Collection settings determine how we will pause collection for this subscription and for how long the subscription.
 /// should be paused.
-#[derive(Copy, Clone, Debug)]
+#[derive(Clone, Debug)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct SubscriptionsResourcePauseCollection {
@@ -67,7 +67,7 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(behavior), Some(resumes_at)) = (self.behavior, self.resumes_at) else {
+            let (Some(behavior), Some(resumes_at)) = (self.behavior.take(), self.resumes_at) else {
                 return None;
             };
             Some(Self::Out { behavior, resumes_at })
@@ -108,32 +108,43 @@ const _: () = {
 };
 /// The payment collection behavior for this subscription while paused.
 /// One of `keep_as_draft`, `mark_uncollectible`, or `void`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum SubscriptionsResourcePauseCollectionBehavior {
     KeepAsDraft,
     MarkUncollectible,
     Void,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl SubscriptionsResourcePauseCollectionBehavior {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use SubscriptionsResourcePauseCollectionBehavior::*;
         match self {
             KeepAsDraft => "keep_as_draft",
             MarkUncollectible => "mark_uncollectible",
             Void => "void",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for SubscriptionsResourcePauseCollectionBehavior {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use SubscriptionsResourcePauseCollectionBehavior::*;
         match s {
             "keep_as_draft" => Ok(KeepAsDraft),
             "mark_uncollectible" => Ok(MarkUncollectible),
             "void" => Ok(Void),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "SubscriptionsResourcePauseCollectionBehavior"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -166,10 +177,8 @@ impl miniserde::Deserialize for SubscriptionsResourcePauseCollectionBehavior {
 impl miniserde::de::Visitor for crate::Place<SubscriptionsResourcePauseCollectionBehavior> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            SubscriptionsResourcePauseCollectionBehavior::from_str(s)
-                .map_err(|_| miniserde::Error)?,
-        );
+        self.out =
+            Some(SubscriptionsResourcePauseCollectionBehavior::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -180,10 +189,6 @@ impl<'de> serde::Deserialize<'de> for SubscriptionsResourcePauseCollectionBehavi
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for SubscriptionsResourcePauseCollectionBehavior",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

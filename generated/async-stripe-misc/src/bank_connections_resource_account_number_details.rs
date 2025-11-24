@@ -84,8 +84,8 @@ const _: () = {
                 Some(supported_networks),
             ) = (
                 self.expected_expiry_date,
-                self.identifier_type,
-                self.status,
+                self.identifier_type.take(),
+                self.status.take(),
                 self.supported_networks.take(),
             )
             else {
@@ -130,29 +130,40 @@ const _: () = {
     }
 };
 /// The type of account number associated with the account.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum BankConnectionsResourceAccountNumberDetailsIdentifierType {
     AccountNumber,
     TokenizedAccountNumber,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl BankConnectionsResourceAccountNumberDetailsIdentifierType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use BankConnectionsResourceAccountNumberDetailsIdentifierType::*;
         match self {
             AccountNumber => "account_number",
             TokenizedAccountNumber => "tokenized_account_number",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for BankConnectionsResourceAccountNumberDetailsIdentifierType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use BankConnectionsResourceAccountNumberDetailsIdentifierType::*;
         match s {
             "account_number" => Ok(AccountNumber),
             "tokenized_account_number" => Ok(TokenizedAccountNumber),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "BankConnectionsResourceAccountNumberDetailsIdentifierType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -189,7 +200,7 @@ impl miniserde::de::Visitor
         use std::str::FromStr;
         self.out = Some(
             BankConnectionsResourceAccountNumberDetailsIdentifierType::from_str(s)
-                .map_err(|_| miniserde::Error)?,
+                .expect("infallible"),
         );
         Ok(())
     }
@@ -203,37 +214,44 @@ impl<'de> serde::Deserialize<'de> for BankConnectionsResourceAccountNumberDetail
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for BankConnectionsResourceAccountNumberDetailsIdentifierType",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Whether the account number is currently active and usable for transactions.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum BankConnectionsResourceAccountNumberDetailsStatus {
     Deactivated,
     Transactable,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl BankConnectionsResourceAccountNumberDetailsStatus {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use BankConnectionsResourceAccountNumberDetailsStatus::*;
         match self {
             Deactivated => "deactivated",
             Transactable => "transactable",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for BankConnectionsResourceAccountNumberDetailsStatus {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use BankConnectionsResourceAccountNumberDetailsStatus::*;
         match s {
             "deactivated" => Ok(Deactivated),
             "transactable" => Ok(Transactable),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "BankConnectionsResourceAccountNumberDetailsStatus"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -267,8 +285,7 @@ impl miniserde::de::Visitor for crate::Place<BankConnectionsResourceAccountNumbe
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(
-            BankConnectionsResourceAccountNumberDetailsStatus::from_str(s)
-                .map_err(|_| miniserde::Error)?,
+            BankConnectionsResourceAccountNumberDetailsStatus::from_str(s).expect("infallible"),
         );
         Ok(())
     }
@@ -280,34 +297,41 @@ impl<'de> serde::Deserialize<'de> for BankConnectionsResourceAccountNumberDetail
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for BankConnectionsResourceAccountNumberDetailsStatus",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The payment networks that the account number can be used for.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum BankConnectionsResourceAccountNumberDetailsSupportedNetworks {
     Ach,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl BankConnectionsResourceAccountNumberDetailsSupportedNetworks {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use BankConnectionsResourceAccountNumberDetailsSupportedNetworks::*;
         match self {
             Ach => "ach",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for BankConnectionsResourceAccountNumberDetailsSupportedNetworks {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use BankConnectionsResourceAccountNumberDetailsSupportedNetworks::*;
         match s {
             "ach" => Ok(Ach),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "BankConnectionsResourceAccountNumberDetailsSupportedNetworks"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -344,7 +368,7 @@ impl miniserde::de::Visitor
         use std::str::FromStr;
         self.out = Some(
             BankConnectionsResourceAccountNumberDetailsSupportedNetworks::from_str(s)
-                .map_err(|_| miniserde::Error)?,
+                .expect("infallible"),
         );
         Ok(())
     }
@@ -358,10 +382,6 @@ impl<'de> serde::Deserialize<'de> for BankConnectionsResourceAccountNumberDetail
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for BankConnectionsResourceAccountNumberDetailsSupportedNetworks",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

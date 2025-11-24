@@ -86,7 +86,7 @@ const _: () = {
             ) = (
                 self.billing_details.take(),
                 self.financial_account.take(),
-                self.type_,
+                self.type_.take(),
                 self.us_bank_account.take(),
             )
             else {
@@ -131,29 +131,40 @@ const _: () = {
     }
 };
 /// The type of the payment method used in the OutboundPayment.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum OutboundPaymentsPaymentMethodDetailsType {
     FinancialAccount,
     UsBankAccount,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl OutboundPaymentsPaymentMethodDetailsType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use OutboundPaymentsPaymentMethodDetailsType::*;
         match self {
             FinancialAccount => "financial_account",
             UsBankAccount => "us_bank_account",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for OutboundPaymentsPaymentMethodDetailsType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use OutboundPaymentsPaymentMethodDetailsType::*;
         match s {
             "financial_account" => Ok(FinancialAccount),
             "us_bank_account" => Ok(UsBankAccount),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "OutboundPaymentsPaymentMethodDetailsType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -186,9 +197,7 @@ impl miniserde::Deserialize for OutboundPaymentsPaymentMethodDetailsType {
 impl miniserde::de::Visitor for crate::Place<OutboundPaymentsPaymentMethodDetailsType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            OutboundPaymentsPaymentMethodDetailsType::from_str(s).map_err(|_| miniserde::Error)?,
-        );
+        self.out = Some(OutboundPaymentsPaymentMethodDetailsType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -199,8 +208,6 @@ impl<'de> serde::Deserialize<'de> for OutboundPaymentsPaymentMethodDetailsType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for OutboundPaymentsPaymentMethodDetailsType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

@@ -139,7 +139,7 @@ const _: () = {
                 self.financial_account.take(),
                 self.flow.take(),
                 self.flow_details.take(),
-                self.flow_type,
+                self.flow_type.take(),
                 self.id.take(),
                 self.livemode,
                 self.transaction.take(),
@@ -230,7 +230,8 @@ impl serde::Serialize for TreasuryTransactionEntry {
     }
 }
 /// Type of the flow associated with the TransactionEntry.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum TreasuryTransactionEntryFlowType {
     CreditReversal,
     DebitReversal,
@@ -241,9 +242,11 @@ pub enum TreasuryTransactionEntryFlowType {
     OutboundTransfer,
     ReceivedCredit,
     ReceivedDebit,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl TreasuryTransactionEntryFlowType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use TreasuryTransactionEntryFlowType::*;
         match self {
             CreditReversal => "credit_reversal",
@@ -255,12 +258,13 @@ impl TreasuryTransactionEntryFlowType {
             OutboundTransfer => "outbound_transfer",
             ReceivedCredit => "received_credit",
             ReceivedDebit => "received_debit",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for TreasuryTransactionEntryFlowType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TreasuryTransactionEntryFlowType::*;
         match s {
@@ -273,7 +277,14 @@ impl std::str::FromStr for TreasuryTransactionEntryFlowType {
             "outbound_transfer" => Ok(OutboundTransfer),
             "received_credit" => Ok(ReceivedCredit),
             "received_debit" => Ok(ReceivedDebit),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "TreasuryTransactionEntryFlowType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -306,8 +317,7 @@ impl miniserde::Deserialize for TreasuryTransactionEntryFlowType {
 impl miniserde::de::Visitor for crate::Place<TreasuryTransactionEntryFlowType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out =
-            Some(TreasuryTransactionEntryFlowType::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(TreasuryTransactionEntryFlowType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -318,9 +328,7 @@ impl<'de> serde::Deserialize<'de> for TreasuryTransactionEntryFlowType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for TreasuryTransactionEntryFlowType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The specific money movement that generated the TransactionEntry.
@@ -404,7 +412,14 @@ impl std::str::FromStr for TreasuryTransactionEntryType {
             "outbound_transfer_return" => Ok(OutboundTransferReturn),
             "received_credit" => Ok(ReceivedCredit),
             "received_debit" => Ok(ReceivedDebit),
-            v => Ok(Unknown(v.to_owned())),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "TreasuryTransactionEntryType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -437,7 +452,7 @@ impl miniserde::Deserialize for TreasuryTransactionEntryType {
 impl miniserde::de::Visitor for crate::Place<TreasuryTransactionEntryType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(TreasuryTransactionEntryType::from_str(s).unwrap());
+        self.out = Some(TreasuryTransactionEntryType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -448,7 +463,7 @@ impl<'de> serde::Deserialize<'de> for TreasuryTransactionEntryType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap())
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 impl stripe_types::Object for TreasuryTransactionEntry {

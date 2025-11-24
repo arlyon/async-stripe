@@ -1,4 +1,4 @@
-#[derive(Copy, Clone, Debug)]
+#[derive(Clone, Debug)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TransformQuantity {
@@ -64,7 +64,7 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(divide_by), Some(round)) = (self.divide_by, self.round) else {
+            let (Some(divide_by), Some(round)) = (self.divide_by, self.round.take()) else {
                 return None;
             };
             Some(Self::Out { divide_by, round })
@@ -104,29 +104,36 @@ const _: () = {
     }
 };
 /// After division, either round the result `up` or `down`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum TransformQuantityRound {
     Down,
     Up,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl TransformQuantityRound {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use TransformQuantityRound::*;
         match self {
             Down => "down",
             Up => "up",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for TransformQuantityRound {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TransformQuantityRound::*;
         match s {
             "down" => Ok(Down),
             "up" => Ok(Up),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "TransformQuantityRound");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -159,7 +166,7 @@ impl miniserde::Deserialize for TransformQuantityRound {
 impl miniserde::de::Visitor for crate::Place<TransformQuantityRound> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(TransformQuantityRound::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(TransformQuantityRound::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -170,7 +177,6 @@ impl<'de> serde::Deserialize<'de> for TransformQuantityRound {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for TransformQuantityRound"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

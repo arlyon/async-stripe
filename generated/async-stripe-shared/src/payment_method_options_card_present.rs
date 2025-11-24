@@ -1,4 +1,4 @@
-#[derive(Copy, Clone, Debug)]
+#[derive(Clone, Debug)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentMethodOptionsCardPresent {
@@ -87,10 +87,10 @@ const _: () = {
                 Some(request_incremental_authorization_support),
                 Some(routing),
             ) = (
-                self.capture_method,
+                self.capture_method.take(),
                 self.request_extended_authorization,
                 self.request_incremental_authorization_support,
-                self.routing,
+                self.routing.take(),
             )
             else {
                 return None;
@@ -143,29 +143,40 @@ const _: () = {
     }
 };
 /// Controls when the funds will be captured from the customer's account.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PaymentMethodOptionsCardPresentCaptureMethod {
     Manual,
     ManualPreferred,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl PaymentMethodOptionsCardPresentCaptureMethod {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PaymentMethodOptionsCardPresentCaptureMethod::*;
         match self {
             Manual => "manual",
             ManualPreferred => "manual_preferred",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for PaymentMethodOptionsCardPresentCaptureMethod {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentMethodOptionsCardPresentCaptureMethod::*;
         match s {
             "manual" => Ok(Manual),
             "manual_preferred" => Ok(ManualPreferred),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PaymentMethodOptionsCardPresentCaptureMethod"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -198,10 +209,8 @@ impl miniserde::Deserialize for PaymentMethodOptionsCardPresentCaptureMethod {
 impl miniserde::de::Visitor for crate::Place<PaymentMethodOptionsCardPresentCaptureMethod> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            PaymentMethodOptionsCardPresentCaptureMethod::from_str(s)
-                .map_err(|_| miniserde::Error)?,
-        );
+        self.out =
+            Some(PaymentMethodOptionsCardPresentCaptureMethod::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -212,10 +221,6 @@ impl<'de> serde::Deserialize<'de> for PaymentMethodOptionsCardPresentCaptureMeth
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for PaymentMethodOptionsCardPresentCaptureMethod",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

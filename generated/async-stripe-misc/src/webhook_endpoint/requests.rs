@@ -1052,7 +1052,14 @@ impl std::str::FromStr for CreateWebhookEndpointEnabledEvents {
             "treasury.received_credit.failed" => Ok(TreasuryReceivedCreditFailed),
             "treasury.received_credit.succeeded" => Ok(TreasuryReceivedCreditSucceeded),
             "treasury.received_debit.created" => Ok(TreasuryReceivedDebitCreated),
-            v => Ok(Unknown(v.to_owned())),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateWebhookEndpointEnabledEvents"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -1080,7 +1087,7 @@ impl<'de> serde::Deserialize<'de> for CreateWebhookEndpointEnabledEvents {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap())
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// A webhook endpoint must have a `url` and a list of `enabled_events`.
@@ -2021,7 +2028,14 @@ impl std::str::FromStr for UpdateWebhookEndpointEnabledEvents {
             "treasury.received_credit.failed" => Ok(TreasuryReceivedCreditFailed),
             "treasury.received_credit.succeeded" => Ok(TreasuryReceivedCreditSucceeded),
             "treasury.received_debit.created" => Ok(TreasuryReceivedDebitCreated),
-            v => Ok(Unknown(v.to_owned())),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdateWebhookEndpointEnabledEvents"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -2049,7 +2063,7 @@ impl<'de> serde::Deserialize<'de> for UpdateWebhookEndpointEnabledEvents {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap())
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Updates the webhook endpoint.

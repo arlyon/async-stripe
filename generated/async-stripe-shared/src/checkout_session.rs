@@ -520,21 +520,21 @@ const _: () = {
                 self.amount_subtotal,
                 self.amount_total,
                 self.automatic_tax.take(),
-                self.billing_address_collection,
+                self.billing_address_collection.take(),
                 self.branding_settings.take(),
                 self.cancel_url.take(),
                 self.client_reference_id.take(),
                 self.client_secret.take(),
                 self.collected_information.take(),
-                self.consent,
-                self.consent_collection,
+                self.consent.take(),
+                self.consent_collection.take(),
                 self.created,
                 self.currency.take(),
                 self.currency_conversion.take(),
                 self.custom_fields.take(),
                 self.custom_text.take(),
                 self.customer.take(),
-                self.customer_creation,
+                self.customer_creation.take(),
                 self.customer_details.take(),
                 self.customer_email.take(),
                 self.discounts.take(),
@@ -547,37 +547,37 @@ const _: () = {
                 self.livemode,
                 self.locale.take(),
                 self.metadata.take(),
-                self.mode,
+                self.mode.take(),
                 self.name_collection,
                 self.optional_items.take(),
-                self.origin_context,
+                self.origin_context.take(),
                 self.payment_intent.take(),
                 self.payment_link.take(),
-                self.payment_method_collection,
+                self.payment_method_collection.take(),
                 self.payment_method_configuration_details.take(),
                 self.payment_method_options.take(),
                 self.payment_method_types.take(),
-                self.payment_status,
-                self.permissions,
+                self.payment_status.take(),
+                self.permissions.take(),
                 self.phone_number_collection,
                 self.presentment_details.take(),
                 self.recovered_from.take(),
-                self.redirect_on_completion,
+                self.redirect_on_completion.take(),
                 self.return_url.take(),
                 self.saved_payment_method_options.take(),
                 self.setup_intent.take(),
                 self.shipping_address_collection.take(),
                 self.shipping_cost.take(),
                 self.shipping_options.take(),
-                self.status,
-                self.submit_type,
+                self.status.take(),
+                self.submit_type.take(),
                 self.subscription.take(),
                 self.success_url.take(),
-                self.tax_id_collection,
+                self.tax_id_collection.take(),
                 self.total_details.take(),
-                self.ui_mode,
+                self.ui_mode.take(),
                 self.url.take(),
-                self.wallet_options,
+                self.wallet_options.take(),
             )
             else {
                 return None;
@@ -845,29 +845,40 @@ impl serde::Serialize for CheckoutSession {
     }
 }
 /// Configure whether a Checkout Session creates a Customer when the Checkout Session completes.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CheckoutSessionCustomerCreation {
     Always,
     IfRequired,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CheckoutSessionCustomerCreation {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CheckoutSessionCustomerCreation::*;
         match self {
             Always => "always",
             IfRequired => "if_required",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CheckoutSessionCustomerCreation {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CheckoutSessionCustomerCreation::*;
         match s {
             "always" => Ok(Always),
             "if_required" => Ok(IfRequired),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CheckoutSessionCustomerCreation"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -900,8 +911,7 @@ impl miniserde::Deserialize for CheckoutSessionCustomerCreation {
 impl miniserde::de::Visitor for crate::Place<CheckoutSessionCustomerCreation> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out =
-            Some(CheckoutSessionCustomerCreation::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(CheckoutSessionCustomerCreation::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -912,35 +922,44 @@ impl<'de> serde::Deserialize<'de> for CheckoutSessionCustomerCreation {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CheckoutSessionCustomerCreation")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Configure whether a Checkout Session should collect a payment method. Defaults to `always`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CheckoutSessionPaymentMethodCollection {
     Always,
     IfRequired,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CheckoutSessionPaymentMethodCollection {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CheckoutSessionPaymentMethodCollection::*;
         match self {
             Always => "always",
             IfRequired => "if_required",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CheckoutSessionPaymentMethodCollection {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CheckoutSessionPaymentMethodCollection::*;
         match s {
             "always" => Ok(Always),
             "if_required" => Ok(IfRequired),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CheckoutSessionPaymentMethodCollection"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -973,9 +992,7 @@ impl miniserde::Deserialize for CheckoutSessionPaymentMethodCollection {
 impl miniserde::de::Visitor for crate::Place<CheckoutSessionPaymentMethodCollection> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            CheckoutSessionPaymentMethodCollection::from_str(s).map_err(|_| miniserde::Error)?,
-        );
+        self.out = Some(CheckoutSessionPaymentMethodCollection::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -986,39 +1003,48 @@ impl<'de> serde::Deserialize<'de> for CheckoutSessionPaymentMethodCollection {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CheckoutSessionPaymentMethodCollection")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The payment status of the Checkout Session, one of `paid`, `unpaid`, or `no_payment_required`.
 /// You can use this value to decide when to fulfill your customer's order.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CheckoutSessionPaymentStatus {
     NoPaymentRequired,
     Paid,
     Unpaid,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CheckoutSessionPaymentStatus {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CheckoutSessionPaymentStatus::*;
         match self {
             NoPaymentRequired => "no_payment_required",
             Paid => "paid",
             Unpaid => "unpaid",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CheckoutSessionPaymentStatus {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CheckoutSessionPaymentStatus::*;
         match s {
             "no_payment_required" => Ok(NoPaymentRequired),
             "paid" => Ok(Paid),
             "unpaid" => Ok(Unpaid),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CheckoutSessionPaymentStatus"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -1051,7 +1077,7 @@ impl miniserde::Deserialize for CheckoutSessionPaymentStatus {
 impl miniserde::de::Visitor for crate::Place<CheckoutSessionPaymentStatus> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(CheckoutSessionPaymentStatus::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(CheckoutSessionPaymentStatus::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -1062,8 +1088,7 @@ impl<'de> serde::Deserialize<'de> for CheckoutSessionPaymentStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for CheckoutSessionPaymentStatus"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 impl stripe_types::Object for CheckoutSession {
@@ -1077,29 +1102,40 @@ impl stripe_types::Object for CheckoutSession {
     }
 }
 stripe_types::def_id!(CheckoutSessionId);
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CheckoutSessionBillingAddressCollection {
     Auto,
     Required,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CheckoutSessionBillingAddressCollection {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CheckoutSessionBillingAddressCollection::*;
         match self {
             Auto => "auto",
             Required => "required",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CheckoutSessionBillingAddressCollection {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CheckoutSessionBillingAddressCollection::*;
         match s {
             "auto" => Ok(Auto),
             "required" => Ok(Required),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CheckoutSessionBillingAddressCollection"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -1131,9 +1167,7 @@ impl miniserde::Deserialize for CheckoutSessionBillingAddressCollection {
 impl miniserde::de::Visitor for crate::Place<CheckoutSessionBillingAddressCollection> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            CheckoutSessionBillingAddressCollection::from_str(s).map_err(|_| miniserde::Error)?,
-        );
+        self.out = Some(CheckoutSessionBillingAddressCollection::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -1144,9 +1178,7 @@ impl<'de> serde::Deserialize<'de> for CheckoutSessionBillingAddressCollection {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CheckoutSessionBillingAddressCollection")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 #[derive(Clone, Eq, PartialEq)]
@@ -1292,7 +1324,10 @@ impl std::str::FromStr for CheckoutSessionLocale {
             "zh" => Ok(Zh),
             "zh-HK" => Ok(ZhMinusHk),
             "zh-TW" => Ok(ZhMinusTw),
-            v => Ok(Unknown(v.to_owned())),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CheckoutSessionLocale");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -1324,7 +1359,7 @@ impl miniserde::Deserialize for CheckoutSessionLocale {
 impl miniserde::de::Visitor for crate::Place<CheckoutSessionLocale> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(CheckoutSessionLocale::from_str(s).unwrap());
+        self.out = Some(CheckoutSessionLocale::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -1335,35 +1370,42 @@ impl<'de> serde::Deserialize<'de> for CheckoutSessionLocale {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap())
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CheckoutSessionMode {
     Payment,
     Setup,
     Subscription,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CheckoutSessionMode {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CheckoutSessionMode::*;
         match self {
             Payment => "payment",
             Setup => "setup",
             Subscription => "subscription",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CheckoutSessionMode {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CheckoutSessionMode::*;
         match s {
             "payment" => Ok(Payment),
             "setup" => Ok(Setup),
             "subscription" => Ok(Subscription),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CheckoutSessionMode");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -1395,7 +1437,7 @@ impl miniserde::Deserialize for CheckoutSessionMode {
 impl miniserde::de::Visitor for crate::Place<CheckoutSessionMode> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(CheckoutSessionMode::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(CheckoutSessionMode::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -1406,33 +1448,43 @@ impl<'de> serde::Deserialize<'de> for CheckoutSessionMode {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for CheckoutSessionMode"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CheckoutSessionOriginContext {
     MobileApp,
     Web,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CheckoutSessionOriginContext {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CheckoutSessionOriginContext::*;
         match self {
             MobileApp => "mobile_app",
             Web => "web",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CheckoutSessionOriginContext {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CheckoutSessionOriginContext::*;
         match s {
             "mobile_app" => Ok(MobileApp),
             "web" => Ok(Web),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CheckoutSessionOriginContext"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -1464,7 +1516,7 @@ impl miniserde::Deserialize for CheckoutSessionOriginContext {
 impl miniserde::de::Visitor for crate::Place<CheckoutSessionOriginContext> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(CheckoutSessionOriginContext::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(CheckoutSessionOriginContext::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -1475,36 +1527,46 @@ impl<'de> serde::Deserialize<'de> for CheckoutSessionOriginContext {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for CheckoutSessionOriginContext"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CheckoutSessionRedirectOnCompletion {
     Always,
     IfRequired,
     Never,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CheckoutSessionRedirectOnCompletion {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CheckoutSessionRedirectOnCompletion::*;
         match self {
             Always => "always",
             IfRequired => "if_required",
             Never => "never",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CheckoutSessionRedirectOnCompletion {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CheckoutSessionRedirectOnCompletion::*;
         match s {
             "always" => Ok(Always),
             "if_required" => Ok(IfRequired),
             "never" => Ok(Never),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CheckoutSessionRedirectOnCompletion"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -1536,8 +1598,7 @@ impl miniserde::Deserialize for CheckoutSessionRedirectOnCompletion {
 impl miniserde::de::Visitor for crate::Place<CheckoutSessionRedirectOnCompletion> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out =
-            Some(CheckoutSessionRedirectOnCompletion::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(CheckoutSessionRedirectOnCompletion::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -1548,37 +1609,42 @@ impl<'de> serde::Deserialize<'de> for CheckoutSessionRedirectOnCompletion {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CheckoutSessionRedirectOnCompletion")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CheckoutSessionStatus {
     Complete,
     Expired,
     Open,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CheckoutSessionStatus {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CheckoutSessionStatus::*;
         match self {
             Complete => "complete",
             Expired => "expired",
             Open => "open",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CheckoutSessionStatus {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CheckoutSessionStatus::*;
         match s {
             "complete" => Ok(Complete),
             "expired" => Ok(Expired),
             "open" => Ok(Open),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CheckoutSessionStatus");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -1610,7 +1676,7 @@ impl miniserde::Deserialize for CheckoutSessionStatus {
 impl miniserde::de::Visitor for crate::Place<CheckoutSessionStatus> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(CheckoutSessionStatus::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(CheckoutSessionStatus::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -1621,20 +1687,22 @@ impl<'de> serde::Deserialize<'de> for CheckoutSessionStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for CheckoutSessionStatus"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CheckoutSessionSubmitType {
     Auto,
     Book,
     Donate,
     Pay,
     Subscribe,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CheckoutSessionSubmitType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CheckoutSessionSubmitType::*;
         match self {
             Auto => "auto",
@@ -1642,12 +1710,13 @@ impl CheckoutSessionSubmitType {
             Donate => "donate",
             Pay => "pay",
             Subscribe => "subscribe",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CheckoutSessionSubmitType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CheckoutSessionSubmitType::*;
         match s {
@@ -1656,7 +1725,10 @@ impl std::str::FromStr for CheckoutSessionSubmitType {
             "donate" => Ok(Donate),
             "pay" => Ok(Pay),
             "subscribe" => Ok(Subscribe),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CheckoutSessionSubmitType");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -1688,7 +1760,7 @@ impl miniserde::Deserialize for CheckoutSessionSubmitType {
 impl miniserde::de::Visitor for crate::Place<CheckoutSessionSubmitType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(CheckoutSessionSubmitType::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(CheckoutSessionSubmitType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -1699,36 +1771,42 @@ impl<'de> serde::Deserialize<'de> for CheckoutSessionSubmitType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for CheckoutSessionSubmitType"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CheckoutSessionUiMode {
     Custom,
     Embedded,
     Hosted,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CheckoutSessionUiMode {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CheckoutSessionUiMode::*;
         match self {
             Custom => "custom",
             Embedded => "embedded",
             Hosted => "hosted",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CheckoutSessionUiMode {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CheckoutSessionUiMode::*;
         match s {
             "custom" => Ok(Custom),
             "embedded" => Ok(Embedded),
             "hosted" => Ok(Hosted),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CheckoutSessionUiMode");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -1760,7 +1838,7 @@ impl miniserde::Deserialize for CheckoutSessionUiMode {
 impl miniserde::de::Visitor for crate::Place<CheckoutSessionUiMode> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(CheckoutSessionUiMode::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(CheckoutSessionUiMode::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -1771,7 +1849,6 @@ impl<'de> serde::Deserialize<'de> for CheckoutSessionUiMode {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for CheckoutSessionUiMode"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

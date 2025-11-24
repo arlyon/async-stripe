@@ -123,8 +123,8 @@ const _: () = {
                 self.payment_method.take(),
                 self.payment_method_details.take(),
                 self.single_use.take(),
-                self.status,
-                self.type_,
+                self.status.take(),
+                self.type_.take(),
             )
             else {
                 return None;
@@ -207,32 +207,39 @@ impl serde::Serialize for Mandate {
     }
 }
 /// The mandate status indicates whether or not you can use it to initiate a payment.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum MandateStatus {
     Active,
     Inactive,
     Pending,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl MandateStatus {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use MandateStatus::*;
         match self {
             Active => "active",
             Inactive => "inactive",
             Pending => "pending",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for MandateStatus {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use MandateStatus::*;
         match s {
             "active" => Ok(Active),
             "inactive" => Ok(Inactive),
             "pending" => Ok(Pending),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "MandateStatus");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -265,7 +272,7 @@ impl miniserde::Deserialize for MandateStatus {
 impl miniserde::de::Visitor for crate::Place<MandateStatus> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(MandateStatus::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(MandateStatus::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -276,33 +283,40 @@ impl<'de> serde::Deserialize<'de> for MandateStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for MandateStatus"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The type of the mandate.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum MandateType {
     MultiUse,
     SingleUse,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl MandateType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use MandateType::*;
         match self {
             MultiUse => "multi_use",
             SingleUse => "single_use",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for MandateType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use MandateType::*;
         match s {
             "multi_use" => Ok(MultiUse),
             "single_use" => Ok(SingleUse),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "MandateType");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -335,7 +349,7 @@ impl miniserde::Deserialize for MandateType {
 impl miniserde::de::Visitor for crate::Place<MandateType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(MandateType::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(MandateType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -346,7 +360,7 @@ impl<'de> serde::Deserialize<'de> for MandateType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for MandateType"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 impl stripe_types::Object for Mandate {

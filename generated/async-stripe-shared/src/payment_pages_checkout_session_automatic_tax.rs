@@ -80,7 +80,7 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (Some(enabled), Some(liability), Some(provider), Some(status)) =
-                (self.enabled, self.liability.take(), self.provider.take(), self.status)
+                (self.enabled, self.liability.take(), self.provider.take(), self.status.take())
             else {
                 return None;
             };
@@ -123,32 +123,43 @@ const _: () = {
     }
 };
 /// The status of the most recent automated tax calculation for this session.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PaymentPagesCheckoutSessionAutomaticTaxStatus {
     Complete,
     Failed,
     RequiresLocationInputs,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl PaymentPagesCheckoutSessionAutomaticTaxStatus {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PaymentPagesCheckoutSessionAutomaticTaxStatus::*;
         match self {
             Complete => "complete",
             Failed => "failed",
             RequiresLocationInputs => "requires_location_inputs",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for PaymentPagesCheckoutSessionAutomaticTaxStatus {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentPagesCheckoutSessionAutomaticTaxStatus::*;
         match s {
             "complete" => Ok(Complete),
             "failed" => Ok(Failed),
             "requires_location_inputs" => Ok(RequiresLocationInputs),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PaymentPagesCheckoutSessionAutomaticTaxStatus"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -181,10 +192,8 @@ impl miniserde::Deserialize for PaymentPagesCheckoutSessionAutomaticTaxStatus {
 impl miniserde::de::Visitor for crate::Place<PaymentPagesCheckoutSessionAutomaticTaxStatus> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            PaymentPagesCheckoutSessionAutomaticTaxStatus::from_str(s)
-                .map_err(|_| miniserde::Error)?,
-        );
+        self.out =
+            Some(PaymentPagesCheckoutSessionAutomaticTaxStatus::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -195,10 +204,6 @@ impl<'de> serde::Deserialize<'de> for PaymentPagesCheckoutSessionAutomaticTaxSta
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for PaymentPagesCheckoutSessionAutomaticTaxStatus",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

@@ -294,7 +294,7 @@ const _: () = {
                 self.ach_debit.take(),
                 self.acss_debit.take(),
                 self.alipay.take(),
-                self.allow_redisplay,
+                self.allow_redisplay.take(),
                 self.amount,
                 self.au_becs_debit.take(),
                 self.bancontact.take(),
@@ -494,32 +494,39 @@ impl serde::Serialize for Source {
 /// This field indicates whether this payment method can be shown again to its customer in a checkout flow.
 /// Stripe products such as Checkout and Elements use this field to determine whether a payment method can be shown as a saved payment method in a checkout flow.
 /// The field defaults to “unspecified”.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum SourceAllowRedisplay {
     Always,
     Limited,
     Unspecified,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl SourceAllowRedisplay {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use SourceAllowRedisplay::*;
         match self {
             Always => "always",
             Limited => "limited",
             Unspecified => "unspecified",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for SourceAllowRedisplay {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use SourceAllowRedisplay::*;
         match s {
             "always" => Ok(Always),
             "limited" => Ok(Limited),
             "unspecified" => Ok(Unspecified),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "SourceAllowRedisplay");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -552,7 +559,7 @@ impl miniserde::Deserialize for SourceAllowRedisplay {
 impl miniserde::de::Visitor for crate::Place<SourceAllowRedisplay> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(SourceAllowRedisplay::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(SourceAllowRedisplay::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -563,8 +570,7 @@ impl<'de> serde::Deserialize<'de> for SourceAllowRedisplay {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for SourceAllowRedisplay"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The `type` of the source.
@@ -648,7 +654,10 @@ impl std::str::FromStr for SourceType {
             "sofort" => Ok(Sofort),
             "three_d_secure" => Ok(ThreeDSecure),
             "wechat" => Ok(Wechat),
-            v => Ok(Unknown(v.to_owned())),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "SourceType");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -681,7 +690,7 @@ impl miniserde::Deserialize for SourceType {
 impl miniserde::de::Visitor for crate::Place<SourceType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(SourceType::from_str(s).unwrap());
+        self.out = Some(SourceType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -692,7 +701,7 @@ impl<'de> serde::Deserialize<'de> for SourceType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap())
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 impl stripe_types::Object for Source {

@@ -288,16 +288,16 @@ const _: () = {
                 self.post_payment_amount,
                 self.pre_payment_amount,
                 self.pretax_credit_amounts.take(),
-                self.reason,
+                self.reason.take(),
                 self.refunds.take(),
                 self.shipping_cost.take(),
-                self.status,
+                self.status.take(),
                 self.subtotal,
                 self.subtotal_excluding_tax,
                 self.total,
                 self.total_excluding_tax,
                 self.total_taxes.take(),
-                self.type_,
+                self.type_.take(),
                 self.voided_at,
             )
             else {
@@ -452,29 +452,36 @@ impl serde::Serialize for CreditNote {
 }
 /// Status of this credit note, one of `issued` or `void`.
 /// Learn more about [voiding credit notes](https://stripe.com/docs/billing/invoices/credit-notes#voiding).
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreditNoteStatus {
     Issued,
     Void,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreditNoteStatus {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreditNoteStatus::*;
         match self {
             Issued => "issued",
             Void => "void",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreditNoteStatus {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreditNoteStatus::*;
         match s {
             "issued" => Ok(Issued),
             "void" => Ok(Void),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CreditNoteStatus");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -507,7 +514,7 @@ impl miniserde::Deserialize for CreditNoteStatus {
 impl miniserde::de::Visitor for crate::Place<CreditNoteStatus> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(CreditNoteStatus::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(CreditNoteStatus::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -518,39 +525,45 @@ impl<'de> serde::Deserialize<'de> for CreditNoteStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for CreditNoteStatus"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Type of this credit note, one of `pre_payment` or `post_payment`.
 /// A `pre_payment` credit note means it was issued when the invoice was open.
 /// A `post_payment` credit note means it was issued when the invoice was paid.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreditNoteType {
     Mixed,
     PostPayment,
     PrePayment,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreditNoteType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreditNoteType::*;
         match self {
             Mixed => "mixed",
             PostPayment => "post_payment",
             PrePayment => "pre_payment",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreditNoteType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreditNoteType::*;
         match s {
             "mixed" => Ok(Mixed),
             "post_payment" => Ok(PostPayment),
             "pre_payment" => Ok(PrePayment),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CreditNoteType");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -583,7 +596,7 @@ impl miniserde::Deserialize for CreditNoteType {
 impl miniserde::de::Visitor for crate::Place<CreditNoteType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(CreditNoteType::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(CreditNoteType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -594,7 +607,7 @@ impl<'de> serde::Deserialize<'de> for CreditNoteType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreditNoteType"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 impl stripe_types::Object for CreditNote {
@@ -608,27 +621,31 @@ impl stripe_types::Object for CreditNote {
     }
 }
 stripe_types::def_id!(CreditNoteId);
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreditNoteReason {
     Duplicate,
     Fraudulent,
     OrderChange,
     ProductUnsatisfactory,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreditNoteReason {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreditNoteReason::*;
         match self {
             Duplicate => "duplicate",
             Fraudulent => "fraudulent",
             OrderChange => "order_change",
             ProductUnsatisfactory => "product_unsatisfactory",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreditNoteReason {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreditNoteReason::*;
         match s {
@@ -636,7 +653,10 @@ impl std::str::FromStr for CreditNoteReason {
             "fraudulent" => Ok(Fraudulent),
             "order_change" => Ok(OrderChange),
             "product_unsatisfactory" => Ok(ProductUnsatisfactory),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CreditNoteReason");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -668,7 +688,7 @@ impl miniserde::Deserialize for CreditNoteReason {
 impl miniserde::de::Visitor for crate::Place<CreditNoteReason> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(CreditNoteReason::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(CreditNoteReason::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -679,7 +699,6 @@ impl<'de> serde::Deserialize<'de> for CreditNoteReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for CreditNoteReason"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

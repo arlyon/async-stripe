@@ -78,9 +78,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(default_value), Some(description), Some(title), Some(value)) =
-                (self.default_value, self.description.take(), self.title.take(), self.value)
-            else {
+            let (Some(default_value), Some(description), Some(title), Some(value)) = (
+                self.default_value.take(),
+                self.description.take(),
+                self.title.take(),
+                self.value.take(),
+            ) else {
                 return None;
             };
             Some(Self::Out { default_value, description, title, value })
@@ -122,29 +125,40 @@ const _: () = {
     }
 };
 /// The toggle's default value. Can be `enabled` or `disabled`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum TerminalReaderReaderResourceToggleDefaultValue {
     Disabled,
     Enabled,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl TerminalReaderReaderResourceToggleDefaultValue {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use TerminalReaderReaderResourceToggleDefaultValue::*;
         match self {
             Disabled => "disabled",
             Enabled => "enabled",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for TerminalReaderReaderResourceToggleDefaultValue {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TerminalReaderReaderResourceToggleDefaultValue::*;
         match s {
             "disabled" => Ok(Disabled),
             "enabled" => Ok(Enabled),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "TerminalReaderReaderResourceToggleDefaultValue"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -177,10 +191,8 @@ impl miniserde::Deserialize for TerminalReaderReaderResourceToggleDefaultValue {
 impl miniserde::de::Visitor for crate::Place<TerminalReaderReaderResourceToggleDefaultValue> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            TerminalReaderReaderResourceToggleDefaultValue::from_str(s)
-                .map_err(|_| miniserde::Error)?,
-        );
+        self.out =
+            Some(TerminalReaderReaderResourceToggleDefaultValue::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -191,37 +203,44 @@ impl<'de> serde::Deserialize<'de> for TerminalReaderReaderResourceToggleDefaultV
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for TerminalReaderReaderResourceToggleDefaultValue",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The toggle's collected value. Can be `enabled` or `disabled`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum TerminalReaderReaderResourceToggleValue {
     Disabled,
     Enabled,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl TerminalReaderReaderResourceToggleValue {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use TerminalReaderReaderResourceToggleValue::*;
         match self {
             Disabled => "disabled",
             Enabled => "enabled",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for TerminalReaderReaderResourceToggleValue {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TerminalReaderReaderResourceToggleValue::*;
         match s {
             "disabled" => Ok(Disabled),
             "enabled" => Ok(Enabled),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "TerminalReaderReaderResourceToggleValue"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -254,9 +273,7 @@ impl miniserde::Deserialize for TerminalReaderReaderResourceToggleValue {
 impl miniserde::de::Visitor for crate::Place<TerminalReaderReaderResourceToggleValue> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            TerminalReaderReaderResourceToggleValue::from_str(s).map_err(|_| miniserde::Error)?,
-        );
+        self.out = Some(TerminalReaderReaderResourceToggleValue::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -267,8 +284,6 @@ impl<'de> serde::Deserialize<'de> for TerminalReaderReaderResourceToggleValue {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for TerminalReaderReaderResourceToggleValue")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

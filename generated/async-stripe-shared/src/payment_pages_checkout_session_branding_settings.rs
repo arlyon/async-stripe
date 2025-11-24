@@ -103,7 +103,7 @@ const _: () = {
                 Some(logo),
             ) = (
                 self.background_color.take(),
-                self.border_style,
+                self.border_style.take(),
                 self.button_color.take(),
                 self.display_name.take(),
                 self.font_family.take(),
@@ -163,32 +163,43 @@ const _: () = {
     }
 };
 /// The border style for the Checkout Session. Must be one of `rounded`, `rectangular`, or `pill`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PaymentPagesCheckoutSessionBrandingSettingsBorderStyle {
     Pill,
     Rectangular,
     Rounded,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl PaymentPagesCheckoutSessionBrandingSettingsBorderStyle {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PaymentPagesCheckoutSessionBrandingSettingsBorderStyle::*;
         match self {
             Pill => "pill",
             Rectangular => "rectangular",
             Rounded => "rounded",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for PaymentPagesCheckoutSessionBrandingSettingsBorderStyle {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentPagesCheckoutSessionBrandingSettingsBorderStyle::*;
         match s {
             "pill" => Ok(Pill),
             "rectangular" => Ok(Rectangular),
             "rounded" => Ok(Rounded),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PaymentPagesCheckoutSessionBrandingSettingsBorderStyle"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -225,7 +236,7 @@ impl miniserde::de::Visitor
         use std::str::FromStr;
         self.out = Some(
             PaymentPagesCheckoutSessionBrandingSettingsBorderStyle::from_str(s)
-                .map_err(|_| miniserde::Error)?,
+                .expect("infallible"),
         );
         Ok(())
     }
@@ -237,10 +248,6 @@ impl<'de> serde::Deserialize<'de> for PaymentPagesCheckoutSessionBrandingSetting
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for PaymentPagesCheckoutSessionBrandingSettingsBorderStyle",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

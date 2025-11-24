@@ -1,4 +1,4 @@
-#[derive(Copy, Clone, Debug)]
+#[derive(Clone, Debug)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct AccountUnificationAccountController {
@@ -98,12 +98,12 @@ const _: () = {
                 Some(stripe_dashboard),
                 Some(type_),
             ) = (
-                self.fees,
+                self.fees.take(),
                 self.is_controller,
-                self.losses,
-                self.requirement_collection,
-                self.stripe_dashboard,
-                self.type_,
+                self.losses.take(),
+                self.requirement_collection.take(),
+                self.stripe_dashboard.take(),
+                self.type_.take(),
             )
             else {
                 return None;
@@ -159,29 +159,40 @@ const _: () = {
 };
 /// A value indicating responsibility for collecting requirements on this account.
 /// Only returned when the Connect application retrieving the resource controls the account.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum AccountUnificationAccountControllerRequirementCollection {
     Application,
     Stripe,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl AccountUnificationAccountControllerRequirementCollection {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use AccountUnificationAccountControllerRequirementCollection::*;
         match self {
             Application => "application",
             Stripe => "stripe",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for AccountUnificationAccountControllerRequirementCollection {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use AccountUnificationAccountControllerRequirementCollection::*;
         match s {
             "application" => Ok(Application),
             "stripe" => Ok(Stripe),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "AccountUnificationAccountControllerRequirementCollection"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -218,7 +229,7 @@ impl miniserde::de::Visitor
         use std::str::FromStr;
         self.out = Some(
             AccountUnificationAccountControllerRequirementCollection::from_str(s)
-                .map_err(|_| miniserde::Error)?,
+                .expect("infallible"),
         );
         Ok(())
     }
@@ -232,38 +243,45 @@ impl<'de> serde::Deserialize<'de> for AccountUnificationAccountControllerRequire
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for AccountUnificationAccountControllerRequirementCollection",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The controller type.
 /// Can be `application`, if a Connect application controls the account, or `account`, if the account controls itself.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum AccountUnificationAccountControllerType {
     Account,
     Application,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl AccountUnificationAccountControllerType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use AccountUnificationAccountControllerType::*;
         match self {
             Account => "account",
             Application => "application",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for AccountUnificationAccountControllerType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use AccountUnificationAccountControllerType::*;
         match s {
             "account" => Ok(Account),
             "application" => Ok(Application),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "AccountUnificationAccountControllerType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -296,9 +314,7 @@ impl miniserde::Deserialize for AccountUnificationAccountControllerType {
 impl miniserde::de::Visitor for crate::Place<AccountUnificationAccountControllerType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            AccountUnificationAccountControllerType::from_str(s).map_err(|_| miniserde::Error)?,
-        );
+        self.out = Some(AccountUnificationAccountControllerType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -309,8 +325,6 @@ impl<'de> serde::Deserialize<'de> for AccountUnificationAccountControllerType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for AccountUnificationAccountControllerType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

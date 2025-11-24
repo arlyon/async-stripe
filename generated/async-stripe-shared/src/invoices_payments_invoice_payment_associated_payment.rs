@@ -84,7 +84,7 @@ const _: () = {
                 self.charge.take(),
                 self.payment_intent.take(),
                 self.payment_record.take(),
-                self.type_,
+                self.type_.take(),
             ) else {
                 return None;
             };
@@ -127,32 +127,43 @@ const _: () = {
     }
 };
 /// Type of payment object associated with this invoice payment.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum InvoicesPaymentsInvoicePaymentAssociatedPaymentType {
     Charge,
     PaymentIntent,
     PaymentRecord,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl InvoicesPaymentsInvoicePaymentAssociatedPaymentType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use InvoicesPaymentsInvoicePaymentAssociatedPaymentType::*;
         match self {
             Charge => "charge",
             PaymentIntent => "payment_intent",
             PaymentRecord => "payment_record",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for InvoicesPaymentsInvoicePaymentAssociatedPaymentType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use InvoicesPaymentsInvoicePaymentAssociatedPaymentType::*;
         match s {
             "charge" => Ok(Charge),
             "payment_intent" => Ok(PaymentIntent),
             "payment_record" => Ok(PaymentRecord),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "InvoicesPaymentsInvoicePaymentAssociatedPaymentType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -186,8 +197,7 @@ impl miniserde::de::Visitor for crate::Place<InvoicesPaymentsInvoicePaymentAssoc
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(
-            InvoicesPaymentsInvoicePaymentAssociatedPaymentType::from_str(s)
-                .map_err(|_| miniserde::Error)?,
+            InvoicesPaymentsInvoicePaymentAssociatedPaymentType::from_str(s).expect("infallible"),
         );
         Ok(())
     }
@@ -199,10 +209,6 @@ impl<'de> serde::Deserialize<'de> for InvoicesPaymentsInvoicePaymentAssociatedPa
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for InvoicesPaymentsInvoicePaymentAssociatedPaymentType",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

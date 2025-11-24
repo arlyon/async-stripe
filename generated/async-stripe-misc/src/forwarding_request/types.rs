@@ -237,16 +237,19 @@ impl stripe_types::Object for ForwardingRequest {
     }
 }
 stripe_types::def_id!(ForwardingRequestId);
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum ForwardingRequestReplacements {
     CardCvc,
     CardExpiry,
     CardNumber,
     CardholderName,
     RequestSignature,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl ForwardingRequestReplacements {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use ForwardingRequestReplacements::*;
         match self {
             CardCvc => "card_cvc",
@@ -254,12 +257,13 @@ impl ForwardingRequestReplacements {
             CardNumber => "card_number",
             CardholderName => "cardholder_name",
             RequestSignature => "request_signature",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for ForwardingRequestReplacements {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ForwardingRequestReplacements::*;
         match s {
@@ -268,7 +272,14 @@ impl std::str::FromStr for ForwardingRequestReplacements {
             "card_number" => Ok(CardNumber),
             "cardholder_name" => Ok(CardholderName),
             "request_signature" => Ok(RequestSignature),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "ForwardingRequestReplacements"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -300,7 +311,7 @@ impl miniserde::Deserialize for ForwardingRequestReplacements {
 impl miniserde::de::Visitor for crate::Place<ForwardingRequestReplacements> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(ForwardingRequestReplacements::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(ForwardingRequestReplacements::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -311,8 +322,6 @@ impl<'de> serde::Deserialize<'de> for ForwardingRequestReplacements {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for ForwardingRequestReplacements")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

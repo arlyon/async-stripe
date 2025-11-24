@@ -237,7 +237,7 @@ const _: () = {
                 self.metadata.take(),
                 self.returned_details.take(),
                 self.statement_descriptor.take(),
-                self.status,
+                self.status.take(),
                 self.status_transitions,
                 self.tracking_details.take(),
                 self.transaction.take(),
@@ -375,16 +375,19 @@ impl stripe_types::Object for TreasuryOutboundPayment {
     }
 }
 stripe_types::def_id!(TreasuryOutboundPaymentId);
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum TreasuryOutboundPaymentStatus {
     Canceled,
     Failed,
     Posted,
     Processing,
     Returned,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl TreasuryOutboundPaymentStatus {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use TreasuryOutboundPaymentStatus::*;
         match self {
             Canceled => "canceled",
@@ -392,12 +395,13 @@ impl TreasuryOutboundPaymentStatus {
             Posted => "posted",
             Processing => "processing",
             Returned => "returned",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for TreasuryOutboundPaymentStatus {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TreasuryOutboundPaymentStatus::*;
         match s {
@@ -406,7 +410,14 @@ impl std::str::FromStr for TreasuryOutboundPaymentStatus {
             "posted" => Ok(Posted),
             "processing" => Ok(Processing),
             "returned" => Ok(Returned),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "TreasuryOutboundPaymentStatus"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -438,7 +449,7 @@ impl miniserde::Deserialize for TreasuryOutboundPaymentStatus {
 impl miniserde::de::Visitor for crate::Place<TreasuryOutboundPaymentStatus> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(TreasuryOutboundPaymentStatus::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(TreasuryOutboundPaymentStatus::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -449,8 +460,6 @@ impl<'de> serde::Deserialize<'de> for TreasuryOutboundPaymentStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for TreasuryOutboundPaymentStatus")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

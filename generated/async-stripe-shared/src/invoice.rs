@@ -638,8 +638,8 @@ const _: () = {
                 self.auto_advance,
                 self.automatic_tax.take(),
                 self.automatically_finalizes_at,
-                self.billing_reason,
-                self.collection_method,
+                self.billing_reason.take(),
+                self.collection_method.take(),
                 self.confirmation_secret.take(),
                 self.created,
                 self.currency.take(),
@@ -650,7 +650,7 @@ const _: () = {
                 self.customer_name.take(),
                 self.customer_phone.take(),
                 self.customer_shipping.take(),
-                self.customer_tax_exempt,
+                self.customer_tax_exempt.take(),
                 self.customer_tax_ids.take(),
                 self.default_payment_method.take(),
                 self.default_source.take(),
@@ -687,7 +687,7 @@ const _: () = {
                 self.shipping_details.take(),
                 self.starting_balance,
                 self.statement_descriptor.take(),
-                self.status,
+                self.status.take(),
                 self.status_transitions,
                 self.subscription.take(),
                 self.subtotal,
@@ -1011,7 +1011,8 @@ impl serde::Serialize for Invoice {
 /// * `subscription_threshold`: A subscription reached a billing threshold.
 /// * `subscription_update`: A subscription was updated.
 /// * `upcoming`: Reserved for upcoming invoices created through the Create Preview Invoice API or when an `invoice.upcoming` event is generated for an upcoming invoice on a subscription.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum InvoiceBillingReason {
     AutomaticPendingInvoiceItemInvoice,
     Manual,
@@ -1022,9 +1023,11 @@ pub enum InvoiceBillingReason {
     SubscriptionThreshold,
     SubscriptionUpdate,
     Upcoming,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl InvoiceBillingReason {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use InvoiceBillingReason::*;
         match self {
             AutomaticPendingInvoiceItemInvoice => "automatic_pending_invoice_item_invoice",
@@ -1036,12 +1039,13 @@ impl InvoiceBillingReason {
             SubscriptionThreshold => "subscription_threshold",
             SubscriptionUpdate => "subscription_update",
             Upcoming => "upcoming",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for InvoiceBillingReason {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use InvoiceBillingReason::*;
         match s {
@@ -1054,7 +1058,10 @@ impl std::str::FromStr for InvoiceBillingReason {
             "subscription_threshold" => Ok(SubscriptionThreshold),
             "subscription_update" => Ok(SubscriptionUpdate),
             "upcoming" => Ok(Upcoming),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "InvoiceBillingReason");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -1087,7 +1094,7 @@ impl miniserde::Deserialize for InvoiceBillingReason {
 impl miniserde::de::Visitor for crate::Place<InvoiceBillingReason> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(InvoiceBillingReason::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(InvoiceBillingReason::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -1098,39 +1105,45 @@ impl<'de> serde::Deserialize<'de> for InvoiceBillingReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for InvoiceBillingReason"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The customer's tax exempt status.
 /// Until the invoice is finalized, this field will equal `customer.tax_exempt`.
 /// Once the invoice is finalized, this field will no longer be updated.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum InvoiceCustomerTaxExempt {
     Exempt,
     None,
     Reverse,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl InvoiceCustomerTaxExempt {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use InvoiceCustomerTaxExempt::*;
         match self {
             Exempt => "exempt",
             None => "none",
             Reverse => "reverse",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for InvoiceCustomerTaxExempt {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use InvoiceCustomerTaxExempt::*;
         match s {
             "exempt" => Ok(Exempt),
             "none" => Ok(None),
             "reverse" => Ok(Reverse),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "InvoiceCustomerTaxExempt");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -1163,7 +1176,7 @@ impl miniserde::Deserialize for InvoiceCustomerTaxExempt {
 impl miniserde::de::Visitor for crate::Place<InvoiceCustomerTaxExempt> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(InvoiceCustomerTaxExempt::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(InvoiceCustomerTaxExempt::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -1174,8 +1187,7 @@ impl<'de> serde::Deserialize<'de> for InvoiceCustomerTaxExempt {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for InvoiceCustomerTaxExempt"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 impl stripe_types::Object for Invoice {
@@ -1189,29 +1201,36 @@ impl stripe_types::Object for Invoice {
     }
 }
 stripe_types::def_id!(InvoiceId);
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum InvoiceCollectionMethod {
     ChargeAutomatically,
     SendInvoice,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl InvoiceCollectionMethod {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use InvoiceCollectionMethod::*;
         match self {
             ChargeAutomatically => "charge_automatically",
             SendInvoice => "send_invoice",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for InvoiceCollectionMethod {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use InvoiceCollectionMethod::*;
         match s {
             "charge_automatically" => Ok(ChargeAutomatically),
             "send_invoice" => Ok(SendInvoice),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "InvoiceCollectionMethod");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -1243,7 +1262,7 @@ impl miniserde::Deserialize for InvoiceCollectionMethod {
 impl miniserde::de::Visitor for crate::Place<InvoiceCollectionMethod> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(InvoiceCollectionMethod::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(InvoiceCollectionMethod::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -1254,20 +1273,22 @@ impl<'de> serde::Deserialize<'de> for InvoiceCollectionMethod {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for InvoiceCollectionMethod"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum InvoiceStatus {
     Draft,
     Open,
     Paid,
     Uncollectible,
     Void,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl InvoiceStatus {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use InvoiceStatus::*;
         match self {
             Draft => "draft",
@@ -1275,12 +1296,13 @@ impl InvoiceStatus {
             Paid => "paid",
             Uncollectible => "uncollectible",
             Void => "void",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for InvoiceStatus {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use InvoiceStatus::*;
         match s {
@@ -1289,7 +1311,10 @@ impl std::str::FromStr for InvoiceStatus {
             "paid" => Ok(Paid),
             "uncollectible" => Ok(Uncollectible),
             "void" => Ok(Void),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "InvoiceStatus");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -1321,7 +1346,7 @@ impl miniserde::Deserialize for InvoiceStatus {
 impl miniserde::de::Visitor for crate::Place<InvoiceStatus> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(InvoiceStatus::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(InvoiceStatus::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -1332,6 +1357,6 @@ impl<'de> serde::Deserialize<'de> for InvoiceStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for InvoiceStatus"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

@@ -1,5 +1,5 @@
 /// Installment configuration for payments.
-#[derive(Copy, Clone, Debug)]
+#[derive(Clone, Debug)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct ConfirmationTokensResourcePaymentMethodOptionsResourceCardResourceInstallment {
@@ -67,7 +67,7 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(plan),) = (self.plan,) else {
+            let (Some(plan),) = (self.plan.take(),) else {
                 return None;
             };
             Some(Self::Out { plan })

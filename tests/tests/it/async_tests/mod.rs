@@ -14,7 +14,7 @@ mod pagination;
 /// `&dyn StripeClient`, but currently traits with async functions cannot be object safe.
 #[derive(Clone)]
 pub enum StripeClient {
-    Hyper(stripe::Client),
+    Hyper(Box<stripe::Client>),
     AsyncStd(Box<stripe::async_std::Client>),
 }
 
@@ -51,7 +51,9 @@ impl stripe_client_core::StripeClient for StripeClient {
 
 impl StripeClient {
     fn hyper() -> Self {
-        Self::Hyper(stripe::ClientBuilder::new(SECRET).url(STRIPE_MOCK_LINK).build().unwrap())
+        Self::Hyper(Box::new(
+            stripe::ClientBuilder::new(SECRET).url(STRIPE_MOCK_LINK).build().unwrap(),
+        ))
     }
 
     fn async_std() -> Self {

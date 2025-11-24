@@ -348,7 +348,7 @@ const _: () = {
                 self.affirm,
                 self.afterpay_clearpay,
                 self.alipay,
-                self.allow_redisplay,
+                self.allow_redisplay.take(),
                 self.alma,
                 self.amazon_pay,
                 self.au_becs_debit.take(),
@@ -551,32 +551,43 @@ const _: () = {
 /// This field indicates whether this payment method can be shown again to its customer in a checkout flow.
 /// Stripe products such as Checkout and Elements use this field to determine whether a payment method can be shown as a saved payment method in a checkout flow.
 /// The field defaults to “unspecified”.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum ConfirmationTokensResourcePaymentMethodPreviewAllowRedisplay {
     Always,
     Limited,
     Unspecified,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl ConfirmationTokensResourcePaymentMethodPreviewAllowRedisplay {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use ConfirmationTokensResourcePaymentMethodPreviewAllowRedisplay::*;
         match self {
             Always => "always",
             Limited => "limited",
             Unspecified => "unspecified",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for ConfirmationTokensResourcePaymentMethodPreviewAllowRedisplay {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ConfirmationTokensResourcePaymentMethodPreviewAllowRedisplay::*;
         match s {
             "always" => Ok(Always),
             "limited" => Ok(Limited),
             "unspecified" => Ok(Unspecified),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "ConfirmationTokensResourcePaymentMethodPreviewAllowRedisplay"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -613,7 +624,7 @@ impl miniserde::de::Visitor
         use std::str::FromStr;
         self.out = Some(
             ConfirmationTokensResourcePaymentMethodPreviewAllowRedisplay::from_str(s)
-                .map_err(|_| miniserde::Error)?,
+                .expect("infallible"),
         );
         Ok(())
     }
@@ -627,11 +638,7 @@ impl<'de> serde::Deserialize<'de> for ConfirmationTokensResourcePaymentMethodPre
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for ConfirmationTokensResourcePaymentMethodPreviewAllowRedisplay",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The type of the PaymentMethod.
@@ -813,7 +820,14 @@ impl std::str::FromStr for ConfirmationTokensResourcePaymentMethodPreviewType {
             "us_bank_account" => Ok(UsBankAccount),
             "wechat_pay" => Ok(WechatPay),
             "zip" => Ok(Zip),
-            v => Ok(Unknown(v.to_owned())),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "ConfirmationTokensResourcePaymentMethodPreviewType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -846,7 +860,9 @@ impl miniserde::Deserialize for ConfirmationTokensResourcePaymentMethodPreviewTy
 impl miniserde::de::Visitor for crate::Place<ConfirmationTokensResourcePaymentMethodPreviewType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(ConfirmationTokensResourcePaymentMethodPreviewType::from_str(s).unwrap());
+        self.out = Some(
+            ConfirmationTokensResourcePaymentMethodPreviewType::from_str(s).expect("infallible"),
+        );
         Ok(())
     }
 }
@@ -857,6 +873,6 @@ impl<'de> serde::Deserialize<'de> for ConfirmationTokensResourcePaymentMethodPre
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap())
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

@@ -1,4 +1,4 @@
-#[derive(Copy, Clone, Debug)]
+#[derive(Clone, Debug)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct CheckoutPixPaymentMethodOptions {
@@ -79,9 +79,11 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(amount_includes_iof), Some(expires_after_seconds), Some(setup_future_usage)) =
-                (self.amount_includes_iof, self.expires_after_seconds, self.setup_future_usage)
-            else {
+            let (Some(amount_includes_iof), Some(expires_after_seconds), Some(setup_future_usage)) = (
+                self.amount_includes_iof.take(),
+                self.expires_after_seconds,
+                self.setup_future_usage.take(),
+            ) else {
                 return None;
             };
             Some(Self::Out { amount_includes_iof, expires_after_seconds, setup_future_usage })
@@ -124,29 +126,40 @@ const _: () = {
     }
 };
 /// Determines if the amount includes the IOF tax.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CheckoutPixPaymentMethodOptionsAmountIncludesIof {
     Always,
     Never,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CheckoutPixPaymentMethodOptionsAmountIncludesIof {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CheckoutPixPaymentMethodOptionsAmountIncludesIof::*;
         match self {
             Always => "always",
             Never => "never",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CheckoutPixPaymentMethodOptionsAmountIncludesIof {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CheckoutPixPaymentMethodOptionsAmountIncludesIof::*;
         match s {
             "always" => Ok(Always),
             "never" => Ok(Never),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CheckoutPixPaymentMethodOptionsAmountIncludesIof"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -180,8 +193,7 @@ impl miniserde::de::Visitor for crate::Place<CheckoutPixPaymentMethodOptionsAmou
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(
-            CheckoutPixPaymentMethodOptionsAmountIncludesIof::from_str(s)
-                .map_err(|_| miniserde::Error)?,
+            CheckoutPixPaymentMethodOptionsAmountIncludesIof::from_str(s).expect("infallible"),
         );
         Ok(())
     }
@@ -193,11 +205,7 @@ impl<'de> serde::Deserialize<'de> for CheckoutPixPaymentMethodOptionsAmountInclu
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for CheckoutPixPaymentMethodOptionsAmountIncludesIof",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -208,26 +216,37 @@ impl<'de> serde::Deserialize<'de> for CheckoutPixPaymentMethodOptionsAmountInclu
 /// If the payment method is `card_present` and isn't a digital wallet, Stripe creates and attaches a [generated_card](/api/charges/object#charge_object-payment_method_details-card_present-generated_card) payment method representing the card to the Customer instead.
 ///
 /// When processing card payments, Stripe uses `setup_future_usage` to help you comply with regional legislation and network rules, such as [SCA](/strong-customer-authentication).
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CheckoutPixPaymentMethodOptionsSetupFutureUsage {
     None,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CheckoutPixPaymentMethodOptionsSetupFutureUsage {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CheckoutPixPaymentMethodOptionsSetupFutureUsage::*;
         match self {
             None => "none",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CheckoutPixPaymentMethodOptionsSetupFutureUsage {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CheckoutPixPaymentMethodOptionsSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CheckoutPixPaymentMethodOptionsSetupFutureUsage"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -260,10 +279,8 @@ impl miniserde::Deserialize for CheckoutPixPaymentMethodOptionsSetupFutureUsage 
 impl miniserde::de::Visitor for crate::Place<CheckoutPixPaymentMethodOptionsSetupFutureUsage> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            CheckoutPixPaymentMethodOptionsSetupFutureUsage::from_str(s)
-                .map_err(|_| miniserde::Error)?,
-        );
+        self.out =
+            Some(CheckoutPixPaymentMethodOptionsSetupFutureUsage::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -274,10 +291,6 @@ impl<'de> serde::Deserialize<'de> for CheckoutPixPaymentMethodOptionsSetupFuture
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for CheckoutPixPaymentMethodOptionsSetupFutureUsage",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

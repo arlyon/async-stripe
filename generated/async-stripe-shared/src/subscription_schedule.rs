@@ -176,21 +176,21 @@ const _: () = {
                 Some(test_clock),
             ) = (
                 self.application.take(),
-                self.billing_mode,
+                self.billing_mode.take(),
                 self.canceled_at,
                 self.completed_at,
                 self.created,
                 self.current_phase,
                 self.customer.take(),
                 self.default_settings.take(),
-                self.end_behavior,
+                self.end_behavior.take(),
                 self.id.take(),
                 self.livemode,
                 self.metadata.take(),
                 self.phases.take(),
                 self.released_at,
                 self.released_subscription.take(),
-                self.status,
+                self.status.take(),
                 self.subscription.take(),
                 self.test_clock.take(),
             )
@@ -301,16 +301,19 @@ impl serde::Serialize for SubscriptionSchedule {
 /// The present status of the subscription schedule.
 /// Possible values are `not_started`, `active`, `completed`, `released`, and `canceled`.
 /// You can read more about the different states in our [behavior guide](https://stripe.com/docs/billing/subscriptions/subscription-schedules).
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum SubscriptionScheduleStatus {
     Active,
     Canceled,
     Completed,
     NotStarted,
     Released,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl SubscriptionScheduleStatus {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use SubscriptionScheduleStatus::*;
         match self {
             Active => "active",
@@ -318,12 +321,13 @@ impl SubscriptionScheduleStatus {
             Completed => "completed",
             NotStarted => "not_started",
             Released => "released",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for SubscriptionScheduleStatus {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use SubscriptionScheduleStatus::*;
         match s {
@@ -332,7 +336,10 @@ impl std::str::FromStr for SubscriptionScheduleStatus {
             "completed" => Ok(Completed),
             "not_started" => Ok(NotStarted),
             "released" => Ok(Released),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "SubscriptionScheduleStatus");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -365,7 +372,7 @@ impl miniserde::Deserialize for SubscriptionScheduleStatus {
 impl miniserde::de::Visitor for crate::Place<SubscriptionScheduleStatus> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(SubscriptionScheduleStatus::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(SubscriptionScheduleStatus::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -376,8 +383,7 @@ impl<'de> serde::Deserialize<'de> for SubscriptionScheduleStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for SubscriptionScheduleStatus"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 impl stripe_types::Object for SubscriptionSchedule {
@@ -391,27 +397,31 @@ impl stripe_types::Object for SubscriptionSchedule {
     }
 }
 stripe_types::def_id!(SubscriptionScheduleId);
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum SubscriptionScheduleEndBehavior {
     Cancel,
     None,
     Release,
     Renew,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl SubscriptionScheduleEndBehavior {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use SubscriptionScheduleEndBehavior::*;
         match self {
             Cancel => "cancel",
             None => "none",
             Release => "release",
             Renew => "renew",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for SubscriptionScheduleEndBehavior {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use SubscriptionScheduleEndBehavior::*;
         match s {
@@ -419,7 +429,14 @@ impl std::str::FromStr for SubscriptionScheduleEndBehavior {
             "none" => Ok(None),
             "release" => Ok(Release),
             "renew" => Ok(Renew),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "SubscriptionScheduleEndBehavior"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -451,8 +468,7 @@ impl miniserde::Deserialize for SubscriptionScheduleEndBehavior {
 impl miniserde::de::Visitor for crate::Place<SubscriptionScheduleEndBehavior> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out =
-            Some(SubscriptionScheduleEndBehavior::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(SubscriptionScheduleEndBehavior::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -463,8 +479,6 @@ impl<'de> serde::Deserialize<'de> for SubscriptionScheduleEndBehavior {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for SubscriptionScheduleEndBehavior")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

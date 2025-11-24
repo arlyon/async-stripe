@@ -69,27 +69,31 @@ impl Default for ListPriceRecurring {
     }
 }
 /// Filter by billing frequency. Either `day`, `week`, `month` or `year`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum ListPriceRecurringInterval {
     Day,
     Month,
     Week,
     Year,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl ListPriceRecurringInterval {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use ListPriceRecurringInterval::*;
         match self {
             Day => "day",
             Month => "month",
             Week => "week",
             Year => "year",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for ListPriceRecurringInterval {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ListPriceRecurringInterval::*;
         match s {
@@ -97,7 +101,10 @@ impl std::str::FromStr for ListPriceRecurringInterval {
             "month" => Ok(Month),
             "week" => Ok(Week),
             "year" => Ok(Year),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "ListPriceRecurringInterval");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -125,34 +132,44 @@ impl<'de> serde::Deserialize<'de> for ListPriceRecurringInterval {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for ListPriceRecurringInterval"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Filter by the usage type for this price. Can be either `metered` or `licensed`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum ListPriceRecurringUsageType {
     Licensed,
     Metered,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl ListPriceRecurringUsageType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use ListPriceRecurringUsageType::*;
         match self {
             Licensed => "licensed",
             Metered => "metered",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for ListPriceRecurringUsageType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ListPriceRecurringUsageType::*;
         match s {
             "licensed" => Ok(Licensed),
             "metered" => Ok(Metered),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "ListPriceRecurringUsageType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -180,8 +197,7 @@ impl<'de> serde::Deserialize<'de> for ListPriceRecurringUsageType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for ListPriceRecurringUsageType"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Returns a list of your active prices, excluding [inline prices](https://stripe.com/docs/products-prices/pricing-models#inline-pricing).
@@ -663,27 +679,31 @@ impl CreatePriceRecurring {
     }
 }
 /// Specifies billing frequency. Either `day`, `week`, `month` or `year`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreatePriceRecurringInterval {
     Day,
     Month,
     Week,
     Year,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreatePriceRecurringInterval {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreatePriceRecurringInterval::*;
         match self {
             Day => "day",
             Month => "month",
             Week => "week",
             Year => "year",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreatePriceRecurringInterval {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePriceRecurringInterval::*;
         match s {
@@ -691,7 +711,14 @@ impl std::str::FromStr for CreatePriceRecurringInterval {
             "month" => Ok(Month),
             "week" => Ok(Week),
             "year" => Ok(Year),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePriceRecurringInterval"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -719,8 +746,7 @@ impl<'de> serde::Deserialize<'de> for CreatePriceRecurringInterval {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for CreatePriceRecurringInterval"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Configures how the quantity per period should be determined.
@@ -728,29 +754,40 @@ impl<'de> serde::Deserialize<'de> for CreatePriceRecurringInterval {
 /// `licensed` automatically bills the `quantity` set when adding it to a subscription.
 /// `metered` aggregates the total usage based on usage records.
 /// Defaults to `licensed`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreatePriceRecurringUsageType {
     Licensed,
     Metered,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreatePriceRecurringUsageType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreatePriceRecurringUsageType::*;
         match self {
             Licensed => "licensed",
             Metered => "metered",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreatePriceRecurringUsageType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePriceRecurringUsageType::*;
         match s {
             "licensed" => Ok(Licensed),
             "metered" => Ok(Metered),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePriceRecurringUsageType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -778,9 +815,7 @@ impl<'de> serde::Deserialize<'de> for CreatePriceRecurringUsageType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreatePriceRecurringUsageType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Each element represents a pricing tier.
@@ -830,7 +865,7 @@ pub enum CreatePriceTiersUpTo {
 }
 /// Apply a transformation to the reported usage or set quantity before computing the billed price.
 /// Cannot be combined with `tiers`.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePriceTransformQuantity {
     /// Divide usage by this number.
     pub divide_by: i64,
@@ -846,29 +881,40 @@ impl CreatePriceTransformQuantity {
     }
 }
 /// After division, either round the result `up` or `down`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreatePriceTransformQuantityRound {
     Down,
     Up,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreatePriceTransformQuantityRound {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreatePriceTransformQuantityRound::*;
         match self {
             Down => "down",
             Up => "up",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreatePriceTransformQuantityRound {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePriceTransformQuantityRound::*;
         match s {
             "down" => Ok(Down),
             "up" => Ok(Up),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePriceTransformQuantityRound"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -896,9 +942,7 @@ impl<'de> serde::Deserialize<'de> for CreatePriceTransformQuantityRound {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreatePriceTransformQuantityRound")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Creates a new [Price](https://docs.stripe.com/api/prices) for an existing [Product](https://docs.stripe.com/api/products).

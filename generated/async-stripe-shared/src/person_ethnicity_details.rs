@@ -106,7 +106,8 @@ const _: () = {
     }
 };
 /// The persons ethnicity
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PersonEthnicityDetailsEthnicity {
     Cuban,
     HispanicOrLatino,
@@ -115,9 +116,11 @@ pub enum PersonEthnicityDetailsEthnicity {
     OtherHispanicOrLatino,
     PreferNotToAnswer,
     PuertoRican,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl PersonEthnicityDetailsEthnicity {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PersonEthnicityDetailsEthnicity::*;
         match self {
             Cuban => "cuban",
@@ -127,12 +130,13 @@ impl PersonEthnicityDetailsEthnicity {
             OtherHispanicOrLatino => "other_hispanic_or_latino",
             PreferNotToAnswer => "prefer_not_to_answer",
             PuertoRican => "puerto_rican",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for PersonEthnicityDetailsEthnicity {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PersonEthnicityDetailsEthnicity::*;
         match s {
@@ -143,7 +147,14 @@ impl std::str::FromStr for PersonEthnicityDetailsEthnicity {
             "other_hispanic_or_latino" => Ok(OtherHispanicOrLatino),
             "prefer_not_to_answer" => Ok(PreferNotToAnswer),
             "puerto_rican" => Ok(PuertoRican),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PersonEthnicityDetailsEthnicity"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -176,8 +187,7 @@ impl miniserde::Deserialize for PersonEthnicityDetailsEthnicity {
 impl miniserde::de::Visitor for crate::Place<PersonEthnicityDetailsEthnicity> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out =
-            Some(PersonEthnicityDetailsEthnicity::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(PersonEthnicityDetailsEthnicity::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -188,8 +198,6 @@ impl<'de> serde::Deserialize<'de> for PersonEthnicityDetailsEthnicity {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for PersonEthnicityDetailsEthnicity")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

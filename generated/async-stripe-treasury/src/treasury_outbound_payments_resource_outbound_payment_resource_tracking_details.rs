@@ -75,7 +75,7 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (Some(ach), Some(type_), Some(us_domestic_wire)) =
-                (self.ach.take(), self.type_, self.us_domestic_wire.take())
+                (self.ach.take(), self.type_.take(), self.us_domestic_wire.take())
             else {
                 return None;
             };
@@ -118,17 +118,21 @@ const _: () = {
     }
 };
 /// The US bank account network used to send funds.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum TreasuryOutboundPaymentsResourceOutboundPaymentResourceTrackingDetailsType {
     Ach,
     UsDomesticWire,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl TreasuryOutboundPaymentsResourceOutboundPaymentResourceTrackingDetailsType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use TreasuryOutboundPaymentsResourceOutboundPaymentResourceTrackingDetailsType::*;
         match self {
             Ach => "ach",
             UsDomesticWire => "us_domestic_wire",
+            Unknown(v) => v,
         }
     }
 }
@@ -136,13 +140,20 @@ impl TreasuryOutboundPaymentsResourceOutboundPaymentResourceTrackingDetailsType 
 impl std::str::FromStr
     for TreasuryOutboundPaymentsResourceOutboundPaymentResourceTrackingDetailsType
 {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TreasuryOutboundPaymentsResourceOutboundPaymentResourceTrackingDetailsType::*;
         match s {
             "ach" => Ok(Ach),
             "us_domestic_wire" => Ok(UsDomesticWire),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "TreasuryOutboundPaymentsResourceOutboundPaymentResourceTrackingDetailsType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -187,7 +198,7 @@ impl miniserde::de::Visitor
         use std::str::FromStr;
         self.out = Some(
             TreasuryOutboundPaymentsResourceOutboundPaymentResourceTrackingDetailsType::from_str(s)
-                .map_err(|_| miniserde::Error)?,
+                .expect("infallible"),
         );
         Ok(())
     }
@@ -203,6 +214,6 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for TreasuryOutboundPaymentsResourceOutboundPaymentResourceTrackingDetailsType"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
