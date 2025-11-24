@@ -74,7 +74,7 @@ fn write_event_object(components: &Components, out_path: &Path) -> anyhow::Resul
         let evt_type = &webhook_obj.event_type;
         let _ = writeln!(
             match_inner,
-            r#"if typ == "{evt_type}" {{ return FromValueOpt::from_value(data).map(Box::new).map(Self::{ident}) }}"#
+            r#"if typ == "{evt_type}" {{ return parse_and_box(data).map(Self::{ident}); }}"#
         );
     }
     let _ = writedoc! {enum_body, r#"
@@ -98,8 +98,16 @@ fn write_event_object(components: &Components, out_path: &Path) -> anyhow::Resul
 
     let _ = writedoc! {out, r#"
     impl EventObject {{
+        #[inline(never)]
         pub(crate) fn from_raw_data(typ: &str, data: miniserde::json::Value) -> Option<Self> {{
             use stripe_types::miniserde_helpers::FromValueOpt;
+
+            // Helper to avoid stack allocation for each branch
+            #[inline(always)]
+            fn parse_and_box<T: FromValueOpt>(data: miniserde::json::Value) -> Option<Box<T>> {{
+                FromValueOpt::from_value(data).map(Box::new)
+            }}
+
             {match_inner}
 
             Some(Self::Unknown(data))

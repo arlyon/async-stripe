@@ -1344,1096 +1344,857 @@ pub enum EventObject {
     Unknown(miniserde::json::Value),
 }
 impl EventObject {
+    #[inline(never)]
     pub(crate) fn from_raw_data(typ: &str, data: miniserde::json::Value) -> Option<Self> {
         use stripe_types::miniserde_helpers::FromValueOpt;
+
+        // Helper to avoid stack allocation for each branch
+        #[inline(always)]
+        fn parse_and_box<T: FromValueOpt>(data: miniserde::json::Value) -> Option<Box<T>> {
+            FromValueOpt::from_value(data).map(Box::new)
+        }
+
         if typ == "account.application.authorized" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::AccountApplicationAuthorized);
+            return parse_and_box(data).map(Self::AccountApplicationAuthorized);
         }
         if typ == "account.application.deauthorized" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::AccountApplicationDeauthorized);
+            return parse_and_box(data).map(Self::AccountApplicationDeauthorized);
         }
         if typ == "account.external_account.created" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::AccountExternalAccountCreated);
+            return parse_and_box(data).map(Self::AccountExternalAccountCreated);
         }
         if typ == "account.external_account.deleted" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::AccountExternalAccountDeleted);
+            return parse_and_box(data).map(Self::AccountExternalAccountDeleted);
         }
         if typ == "account.external_account.updated" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::AccountExternalAccountUpdated);
+            return parse_and_box(data).map(Self::AccountExternalAccountUpdated);
         }
         if typ == "account.updated" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::AccountUpdated);
+            return parse_and_box(data).map(Self::AccountUpdated);
         }
         if typ == "application_fee.created" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::ApplicationFeeCreated);
+            return parse_and_box(data).map(Self::ApplicationFeeCreated);
         }
         if typ == "application_fee.refund.updated" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::ApplicationFeeRefundUpdated);
+            return parse_and_box(data).map(Self::ApplicationFeeRefundUpdated);
         }
         if typ == "application_fee.refunded" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::ApplicationFeeRefunded);
+            return parse_and_box(data).map(Self::ApplicationFeeRefunded);
         }
         #[cfg(feature = "async-stripe-core")]
         if typ == "balance.available" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::BalanceAvailable);
+            return parse_and_box(data).map(Self::BalanceAvailable);
         }
         #[cfg(feature = "async-stripe-core")]
         if typ == "balance_settings.updated" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::BalanceSettingsUpdated);
+            return parse_and_box(data).map(Self::BalanceSettingsUpdated);
         }
         #[cfg(feature = "async-stripe-billing")]
         if typ == "billing.alert.triggered" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::BillingAlertTriggered);
+            return parse_and_box(data).map(Self::BillingAlertTriggered);
         }
         if typ == "billing.credit_balance_transaction.created" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::BillingCreditBalanceTransactionCreated);
+            return parse_and_box(data).map(Self::BillingCreditBalanceTransactionCreated);
         }
         if typ == "billing.credit_grant.created" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::BillingCreditGrantCreated);
+            return parse_and_box(data).map(Self::BillingCreditGrantCreated);
         }
         if typ == "billing.credit_grant.updated" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::BillingCreditGrantUpdated);
+            return parse_and_box(data).map(Self::BillingCreditGrantUpdated);
         }
         #[cfg(feature = "async-stripe-billing")]
         if typ == "billing.meter.created" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::BillingMeterCreated);
+            return parse_and_box(data).map(Self::BillingMeterCreated);
         }
         #[cfg(feature = "async-stripe-billing")]
         if typ == "billing.meter.deactivated" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::BillingMeterDeactivated);
+            return parse_and_box(data).map(Self::BillingMeterDeactivated);
         }
         #[cfg(feature = "async-stripe-billing")]
         if typ == "billing.meter.reactivated" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::BillingMeterReactivated);
+            return parse_and_box(data).map(Self::BillingMeterReactivated);
         }
         #[cfg(feature = "async-stripe-billing")]
         if typ == "billing.meter.updated" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::BillingMeterUpdated);
+            return parse_and_box(data).map(Self::BillingMeterUpdated);
         }
         #[cfg(feature = "async-stripe-billing")]
         if typ == "billing_portal.configuration.created" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::BillingPortalConfigurationCreated);
+            return parse_and_box(data).map(Self::BillingPortalConfigurationCreated);
         }
         #[cfg(feature = "async-stripe-billing")]
         if typ == "billing_portal.configuration.updated" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::BillingPortalConfigurationUpdated);
+            return parse_and_box(data).map(Self::BillingPortalConfigurationUpdated);
         }
         #[cfg(feature = "async-stripe-billing")]
         if typ == "billing_portal.session.created" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::BillingPortalSessionCreated);
+            return parse_and_box(data).map(Self::BillingPortalSessionCreated);
         }
         if typ == "capability.updated" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::CapabilityUpdated);
+            return parse_and_box(data).map(Self::CapabilityUpdated);
         }
         if typ == "cash_balance.funds_available" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::CashBalanceFundsAvailable);
+            return parse_and_box(data).map(Self::CashBalanceFundsAvailable);
         }
         if typ == "charge.captured" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::ChargeCaptured);
+            return parse_and_box(data).map(Self::ChargeCaptured);
         }
         if typ == "charge.dispute.closed" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::ChargeDisputeClosed);
+            return parse_and_box(data).map(Self::ChargeDisputeClosed);
         }
         if typ == "charge.dispute.created" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::ChargeDisputeCreated);
+            return parse_and_box(data).map(Self::ChargeDisputeCreated);
         }
         if typ == "charge.dispute.funds_reinstated" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::ChargeDisputeFundsReinstated);
+            return parse_and_box(data).map(Self::ChargeDisputeFundsReinstated);
         }
         if typ == "charge.dispute.funds_withdrawn" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::ChargeDisputeFundsWithdrawn);
+            return parse_and_box(data).map(Self::ChargeDisputeFundsWithdrawn);
         }
         if typ == "charge.dispute.updated" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::ChargeDisputeUpdated);
+            return parse_and_box(data).map(Self::ChargeDisputeUpdated);
         }
         if typ == "charge.expired" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::ChargeExpired);
+            return parse_and_box(data).map(Self::ChargeExpired);
         }
         if typ == "charge.failed" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::ChargeFailed);
+            return parse_and_box(data).map(Self::ChargeFailed);
         }
         if typ == "charge.pending" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::ChargePending);
+            return parse_and_box(data).map(Self::ChargePending);
         }
         if typ == "charge.refund.updated" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::ChargeRefundUpdated);
+            return parse_and_box(data).map(Self::ChargeRefundUpdated);
         }
         if typ == "charge.refunded" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::ChargeRefunded);
+            return parse_and_box(data).map(Self::ChargeRefunded);
         }
         if typ == "charge.succeeded" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::ChargeSucceeded);
+            return parse_and_box(data).map(Self::ChargeSucceeded);
         }
         if typ == "charge.updated" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::ChargeUpdated);
+            return parse_and_box(data).map(Self::ChargeUpdated);
         }
         if typ == "checkout.session.async_payment_failed" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::CheckoutSessionAsyncPaymentFailed);
+            return parse_and_box(data).map(Self::CheckoutSessionAsyncPaymentFailed);
         }
         if typ == "checkout.session.async_payment_succeeded" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::CheckoutSessionAsyncPaymentSucceeded);
+            return parse_and_box(data).map(Self::CheckoutSessionAsyncPaymentSucceeded);
         }
         if typ == "checkout.session.completed" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::CheckoutSessionCompleted);
+            return parse_and_box(data).map(Self::CheckoutSessionCompleted);
         }
         if typ == "checkout.session.expired" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::CheckoutSessionExpired);
+            return parse_and_box(data).map(Self::CheckoutSessionExpired);
         }
         #[cfg(feature = "async-stripe-misc")]
         if typ == "climate.order.canceled" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::ClimateOrderCanceled);
+            return parse_and_box(data).map(Self::ClimateOrderCanceled);
         }
         #[cfg(feature = "async-stripe-misc")]
         if typ == "climate.order.created" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::ClimateOrderCreated);
+            return parse_and_box(data).map(Self::ClimateOrderCreated);
         }
         #[cfg(feature = "async-stripe-misc")]
         if typ == "climate.order.delayed" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::ClimateOrderDelayed);
+            return parse_and_box(data).map(Self::ClimateOrderDelayed);
         }
         #[cfg(feature = "async-stripe-misc")]
         if typ == "climate.order.delivered" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::ClimateOrderDelivered);
+            return parse_and_box(data).map(Self::ClimateOrderDelivered);
         }
         #[cfg(feature = "async-stripe-misc")]
         if typ == "climate.order.product_substituted" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::ClimateOrderProductSubstituted);
+            return parse_and_box(data).map(Self::ClimateOrderProductSubstituted);
         }
         #[cfg(feature = "async-stripe-misc")]
         if typ == "climate.product.created" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::ClimateProductCreated);
+            return parse_and_box(data).map(Self::ClimateProductCreated);
         }
         #[cfg(feature = "async-stripe-misc")]
         if typ == "climate.product.pricing_updated" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::ClimateProductPricingUpdated);
+            return parse_and_box(data).map(Self::ClimateProductPricingUpdated);
         }
         if typ == "coupon.created" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::CouponCreated);
+            return parse_and_box(data).map(Self::CouponCreated);
         }
         if typ == "coupon.deleted" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::CouponDeleted);
+            return parse_and_box(data).map(Self::CouponDeleted);
         }
         if typ == "coupon.updated" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::CouponUpdated);
+            return parse_and_box(data).map(Self::CouponUpdated);
         }
         if typ == "credit_note.created" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::CreditNoteCreated);
+            return parse_and_box(data).map(Self::CreditNoteCreated);
         }
         if typ == "credit_note.updated" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::CreditNoteUpdated);
+            return parse_and_box(data).map(Self::CreditNoteUpdated);
         }
         if typ == "credit_note.voided" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::CreditNoteVoided);
+            return parse_and_box(data).map(Self::CreditNoteVoided);
         }
         if typ == "customer.created" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::CustomerCreated);
+            return parse_and_box(data).map(Self::CustomerCreated);
         }
         if typ == "customer.deleted" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::CustomerDeleted);
+            return parse_and_box(data).map(Self::CustomerDeleted);
         }
         if typ == "customer.discount.created" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::CustomerDiscountCreated);
+            return parse_and_box(data).map(Self::CustomerDiscountCreated);
         }
         if typ == "customer.discount.deleted" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::CustomerDiscountDeleted);
+            return parse_and_box(data).map(Self::CustomerDiscountDeleted);
         }
         if typ == "customer.discount.updated" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::CustomerDiscountUpdated);
+            return parse_and_box(data).map(Self::CustomerDiscountUpdated);
         }
         if typ == "customer.source.created" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::CustomerSourceCreated);
+            return parse_and_box(data).map(Self::CustomerSourceCreated);
         }
         if typ == "customer.source.deleted" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::CustomerSourceDeleted);
+            return parse_and_box(data).map(Self::CustomerSourceDeleted);
         }
         if typ == "customer.source.expiring" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::CustomerSourceExpiring);
+            return parse_and_box(data).map(Self::CustomerSourceExpiring);
         }
         if typ == "customer.source.updated" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::CustomerSourceUpdated);
+            return parse_and_box(data).map(Self::CustomerSourceUpdated);
         }
         if typ == "customer.subscription.created" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::CustomerSubscriptionCreated);
+            return parse_and_box(data).map(Self::CustomerSubscriptionCreated);
         }
         if typ == "customer.subscription.deleted" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::CustomerSubscriptionDeleted);
+            return parse_and_box(data).map(Self::CustomerSubscriptionDeleted);
         }
         if typ == "customer.subscription.paused" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::CustomerSubscriptionPaused);
+            return parse_and_box(data).map(Self::CustomerSubscriptionPaused);
         }
         if typ == "customer.subscription.pending_update_applied" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::CustomerSubscriptionPendingUpdateApplied);
+            return parse_and_box(data).map(Self::CustomerSubscriptionPendingUpdateApplied);
         }
         if typ == "customer.subscription.pending_update_expired" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::CustomerSubscriptionPendingUpdateExpired);
+            return parse_and_box(data).map(Self::CustomerSubscriptionPendingUpdateExpired);
         }
         if typ == "customer.subscription.resumed" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::CustomerSubscriptionResumed);
+            return parse_and_box(data).map(Self::CustomerSubscriptionResumed);
         }
         if typ == "customer.subscription.trial_will_end" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::CustomerSubscriptionTrialWillEnd);
+            return parse_and_box(data).map(Self::CustomerSubscriptionTrialWillEnd);
         }
         if typ == "customer.subscription.updated" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::CustomerSubscriptionUpdated);
+            return parse_and_box(data).map(Self::CustomerSubscriptionUpdated);
         }
         if typ == "customer.tax_id.created" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::CustomerTaxIdCreated);
+            return parse_and_box(data).map(Self::CustomerTaxIdCreated);
         }
         if typ == "customer.tax_id.deleted" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::CustomerTaxIdDeleted);
+            return parse_and_box(data).map(Self::CustomerTaxIdDeleted);
         }
         if typ == "customer.tax_id.updated" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::CustomerTaxIdUpdated);
+            return parse_and_box(data).map(Self::CustomerTaxIdUpdated);
         }
         if typ == "customer.updated" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::CustomerUpdated);
+            return parse_and_box(data).map(Self::CustomerUpdated);
         }
         if typ == "customer_cash_balance_transaction.created" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::CustomerCashBalanceTransactionCreated);
+            return parse_and_box(data).map(Self::CustomerCashBalanceTransactionCreated);
         }
         #[cfg(feature = "async-stripe-misc")]
         if typ == "entitlements.active_entitlement_summary.updated" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::EntitlementsActiveEntitlementSummaryUpdated);
+            return parse_and_box(data).map(Self::EntitlementsActiveEntitlementSummaryUpdated);
         }
         if typ == "file.created" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::FileCreated);
+            return parse_and_box(data).map(Self::FileCreated);
         }
         #[cfg(feature = "async-stripe-misc")]
         if typ == "financial_connections.account.account_numbers_updated" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::FinancialConnectionsAccountAccountNumbersUpdated);
+            return parse_and_box(data).map(Self::FinancialConnectionsAccountAccountNumbersUpdated);
         }
         #[cfg(feature = "async-stripe-misc")]
         if typ == "financial_connections.account.created" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::FinancialConnectionsAccountCreated);
+            return parse_and_box(data).map(Self::FinancialConnectionsAccountCreated);
         }
         #[cfg(feature = "async-stripe-misc")]
         if typ == "financial_connections.account.deactivated" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::FinancialConnectionsAccountDeactivated);
+            return parse_and_box(data).map(Self::FinancialConnectionsAccountDeactivated);
         }
         #[cfg(feature = "async-stripe-misc")]
         if typ == "financial_connections.account.disconnected" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::FinancialConnectionsAccountDisconnected);
+            return parse_and_box(data).map(Self::FinancialConnectionsAccountDisconnected);
         }
         #[cfg(feature = "async-stripe-misc")]
         if typ == "financial_connections.account.reactivated" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::FinancialConnectionsAccountReactivated);
+            return parse_and_box(data).map(Self::FinancialConnectionsAccountReactivated);
         }
         #[cfg(feature = "async-stripe-misc")]
         if typ == "financial_connections.account.refreshed_balance" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::FinancialConnectionsAccountRefreshedBalance);
+            return parse_and_box(data).map(Self::FinancialConnectionsAccountRefreshedBalance);
         }
         #[cfg(feature = "async-stripe-misc")]
         if typ == "financial_connections.account.refreshed_ownership" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::FinancialConnectionsAccountRefreshedOwnership);
+            return parse_and_box(data).map(Self::FinancialConnectionsAccountRefreshedOwnership);
         }
         #[cfg(feature = "async-stripe-misc")]
         if typ == "financial_connections.account.refreshed_transactions" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::FinancialConnectionsAccountRefreshedTransactions);
+            return parse_and_box(data).map(Self::FinancialConnectionsAccountRefreshedTransactions);
         }
         #[cfg(feature = "async-stripe-misc")]
         if typ == "financial_connections.account.upcoming_account_number_expiry" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
+            return parse_and_box(data)
                 .map(Self::FinancialConnectionsAccountUpcomingAccountNumberExpiry);
         }
         #[cfg(feature = "async-stripe-misc")]
         if typ == "identity.verification_session.canceled" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::IdentityVerificationSessionCanceled);
+            return parse_and_box(data).map(Self::IdentityVerificationSessionCanceled);
         }
         #[cfg(feature = "async-stripe-misc")]
         if typ == "identity.verification_session.created" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::IdentityVerificationSessionCreated);
+            return parse_and_box(data).map(Self::IdentityVerificationSessionCreated);
         }
         #[cfg(feature = "async-stripe-misc")]
         if typ == "identity.verification_session.processing" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::IdentityVerificationSessionProcessing);
+            return parse_and_box(data).map(Self::IdentityVerificationSessionProcessing);
         }
         #[cfg(feature = "async-stripe-misc")]
         if typ == "identity.verification_session.redacted" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::IdentityVerificationSessionRedacted);
+            return parse_and_box(data).map(Self::IdentityVerificationSessionRedacted);
         }
         #[cfg(feature = "async-stripe-misc")]
         if typ == "identity.verification_session.requires_input" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::IdentityVerificationSessionRequiresInput);
+            return parse_and_box(data).map(Self::IdentityVerificationSessionRequiresInput);
         }
         #[cfg(feature = "async-stripe-misc")]
         if typ == "identity.verification_session.verified" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::IdentityVerificationSessionVerified);
+            return parse_and_box(data).map(Self::IdentityVerificationSessionVerified);
         }
         if typ == "invoice.created" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::InvoiceCreated);
+            return parse_and_box(data).map(Self::InvoiceCreated);
         }
         if typ == "invoice.deleted" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::InvoiceDeleted);
+            return parse_and_box(data).map(Self::InvoiceDeleted);
         }
         if typ == "invoice.finalization_failed" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::InvoiceFinalizationFailed);
+            return parse_and_box(data).map(Self::InvoiceFinalizationFailed);
         }
         if typ == "invoice.finalized" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::InvoiceFinalized);
+            return parse_and_box(data).map(Self::InvoiceFinalized);
         }
         if typ == "invoice.marked_uncollectible" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::InvoiceMarkedUncollectible);
+            return parse_and_box(data).map(Self::InvoiceMarkedUncollectible);
         }
         if typ == "invoice.overdue" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::InvoiceOverdue);
+            return parse_and_box(data).map(Self::InvoiceOverdue);
         }
         if typ == "invoice.overpaid" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::InvoiceOverpaid);
+            return parse_and_box(data).map(Self::InvoiceOverpaid);
         }
         if typ == "invoice.paid" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::InvoicePaid);
+            return parse_and_box(data).map(Self::InvoicePaid);
         }
         if typ == "invoice.payment_action_required" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::InvoicePaymentActionRequired);
+            return parse_and_box(data).map(Self::InvoicePaymentActionRequired);
         }
         if typ == "invoice.payment_attempt_required" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::InvoicePaymentAttemptRequired);
+            return parse_and_box(data).map(Self::InvoicePaymentAttemptRequired);
         }
         if typ == "invoice.payment_failed" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::InvoicePaymentFailed);
+            return parse_and_box(data).map(Self::InvoicePaymentFailed);
         }
         if typ == "invoice.payment_succeeded" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::InvoicePaymentSucceeded);
+            return parse_and_box(data).map(Self::InvoicePaymentSucceeded);
         }
         if typ == "invoice.sent" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::InvoiceSent);
+            return parse_and_box(data).map(Self::InvoiceSent);
         }
         if typ == "invoice.upcoming" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::InvoiceUpcoming);
+            return parse_and_box(data).map(Self::InvoiceUpcoming);
         }
         if typ == "invoice.updated" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::InvoiceUpdated);
+            return parse_and_box(data).map(Self::InvoiceUpdated);
         }
         if typ == "invoice.voided" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::InvoiceVoided);
+            return parse_and_box(data).map(Self::InvoiceVoided);
         }
         if typ == "invoice.will_be_due" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::InvoiceWillBeDue);
+            return parse_and_box(data).map(Self::InvoiceWillBeDue);
         }
         if typ == "invoice_payment.paid" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::InvoicePaymentPaid);
+            return parse_and_box(data).map(Self::InvoicePaymentPaid);
         }
         #[cfg(feature = "async-stripe-billing")]
         if typ == "invoiceitem.created" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::InvoiceitemCreated);
+            return parse_and_box(data).map(Self::InvoiceitemCreated);
         }
         #[cfg(feature = "async-stripe-billing")]
         if typ == "invoiceitem.deleted" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::InvoiceitemDeleted);
+            return parse_and_box(data).map(Self::InvoiceitemDeleted);
         }
         if typ == "issuing_authorization.created" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::IssuingAuthorizationCreated);
+            return parse_and_box(data).map(Self::IssuingAuthorizationCreated);
         }
         if typ == "issuing_authorization.request" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::IssuingAuthorizationRequest);
+            return parse_and_box(data).map(Self::IssuingAuthorizationRequest);
         }
         if typ == "issuing_authorization.updated" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::IssuingAuthorizationUpdated);
+            return parse_and_box(data).map(Self::IssuingAuthorizationUpdated);
         }
         if typ == "issuing_card.created" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::IssuingCardCreated);
+            return parse_and_box(data).map(Self::IssuingCardCreated);
         }
         if typ == "issuing_card.updated" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::IssuingCardUpdated);
+            return parse_and_box(data).map(Self::IssuingCardUpdated);
         }
         if typ == "issuing_cardholder.created" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::IssuingCardholderCreated);
+            return parse_and_box(data).map(Self::IssuingCardholderCreated);
         }
         if typ == "issuing_cardholder.updated" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::IssuingCardholderUpdated);
+            return parse_and_box(data).map(Self::IssuingCardholderUpdated);
         }
         if typ == "issuing_dispute.closed" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::IssuingDisputeClosed);
+            return parse_and_box(data).map(Self::IssuingDisputeClosed);
         }
         if typ == "issuing_dispute.created" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::IssuingDisputeCreated);
+            return parse_and_box(data).map(Self::IssuingDisputeCreated);
         }
         if typ == "issuing_dispute.funds_reinstated" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::IssuingDisputeFundsReinstated);
+            return parse_and_box(data).map(Self::IssuingDisputeFundsReinstated);
         }
         if typ == "issuing_dispute.funds_rescinded" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::IssuingDisputeFundsRescinded);
+            return parse_and_box(data).map(Self::IssuingDisputeFundsRescinded);
         }
         if typ == "issuing_dispute.submitted" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::IssuingDisputeSubmitted);
+            return parse_and_box(data).map(Self::IssuingDisputeSubmitted);
         }
         if typ == "issuing_dispute.updated" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::IssuingDisputeUpdated);
+            return parse_and_box(data).map(Self::IssuingDisputeUpdated);
         }
         if typ == "issuing_personalization_design.activated" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::IssuingPersonalizationDesignActivated);
+            return parse_and_box(data).map(Self::IssuingPersonalizationDesignActivated);
         }
         if typ == "issuing_personalization_design.deactivated" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::IssuingPersonalizationDesignDeactivated);
+            return parse_and_box(data).map(Self::IssuingPersonalizationDesignDeactivated);
         }
         if typ == "issuing_personalization_design.rejected" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::IssuingPersonalizationDesignRejected);
+            return parse_and_box(data).map(Self::IssuingPersonalizationDesignRejected);
         }
         if typ == "issuing_personalization_design.updated" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::IssuingPersonalizationDesignUpdated);
+            return parse_and_box(data).map(Self::IssuingPersonalizationDesignUpdated);
         }
         if typ == "issuing_token.created" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::IssuingTokenCreated);
+            return parse_and_box(data).map(Self::IssuingTokenCreated);
         }
         if typ == "issuing_token.updated" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::IssuingTokenUpdated);
+            return parse_and_box(data).map(Self::IssuingTokenUpdated);
         }
         if typ == "issuing_transaction.created" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::IssuingTransactionCreated);
+            return parse_and_box(data).map(Self::IssuingTransactionCreated);
         }
         if typ == "issuing_transaction.purchase_details_receipt_updated" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::IssuingTransactionPurchaseDetailsReceiptUpdated);
+            return parse_and_box(data).map(Self::IssuingTransactionPurchaseDetailsReceiptUpdated);
         }
         if typ == "issuing_transaction.updated" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::IssuingTransactionUpdated);
+            return parse_and_box(data).map(Self::IssuingTransactionUpdated);
         }
         if typ == "mandate.updated" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::MandateUpdated);
+            return parse_and_box(data).map(Self::MandateUpdated);
         }
         if typ == "payment_intent.amount_capturable_updated" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::PaymentIntentAmountCapturableUpdated);
+            return parse_and_box(data).map(Self::PaymentIntentAmountCapturableUpdated);
         }
         if typ == "payment_intent.canceled" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::PaymentIntentCanceled);
+            return parse_and_box(data).map(Self::PaymentIntentCanceled);
         }
         if typ == "payment_intent.created" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::PaymentIntentCreated);
+            return parse_and_box(data).map(Self::PaymentIntentCreated);
         }
         if typ == "payment_intent.partially_funded" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::PaymentIntentPartiallyFunded);
+            return parse_and_box(data).map(Self::PaymentIntentPartiallyFunded);
         }
         if typ == "payment_intent.payment_failed" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::PaymentIntentPaymentFailed);
+            return parse_and_box(data).map(Self::PaymentIntentPaymentFailed);
         }
         if typ == "payment_intent.processing" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::PaymentIntentProcessing);
+            return parse_and_box(data).map(Self::PaymentIntentProcessing);
         }
         if typ == "payment_intent.requires_action" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::PaymentIntentRequiresAction);
+            return parse_and_box(data).map(Self::PaymentIntentRequiresAction);
         }
         if typ == "payment_intent.succeeded" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::PaymentIntentSucceeded);
+            return parse_and_box(data).map(Self::PaymentIntentSucceeded);
         }
         if typ == "payment_link.created" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::PaymentLinkCreated);
+            return parse_and_box(data).map(Self::PaymentLinkCreated);
         }
         if typ == "payment_link.updated" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::PaymentLinkUpdated);
+            return parse_and_box(data).map(Self::PaymentLinkUpdated);
         }
         if typ == "payment_method.attached" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::PaymentMethodAttached);
+            return parse_and_box(data).map(Self::PaymentMethodAttached);
         }
         if typ == "payment_method.automatically_updated" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::PaymentMethodAutomaticallyUpdated);
+            return parse_and_box(data).map(Self::PaymentMethodAutomaticallyUpdated);
         }
         if typ == "payment_method.detached" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::PaymentMethodDetached);
+            return parse_and_box(data).map(Self::PaymentMethodDetached);
         }
         if typ == "payment_method.updated" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::PaymentMethodUpdated);
+            return parse_and_box(data).map(Self::PaymentMethodUpdated);
         }
         if typ == "payout.canceled" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::PayoutCanceled);
+            return parse_and_box(data).map(Self::PayoutCanceled);
         }
         if typ == "payout.created" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::PayoutCreated);
+            return parse_and_box(data).map(Self::PayoutCreated);
         }
         if typ == "payout.failed" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::PayoutFailed);
+            return parse_and_box(data).map(Self::PayoutFailed);
         }
         if typ == "payout.paid" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::PayoutPaid);
+            return parse_and_box(data).map(Self::PayoutPaid);
         }
         if typ == "payout.reconciliation_completed" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::PayoutReconciliationCompleted);
+            return parse_and_box(data).map(Self::PayoutReconciliationCompleted);
         }
         if typ == "payout.updated" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::PayoutUpdated);
+            return parse_and_box(data).map(Self::PayoutUpdated);
         }
         if typ == "person.created" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::PersonCreated);
+            return parse_and_box(data).map(Self::PersonCreated);
         }
         if typ == "person.deleted" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::PersonDeleted);
+            return parse_and_box(data).map(Self::PersonDeleted);
         }
         if typ == "person.updated" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::PersonUpdated);
+            return parse_and_box(data).map(Self::PersonUpdated);
         }
         if typ == "plan.created" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::PlanCreated);
+            return parse_and_box(data).map(Self::PlanCreated);
         }
         if typ == "plan.deleted" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::PlanDeleted);
+            return parse_and_box(data).map(Self::PlanDeleted);
         }
         if typ == "plan.updated" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::PlanUpdated);
+            return parse_and_box(data).map(Self::PlanUpdated);
         }
         if typ == "price.created" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::PriceCreated);
+            return parse_and_box(data).map(Self::PriceCreated);
         }
         if typ == "price.deleted" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::PriceDeleted);
+            return parse_and_box(data).map(Self::PriceDeleted);
         }
         if typ == "price.updated" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::PriceUpdated);
+            return parse_and_box(data).map(Self::PriceUpdated);
         }
         if typ == "product.created" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::ProductCreated);
+            return parse_and_box(data).map(Self::ProductCreated);
         }
         if typ == "product.deleted" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::ProductDeleted);
+            return parse_and_box(data).map(Self::ProductDeleted);
         }
         if typ == "product.updated" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::ProductUpdated);
+            return parse_and_box(data).map(Self::ProductUpdated);
         }
         if typ == "promotion_code.created" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::PromotionCodeCreated);
+            return parse_and_box(data).map(Self::PromotionCodeCreated);
         }
         if typ == "promotion_code.updated" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::PromotionCodeUpdated);
+            return parse_and_box(data).map(Self::PromotionCodeUpdated);
         }
         #[cfg(feature = "async-stripe-billing")]
         if typ == "quote.accepted" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::QuoteAccepted);
+            return parse_and_box(data).map(Self::QuoteAccepted);
         }
         #[cfg(feature = "async-stripe-billing")]
         if typ == "quote.canceled" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::QuoteCanceled);
+            return parse_and_box(data).map(Self::QuoteCanceled);
         }
         #[cfg(feature = "async-stripe-billing")]
         if typ == "quote.created" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::QuoteCreated);
+            return parse_and_box(data).map(Self::QuoteCreated);
         }
         #[cfg(feature = "async-stripe-billing")]
         if typ == "quote.finalized" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::QuoteFinalized);
+            return parse_and_box(data).map(Self::QuoteFinalized);
         }
         #[cfg(feature = "async-stripe-fraud")]
         if typ == "radar.early_fraud_warning.created" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::RadarEarlyFraudWarningCreated);
+            return parse_and_box(data).map(Self::RadarEarlyFraudWarningCreated);
         }
         #[cfg(feature = "async-stripe-fraud")]
         if typ == "radar.early_fraud_warning.updated" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::RadarEarlyFraudWarningUpdated);
+            return parse_and_box(data).map(Self::RadarEarlyFraudWarningUpdated);
         }
         if typ == "refund.created" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::RefundCreated);
+            return parse_and_box(data).map(Self::RefundCreated);
         }
         if typ == "refund.failed" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::RefundFailed);
+            return parse_and_box(data).map(Self::RefundFailed);
         }
         if typ == "refund.updated" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::RefundUpdated);
+            return parse_and_box(data).map(Self::RefundUpdated);
         }
         #[cfg(feature = "async-stripe-misc")]
         if typ == "reporting.report_run.failed" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::ReportingReportRunFailed);
+            return parse_and_box(data).map(Self::ReportingReportRunFailed);
         }
         #[cfg(feature = "async-stripe-misc")]
         if typ == "reporting.report_run.succeeded" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::ReportingReportRunSucceeded);
+            return parse_and_box(data).map(Self::ReportingReportRunSucceeded);
         }
         #[cfg(feature = "async-stripe-misc")]
         if typ == "reporting.report_type.updated" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::ReportingReportTypeUpdated);
+            return parse_and_box(data).map(Self::ReportingReportTypeUpdated);
         }
         if typ == "review.closed" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::ReviewClosed);
+            return parse_and_box(data).map(Self::ReviewClosed);
         }
         if typ == "review.opened" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::ReviewOpened);
+            return parse_and_box(data).map(Self::ReviewOpened);
         }
         if typ == "setup_intent.canceled" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::SetupIntentCanceled);
+            return parse_and_box(data).map(Self::SetupIntentCanceled);
         }
         if typ == "setup_intent.created" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::SetupIntentCreated);
+            return parse_and_box(data).map(Self::SetupIntentCreated);
         }
         if typ == "setup_intent.requires_action" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::SetupIntentRequiresAction);
+            return parse_and_box(data).map(Self::SetupIntentRequiresAction);
         }
         if typ == "setup_intent.setup_failed" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::SetupIntentSetupFailed);
+            return parse_and_box(data).map(Self::SetupIntentSetupFailed);
         }
         if typ == "setup_intent.succeeded" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::SetupIntentSucceeded);
+            return parse_and_box(data).map(Self::SetupIntentSucceeded);
         }
         #[cfg(feature = "async-stripe-misc")]
         if typ == "sigma.scheduled_query_run.created" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::SigmaScheduledQueryRunCreated);
+            return parse_and_box(data).map(Self::SigmaScheduledQueryRunCreated);
         }
         if typ == "source.canceled" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::SourceCanceled);
+            return parse_and_box(data).map(Self::SourceCanceled);
         }
         if typ == "source.chargeable" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::SourceChargeable);
+            return parse_and_box(data).map(Self::SourceChargeable);
         }
         if typ == "source.failed" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::SourceFailed);
+            return parse_and_box(data).map(Self::SourceFailed);
         }
         #[cfg(feature = "async-stripe-payment")]
         if typ == "source.mandate_notification" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::SourceMandateNotification);
+            return parse_and_box(data).map(Self::SourceMandateNotification);
         }
         if typ == "source.refund_attributes_required" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::SourceRefundAttributesRequired);
+            return parse_and_box(data).map(Self::SourceRefundAttributesRequired);
         }
         if typ == "source.transaction.created" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::SourceTransactionCreated);
+            return parse_and_box(data).map(Self::SourceTransactionCreated);
         }
         if typ == "source.transaction.updated" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::SourceTransactionUpdated);
+            return parse_and_box(data).map(Self::SourceTransactionUpdated);
         }
         if typ == "subscription_schedule.aborted" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::SubscriptionScheduleAborted);
+            return parse_and_box(data).map(Self::SubscriptionScheduleAborted);
         }
         if typ == "subscription_schedule.canceled" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::SubscriptionScheduleCanceled);
+            return parse_and_box(data).map(Self::SubscriptionScheduleCanceled);
         }
         if typ == "subscription_schedule.completed" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::SubscriptionScheduleCompleted);
+            return parse_and_box(data).map(Self::SubscriptionScheduleCompleted);
         }
         if typ == "subscription_schedule.created" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::SubscriptionScheduleCreated);
+            return parse_and_box(data).map(Self::SubscriptionScheduleCreated);
         }
         if typ == "subscription_schedule.expiring" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::SubscriptionScheduleExpiring);
+            return parse_and_box(data).map(Self::SubscriptionScheduleExpiring);
         }
         if typ == "subscription_schedule.released" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::SubscriptionScheduleReleased);
+            return parse_and_box(data).map(Self::SubscriptionScheduleReleased);
         }
         if typ == "subscription_schedule.updated" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::SubscriptionScheduleUpdated);
+            return parse_and_box(data).map(Self::SubscriptionScheduleUpdated);
         }
         #[cfg(feature = "async-stripe-misc")]
         if typ == "tax.settings.updated" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::TaxSettingsUpdated);
+            return parse_and_box(data).map(Self::TaxSettingsUpdated);
         }
         if typ == "tax_rate.created" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::TaxRateCreated);
+            return parse_and_box(data).map(Self::TaxRateCreated);
         }
         if typ == "tax_rate.updated" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::TaxRateUpdated);
+            return parse_and_box(data).map(Self::TaxRateUpdated);
         }
         #[cfg(feature = "async-stripe-terminal")]
         if typ == "terminal.reader.action_failed" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::TerminalReaderActionFailed);
+            return parse_and_box(data).map(Self::TerminalReaderActionFailed);
         }
         #[cfg(feature = "async-stripe-terminal")]
         if typ == "terminal.reader.action_succeeded" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::TerminalReaderActionSucceeded);
+            return parse_and_box(data).map(Self::TerminalReaderActionSucceeded);
         }
         #[cfg(feature = "async-stripe-terminal")]
         if typ == "terminal.reader.action_updated" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::TerminalReaderActionUpdated);
+            return parse_and_box(data).map(Self::TerminalReaderActionUpdated);
         }
         if typ == "test_helpers.test_clock.advancing" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::TestHelpersTestClockAdvancing);
+            return parse_and_box(data).map(Self::TestHelpersTestClockAdvancing);
         }
         if typ == "test_helpers.test_clock.created" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::TestHelpersTestClockCreated);
+            return parse_and_box(data).map(Self::TestHelpersTestClockCreated);
         }
         if typ == "test_helpers.test_clock.deleted" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::TestHelpersTestClockDeleted);
+            return parse_and_box(data).map(Self::TestHelpersTestClockDeleted);
         }
         if typ == "test_helpers.test_clock.internal_failure" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::TestHelpersTestClockInternalFailure);
+            return parse_and_box(data).map(Self::TestHelpersTestClockInternalFailure);
         }
         if typ == "test_helpers.test_clock.ready" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::TestHelpersTestClockReady);
+            return parse_and_box(data).map(Self::TestHelpersTestClockReady);
         }
         if typ == "topup.canceled" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::TopupCanceled);
+            return parse_and_box(data).map(Self::TopupCanceled);
         }
         if typ == "topup.created" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::TopupCreated);
+            return parse_and_box(data).map(Self::TopupCreated);
         }
         if typ == "topup.failed" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::TopupFailed);
+            return parse_and_box(data).map(Self::TopupFailed);
         }
         if typ == "topup.reversed" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::TopupReversed);
+            return parse_and_box(data).map(Self::TopupReversed);
         }
         if typ == "topup.succeeded" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::TopupSucceeded);
+            return parse_and_box(data).map(Self::TopupSucceeded);
         }
         if typ == "transfer.created" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::TransferCreated);
+            return parse_and_box(data).map(Self::TransferCreated);
         }
         if typ == "transfer.reversed" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::TransferReversed);
+            return parse_and_box(data).map(Self::TransferReversed);
         }
         if typ == "transfer.updated" {
-            return FromValueOpt::from_value(data).map(Box::new).map(Self::TransferUpdated);
+            return parse_and_box(data).map(Self::TransferUpdated);
         }
         #[cfg(feature = "async-stripe-treasury")]
         if typ == "treasury.credit_reversal.created" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::TreasuryCreditReversalCreated);
+            return parse_and_box(data).map(Self::TreasuryCreditReversalCreated);
         }
         #[cfg(feature = "async-stripe-treasury")]
         if typ == "treasury.credit_reversal.posted" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::TreasuryCreditReversalPosted);
+            return parse_and_box(data).map(Self::TreasuryCreditReversalPosted);
         }
         #[cfg(feature = "async-stripe-treasury")]
         if typ == "treasury.debit_reversal.completed" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::TreasuryDebitReversalCompleted);
+            return parse_and_box(data).map(Self::TreasuryDebitReversalCompleted);
         }
         #[cfg(feature = "async-stripe-treasury")]
         if typ == "treasury.debit_reversal.created" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::TreasuryDebitReversalCreated);
+            return parse_and_box(data).map(Self::TreasuryDebitReversalCreated);
         }
         #[cfg(feature = "async-stripe-treasury")]
         if typ == "treasury.debit_reversal.initial_credit_granted" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::TreasuryDebitReversalInitialCreditGranted);
+            return parse_and_box(data).map(Self::TreasuryDebitReversalInitialCreditGranted);
         }
         #[cfg(feature = "async-stripe-treasury")]
         if typ == "treasury.financial_account.closed" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::TreasuryFinancialAccountClosed);
+            return parse_and_box(data).map(Self::TreasuryFinancialAccountClosed);
         }
         #[cfg(feature = "async-stripe-treasury")]
         if typ == "treasury.financial_account.created" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::TreasuryFinancialAccountCreated);
+            return parse_and_box(data).map(Self::TreasuryFinancialAccountCreated);
         }
         #[cfg(feature = "async-stripe-treasury")]
         if typ == "treasury.financial_account.features_status_updated" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::TreasuryFinancialAccountFeaturesStatusUpdated);
+            return parse_and_box(data).map(Self::TreasuryFinancialAccountFeaturesStatusUpdated);
         }
         #[cfg(feature = "async-stripe-treasury")]
         if typ == "treasury.inbound_transfer.canceled" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::TreasuryInboundTransferCanceled);
+            return parse_and_box(data).map(Self::TreasuryInboundTransferCanceled);
         }
         #[cfg(feature = "async-stripe-treasury")]
         if typ == "treasury.inbound_transfer.created" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::TreasuryInboundTransferCreated);
+            return parse_and_box(data).map(Self::TreasuryInboundTransferCreated);
         }
         #[cfg(feature = "async-stripe-treasury")]
         if typ == "treasury.inbound_transfer.failed" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::TreasuryInboundTransferFailed);
+            return parse_and_box(data).map(Self::TreasuryInboundTransferFailed);
         }
         #[cfg(feature = "async-stripe-treasury")]
         if typ == "treasury.inbound_transfer.succeeded" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::TreasuryInboundTransferSucceeded);
+            return parse_and_box(data).map(Self::TreasuryInboundTransferSucceeded);
         }
         #[cfg(feature = "async-stripe-treasury")]
         if typ == "treasury.outbound_payment.canceled" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::TreasuryOutboundPaymentCanceled);
+            return parse_and_box(data).map(Self::TreasuryOutboundPaymentCanceled);
         }
         #[cfg(feature = "async-stripe-treasury")]
         if typ == "treasury.outbound_payment.created" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::TreasuryOutboundPaymentCreated);
+            return parse_and_box(data).map(Self::TreasuryOutboundPaymentCreated);
         }
         #[cfg(feature = "async-stripe-treasury")]
         if typ == "treasury.outbound_payment.expected_arrival_date_updated" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
+            return parse_and_box(data)
                 .map(Self::TreasuryOutboundPaymentExpectedArrivalDateUpdated);
         }
         #[cfg(feature = "async-stripe-treasury")]
         if typ == "treasury.outbound_payment.failed" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::TreasuryOutboundPaymentFailed);
+            return parse_and_box(data).map(Self::TreasuryOutboundPaymentFailed);
         }
         #[cfg(feature = "async-stripe-treasury")]
         if typ == "treasury.outbound_payment.posted" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::TreasuryOutboundPaymentPosted);
+            return parse_and_box(data).map(Self::TreasuryOutboundPaymentPosted);
         }
         #[cfg(feature = "async-stripe-treasury")]
         if typ == "treasury.outbound_payment.returned" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::TreasuryOutboundPaymentReturned);
+            return parse_and_box(data).map(Self::TreasuryOutboundPaymentReturned);
         }
         #[cfg(feature = "async-stripe-treasury")]
         if typ == "treasury.outbound_payment.tracking_details_updated" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::TreasuryOutboundPaymentTrackingDetailsUpdated);
+            return parse_and_box(data).map(Self::TreasuryOutboundPaymentTrackingDetailsUpdated);
         }
         #[cfg(feature = "async-stripe-treasury")]
         if typ == "treasury.outbound_transfer.canceled" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::TreasuryOutboundTransferCanceled);
+            return parse_and_box(data).map(Self::TreasuryOutboundTransferCanceled);
         }
         #[cfg(feature = "async-stripe-treasury")]
         if typ == "treasury.outbound_transfer.created" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::TreasuryOutboundTransferCreated);
+            return parse_and_box(data).map(Self::TreasuryOutboundTransferCreated);
         }
         #[cfg(feature = "async-stripe-treasury")]
         if typ == "treasury.outbound_transfer.expected_arrival_date_updated" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
+            return parse_and_box(data)
                 .map(Self::TreasuryOutboundTransferExpectedArrivalDateUpdated);
         }
         #[cfg(feature = "async-stripe-treasury")]
         if typ == "treasury.outbound_transfer.failed" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::TreasuryOutboundTransferFailed);
+            return parse_and_box(data).map(Self::TreasuryOutboundTransferFailed);
         }
         #[cfg(feature = "async-stripe-treasury")]
         if typ == "treasury.outbound_transfer.posted" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::TreasuryOutboundTransferPosted);
+            return parse_and_box(data).map(Self::TreasuryOutboundTransferPosted);
         }
         #[cfg(feature = "async-stripe-treasury")]
         if typ == "treasury.outbound_transfer.returned" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::TreasuryOutboundTransferReturned);
+            return parse_and_box(data).map(Self::TreasuryOutboundTransferReturned);
         }
         #[cfg(feature = "async-stripe-treasury")]
         if typ == "treasury.outbound_transfer.tracking_details_updated" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::TreasuryOutboundTransferTrackingDetailsUpdated);
+            return parse_and_box(data).map(Self::TreasuryOutboundTransferTrackingDetailsUpdated);
         }
         #[cfg(feature = "async-stripe-treasury")]
         if typ == "treasury.received_credit.created" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::TreasuryReceivedCreditCreated);
+            return parse_and_box(data).map(Self::TreasuryReceivedCreditCreated);
         }
         #[cfg(feature = "async-stripe-treasury")]
         if typ == "treasury.received_credit.failed" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::TreasuryReceivedCreditFailed);
+            return parse_and_box(data).map(Self::TreasuryReceivedCreditFailed);
         }
         #[cfg(feature = "async-stripe-treasury")]
         if typ == "treasury.received_credit.succeeded" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::TreasuryReceivedCreditSucceeded);
+            return parse_and_box(data).map(Self::TreasuryReceivedCreditSucceeded);
         }
         #[cfg(feature = "async-stripe-treasury")]
         if typ == "treasury.received_debit.created" {
-            return FromValueOpt::from_value(data)
-                .map(Box::new)
-                .map(Self::TreasuryReceivedDebitCreated);
+            return parse_and_box(data).map(Self::TreasuryReceivedDebitCreated);
         }
 
         Some(Self::Unknown(data))
