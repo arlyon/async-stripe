@@ -66,7 +66,7 @@ fn write_event_object(components: &Components, out_path: &Path) -> anyhow::Resul
         if let Some(gate) = &feature_gate {
             let _ = writeln!(enum_body, r#"#[cfg(feature = "{gate}")]"#);
         }
-        let _ = writeln!(enum_body, "{ident}({printable}),");
+        let _ = writeln!(enum_body, "{ident}(Box<{printable}>),");
 
         if let Some(gate) = &feature_gate {
             let _ = writeln!(match_inner, r#"#[cfg(feature = "{gate}")]"#);
@@ -74,7 +74,7 @@ fn write_event_object(components: &Components, out_path: &Path) -> anyhow::Resul
         let evt_type = &webhook_obj.event_type;
         let _ = writeln!(
             match_inner,
-            r#"if typ == "{evt_type}" {{ return FromValueOpt::from_value(data).map(Self::{ident}) }}"#
+            r#"if typ == "{evt_type}" {{ return FromValueOpt::from_value(data).map(Box::new).map(Self::{ident}) }}"#
         );
     }
     let _ = writedoc! {enum_body, r#"

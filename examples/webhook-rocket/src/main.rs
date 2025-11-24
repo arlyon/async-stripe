@@ -36,7 +36,7 @@ pub async fn stripe_webhooks(stripe_signature: StripeSignature<'_>, payload: Pay
     ) {
         match event.data.object {
             EventObject::CheckoutSessionCompleted(session) => {
-                match checkout_session_completed(session) {
+                match checkout_session_completed(*session) {
                     Ok(_) => Status::Accepted,
                     Err(_) => Status::BadRequest,
                 }
