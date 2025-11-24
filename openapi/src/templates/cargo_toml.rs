@@ -73,6 +73,7 @@ pub fn gen_crate_toml(
         serde_json = {{ workspace = true, optional = true }}
         smol_str.workspace = true
         miniserde.workspace = true
+        tracing = {{ version = "0.1", default-features = false }}
         async-stripe-types = {{path = "../../async-stripe-types", version = "{version}" }}
         {request_deps}
 
