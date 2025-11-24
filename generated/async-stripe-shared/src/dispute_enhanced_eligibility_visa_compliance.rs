@@ -1,4 +1,4 @@
-#[derive(Copy, Clone, Debug)]
+#[derive(Clone, Debug)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct DisputeEnhancedEligibilityVisaCompliance {
@@ -60,7 +60,7 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(status),) = (self.status,) else {
+            let (Some(status),) = (self.status.take(),) else {
                 return None;
             };
             Some(Self::Out { status })
@@ -99,29 +99,40 @@ const _: () = {
     }
 };
 /// Visa compliance eligibility status.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum DisputeEnhancedEligibilityVisaComplianceStatus {
     FeeAcknowledged,
     RequiresFeeAcknowledgement,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl DisputeEnhancedEligibilityVisaComplianceStatus {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use DisputeEnhancedEligibilityVisaComplianceStatus::*;
         match self {
             FeeAcknowledged => "fee_acknowledged",
             RequiresFeeAcknowledgement => "requires_fee_acknowledgement",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for DisputeEnhancedEligibilityVisaComplianceStatus {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use DisputeEnhancedEligibilityVisaComplianceStatus::*;
         match s {
             "fee_acknowledged" => Ok(FeeAcknowledged),
             "requires_fee_acknowledgement" => Ok(RequiresFeeAcknowledgement),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "DisputeEnhancedEligibilityVisaComplianceStatus"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -154,10 +165,8 @@ impl miniserde::Deserialize for DisputeEnhancedEligibilityVisaComplianceStatus {
 impl miniserde::de::Visitor for crate::Place<DisputeEnhancedEligibilityVisaComplianceStatus> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            DisputeEnhancedEligibilityVisaComplianceStatus::from_str(s)
-                .map_err(|_| miniserde::Error)?,
-        );
+        self.out =
+            Some(DisputeEnhancedEligibilityVisaComplianceStatus::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -168,10 +177,6 @@ impl<'de> serde::Deserialize<'de> for DisputeEnhancedEligibilityVisaComplianceSt
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for DisputeEnhancedEligibilityVisaComplianceStatus",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

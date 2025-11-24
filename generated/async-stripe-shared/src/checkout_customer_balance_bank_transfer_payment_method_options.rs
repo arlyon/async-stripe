@@ -80,9 +80,11 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(eu_bank_transfer), Some(requested_address_types), Some(type_)) =
-                (self.eu_bank_transfer, self.requested_address_types.take(), self.type_)
-            else {
+            let (Some(eu_bank_transfer), Some(requested_address_types), Some(type_)) = (
+                self.eu_bank_transfer.take(),
+                self.requested_address_types.take(),
+                self.type_.take(),
+            ) else {
                 return None;
             };
             Some(Self::Out { eu_bank_transfer, requested_address_types, type_ })
@@ -129,7 +131,8 @@ const _: () = {
 /// If not specified, all valid types will be returned.
 ///
 /// Permitted values include: `sort_code`, `zengin`, `iban`, or `spei`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CheckoutCustomerBalanceBankTransferPaymentMethodOptionsRequestedAddressTypes {
     Aba,
     Iban,
@@ -138,9 +141,11 @@ pub enum CheckoutCustomerBalanceBankTransferPaymentMethodOptionsRequestedAddress
     Spei,
     Swift,
     Zengin,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CheckoutCustomerBalanceBankTransferPaymentMethodOptionsRequestedAddressTypes {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CheckoutCustomerBalanceBankTransferPaymentMethodOptionsRequestedAddressTypes::*;
         match self {
             Aba => "aba",
@@ -150,6 +155,7 @@ impl CheckoutCustomerBalanceBankTransferPaymentMethodOptionsRequestedAddressType
             Spei => "spei",
             Swift => "swift",
             Zengin => "zengin",
+            Unknown(v) => v,
         }
     }
 }
@@ -157,7 +163,7 @@ impl CheckoutCustomerBalanceBankTransferPaymentMethodOptionsRequestedAddressType
 impl std::str::FromStr
     for CheckoutCustomerBalanceBankTransferPaymentMethodOptionsRequestedAddressTypes
 {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CheckoutCustomerBalanceBankTransferPaymentMethodOptionsRequestedAddressTypes::*;
         match s {
@@ -168,7 +174,14 @@ impl std::str::FromStr
             "spei" => Ok(Spei),
             "swift" => Ok(Swift),
             "zengin" => Ok(Zengin),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CheckoutCustomerBalanceBankTransferPaymentMethodOptionsRequestedAddressTypes"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -215,7 +228,7 @@ impl miniserde::de::Visitor
             CheckoutCustomerBalanceBankTransferPaymentMethodOptionsRequestedAddressTypes::from_str(
                 s,
             )
-            .map_err(|_| miniserde::Error)?,
+            .expect("infallible"),
         );
         Ok(())
     }
@@ -231,20 +244,23 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CheckoutCustomerBalanceBankTransferPaymentMethodOptionsRequestedAddressTypes"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The bank transfer type that this PaymentIntent is allowed to use for funding Permitted values include: `eu_bank_transfer`, `gb_bank_transfer`, `jp_bank_transfer`, `mx_bank_transfer`, or `us_bank_transfer`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CheckoutCustomerBalanceBankTransferPaymentMethodOptionsType {
     EuBankTransfer,
     GbBankTransfer,
     JpBankTransfer,
     MxBankTransfer,
     UsBankTransfer,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CheckoutCustomerBalanceBankTransferPaymentMethodOptionsType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CheckoutCustomerBalanceBankTransferPaymentMethodOptionsType::*;
         match self {
             EuBankTransfer => "eu_bank_transfer",
@@ -252,12 +268,13 @@ impl CheckoutCustomerBalanceBankTransferPaymentMethodOptionsType {
             JpBankTransfer => "jp_bank_transfer",
             MxBankTransfer => "mx_bank_transfer",
             UsBankTransfer => "us_bank_transfer",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CheckoutCustomerBalanceBankTransferPaymentMethodOptionsType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CheckoutCustomerBalanceBankTransferPaymentMethodOptionsType::*;
         match s {
@@ -266,7 +283,14 @@ impl std::str::FromStr for CheckoutCustomerBalanceBankTransferPaymentMethodOptio
             "jp_bank_transfer" => Ok(JpBankTransfer),
             "mx_bank_transfer" => Ok(MxBankTransfer),
             "us_bank_transfer" => Ok(UsBankTransfer),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CheckoutCustomerBalanceBankTransferPaymentMethodOptionsType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -303,7 +327,7 @@ impl miniserde::de::Visitor
         use std::str::FromStr;
         self.out = Some(
             CheckoutCustomerBalanceBankTransferPaymentMethodOptionsType::from_str(s)
-                .map_err(|_| miniserde::Error)?,
+                .expect("infallible"),
         );
         Ok(())
     }
@@ -317,10 +341,6 @@ impl<'de> serde::Deserialize<'de> for CheckoutCustomerBalanceBankTransferPayment
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for CheckoutCustomerBalanceBankTransferPaymentMethodOptionsType",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

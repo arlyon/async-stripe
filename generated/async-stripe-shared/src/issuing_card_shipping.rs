@@ -144,17 +144,17 @@ const _: () = {
             ) = (
                 self.address.take(),
                 self.address_validation.take(),
-                self.carrier,
+                self.carrier.take(),
                 self.customs.take(),
                 self.eta,
                 self.name.take(),
                 self.phone_number.take(),
                 self.require_signature,
-                self.service,
-                self.status,
+                self.service.take(),
+                self.status.take(),
                 self.tracking_number.take(),
                 self.tracking_url.take(),
-                self.type_,
+                self.type_.take(),
             )
             else {
                 return None;
@@ -221,27 +221,31 @@ const _: () = {
     }
 };
 /// The delivery company that shipped a card.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum IssuingCardShippingCarrier {
     Dhl,
     Fedex,
     RoyalMail,
     Usps,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl IssuingCardShippingCarrier {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use IssuingCardShippingCarrier::*;
         match self {
             Dhl => "dhl",
             Fedex => "fedex",
             RoyalMail => "royal_mail",
             Usps => "usps",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for IssuingCardShippingCarrier {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use IssuingCardShippingCarrier::*;
         match s {
@@ -249,7 +253,10 @@ impl std::str::FromStr for IssuingCardShippingCarrier {
             "fedex" => Ok(Fedex),
             "royal_mail" => Ok(RoyalMail),
             "usps" => Ok(Usps),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "IssuingCardShippingCarrier");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -282,7 +289,7 @@ impl miniserde::Deserialize for IssuingCardShippingCarrier {
 impl miniserde::de::Visitor for crate::Place<IssuingCardShippingCarrier> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(IssuingCardShippingCarrier::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(IssuingCardShippingCarrier::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -293,37 +300,43 @@ impl<'de> serde::Deserialize<'de> for IssuingCardShippingCarrier {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for IssuingCardShippingCarrier"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Shipment service, such as `standard` or `express`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum IssuingCardShippingService {
     Express,
     Priority,
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl IssuingCardShippingService {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use IssuingCardShippingService::*;
         match self {
             Express => "express",
             Priority => "priority",
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for IssuingCardShippingService {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use IssuingCardShippingService::*;
         match s {
             "express" => Ok(Express),
             "priority" => Ok(Priority),
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "IssuingCardShippingService");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -356,7 +369,7 @@ impl miniserde::Deserialize for IssuingCardShippingService {
 impl miniserde::de::Visitor for crate::Place<IssuingCardShippingService> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(IssuingCardShippingService::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(IssuingCardShippingService::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -367,12 +380,12 @@ impl<'de> serde::Deserialize<'de> for IssuingCardShippingService {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for IssuingCardShippingService"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The delivery status of the card.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum IssuingCardShippingStatus {
     Canceled,
     Delivered,
@@ -381,9 +394,11 @@ pub enum IssuingCardShippingStatus {
     Returned,
     Shipped,
     Submitted,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl IssuingCardShippingStatus {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use IssuingCardShippingStatus::*;
         match self {
             Canceled => "canceled",
@@ -393,12 +408,13 @@ impl IssuingCardShippingStatus {
             Returned => "returned",
             Shipped => "shipped",
             Submitted => "submitted",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for IssuingCardShippingStatus {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use IssuingCardShippingStatus::*;
         match s {
@@ -409,7 +425,10 @@ impl std::str::FromStr for IssuingCardShippingStatus {
             "returned" => Ok(Returned),
             "shipped" => Ok(Shipped),
             "submitted" => Ok(Submitted),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "IssuingCardShippingStatus");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -442,7 +461,7 @@ impl miniserde::Deserialize for IssuingCardShippingStatus {
 impl miniserde::de::Visitor for crate::Place<IssuingCardShippingStatus> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(IssuingCardShippingStatus::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(IssuingCardShippingStatus::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -453,34 +472,40 @@ impl<'de> serde::Deserialize<'de> for IssuingCardShippingStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for IssuingCardShippingStatus"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Packaging options.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum IssuingCardShippingType {
     Bulk,
     Individual,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl IssuingCardShippingType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use IssuingCardShippingType::*;
         match self {
             Bulk => "bulk",
             Individual => "individual",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for IssuingCardShippingType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use IssuingCardShippingType::*;
         match s {
             "bulk" => Ok(Bulk),
             "individual" => Ok(Individual),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "IssuingCardShippingType");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -513,7 +538,7 @@ impl miniserde::Deserialize for IssuingCardShippingType {
 impl miniserde::de::Visitor for crate::Place<IssuingCardShippingType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(IssuingCardShippingType::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(IssuingCardShippingType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -524,7 +549,6 @@ impl<'de> serde::Deserialize<'de> for IssuingCardShippingType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for IssuingCardShippingType"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

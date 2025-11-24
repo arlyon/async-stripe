@@ -223,29 +223,36 @@ impl CreatePayoutBuilder {
 /// The method used to send this payout, which is `standard` or `instant`.
 /// We support `instant` for payouts to debit cards and bank accounts in certain countries.
 /// Learn more about [bank support for Instant Payouts](https://stripe.com/docs/payouts/instant-payouts-banks).
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreatePayoutMethod {
     Instant,
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreatePayoutMethod {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreatePayoutMethod::*;
         match self {
             Instant => "instant",
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreatePayoutMethod {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePayoutMethod::*;
         match s {
             "instant" => Ok(Instant),
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CreatePayoutMethod");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -273,40 +280,46 @@ impl<'de> serde::Deserialize<'de> for CreatePayoutMethod {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for CreatePayoutMethod"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The balance type of your Stripe balance to draw this payout from.
 /// Balances for different payment sources are kept separately.
 /// You can find the amounts with the Balances API.
 /// One of `bank_account`, `card`, or `fpx`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreatePayoutSourceType {
     BankAccount,
     Card,
     Fpx,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreatePayoutSourceType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreatePayoutSourceType::*;
         match self {
             BankAccount => "bank_account",
             Card => "card",
             Fpx => "fpx",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreatePayoutSourceType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePayoutSourceType::*;
         match s {
             "bank_account" => Ok(BankAccount),
             "card" => Ok(Card),
             "fpx" => Ok(Fpx),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CreatePayoutSourceType");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -334,8 +347,7 @@ impl<'de> serde::Deserialize<'de> for CreatePayoutSourceType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for CreatePayoutSourceType"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// To send funds to your own bank account, create a new payout object.

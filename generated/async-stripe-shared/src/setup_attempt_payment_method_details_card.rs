@@ -166,7 +166,7 @@ const _: () = {
                 self.last4.take(),
                 self.network.take(),
                 self.three_d_secure.take(),
-                self.wallet,
+                self.wallet.take(),
             )
             else {
                 return None;

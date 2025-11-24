@@ -1,4 +1,4 @@
-#[derive(Copy, Clone, Debug)]
+#[derive(Clone, Debug)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct IssuingPhysicalBundleFeatures {
@@ -73,7 +73,7 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (Some(card_logo), Some(carrier_text), Some(second_line)) =
-                (self.card_logo, self.carrier_text, self.second_line)
+                (self.card_logo.take(), self.carrier_text.take(), self.second_line.take())
             else {
                 return None;
             };
@@ -115,32 +115,43 @@ const _: () = {
     }
 };
 /// The policy for how to use card logo images in a card design with this physical bundle.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum IssuingPhysicalBundleFeaturesCardLogo {
     Optional,
     Required,
     Unsupported,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl IssuingPhysicalBundleFeaturesCardLogo {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use IssuingPhysicalBundleFeaturesCardLogo::*;
         match self {
             Optional => "optional",
             Required => "required",
             Unsupported => "unsupported",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for IssuingPhysicalBundleFeaturesCardLogo {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use IssuingPhysicalBundleFeaturesCardLogo::*;
         match s {
             "optional" => Ok(Optional),
             "required" => Ok(Required),
             "unsupported" => Ok(Unsupported),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "IssuingPhysicalBundleFeaturesCardLogo"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -173,8 +184,7 @@ impl miniserde::Deserialize for IssuingPhysicalBundleFeaturesCardLogo {
 impl miniserde::de::Visitor for crate::Place<IssuingPhysicalBundleFeaturesCardLogo> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out =
-            Some(IssuingPhysicalBundleFeaturesCardLogo::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(IssuingPhysicalBundleFeaturesCardLogo::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -185,38 +195,47 @@ impl<'de> serde::Deserialize<'de> for IssuingPhysicalBundleFeaturesCardLogo {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for IssuingPhysicalBundleFeaturesCardLogo")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The policy for how to use carrier letter text in a card design with this physical bundle.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum IssuingPhysicalBundleFeaturesCarrierText {
     Optional,
     Required,
     Unsupported,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl IssuingPhysicalBundleFeaturesCarrierText {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use IssuingPhysicalBundleFeaturesCarrierText::*;
         match self {
             Optional => "optional",
             Required => "required",
             Unsupported => "unsupported",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for IssuingPhysicalBundleFeaturesCarrierText {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use IssuingPhysicalBundleFeaturesCarrierText::*;
         match s {
             "optional" => Ok(Optional),
             "required" => Ok(Required),
             "unsupported" => Ok(Unsupported),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "IssuingPhysicalBundleFeaturesCarrierText"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -249,9 +268,7 @@ impl miniserde::Deserialize for IssuingPhysicalBundleFeaturesCarrierText {
 impl miniserde::de::Visitor for crate::Place<IssuingPhysicalBundleFeaturesCarrierText> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            IssuingPhysicalBundleFeaturesCarrierText::from_str(s).map_err(|_| miniserde::Error)?,
-        );
+        self.out = Some(IssuingPhysicalBundleFeaturesCarrierText::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -262,38 +279,47 @@ impl<'de> serde::Deserialize<'de> for IssuingPhysicalBundleFeaturesCarrierText {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for IssuingPhysicalBundleFeaturesCarrierText")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The policy for how to use a second line on a card with this physical bundle.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum IssuingPhysicalBundleFeaturesSecondLine {
     Optional,
     Required,
     Unsupported,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl IssuingPhysicalBundleFeaturesSecondLine {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use IssuingPhysicalBundleFeaturesSecondLine::*;
         match self {
             Optional => "optional",
             Required => "required",
             Unsupported => "unsupported",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for IssuingPhysicalBundleFeaturesSecondLine {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use IssuingPhysicalBundleFeaturesSecondLine::*;
         match s {
             "optional" => Ok(Optional),
             "required" => Ok(Required),
             "unsupported" => Ok(Unsupported),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "IssuingPhysicalBundleFeaturesSecondLine"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -326,9 +352,7 @@ impl miniserde::Deserialize for IssuingPhysicalBundleFeaturesSecondLine {
 impl miniserde::de::Visitor for crate::Place<IssuingPhysicalBundleFeaturesSecondLine> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            IssuingPhysicalBundleFeaturesSecondLine::from_str(s).map_err(|_| miniserde::Error)?,
-        );
+        self.out = Some(IssuingPhysicalBundleFeaturesSecondLine::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -339,8 +363,6 @@ impl<'de> serde::Deserialize<'de> for IssuingPhysicalBundleFeaturesSecondLine {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for IssuingPhysicalBundleFeaturesSecondLine")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

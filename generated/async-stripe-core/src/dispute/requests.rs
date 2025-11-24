@@ -430,31 +430,35 @@ impl Default for UpdateDisputeEvidenceEnhancedEvidenceVisaCompellingEvidence3Dis
     }
 }
 /// Categorization of disputed payment.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdateDisputeEvidenceEnhancedEvidenceVisaCompellingEvidence3DisputedTransactionMerchandiseOrServices
 {
     Merchandise,
     Services,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdateDisputeEvidenceEnhancedEvidenceVisaCompellingEvidence3DisputedTransactionMerchandiseOrServices {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdateDisputeEvidenceEnhancedEvidenceVisaCompellingEvidence3DisputedTransactionMerchandiseOrServices::*;
         match self {
 Merchandise => "merchandise",
 Services => "services",
+Unknown(v) => v,
 
         }
     }
 }
 
 impl std::str::FromStr for UpdateDisputeEvidenceEnhancedEvidenceVisaCompellingEvidence3DisputedTransactionMerchandiseOrServices {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateDisputeEvidenceEnhancedEvidenceVisaCompellingEvidence3DisputedTransactionMerchandiseOrServices::*;
         match s {
     "merchandise" => Ok(Merchandise),
 "services" => Ok(Services),
-_ => Err(stripe_types::StripeParseError)
+v => { tracing::warn!("Unknown value '{}' for enum '{}'", v, "UpdateDisputeEvidenceEnhancedEvidenceVisaCompellingEvidence3DisputedTransactionMerchandiseOrServices"); Ok(Unknown(v.to_owned())) }
 
         }
     }
@@ -480,7 +484,7 @@ impl<'de> serde::Deserialize<'de> for UpdateDisputeEvidenceEnhancedEvidenceVisaC
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdateDisputeEvidenceEnhancedEvidenceVisaCompellingEvidence3DisputedTransactionMerchandiseOrServices"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// List of exactly two prior undisputed transaction objects for Visa Compelling Evidence 3.0 evidence submission.

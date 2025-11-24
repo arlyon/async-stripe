@@ -78,9 +78,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(account), Some(application), Some(customer), Some(type_)) =
-                (self.account.take(), self.application.take(), self.customer.take(), self.type_)
-            else {
+            let (Some(account), Some(application), Some(customer), Some(type_)) = (
+                self.account.take(),
+                self.application.take(),
+                self.customer.take(),
+                self.type_.take(),
+            ) else {
                 return None;
             };
             Some(Self::Out { account, application, customer, type_ })
@@ -122,27 +125,31 @@ const _: () = {
     }
 };
 /// Type of owner referenced.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum TaxIDsOwnerType {
     Account,
     Application,
     Customer,
     Self_,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl TaxIDsOwnerType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use TaxIDsOwnerType::*;
         match self {
             Account => "account",
             Application => "application",
             Customer => "customer",
             Self_ => "self",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for TaxIDsOwnerType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TaxIDsOwnerType::*;
         match s {
@@ -150,7 +157,10 @@ impl std::str::FromStr for TaxIDsOwnerType {
             "application" => Ok(Application),
             "customer" => Ok(Customer),
             "self" => Ok(Self_),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "TaxIDsOwnerType");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -183,7 +193,7 @@ impl miniserde::Deserialize for TaxIDsOwnerType {
 impl miniserde::de::Visitor for crate::Place<TaxIDsOwnerType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(TaxIDsOwnerType::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(TaxIDsOwnerType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -194,7 +204,6 @@ impl<'de> serde::Deserialize<'de> for TaxIDsOwnerType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for TaxIDsOwnerType"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

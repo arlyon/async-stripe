@@ -147,7 +147,7 @@ const _: () = {
                 self.livemode,
                 self.loss_reason.take(),
                 self.metadata.take(),
-                self.status,
+                self.status.take(),
                 self.transaction.take(),
                 self.treasury.take(),
             )
@@ -332,7 +332,10 @@ impl std::str::FromStr for IssuingDisputeLossReason {
                 Ok(TransactionQualifiesForVisaEasyPaymentService)
             }
             "transaction_unattended" => Ok(TransactionUnattended),
-            v => Ok(Unknown(v.to_owned())),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "IssuingDisputeLossReason");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -365,7 +368,7 @@ impl miniserde::Deserialize for IssuingDisputeLossReason {
 impl miniserde::de::Visitor for crate::Place<IssuingDisputeLossReason> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(IssuingDisputeLossReason::from_str(s).unwrap());
+        self.out = Some(IssuingDisputeLossReason::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -376,7 +379,7 @@ impl<'de> serde::Deserialize<'de> for IssuingDisputeLossReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap())
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 impl stripe_types::Object for IssuingDispute {
@@ -390,16 +393,19 @@ impl stripe_types::Object for IssuingDispute {
     }
 }
 stripe_types::def_id!(IssuingDisputeId);
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum IssuingDisputeStatus {
     Expired,
     Lost,
     Submitted,
     Unsubmitted,
     Won,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl IssuingDisputeStatus {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use IssuingDisputeStatus::*;
         match self {
             Expired => "expired",
@@ -407,12 +413,13 @@ impl IssuingDisputeStatus {
             Submitted => "submitted",
             Unsubmitted => "unsubmitted",
             Won => "won",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for IssuingDisputeStatus {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use IssuingDisputeStatus::*;
         match s {
@@ -421,7 +428,10 @@ impl std::str::FromStr for IssuingDisputeStatus {
             "submitted" => Ok(Submitted),
             "unsubmitted" => Ok(Unsubmitted),
             "won" => Ok(Won),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "IssuingDisputeStatus");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -453,7 +463,7 @@ impl miniserde::Deserialize for IssuingDisputeStatus {
 impl miniserde::de::Visitor for crate::Place<IssuingDisputeStatus> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(IssuingDisputeStatus::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(IssuingDisputeStatus::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -464,7 +474,6 @@ impl<'de> serde::Deserialize<'de> for IssuingDisputeStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for IssuingDisputeStatus"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

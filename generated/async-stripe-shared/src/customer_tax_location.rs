@@ -73,7 +73,7 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (Some(country), Some(source), Some(state)) =
-                (self.country.take(), self.source, self.state.take())
+                (self.country.take(), self.source.take(), self.state.take())
             else {
                 return None;
             };
@@ -115,27 +115,31 @@ const _: () = {
     }
 };
 /// The data source used to infer the customer's location.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CustomerTaxLocationSource {
     BillingAddress,
     IpAddress,
     PaymentMethod,
     ShippingDestination,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CustomerTaxLocationSource {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CustomerTaxLocationSource::*;
         match self {
             BillingAddress => "billing_address",
             IpAddress => "ip_address",
             PaymentMethod => "payment_method",
             ShippingDestination => "shipping_destination",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CustomerTaxLocationSource {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CustomerTaxLocationSource::*;
         match s {
@@ -143,7 +147,10 @@ impl std::str::FromStr for CustomerTaxLocationSource {
             "ip_address" => Ok(IpAddress),
             "payment_method" => Ok(PaymentMethod),
             "shipping_destination" => Ok(ShippingDestination),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CustomerTaxLocationSource");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -176,7 +183,7 @@ impl miniserde::Deserialize for CustomerTaxLocationSource {
 impl miniserde::de::Visitor for crate::Place<CustomerTaxLocationSource> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(CustomerTaxLocationSource::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(CustomerTaxLocationSource::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -187,7 +194,6 @@ impl<'de> serde::Deserialize<'de> for CustomerTaxLocationSource {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for CustomerTaxLocationSource"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

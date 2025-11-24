@@ -384,32 +384,43 @@ impl CreateConfirmationTokenPaymentMethodDataAcssDebit {
 /// This field indicates whether this payment method can be shown again to its customer in a checkout flow.
 /// Stripe products such as Checkout and Elements use this field to determine whether a payment method can be shown as a saved payment method in a checkout flow.
 /// The field defaults to `unspecified`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateConfirmationTokenPaymentMethodDataAllowRedisplay {
     Always,
     Limited,
     Unspecified,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateConfirmationTokenPaymentMethodDataAllowRedisplay {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateConfirmationTokenPaymentMethodDataAllowRedisplay::*;
         match self {
             Always => "always",
             Limited => "limited",
             Unspecified => "unspecified",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateConfirmationTokenPaymentMethodDataAllowRedisplay {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateConfirmationTokenPaymentMethodDataAllowRedisplay::*;
         match s {
             "always" => Ok(Always),
             "limited" => Ok(Limited),
             "unspecified" => Ok(Unspecified),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateConfirmationTokenPaymentMethodDataAllowRedisplay"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -437,11 +448,7 @@ impl<'de> serde::Deserialize<'de> for CreateConfirmationTokenPaymentMethodDataAl
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for CreateConfirmationTokenPaymentMethodDataAllowRedisplay",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// If this is an `au_becs_debit` PaymentMethod, this hash contains details about the bank account.
@@ -672,7 +679,14 @@ impl std::str::FromStr for CreateConfirmationTokenPaymentMethodDataEpsBank {
             "volksbank_gruppe" => Ok(VolksbankGruppe),
             "volkskreditbank_ag" => Ok(VolkskreditbankAg),
             "vr_bank_braunau" => Ok(VrBankBraunau),
-            v => Ok(Unknown(v.to_owned())),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateConfirmationTokenPaymentMethodDataEpsBank"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -700,7 +714,7 @@ impl<'de> serde::Deserialize<'de> for CreateConfirmationTokenPaymentMethodDataEp
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap())
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// If this is an `fpx` PaymentMethod, this hash contains details about the FPX payment method.
@@ -718,29 +732,40 @@ impl CreateConfirmationTokenPaymentMethodDataFpx {
     }
 }
 /// Account holder type for FPX transaction
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateConfirmationTokenPaymentMethodDataFpxAccountHolderType {
     Company,
     Individual,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateConfirmationTokenPaymentMethodDataFpxAccountHolderType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateConfirmationTokenPaymentMethodDataFpxAccountHolderType::*;
         match self {
             Company => "company",
             Individual => "individual",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateConfirmationTokenPaymentMethodDataFpxAccountHolderType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateConfirmationTokenPaymentMethodDataFpxAccountHolderType::*;
         match s {
             "company" => Ok(Company),
             "individual" => Ok(Individual),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateConfirmationTokenPaymentMethodDataFpxAccountHolderType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -768,11 +793,7 @@ impl<'de> serde::Deserialize<'de> for CreateConfirmationTokenPaymentMethodDataFp
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for CreateConfirmationTokenPaymentMethodDataFpxAccountHolderType",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The customer's bank.
@@ -862,7 +883,14 @@ impl std::str::FromStr for CreateConfirmationTokenPaymentMethodDataFpxBank {
             "rhb" => Ok(Rhb),
             "standard_chartered" => Ok(StandardChartered),
             "uob" => Ok(Uob),
-            v => Ok(Unknown(v.to_owned())),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateConfirmationTokenPaymentMethodDataFpxBank"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -890,7 +918,7 @@ impl<'de> serde::Deserialize<'de> for CreateConfirmationTokenPaymentMethodDataFp
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap())
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// If this is an `ideal` PaymentMethod, this hash contains details about the iDEAL payment method.
@@ -989,7 +1017,14 @@ impl std::str::FromStr for CreateConfirmationTokenPaymentMethodDataIdealBank {
             "triodos_bank" => Ok(TriodosBank),
             "van_lanschot" => Ok(VanLanschot),
             "yoursafe" => Ok(Yoursafe),
-            v => Ok(Unknown(v.to_owned())),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateConfirmationTokenPaymentMethodDataIdealBank"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -1017,7 +1052,7 @@ impl<'de> serde::Deserialize<'de> for CreateConfirmationTokenPaymentMethodDataId
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap())
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// If this is a `klarna` PaymentMethod, this hash contains details about the Klarna payment method.
@@ -1053,7 +1088,7 @@ impl CreateConfirmationTokenPaymentMethodDataKlarnaDob {
     }
 }
 /// If this is a `naver_pay` PaymentMethod, this hash contains details about the Naver Pay payment method.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateConfirmationTokenPaymentMethodDataNaverPay {
     /// Whether to use Naver Pay points or a card to fund this transaction.
     /// If not provided, this defaults to `card`.
@@ -1072,29 +1107,40 @@ impl Default for CreateConfirmationTokenPaymentMethodDataNaverPay {
 }
 /// Whether to use Naver Pay points or a card to fund this transaction.
 /// If not provided, this defaults to `card`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateConfirmationTokenPaymentMethodDataNaverPayFunding {
     Card,
     Points,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateConfirmationTokenPaymentMethodDataNaverPayFunding {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateConfirmationTokenPaymentMethodDataNaverPayFunding::*;
         match self {
             Card => "card",
             Points => "points",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateConfirmationTokenPaymentMethodDataNaverPayFunding {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateConfirmationTokenPaymentMethodDataNaverPayFunding::*;
         match s {
             "card" => Ok(Card),
             "points" => Ok(Points),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateConfirmationTokenPaymentMethodDataNaverPayFunding"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -1122,11 +1168,7 @@ impl<'de> serde::Deserialize<'de> for CreateConfirmationTokenPaymentMethodDataNa
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for CreateConfirmationTokenPaymentMethodDataNaverPayFunding",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// If this is an nz_bank_account PaymentMethod, this hash contains details about the nz_bank_account payment method.
@@ -1280,7 +1322,14 @@ impl std::str::FromStr for CreateConfirmationTokenPaymentMethodDataP24Bank {
             "toyota_bank" => Ok(ToyotaBank),
             "velobank" => Ok(Velobank),
             "volkswagen_bank" => Ok(VolkswagenBank),
-            v => Ok(Unknown(v.to_owned())),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateConfirmationTokenPaymentMethodDataP24Bank"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -1308,7 +1357,7 @@ impl<'de> serde::Deserialize<'de> for CreateConfirmationTokenPaymentMethodDataP2
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap())
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Options to configure Radar.
@@ -1341,7 +1390,7 @@ impl CreateConfirmationTokenPaymentMethodDataSepaDebit {
     }
 }
 /// If this is a `sofort` PaymentMethod, this hash contains details about the SOFORT payment method.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateConfirmationTokenPaymentMethodDataSofort {
     /// Two-letter ISO code representing the country the bank account is located in.
     pub country: CreateConfirmationTokenPaymentMethodDataSofortCountry,
@@ -1352,7 +1401,8 @@ impl CreateConfirmationTokenPaymentMethodDataSofort {
     }
 }
 /// Two-letter ISO code representing the country the bank account is located in.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateConfirmationTokenPaymentMethodDataSofortCountry {
     At,
     Be,
@@ -1360,9 +1410,11 @@ pub enum CreateConfirmationTokenPaymentMethodDataSofortCountry {
     Es,
     It,
     Nl,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateConfirmationTokenPaymentMethodDataSofortCountry {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateConfirmationTokenPaymentMethodDataSofortCountry::*;
         match self {
             At => "AT",
@@ -1371,12 +1423,13 @@ impl CreateConfirmationTokenPaymentMethodDataSofortCountry {
             Es => "ES",
             It => "IT",
             Nl => "NL",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateConfirmationTokenPaymentMethodDataSofortCountry {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateConfirmationTokenPaymentMethodDataSofortCountry::*;
         match s {
@@ -1386,7 +1439,14 @@ impl std::str::FromStr for CreateConfirmationTokenPaymentMethodDataSofortCountry
             "ES" => Ok(Es),
             "IT" => Ok(It),
             "NL" => Ok(Nl),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateConfirmationTokenPaymentMethodDataSofortCountry"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -1414,11 +1474,7 @@ impl<'de> serde::Deserialize<'de> for CreateConfirmationTokenPaymentMethodDataSo
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for CreateConfirmationTokenPaymentMethodDataSofortCountry",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The type of the PaymentMethod.
@@ -1588,7 +1644,14 @@ impl std::str::FromStr for CreateConfirmationTokenPaymentMethodDataType {
             "us_bank_account" => Ok(UsBankAccount),
             "wechat_pay" => Ok(WechatPay),
             "zip" => Ok(Zip),
-            v => Ok(Unknown(v.to_owned())),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateConfirmationTokenPaymentMethodDataType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -1616,7 +1679,7 @@ impl<'de> serde::Deserialize<'de> for CreateConfirmationTokenPaymentMethodDataTy
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap())
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// If this is an `us_bank_account` PaymentMethod, this hash contains details about the US bank account payment method.
@@ -1656,29 +1719,40 @@ impl Default for CreateConfirmationTokenPaymentMethodDataUsBankAccount {
     }
 }
 /// Account holder type: individual or company.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateConfirmationTokenPaymentMethodDataUsBankAccountAccountHolderType {
     Company,
     Individual,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateConfirmationTokenPaymentMethodDataUsBankAccountAccountHolderType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateConfirmationTokenPaymentMethodDataUsBankAccountAccountHolderType::*;
         match self {
             Company => "company",
             Individual => "individual",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateConfirmationTokenPaymentMethodDataUsBankAccountAccountHolderType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateConfirmationTokenPaymentMethodDataUsBankAccountAccountHolderType::*;
         match s {
             "company" => Ok(Company),
             "individual" => Ok(Individual),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateConfirmationTokenPaymentMethodDataUsBankAccountAccountHolderType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -1708,33 +1782,44 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateConfirmationTokenPaymentMethodDataUsBankAccountAccountHolderType"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Account type: checkings or savings. Defaults to checking if omitted.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateConfirmationTokenPaymentMethodDataUsBankAccountAccountType {
     Checking,
     Savings,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateConfirmationTokenPaymentMethodDataUsBankAccountAccountType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateConfirmationTokenPaymentMethodDataUsBankAccountAccountType::*;
         match self {
             Checking => "checking",
             Savings => "savings",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateConfirmationTokenPaymentMethodDataUsBankAccountAccountType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateConfirmationTokenPaymentMethodDataUsBankAccountAccountType::*;
         match s {
             "checking" => Ok(Checking),
             "savings" => Ok(Savings),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateConfirmationTokenPaymentMethodDataUsBankAccountAccountType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -1764,11 +1849,11 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateConfirmationTokenPaymentMethodDataUsBankAccountAccountType"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Payment-method-specific configuration for this ConfirmationToken.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateConfirmationTokenPaymentMethodOptions {
     /// Configuration for any card payments confirmed using this ConfirmationToken.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1785,7 +1870,7 @@ impl Default for CreateConfirmationTokenPaymentMethodOptions {
     }
 }
 /// Configuration for any card payments confirmed using this ConfirmationToken.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateConfirmationTokenPaymentMethodOptionsCard {
     /// Installment configuration for payments confirmed using this ConfirmationToken.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1802,7 +1887,7 @@ impl Default for CreateConfirmationTokenPaymentMethodOptionsCard {
     }
 }
 /// Installment configuration for payments confirmed using this ConfirmationToken.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateConfirmationTokenPaymentMethodOptionsCardInstallments {
     /// The selected installment plan to use for this payment attempt.
     /// This parameter can only be provided during confirmation.
@@ -1817,7 +1902,7 @@ impl CreateConfirmationTokenPaymentMethodOptionsCardInstallments {
 }
 /// The selected installment plan to use for this payment attempt.
 /// This parameter can only be provided during confirmation.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateConfirmationTokenPaymentMethodOptionsCardInstallmentsPlan {
     /// For `fixed_count` installment plans, this is required.
     /// It represents the number of installment payments your customer will make to their credit card.
@@ -1842,26 +1927,37 @@ impl CreateConfirmationTokenPaymentMethodOptionsCardInstallmentsPlan {
 /// For `fixed_count` installment plans, this is required.
 /// It represents the interval between installment payments your customer will make to their credit card.
 /// One of `month`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateConfirmationTokenPaymentMethodOptionsCardInstallmentsPlanInterval {
     Month,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateConfirmationTokenPaymentMethodOptionsCardInstallmentsPlanInterval {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateConfirmationTokenPaymentMethodOptionsCardInstallmentsPlanInterval::*;
         match self {
             Month => "month",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateConfirmationTokenPaymentMethodOptionsCardInstallmentsPlanInterval {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateConfirmationTokenPaymentMethodOptionsCardInstallmentsPlanInterval::*;
         match s {
             "month" => Ok(Month),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateConfirmationTokenPaymentMethodOptionsCardInstallmentsPlanInterval"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -1891,36 +1987,47 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateConfirmationTokenPaymentMethodOptionsCardInstallmentsPlanInterval"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Type of installment plan, one of `fixed_count`, `bonus`, or `revolving`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateConfirmationTokenPaymentMethodOptionsCardInstallmentsPlanType {
     Bonus,
     FixedCount,
     Revolving,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateConfirmationTokenPaymentMethodOptionsCardInstallmentsPlanType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateConfirmationTokenPaymentMethodOptionsCardInstallmentsPlanType::*;
         match self {
             Bonus => "bonus",
             FixedCount => "fixed_count",
             Revolving => "revolving",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateConfirmationTokenPaymentMethodOptionsCardInstallmentsPlanType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateConfirmationTokenPaymentMethodOptionsCardInstallmentsPlanType::*;
         match s {
             "bonus" => Ok(Bonus),
             "fixed_count" => Ok(FixedCount),
             "revolving" => Ok(Revolving),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateConfirmationTokenPaymentMethodOptionsCardInstallmentsPlanType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -1950,7 +2057,7 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateConfirmationTokenPaymentMethodOptionsCardInstallmentsPlanType"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Shipping information for this ConfirmationToken.

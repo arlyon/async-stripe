@@ -588,7 +588,7 @@ impl UpdateChargeBuilder {
 /// If you believe a charge is fraudulent, include a `user_report` key with a value of `fraudulent`.
 /// If you believe a charge is safe, include a `user_report` key with a value of `safe`.
 /// Stripe will use the information you send to improve our fraud detection algorithms.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdateChargeFraudDetails {
     /// Either `safe` or `fraudulent`.
     pub user_report: UpdateChargeFraudDetailsUserReport,
@@ -599,29 +599,40 @@ impl UpdateChargeFraudDetails {
     }
 }
 /// Either `safe` or `fraudulent`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdateChargeFraudDetailsUserReport {
     Fraudulent,
     Safe,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdateChargeFraudDetailsUserReport {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdateChargeFraudDetailsUserReport::*;
         match self {
             Fraudulent => "fraudulent",
             Safe => "safe",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for UpdateChargeFraudDetailsUserReport {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateChargeFraudDetailsUserReport::*;
         match s {
             "fraudulent" => Ok(Fraudulent),
             "safe" => Ok(Safe),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdateChargeFraudDetailsUserReport"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -649,9 +660,7 @@ impl<'de> serde::Deserialize<'de> for UpdateChargeFraudDetailsUserReport {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for UpdateChargeFraudDetailsUserReport")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Updates the specified charge by setting the values of the parameters passed.

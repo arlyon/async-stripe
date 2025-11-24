@@ -202,11 +202,11 @@ const _: () = {
                 self.active,
                 self.amount,
                 self.amount_decimal.take(),
-                self.billing_scheme,
+                self.billing_scheme.take(),
                 self.created,
                 self.currency.take(),
                 self.id.take(),
-                self.interval,
+                self.interval.take(),
                 self.interval_count,
                 self.livemode,
                 self.metadata.take(),
@@ -214,10 +214,10 @@ const _: () = {
                 self.nickname.take(),
                 self.product.take(),
                 self.tiers.take(),
-                self.tiers_mode,
-                self.transform_usage,
+                self.tiers_mode.take(),
+                self.transform_usage.take(),
                 self.trial_period_days,
-                self.usage_type,
+                self.usage_type.take(),
             )
             else {
                 return None;
@@ -335,29 +335,36 @@ impl stripe_types::Object for Plan {
     }
 }
 stripe_types::def_id!(PlanId);
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PlanBillingScheme {
     PerUnit,
     Tiered,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl PlanBillingScheme {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PlanBillingScheme::*;
         match self {
             PerUnit => "per_unit",
             Tiered => "tiered",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for PlanBillingScheme {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PlanBillingScheme::*;
         match s {
             "per_unit" => Ok(PerUnit),
             "tiered" => Ok(Tiered),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "PlanBillingScheme");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -389,7 +396,7 @@ impl miniserde::Deserialize for PlanBillingScheme {
 impl miniserde::de::Visitor for crate::Place<PlanBillingScheme> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(PlanBillingScheme::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(PlanBillingScheme::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -400,31 +407,34 @@ impl<'de> serde::Deserialize<'de> for PlanBillingScheme {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for PlanBillingScheme"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PlanInterval {
     Day,
     Month,
     Week,
     Year,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl PlanInterval {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PlanInterval::*;
         match self {
             Day => "day",
             Month => "month",
             Week => "week",
             Year => "year",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for PlanInterval {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PlanInterval::*;
         match s {
@@ -432,7 +442,10 @@ impl std::str::FromStr for PlanInterval {
             "month" => Ok(Month),
             "week" => Ok(Week),
             "year" => Ok(Year),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "PlanInterval");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -464,7 +477,7 @@ impl miniserde::Deserialize for PlanInterval {
 impl miniserde::de::Visitor for crate::Place<PlanInterval> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(PlanInterval::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(PlanInterval::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -475,32 +488,39 @@ impl<'de> serde::Deserialize<'de> for PlanInterval {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for PlanInterval"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PlanTiersMode {
     Graduated,
     Volume,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl PlanTiersMode {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PlanTiersMode::*;
         match self {
             Graduated => "graduated",
             Volume => "volume",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for PlanTiersMode {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PlanTiersMode::*;
         match s {
             "graduated" => Ok(Graduated),
             "volume" => Ok(Volume),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "PlanTiersMode");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -532,7 +552,7 @@ impl miniserde::Deserialize for PlanTiersMode {
 impl miniserde::de::Visitor for crate::Place<PlanTiersMode> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(PlanTiersMode::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(PlanTiersMode::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -543,32 +563,39 @@ impl<'de> serde::Deserialize<'de> for PlanTiersMode {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for PlanTiersMode"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PlanUsageType {
     Licensed,
     Metered,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl PlanUsageType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PlanUsageType::*;
         match self {
             Licensed => "licensed",
             Metered => "metered",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for PlanUsageType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PlanUsageType::*;
         match s {
             "licensed" => Ok(Licensed),
             "metered" => Ok(Metered),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "PlanUsageType");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -600,7 +627,7 @@ impl miniserde::Deserialize for PlanUsageType {
 impl miniserde::de::Visitor for crate::Place<PlanUsageType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(PlanUsageType::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(PlanUsageType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -611,6 +638,6 @@ impl<'de> serde::Deserialize<'de> for PlanUsageType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for PlanUsageType"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

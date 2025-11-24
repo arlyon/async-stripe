@@ -89,8 +89,8 @@ const _: () = {
                 self.cancel.take(),
                 self.event_name.take(),
                 self.livemode,
-                self.status,
-                self.type_,
+                self.status.take(),
+                self.type_.take(),
             ) else {
                 return None;
             };
@@ -149,29 +149,40 @@ impl serde::Serialize for BillingMeterEventAdjustment {
     }
 }
 /// The meter event adjustment's status.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum BillingMeterEventAdjustmentStatus {
     Complete,
     Pending,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl BillingMeterEventAdjustmentStatus {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use BillingMeterEventAdjustmentStatus::*;
         match self {
             Complete => "complete",
             Pending => "pending",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for BillingMeterEventAdjustmentStatus {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use BillingMeterEventAdjustmentStatus::*;
         match s {
             "complete" => Ok(Complete),
             "pending" => Ok(Pending),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "BillingMeterEventAdjustmentStatus"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -204,8 +215,7 @@ impl miniserde::Deserialize for BillingMeterEventAdjustmentStatus {
 impl miniserde::de::Visitor for crate::Place<BillingMeterEventAdjustmentStatus> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out =
-            Some(BillingMeterEventAdjustmentStatus::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(BillingMeterEventAdjustmentStatus::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -216,31 +226,40 @@ impl<'de> serde::Deserialize<'de> for BillingMeterEventAdjustmentStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for BillingMeterEventAdjustmentStatus")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum BillingMeterEventAdjustmentType {
     Cancel,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl BillingMeterEventAdjustmentType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use BillingMeterEventAdjustmentType::*;
         match self {
             Cancel => "cancel",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for BillingMeterEventAdjustmentType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use BillingMeterEventAdjustmentType::*;
         match s {
             "cancel" => Ok(Cancel),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "BillingMeterEventAdjustmentType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -272,8 +291,7 @@ impl miniserde::Deserialize for BillingMeterEventAdjustmentType {
 impl miniserde::de::Visitor for crate::Place<BillingMeterEventAdjustmentType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out =
-            Some(BillingMeterEventAdjustmentType::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(BillingMeterEventAdjustmentType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -284,8 +302,6 @@ impl<'de> serde::Deserialize<'de> for BillingMeterEventAdjustmentType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for BillingMeterEventAdjustmentType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

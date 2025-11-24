@@ -66,7 +66,8 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(status), Some(status_details)) = (self.status, self.status_details.take())
+            let (Some(status), Some(status_details)) =
+                (self.status.take(), self.status_details.take())
             else {
                 return None;
             };
@@ -107,29 +108,40 @@ const _: () = {
     }
 };
 /// The status of the payment method on the domain.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PaymentMethodDomainResourcePaymentMethodStatusStatus {
     Active,
     Inactive,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl PaymentMethodDomainResourcePaymentMethodStatusStatus {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PaymentMethodDomainResourcePaymentMethodStatusStatus::*;
         match self {
             Active => "active",
             Inactive => "inactive",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for PaymentMethodDomainResourcePaymentMethodStatusStatus {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentMethodDomainResourcePaymentMethodStatusStatus::*;
         match s {
             "active" => Ok(Active),
             "inactive" => Ok(Inactive),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PaymentMethodDomainResourcePaymentMethodStatusStatus"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -163,8 +175,7 @@ impl miniserde::de::Visitor for crate::Place<PaymentMethodDomainResourcePaymentM
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(
-            PaymentMethodDomainResourcePaymentMethodStatusStatus::from_str(s)
-                .map_err(|_| miniserde::Error)?,
+            PaymentMethodDomainResourcePaymentMethodStatusStatus::from_str(s).expect("infallible"),
         );
         Ok(())
     }
@@ -176,10 +187,6 @@ impl<'de> serde::Deserialize<'de> for PaymentMethodDomainResourcePaymentMethodSt
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for PaymentMethodDomainResourcePaymentMethodStatusStatus",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

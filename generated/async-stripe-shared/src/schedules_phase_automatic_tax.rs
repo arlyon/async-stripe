@@ -75,7 +75,7 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (Some(disabled_reason), Some(enabled), Some(liability)) =
-                (self.disabled_reason, self.enabled, self.liability.take())
+                (self.disabled_reason.take(), self.enabled, self.liability.take())
             else {
                 return None;
             };
@@ -117,26 +117,37 @@ const _: () = {
     }
 };
 /// If Stripe disabled automatic tax, this enum describes why.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum SchedulesPhaseAutomaticTaxDisabledReason {
     RequiresLocationInputs,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl SchedulesPhaseAutomaticTaxDisabledReason {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use SchedulesPhaseAutomaticTaxDisabledReason::*;
         match self {
             RequiresLocationInputs => "requires_location_inputs",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for SchedulesPhaseAutomaticTaxDisabledReason {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use SchedulesPhaseAutomaticTaxDisabledReason::*;
         match s {
             "requires_location_inputs" => Ok(RequiresLocationInputs),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "SchedulesPhaseAutomaticTaxDisabledReason"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -169,9 +180,7 @@ impl miniserde::Deserialize for SchedulesPhaseAutomaticTaxDisabledReason {
 impl miniserde::de::Visitor for crate::Place<SchedulesPhaseAutomaticTaxDisabledReason> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            SchedulesPhaseAutomaticTaxDisabledReason::from_str(s).map_err(|_| miniserde::Error)?,
-        );
+        self.out = Some(SchedulesPhaseAutomaticTaxDisabledReason::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -182,8 +191,6 @@ impl<'de> serde::Deserialize<'de> for SchedulesPhaseAutomaticTaxDisabledReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for SchedulesPhaseAutomaticTaxDisabledReason")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

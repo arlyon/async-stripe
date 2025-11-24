@@ -74,7 +74,7 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (Some(hosted_confirmation), Some(redirect), Some(type_)) =
-                (self.hosted_confirmation.take(), self.redirect.take(), self.type_)
+                (self.hosted_confirmation.take(), self.redirect.take(), self.type_.take())
             else {
                 return None;
             };
@@ -116,29 +116,40 @@ const _: () = {
     }
 };
 /// The specified behavior after the purchase is complete.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PaymentLinksResourceAfterCompletionType {
     HostedConfirmation,
     Redirect,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl PaymentLinksResourceAfterCompletionType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PaymentLinksResourceAfterCompletionType::*;
         match self {
             HostedConfirmation => "hosted_confirmation",
             Redirect => "redirect",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for PaymentLinksResourceAfterCompletionType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentLinksResourceAfterCompletionType::*;
         match s {
             "hosted_confirmation" => Ok(HostedConfirmation),
             "redirect" => Ok(Redirect),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PaymentLinksResourceAfterCompletionType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -171,9 +182,7 @@ impl miniserde::Deserialize for PaymentLinksResourceAfterCompletionType {
 impl miniserde::de::Visitor for crate::Place<PaymentLinksResourceAfterCompletionType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            PaymentLinksResourceAfterCompletionType::from_str(s).map_err(|_| miniserde::Error)?,
-        );
+        self.out = Some(PaymentLinksResourceAfterCompletionType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -184,8 +193,6 @@ impl<'de> serde::Deserialize<'de> for PaymentLinksResourceAfterCompletionType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for PaymentLinksResourceAfterCompletionType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

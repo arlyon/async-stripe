@@ -70,7 +70,7 @@ sender_name: Deserialize::default(),
     fn take_out(&mut self) -> Option<Self::Out> {
         let (Some(network),
 Some(sender_name),
-) = (self.network,
+) = (self.network.take(),
 self.sender_name.take(),
 ) else {
             return None;
@@ -112,34 +112,38 @@ self.sender_name.take(),
 }
 };
 /// The banking network used for this funding.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferResourceUsBankTransferNetwork
 {
     Ach,
     DomesticWireUs,
     Swift,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferResourceUsBankTransferNetwork {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferResourceUsBankTransferNetwork::*;
         match self {
 Ach => "ach",
 DomesticWireUs => "domestic_wire_us",
 Swift => "swift",
+Unknown(v) => v,
 
         }
     }
 }
 
 impl std::str::FromStr for CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferResourceUsBankTransferNetwork {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferResourceUsBankTransferNetwork::*;
         match s {
     "ach" => Ok(Ach),
 "domestic_wire_us" => Ok(DomesticWireUs),
 "swift" => Ok(Swift),
-_ => Err(stripe_types::StripeParseError)
+v => { tracing::warn!("Unknown value '{}' for enum '{}'", v, "CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferResourceUsBankTransferNetwork"); Ok(Unknown(v.to_owned())) }
 
         }
     }
@@ -170,7 +174,7 @@ impl miniserde::Deserialize for CustomerBalanceResourceCashBalanceTransactionRes
 impl miniserde::de::Visitor for crate::Place<CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferResourceUsBankTransferNetwork> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferResourceUsBankTransferNetwork::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferResourceUsBankTransferNetwork::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -181,6 +185,6 @@ impl<'de> serde::Deserialize<'de> for CustomerBalanceResourceCashBalanceTransact
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CustomerBalanceResourceCashBalanceTransactionResourceFundedTransactionResourceBankTransferResourceUsBankTransferNetwork"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

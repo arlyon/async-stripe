@@ -117,7 +117,7 @@ const _: () = {
                 self.generated_sepa_debit.take(),
                 self.generated_sepa_debit_mandate.take(),
                 self.iban_last4.take(),
-                self.preferred_language,
+                self.preferred_language.take(),
                 self.verified_name.take(),
             )
             else {
@@ -178,27 +178,31 @@ const _: () = {
 };
 /// Preferred language of the Bancontact authorization page that the customer is redirected to.
 /// Can be one of `en`, `de`, `fr`, or `nl`
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PaymentMethodDetailsBancontactPreferredLanguage {
     De,
     En,
     Fr,
     Nl,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl PaymentMethodDetailsBancontactPreferredLanguage {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PaymentMethodDetailsBancontactPreferredLanguage::*;
         match self {
             De => "de",
             En => "en",
             Fr => "fr",
             Nl => "nl",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for PaymentMethodDetailsBancontactPreferredLanguage {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentMethodDetailsBancontactPreferredLanguage::*;
         match s {
@@ -206,7 +210,14 @@ impl std::str::FromStr for PaymentMethodDetailsBancontactPreferredLanguage {
             "en" => Ok(En),
             "fr" => Ok(Fr),
             "nl" => Ok(Nl),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PaymentMethodDetailsBancontactPreferredLanguage"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -239,10 +250,8 @@ impl miniserde::Deserialize for PaymentMethodDetailsBancontactPreferredLanguage 
 impl miniserde::de::Visitor for crate::Place<PaymentMethodDetailsBancontactPreferredLanguage> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            PaymentMethodDetailsBancontactPreferredLanguage::from_str(s)
-                .map_err(|_| miniserde::Error)?,
-        );
+        self.out =
+            Some(PaymentMethodDetailsBancontactPreferredLanguage::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -253,10 +262,6 @@ impl<'de> serde::Deserialize<'de> for PaymentMethodDetailsBancontactPreferredLan
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for PaymentMethodDetailsBancontactPreferredLanguage",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

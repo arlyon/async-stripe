@@ -372,7 +372,10 @@ impl std::str::FromStr for ApiVersion {
             "2025-09-30.clover" => Ok(V2025_09_30_clover),
             "2025-10-29.clover" => Ok(V2025_10_29_clover),
             "2025-11-17.clover" => Ok(V2025_11_17_clover),
-            v => Ok(Unknown(v.to_owned())),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "ApiVersion");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -404,7 +407,7 @@ impl miniserde::Deserialize for ApiVersion {
 impl miniserde::de::Visitor for crate::Place<ApiVersion> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(ApiVersion::from_str(s).unwrap());
+        self.out = Some(ApiVersion::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -415,6 +418,6 @@ impl<'de> serde::Deserialize<'de> for ApiVersion {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap())
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

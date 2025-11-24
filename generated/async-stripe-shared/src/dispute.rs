@@ -186,7 +186,7 @@ const _: () = {
                 self.payment_intent.take(),
                 self.payment_method_details.take(),
                 self.reason.take(),
-                self.status,
+                self.status.take(),
             )
             else {
                 return None;
@@ -292,29 +292,40 @@ impl serde::Serialize for Dispute {
     }
 }
 /// List of eligibility types that are included in `enhanced_evidence`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum DisputeEnhancedEligibilityTypes {
     VisaCompellingEvidence3,
     VisaCompliance,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl DisputeEnhancedEligibilityTypes {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use DisputeEnhancedEligibilityTypes::*;
         match self {
             VisaCompellingEvidence3 => "visa_compelling_evidence_3",
             VisaCompliance => "visa_compliance",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for DisputeEnhancedEligibilityTypes {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use DisputeEnhancedEligibilityTypes::*;
         match s {
             "visa_compelling_evidence_3" => Ok(VisaCompellingEvidence3),
             "visa_compliance" => Ok(VisaCompliance),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "DisputeEnhancedEligibilityTypes"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -347,8 +358,7 @@ impl miniserde::Deserialize for DisputeEnhancedEligibilityTypes {
 impl miniserde::de::Visitor for crate::Place<DisputeEnhancedEligibilityTypes> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out =
-            Some(DisputeEnhancedEligibilityTypes::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(DisputeEnhancedEligibilityTypes::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -359,14 +369,13 @@ impl<'de> serde::Deserialize<'de> for DisputeEnhancedEligibilityTypes {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for DisputeEnhancedEligibilityTypes")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The current status of a dispute.
 /// Possible values include:`warning_needs_response`, `warning_under_review`, `warning_closed`, `needs_response`, `under_review`, `won`, `lost`, or `prevented`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum DisputeStatus {
     Lost,
     NeedsResponse,
@@ -376,9 +385,11 @@ pub enum DisputeStatus {
     WarningNeedsResponse,
     WarningUnderReview,
     Won,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl DisputeStatus {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use DisputeStatus::*;
         match self {
             Lost => "lost",
@@ -389,12 +400,13 @@ impl DisputeStatus {
             WarningNeedsResponse => "warning_needs_response",
             WarningUnderReview => "warning_under_review",
             Won => "won",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for DisputeStatus {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use DisputeStatus::*;
         match s {
@@ -406,7 +418,10 @@ impl std::str::FromStr for DisputeStatus {
             "warning_needs_response" => Ok(WarningNeedsResponse),
             "warning_under_review" => Ok(WarningUnderReview),
             "won" => Ok(Won),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "DisputeStatus");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -439,7 +454,7 @@ impl miniserde::Deserialize for DisputeStatus {
 impl miniserde::de::Visitor for crate::Place<DisputeStatus> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(DisputeStatus::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(DisputeStatus::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -450,7 +465,7 @@ impl<'de> serde::Deserialize<'de> for DisputeStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for DisputeStatus"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 impl stripe_types::Object for Dispute {

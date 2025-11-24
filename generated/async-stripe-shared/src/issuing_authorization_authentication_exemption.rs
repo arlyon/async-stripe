@@ -1,4 +1,4 @@
-#[derive(Copy, Clone, Debug)]
+#[derive(Clone, Debug)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct IssuingAuthorizationAuthenticationExemption {
@@ -65,7 +65,7 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(claimed_by), Some(type_)) = (self.claimed_by, self.type_) else {
+            let (Some(claimed_by), Some(type_)) = (self.claimed_by.take(), self.type_) else {
                 return None;
             };
             Some(Self::Out { claimed_by, type_ })
@@ -105,29 +105,40 @@ const _: () = {
     }
 };
 /// The entity that requested the exemption, either the acquiring merchant or the Issuing user.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum IssuingAuthorizationAuthenticationExemptionClaimedBy {
     Acquirer,
     Issuer,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl IssuingAuthorizationAuthenticationExemptionClaimedBy {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use IssuingAuthorizationAuthenticationExemptionClaimedBy::*;
         match self {
             Acquirer => "acquirer",
             Issuer => "issuer",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for IssuingAuthorizationAuthenticationExemptionClaimedBy {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use IssuingAuthorizationAuthenticationExemptionClaimedBy::*;
         match s {
             "acquirer" => Ok(Acquirer),
             "issuer" => Ok(Issuer),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "IssuingAuthorizationAuthenticationExemptionClaimedBy"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -161,8 +172,7 @@ impl miniserde::de::Visitor for crate::Place<IssuingAuthorizationAuthenticationE
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(
-            IssuingAuthorizationAuthenticationExemptionClaimedBy::from_str(s)
-                .map_err(|_| miniserde::Error)?,
+            IssuingAuthorizationAuthenticationExemptionClaimedBy::from_str(s).expect("infallible"),
         );
         Ok(())
     }
@@ -174,11 +184,7 @@ impl<'de> serde::Deserialize<'de> for IssuingAuthorizationAuthenticationExemptio
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for IssuingAuthorizationAuthenticationExemptionClaimedBy",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The specific exemption claimed for this authorization.

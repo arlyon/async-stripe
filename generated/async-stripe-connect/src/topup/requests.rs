@@ -34,27 +34,31 @@ impl ListTopupBuilder {
 }
 /// Only return top-ups that have the given status.
 /// One of `canceled`, `failed`, `pending` or `succeeded`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum ListTopupStatus {
     Canceled,
     Failed,
     Pending,
     Succeeded,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl ListTopupStatus {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use ListTopupStatus::*;
         match self {
             Canceled => "canceled",
             Failed => "failed",
             Pending => "pending",
             Succeeded => "succeeded",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for ListTopupStatus {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ListTopupStatus::*;
         match s {
@@ -62,7 +66,10 @@ impl std::str::FromStr for ListTopupStatus {
             "failed" => Ok(Failed),
             "pending" => Ok(Pending),
             "succeeded" => Ok(Succeeded),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "ListTopupStatus");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -90,8 +97,7 @@ impl<'de> serde::Deserialize<'de> for ListTopupStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for ListTopupStatus"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Returns a list of top-ups.

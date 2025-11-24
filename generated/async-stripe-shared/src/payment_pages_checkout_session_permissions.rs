@@ -1,4 +1,4 @@
-#[derive(Copy, Clone, Debug)]
+#[derive(Clone, Debug)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentPagesCheckoutSessionPermissions {
@@ -68,7 +68,7 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(update_shipping_details),) = (self.update_shipping_details,) else {
+            let (Some(update_shipping_details),) = (self.update_shipping_details.take(),) else {
                 return None;
             };
             Some(Self::Out { update_shipping_details })
@@ -115,29 +115,40 @@ const _: () = {
 /// If set to `server_only`, only your server is allowed to update the shipping details.
 ///
 /// When set to `server_only`, you must add the onShippingDetailsChange event handler when initializing the Stripe Checkout client and manually update the shipping details from your server using the Stripe API.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PaymentPagesCheckoutSessionPermissionsUpdateShippingDetails {
     ClientOnly,
     ServerOnly,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl PaymentPagesCheckoutSessionPermissionsUpdateShippingDetails {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PaymentPagesCheckoutSessionPermissionsUpdateShippingDetails::*;
         match self {
             ClientOnly => "client_only",
             ServerOnly => "server_only",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for PaymentPagesCheckoutSessionPermissionsUpdateShippingDetails {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentPagesCheckoutSessionPermissionsUpdateShippingDetails::*;
         match s {
             "client_only" => Ok(ClientOnly),
             "server_only" => Ok(ServerOnly),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PaymentPagesCheckoutSessionPermissionsUpdateShippingDetails"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -174,7 +185,7 @@ impl miniserde::de::Visitor
         use std::str::FromStr;
         self.out = Some(
             PaymentPagesCheckoutSessionPermissionsUpdateShippingDetails::from_str(s)
-                .map_err(|_| miniserde::Error)?,
+                .expect("infallible"),
         );
         Ok(())
     }
@@ -188,10 +199,6 @@ impl<'de> serde::Deserialize<'de> for PaymentPagesCheckoutSessionPermissionsUpda
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for PaymentPagesCheckoutSessionPermissionsUpdateShippingDetails",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

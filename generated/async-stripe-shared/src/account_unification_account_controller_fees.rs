@@ -1,4 +1,4 @@
-#[derive(Copy, Clone, Debug)]
+#[derive(Clone, Debug)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct AccountUnificationAccountControllerFees {
@@ -61,7 +61,7 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(payer),) = (self.payer,) else {
+            let (Some(payer),) = (self.payer.take(),) else {
                 return None;
             };
             Some(Self::Out { payer })
@@ -101,27 +101,31 @@ const _: () = {
 };
 /// A value indicating the responsible payer of a bundle of Stripe fees for pricing-control eligible products on this account.
 /// Learn more about [fee behavior on connected accounts](https://docs.stripe.com/connect/direct-charges-fee-payer-behavior).
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum AccountUnificationAccountControllerFeesPayer {
     Account,
     Application,
     ApplicationCustom,
     ApplicationExpress,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl AccountUnificationAccountControllerFeesPayer {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use AccountUnificationAccountControllerFeesPayer::*;
         match self {
             Account => "account",
             Application => "application",
             ApplicationCustom => "application_custom",
             ApplicationExpress => "application_express",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for AccountUnificationAccountControllerFeesPayer {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use AccountUnificationAccountControllerFeesPayer::*;
         match s {
@@ -129,7 +133,14 @@ impl std::str::FromStr for AccountUnificationAccountControllerFeesPayer {
             "application" => Ok(Application),
             "application_custom" => Ok(ApplicationCustom),
             "application_express" => Ok(ApplicationExpress),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "AccountUnificationAccountControllerFeesPayer"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -162,10 +173,8 @@ impl miniserde::Deserialize for AccountUnificationAccountControllerFeesPayer {
 impl miniserde::de::Visitor for crate::Place<AccountUnificationAccountControllerFeesPayer> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            AccountUnificationAccountControllerFeesPayer::from_str(s)
-                .map_err(|_| miniserde::Error)?,
-        );
+        self.out =
+            Some(AccountUnificationAccountControllerFeesPayer::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -176,10 +185,6 @@ impl<'de> serde::Deserialize<'de> for AccountUnificationAccountControllerFeesPay
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for AccountUnificationAccountControllerFeesPayer",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

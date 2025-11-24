@@ -77,9 +77,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(cancellation_reason), Some(enabled), Some(mode), Some(proration_behavior)) =
-                (self.cancellation_reason.take(), self.enabled, self.mode, self.proration_behavior)
-            else {
+            let (Some(cancellation_reason), Some(enabled), Some(mode), Some(proration_behavior)) = (
+                self.cancellation_reason.take(),
+                self.enabled,
+                self.mode.take(),
+                self.proration_behavior.take(),
+            ) else {
                 return None;
             };
             Some(Self::Out { cancellation_reason, enabled, mode, proration_behavior })
@@ -121,29 +124,40 @@ const _: () = {
     }
 };
 /// Whether to cancel subscriptions immediately or at the end of the billing period.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PortalSubscriptionCancelMode {
     AtPeriodEnd,
     Immediately,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl PortalSubscriptionCancelMode {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PortalSubscriptionCancelMode::*;
         match self {
             AtPeriodEnd => "at_period_end",
             Immediately => "immediately",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for PortalSubscriptionCancelMode {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PortalSubscriptionCancelMode::*;
         match s {
             "at_period_end" => Ok(AtPeriodEnd),
             "immediately" => Ok(Immediately),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PortalSubscriptionCancelMode"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -176,7 +190,7 @@ impl miniserde::Deserialize for PortalSubscriptionCancelMode {
 impl miniserde::de::Visitor for crate::Place<PortalSubscriptionCancelMode> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(PortalSubscriptionCancelMode::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(PortalSubscriptionCancelMode::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -187,38 +201,48 @@ impl<'de> serde::Deserialize<'de> for PortalSubscriptionCancelMode {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for PortalSubscriptionCancelMode"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Whether to create prorations when canceling subscriptions.
 /// Possible values are `none` and `create_prorations`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PortalSubscriptionCancelProrationBehavior {
     AlwaysInvoice,
     CreateProrations,
     None,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl PortalSubscriptionCancelProrationBehavior {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PortalSubscriptionCancelProrationBehavior::*;
         match self {
             AlwaysInvoice => "always_invoice",
             CreateProrations => "create_prorations",
             None => "none",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for PortalSubscriptionCancelProrationBehavior {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PortalSubscriptionCancelProrationBehavior::*;
         match s {
             "always_invoice" => Ok(AlwaysInvoice),
             "create_prorations" => Ok(CreateProrations),
             "none" => Ok(None),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PortalSubscriptionCancelProrationBehavior"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -251,9 +275,8 @@ impl miniserde::Deserialize for PortalSubscriptionCancelProrationBehavior {
 impl miniserde::de::Visitor for crate::Place<PortalSubscriptionCancelProrationBehavior> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            PortalSubscriptionCancelProrationBehavior::from_str(s).map_err(|_| miniserde::Error)?,
-        );
+        self.out =
+            Some(PortalSubscriptionCancelProrationBehavior::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -264,8 +287,6 @@ impl<'de> serde::Deserialize<'de> for PortalSubscriptionCancelProrationBehavior 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for PortalSubscriptionCancelProrationBehavior")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

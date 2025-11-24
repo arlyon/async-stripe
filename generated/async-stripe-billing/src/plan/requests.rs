@@ -376,7 +376,7 @@ pub enum CreatePlanTiersUpTo {
 }
 /// Apply a transformation to the reported usage or set quantity before computing the billed price.
 /// Cannot be combined with `tiers`.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePlanTransformUsage {
     /// Divide usage by this number.
     pub divide_by: i64,
@@ -389,29 +389,40 @@ impl CreatePlanTransformUsage {
     }
 }
 /// After division, either round the result `up` or `down`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreatePlanTransformUsageRound {
     Down,
     Up,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreatePlanTransformUsageRound {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreatePlanTransformUsageRound::*;
         match self {
             Down => "down",
             Up => "up",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreatePlanTransformUsageRound {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePlanTransformUsageRound::*;
         match s {
             "down" => Ok(Down),
             "up" => Ok(Up),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePlanTransformUsageRound"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -439,9 +450,7 @@ impl<'de> serde::Deserialize<'de> for CreatePlanTransformUsageRound {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreatePlanTransformUsageRound")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// You can now model subscriptions more flexibly using the [Prices API](https://stripe.com/docs/api#prices).

@@ -1,4 +1,4 @@
-#[derive(Copy, Clone, Debug)]
+#[derive(Clone, Debug)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TaxProductRegistrationsResourceCountryOptionsDefaultStandard {
@@ -62,7 +62,7 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(place_of_supply_scheme),) = (self.place_of_supply_scheme,) else {
+            let (Some(place_of_supply_scheme),) = (self.place_of_supply_scheme.take(),) else {
                 return None;
             };
             Some(Self::Out { place_of_supply_scheme })
@@ -105,17 +105,21 @@ const _: () = {
     }
 };
 /// Place of supply scheme used in an Default standard registration.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum TaxProductRegistrationsResourceCountryOptionsDefaultStandardPlaceOfSupplyScheme {
     InboundGoods,
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl TaxProductRegistrationsResourceCountryOptionsDefaultStandardPlaceOfSupplyScheme {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use TaxProductRegistrationsResourceCountryOptionsDefaultStandardPlaceOfSupplyScheme::*;
         match self {
             InboundGoods => "inbound_goods",
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
@@ -123,13 +127,20 @@ impl TaxProductRegistrationsResourceCountryOptionsDefaultStandardPlaceOfSupplySc
 impl std::str::FromStr
     for TaxProductRegistrationsResourceCountryOptionsDefaultStandardPlaceOfSupplyScheme
 {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TaxProductRegistrationsResourceCountryOptionsDefaultStandardPlaceOfSupplyScheme::*;
         match s {
             "inbound_goods" => Ok(InboundGoods),
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "TaxProductRegistrationsResourceCountryOptionsDefaultStandardPlaceOfSupplyScheme"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -174,7 +185,7 @@ impl miniserde::de::Visitor
 {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(TaxProductRegistrationsResourceCountryOptionsDefaultStandardPlaceOfSupplyScheme::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(TaxProductRegistrationsResourceCountryOptionsDefaultStandardPlaceOfSupplyScheme::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -189,6 +200,6 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for TaxProductRegistrationsResourceCountryOptionsDefaultStandardPlaceOfSupplyScheme"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

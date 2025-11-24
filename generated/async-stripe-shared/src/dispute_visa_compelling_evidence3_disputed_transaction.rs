@@ -119,7 +119,7 @@ const _: () = {
                 self.customer_device_id.take(),
                 self.customer_email_address.take(),
                 self.customer_purchase_ip.take(),
-                self.merchandise_or_services,
+                self.merchandise_or_services.take(),
                 self.product_description.take(),
                 self.shipping_address.take(),
             )
@@ -184,29 +184,40 @@ const _: () = {
     }
 };
 /// Categorization of disputed payment.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum DisputeVisaCompellingEvidence3DisputedTransactionMerchandiseOrServices {
     Merchandise,
     Services,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl DisputeVisaCompellingEvidence3DisputedTransactionMerchandiseOrServices {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use DisputeVisaCompellingEvidence3DisputedTransactionMerchandiseOrServices::*;
         match self {
             Merchandise => "merchandise",
             Services => "services",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for DisputeVisaCompellingEvidence3DisputedTransactionMerchandiseOrServices {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use DisputeVisaCompellingEvidence3DisputedTransactionMerchandiseOrServices::*;
         match s {
             "merchandise" => Ok(Merchandise),
             "services" => Ok(Services),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "DisputeVisaCompellingEvidence3DisputedTransactionMerchandiseOrServices"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -245,7 +256,7 @@ impl miniserde::de::Visitor
         use std::str::FromStr;
         self.out = Some(
             DisputeVisaCompellingEvidence3DisputedTransactionMerchandiseOrServices::from_str(s)
-                .map_err(|_| miniserde::Error)?,
+                .expect("infallible"),
         );
         Ok(())
     }
@@ -261,6 +272,6 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for DisputeVisaCompellingEvidence3DisputedTransactionMerchandiseOrServices"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

@@ -64,7 +64,7 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(customer), Some(type_)) = (self.customer.take(), self.type_) else {
+            let (Some(customer), Some(type_)) = (self.customer.take(), self.type_.take()) else {
                 return None;
             };
             Some(Self::Out { customer, type_ })
@@ -103,26 +103,37 @@ const _: () = {
         }
     }
 };
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum ThresholdsResourceUsageAlertFilterType {
     Customer,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl ThresholdsResourceUsageAlertFilterType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use ThresholdsResourceUsageAlertFilterType::*;
         match self {
             Customer => "customer",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for ThresholdsResourceUsageAlertFilterType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ThresholdsResourceUsageAlertFilterType::*;
         match s {
             "customer" => Ok(Customer),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "ThresholdsResourceUsageAlertFilterType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -155,9 +166,7 @@ impl miniserde::Deserialize for ThresholdsResourceUsageAlertFilterType {
 impl miniserde::de::Visitor for crate::Place<ThresholdsResourceUsageAlertFilterType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            ThresholdsResourceUsageAlertFilterType::from_str(s).map_err(|_| miniserde::Error)?,
-        );
+        self.out = Some(ThresholdsResourceUsageAlertFilterType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -168,8 +177,6 @@ impl<'de> serde::Deserialize<'de> for ThresholdsResourceUsageAlertFilterType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for ThresholdsResourceUsageAlertFilterType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

@@ -197,9 +197,9 @@ const _: () = {
                 self.add_invoice_items.take(),
                 self.application_fee_percent,
                 self.automatic_tax.take(),
-                self.billing_cycle_anchor,
+                self.billing_cycle_anchor.take(),
                 self.billing_thresholds,
-                self.collection_method,
+                self.collection_method.take(),
                 self.currency.take(),
                 self.default_payment_method.take(),
                 self.default_tax_rates.take(),
@@ -210,7 +210,7 @@ const _: () = {
                 self.items.take(),
                 self.metadata.take(),
                 self.on_behalf_of.take(),
-                self.proration_behavior,
+                self.proration_behavior.take(),
                 self.start_date,
                 self.transfer_data.take(),
                 self.trial_end,
@@ -301,29 +301,40 @@ const _: () = {
 /// If `phase_start` then billing cycle anchor of the subscription is set to the start of the phase when entering the phase.
 /// If `automatic` then the billing cycle anchor is automatically modified as needed when entering the phase.
 /// For more information, see the billing cycle [documentation](https://stripe.com/docs/billing/subscriptions/billing-cycle).
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum SubscriptionSchedulePhaseConfigurationBillingCycleAnchor {
     Automatic,
     PhaseStart,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl SubscriptionSchedulePhaseConfigurationBillingCycleAnchor {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use SubscriptionSchedulePhaseConfigurationBillingCycleAnchor::*;
         match self {
             Automatic => "automatic",
             PhaseStart => "phase_start",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for SubscriptionSchedulePhaseConfigurationBillingCycleAnchor {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use SubscriptionSchedulePhaseConfigurationBillingCycleAnchor::*;
         match s {
             "automatic" => Ok(Automatic),
             "phase_start" => Ok(PhaseStart),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "SubscriptionSchedulePhaseConfigurationBillingCycleAnchor"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -360,7 +371,7 @@ impl miniserde::de::Visitor
         use std::str::FromStr;
         self.out = Some(
             SubscriptionSchedulePhaseConfigurationBillingCycleAnchor::from_str(s)
-                .map_err(|_| miniserde::Error)?,
+                .expect("infallible"),
         );
         Ok(())
     }
@@ -374,39 +385,46 @@ impl<'de> serde::Deserialize<'de> for SubscriptionSchedulePhaseConfigurationBill
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for SubscriptionSchedulePhaseConfigurationBillingCycleAnchor",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Either `charge_automatically`, or `send_invoice`.
 /// When charging automatically, Stripe will attempt to pay the underlying subscription at the end of each billing cycle using the default source attached to the customer.
 /// When sending an invoice, Stripe will email your customer an invoice with payment instructions and mark the subscription as `active`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum SubscriptionSchedulePhaseConfigurationCollectionMethod {
     ChargeAutomatically,
     SendInvoice,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl SubscriptionSchedulePhaseConfigurationCollectionMethod {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use SubscriptionSchedulePhaseConfigurationCollectionMethod::*;
         match self {
             ChargeAutomatically => "charge_automatically",
             SendInvoice => "send_invoice",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for SubscriptionSchedulePhaseConfigurationCollectionMethod {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use SubscriptionSchedulePhaseConfigurationCollectionMethod::*;
         match s {
             "charge_automatically" => Ok(ChargeAutomatically),
             "send_invoice" => Ok(SendInvoice),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "SubscriptionSchedulePhaseConfigurationCollectionMethod"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -443,7 +461,7 @@ impl miniserde::de::Visitor
         use std::str::FromStr;
         self.out = Some(
             SubscriptionSchedulePhaseConfigurationCollectionMethod::from_str(s)
-                .map_err(|_| miniserde::Error)?,
+                .expect("infallible"),
         );
         Ok(())
     }
@@ -455,41 +473,48 @@ impl<'de> serde::Deserialize<'de> for SubscriptionSchedulePhaseConfigurationColl
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for SubscriptionSchedulePhaseConfigurationCollectionMethod",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// When transitioning phases, controls how prorations are handled (if any).
 /// Possible values are `create_prorations`, `none`, and `always_invoice`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum SubscriptionSchedulePhaseConfigurationProrationBehavior {
     AlwaysInvoice,
     CreateProrations,
     None,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl SubscriptionSchedulePhaseConfigurationProrationBehavior {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use SubscriptionSchedulePhaseConfigurationProrationBehavior::*;
         match self {
             AlwaysInvoice => "always_invoice",
             CreateProrations => "create_prorations",
             None => "none",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for SubscriptionSchedulePhaseConfigurationProrationBehavior {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use SubscriptionSchedulePhaseConfigurationProrationBehavior::*;
         match s {
             "always_invoice" => Ok(AlwaysInvoice),
             "create_prorations" => Ok(CreateProrations),
             "none" => Ok(None),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "SubscriptionSchedulePhaseConfigurationProrationBehavior"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -526,7 +551,7 @@ impl miniserde::de::Visitor
         use std::str::FromStr;
         self.out = Some(
             SubscriptionSchedulePhaseConfigurationProrationBehavior::from_str(s)
-                .map_err(|_| miniserde::Error)?,
+                .expect("infallible"),
         );
         Ok(())
     }
@@ -538,10 +563,6 @@ impl<'de> serde::Deserialize<'de> for SubscriptionSchedulePhaseConfigurationPror
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for SubscriptionSchedulePhaseConfigurationProrationBehavior",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

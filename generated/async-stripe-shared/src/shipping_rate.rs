@@ -136,15 +136,15 @@ const _: () = {
             ) = (
                 self.active,
                 self.created,
-                self.delivery_estimate,
+                self.delivery_estimate.take(),
                 self.display_name.take(),
                 self.fixed_amount.take(),
                 self.id.take(),
                 self.livemode,
                 self.metadata.take(),
-                self.tax_behavior,
+                self.tax_behavior.take(),
                 self.tax_code.take(),
-                self.type_,
+                self.type_.take(),
             )
             else {
                 return None;
@@ -238,32 +238,39 @@ impl stripe_types::Object for ShippingRate {
     }
 }
 stripe_types::def_id!(ShippingRateId);
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum ShippingRateTaxBehavior {
     Exclusive,
     Inclusive,
     Unspecified,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl ShippingRateTaxBehavior {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use ShippingRateTaxBehavior::*;
         match self {
             Exclusive => "exclusive",
             Inclusive => "inclusive",
             Unspecified => "unspecified",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for ShippingRateTaxBehavior {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ShippingRateTaxBehavior::*;
         match s {
             "exclusive" => Ok(Exclusive),
             "inclusive" => Ok(Inclusive),
             "unspecified" => Ok(Unspecified),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "ShippingRateTaxBehavior");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -295,7 +302,7 @@ impl miniserde::Deserialize for ShippingRateTaxBehavior {
 impl miniserde::de::Visitor for crate::Place<ShippingRateTaxBehavior> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(ShippingRateTaxBehavior::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(ShippingRateTaxBehavior::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -306,30 +313,36 @@ impl<'de> serde::Deserialize<'de> for ShippingRateTaxBehavior {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for ShippingRateTaxBehavior"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum ShippingRateType {
     FixedAmount,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl ShippingRateType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use ShippingRateType::*;
         match self {
             FixedAmount => "fixed_amount",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for ShippingRateType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ShippingRateType::*;
         match s {
             "fixed_amount" => Ok(FixedAmount),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "ShippingRateType");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -361,7 +374,7 @@ impl miniserde::Deserialize for ShippingRateType {
 impl miniserde::de::Visitor for crate::Place<ShippingRateType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(ShippingRateType::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(ShippingRateType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -372,7 +385,6 @@ impl<'de> serde::Deserialize<'de> for ShippingRateType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for ShippingRateType"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

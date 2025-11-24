@@ -207,7 +207,7 @@ const _: () = {
                 Some(unit_amount_decimal),
             ) = (
                 self.active,
-                self.billing_scheme,
+                self.billing_scheme.take(),
                 self.created,
                 self.currency.take(),
                 self.currency_options.take(),
@@ -219,11 +219,11 @@ const _: () = {
                 self.nickname.take(),
                 self.product.take(),
                 self.recurring.take(),
-                self.tax_behavior,
+                self.tax_behavior.take(),
                 self.tiers.take(),
-                self.tiers_mode,
-                self.transform_quantity,
-                self.type_,
+                self.tiers_mode.take(),
+                self.transform_quantity.take(),
+                self.type_.take(),
                 self.unit_amount,
                 self.unit_amount_decimal.take(),
             )
@@ -346,29 +346,36 @@ impl stripe_types::Object for Price {
     }
 }
 stripe_types::def_id!(PriceId);
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PriceBillingScheme {
     PerUnit,
     Tiered,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl PriceBillingScheme {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PriceBillingScheme::*;
         match self {
             PerUnit => "per_unit",
             Tiered => "tiered",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for PriceBillingScheme {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PriceBillingScheme::*;
         match s {
             "per_unit" => Ok(PerUnit),
             "tiered" => Ok(Tiered),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "PriceBillingScheme");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -400,7 +407,7 @@ impl miniserde::Deserialize for PriceBillingScheme {
 impl miniserde::de::Visitor for crate::Place<PriceBillingScheme> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(PriceBillingScheme::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(PriceBillingScheme::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -411,36 +418,42 @@ impl<'de> serde::Deserialize<'de> for PriceBillingScheme {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for PriceBillingScheme"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PriceTaxBehavior {
     Exclusive,
     Inclusive,
     Unspecified,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl PriceTaxBehavior {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PriceTaxBehavior::*;
         match self {
             Exclusive => "exclusive",
             Inclusive => "inclusive",
             Unspecified => "unspecified",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for PriceTaxBehavior {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PriceTaxBehavior::*;
         match s {
             "exclusive" => Ok(Exclusive),
             "inclusive" => Ok(Inclusive),
             "unspecified" => Ok(Unspecified),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "PriceTaxBehavior");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -472,7 +485,7 @@ impl miniserde::Deserialize for PriceTaxBehavior {
 impl miniserde::de::Visitor for crate::Place<PriceTaxBehavior> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(PriceTaxBehavior::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(PriceTaxBehavior::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -483,33 +496,39 @@ impl<'de> serde::Deserialize<'de> for PriceTaxBehavior {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for PriceTaxBehavior"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PriceTiersMode {
     Graduated,
     Volume,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl PriceTiersMode {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PriceTiersMode::*;
         match self {
             Graduated => "graduated",
             Volume => "volume",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for PriceTiersMode {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PriceTiersMode::*;
         match s {
             "graduated" => Ok(Graduated),
             "volume" => Ok(Volume),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "PriceTiersMode");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -541,7 +560,7 @@ impl miniserde::Deserialize for PriceTiersMode {
 impl miniserde::de::Visitor for crate::Place<PriceTiersMode> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(PriceTiersMode::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(PriceTiersMode::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -552,32 +571,39 @@ impl<'de> serde::Deserialize<'de> for PriceTiersMode {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for PriceTiersMode"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PriceType {
     OneTime,
     Recurring,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl PriceType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PriceType::*;
         match self {
             OneTime => "one_time",
             Recurring => "recurring",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for PriceType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PriceType::*;
         match s {
             "one_time" => Ok(OneTime),
             "recurring" => Ok(Recurring),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "PriceType");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -609,7 +635,7 @@ impl miniserde::Deserialize for PriceType {
 impl miniserde::de::Visitor for crate::Place<PriceType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(PriceType::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(PriceType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -620,6 +646,6 @@ impl<'de> serde::Deserialize<'de> for PriceType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for PriceType"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

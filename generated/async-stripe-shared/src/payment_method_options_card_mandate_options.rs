@@ -121,10 +121,10 @@ const _: () = {
                 Some(supported_types),
             ) = (
                 self.amount,
-                self.amount_type,
+                self.amount_type.take(),
                 self.description.take(),
                 self.end_date,
-                self.interval,
+                self.interval.take(),
                 self.interval_count,
                 self.reference.take(),
                 self.start_date,
@@ -189,29 +189,40 @@ const _: () = {
 /// One of `fixed` or `maximum`.
 /// If `fixed`, the `amount` param refers to the exact amount to be charged in future payments.
 /// If `maximum`, the amount charged can be up to the value passed for the `amount` param.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PaymentMethodOptionsCardMandateOptionsAmountType {
     Fixed,
     Maximum,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl PaymentMethodOptionsCardMandateOptionsAmountType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PaymentMethodOptionsCardMandateOptionsAmountType::*;
         match self {
             Fixed => "fixed",
             Maximum => "maximum",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for PaymentMethodOptionsCardMandateOptionsAmountType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentMethodOptionsCardMandateOptionsAmountType::*;
         match s {
             "fixed" => Ok(Fixed),
             "maximum" => Ok(Maximum),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PaymentMethodOptionsCardMandateOptionsAmountType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -245,8 +256,7 @@ impl miniserde::de::Visitor for crate::Place<PaymentMethodOptionsCardMandateOpti
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(
-            PaymentMethodOptionsCardMandateOptionsAmountType::from_str(s)
-                .map_err(|_| miniserde::Error)?,
+            PaymentMethodOptionsCardMandateOptionsAmountType::from_str(s).expect("infallible"),
         );
         Ok(())
     }
@@ -258,24 +268,23 @@ impl<'de> serde::Deserialize<'de> for PaymentMethodOptionsCardMandateOptionsAmou
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for PaymentMethodOptionsCardMandateOptionsAmountType",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Specifies payment frequency. One of `day`, `week`, `month`, `year`, or `sporadic`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PaymentMethodOptionsCardMandateOptionsInterval {
     Day,
     Month,
     Sporadic,
     Week,
     Year,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl PaymentMethodOptionsCardMandateOptionsInterval {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PaymentMethodOptionsCardMandateOptionsInterval::*;
         match self {
             Day => "day",
@@ -283,12 +292,13 @@ impl PaymentMethodOptionsCardMandateOptionsInterval {
             Sporadic => "sporadic",
             Week => "week",
             Year => "year",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for PaymentMethodOptionsCardMandateOptionsInterval {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentMethodOptionsCardMandateOptionsInterval::*;
         match s {
@@ -297,7 +307,14 @@ impl std::str::FromStr for PaymentMethodOptionsCardMandateOptionsInterval {
             "sporadic" => Ok(Sporadic),
             "week" => Ok(Week),
             "year" => Ok(Year),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PaymentMethodOptionsCardMandateOptionsInterval"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -330,10 +347,8 @@ impl miniserde::Deserialize for PaymentMethodOptionsCardMandateOptionsInterval {
 impl miniserde::de::Visitor for crate::Place<PaymentMethodOptionsCardMandateOptionsInterval> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            PaymentMethodOptionsCardMandateOptionsInterval::from_str(s)
-                .map_err(|_| miniserde::Error)?,
-        );
+        self.out =
+            Some(PaymentMethodOptionsCardMandateOptionsInterval::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -344,34 +359,41 @@ impl<'de> serde::Deserialize<'de> for PaymentMethodOptionsCardMandateOptionsInte
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for PaymentMethodOptionsCardMandateOptionsInterval",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Specifies the type of mandates supported. Possible values are `india`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PaymentMethodOptionsCardMandateOptionsSupportedTypes {
     India,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl PaymentMethodOptionsCardMandateOptionsSupportedTypes {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PaymentMethodOptionsCardMandateOptionsSupportedTypes::*;
         match self {
             India => "india",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for PaymentMethodOptionsCardMandateOptionsSupportedTypes {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentMethodOptionsCardMandateOptionsSupportedTypes::*;
         match s {
             "india" => Ok(India),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PaymentMethodOptionsCardMandateOptionsSupportedTypes"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -405,8 +427,7 @@ impl miniserde::de::Visitor for crate::Place<PaymentMethodOptionsCardMandateOpti
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(
-            PaymentMethodOptionsCardMandateOptionsSupportedTypes::from_str(s)
-                .map_err(|_| miniserde::Error)?,
+            PaymentMethodOptionsCardMandateOptionsSupportedTypes::from_str(s).expect("infallible"),
         );
         Ok(())
     }
@@ -418,10 +439,6 @@ impl<'de> serde::Deserialize<'de> for PaymentMethodOptionsCardMandateOptionsSupp
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for PaymentMethodOptionsCardMandateOptionsSupportedTypes",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

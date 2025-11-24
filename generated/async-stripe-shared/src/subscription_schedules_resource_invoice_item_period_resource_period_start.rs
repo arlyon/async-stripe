@@ -1,4 +1,4 @@
-#[derive(Copy, Clone, Debug)]
+#[derive(Clone, Debug)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct SubscriptionSchedulesResourceInvoiceItemPeriodResourcePeriodStart {
@@ -66,7 +66,7 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(timestamp), Some(type_)) = (self.timestamp, self.type_) else {
+            let (Some(timestamp), Some(type_)) = (self.timestamp, self.type_.take()) else {
                 return None;
             };
             Some(Self::Out { timestamp, type_ })
@@ -106,32 +106,43 @@ const _: () = {
     }
 };
 /// Select how to calculate the start of the invoice item period.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum SubscriptionSchedulesResourceInvoiceItemPeriodResourcePeriodStartType {
     MaxItemPeriodStart,
     PhaseStart,
     Timestamp,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl SubscriptionSchedulesResourceInvoiceItemPeriodResourcePeriodStartType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use SubscriptionSchedulesResourceInvoiceItemPeriodResourcePeriodStartType::*;
         match self {
             MaxItemPeriodStart => "max_item_period_start",
             PhaseStart => "phase_start",
             Timestamp => "timestamp",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for SubscriptionSchedulesResourceInvoiceItemPeriodResourcePeriodStartType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use SubscriptionSchedulesResourceInvoiceItemPeriodResourcePeriodStartType::*;
         match s {
             "max_item_period_start" => Ok(MaxItemPeriodStart),
             "phase_start" => Ok(PhaseStart),
             "timestamp" => Ok(Timestamp),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "SubscriptionSchedulesResourceInvoiceItemPeriodResourcePeriodStartType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -170,7 +181,7 @@ impl miniserde::de::Visitor
         use std::str::FromStr;
         self.out = Some(
             SubscriptionSchedulesResourceInvoiceItemPeriodResourcePeriodStartType::from_str(s)
-                .map_err(|_| miniserde::Error)?,
+                .expect("infallible"),
         );
         Ok(())
     }
@@ -186,6 +197,6 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for SubscriptionSchedulesResourceInvoiceItemPeriodResourcePeriodStartType"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

@@ -533,7 +533,8 @@ impl Default for CreateAccountPersonUsCfpbDataEthnicityDetails {
     }
 }
 /// The persons ethnicity
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateAccountPersonUsCfpbDataEthnicityDetailsEthnicity {
     Cuban,
     HispanicOrLatino,
@@ -542,9 +543,11 @@ pub enum CreateAccountPersonUsCfpbDataEthnicityDetailsEthnicity {
     OtherHispanicOrLatino,
     PreferNotToAnswer,
     PuertoRican,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateAccountPersonUsCfpbDataEthnicityDetailsEthnicity {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateAccountPersonUsCfpbDataEthnicityDetailsEthnicity::*;
         match self {
             Cuban => "cuban",
@@ -554,12 +557,13 @@ impl CreateAccountPersonUsCfpbDataEthnicityDetailsEthnicity {
             OtherHispanicOrLatino => "other_hispanic_or_latino",
             PreferNotToAnswer => "prefer_not_to_answer",
             PuertoRican => "puerto_rican",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateAccountPersonUsCfpbDataEthnicityDetailsEthnicity {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateAccountPersonUsCfpbDataEthnicityDetailsEthnicity::*;
         match s {
@@ -570,7 +574,14 @@ impl std::str::FromStr for CreateAccountPersonUsCfpbDataEthnicityDetailsEthnicit
             "other_hispanic_or_latino" => Ok(OtherHispanicOrLatino),
             "prefer_not_to_answer" => Ok(PreferNotToAnswer),
             "puerto_rican" => Ok(PuertoRican),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateAccountPersonUsCfpbDataEthnicityDetailsEthnicity"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -598,11 +609,7 @@ impl<'de> serde::Deserialize<'de> for CreateAccountPersonUsCfpbDataEthnicityDeta
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for CreateAccountPersonUsCfpbDataEthnicityDetailsEthnicity",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The persons race details
@@ -718,7 +725,14 @@ impl std::str::FromStr for CreateAccountPersonUsCfpbDataRaceDetailsRace {
             "somali" => Ok(Somali),
             "vietnamese" => Ok(Vietnamese),
             "white" => Ok(White),
-            v => Ok(Unknown(v.to_owned())),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateAccountPersonUsCfpbDataRaceDetailsRace"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -746,7 +760,7 @@ impl<'de> serde::Deserialize<'de> for CreateAccountPersonUsCfpbDataRaceDetailsRa
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap())
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Creates a new person.
@@ -1246,7 +1260,8 @@ impl Default for UpdatePersonUsCfpbDataEthnicityDetails {
     }
 }
 /// The persons ethnicity
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdatePersonUsCfpbDataEthnicityDetailsEthnicity {
     Cuban,
     HispanicOrLatino,
@@ -1255,9 +1270,11 @@ pub enum UpdatePersonUsCfpbDataEthnicityDetailsEthnicity {
     OtherHispanicOrLatino,
     PreferNotToAnswer,
     PuertoRican,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdatePersonUsCfpbDataEthnicityDetailsEthnicity {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdatePersonUsCfpbDataEthnicityDetailsEthnicity::*;
         match self {
             Cuban => "cuban",
@@ -1267,12 +1284,13 @@ impl UpdatePersonUsCfpbDataEthnicityDetailsEthnicity {
             OtherHispanicOrLatino => "other_hispanic_or_latino",
             PreferNotToAnswer => "prefer_not_to_answer",
             PuertoRican => "puerto_rican",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for UpdatePersonUsCfpbDataEthnicityDetailsEthnicity {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePersonUsCfpbDataEthnicityDetailsEthnicity::*;
         match s {
@@ -1283,7 +1301,14 @@ impl std::str::FromStr for UpdatePersonUsCfpbDataEthnicityDetailsEthnicity {
             "other_hispanic_or_latino" => Ok(OtherHispanicOrLatino),
             "prefer_not_to_answer" => Ok(PreferNotToAnswer),
             "puerto_rican" => Ok(PuertoRican),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdatePersonUsCfpbDataEthnicityDetailsEthnicity"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -1311,11 +1336,7 @@ impl<'de> serde::Deserialize<'de> for UpdatePersonUsCfpbDataEthnicityDetailsEthn
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for UpdatePersonUsCfpbDataEthnicityDetailsEthnicity",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The persons race details
@@ -1431,7 +1452,14 @@ impl std::str::FromStr for UpdatePersonUsCfpbDataRaceDetailsRace {
             "somali" => Ok(Somali),
             "vietnamese" => Ok(Vietnamese),
             "white" => Ok(White),
-            v => Ok(Unknown(v.to_owned())),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdatePersonUsCfpbDataRaceDetailsRace"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -1459,7 +1487,7 @@ impl<'de> serde::Deserialize<'de> for UpdatePersonUsCfpbDataRaceDetailsRace {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap())
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Updates an existing person.

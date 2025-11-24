@@ -187,7 +187,14 @@ impl std::str::FromStr for LineItemsTaxAmountTaxabilityReason {
             "standard_rated" => Ok(StandardRated),
             "taxable_basis_reduced" => Ok(TaxableBasisReduced),
             "zero_rated" => Ok(ZeroRated),
-            v => Ok(Unknown(v.to_owned())),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "LineItemsTaxAmountTaxabilityReason"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -220,7 +227,7 @@ impl miniserde::Deserialize for LineItemsTaxAmountTaxabilityReason {
 impl miniserde::de::Visitor for crate::Place<LineItemsTaxAmountTaxabilityReason> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(LineItemsTaxAmountTaxabilityReason::from_str(s).unwrap());
+        self.out = Some(LineItemsTaxAmountTaxabilityReason::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -231,6 +238,6 @@ impl<'de> serde::Deserialize<'de> for LineItemsTaxAmountTaxabilityReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap())
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

@@ -75,7 +75,7 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (Some(price_details), Some(type_), Some(unit_amount_decimal)) =
-                (self.price_details.take(), self.type_, self.unit_amount_decimal.take())
+                (self.price_details.take(), self.type_.take(), self.unit_amount_decimal.take())
             else {
                 return None;
             };
@@ -117,26 +117,37 @@ const _: () = {
     }
 };
 /// The type of the pricing details.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum BillingBillResourceInvoicingPricingPricingType {
     PriceDetails,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl BillingBillResourceInvoicingPricingPricingType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use BillingBillResourceInvoicingPricingPricingType::*;
         match self {
             PriceDetails => "price_details",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for BillingBillResourceInvoicingPricingPricingType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use BillingBillResourceInvoicingPricingPricingType::*;
         match s {
             "price_details" => Ok(PriceDetails),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "BillingBillResourceInvoicingPricingPricingType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -169,10 +180,8 @@ impl miniserde::Deserialize for BillingBillResourceInvoicingPricingPricingType {
 impl miniserde::de::Visitor for crate::Place<BillingBillResourceInvoicingPricingPricingType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            BillingBillResourceInvoicingPricingPricingType::from_str(s)
-                .map_err(|_| miniserde::Error)?,
-        );
+        self.out =
+            Some(BillingBillResourceInvoicingPricingPricingType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -183,10 +192,6 @@ impl<'de> serde::Deserialize<'de> for BillingBillResourceInvoicingPricingPricing
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for BillingBillResourceInvoicingPricingPricingType",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

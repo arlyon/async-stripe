@@ -74,7 +74,7 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (Some(id), Some(style), Some(text)) =
-                (self.id.take(), self.style, self.text.take())
+                (self.id.take(), self.style.take(), self.text.take())
             else {
                 return None;
             };
@@ -116,29 +116,40 @@ const _: () = {
     }
 };
 /// The button style for the choice. Can be `primary` or `secondary`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum TerminalReaderReaderResourceChoiceStyle {
     Primary,
     Secondary,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl TerminalReaderReaderResourceChoiceStyle {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use TerminalReaderReaderResourceChoiceStyle::*;
         match self {
             Primary => "primary",
             Secondary => "secondary",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for TerminalReaderReaderResourceChoiceStyle {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TerminalReaderReaderResourceChoiceStyle::*;
         match s {
             "primary" => Ok(Primary),
             "secondary" => Ok(Secondary),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "TerminalReaderReaderResourceChoiceStyle"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -171,9 +182,7 @@ impl miniserde::Deserialize for TerminalReaderReaderResourceChoiceStyle {
 impl miniserde::de::Visitor for crate::Place<TerminalReaderReaderResourceChoiceStyle> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            TerminalReaderReaderResourceChoiceStyle::from_str(s).map_err(|_| miniserde::Error)?,
-        );
+        self.out = Some(TerminalReaderReaderResourceChoiceStyle::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -184,9 +193,7 @@ impl<'de> serde::Deserialize<'de> for TerminalReaderReaderResourceChoiceStyle {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for TerminalReaderReaderResourceChoiceStyle")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 impl stripe_types::Object for TerminalReaderReaderResourceChoice {

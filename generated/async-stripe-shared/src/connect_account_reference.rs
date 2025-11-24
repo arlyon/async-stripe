@@ -65,7 +65,7 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(account), Some(type_)) = (self.account.take(), self.type_) else {
+            let (Some(account), Some(type_)) = (self.account.take(), self.type_.take()) else {
                 return None;
             };
             Some(Self::Out { account, type_ })
@@ -105,29 +105,40 @@ const _: () = {
     }
 };
 /// Type of the account referenced.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum ConnectAccountReferenceType {
     Account,
     Self_,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl ConnectAccountReferenceType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use ConnectAccountReferenceType::*;
         match self {
             Account => "account",
             Self_ => "self",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for ConnectAccountReferenceType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ConnectAccountReferenceType::*;
         match s {
             "account" => Ok(Account),
             "self" => Ok(Self_),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "ConnectAccountReferenceType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -160,7 +171,7 @@ impl miniserde::Deserialize for ConnectAccountReferenceType {
 impl miniserde::de::Visitor for crate::Place<ConnectAccountReferenceType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(ConnectAccountReferenceType::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(ConnectAccountReferenceType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -171,7 +182,6 @@ impl<'de> serde::Deserialize<'de> for ConnectAccountReferenceType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for ConnectAccountReferenceType"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

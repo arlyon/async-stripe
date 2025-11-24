@@ -106,9 +106,9 @@ const _: () = {
                 self.error.take(),
                 self.first_name.take(),
                 self.id_number.take(),
-                self.id_number_type,
+                self.id_number_type.take(),
                 self.last_name.take(),
-                self.status,
+                self.status.take(),
             )
             else {
                 return None;
@@ -155,32 +155,43 @@ const _: () = {
     }
 };
 /// Type of ID number.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum GelatoIdNumberReportIdNumberType {
     BrCpf,
     SgNric,
     UsSsn,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl GelatoIdNumberReportIdNumberType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use GelatoIdNumberReportIdNumberType::*;
         match self {
             BrCpf => "br_cpf",
             SgNric => "sg_nric",
             UsSsn => "us_ssn",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for GelatoIdNumberReportIdNumberType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use GelatoIdNumberReportIdNumberType::*;
         match s {
             "br_cpf" => Ok(BrCpf),
             "sg_nric" => Ok(SgNric),
             "us_ssn" => Ok(UsSsn),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "GelatoIdNumberReportIdNumberType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -213,8 +224,7 @@ impl miniserde::Deserialize for GelatoIdNumberReportIdNumberType {
 impl miniserde::de::Visitor for crate::Place<GelatoIdNumberReportIdNumberType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out =
-            Some(GelatoIdNumberReportIdNumberType::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(GelatoIdNumberReportIdNumberType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -225,35 +235,40 @@ impl<'de> serde::Deserialize<'de> for GelatoIdNumberReportIdNumberType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for GelatoIdNumberReportIdNumberType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Status of this `id_number` check.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum GelatoIdNumberReportStatus {
     Unverified,
     Verified,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl GelatoIdNumberReportStatus {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use GelatoIdNumberReportStatus::*;
         match self {
             Unverified => "unverified",
             Verified => "verified",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for GelatoIdNumberReportStatus {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use GelatoIdNumberReportStatus::*;
         match s {
             "unverified" => Ok(Unverified),
             "verified" => Ok(Verified),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "GelatoIdNumberReportStatus");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -286,7 +301,7 @@ impl miniserde::Deserialize for GelatoIdNumberReportStatus {
 impl miniserde::de::Visitor for crate::Place<GelatoIdNumberReportStatus> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(GelatoIdNumberReportStatus::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(GelatoIdNumberReportStatus::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -297,7 +312,6 @@ impl<'de> serde::Deserialize<'de> for GelatoIdNumberReportStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for GelatoIdNumberReportStatus"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

@@ -54,29 +54,40 @@ impl ListInvoicePaymentPayment {
     }
 }
 /// Only return invoice payments associated by this payment type.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum ListInvoicePaymentPaymentType {
     PaymentIntent,
     PaymentRecord,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl ListInvoicePaymentPaymentType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use ListInvoicePaymentPaymentType::*;
         match self {
             PaymentIntent => "payment_intent",
             PaymentRecord => "payment_record",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for ListInvoicePaymentPaymentType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ListInvoicePaymentPaymentType::*;
         match s {
             "payment_intent" => Ok(PaymentIntent),
             "payment_record" => Ok(PaymentRecord),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "ListInvoicePaymentPaymentType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -104,38 +115,43 @@ impl<'de> serde::Deserialize<'de> for ListInvoicePaymentPaymentType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for ListInvoicePaymentPaymentType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The status of the invoice payments to return.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum ListInvoicePaymentStatus {
     Canceled,
     Open,
     Paid,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl ListInvoicePaymentStatus {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use ListInvoicePaymentStatus::*;
         match self {
             Canceled => "canceled",
             Open => "open",
             Paid => "paid",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for ListInvoicePaymentStatus {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ListInvoicePaymentStatus::*;
         match s {
             "canceled" => Ok(Canceled),
             "open" => Ok(Open),
             "paid" => Ok(Paid),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "ListInvoicePaymentStatus");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -163,8 +179,7 @@ impl<'de> serde::Deserialize<'de> for ListInvoicePaymentStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for ListInvoicePaymentStatus"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// When retrieving an invoice, there is an includable payments property containing the first handful of those items.

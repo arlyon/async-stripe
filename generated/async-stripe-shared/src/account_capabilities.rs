@@ -1,4 +1,4 @@
-#[derive(Copy, Clone, Debug)]
+#[derive(Clone, Debug)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct AccountCapabilities {
@@ -441,66 +441,66 @@ const _: () = {
                 Some(us_bank_transfer_payments),
                 Some(zip_payments),
             ) = (
-                self.acss_debit_payments,
-                self.affirm_payments,
-                self.afterpay_clearpay_payments,
-                self.alma_payments,
-                self.amazon_pay_payments,
-                self.au_becs_debit_payments,
-                self.bacs_debit_payments,
-                self.bancontact_payments,
-                self.bank_transfer_payments,
-                self.billie_payments,
-                self.blik_payments,
-                self.boleto_payments,
-                self.card_issuing,
-                self.card_payments,
-                self.cartes_bancaires_payments,
-                self.cashapp_payments,
-                self.crypto_payments,
-                self.eps_payments,
-                self.fpx_payments,
-                self.gb_bank_transfer_payments,
-                self.giropay_payments,
-                self.grabpay_payments,
-                self.ideal_payments,
-                self.india_international_payments,
-                self.jcb_payments,
-                self.jp_bank_transfer_payments,
-                self.kakao_pay_payments,
-                self.klarna_payments,
-                self.konbini_payments,
-                self.kr_card_payments,
-                self.legacy_payments,
-                self.link_payments,
-                self.mb_way_payments,
-                self.mobilepay_payments,
-                self.multibanco_payments,
-                self.mx_bank_transfer_payments,
-                self.naver_pay_payments,
-                self.nz_bank_account_becs_debit_payments,
-                self.oxxo_payments,
-                self.p24_payments,
-                self.pay_by_bank_payments,
-                self.payco_payments,
-                self.paynow_payments,
-                self.pix_payments,
-                self.promptpay_payments,
-                self.revolut_pay_payments,
-                self.samsung_pay_payments,
-                self.satispay_payments,
-                self.sepa_bank_transfer_payments,
-                self.sepa_debit_payments,
-                self.sofort_payments,
-                self.swish_payments,
-                self.tax_reporting_us_1099_k,
-                self.tax_reporting_us_1099_misc,
-                self.transfers,
-                self.treasury,
-                self.twint_payments,
-                self.us_bank_account_ach_payments,
-                self.us_bank_transfer_payments,
-                self.zip_payments,
+                self.acss_debit_payments.take(),
+                self.affirm_payments.take(),
+                self.afterpay_clearpay_payments.take(),
+                self.alma_payments.take(),
+                self.amazon_pay_payments.take(),
+                self.au_becs_debit_payments.take(),
+                self.bacs_debit_payments.take(),
+                self.bancontact_payments.take(),
+                self.bank_transfer_payments.take(),
+                self.billie_payments.take(),
+                self.blik_payments.take(),
+                self.boleto_payments.take(),
+                self.card_issuing.take(),
+                self.card_payments.take(),
+                self.cartes_bancaires_payments.take(),
+                self.cashapp_payments.take(),
+                self.crypto_payments.take(),
+                self.eps_payments.take(),
+                self.fpx_payments.take(),
+                self.gb_bank_transfer_payments.take(),
+                self.giropay_payments.take(),
+                self.grabpay_payments.take(),
+                self.ideal_payments.take(),
+                self.india_international_payments.take(),
+                self.jcb_payments.take(),
+                self.jp_bank_transfer_payments.take(),
+                self.kakao_pay_payments.take(),
+                self.klarna_payments.take(),
+                self.konbini_payments.take(),
+                self.kr_card_payments.take(),
+                self.legacy_payments.take(),
+                self.link_payments.take(),
+                self.mb_way_payments.take(),
+                self.mobilepay_payments.take(),
+                self.multibanco_payments.take(),
+                self.mx_bank_transfer_payments.take(),
+                self.naver_pay_payments.take(),
+                self.nz_bank_account_becs_debit_payments.take(),
+                self.oxxo_payments.take(),
+                self.p24_payments.take(),
+                self.pay_by_bank_payments.take(),
+                self.payco_payments.take(),
+                self.paynow_payments.take(),
+                self.pix_payments.take(),
+                self.promptpay_payments.take(),
+                self.revolut_pay_payments.take(),
+                self.samsung_pay_payments.take(),
+                self.satispay_payments.take(),
+                self.sepa_bank_transfer_payments.take(),
+                self.sepa_debit_payments.take(),
+                self.sofort_payments.take(),
+                self.swish_payments.take(),
+                self.tax_reporting_us_1099_k.take(),
+                self.tax_reporting_us_1099_misc.take(),
+                self.transfers.take(),
+                self.treasury.take(),
+                self.twint_payments.take(),
+                self.us_bank_account_ach_payments.take(),
+                self.us_bank_transfer_payments.take(),
+                self.zip_payments.take(),
             )
             else {
                 return None;
@@ -688,32 +688,39 @@ const _: () = {
         }
     }
 };
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum AccountCapabilitiesStatus {
     Active,
     Inactive,
     Pending,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl AccountCapabilitiesStatus {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use AccountCapabilitiesStatus::*;
         match self {
             Active => "active",
             Inactive => "inactive",
             Pending => "pending",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for AccountCapabilitiesStatus {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use AccountCapabilitiesStatus::*;
         match s {
             "active" => Ok(Active),
             "inactive" => Ok(Inactive),
             "pending" => Ok(Pending),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "AccountCapabilitiesStatus");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -746,7 +753,7 @@ impl miniserde::Deserialize for AccountCapabilitiesStatus {
 impl miniserde::de::Visitor for crate::Place<AccountCapabilitiesStatus> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(AccountCapabilitiesStatus::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(AccountCapabilitiesStatus::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -757,7 +764,6 @@ impl<'de> serde::Deserialize<'de> for AccountCapabilitiesStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for AccountCapabilitiesStatus"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

@@ -39,7 +39,8 @@ impl Default for CancelSubscriptionCancellationDetails {
     }
 }
 /// The customer submitted reason for why they canceled, if the subscription was canceled explicitly by the user.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CancelSubscriptionCancellationDetailsFeedback {
     CustomerService,
     LowQuality,
@@ -49,9 +50,11 @@ pub enum CancelSubscriptionCancellationDetailsFeedback {
     TooComplex,
     TooExpensive,
     Unused,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CancelSubscriptionCancellationDetailsFeedback {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CancelSubscriptionCancellationDetailsFeedback::*;
         match self {
             CustomerService => "customer_service",
@@ -62,12 +65,13 @@ impl CancelSubscriptionCancellationDetailsFeedback {
             TooComplex => "too_complex",
             TooExpensive => "too_expensive",
             Unused => "unused",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CancelSubscriptionCancellationDetailsFeedback {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CancelSubscriptionCancellationDetailsFeedback::*;
         match s {
@@ -79,7 +83,14 @@ impl std::str::FromStr for CancelSubscriptionCancellationDetailsFeedback {
             "too_complex" => Ok(TooComplex),
             "too_expensive" => Ok(TooExpensive),
             "unused" => Ok(Unused),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CancelSubscriptionCancellationDetailsFeedback"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -107,11 +118,7 @@ impl<'de> serde::Deserialize<'de> for CancelSubscriptionCancellationDetailsFeedb
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for CancelSubscriptionCancellationDetailsFeedback",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Cancels a customer’s subscription immediately.
@@ -302,7 +309,8 @@ impl ListSubscriptionAutomaticTax {
 /// Pass `ended` to find subscriptions that are canceled and subscriptions that are expired due to [incomplete payment](https://stripe.com/docs/billing/subscriptions/overview#subscription-statuses).
 /// Passing in a value of `all` will return subscriptions of all statuses.
 /// If no value is supplied, all subscriptions that have not been canceled are returned.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum ListSubscriptionStatus {
     Active,
     All,
@@ -314,9 +322,11 @@ pub enum ListSubscriptionStatus {
     Paused,
     Trialing,
     Unpaid,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl ListSubscriptionStatus {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use ListSubscriptionStatus::*;
         match self {
             Active => "active",
@@ -329,12 +339,13 @@ impl ListSubscriptionStatus {
             Paused => "paused",
             Trialing => "trialing",
             Unpaid => "unpaid",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for ListSubscriptionStatus {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ListSubscriptionStatus::*;
         match s {
@@ -348,7 +359,10 @@ impl std::str::FromStr for ListSubscriptionStatus {
             "paused" => Ok(Paused),
             "trialing" => Ok(Trialing),
             "unpaid" => Ok(Unpaid),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "ListSubscriptionStatus");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -376,8 +390,7 @@ impl<'de> serde::Deserialize<'de> for ListSubscriptionStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for ListSubscriptionStatus"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// By default, returns a list of subscriptions that have not been canceled.
@@ -817,7 +830,7 @@ impl Default for CreateSubscriptionAddInvoiceItems {
 }
 /// The period associated with this invoice item.
 /// If not set, `period.start.type` defaults to `max_item_period_start` and `period.end.type` defaults to `min_item_period_end`.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateSubscriptionAddInvoiceItemsPeriod {
     /// End of the invoice item period.
     pub end: CreateSubscriptionAddInvoiceItemsPeriodEnd,
@@ -833,7 +846,7 @@ impl CreateSubscriptionAddInvoiceItemsPeriod {
     }
 }
 /// End of the invoice item period.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateSubscriptionAddInvoiceItemsPeriodEnd {
     /// A precise Unix timestamp for the end of the invoice item period.
     /// Must be greater than or equal to `period.start`.
@@ -849,29 +862,40 @@ impl CreateSubscriptionAddInvoiceItemsPeriodEnd {
     }
 }
 /// Select how to calculate the end of the invoice item period.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateSubscriptionAddInvoiceItemsPeriodEndType {
     MinItemPeriodEnd,
     Timestamp,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateSubscriptionAddInvoiceItemsPeriodEndType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateSubscriptionAddInvoiceItemsPeriodEndType::*;
         match self {
             MinItemPeriodEnd => "min_item_period_end",
             Timestamp => "timestamp",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateSubscriptionAddInvoiceItemsPeriodEndType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateSubscriptionAddInvoiceItemsPeriodEndType::*;
         match s {
             "min_item_period_end" => Ok(MinItemPeriodEnd),
             "timestamp" => Ok(Timestamp),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateSubscriptionAddInvoiceItemsPeriodEndType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -899,15 +923,11 @@ impl<'de> serde::Deserialize<'de> for CreateSubscriptionAddInvoiceItemsPeriodEnd
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for CreateSubscriptionAddInvoiceItemsPeriodEndType",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Start of the invoice item period.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateSubscriptionAddInvoiceItemsPeriodStart {
     /// A precise Unix timestamp for the start of the invoice item period.
     /// Must be less than or equal to `period.end`.
@@ -923,32 +943,43 @@ impl CreateSubscriptionAddInvoiceItemsPeriodStart {
     }
 }
 /// Select how to calculate the start of the invoice item period.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateSubscriptionAddInvoiceItemsPeriodStartType {
     MaxItemPeriodStart,
     Now,
     Timestamp,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateSubscriptionAddInvoiceItemsPeriodStartType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateSubscriptionAddInvoiceItemsPeriodStartType::*;
         match self {
             MaxItemPeriodStart => "max_item_period_start",
             Now => "now",
             Timestamp => "timestamp",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateSubscriptionAddInvoiceItemsPeriodStartType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateSubscriptionAddInvoiceItemsPeriodStartType::*;
         match s {
             "max_item_period_start" => Ok(MaxItemPeriodStart),
             "now" => Ok(Now),
             "timestamp" => Ok(Timestamp),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateSubscriptionAddInvoiceItemsPeriodStartType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -976,11 +1007,7 @@ impl<'de> serde::Deserialize<'de> for CreateSubscriptionAddInvoiceItemsPeriodSta
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for CreateSubscriptionAddInvoiceItemsPeriodStartType",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
@@ -1021,32 +1048,43 @@ impl CreateSubscriptionAddInvoiceItemsPriceData {
 /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
 /// One of `inclusive`, `exclusive`, or `unspecified`.
 /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateSubscriptionAddInvoiceItemsPriceDataTaxBehavior {
     Exclusive,
     Inclusive,
     Unspecified,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateSubscriptionAddInvoiceItemsPriceDataTaxBehavior {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateSubscriptionAddInvoiceItemsPriceDataTaxBehavior::*;
         match self {
             Exclusive => "exclusive",
             Inclusive => "inclusive",
             Unspecified => "unspecified",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateSubscriptionAddInvoiceItemsPriceDataTaxBehavior {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateSubscriptionAddInvoiceItemsPriceDataTaxBehavior::*;
         match s {
             "exclusive" => Ok(Exclusive),
             "inclusive" => Ok(Inclusive),
             "unspecified" => Ok(Unspecified),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateSubscriptionAddInvoiceItemsPriceDataTaxBehavior"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -1074,11 +1112,7 @@ impl<'de> serde::Deserialize<'de> for CreateSubscriptionAddInvoiceItemsPriceData
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for CreateSubscriptionAddInvoiceItemsPriceDataTaxBehavior",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Automatic tax settings for this subscription.
@@ -1115,29 +1149,40 @@ impl CreateSubscriptionAutomaticTaxLiability {
     }
 }
 /// Type of the account referenced in the request.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateSubscriptionAutomaticTaxLiabilityType {
     Account,
     Self_,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateSubscriptionAutomaticTaxLiabilityType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateSubscriptionAutomaticTaxLiabilityType::*;
         match self {
             Account => "account",
             Self_ => "self",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateSubscriptionAutomaticTaxLiabilityType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateSubscriptionAutomaticTaxLiabilityType::*;
         match s {
             "account" => Ok(Account),
             "self" => Ok(Self_),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateSubscriptionAutomaticTaxLiabilityType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -1165,11 +1210,7 @@ impl<'de> serde::Deserialize<'de> for CreateSubscriptionAutomaticTaxLiabilityTyp
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for CreateSubscriptionAutomaticTaxLiabilityType",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Mutually exclusive with billing_cycle_anchor and only valid with monthly and yearly price intervals.
@@ -1203,7 +1244,7 @@ impl CreateSubscriptionBillingCycleAnchorConfig {
     }
 }
 /// Controls how prorations and invoices for subscriptions are calculated and orchestrated.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateSubscriptionBillingMode {
     /// Configure behavior for flexible billing mode.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1219,7 +1260,7 @@ impl CreateSubscriptionBillingMode {
     }
 }
 /// Configure behavior for flexible billing mode.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateSubscriptionBillingModeFlexible {
     /// Controls how invoices and invoice items display proration amounts and discount amounts.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1236,29 +1277,40 @@ impl Default for CreateSubscriptionBillingModeFlexible {
     }
 }
 /// Controls how invoices and invoice items display proration amounts and discount amounts.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateSubscriptionBillingModeFlexibleProrationDiscounts {
     Included,
     Itemized,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateSubscriptionBillingModeFlexibleProrationDiscounts {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateSubscriptionBillingModeFlexibleProrationDiscounts::*;
         match self {
             Included => "included",
             Itemized => "itemized",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateSubscriptionBillingModeFlexibleProrationDiscounts {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateSubscriptionBillingModeFlexibleProrationDiscounts::*;
         match s {
             "included" => Ok(Included),
             "itemized" => Ok(Itemized),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateSubscriptionBillingModeFlexibleProrationDiscounts"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -1286,38 +1338,45 @@ impl<'de> serde::Deserialize<'de> for CreateSubscriptionBillingModeFlexibleProra
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for CreateSubscriptionBillingModeFlexibleProrationDiscounts",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Controls the calculation and orchestration of prorations and invoices for subscriptions.
 /// If no value is passed, the default is `flexible`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateSubscriptionBillingModeType {
     Classic,
     Flexible,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateSubscriptionBillingModeType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateSubscriptionBillingModeType::*;
         match self {
             Classic => "classic",
             Flexible => "flexible",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateSubscriptionBillingModeType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateSubscriptionBillingModeType::*;
         match s {
             "classic" => Ok(Classic),
             "flexible" => Ok(Flexible),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateSubscriptionBillingModeType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -1345,9 +1404,7 @@ impl<'de> serde::Deserialize<'de> for CreateSubscriptionBillingModeType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateSubscriptionBillingModeType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// A timestamp at which the subscription should cancel.
@@ -1400,29 +1457,40 @@ impl CreateSubscriptionInvoiceSettingsIssuer {
     }
 }
 /// Type of the account referenced in the request.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateSubscriptionInvoiceSettingsIssuerType {
     Account,
     Self_,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateSubscriptionInvoiceSettingsIssuerType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateSubscriptionInvoiceSettingsIssuerType::*;
         match self {
             Account => "account",
             Self_ => "self",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateSubscriptionInvoiceSettingsIssuerType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateSubscriptionInvoiceSettingsIssuerType::*;
         match s {
             "account" => Ok(Account),
             "self" => Ok(Self_),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateSubscriptionInvoiceSettingsIssuerType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -1450,11 +1518,7 @@ impl<'de> serde::Deserialize<'de> for CreateSubscriptionInvoiceSettingsIssuerTyp
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for CreateSubscriptionInvoiceSettingsIssuerType",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// A list of up to 20 subscription items, each with an attached price.
@@ -1551,7 +1615,7 @@ impl CreateSubscriptionItemsPriceData {
     }
 }
 /// The recurring components of a price such as `interval` and `interval_count`.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateSubscriptionItemsPriceDataRecurring {
     /// Specifies billing frequency. Either `day`, `week`, `month` or `year`.
     pub interval: CreateSubscriptionItemsPriceDataRecurringInterval,
@@ -1567,27 +1631,31 @@ impl CreateSubscriptionItemsPriceDataRecurring {
     }
 }
 /// Specifies billing frequency. Either `day`, `week`, `month` or `year`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateSubscriptionItemsPriceDataRecurringInterval {
     Day,
     Month,
     Week,
     Year,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateSubscriptionItemsPriceDataRecurringInterval {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateSubscriptionItemsPriceDataRecurringInterval::*;
         match self {
             Day => "day",
             Month => "month",
             Week => "week",
             Year => "year",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateSubscriptionItemsPriceDataRecurringInterval {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateSubscriptionItemsPriceDataRecurringInterval::*;
         match s {
@@ -1595,7 +1663,14 @@ impl std::str::FromStr for CreateSubscriptionItemsPriceDataRecurringInterval {
             "month" => Ok(Month),
             "week" => Ok(Week),
             "year" => Ok(Year),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateSubscriptionItemsPriceDataRecurringInterval"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -1623,43 +1698,50 @@ impl<'de> serde::Deserialize<'de> for CreateSubscriptionItemsPriceDataRecurringI
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for CreateSubscriptionItemsPriceDataRecurringInterval",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
 /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
 /// One of `inclusive`, `exclusive`, or `unspecified`.
 /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateSubscriptionItemsPriceDataTaxBehavior {
     Exclusive,
     Inclusive,
     Unspecified,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateSubscriptionItemsPriceDataTaxBehavior {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateSubscriptionItemsPriceDataTaxBehavior::*;
         match self {
             Exclusive => "exclusive",
             Inclusive => "inclusive",
             Unspecified => "unspecified",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateSubscriptionItemsPriceDataTaxBehavior {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateSubscriptionItemsPriceDataTaxBehavior::*;
         match s {
             "exclusive" => Ok(Exclusive),
             "inclusive" => Ok(Inclusive),
             "unspecified" => Ok(Unspecified),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateSubscriptionItemsPriceDataTaxBehavior"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -1687,11 +1769,7 @@ impl<'de> serde::Deserialize<'de> for CreateSubscriptionItemsPriceDataTaxBehavio
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for CreateSubscriptionItemsPriceDataTaxBehavior",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Only applies to subscriptions with `collection_method=charge_automatically`.
@@ -1715,27 +1793,31 @@ impl<'de> serde::Deserialize<'de> for CreateSubscriptionItemsPriceDataTaxBehavio
 /// `pending_if_incomplete` is only used with updates and cannot be passed when creating a Subscription.
 ///
 /// Subscriptions with `collection_method=send_invoice` are automatically activated regardless of the first Invoice status.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateSubscriptionPaymentBehavior {
     AllowIncomplete,
     DefaultIncomplete,
     ErrorIfIncomplete,
     PendingIfIncomplete,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateSubscriptionPaymentBehavior {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateSubscriptionPaymentBehavior::*;
         match self {
             AllowIncomplete => "allow_incomplete",
             DefaultIncomplete => "default_incomplete",
             ErrorIfIncomplete => "error_if_incomplete",
             PendingIfIncomplete => "pending_if_incomplete",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateSubscriptionPaymentBehavior {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateSubscriptionPaymentBehavior::*;
         match s {
@@ -1743,7 +1825,14 @@ impl std::str::FromStr for CreateSubscriptionPaymentBehavior {
             "default_incomplete" => Ok(DefaultIncomplete),
             "error_if_incomplete" => Ok(ErrorIfIncomplete),
             "pending_if_incomplete" => Ok(PendingIfIncomplete),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateSubscriptionPaymentBehavior"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -1771,9 +1860,7 @@ impl<'de> serde::Deserialize<'de> for CreateSubscriptionPaymentBehavior {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateSubscriptionPaymentBehavior")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Payment settings to pass to invoices created by the subscription.
@@ -1854,7 +1941,7 @@ impl Default for CreateSubscriptionPaymentSettingsPaymentMethodOptions {
     }
 }
 /// This sub-hash contains details about the Canadian pre-authorized debit payment method options to pass to the invoice’s PaymentIntent.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebit {
     /// Additional fields for Mandate creation
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1876,7 +1963,7 @@ impl Default for CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebit 
     }
 }
 /// Additional fields for Mandate creation
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptions {
     /// Transaction type of the mandate.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1895,18 +1982,22 @@ impl Default for CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitM
     }
 }
 /// Transaction type of the mandate.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType
 {
     Business,
     Personal,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType::*;
         match self {
             Business => "business",
             Personal => "personal",
+            Unknown(v) => v,
         }
     }
 }
@@ -1914,13 +2005,20 @@ impl CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitMandateOption
 impl std::str::FromStr
     for CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType
 {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType::*;
         match s {
             "business" => Ok(Business),
             "personal" => Ok(Personal),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -1956,23 +2054,27 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Verification method for the intent
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod {
     Automatic,
     Instant,
     Microdeposits,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod::*;
         match self {
             Automatic => "automatic",
             Instant => "instant",
             Microdeposits => "microdeposits",
+            Unknown(v) => v,
         }
     }
 }
@@ -1980,14 +2082,21 @@ impl CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitVerificationM
 impl std::str::FromStr
     for CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod
 {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod::*;
         match s {
             "automatic" => Ok(Automatic),
             "instant" => Ok(Instant),
             "microdeposits" => Ok(Microdeposits),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -2023,11 +2132,11 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// This sub-hash contains details about the Bancontact payment method options to pass to the invoice’s PaymentIntent.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateSubscriptionPaymentSettingsPaymentMethodOptionsBancontact {
     /// Preferred language of the Bancontact authorization page that the customer is redirected to.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2045,21 +2154,25 @@ impl Default for CreateSubscriptionPaymentSettingsPaymentMethodOptionsBancontact
     }
 }
 /// Preferred language of the Bancontact authorization page that the customer is redirected to.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateSubscriptionPaymentSettingsPaymentMethodOptionsBancontactPreferredLanguage {
     De,
     En,
     Fr,
     Nl,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateSubscriptionPaymentSettingsPaymentMethodOptionsBancontactPreferredLanguage {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateSubscriptionPaymentSettingsPaymentMethodOptionsBancontactPreferredLanguage::*;
         match self {
             De => "de",
             En => "en",
             Fr => "fr",
             Nl => "nl",
+            Unknown(v) => v,
         }
     }
 }
@@ -2067,7 +2180,7 @@ impl CreateSubscriptionPaymentSettingsPaymentMethodOptionsBancontactPreferredLan
 impl std::str::FromStr
     for CreateSubscriptionPaymentSettingsPaymentMethodOptionsBancontactPreferredLanguage
 {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateSubscriptionPaymentSettingsPaymentMethodOptionsBancontactPreferredLanguage::*;
         match s {
@@ -2075,7 +2188,14 @@ impl std::str::FromStr
             "en" => Ok(En),
             "fr" => Ok(Fr),
             "nl" => Ok(Nl),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateSubscriptionPaymentSettingsPaymentMethodOptionsBancontactPreferredLanguage"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -2111,7 +2231,7 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateSubscriptionPaymentSettingsPaymentMethodOptionsBancontactPreferredLanguage"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// This sub-hash contains details about the Card payment method options to pass to the invoice’s PaymentIntent.
@@ -2172,17 +2292,21 @@ impl Default for CreateSubscriptionPaymentSettingsPaymentMethodOptionsCardMandat
 /// One of `fixed` or `maximum`.
 /// If `fixed`, the `amount` param refers to the exact amount to be charged in future payments.
 /// If `maximum`, the amount charged can be up to the value passed for the `amount` param.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateSubscriptionPaymentSettingsPaymentMethodOptionsCardMandateOptionsAmountType {
     Fixed,
     Maximum,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateSubscriptionPaymentSettingsPaymentMethodOptionsCardMandateOptionsAmountType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateSubscriptionPaymentSettingsPaymentMethodOptionsCardMandateOptionsAmountType::*;
         match self {
             Fixed => "fixed",
             Maximum => "maximum",
+            Unknown(v) => v,
         }
     }
 }
@@ -2190,13 +2314,20 @@ impl CreateSubscriptionPaymentSettingsPaymentMethodOptionsCardMandateOptionsAmou
 impl std::str::FromStr
     for CreateSubscriptionPaymentSettingsPaymentMethodOptionsCardMandateOptionsAmountType
 {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateSubscriptionPaymentSettingsPaymentMethodOptionsCardMandateOptionsAmountType::*;
         match s {
             "fixed" => Ok(Fixed),
             "maximum" => Ok(Maximum),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateSubscriptionPaymentSettingsPaymentMethodOptionsCardMandateOptionsAmountType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -2232,7 +2363,7 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateSubscriptionPaymentSettingsPaymentMethodOptionsCardMandateOptionsAmountType"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Selected network to process this Subscription on.
@@ -2329,19 +2460,23 @@ impl<'de> serde::Deserialize<'de>
 /// We strongly recommend that you rely on our SCA Engine to automatically prompt your customers for authentication based on risk level and [other requirements](https://stripe.com/docs/strong-customer-authentication).
 /// However, if you wish to request 3D Secure based on logic from your own fraud engine, provide this option.
 /// Read our guide on [manually requesting 3D Secure](https://stripe.com/docs/payments/3d-secure/authentication-flow#manual-three-ds) for more information on how this configuration interacts with Radar and our SCA Engine.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateSubscriptionPaymentSettingsPaymentMethodOptionsCardRequestThreeDSecure {
     Any,
     Automatic,
     Challenge,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateSubscriptionPaymentSettingsPaymentMethodOptionsCardRequestThreeDSecure {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateSubscriptionPaymentSettingsPaymentMethodOptionsCardRequestThreeDSecure::*;
         match self {
             Any => "any",
             Automatic => "automatic",
             Challenge => "challenge",
+            Unknown(v) => v,
         }
     }
 }
@@ -2349,14 +2484,21 @@ impl CreateSubscriptionPaymentSettingsPaymentMethodOptionsCardRequestThreeDSecur
 impl std::str::FromStr
     for CreateSubscriptionPaymentSettingsPaymentMethodOptionsCardRequestThreeDSecure
 {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateSubscriptionPaymentSettingsPaymentMethodOptionsCardRequestThreeDSecure::*;
         match s {
             "any" => Ok(Any),
             "automatic" => Ok(Automatic),
             "challenge" => Ok(Challenge),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateSubscriptionPaymentSettingsPaymentMethodOptionsCardRequestThreeDSecure"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -2392,7 +2534,7 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateSubscriptionPaymentSettingsPaymentMethodOptionsCardRequestThreeDSecure"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// This sub-hash contains details about the ACH direct debit payment method options to pass to the invoice’s PaymentIntent.
@@ -2468,31 +2610,35 @@ impl Default for CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAcco
 }
 /// The account subcategories to use to filter for selectable accounts.
 /// Valid subcategories are `checking` and `savings`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsFiltersAccountSubcategories
 {
     Checking,
     Savings,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsFiltersAccountSubcategories {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsFiltersAccountSubcategories::*;
         match self {
 Checking => "checking",
 Savings => "savings",
+Unknown(v) => v,
 
         }
     }
 }
 
 impl std::str::FromStr for CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsFiltersAccountSubcategories {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsFiltersAccountSubcategories::*;
         match s {
     "checking" => Ok(Checking),
 "savings" => Ok(Savings),
-_ => Err(stripe_types::StripeParseError)
+v => { tracing::warn!("Unknown value '{}' for enum '{}'", v, "CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsFiltersAccountSubcategories"); Ok(Unknown(v.to_owned())) }
 
         }
     }
@@ -2518,35 +2664,39 @@ impl<'de> serde::Deserialize<'de> for CreateSubscriptionPaymentSettingsPaymentMe
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsFiltersAccountSubcategories"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The list of permissions to request.
 /// If this parameter is passed, the `payment_method` permission must be included.
 /// Valid permissions include: `balances`, `ownership`, `payment_method`, and `transactions`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions
 {
     Balances,
     Ownership,
     PaymentMethod,
     Transactions,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions::*;
         match self {
 Balances => "balances",
 Ownership => "ownership",
 PaymentMethod => "payment_method",
 Transactions => "transactions",
+Unknown(v) => v,
 
         }
     }
 }
 
 impl std::str::FromStr for CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions::*;
         match s {
@@ -2554,7 +2704,7 @@ impl std::str::FromStr for CreateSubscriptionPaymentSettingsPaymentMethodOptions
 "ownership" => Ok(Ownership),
 "payment_method" => Ok(PaymentMethod),
 "transactions" => Ok(Transactions),
-_ => Err(stripe_types::StripeParseError)
+v => { tracing::warn!("Unknown value '{}' for enum '{}'", v, "CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions"); Ok(Unknown(v.to_owned())) }
 
         }
     }
@@ -2580,39 +2730,43 @@ impl<'de> serde::Deserialize<'de> for CreateSubscriptionPaymentSettingsPaymentMe
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// List of data features that you would like to retrieve upon account creation.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch
 {
     Balances,
     Ownership,
     Transactions,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl
     CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch
 {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch::*;
         match self {
             Balances => "balances",
             Ownership => "ownership",
             Transactions => "transactions",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch::*;
         match s {
     "balances" => Ok(Balances),
 "ownership" => Ok(Ownership),
 "transactions" => Ok(Transactions),
-_ => Err(stripe_types::StripeParseError)
+v => { tracing::warn!("Unknown value '{}' for enum '{}'", v, "CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch"); Ok(Unknown(v.to_owned())) }
 
         }
     }
@@ -2638,23 +2792,27 @@ impl<'de> serde::Deserialize<'de> for CreateSubscriptionPaymentSettingsPaymentMe
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Verification method for the intent
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountVerificationMethod {
     Automatic,
     Instant,
     Microdeposits,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountVerificationMethod {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountVerificationMethod::*;
         match self {
             Automatic => "automatic",
             Instant => "instant",
             Microdeposits => "microdeposits",
+            Unknown(v) => v,
         }
     }
 }
@@ -2662,14 +2820,21 @@ impl CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountVerificat
 impl std::str::FromStr
     for CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountVerificationMethod
 {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountVerificationMethod::*;
         match s {
             "automatic" => Ok(Automatic),
             "instant" => Ok(Instant),
             "microdeposits" => Ok(Microdeposits),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountVerificationMethod"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -2705,7 +2870,7 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountVerificationMethod"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The list of payment method types (e.g.
@@ -2852,7 +3017,14 @@ impl std::str::FromStr for CreateSubscriptionPaymentSettingsPaymentMethodTypes {
             "swish" => Ok(Swish),
             "us_bank_account" => Ok(UsBankAccount),
             "wechat_pay" => Ok(WechatPay),
-            v => Ok(Unknown(v.to_owned())),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateSubscriptionPaymentSettingsPaymentMethodTypes"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -2880,34 +3052,45 @@ impl<'de> serde::Deserialize<'de> for CreateSubscriptionPaymentSettingsPaymentMe
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap())
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Configure whether Stripe updates `subscription.default_payment_method` when payment succeeds.
 /// Defaults to `off` if unspecified.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateSubscriptionPaymentSettingsSaveDefaultPaymentMethod {
     Off,
     OnSubscription,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateSubscriptionPaymentSettingsSaveDefaultPaymentMethod {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateSubscriptionPaymentSettingsSaveDefaultPaymentMethod::*;
         match self {
             Off => "off",
             OnSubscription => "on_subscription",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateSubscriptionPaymentSettingsSaveDefaultPaymentMethod {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateSubscriptionPaymentSettingsSaveDefaultPaymentMethod::*;
         match s {
             "off" => Ok(Off),
             "on_subscription" => Ok(OnSubscription),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateSubscriptionPaymentSettingsSaveDefaultPaymentMethod"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -2935,16 +3118,12 @@ impl<'de> serde::Deserialize<'de> for CreateSubscriptionPaymentSettingsSaveDefau
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for CreateSubscriptionPaymentSettingsSaveDefaultPaymentMethod",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Specifies an interval for how often to bill for any pending invoice items.
 /// It is analogous to calling [Create an invoice](https://stripe.com/docs/api#create_invoice) for the given subscription at the specified interval.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateSubscriptionPendingInvoiceItemInterval {
     /// Specifies invoicing frequency. Either `day`, `week`, `month` or `year`.
     pub interval: CreateSubscriptionPendingInvoiceItemIntervalInterval,
@@ -2960,27 +3139,31 @@ impl CreateSubscriptionPendingInvoiceItemInterval {
     }
 }
 /// Specifies invoicing frequency. Either `day`, `week`, `month` or `year`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateSubscriptionPendingInvoiceItemIntervalInterval {
     Day,
     Month,
     Week,
     Year,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateSubscriptionPendingInvoiceItemIntervalInterval {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateSubscriptionPendingInvoiceItemIntervalInterval::*;
         match self {
             Day => "day",
             Month => "month",
             Week => "week",
             Year => "year",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateSubscriptionPendingInvoiceItemIntervalInterval {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateSubscriptionPendingInvoiceItemIntervalInterval::*;
         match s {
@@ -2988,7 +3171,14 @@ impl std::str::FromStr for CreateSubscriptionPendingInvoiceItemIntervalInterval 
             "month" => Ok(Month),
             "week" => Ok(Week),
             "year" => Ok(Year),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateSubscriptionPendingInvoiceItemIntervalInterval"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -3016,41 +3206,48 @@ impl<'de> serde::Deserialize<'de> for CreateSubscriptionPendingInvoiceItemInterv
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for CreateSubscriptionPendingInvoiceItemIntervalInterval",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Determines how to handle [prorations](https://stripe.com/docs/billing/subscriptions/prorations) resulting from the `billing_cycle_anchor`.
 /// If no value is passed, the default is `create_prorations`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateSubscriptionProrationBehavior {
     AlwaysInvoice,
     CreateProrations,
     None,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateSubscriptionProrationBehavior {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateSubscriptionProrationBehavior::*;
         match self {
             AlwaysInvoice => "always_invoice",
             CreateProrations => "create_prorations",
             None => "none",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateSubscriptionProrationBehavior {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateSubscriptionProrationBehavior::*;
         match s {
             "always_invoice" => Ok(AlwaysInvoice),
             "create_prorations" => Ok(CreateProrations),
             "none" => Ok(None),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateSubscriptionProrationBehavior"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -3078,9 +3275,7 @@ impl<'de> serde::Deserialize<'de> for CreateSubscriptionProrationBehavior {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateSubscriptionProrationBehavior")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Unix timestamp representing the end of the trial period the customer will get before being charged for the first time.
@@ -3096,7 +3291,7 @@ pub enum CreateSubscriptionTrialEnd {
     Timestamp(stripe_types::Timestamp),
 }
 /// Settings related to subscription trials.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateSubscriptionTrialSettings {
     /// Defines how the subscription should behave when the user's free trial ends.
     pub end_behavior: CreateSubscriptionTrialSettingsEndBehavior,
@@ -3107,7 +3302,7 @@ impl CreateSubscriptionTrialSettings {
     }
 }
 /// Defines how the subscription should behave when the user's free trial ends.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateSubscriptionTrialSettingsEndBehavior {
     /// Indicates how the subscription should change when the trial ends if the user did not provide a payment method.
     pub missing_payment_method: CreateSubscriptionTrialSettingsEndBehaviorMissingPaymentMethod,
@@ -3122,32 +3317,43 @@ impl CreateSubscriptionTrialSettingsEndBehavior {
     }
 }
 /// Indicates how the subscription should change when the trial ends if the user did not provide a payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateSubscriptionTrialSettingsEndBehaviorMissingPaymentMethod {
     Cancel,
     CreateInvoice,
     Pause,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateSubscriptionTrialSettingsEndBehaviorMissingPaymentMethod {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateSubscriptionTrialSettingsEndBehaviorMissingPaymentMethod::*;
         match self {
             Cancel => "cancel",
             CreateInvoice => "create_invoice",
             Pause => "pause",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateSubscriptionTrialSettingsEndBehaviorMissingPaymentMethod {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateSubscriptionTrialSettingsEndBehaviorMissingPaymentMethod::*;
         match s {
             "cancel" => Ok(Cancel),
             "create_invoice" => Ok(CreateInvoice),
             "pause" => Ok(Pause),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateSubscriptionTrialSettingsEndBehaviorMissingPaymentMethod"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -3177,11 +3383,7 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for CreateSubscriptionTrialSettingsEndBehaviorMissingPaymentMethod",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Creates a new subscription on an existing customer.
@@ -3508,7 +3710,7 @@ impl MigrateSubscriptionBuilder {
     }
 }
 /// Controls how prorations and invoices for subscriptions are calculated and orchestrated.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct MigrateSubscriptionBillingMode {
     /// Configure behavior for flexible billing mode.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3523,7 +3725,7 @@ impl MigrateSubscriptionBillingMode {
     }
 }
 /// Configure behavior for flexible billing mode.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct MigrateSubscriptionBillingModeFlexible {
     /// Controls how invoices and invoice items display proration amounts and discount amounts.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3540,29 +3742,40 @@ impl Default for MigrateSubscriptionBillingModeFlexible {
     }
 }
 /// Controls how invoices and invoice items display proration amounts and discount amounts.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum MigrateSubscriptionBillingModeFlexibleProrationDiscounts {
     Included,
     Itemized,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl MigrateSubscriptionBillingModeFlexibleProrationDiscounts {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use MigrateSubscriptionBillingModeFlexibleProrationDiscounts::*;
         match self {
             Included => "included",
             Itemized => "itemized",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for MigrateSubscriptionBillingModeFlexibleProrationDiscounts {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use MigrateSubscriptionBillingModeFlexibleProrationDiscounts::*;
         match s {
             "included" => Ok(Included),
             "itemized" => Ok(Itemized),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "MigrateSubscriptionBillingModeFlexibleProrationDiscounts"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -3590,34 +3803,41 @@ impl<'de> serde::Deserialize<'de> for MigrateSubscriptionBillingModeFlexiblePror
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for MigrateSubscriptionBillingModeFlexibleProrationDiscounts",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Controls the calculation and orchestration of prorations and invoices for subscriptions.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum MigrateSubscriptionBillingModeType {
     Flexible,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl MigrateSubscriptionBillingModeType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use MigrateSubscriptionBillingModeType::*;
         match self {
             Flexible => "flexible",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for MigrateSubscriptionBillingModeType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use MigrateSubscriptionBillingModeType::*;
         match s {
             "flexible" => Ok(Flexible),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "MigrateSubscriptionBillingModeType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -3645,9 +3865,7 @@ impl<'de> serde::Deserialize<'de> for MigrateSubscriptionBillingModeType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for MigrateSubscriptionBillingModeType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Upgrade the billing_mode of an existing subscription.
@@ -3725,29 +3943,40 @@ impl ResumeSubscriptionBuilder {
 /// Either `now` or `unchanged`.
 /// The default is `now`.
 /// For more information, see the billing cycle [documentation](https://stripe.com/docs/billing/subscriptions/billing-cycle).
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum ResumeSubscriptionBillingCycleAnchor {
     Now,
     Unchanged,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl ResumeSubscriptionBillingCycleAnchor {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use ResumeSubscriptionBillingCycleAnchor::*;
         match self {
             Now => "now",
             Unchanged => "unchanged",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for ResumeSubscriptionBillingCycleAnchor {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ResumeSubscriptionBillingCycleAnchor::*;
         match s {
             "now" => Ok(Now),
             "unchanged" => Ok(Unchanged),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "ResumeSubscriptionBillingCycleAnchor"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -3775,40 +4004,49 @@ impl<'de> serde::Deserialize<'de> for ResumeSubscriptionBillingCycleAnchor {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for ResumeSubscriptionBillingCycleAnchor")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Determines how to handle [prorations](https://stripe.com/docs/billing/subscriptions/prorations) resulting from the `billing_cycle_anchor` being `unchanged`.
 /// When the `billing_cycle_anchor` is set to `now` (default value), no prorations are generated.
 /// If no value is passed, the default is `create_prorations`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum ResumeSubscriptionProrationBehavior {
     AlwaysInvoice,
     CreateProrations,
     None,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl ResumeSubscriptionProrationBehavior {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use ResumeSubscriptionProrationBehavior::*;
         match self {
             AlwaysInvoice => "always_invoice",
             CreateProrations => "create_prorations",
             None => "none",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for ResumeSubscriptionProrationBehavior {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ResumeSubscriptionProrationBehavior::*;
         match s {
             "always_invoice" => Ok(AlwaysInvoice),
             "create_prorations" => Ok(CreateProrations),
             "none" => Ok(None),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "ResumeSubscriptionProrationBehavior"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -3836,9 +4074,7 @@ impl<'de> serde::Deserialize<'de> for ResumeSubscriptionProrationBehavior {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for ResumeSubscriptionProrationBehavior")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Initiates resumption of a paused subscription, optionally resetting the billing cycle anchor and creating prorations.
@@ -4068,7 +4304,7 @@ impl Default for UpdateSubscriptionAddInvoiceItems {
 }
 /// The period associated with this invoice item.
 /// If not set, `period.start.type` defaults to `max_item_period_start` and `period.end.type` defaults to `min_item_period_end`.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdateSubscriptionAddInvoiceItemsPeriod {
     /// End of the invoice item period.
     pub end: UpdateSubscriptionAddInvoiceItemsPeriodEnd,
@@ -4084,7 +4320,7 @@ impl UpdateSubscriptionAddInvoiceItemsPeriod {
     }
 }
 /// End of the invoice item period.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdateSubscriptionAddInvoiceItemsPeriodEnd {
     /// A precise Unix timestamp for the end of the invoice item period.
     /// Must be greater than or equal to `period.start`.
@@ -4100,29 +4336,40 @@ impl UpdateSubscriptionAddInvoiceItemsPeriodEnd {
     }
 }
 /// Select how to calculate the end of the invoice item period.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdateSubscriptionAddInvoiceItemsPeriodEndType {
     MinItemPeriodEnd,
     Timestamp,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdateSubscriptionAddInvoiceItemsPeriodEndType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdateSubscriptionAddInvoiceItemsPeriodEndType::*;
         match self {
             MinItemPeriodEnd => "min_item_period_end",
             Timestamp => "timestamp",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for UpdateSubscriptionAddInvoiceItemsPeriodEndType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateSubscriptionAddInvoiceItemsPeriodEndType::*;
         match s {
             "min_item_period_end" => Ok(MinItemPeriodEnd),
             "timestamp" => Ok(Timestamp),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdateSubscriptionAddInvoiceItemsPeriodEndType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -4150,15 +4397,11 @@ impl<'de> serde::Deserialize<'de> for UpdateSubscriptionAddInvoiceItemsPeriodEnd
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for UpdateSubscriptionAddInvoiceItemsPeriodEndType",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Start of the invoice item period.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdateSubscriptionAddInvoiceItemsPeriodStart {
     /// A precise Unix timestamp for the start of the invoice item period.
     /// Must be less than or equal to `period.end`.
@@ -4174,32 +4417,43 @@ impl UpdateSubscriptionAddInvoiceItemsPeriodStart {
     }
 }
 /// Select how to calculate the start of the invoice item period.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdateSubscriptionAddInvoiceItemsPeriodStartType {
     MaxItemPeriodStart,
     Now,
     Timestamp,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdateSubscriptionAddInvoiceItemsPeriodStartType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdateSubscriptionAddInvoiceItemsPeriodStartType::*;
         match self {
             MaxItemPeriodStart => "max_item_period_start",
             Now => "now",
             Timestamp => "timestamp",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for UpdateSubscriptionAddInvoiceItemsPeriodStartType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateSubscriptionAddInvoiceItemsPeriodStartType::*;
         match s {
             "max_item_period_start" => Ok(MaxItemPeriodStart),
             "now" => Ok(Now),
             "timestamp" => Ok(Timestamp),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdateSubscriptionAddInvoiceItemsPeriodStartType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -4227,11 +4481,7 @@ impl<'de> serde::Deserialize<'de> for UpdateSubscriptionAddInvoiceItemsPeriodSta
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for UpdateSubscriptionAddInvoiceItemsPeriodStartType",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
@@ -4272,32 +4522,43 @@ impl UpdateSubscriptionAddInvoiceItemsPriceData {
 /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
 /// One of `inclusive`, `exclusive`, or `unspecified`.
 /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdateSubscriptionAddInvoiceItemsPriceDataTaxBehavior {
     Exclusive,
     Inclusive,
     Unspecified,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdateSubscriptionAddInvoiceItemsPriceDataTaxBehavior {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdateSubscriptionAddInvoiceItemsPriceDataTaxBehavior::*;
         match self {
             Exclusive => "exclusive",
             Inclusive => "inclusive",
             Unspecified => "unspecified",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for UpdateSubscriptionAddInvoiceItemsPriceDataTaxBehavior {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateSubscriptionAddInvoiceItemsPriceDataTaxBehavior::*;
         match s {
             "exclusive" => Ok(Exclusive),
             "inclusive" => Ok(Inclusive),
             "unspecified" => Ok(Unspecified),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdateSubscriptionAddInvoiceItemsPriceDataTaxBehavior"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -4325,11 +4586,7 @@ impl<'de> serde::Deserialize<'de> for UpdateSubscriptionAddInvoiceItemsPriceData
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for UpdateSubscriptionAddInvoiceItemsPriceDataTaxBehavior",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Automatic tax settings for this subscription.
@@ -4367,29 +4624,40 @@ impl UpdateSubscriptionAutomaticTaxLiability {
     }
 }
 /// Type of the account referenced in the request.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdateSubscriptionAutomaticTaxLiabilityType {
     Account,
     Self_,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdateSubscriptionAutomaticTaxLiabilityType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdateSubscriptionAutomaticTaxLiabilityType::*;
         match self {
             Account => "account",
             Self_ => "self",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for UpdateSubscriptionAutomaticTaxLiabilityType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateSubscriptionAutomaticTaxLiabilityType::*;
         match s {
             "account" => Ok(Account),
             "self" => Ok(Self_),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdateSubscriptionAutomaticTaxLiabilityType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -4417,39 +4685,46 @@ impl<'de> serde::Deserialize<'de> for UpdateSubscriptionAutomaticTaxLiabilityTyp
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for UpdateSubscriptionAutomaticTaxLiabilityType",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Either `now` or `unchanged`.
 /// Setting the value to `now` resets the subscription's billing cycle anchor to the current time (in UTC).
 /// For more information, see the billing cycle [documentation](https://stripe.com/docs/billing/subscriptions/billing-cycle).
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdateSubscriptionBillingCycleAnchor {
     Now,
     Unchanged,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdateSubscriptionBillingCycleAnchor {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdateSubscriptionBillingCycleAnchor::*;
         match self {
             Now => "now",
             Unchanged => "unchanged",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for UpdateSubscriptionBillingCycleAnchor {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateSubscriptionBillingCycleAnchor::*;
         match s {
             "now" => Ok(Now),
             "unchanged" => Ok(Unchanged),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdateSubscriptionBillingCycleAnchor"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -4477,9 +4752,7 @@ impl<'de> serde::Deserialize<'de> for UpdateSubscriptionBillingCycleAnchor {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for UpdateSubscriptionBillingCycleAnchor")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// A timestamp at which the subscription should cancel.
@@ -4514,7 +4787,8 @@ impl Default for UpdateSubscriptionCancellationDetails {
     }
 }
 /// The customer submitted reason for why they canceled, if the subscription was canceled explicitly by the user.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdateSubscriptionCancellationDetailsFeedback {
     CustomerService,
     LowQuality,
@@ -4524,9 +4798,11 @@ pub enum UpdateSubscriptionCancellationDetailsFeedback {
     TooComplex,
     TooExpensive,
     Unused,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdateSubscriptionCancellationDetailsFeedback {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdateSubscriptionCancellationDetailsFeedback::*;
         match self {
             CustomerService => "customer_service",
@@ -4537,12 +4813,13 @@ impl UpdateSubscriptionCancellationDetailsFeedback {
             TooComplex => "too_complex",
             TooExpensive => "too_expensive",
             Unused => "unused",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for UpdateSubscriptionCancellationDetailsFeedback {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateSubscriptionCancellationDetailsFeedback::*;
         match s {
@@ -4554,7 +4831,14 @@ impl std::str::FromStr for UpdateSubscriptionCancellationDetailsFeedback {
             "too_complex" => Ok(TooComplex),
             "too_expensive" => Ok(TooExpensive),
             "unused" => Ok(Unused),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdateSubscriptionCancellationDetailsFeedback"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -4582,11 +4866,7 @@ impl<'de> serde::Deserialize<'de> for UpdateSubscriptionCancellationDetailsFeedb
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for UpdateSubscriptionCancellationDetailsFeedback",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// All invoices will be billed using the specified settings.
@@ -4628,29 +4908,40 @@ impl UpdateSubscriptionInvoiceSettingsIssuer {
     }
 }
 /// Type of the account referenced in the request.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdateSubscriptionInvoiceSettingsIssuerType {
     Account,
     Self_,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdateSubscriptionInvoiceSettingsIssuerType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdateSubscriptionInvoiceSettingsIssuerType::*;
         match self {
             Account => "account",
             Self_ => "self",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for UpdateSubscriptionInvoiceSettingsIssuerType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateSubscriptionInvoiceSettingsIssuerType::*;
         match s {
             "account" => Ok(Account),
             "self" => Ok(Self_),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdateSubscriptionInvoiceSettingsIssuerType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -4678,11 +4969,7 @@ impl<'de> serde::Deserialize<'de> for UpdateSubscriptionInvoiceSettingsIssuerTyp
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for UpdateSubscriptionInvoiceSettingsIssuerType",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// A list of up to 20 subscription items, each with an attached price.
@@ -4797,7 +5084,7 @@ impl UpdateSubscriptionItemsPriceData {
     }
 }
 /// The recurring components of a price such as `interval` and `interval_count`.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdateSubscriptionItemsPriceDataRecurring {
     /// Specifies billing frequency. Either `day`, `week`, `month` or `year`.
     pub interval: UpdateSubscriptionItemsPriceDataRecurringInterval,
@@ -4813,27 +5100,31 @@ impl UpdateSubscriptionItemsPriceDataRecurring {
     }
 }
 /// Specifies billing frequency. Either `day`, `week`, `month` or `year`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdateSubscriptionItemsPriceDataRecurringInterval {
     Day,
     Month,
     Week,
     Year,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdateSubscriptionItemsPriceDataRecurringInterval {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdateSubscriptionItemsPriceDataRecurringInterval::*;
         match self {
             Day => "day",
             Month => "month",
             Week => "week",
             Year => "year",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for UpdateSubscriptionItemsPriceDataRecurringInterval {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateSubscriptionItemsPriceDataRecurringInterval::*;
         match s {
@@ -4841,7 +5132,14 @@ impl std::str::FromStr for UpdateSubscriptionItemsPriceDataRecurringInterval {
             "month" => Ok(Month),
             "week" => Ok(Week),
             "year" => Ok(Year),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdateSubscriptionItemsPriceDataRecurringInterval"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -4869,43 +5167,50 @@ impl<'de> serde::Deserialize<'de> for UpdateSubscriptionItemsPriceDataRecurringI
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for UpdateSubscriptionItemsPriceDataRecurringInterval",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
 /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
 /// One of `inclusive`, `exclusive`, or `unspecified`.
 /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdateSubscriptionItemsPriceDataTaxBehavior {
     Exclusive,
     Inclusive,
     Unspecified,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdateSubscriptionItemsPriceDataTaxBehavior {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdateSubscriptionItemsPriceDataTaxBehavior::*;
         match self {
             Exclusive => "exclusive",
             Inclusive => "inclusive",
             Unspecified => "unspecified",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for UpdateSubscriptionItemsPriceDataTaxBehavior {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateSubscriptionItemsPriceDataTaxBehavior::*;
         match s {
             "exclusive" => Ok(Exclusive),
             "inclusive" => Ok(Inclusive),
             "unspecified" => Ok(Unspecified),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdateSubscriptionItemsPriceDataTaxBehavior"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -4933,17 +5238,13 @@ impl<'de> serde::Deserialize<'de> for UpdateSubscriptionItemsPriceDataTaxBehavio
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for UpdateSubscriptionItemsPriceDataTaxBehavior",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// If specified, payment collection for this subscription will be paused.
 /// Note that the subscription status will be unchanged and will not be updated to `paused`.
 /// Learn more about [pausing collection](https://stripe.com/docs/billing/subscriptions/pause-payment).
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdateSubscriptionPauseCollection {
     /// The payment collection behavior for this subscription while paused.
     /// One of `keep_as_draft`, `mark_uncollectible`, or `void`.
@@ -4959,32 +5260,43 @@ impl UpdateSubscriptionPauseCollection {
 }
 /// The payment collection behavior for this subscription while paused.
 /// One of `keep_as_draft`, `mark_uncollectible`, or `void`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdateSubscriptionPauseCollectionBehavior {
     KeepAsDraft,
     MarkUncollectible,
     Void,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdateSubscriptionPauseCollectionBehavior {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdateSubscriptionPauseCollectionBehavior::*;
         match self {
             KeepAsDraft => "keep_as_draft",
             MarkUncollectible => "mark_uncollectible",
             Void => "void",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for UpdateSubscriptionPauseCollectionBehavior {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateSubscriptionPauseCollectionBehavior::*;
         match s {
             "keep_as_draft" => Ok(KeepAsDraft),
             "mark_uncollectible" => Ok(MarkUncollectible),
             "void" => Ok(Void),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdateSubscriptionPauseCollectionBehavior"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -5012,9 +5324,7 @@ impl<'de> serde::Deserialize<'de> for UpdateSubscriptionPauseCollectionBehavior 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for UpdateSubscriptionPauseCollectionBehavior")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Use `allow_incomplete` to transition the subscription to `status=past_due` if a payment is required but cannot be paid.
@@ -5034,27 +5344,31 @@ impl<'de> serde::Deserialize<'de> for UpdateSubscriptionPauseCollectionBehavior 
 /// For example, if a payment method requires 3DS authentication due to SCA regulation and further user action is needed, this parameter does not update the subscription and returns an error instead.
 /// This was the default behavior for API versions prior to 2019-03-14.
 /// See the [changelog](https://docs.stripe.com/changelog/2019-03-14) to learn more.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdateSubscriptionPaymentBehavior {
     AllowIncomplete,
     DefaultIncomplete,
     ErrorIfIncomplete,
     PendingIfIncomplete,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdateSubscriptionPaymentBehavior {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdateSubscriptionPaymentBehavior::*;
         match self {
             AllowIncomplete => "allow_incomplete",
             DefaultIncomplete => "default_incomplete",
             ErrorIfIncomplete => "error_if_incomplete",
             PendingIfIncomplete => "pending_if_incomplete",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for UpdateSubscriptionPaymentBehavior {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateSubscriptionPaymentBehavior::*;
         match s {
@@ -5062,7 +5376,14 @@ impl std::str::FromStr for UpdateSubscriptionPaymentBehavior {
             "default_incomplete" => Ok(DefaultIncomplete),
             "error_if_incomplete" => Ok(ErrorIfIncomplete),
             "pending_if_incomplete" => Ok(PendingIfIncomplete),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdateSubscriptionPaymentBehavior"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -5090,9 +5411,7 @@ impl<'de> serde::Deserialize<'de> for UpdateSubscriptionPaymentBehavior {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for UpdateSubscriptionPaymentBehavior")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Payment settings to pass to invoices created by the subscription.
@@ -5173,7 +5492,7 @@ impl Default for UpdateSubscriptionPaymentSettingsPaymentMethodOptions {
     }
 }
 /// This sub-hash contains details about the Canadian pre-authorized debit payment method options to pass to the invoice’s PaymentIntent.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebit {
     /// Additional fields for Mandate creation
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5195,7 +5514,7 @@ impl Default for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebit 
     }
 }
 /// Additional fields for Mandate creation
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptions {
     /// Transaction type of the mandate.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5214,18 +5533,22 @@ impl Default for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitM
     }
 }
 /// Transaction type of the mandate.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType
 {
     Business,
     Personal,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType::*;
         match self {
             Business => "business",
             Personal => "personal",
+            Unknown(v) => v,
         }
     }
 }
@@ -5233,13 +5556,20 @@ impl UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitMandateOption
 impl std::str::FromStr
     for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType
 {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType::*;
         match s {
             "business" => Ok(Business),
             "personal" => Ok(Personal),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -5275,23 +5605,27 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitMandateOptionsTransactionType"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Verification method for the intent
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod {
     Automatic,
     Instant,
     Microdeposits,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod::*;
         match self {
             Automatic => "automatic",
             Instant => "instant",
             Microdeposits => "microdeposits",
+            Unknown(v) => v,
         }
     }
 }
@@ -5299,14 +5633,21 @@ impl UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitVerificationM
 impl std::str::FromStr
     for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod
 {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod::*;
         match s {
             "automatic" => Ok(Automatic),
             "instant" => Ok(Instant),
             "microdeposits" => Ok(Microdeposits),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -5342,11 +5683,11 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsAcssDebitVerificationMethod"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// This sub-hash contains details about the Bancontact payment method options to pass to the invoice’s PaymentIntent.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdateSubscriptionPaymentSettingsPaymentMethodOptionsBancontact {
     /// Preferred language of the Bancontact authorization page that the customer is redirected to.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5364,21 +5705,25 @@ impl Default for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsBancontact
     }
 }
 /// Preferred language of the Bancontact authorization page that the customer is redirected to.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdateSubscriptionPaymentSettingsPaymentMethodOptionsBancontactPreferredLanguage {
     De,
     En,
     Fr,
     Nl,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdateSubscriptionPaymentSettingsPaymentMethodOptionsBancontactPreferredLanguage {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdateSubscriptionPaymentSettingsPaymentMethodOptionsBancontactPreferredLanguage::*;
         match self {
             De => "de",
             En => "en",
             Fr => "fr",
             Nl => "nl",
+            Unknown(v) => v,
         }
     }
 }
@@ -5386,7 +5731,7 @@ impl UpdateSubscriptionPaymentSettingsPaymentMethodOptionsBancontactPreferredLan
 impl std::str::FromStr
     for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsBancontactPreferredLanguage
 {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateSubscriptionPaymentSettingsPaymentMethodOptionsBancontactPreferredLanguage::*;
         match s {
@@ -5394,7 +5739,14 @@ impl std::str::FromStr
             "en" => Ok(En),
             "fr" => Ok(Fr),
             "nl" => Ok(Nl),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdateSubscriptionPaymentSettingsPaymentMethodOptionsBancontactPreferredLanguage"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -5430,7 +5782,7 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsBancontactPreferredLanguage"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// This sub-hash contains details about the Card payment method options to pass to the invoice’s PaymentIntent.
@@ -5491,17 +5843,21 @@ impl Default for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCardMandat
 /// One of `fixed` or `maximum`.
 /// If `fixed`, the `amount` param refers to the exact amount to be charged in future payments.
 /// If `maximum`, the amount charged can be up to the value passed for the `amount` param.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCardMandateOptionsAmountType {
     Fixed,
     Maximum,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCardMandateOptionsAmountType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCardMandateOptionsAmountType::*;
         match self {
             Fixed => "fixed",
             Maximum => "maximum",
+            Unknown(v) => v,
         }
     }
 }
@@ -5509,13 +5865,20 @@ impl UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCardMandateOptionsAmou
 impl std::str::FromStr
     for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCardMandateOptionsAmountType
 {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCardMandateOptionsAmountType::*;
         match s {
             "fixed" => Ok(Fixed),
             "maximum" => Ok(Maximum),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCardMandateOptionsAmountType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -5551,7 +5914,7 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCardMandateOptionsAmountType"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Selected network to process this Subscription on.
@@ -5648,19 +6011,23 @@ impl<'de> serde::Deserialize<'de>
 /// We strongly recommend that you rely on our SCA Engine to automatically prompt your customers for authentication based on risk level and [other requirements](https://stripe.com/docs/strong-customer-authentication).
 /// However, if you wish to request 3D Secure based on logic from your own fraud engine, provide this option.
 /// Read our guide on [manually requesting 3D Secure](https://stripe.com/docs/payments/3d-secure/authentication-flow#manual-three-ds) for more information on how this configuration interacts with Radar and our SCA Engine.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCardRequestThreeDSecure {
     Any,
     Automatic,
     Challenge,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCardRequestThreeDSecure {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCardRequestThreeDSecure::*;
         match self {
             Any => "any",
             Automatic => "automatic",
             Challenge => "challenge",
+            Unknown(v) => v,
         }
     }
 }
@@ -5668,14 +6035,21 @@ impl UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCardRequestThreeDSecur
 impl std::str::FromStr
     for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCardRequestThreeDSecure
 {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCardRequestThreeDSecure::*;
         match s {
             "any" => Ok(Any),
             "automatic" => Ok(Automatic),
             "challenge" => Ok(Challenge),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCardRequestThreeDSecure"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -5711,7 +6085,7 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCardRequestThreeDSecure"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// This sub-hash contains details about the ACH direct debit payment method options to pass to the invoice’s PaymentIntent.
@@ -5787,31 +6161,35 @@ impl Default for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAcco
 }
 /// The account subcategories to use to filter for selectable accounts.
 /// Valid subcategories are `checking` and `savings`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsFiltersAccountSubcategories
 {
     Checking,
     Savings,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsFiltersAccountSubcategories {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsFiltersAccountSubcategories::*;
         match self {
 Checking => "checking",
 Savings => "savings",
+Unknown(v) => v,
 
         }
     }
 }
 
 impl std::str::FromStr for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsFiltersAccountSubcategories {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsFiltersAccountSubcategories::*;
         match s {
     "checking" => Ok(Checking),
 "savings" => Ok(Savings),
-_ => Err(stripe_types::StripeParseError)
+v => { tracing::warn!("Unknown value '{}' for enum '{}'", v, "UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsFiltersAccountSubcategories"); Ok(Unknown(v.to_owned())) }
 
         }
     }
@@ -5837,35 +6215,39 @@ impl<'de> serde::Deserialize<'de> for UpdateSubscriptionPaymentSettingsPaymentMe
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsFiltersAccountSubcategories"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The list of permissions to request.
 /// If this parameter is passed, the `payment_method` permission must be included.
 /// Valid permissions include: `balances`, `ownership`, `payment_method`, and `transactions`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions
 {
     Balances,
     Ownership,
     PaymentMethod,
     Transactions,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions::*;
         match self {
 Balances => "balances",
 Ownership => "ownership",
 PaymentMethod => "payment_method",
 Transactions => "transactions",
+Unknown(v) => v,
 
         }
     }
 }
 
 impl std::str::FromStr for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions::*;
         match s {
@@ -5873,7 +6255,7 @@ impl std::str::FromStr for UpdateSubscriptionPaymentSettingsPaymentMethodOptions
 "ownership" => Ok(Ownership),
 "payment_method" => Ok(PaymentMethod),
 "transactions" => Ok(Transactions),
-_ => Err(stripe_types::StripeParseError)
+v => { tracing::warn!("Unknown value '{}' for enum '{}'", v, "UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions"); Ok(Unknown(v.to_owned())) }
 
         }
     }
@@ -5899,39 +6281,43 @@ impl<'de> serde::Deserialize<'de> for UpdateSubscriptionPaymentSettingsPaymentMe
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// List of data features that you would like to retrieve upon account creation.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch
 {
     Balances,
     Ownership,
     Transactions,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl
     UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch
 {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch::*;
         match self {
             Balances => "balances",
             Ownership => "ownership",
             Transactions => "transactions",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch::*;
         match s {
     "balances" => Ok(Balances),
 "ownership" => Ok(Ownership),
 "transactions" => Ok(Transactions),
-_ => Err(stripe_types::StripeParseError)
+v => { tracing::warn!("Unknown value '{}' for enum '{}'", v, "UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch"); Ok(Unknown(v.to_owned())) }
 
         }
     }
@@ -5957,23 +6343,27 @@ impl<'de> serde::Deserialize<'de> for UpdateSubscriptionPaymentSettingsPaymentMe
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Verification method for the intent
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountVerificationMethod {
     Automatic,
     Instant,
     Microdeposits,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountVerificationMethod {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountVerificationMethod::*;
         match self {
             Automatic => "automatic",
             Instant => "instant",
             Microdeposits => "microdeposits",
+            Unknown(v) => v,
         }
     }
 }
@@ -5981,14 +6371,21 @@ impl UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountVerificat
 impl std::str::FromStr
     for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountVerificationMethod
 {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountVerificationMethod::*;
         match s {
             "automatic" => Ok(Automatic),
             "instant" => Ok(Instant),
             "microdeposits" => Ok(Microdeposits),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountVerificationMethod"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -6024,7 +6421,7 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsUsBankAccountVerificationMethod"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The list of payment method types (e.g.
@@ -6171,7 +6568,14 @@ impl std::str::FromStr for UpdateSubscriptionPaymentSettingsPaymentMethodTypes {
             "swish" => Ok(Swish),
             "us_bank_account" => Ok(UsBankAccount),
             "wechat_pay" => Ok(WechatPay),
-            v => Ok(Unknown(v.to_owned())),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdateSubscriptionPaymentSettingsPaymentMethodTypes"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -6199,34 +6603,45 @@ impl<'de> serde::Deserialize<'de> for UpdateSubscriptionPaymentSettingsPaymentMe
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap())
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Configure whether Stripe updates `subscription.default_payment_method` when payment succeeds.
 /// Defaults to `off` if unspecified.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdateSubscriptionPaymentSettingsSaveDefaultPaymentMethod {
     Off,
     OnSubscription,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdateSubscriptionPaymentSettingsSaveDefaultPaymentMethod {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdateSubscriptionPaymentSettingsSaveDefaultPaymentMethod::*;
         match self {
             Off => "off",
             OnSubscription => "on_subscription",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for UpdateSubscriptionPaymentSettingsSaveDefaultPaymentMethod {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateSubscriptionPaymentSettingsSaveDefaultPaymentMethod::*;
         match s {
             "off" => Ok(Off),
             "on_subscription" => Ok(OnSubscription),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdateSubscriptionPaymentSettingsSaveDefaultPaymentMethod"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -6254,16 +6669,12 @@ impl<'de> serde::Deserialize<'de> for UpdateSubscriptionPaymentSettingsSaveDefau
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for UpdateSubscriptionPaymentSettingsSaveDefaultPaymentMethod",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Specifies an interval for how often to bill for any pending invoice items.
 /// It is analogous to calling [Create an invoice](https://stripe.com/docs/api#create_invoice) for the given subscription at the specified interval.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdateSubscriptionPendingInvoiceItemInterval {
     /// Specifies invoicing frequency. Either `day`, `week`, `month` or `year`.
     pub interval: UpdateSubscriptionPendingInvoiceItemIntervalInterval,
@@ -6279,27 +6690,31 @@ impl UpdateSubscriptionPendingInvoiceItemInterval {
     }
 }
 /// Specifies invoicing frequency. Either `day`, `week`, `month` or `year`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdateSubscriptionPendingInvoiceItemIntervalInterval {
     Day,
     Month,
     Week,
     Year,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdateSubscriptionPendingInvoiceItemIntervalInterval {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdateSubscriptionPendingInvoiceItemIntervalInterval::*;
         match self {
             Day => "day",
             Month => "month",
             Week => "week",
             Year => "year",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for UpdateSubscriptionPendingInvoiceItemIntervalInterval {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateSubscriptionPendingInvoiceItemIntervalInterval::*;
         match s {
@@ -6307,7 +6722,14 @@ impl std::str::FromStr for UpdateSubscriptionPendingInvoiceItemIntervalInterval 
             "month" => Ok(Month),
             "week" => Ok(Week),
             "year" => Ok(Year),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdateSubscriptionPendingInvoiceItemIntervalInterval"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -6335,41 +6757,48 @@ impl<'de> serde::Deserialize<'de> for UpdateSubscriptionPendingInvoiceItemInterv
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for UpdateSubscriptionPendingInvoiceItemIntervalInterval",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Determines how to handle [prorations](https://stripe.com/docs/billing/subscriptions/prorations) when the billing cycle changes (e.g., when switching plans, resetting `billing_cycle_anchor=now`, or starting a trial), or if an item's `quantity` changes.
 /// The default value is `create_prorations`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdateSubscriptionProrationBehavior {
     AlwaysInvoice,
     CreateProrations,
     None,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdateSubscriptionProrationBehavior {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdateSubscriptionProrationBehavior::*;
         match self {
             AlwaysInvoice => "always_invoice",
             CreateProrations => "create_prorations",
             None => "none",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for UpdateSubscriptionProrationBehavior {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateSubscriptionProrationBehavior::*;
         match s {
             "always_invoice" => Ok(AlwaysInvoice),
             "create_prorations" => Ok(CreateProrations),
             "none" => Ok(None),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdateSubscriptionProrationBehavior"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -6397,9 +6826,7 @@ impl<'de> serde::Deserialize<'de> for UpdateSubscriptionProrationBehavior {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for UpdateSubscriptionProrationBehavior")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Unix timestamp representing the end of the trial period the customer will get before being charged for the first time.
@@ -6416,7 +6843,7 @@ pub enum UpdateSubscriptionTrialEnd {
     Timestamp(stripe_types::Timestamp),
 }
 /// Settings related to subscription trials.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdateSubscriptionTrialSettings {
     /// Defines how the subscription should behave when the user's free trial ends.
     pub end_behavior: UpdateSubscriptionTrialSettingsEndBehavior,
@@ -6427,7 +6854,7 @@ impl UpdateSubscriptionTrialSettings {
     }
 }
 /// Defines how the subscription should behave when the user's free trial ends.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdateSubscriptionTrialSettingsEndBehavior {
     /// Indicates how the subscription should change when the trial ends if the user did not provide a payment method.
     pub missing_payment_method: UpdateSubscriptionTrialSettingsEndBehaviorMissingPaymentMethod,
@@ -6442,32 +6869,43 @@ impl UpdateSubscriptionTrialSettingsEndBehavior {
     }
 }
 /// Indicates how the subscription should change when the trial ends if the user did not provide a payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdateSubscriptionTrialSettingsEndBehaviorMissingPaymentMethod {
     Cancel,
     CreateInvoice,
     Pause,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdateSubscriptionTrialSettingsEndBehaviorMissingPaymentMethod {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdateSubscriptionTrialSettingsEndBehaviorMissingPaymentMethod::*;
         match self {
             Cancel => "cancel",
             CreateInvoice => "create_invoice",
             Pause => "pause",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for UpdateSubscriptionTrialSettingsEndBehaviorMissingPaymentMethod {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateSubscriptionTrialSettingsEndBehaviorMissingPaymentMethod::*;
         match s {
             "cancel" => Ok(Cancel),
             "create_invoice" => Ok(CreateInvoice),
             "pause" => Ok(Pause),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdateSubscriptionTrialSettingsEndBehaviorMissingPaymentMethod"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -6497,11 +6935,7 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for UpdateSubscriptionTrialSettingsEndBehaviorMissingPaymentMethod",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Updates an existing subscription to match the specified parameters.

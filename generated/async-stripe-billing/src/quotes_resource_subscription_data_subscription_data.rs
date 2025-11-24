@@ -95,7 +95,7 @@ const _: () = {
                 Some(metadata),
                 Some(trial_period_days),
             ) = (
-                self.billing_mode,
+                self.billing_mode.take(),
                 self.description.take(),
                 self.effective_date,
                 self.metadata.take(),

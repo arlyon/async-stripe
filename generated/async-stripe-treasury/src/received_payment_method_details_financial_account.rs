@@ -64,7 +64,7 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(id), Some(network)) = (self.id.take(), self.network) else {
+            let (Some(id), Some(network)) = (self.id.take(), self.network.take()) else {
                 return None;
             };
             Some(Self::Out { id, network })
@@ -104,26 +104,37 @@ const _: () = {
     }
 };
 /// The rails the ReceivedCredit was sent over. A FinancialAccount can only send funds over `stripe`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum ReceivedPaymentMethodDetailsFinancialAccountNetwork {
     Stripe,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl ReceivedPaymentMethodDetailsFinancialAccountNetwork {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use ReceivedPaymentMethodDetailsFinancialAccountNetwork::*;
         match self {
             Stripe => "stripe",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for ReceivedPaymentMethodDetailsFinancialAccountNetwork {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ReceivedPaymentMethodDetailsFinancialAccountNetwork::*;
         match s {
             "stripe" => Ok(Stripe),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "ReceivedPaymentMethodDetailsFinancialAccountNetwork"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -157,8 +168,7 @@ impl miniserde::de::Visitor for crate::Place<ReceivedPaymentMethodDetailsFinanci
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(
-            ReceivedPaymentMethodDetailsFinancialAccountNetwork::from_str(s)
-                .map_err(|_| miniserde::Error)?,
+            ReceivedPaymentMethodDetailsFinancialAccountNetwork::from_str(s).expect("infallible"),
         );
         Ok(())
     }
@@ -170,10 +180,6 @@ impl<'de> serde::Deserialize<'de> for ReceivedPaymentMethodDetailsFinancialAccou
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for ReceivedPaymentMethodDetailsFinancialAccountNetwork",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

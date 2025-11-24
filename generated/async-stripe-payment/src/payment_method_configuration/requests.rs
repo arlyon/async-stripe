@@ -349,7 +349,7 @@ impl CreatePaymentMethodConfigurationBuilder {
     }
 }
 /// Canadian pre-authorized debit payments, check this [page](https://stripe.com/docs/payments/acss-debit) for more details like country availability.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationAcssDebit {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -366,7 +366,7 @@ impl Default for CreatePaymentMethodConfigurationAcssDebit {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationAcssDebitDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -383,32 +383,43 @@ impl Default for CreatePaymentMethodConfigurationAcssDebitDisplayPreference {
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreatePaymentMethodConfigurationAcssDebitDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreatePaymentMethodConfigurationAcssDebitDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreatePaymentMethodConfigurationAcssDebitDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreatePaymentMethodConfigurationAcssDebitDisplayPreferencePreference {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodConfigurationAcssDebitDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePaymentMethodConfigurationAcssDebitDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -438,13 +449,13 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentMethodConfigurationAcssDebitDisplayPreferencePreference"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// [Affirm](https://www.affirm.com/) gives your customers a way to split purchases over a series of payments.
 /// Depending on the purchase, they can pay with four interest-free payments (Split Pay) or pay over a longer term (Installments), which might include interest.
 /// Check this [page](https://stripe.com/docs/payments/affirm) for more details like country availability.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationAffirm {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -461,7 +472,7 @@ impl Default for CreatePaymentMethodConfigurationAffirm {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationAffirmDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -478,32 +489,43 @@ impl Default for CreatePaymentMethodConfigurationAffirmDisplayPreference {
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreatePaymentMethodConfigurationAffirmDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreatePaymentMethodConfigurationAffirmDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreatePaymentMethodConfigurationAffirmDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreatePaymentMethodConfigurationAffirmDisplayPreferencePreference {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodConfigurationAffirmDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePaymentMethodConfigurationAffirmDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -533,12 +555,12 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentMethodConfigurationAffirmDisplayPreferencePreference"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Afterpay gives your customers a way to pay for purchases in installments, check this [page](https://stripe.com/docs/payments/afterpay-clearpay) for more details like country availability.
 /// Afterpay is particularly popular among businesses selling fashion, beauty, and sports products.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationAfterpayClearpay {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -556,7 +578,7 @@ impl Default for CreatePaymentMethodConfigurationAfterpayClearpay {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationAfterpayClearpayDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -574,19 +596,23 @@ impl Default for CreatePaymentMethodConfigurationAfterpayClearpayDisplayPreferen
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreatePaymentMethodConfigurationAfterpayClearpayDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreatePaymentMethodConfigurationAfterpayClearpayDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreatePaymentMethodConfigurationAfterpayClearpayDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
@@ -594,14 +620,21 @@ impl CreatePaymentMethodConfigurationAfterpayClearpayDisplayPreferencePreference
 impl std::str::FromStr
     for CreatePaymentMethodConfigurationAfterpayClearpayDisplayPreferencePreference
 {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodConfigurationAfterpayClearpayDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePaymentMethodConfigurationAfterpayClearpayDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -637,14 +670,14 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentMethodConfigurationAfterpayClearpayDisplayPreferencePreference"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Alipay is a digital wallet in China that has more than a billion active users worldwide.
 /// Alipay users can pay on the web or on a mobile device using login credentials or their Alipay app.
 /// Alipay has a low dispute rate and reduces fraud by authenticating payments using the customer's login credentials.
 /// Check this [page](https://stripe.com/docs/payments/alipay) for more details.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationAlipay {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -661,7 +694,7 @@ impl Default for CreatePaymentMethodConfigurationAlipay {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationAlipayDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -678,32 +711,43 @@ impl Default for CreatePaymentMethodConfigurationAlipayDisplayPreference {
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreatePaymentMethodConfigurationAlipayDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreatePaymentMethodConfigurationAlipayDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreatePaymentMethodConfigurationAlipayDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreatePaymentMethodConfigurationAlipayDisplayPreferencePreference {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodConfigurationAlipayDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePaymentMethodConfigurationAlipayDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -733,11 +777,11 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentMethodConfigurationAlipayDisplayPreferencePreference"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Alma is a Buy Now, Pay Later payment method that offers customers the ability to pay in 2, 3, or 4 installments.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationAlma {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -754,7 +798,7 @@ impl Default for CreatePaymentMethodConfigurationAlma {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationAlmaDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -771,32 +815,43 @@ impl Default for CreatePaymentMethodConfigurationAlmaDisplayPreference {
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreatePaymentMethodConfigurationAlmaDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreatePaymentMethodConfigurationAlmaDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreatePaymentMethodConfigurationAlmaDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreatePaymentMethodConfigurationAlmaDisplayPreferencePreference {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodConfigurationAlmaDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePaymentMethodConfigurationAlmaDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -826,15 +881,11 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for CreatePaymentMethodConfigurationAlmaDisplayPreferencePreference",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Amazon Pay is a wallet payment method that lets your customers check out the same way as on Amazon.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationAmazonPay {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -851,7 +902,7 @@ impl Default for CreatePaymentMethodConfigurationAmazonPay {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationAmazonPayDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -868,32 +919,43 @@ impl Default for CreatePaymentMethodConfigurationAmazonPayDisplayPreference {
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreatePaymentMethodConfigurationAmazonPayDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreatePaymentMethodConfigurationAmazonPayDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreatePaymentMethodConfigurationAmazonPayDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreatePaymentMethodConfigurationAmazonPayDisplayPreferencePreference {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodConfigurationAmazonPayDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePaymentMethodConfigurationAmazonPayDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -923,13 +985,13 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentMethodConfigurationAmazonPayDisplayPreferencePreference"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Stripe users can accept [Apple Pay](https://stripe.com/payments/apple-pay) in iOS applications in iOS 9 and later, and on the web in Safari starting with iOS 10 or macOS Sierra.
 /// There are no additional fees to process Apple Pay payments, and the [pricing](https://stripe.com/pricing) is the same as other card transactions.
 /// Check this [page](https://stripe.com/docs/apple-pay) for more details.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationApplePay {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -946,7 +1008,7 @@ impl Default for CreatePaymentMethodConfigurationApplePay {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationApplePayDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -963,32 +1025,43 @@ impl Default for CreatePaymentMethodConfigurationApplePayDisplayPreference {
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreatePaymentMethodConfigurationApplePayDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreatePaymentMethodConfigurationApplePayDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreatePaymentMethodConfigurationApplePayDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreatePaymentMethodConfigurationApplePayDisplayPreferencePreference {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodConfigurationApplePayDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePaymentMethodConfigurationApplePayDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -1018,11 +1091,11 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentMethodConfigurationApplePayDisplayPreferencePreference"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Apple Pay Later, a payment method for customers to buy now and pay later, gives your customers a way to split purchases into four installments across six weeks.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationApplePayLater {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1039,7 +1112,7 @@ impl Default for CreatePaymentMethodConfigurationApplePayLater {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationApplePayLaterDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1057,19 +1130,23 @@ impl Default for CreatePaymentMethodConfigurationApplePayLaterDisplayPreference 
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreatePaymentMethodConfigurationApplePayLaterDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreatePaymentMethodConfigurationApplePayLaterDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreatePaymentMethodConfigurationApplePayLaterDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
@@ -1077,14 +1154,21 @@ impl CreatePaymentMethodConfigurationApplePayLaterDisplayPreferencePreference {
 impl std::str::FromStr
     for CreatePaymentMethodConfigurationApplePayLaterDisplayPreferencePreference
 {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodConfigurationApplePayLaterDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePaymentMethodConfigurationApplePayLaterDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -1116,12 +1200,12 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentMethodConfigurationApplePayLaterDisplayPreferencePreference"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Stripe users in Australia can accept Bulk Electronic Clearing System (BECS) direct debit payments from customers with an Australian bank account.
 /// Check this [page](https://stripe.com/docs/payments/au-becs-debit) for more details.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationAuBecsDebit {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1138,7 +1222,7 @@ impl Default for CreatePaymentMethodConfigurationAuBecsDebit {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationAuBecsDebitDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1155,32 +1239,43 @@ impl Default for CreatePaymentMethodConfigurationAuBecsDebitDisplayPreference {
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreatePaymentMethodConfigurationAuBecsDebitDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreatePaymentMethodConfigurationAuBecsDebitDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreatePaymentMethodConfigurationAuBecsDebitDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreatePaymentMethodConfigurationAuBecsDebitDisplayPreferencePreference {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodConfigurationAuBecsDebitDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePaymentMethodConfigurationAuBecsDebitDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -1210,11 +1305,11 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentMethodConfigurationAuBecsDebitDisplayPreferencePreference"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Stripe users in the UK can accept Bacs Direct Debit payments from customers with a UK bank account, check this [page](https://stripe.com/docs/payments/payment-methods/bacs-debit) for more details.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationBacsDebit {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1231,7 +1326,7 @@ impl Default for CreatePaymentMethodConfigurationBacsDebit {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationBacsDebitDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1248,32 +1343,43 @@ impl Default for CreatePaymentMethodConfigurationBacsDebitDisplayPreference {
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreatePaymentMethodConfigurationBacsDebitDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreatePaymentMethodConfigurationBacsDebitDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreatePaymentMethodConfigurationBacsDebitDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreatePaymentMethodConfigurationBacsDebitDisplayPreferencePreference {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodConfigurationBacsDebitDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePaymentMethodConfigurationBacsDebitDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -1303,13 +1409,13 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentMethodConfigurationBacsDebitDisplayPreferencePreference"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Bancontact is the most popular online payment method in Belgium, with over 15 million cards in circulation.
 /// [Customers](https://stripe.com/docs/api/customers) use a Bancontact card or mobile app linked to a Belgian bank account to make online payments that are secure, guaranteed, and confirmed immediately.
 /// Check this [page](https://stripe.com/docs/payments/bancontact) for more details.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationBancontact {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1326,7 +1432,7 @@ impl Default for CreatePaymentMethodConfigurationBancontact {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationBancontactDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1343,32 +1449,43 @@ impl Default for CreatePaymentMethodConfigurationBancontactDisplayPreference {
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreatePaymentMethodConfigurationBancontactDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreatePaymentMethodConfigurationBancontactDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreatePaymentMethodConfigurationBancontactDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreatePaymentMethodConfigurationBancontactDisplayPreferencePreference {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodConfigurationBancontactDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePaymentMethodConfigurationBancontactDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -1398,13 +1515,13 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentMethodConfigurationBancontactDisplayPreferencePreference"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Billie is a [single-use](https://docs.stripe.com/payments/payment-methods#usage) payment method that offers businesses Pay by Invoice where they offer payment terms ranging from 7-120 days.
 /// Customers are redirected from your website or app, authorize the payment with Billie, then return to your website or app.
 /// You get [immediate notification](/payments/payment-methods#payment-notification) of whether the payment succeeded or failed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationBillie {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1421,7 +1538,7 @@ impl Default for CreatePaymentMethodConfigurationBillie {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationBillieDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1438,32 +1555,43 @@ impl Default for CreatePaymentMethodConfigurationBillieDisplayPreference {
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreatePaymentMethodConfigurationBillieDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreatePaymentMethodConfigurationBillieDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreatePaymentMethodConfigurationBillieDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreatePaymentMethodConfigurationBillieDisplayPreferencePreference {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodConfigurationBillieDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePaymentMethodConfigurationBillieDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -1493,13 +1621,13 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentMethodConfigurationBillieDisplayPreferencePreference"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// BLIK is a [single use](https://stripe.com/docs/payments/payment-methods#usage) payment method that requires customers to authenticate their payments.
 /// When customers want to pay online using BLIK, they request a six-digit code from their banking application and enter it into the payment collection form.
 /// Check this [page](https://stripe.com/docs/payments/blik) for more details.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationBlik {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1516,7 +1644,7 @@ impl Default for CreatePaymentMethodConfigurationBlik {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationBlikDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1533,32 +1661,43 @@ impl Default for CreatePaymentMethodConfigurationBlikDisplayPreference {
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreatePaymentMethodConfigurationBlikDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreatePaymentMethodConfigurationBlikDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreatePaymentMethodConfigurationBlikDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreatePaymentMethodConfigurationBlikDisplayPreferencePreference {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodConfigurationBlikDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePaymentMethodConfigurationBlikDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -1588,16 +1727,12 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for CreatePaymentMethodConfigurationBlikDisplayPreferencePreference",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Boleto is an official (regulated by the Central Bank of Brazil) payment method in Brazil.
 /// Check this [page](https://stripe.com/docs/payments/boleto) for more details.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationBoleto {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1614,7 +1749,7 @@ impl Default for CreatePaymentMethodConfigurationBoleto {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationBoletoDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1631,32 +1766,43 @@ impl Default for CreatePaymentMethodConfigurationBoletoDisplayPreference {
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreatePaymentMethodConfigurationBoletoDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreatePaymentMethodConfigurationBoletoDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreatePaymentMethodConfigurationBoletoDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreatePaymentMethodConfigurationBoletoDisplayPreferencePreference {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodConfigurationBoletoDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePaymentMethodConfigurationBoletoDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -1686,12 +1832,12 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentMethodConfigurationBoletoDisplayPreferencePreference"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Cards are a popular way for consumers and businesses to pay online or in person.
 /// Stripe supports global and local card networks.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationCard {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1708,7 +1854,7 @@ impl Default for CreatePaymentMethodConfigurationCard {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationCardDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1725,32 +1871,43 @@ impl Default for CreatePaymentMethodConfigurationCardDisplayPreference {
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreatePaymentMethodConfigurationCardDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreatePaymentMethodConfigurationCardDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreatePaymentMethodConfigurationCardDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreatePaymentMethodConfigurationCardDisplayPreferencePreference {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodConfigurationCardDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePaymentMethodConfigurationCardDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -1780,17 +1937,13 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for CreatePaymentMethodConfigurationCardDisplayPreferencePreference",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Cartes Bancaires is France's local card network.
 /// More than 95% of these cards are co-branded with either Visa or Mastercard, meaning you can process these cards over either Cartes Bancaires or the Visa or Mastercard networks.
 /// Check this [page](https://stripe.com/docs/payments/cartes-bancaires) for more details.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationCartesBancaires {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1808,7 +1961,7 @@ impl Default for CreatePaymentMethodConfigurationCartesBancaires {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationCartesBancairesDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1826,19 +1979,23 @@ impl Default for CreatePaymentMethodConfigurationCartesBancairesDisplayPreferenc
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreatePaymentMethodConfigurationCartesBancairesDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreatePaymentMethodConfigurationCartesBancairesDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreatePaymentMethodConfigurationCartesBancairesDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
@@ -1846,14 +2003,21 @@ impl CreatePaymentMethodConfigurationCartesBancairesDisplayPreferencePreference 
 impl std::str::FromStr
     for CreatePaymentMethodConfigurationCartesBancairesDisplayPreferencePreference
 {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodConfigurationCartesBancairesDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePaymentMethodConfigurationCartesBancairesDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -1889,12 +2053,12 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentMethodConfigurationCartesBancairesDisplayPreferencePreference"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Cash App is a popular consumer app in the US that allows customers to bank, invest, send, and receive money using their digital wallet.
 /// Check this [page](https://stripe.com/docs/payments/cash-app-pay) for more details.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationCashapp {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1911,7 +2075,7 @@ impl Default for CreatePaymentMethodConfigurationCashapp {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationCashappDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1928,32 +2092,43 @@ impl Default for CreatePaymentMethodConfigurationCashappDisplayPreference {
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreatePaymentMethodConfigurationCashappDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreatePaymentMethodConfigurationCashappDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreatePaymentMethodConfigurationCashappDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreatePaymentMethodConfigurationCashappDisplayPreferencePreference {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodConfigurationCashappDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePaymentMethodConfigurationCashappDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -1983,11 +2158,11 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentMethodConfigurationCashappDisplayPreferencePreference"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// [Stablecoin payments](https://stripe.com/docs/payments/stablecoin-payments) enable customers to pay in stablecoins like USDC from 100s of wallets including Phantom and Metamask.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationCrypto {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2004,7 +2179,7 @@ impl Default for CreatePaymentMethodConfigurationCrypto {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationCryptoDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2021,32 +2196,43 @@ impl Default for CreatePaymentMethodConfigurationCryptoDisplayPreference {
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreatePaymentMethodConfigurationCryptoDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreatePaymentMethodConfigurationCryptoDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreatePaymentMethodConfigurationCryptoDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreatePaymentMethodConfigurationCryptoDisplayPreferencePreference {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodConfigurationCryptoDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePaymentMethodConfigurationCryptoDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -2076,13 +2262,13 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentMethodConfigurationCryptoDisplayPreferencePreference"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Uses a customer’s [cash balance](https://stripe.com/docs/payments/customer-balance) for the payment.
 /// The cash balance can be funded via a bank transfer.
 /// Check this [page](https://stripe.com/docs/payments/bank-transfers) for more details.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationCustomerBalance {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2100,7 +2286,7 @@ impl Default for CreatePaymentMethodConfigurationCustomerBalance {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationCustomerBalanceDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2118,19 +2304,23 @@ impl Default for CreatePaymentMethodConfigurationCustomerBalanceDisplayPreferenc
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreatePaymentMethodConfigurationCustomerBalanceDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreatePaymentMethodConfigurationCustomerBalanceDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreatePaymentMethodConfigurationCustomerBalanceDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
@@ -2138,14 +2328,21 @@ impl CreatePaymentMethodConfigurationCustomerBalanceDisplayPreferencePreference 
 impl std::str::FromStr
     for CreatePaymentMethodConfigurationCustomerBalanceDisplayPreferencePreference
 {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodConfigurationCustomerBalanceDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePaymentMethodConfigurationCustomerBalanceDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -2181,13 +2378,13 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentMethodConfigurationCustomerBalanceDisplayPreferencePreference"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// EPS is an Austria-based payment method that allows customers to complete transactions online using their bank credentials.
 /// EPS is supported by all Austrian banks and is accepted by over 80% of Austrian online retailers.
 /// Check this [page](https://stripe.com/docs/payments/eps) for more details.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationEps {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2204,7 +2401,7 @@ impl Default for CreatePaymentMethodConfigurationEps {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationEpsDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2221,32 +2418,43 @@ impl Default for CreatePaymentMethodConfigurationEpsDisplayPreference {
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreatePaymentMethodConfigurationEpsDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreatePaymentMethodConfigurationEpsDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreatePaymentMethodConfigurationEpsDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreatePaymentMethodConfigurationEpsDisplayPreferencePreference {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodConfigurationEpsDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePaymentMethodConfigurationEpsDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -2276,18 +2484,14 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for CreatePaymentMethodConfigurationEpsDisplayPreferencePreference",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Financial Process Exchange (FPX) is a Malaysia-based payment method that allows customers to complete transactions online using their bank credentials.
 /// Bank Negara Malaysia (BNM), the Central Bank of Malaysia, and eleven other major Malaysian financial institutions are members of the PayNet Group, which owns and operates FPX.
 /// It is one of the most popular online payment methods in Malaysia, with nearly 90 million transactions in 2018 according to BNM.
 /// Check this [page](https://stripe.com/docs/payments/fpx) for more details.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationFpx {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2304,7 +2508,7 @@ impl Default for CreatePaymentMethodConfigurationFpx {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationFpxDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2321,32 +2525,43 @@ impl Default for CreatePaymentMethodConfigurationFpxDisplayPreference {
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreatePaymentMethodConfigurationFpxDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreatePaymentMethodConfigurationFpxDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreatePaymentMethodConfigurationFpxDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreatePaymentMethodConfigurationFpxDisplayPreferencePreference {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodConfigurationFpxDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePaymentMethodConfigurationFpxDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -2376,16 +2591,12 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for CreatePaymentMethodConfigurationFpxDisplayPreferencePreference",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Meal vouchers in France, or “titres-restaurant”, is a local benefits program commonly offered by employers for their employees to purchase prepared food and beverages on working days.
 /// Check this [page](https://stripe.com/docs/payments/benefits/fr-meal-vouchers) for more details.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationFrMealVoucherConecs {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2403,7 +2614,7 @@ impl Default for CreatePaymentMethodConfigurationFrMealVoucherConecs {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationFrMealVoucherConecsDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2421,19 +2632,23 @@ impl Default for CreatePaymentMethodConfigurationFrMealVoucherConecsDisplayPrefe
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreatePaymentMethodConfigurationFrMealVoucherConecsDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreatePaymentMethodConfigurationFrMealVoucherConecsDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreatePaymentMethodConfigurationFrMealVoucherConecsDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
@@ -2441,14 +2656,21 @@ impl CreatePaymentMethodConfigurationFrMealVoucherConecsDisplayPreferencePrefere
 impl std::str::FromStr
     for CreatePaymentMethodConfigurationFrMealVoucherConecsDisplayPreferencePreference
 {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodConfigurationFrMealVoucherConecsDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePaymentMethodConfigurationFrMealVoucherConecsDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -2484,7 +2706,7 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentMethodConfigurationFrMealVoucherConecsDisplayPreferencePreference"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// giropay is a German payment method based on online banking, introduced in 2006.
@@ -2492,7 +2714,7 @@ impl<'de> serde::Deserialize<'de>
 /// Depending on their bank, customers confirm payments on giropay using a second factor of authentication or a PIN.
 /// giropay accounts for 10% of online checkouts in Germany.
 /// Check this [page](https://stripe.com/docs/payments/giropay) for more details.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationGiropay {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2509,7 +2731,7 @@ impl Default for CreatePaymentMethodConfigurationGiropay {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationGiropayDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2526,32 +2748,43 @@ impl Default for CreatePaymentMethodConfigurationGiropayDisplayPreference {
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreatePaymentMethodConfigurationGiropayDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreatePaymentMethodConfigurationGiropayDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreatePaymentMethodConfigurationGiropayDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreatePaymentMethodConfigurationGiropayDisplayPreferencePreference {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodConfigurationGiropayDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePaymentMethodConfigurationGiropayDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -2581,13 +2814,13 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentMethodConfigurationGiropayDisplayPreferencePreference"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Google Pay allows customers to make payments in your app or website using any credit or debit card saved to their Google Account, including those from Google Play, YouTube, Chrome, or an Android device.
 /// Use the Google Pay API to request any credit or debit card stored in your customer's Google account.
 /// Check this [page](https://stripe.com/docs/google-pay) for more details.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationGooglePay {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2604,7 +2837,7 @@ impl Default for CreatePaymentMethodConfigurationGooglePay {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationGooglePayDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2621,32 +2854,43 @@ impl Default for CreatePaymentMethodConfigurationGooglePayDisplayPreference {
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreatePaymentMethodConfigurationGooglePayDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreatePaymentMethodConfigurationGooglePayDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreatePaymentMethodConfigurationGooglePayDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreatePaymentMethodConfigurationGooglePayDisplayPreferencePreference {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodConfigurationGooglePayDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePaymentMethodConfigurationGooglePayDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -2676,13 +2920,13 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentMethodConfigurationGooglePayDisplayPreferencePreference"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// GrabPay is a payment method developed by [Grab](https://www.grab.com/sg/consumer/finance/pay/).
 /// GrabPay is a digital wallet - customers maintain a balance in their wallets that they pay out with.
 /// Check this [page](https://stripe.com/docs/payments/grabpay) for more details.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationGrabpay {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2699,7 +2943,7 @@ impl Default for CreatePaymentMethodConfigurationGrabpay {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationGrabpayDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2716,32 +2960,43 @@ impl Default for CreatePaymentMethodConfigurationGrabpayDisplayPreference {
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreatePaymentMethodConfigurationGrabpayDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreatePaymentMethodConfigurationGrabpayDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreatePaymentMethodConfigurationGrabpayDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreatePaymentMethodConfigurationGrabpayDisplayPreferencePreference {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodConfigurationGrabpayDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePaymentMethodConfigurationGrabpayDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -2771,13 +3026,13 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentMethodConfigurationGrabpayDisplayPreferencePreference"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// iDEAL is a Netherlands-based payment method that allows customers to complete transactions online using their bank credentials.
 /// All major Dutch banks are members of Currence, the scheme that operates iDEAL, making it the most popular online payment method in the Netherlands with a share of online transactions close to 55%.
 /// Check this [page](https://stripe.com/docs/payments/ideal) for more details.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationIdeal {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2794,7 +3049,7 @@ impl Default for CreatePaymentMethodConfigurationIdeal {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationIdealDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2811,32 +3066,43 @@ impl Default for CreatePaymentMethodConfigurationIdealDisplayPreference {
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreatePaymentMethodConfigurationIdealDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreatePaymentMethodConfigurationIdealDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreatePaymentMethodConfigurationIdealDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreatePaymentMethodConfigurationIdealDisplayPreferencePreference {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodConfigurationIdealDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePaymentMethodConfigurationIdealDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -2866,13 +3132,13 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentMethodConfigurationIdealDisplayPreferencePreference"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// JCB is a credit card company based in Japan.
 /// JCB is currently available in Japan to businesses approved by JCB, and available to all businesses in Australia, Canada, Hong Kong, Japan, New Zealand, Singapore, Switzerland, United Kingdom, United States, and all countries in the European Economic Area except Iceland.
 /// Check this [page](https://support.stripe.com/questions/accepting-japan-credit-bureau-%28jcb%29-payments) for more details.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationJcb {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2889,7 +3155,7 @@ impl Default for CreatePaymentMethodConfigurationJcb {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationJcbDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2906,32 +3172,43 @@ impl Default for CreatePaymentMethodConfigurationJcbDisplayPreference {
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreatePaymentMethodConfigurationJcbDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreatePaymentMethodConfigurationJcbDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreatePaymentMethodConfigurationJcbDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreatePaymentMethodConfigurationJcbDisplayPreferencePreference {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodConfigurationJcbDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePaymentMethodConfigurationJcbDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -2961,15 +3238,11 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for CreatePaymentMethodConfigurationJcbDisplayPreferencePreference",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Kakao Pay is a popular local wallet available in South Korea.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationKakaoPay {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2986,7 +3259,7 @@ impl Default for CreatePaymentMethodConfigurationKakaoPay {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationKakaoPayDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3003,32 +3276,43 @@ impl Default for CreatePaymentMethodConfigurationKakaoPayDisplayPreference {
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreatePaymentMethodConfigurationKakaoPayDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreatePaymentMethodConfigurationKakaoPayDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreatePaymentMethodConfigurationKakaoPayDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreatePaymentMethodConfigurationKakaoPayDisplayPreferencePreference {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodConfigurationKakaoPayDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePaymentMethodConfigurationKakaoPayDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -3058,14 +3342,14 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentMethodConfigurationKakaoPayDisplayPreferencePreference"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Klarna gives customers a range of [payment options](https://stripe.com/docs/payments/klarna#payment-options) during checkout.
 /// Available payment options vary depending on the customer's billing address and the transaction amount.
 /// These payment options make it convenient for customers to purchase items in all price ranges.
 /// Check this [page](https://stripe.com/docs/payments/klarna) for more details.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationKlarna {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3082,7 +3366,7 @@ impl Default for CreatePaymentMethodConfigurationKlarna {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationKlarnaDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3099,32 +3383,43 @@ impl Default for CreatePaymentMethodConfigurationKlarnaDisplayPreference {
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreatePaymentMethodConfigurationKlarnaDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreatePaymentMethodConfigurationKlarnaDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreatePaymentMethodConfigurationKlarnaDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreatePaymentMethodConfigurationKlarnaDisplayPreferencePreference {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodConfigurationKlarnaDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePaymentMethodConfigurationKlarnaDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -3154,12 +3449,12 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentMethodConfigurationKlarnaDisplayPreferencePreference"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Konbini allows customers in Japan to pay for bills and online purchases at convenience stores with cash.
 /// Check this [page](https://stripe.com/docs/payments/konbini) for more details.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationKonbini {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3176,7 +3471,7 @@ impl Default for CreatePaymentMethodConfigurationKonbini {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationKonbiniDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3193,32 +3488,43 @@ impl Default for CreatePaymentMethodConfigurationKonbiniDisplayPreference {
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreatePaymentMethodConfigurationKonbiniDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreatePaymentMethodConfigurationKonbiniDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreatePaymentMethodConfigurationKonbiniDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreatePaymentMethodConfigurationKonbiniDisplayPreferencePreference {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodConfigurationKonbiniDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePaymentMethodConfigurationKonbiniDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -3248,11 +3554,11 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentMethodConfigurationKonbiniDisplayPreferencePreference"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Korean cards let users pay using locally issued cards from South Korea.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationKrCard {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3269,7 +3575,7 @@ impl Default for CreatePaymentMethodConfigurationKrCard {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationKrCardDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3286,32 +3592,43 @@ impl Default for CreatePaymentMethodConfigurationKrCardDisplayPreference {
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreatePaymentMethodConfigurationKrCardDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreatePaymentMethodConfigurationKrCardDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreatePaymentMethodConfigurationKrCardDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreatePaymentMethodConfigurationKrCardDisplayPreferencePreference {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodConfigurationKrCardDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePaymentMethodConfigurationKrCardDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -3341,12 +3658,12 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentMethodConfigurationKrCardDisplayPreferencePreference"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// [Link](https://stripe.com/docs/payments/link) is a payment method network.
 /// With Link, users save their payment details once, then reuse that information to pay with one click for any business on the network.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationLink {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3363,7 +3680,7 @@ impl Default for CreatePaymentMethodConfigurationLink {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationLinkDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3380,32 +3697,43 @@ impl Default for CreatePaymentMethodConfigurationLinkDisplayPreference {
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreatePaymentMethodConfigurationLinkDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreatePaymentMethodConfigurationLinkDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreatePaymentMethodConfigurationLinkDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreatePaymentMethodConfigurationLinkDisplayPreferencePreference {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodConfigurationLinkDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePaymentMethodConfigurationLinkDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -3435,17 +3763,13 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for CreatePaymentMethodConfigurationLinkDisplayPreferencePreference",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// MB WAY is the most popular wallet in Portugal.
 /// After entering their phone number in your checkout, customers approve the payment directly in their MB WAY app.
 /// Check this [page](https://stripe.com/docs/payments/mb-way) for more details.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationMbWay {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3462,7 +3786,7 @@ impl Default for CreatePaymentMethodConfigurationMbWay {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationMbWayDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3479,32 +3803,43 @@ impl Default for CreatePaymentMethodConfigurationMbWayDisplayPreference {
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreatePaymentMethodConfigurationMbWayDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreatePaymentMethodConfigurationMbWayDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreatePaymentMethodConfigurationMbWayDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreatePaymentMethodConfigurationMbWayDisplayPreferencePreference {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodConfigurationMbWayDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePaymentMethodConfigurationMbWayDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -3534,13 +3869,13 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentMethodConfigurationMbWayDisplayPreferencePreference"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// MobilePay is a [single-use](https://stripe.com/docs/payments/payment-methods#usage) card wallet payment method used in Denmark and Finland.
 /// It allows customers to [authenticate and approve](https://stripe.com/docs/payments/payment-methods#customer-actions) payments using the MobilePay app.
 /// Check this [page](https://stripe.com/docs/payments/mobilepay) for more details.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationMobilepay {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3557,7 +3892,7 @@ impl Default for CreatePaymentMethodConfigurationMobilepay {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationMobilepayDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3574,32 +3909,43 @@ impl Default for CreatePaymentMethodConfigurationMobilepayDisplayPreference {
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreatePaymentMethodConfigurationMobilepayDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreatePaymentMethodConfigurationMobilepayDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreatePaymentMethodConfigurationMobilepayDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreatePaymentMethodConfigurationMobilepayDisplayPreferencePreference {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodConfigurationMobilepayDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePaymentMethodConfigurationMobilepayDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -3629,11 +3975,11 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentMethodConfigurationMobilepayDisplayPreferencePreference"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Stripe users in Europe and the United States can accept Multibanco payments from customers in Portugal using [Sources](https://stripe.com/docs/sources)—a single integration path for creating payments using any supported method.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationMultibanco {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3650,7 +3996,7 @@ impl Default for CreatePaymentMethodConfigurationMultibanco {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationMultibancoDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3667,32 +4013,43 @@ impl Default for CreatePaymentMethodConfigurationMultibancoDisplayPreference {
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreatePaymentMethodConfigurationMultibancoDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreatePaymentMethodConfigurationMultibancoDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreatePaymentMethodConfigurationMultibancoDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreatePaymentMethodConfigurationMultibancoDisplayPreferencePreference {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodConfigurationMultibancoDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePaymentMethodConfigurationMultibancoDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -3722,11 +4079,11 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentMethodConfigurationMultibancoDisplayPreferencePreference"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Naver Pay is a popular local wallet available in South Korea.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationNaverPay {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3743,7 +4100,7 @@ impl Default for CreatePaymentMethodConfigurationNaverPay {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationNaverPayDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3760,32 +4117,43 @@ impl Default for CreatePaymentMethodConfigurationNaverPayDisplayPreference {
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreatePaymentMethodConfigurationNaverPayDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreatePaymentMethodConfigurationNaverPayDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreatePaymentMethodConfigurationNaverPayDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreatePaymentMethodConfigurationNaverPayDisplayPreferencePreference {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodConfigurationNaverPayDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePaymentMethodConfigurationNaverPayDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -3815,12 +4183,12 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentMethodConfigurationNaverPayDisplayPreferencePreference"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Stripe users in New Zealand can accept Bulk Electronic Clearing System (BECS) direct debit payments from customers with a New Zeland bank account.
 /// Check this [page](https://stripe.com/docs/payments/nz-bank-account) for more details.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationNzBankAccount {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3837,7 +4205,7 @@ impl Default for CreatePaymentMethodConfigurationNzBankAccount {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationNzBankAccountDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3855,19 +4223,23 @@ impl Default for CreatePaymentMethodConfigurationNzBankAccountDisplayPreference 
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreatePaymentMethodConfigurationNzBankAccountDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreatePaymentMethodConfigurationNzBankAccountDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreatePaymentMethodConfigurationNzBankAccountDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
@@ -3875,14 +4247,21 @@ impl CreatePaymentMethodConfigurationNzBankAccountDisplayPreferencePreference {
 impl std::str::FromStr
     for CreatePaymentMethodConfigurationNzBankAccountDisplayPreferencePreference
 {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodConfigurationNzBankAccountDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePaymentMethodConfigurationNzBankAccountDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -3914,13 +4293,13 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentMethodConfigurationNzBankAccountDisplayPreferencePreference"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// OXXO is a Mexican chain of convenience stores with thousands of locations across Latin America and represents nearly 20% of online transactions in Mexico.
 /// OXXO allows customers to pay bills and online purchases in-store with cash.
 /// Check this [page](https://stripe.com/docs/payments/oxxo) for more details.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationOxxo {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3937,7 +4316,7 @@ impl Default for CreatePaymentMethodConfigurationOxxo {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationOxxoDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3954,32 +4333,43 @@ impl Default for CreatePaymentMethodConfigurationOxxoDisplayPreference {
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreatePaymentMethodConfigurationOxxoDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreatePaymentMethodConfigurationOxxoDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreatePaymentMethodConfigurationOxxoDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreatePaymentMethodConfigurationOxxoDisplayPreferencePreference {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodConfigurationOxxoDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePaymentMethodConfigurationOxxoDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -4009,17 +4399,13 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for CreatePaymentMethodConfigurationOxxoDisplayPreferencePreference",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Przelewy24 is a Poland-based payment method aggregator that allows customers to complete transactions online using bank transfers and other methods.
 /// Bank transfers account for 30% of online payments in Poland and Przelewy24 provides a way for customers to pay with over 165 banks.
 /// Check this [page](https://stripe.com/docs/payments/p24) for more details.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationP24 {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4036,7 +4422,7 @@ impl Default for CreatePaymentMethodConfigurationP24 {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationP24DisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4053,32 +4439,43 @@ impl Default for CreatePaymentMethodConfigurationP24DisplayPreference {
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreatePaymentMethodConfigurationP24DisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreatePaymentMethodConfigurationP24DisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreatePaymentMethodConfigurationP24DisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreatePaymentMethodConfigurationP24DisplayPreferencePreference {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodConfigurationP24DisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePaymentMethodConfigurationP24DisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -4108,17 +4505,13 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for CreatePaymentMethodConfigurationP24DisplayPreferencePreference",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Pay by bank is a redirect payment method backed by bank transfers.
 /// A customer is redirected to their bank to authorize a bank transfer for a given amount.
 /// This removes a lot of the error risks inherent in waiting for the customer to initiate a transfer themselves, and is less expensive than card payments.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationPayByBank {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4135,7 +4528,7 @@ impl Default for CreatePaymentMethodConfigurationPayByBank {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationPayByBankDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4152,32 +4545,43 @@ impl Default for CreatePaymentMethodConfigurationPayByBankDisplayPreference {
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreatePaymentMethodConfigurationPayByBankDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreatePaymentMethodConfigurationPayByBankDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreatePaymentMethodConfigurationPayByBankDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreatePaymentMethodConfigurationPayByBankDisplayPreferencePreference {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodConfigurationPayByBankDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePaymentMethodConfigurationPayByBankDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -4207,11 +4611,11 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentMethodConfigurationPayByBankDisplayPreferencePreference"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// PAYCO is a [single-use](https://docs.stripe.com/payments/payment-methods#usage local wallet available in South Korea.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationPayco {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4228,7 +4632,7 @@ impl Default for CreatePaymentMethodConfigurationPayco {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationPaycoDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4245,32 +4649,43 @@ impl Default for CreatePaymentMethodConfigurationPaycoDisplayPreference {
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreatePaymentMethodConfigurationPaycoDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreatePaymentMethodConfigurationPaycoDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreatePaymentMethodConfigurationPaycoDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreatePaymentMethodConfigurationPaycoDisplayPreferencePreference {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodConfigurationPaycoDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePaymentMethodConfigurationPaycoDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -4300,12 +4715,12 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentMethodConfigurationPaycoDisplayPreferencePreference"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// PayNow is a Singapore-based payment method that allows customers to make a payment using their preferred app from participating banks and participating non-bank financial institutions.
 /// Check this [page](https://stripe.com/docs/payments/paynow) for more details.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationPaynow {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4322,7 +4737,7 @@ impl Default for CreatePaymentMethodConfigurationPaynow {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationPaynowDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4339,32 +4754,43 @@ impl Default for CreatePaymentMethodConfigurationPaynowDisplayPreference {
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreatePaymentMethodConfigurationPaynowDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreatePaymentMethodConfigurationPaynowDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreatePaymentMethodConfigurationPaynowDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreatePaymentMethodConfigurationPaynowDisplayPreferencePreference {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodConfigurationPaynowDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePaymentMethodConfigurationPaynowDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -4394,12 +4820,12 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentMethodConfigurationPaynowDisplayPreferencePreference"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// PayPal, a digital wallet popular with customers in Europe, allows your customers worldwide to pay using their PayPal account.
 /// Check this [page](https://stripe.com/docs/payments/paypal) for more details.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationPaypal {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4416,7 +4842,7 @@ impl Default for CreatePaymentMethodConfigurationPaypal {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationPaypalDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4433,32 +4859,43 @@ impl Default for CreatePaymentMethodConfigurationPaypalDisplayPreference {
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreatePaymentMethodConfigurationPaypalDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreatePaymentMethodConfigurationPaypalDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreatePaymentMethodConfigurationPaypalDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreatePaymentMethodConfigurationPaypalDisplayPreferencePreference {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodConfigurationPaypalDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePaymentMethodConfigurationPaypalDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -4488,13 +4925,13 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentMethodConfigurationPaypalDisplayPreferencePreference"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Pix is a payment method popular in Brazil.
 /// When paying with Pix, customers authenticate and approve payments by scanning a QR code in their preferred banking app.
 /// Check this [page](https://docs.stripe.com/payments/pix) for more details.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationPix {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4511,7 +4948,7 @@ impl Default for CreatePaymentMethodConfigurationPix {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationPixDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4528,32 +4965,43 @@ impl Default for CreatePaymentMethodConfigurationPixDisplayPreference {
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreatePaymentMethodConfigurationPixDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreatePaymentMethodConfigurationPixDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreatePaymentMethodConfigurationPixDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreatePaymentMethodConfigurationPixDisplayPreferencePreference {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodConfigurationPixDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePaymentMethodConfigurationPixDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -4583,16 +5031,12 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for CreatePaymentMethodConfigurationPixDisplayPreferencePreference",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// PromptPay is a Thailand-based payment method that allows customers to make a payment using their preferred app from participating banks.
 /// Check this [page](https://stripe.com/docs/payments/promptpay) for more details.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationPromptpay {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4609,7 +5053,7 @@ impl Default for CreatePaymentMethodConfigurationPromptpay {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationPromptpayDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4626,32 +5070,43 @@ impl Default for CreatePaymentMethodConfigurationPromptpayDisplayPreference {
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreatePaymentMethodConfigurationPromptpayDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreatePaymentMethodConfigurationPromptpayDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreatePaymentMethodConfigurationPromptpayDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreatePaymentMethodConfigurationPromptpayDisplayPreferencePreference {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodConfigurationPromptpayDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePaymentMethodConfigurationPromptpayDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -4681,12 +5136,12 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentMethodConfigurationPromptpayDisplayPreferencePreference"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Revolut Pay, developed by Revolut, a global finance app, is a digital wallet payment method.
 /// Revolut Pay uses the customer’s stored balance or cards to fund the payment, and offers the option for non-Revolut customers to save their details after their first purchase.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationRevolutPay {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4703,7 +5158,7 @@ impl Default for CreatePaymentMethodConfigurationRevolutPay {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationRevolutPayDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4720,32 +5175,43 @@ impl Default for CreatePaymentMethodConfigurationRevolutPayDisplayPreference {
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreatePaymentMethodConfigurationRevolutPayDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreatePaymentMethodConfigurationRevolutPayDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreatePaymentMethodConfigurationRevolutPayDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreatePaymentMethodConfigurationRevolutPayDisplayPreferencePreference {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodConfigurationRevolutPayDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePaymentMethodConfigurationRevolutPayDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -4775,11 +5241,11 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentMethodConfigurationRevolutPayDisplayPreferencePreference"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Samsung Pay is a [single-use](https://docs.stripe.com/payments/payment-methods#usage local wallet available in South Korea.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationSamsungPay {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4796,7 +5262,7 @@ impl Default for CreatePaymentMethodConfigurationSamsungPay {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationSamsungPayDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4813,32 +5279,43 @@ impl Default for CreatePaymentMethodConfigurationSamsungPayDisplayPreference {
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreatePaymentMethodConfigurationSamsungPayDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreatePaymentMethodConfigurationSamsungPayDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreatePaymentMethodConfigurationSamsungPayDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreatePaymentMethodConfigurationSamsungPayDisplayPreferencePreference {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodConfigurationSamsungPayDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePaymentMethodConfigurationSamsungPayDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -4868,13 +5345,13 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentMethodConfigurationSamsungPayDisplayPreferencePreference"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Satispay is a [single-use](https://docs.stripe.com/payments/payment-methods#usage) payment method where customers are required to [authenticate](/payments/payment-methods#customer-actions) their payment.
 /// Customers pay by being redirected from your website or app, authorizing the payment with Satispay, then returning to your website or app.
 /// You get [immediate notification](/payments/payment-methods#payment-notification) of whether the payment succeeded or failed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationSatispay {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4891,7 +5368,7 @@ impl Default for CreatePaymentMethodConfigurationSatispay {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationSatispayDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4908,32 +5385,43 @@ impl Default for CreatePaymentMethodConfigurationSatispayDisplayPreference {
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreatePaymentMethodConfigurationSatispayDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreatePaymentMethodConfigurationSatispayDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreatePaymentMethodConfigurationSatispayDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreatePaymentMethodConfigurationSatispayDisplayPreferencePreference {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodConfigurationSatispayDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePaymentMethodConfigurationSatispayDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -4963,12 +5451,12 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentMethodConfigurationSatispayDisplayPreferencePreference"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The [Single Euro Payments Area (SEPA)](https://en.wikipedia.org/wiki/Single_Euro_Payments_Area) is an initiative of the European Union to simplify payments within and across member countries.
 /// SEPA established and enforced banking standards to allow for the direct debiting of every EUR-denominated bank account within the SEPA region, check this [page](https://stripe.com/docs/payments/sepa-debit) for more details.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationSepaDebit {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4985,7 +5473,7 @@ impl Default for CreatePaymentMethodConfigurationSepaDebit {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationSepaDebitDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5002,32 +5490,43 @@ impl Default for CreatePaymentMethodConfigurationSepaDebitDisplayPreference {
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreatePaymentMethodConfigurationSepaDebitDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreatePaymentMethodConfigurationSepaDebitDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreatePaymentMethodConfigurationSepaDebitDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreatePaymentMethodConfigurationSepaDebitDisplayPreferencePreference {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodConfigurationSepaDebitDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePaymentMethodConfigurationSepaDebitDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -5057,12 +5556,12 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentMethodConfigurationSepaDebitDisplayPreferencePreference"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Stripe users in Europe and the United States can use the [Payment Intents API](https://stripe.com/docs/payments/payment-intents)—a single integration path for creating payments using any supported method—to accept [Sofort](https://www.sofort.com/) payments from customers.
 /// Check this [page](https://stripe.com/docs/payments/sofort) for more details.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationSofort {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5079,7 +5578,7 @@ impl Default for CreatePaymentMethodConfigurationSofort {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationSofortDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5096,32 +5595,43 @@ impl Default for CreatePaymentMethodConfigurationSofortDisplayPreference {
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreatePaymentMethodConfigurationSofortDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreatePaymentMethodConfigurationSofortDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreatePaymentMethodConfigurationSofortDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreatePaymentMethodConfigurationSofortDisplayPreferencePreference {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodConfigurationSofortDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePaymentMethodConfigurationSofortDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -5151,13 +5661,13 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentMethodConfigurationSofortDisplayPreferencePreference"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Swish is a [real-time](https://stripe.com/docs/payments/real-time) payment method popular in Sweden.
 /// It allows customers to [authenticate and approve](https://stripe.com/docs/payments/payment-methods#customer-actions) payments using the Swish mobile app and the Swedish BankID mobile app.
 /// Check this [page](https://stripe.com/docs/payments/swish) for more details.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationSwish {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5174,7 +5684,7 @@ impl Default for CreatePaymentMethodConfigurationSwish {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationSwishDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5191,32 +5701,43 @@ impl Default for CreatePaymentMethodConfigurationSwishDisplayPreference {
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreatePaymentMethodConfigurationSwishDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreatePaymentMethodConfigurationSwishDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreatePaymentMethodConfigurationSwishDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreatePaymentMethodConfigurationSwishDisplayPreferencePreference {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodConfigurationSwishDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePaymentMethodConfigurationSwishDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -5246,13 +5767,13 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentMethodConfigurationSwishDisplayPreferencePreference"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Twint is a payment method popular in Switzerland.
 /// It allows customers to pay using their mobile phone.
 /// Check this [page](https://docs.stripe.com/payments/twint) for more details.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationTwint {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5269,7 +5790,7 @@ impl Default for CreatePaymentMethodConfigurationTwint {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationTwintDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5286,32 +5807,43 @@ impl Default for CreatePaymentMethodConfigurationTwintDisplayPreference {
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreatePaymentMethodConfigurationTwintDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreatePaymentMethodConfigurationTwintDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreatePaymentMethodConfigurationTwintDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreatePaymentMethodConfigurationTwintDisplayPreferencePreference {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodConfigurationTwintDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePaymentMethodConfigurationTwintDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -5341,12 +5873,12 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentMethodConfigurationTwintDisplayPreferencePreference"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Stripe users in the United States can accept ACH direct debit payments from customers with a US bank account using the Automated Clearing House (ACH) payments system operated by Nacha.
 /// Check this [page](https://stripe.com/docs/payments/ach-direct-debit) for more details.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationUsBankAccount {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5363,7 +5895,7 @@ impl Default for CreatePaymentMethodConfigurationUsBankAccount {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationUsBankAccountDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5381,19 +5913,23 @@ impl Default for CreatePaymentMethodConfigurationUsBankAccountDisplayPreference 
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreatePaymentMethodConfigurationUsBankAccountDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreatePaymentMethodConfigurationUsBankAccountDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreatePaymentMethodConfigurationUsBankAccountDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
@@ -5401,14 +5937,21 @@ impl CreatePaymentMethodConfigurationUsBankAccountDisplayPreferencePreference {
 impl std::str::FromStr
     for CreatePaymentMethodConfigurationUsBankAccountDisplayPreferencePreference
 {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodConfigurationUsBankAccountDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePaymentMethodConfigurationUsBankAccountDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -5440,14 +5983,14 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentMethodConfigurationUsBankAccountDisplayPreferencePreference"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// WeChat, owned by Tencent, is China's leading mobile app with over 1 billion monthly active users.
 /// Chinese consumers can use WeChat Pay to pay for goods and services inside of businesses' apps and websites.
 /// WeChat Pay users buy most frequently in gaming, e-commerce, travel, online education, and food/nutrition.
 /// Check this [page](https://stripe.com/docs/payments/wechat-pay) for more details.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationWechatPay {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5464,7 +6007,7 @@ impl Default for CreatePaymentMethodConfigurationWechatPay {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationWechatPayDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5481,32 +6024,43 @@ impl Default for CreatePaymentMethodConfigurationWechatPayDisplayPreference {
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreatePaymentMethodConfigurationWechatPayDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreatePaymentMethodConfigurationWechatPayDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreatePaymentMethodConfigurationWechatPayDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreatePaymentMethodConfigurationWechatPayDisplayPreferencePreference {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodConfigurationWechatPayDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePaymentMethodConfigurationWechatPayDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -5536,12 +6090,12 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreatePaymentMethodConfigurationWechatPayDisplayPreferencePreference"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Zip gives your customers a way to split purchases over a series of payments.
 /// Check this [page](https://stripe.com/docs/payments/zip) for more details like country availability.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationZip {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5558,7 +6112,7 @@ impl Default for CreatePaymentMethodConfigurationZip {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationZipDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5575,32 +6129,43 @@ impl Default for CreatePaymentMethodConfigurationZipDisplayPreference {
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreatePaymentMethodConfigurationZipDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreatePaymentMethodConfigurationZipDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreatePaymentMethodConfigurationZipDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreatePaymentMethodConfigurationZipDisplayPreferencePreference {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentMethodConfigurationZipDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePaymentMethodConfigurationZipDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -5630,11 +6195,7 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for CreatePaymentMethodConfigurationZipDisplayPreferencePreference",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Creates a payment method configuration
@@ -6302,7 +6863,7 @@ impl UpdatePaymentMethodConfigurationBuilder {
     }
 }
 /// Canadian pre-authorized debit payments, check this [page](https://stripe.com/docs/payments/acss-debit) for more details like country availability.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationAcssDebit {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -6319,7 +6880,7 @@ impl Default for UpdatePaymentMethodConfigurationAcssDebit {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationAcssDebitDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -6336,32 +6897,43 @@ impl Default for UpdatePaymentMethodConfigurationAcssDebitDisplayPreference {
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdatePaymentMethodConfigurationAcssDebitDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdatePaymentMethodConfigurationAcssDebitDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdatePaymentMethodConfigurationAcssDebitDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for UpdatePaymentMethodConfigurationAcssDebitDisplayPreferencePreference {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentMethodConfigurationAcssDebitDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdatePaymentMethodConfigurationAcssDebitDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -6391,13 +6963,13 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentMethodConfigurationAcssDebitDisplayPreferencePreference"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// [Affirm](https://www.affirm.com/) gives your customers a way to split purchases over a series of payments.
 /// Depending on the purchase, they can pay with four interest-free payments (Split Pay) or pay over a longer term (Installments), which might include interest.
 /// Check this [page](https://stripe.com/docs/payments/affirm) for more details like country availability.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationAffirm {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -6414,7 +6986,7 @@ impl Default for UpdatePaymentMethodConfigurationAffirm {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationAffirmDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -6431,32 +7003,43 @@ impl Default for UpdatePaymentMethodConfigurationAffirmDisplayPreference {
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdatePaymentMethodConfigurationAffirmDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdatePaymentMethodConfigurationAffirmDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdatePaymentMethodConfigurationAffirmDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for UpdatePaymentMethodConfigurationAffirmDisplayPreferencePreference {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentMethodConfigurationAffirmDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdatePaymentMethodConfigurationAffirmDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -6486,12 +7069,12 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentMethodConfigurationAffirmDisplayPreferencePreference"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Afterpay gives your customers a way to pay for purchases in installments, check this [page](https://stripe.com/docs/payments/afterpay-clearpay) for more details like country availability.
 /// Afterpay is particularly popular among businesses selling fashion, beauty, and sports products.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationAfterpayClearpay {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -6509,7 +7092,7 @@ impl Default for UpdatePaymentMethodConfigurationAfterpayClearpay {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationAfterpayClearpayDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -6527,19 +7110,23 @@ impl Default for UpdatePaymentMethodConfigurationAfterpayClearpayDisplayPreferen
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdatePaymentMethodConfigurationAfterpayClearpayDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdatePaymentMethodConfigurationAfterpayClearpayDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdatePaymentMethodConfigurationAfterpayClearpayDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
@@ -6547,14 +7134,21 @@ impl UpdatePaymentMethodConfigurationAfterpayClearpayDisplayPreferencePreference
 impl std::str::FromStr
     for UpdatePaymentMethodConfigurationAfterpayClearpayDisplayPreferencePreference
 {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentMethodConfigurationAfterpayClearpayDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdatePaymentMethodConfigurationAfterpayClearpayDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -6590,14 +7184,14 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentMethodConfigurationAfterpayClearpayDisplayPreferencePreference"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Alipay is a digital wallet in China that has more than a billion active users worldwide.
 /// Alipay users can pay on the web or on a mobile device using login credentials or their Alipay app.
 /// Alipay has a low dispute rate and reduces fraud by authenticating payments using the customer's login credentials.
 /// Check this [page](https://stripe.com/docs/payments/alipay) for more details.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationAlipay {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -6614,7 +7208,7 @@ impl Default for UpdatePaymentMethodConfigurationAlipay {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationAlipayDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -6631,32 +7225,43 @@ impl Default for UpdatePaymentMethodConfigurationAlipayDisplayPreference {
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdatePaymentMethodConfigurationAlipayDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdatePaymentMethodConfigurationAlipayDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdatePaymentMethodConfigurationAlipayDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for UpdatePaymentMethodConfigurationAlipayDisplayPreferencePreference {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentMethodConfigurationAlipayDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdatePaymentMethodConfigurationAlipayDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -6686,11 +7291,11 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentMethodConfigurationAlipayDisplayPreferencePreference"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Alma is a Buy Now, Pay Later payment method that offers customers the ability to pay in 2, 3, or 4 installments.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationAlma {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -6707,7 +7312,7 @@ impl Default for UpdatePaymentMethodConfigurationAlma {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationAlmaDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -6724,32 +7329,43 @@ impl Default for UpdatePaymentMethodConfigurationAlmaDisplayPreference {
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdatePaymentMethodConfigurationAlmaDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdatePaymentMethodConfigurationAlmaDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdatePaymentMethodConfigurationAlmaDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for UpdatePaymentMethodConfigurationAlmaDisplayPreferencePreference {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentMethodConfigurationAlmaDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdatePaymentMethodConfigurationAlmaDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -6779,15 +7395,11 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for UpdatePaymentMethodConfigurationAlmaDisplayPreferencePreference",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Amazon Pay is a wallet payment method that lets your customers check out the same way as on Amazon.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationAmazonPay {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -6804,7 +7416,7 @@ impl Default for UpdatePaymentMethodConfigurationAmazonPay {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationAmazonPayDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -6821,32 +7433,43 @@ impl Default for UpdatePaymentMethodConfigurationAmazonPayDisplayPreference {
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdatePaymentMethodConfigurationAmazonPayDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdatePaymentMethodConfigurationAmazonPayDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdatePaymentMethodConfigurationAmazonPayDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for UpdatePaymentMethodConfigurationAmazonPayDisplayPreferencePreference {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentMethodConfigurationAmazonPayDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdatePaymentMethodConfigurationAmazonPayDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -6876,13 +7499,13 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentMethodConfigurationAmazonPayDisplayPreferencePreference"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Stripe users can accept [Apple Pay](https://stripe.com/payments/apple-pay) in iOS applications in iOS 9 and later, and on the web in Safari starting with iOS 10 or macOS Sierra.
 /// There are no additional fees to process Apple Pay payments, and the [pricing](https://stripe.com/pricing) is the same as other card transactions.
 /// Check this [page](https://stripe.com/docs/apple-pay) for more details.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationApplePay {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -6899,7 +7522,7 @@ impl Default for UpdatePaymentMethodConfigurationApplePay {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationApplePayDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -6916,32 +7539,43 @@ impl Default for UpdatePaymentMethodConfigurationApplePayDisplayPreference {
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdatePaymentMethodConfigurationApplePayDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdatePaymentMethodConfigurationApplePayDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdatePaymentMethodConfigurationApplePayDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for UpdatePaymentMethodConfigurationApplePayDisplayPreferencePreference {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentMethodConfigurationApplePayDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdatePaymentMethodConfigurationApplePayDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -6971,11 +7605,11 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentMethodConfigurationApplePayDisplayPreferencePreference"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Apple Pay Later, a payment method for customers to buy now and pay later, gives your customers a way to split purchases into four installments across six weeks.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationApplePayLater {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -6992,7 +7626,7 @@ impl Default for UpdatePaymentMethodConfigurationApplePayLater {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationApplePayLaterDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -7010,19 +7644,23 @@ impl Default for UpdatePaymentMethodConfigurationApplePayLaterDisplayPreference 
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdatePaymentMethodConfigurationApplePayLaterDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdatePaymentMethodConfigurationApplePayLaterDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdatePaymentMethodConfigurationApplePayLaterDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
@@ -7030,14 +7668,21 @@ impl UpdatePaymentMethodConfigurationApplePayLaterDisplayPreferencePreference {
 impl std::str::FromStr
     for UpdatePaymentMethodConfigurationApplePayLaterDisplayPreferencePreference
 {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentMethodConfigurationApplePayLaterDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdatePaymentMethodConfigurationApplePayLaterDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -7069,12 +7714,12 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentMethodConfigurationApplePayLaterDisplayPreferencePreference"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Stripe users in Australia can accept Bulk Electronic Clearing System (BECS) direct debit payments from customers with an Australian bank account.
 /// Check this [page](https://stripe.com/docs/payments/au-becs-debit) for more details.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationAuBecsDebit {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -7091,7 +7736,7 @@ impl Default for UpdatePaymentMethodConfigurationAuBecsDebit {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationAuBecsDebitDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -7108,32 +7753,43 @@ impl Default for UpdatePaymentMethodConfigurationAuBecsDebitDisplayPreference {
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdatePaymentMethodConfigurationAuBecsDebitDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdatePaymentMethodConfigurationAuBecsDebitDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdatePaymentMethodConfigurationAuBecsDebitDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for UpdatePaymentMethodConfigurationAuBecsDebitDisplayPreferencePreference {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentMethodConfigurationAuBecsDebitDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdatePaymentMethodConfigurationAuBecsDebitDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -7163,11 +7819,11 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentMethodConfigurationAuBecsDebitDisplayPreferencePreference"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Stripe users in the UK can accept Bacs Direct Debit payments from customers with a UK bank account, check this [page](https://stripe.com/docs/payments/payment-methods/bacs-debit) for more details.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationBacsDebit {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -7184,7 +7840,7 @@ impl Default for UpdatePaymentMethodConfigurationBacsDebit {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationBacsDebitDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -7201,32 +7857,43 @@ impl Default for UpdatePaymentMethodConfigurationBacsDebitDisplayPreference {
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdatePaymentMethodConfigurationBacsDebitDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdatePaymentMethodConfigurationBacsDebitDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdatePaymentMethodConfigurationBacsDebitDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for UpdatePaymentMethodConfigurationBacsDebitDisplayPreferencePreference {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentMethodConfigurationBacsDebitDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdatePaymentMethodConfigurationBacsDebitDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -7256,13 +7923,13 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentMethodConfigurationBacsDebitDisplayPreferencePreference"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Bancontact is the most popular online payment method in Belgium, with over 15 million cards in circulation.
 /// [Customers](https://stripe.com/docs/api/customers) use a Bancontact card or mobile app linked to a Belgian bank account to make online payments that are secure, guaranteed, and confirmed immediately.
 /// Check this [page](https://stripe.com/docs/payments/bancontact) for more details.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationBancontact {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -7279,7 +7946,7 @@ impl Default for UpdatePaymentMethodConfigurationBancontact {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationBancontactDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -7296,32 +7963,43 @@ impl Default for UpdatePaymentMethodConfigurationBancontactDisplayPreference {
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdatePaymentMethodConfigurationBancontactDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdatePaymentMethodConfigurationBancontactDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdatePaymentMethodConfigurationBancontactDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for UpdatePaymentMethodConfigurationBancontactDisplayPreferencePreference {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentMethodConfigurationBancontactDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdatePaymentMethodConfigurationBancontactDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -7351,13 +8029,13 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentMethodConfigurationBancontactDisplayPreferencePreference"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Billie is a [single-use](https://docs.stripe.com/payments/payment-methods#usage) payment method that offers businesses Pay by Invoice where they offer payment terms ranging from 7-120 days.
 /// Customers are redirected from your website or app, authorize the payment with Billie, then return to your website or app.
 /// You get [immediate notification](/payments/payment-methods#payment-notification) of whether the payment succeeded or failed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationBillie {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -7374,7 +8052,7 @@ impl Default for UpdatePaymentMethodConfigurationBillie {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationBillieDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -7391,32 +8069,43 @@ impl Default for UpdatePaymentMethodConfigurationBillieDisplayPreference {
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdatePaymentMethodConfigurationBillieDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdatePaymentMethodConfigurationBillieDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdatePaymentMethodConfigurationBillieDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for UpdatePaymentMethodConfigurationBillieDisplayPreferencePreference {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentMethodConfigurationBillieDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdatePaymentMethodConfigurationBillieDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -7446,13 +8135,13 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentMethodConfigurationBillieDisplayPreferencePreference"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// BLIK is a [single use](https://stripe.com/docs/payments/payment-methods#usage) payment method that requires customers to authenticate their payments.
 /// When customers want to pay online using BLIK, they request a six-digit code from their banking application and enter it into the payment collection form.
 /// Check this [page](https://stripe.com/docs/payments/blik) for more details.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationBlik {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -7469,7 +8158,7 @@ impl Default for UpdatePaymentMethodConfigurationBlik {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationBlikDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -7486,32 +8175,43 @@ impl Default for UpdatePaymentMethodConfigurationBlikDisplayPreference {
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdatePaymentMethodConfigurationBlikDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdatePaymentMethodConfigurationBlikDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdatePaymentMethodConfigurationBlikDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for UpdatePaymentMethodConfigurationBlikDisplayPreferencePreference {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentMethodConfigurationBlikDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdatePaymentMethodConfigurationBlikDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -7541,16 +8241,12 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for UpdatePaymentMethodConfigurationBlikDisplayPreferencePreference",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Boleto is an official (regulated by the Central Bank of Brazil) payment method in Brazil.
 /// Check this [page](https://stripe.com/docs/payments/boleto) for more details.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationBoleto {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -7567,7 +8263,7 @@ impl Default for UpdatePaymentMethodConfigurationBoleto {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationBoletoDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -7584,32 +8280,43 @@ impl Default for UpdatePaymentMethodConfigurationBoletoDisplayPreference {
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdatePaymentMethodConfigurationBoletoDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdatePaymentMethodConfigurationBoletoDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdatePaymentMethodConfigurationBoletoDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for UpdatePaymentMethodConfigurationBoletoDisplayPreferencePreference {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentMethodConfigurationBoletoDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdatePaymentMethodConfigurationBoletoDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -7639,12 +8346,12 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentMethodConfigurationBoletoDisplayPreferencePreference"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Cards are a popular way for consumers and businesses to pay online or in person.
 /// Stripe supports global and local card networks.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationCard {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -7661,7 +8368,7 @@ impl Default for UpdatePaymentMethodConfigurationCard {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationCardDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -7678,32 +8385,43 @@ impl Default for UpdatePaymentMethodConfigurationCardDisplayPreference {
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdatePaymentMethodConfigurationCardDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdatePaymentMethodConfigurationCardDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdatePaymentMethodConfigurationCardDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for UpdatePaymentMethodConfigurationCardDisplayPreferencePreference {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentMethodConfigurationCardDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdatePaymentMethodConfigurationCardDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -7733,17 +8451,13 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for UpdatePaymentMethodConfigurationCardDisplayPreferencePreference",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Cartes Bancaires is France's local card network.
 /// More than 95% of these cards are co-branded with either Visa or Mastercard, meaning you can process these cards over either Cartes Bancaires or the Visa or Mastercard networks.
 /// Check this [page](https://stripe.com/docs/payments/cartes-bancaires) for more details.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationCartesBancaires {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -7761,7 +8475,7 @@ impl Default for UpdatePaymentMethodConfigurationCartesBancaires {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationCartesBancairesDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -7779,19 +8493,23 @@ impl Default for UpdatePaymentMethodConfigurationCartesBancairesDisplayPreferenc
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdatePaymentMethodConfigurationCartesBancairesDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdatePaymentMethodConfigurationCartesBancairesDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdatePaymentMethodConfigurationCartesBancairesDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
@@ -7799,14 +8517,21 @@ impl UpdatePaymentMethodConfigurationCartesBancairesDisplayPreferencePreference 
 impl std::str::FromStr
     for UpdatePaymentMethodConfigurationCartesBancairesDisplayPreferencePreference
 {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentMethodConfigurationCartesBancairesDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdatePaymentMethodConfigurationCartesBancairesDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -7842,12 +8567,12 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentMethodConfigurationCartesBancairesDisplayPreferencePreference"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Cash App is a popular consumer app in the US that allows customers to bank, invest, send, and receive money using their digital wallet.
 /// Check this [page](https://stripe.com/docs/payments/cash-app-pay) for more details.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationCashapp {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -7864,7 +8589,7 @@ impl Default for UpdatePaymentMethodConfigurationCashapp {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationCashappDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -7881,32 +8606,43 @@ impl Default for UpdatePaymentMethodConfigurationCashappDisplayPreference {
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdatePaymentMethodConfigurationCashappDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdatePaymentMethodConfigurationCashappDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdatePaymentMethodConfigurationCashappDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for UpdatePaymentMethodConfigurationCashappDisplayPreferencePreference {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentMethodConfigurationCashappDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdatePaymentMethodConfigurationCashappDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -7936,11 +8672,11 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentMethodConfigurationCashappDisplayPreferencePreference"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// [Stablecoin payments](https://stripe.com/docs/payments/stablecoin-payments) enable customers to pay in stablecoins like USDC from 100s of wallets including Phantom and Metamask.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationCrypto {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -7957,7 +8693,7 @@ impl Default for UpdatePaymentMethodConfigurationCrypto {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationCryptoDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -7974,32 +8710,43 @@ impl Default for UpdatePaymentMethodConfigurationCryptoDisplayPreference {
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdatePaymentMethodConfigurationCryptoDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdatePaymentMethodConfigurationCryptoDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdatePaymentMethodConfigurationCryptoDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for UpdatePaymentMethodConfigurationCryptoDisplayPreferencePreference {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentMethodConfigurationCryptoDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdatePaymentMethodConfigurationCryptoDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -8029,13 +8776,13 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentMethodConfigurationCryptoDisplayPreferencePreference"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Uses a customer’s [cash balance](https://stripe.com/docs/payments/customer-balance) for the payment.
 /// The cash balance can be funded via a bank transfer.
 /// Check this [page](https://stripe.com/docs/payments/bank-transfers) for more details.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationCustomerBalance {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -8053,7 +8800,7 @@ impl Default for UpdatePaymentMethodConfigurationCustomerBalance {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationCustomerBalanceDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -8071,19 +8818,23 @@ impl Default for UpdatePaymentMethodConfigurationCustomerBalanceDisplayPreferenc
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdatePaymentMethodConfigurationCustomerBalanceDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdatePaymentMethodConfigurationCustomerBalanceDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdatePaymentMethodConfigurationCustomerBalanceDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
@@ -8091,14 +8842,21 @@ impl UpdatePaymentMethodConfigurationCustomerBalanceDisplayPreferencePreference 
 impl std::str::FromStr
     for UpdatePaymentMethodConfigurationCustomerBalanceDisplayPreferencePreference
 {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentMethodConfigurationCustomerBalanceDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdatePaymentMethodConfigurationCustomerBalanceDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -8134,13 +8892,13 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentMethodConfigurationCustomerBalanceDisplayPreferencePreference"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// EPS is an Austria-based payment method that allows customers to complete transactions online using their bank credentials.
 /// EPS is supported by all Austrian banks and is accepted by over 80% of Austrian online retailers.
 /// Check this [page](https://stripe.com/docs/payments/eps) for more details.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationEps {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -8157,7 +8915,7 @@ impl Default for UpdatePaymentMethodConfigurationEps {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationEpsDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -8174,32 +8932,43 @@ impl Default for UpdatePaymentMethodConfigurationEpsDisplayPreference {
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdatePaymentMethodConfigurationEpsDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdatePaymentMethodConfigurationEpsDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdatePaymentMethodConfigurationEpsDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for UpdatePaymentMethodConfigurationEpsDisplayPreferencePreference {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentMethodConfigurationEpsDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdatePaymentMethodConfigurationEpsDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -8229,18 +8998,14 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for UpdatePaymentMethodConfigurationEpsDisplayPreferencePreference",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Financial Process Exchange (FPX) is a Malaysia-based payment method that allows customers to complete transactions online using their bank credentials.
 /// Bank Negara Malaysia (BNM), the Central Bank of Malaysia, and eleven other major Malaysian financial institutions are members of the PayNet Group, which owns and operates FPX.
 /// It is one of the most popular online payment methods in Malaysia, with nearly 90 million transactions in 2018 according to BNM.
 /// Check this [page](https://stripe.com/docs/payments/fpx) for more details.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationFpx {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -8257,7 +9022,7 @@ impl Default for UpdatePaymentMethodConfigurationFpx {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationFpxDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -8274,32 +9039,43 @@ impl Default for UpdatePaymentMethodConfigurationFpxDisplayPreference {
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdatePaymentMethodConfigurationFpxDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdatePaymentMethodConfigurationFpxDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdatePaymentMethodConfigurationFpxDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for UpdatePaymentMethodConfigurationFpxDisplayPreferencePreference {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentMethodConfigurationFpxDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdatePaymentMethodConfigurationFpxDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -8329,16 +9105,12 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for UpdatePaymentMethodConfigurationFpxDisplayPreferencePreference",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Meal vouchers in France, or “titres-restaurant”, is a local benefits program commonly offered by employers for their employees to purchase prepared food and beverages on working days.
 /// Check this [page](https://stripe.com/docs/payments/benefits/fr-meal-vouchers) for more details.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationFrMealVoucherConecs {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -8356,7 +9128,7 @@ impl Default for UpdatePaymentMethodConfigurationFrMealVoucherConecs {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationFrMealVoucherConecsDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -8374,19 +9146,23 @@ impl Default for UpdatePaymentMethodConfigurationFrMealVoucherConecsDisplayPrefe
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdatePaymentMethodConfigurationFrMealVoucherConecsDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdatePaymentMethodConfigurationFrMealVoucherConecsDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdatePaymentMethodConfigurationFrMealVoucherConecsDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
@@ -8394,14 +9170,21 @@ impl UpdatePaymentMethodConfigurationFrMealVoucherConecsDisplayPreferencePrefere
 impl std::str::FromStr
     for UpdatePaymentMethodConfigurationFrMealVoucherConecsDisplayPreferencePreference
 {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentMethodConfigurationFrMealVoucherConecsDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdatePaymentMethodConfigurationFrMealVoucherConecsDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -8437,7 +9220,7 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentMethodConfigurationFrMealVoucherConecsDisplayPreferencePreference"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// giropay is a German payment method based on online banking, introduced in 2006.
@@ -8445,7 +9228,7 @@ impl<'de> serde::Deserialize<'de>
 /// Depending on their bank, customers confirm payments on giropay using a second factor of authentication or a PIN.
 /// giropay accounts for 10% of online checkouts in Germany.
 /// Check this [page](https://stripe.com/docs/payments/giropay) for more details.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationGiropay {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -8462,7 +9245,7 @@ impl Default for UpdatePaymentMethodConfigurationGiropay {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationGiropayDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -8479,32 +9262,43 @@ impl Default for UpdatePaymentMethodConfigurationGiropayDisplayPreference {
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdatePaymentMethodConfigurationGiropayDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdatePaymentMethodConfigurationGiropayDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdatePaymentMethodConfigurationGiropayDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for UpdatePaymentMethodConfigurationGiropayDisplayPreferencePreference {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentMethodConfigurationGiropayDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdatePaymentMethodConfigurationGiropayDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -8534,13 +9328,13 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentMethodConfigurationGiropayDisplayPreferencePreference"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Google Pay allows customers to make payments in your app or website using any credit or debit card saved to their Google Account, including those from Google Play, YouTube, Chrome, or an Android device.
 /// Use the Google Pay API to request any credit or debit card stored in your customer's Google account.
 /// Check this [page](https://stripe.com/docs/google-pay) for more details.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationGooglePay {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -8557,7 +9351,7 @@ impl Default for UpdatePaymentMethodConfigurationGooglePay {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationGooglePayDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -8574,32 +9368,43 @@ impl Default for UpdatePaymentMethodConfigurationGooglePayDisplayPreference {
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdatePaymentMethodConfigurationGooglePayDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdatePaymentMethodConfigurationGooglePayDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdatePaymentMethodConfigurationGooglePayDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for UpdatePaymentMethodConfigurationGooglePayDisplayPreferencePreference {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentMethodConfigurationGooglePayDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdatePaymentMethodConfigurationGooglePayDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -8629,13 +9434,13 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentMethodConfigurationGooglePayDisplayPreferencePreference"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// GrabPay is a payment method developed by [Grab](https://www.grab.com/sg/consumer/finance/pay/).
 /// GrabPay is a digital wallet - customers maintain a balance in their wallets that they pay out with.
 /// Check this [page](https://stripe.com/docs/payments/grabpay) for more details.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationGrabpay {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -8652,7 +9457,7 @@ impl Default for UpdatePaymentMethodConfigurationGrabpay {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationGrabpayDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -8669,32 +9474,43 @@ impl Default for UpdatePaymentMethodConfigurationGrabpayDisplayPreference {
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdatePaymentMethodConfigurationGrabpayDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdatePaymentMethodConfigurationGrabpayDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdatePaymentMethodConfigurationGrabpayDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for UpdatePaymentMethodConfigurationGrabpayDisplayPreferencePreference {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentMethodConfigurationGrabpayDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdatePaymentMethodConfigurationGrabpayDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -8724,13 +9540,13 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentMethodConfigurationGrabpayDisplayPreferencePreference"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// iDEAL is a Netherlands-based payment method that allows customers to complete transactions online using their bank credentials.
 /// All major Dutch banks are members of Currence, the scheme that operates iDEAL, making it the most popular online payment method in the Netherlands with a share of online transactions close to 55%.
 /// Check this [page](https://stripe.com/docs/payments/ideal) for more details.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationIdeal {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -8747,7 +9563,7 @@ impl Default for UpdatePaymentMethodConfigurationIdeal {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationIdealDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -8764,32 +9580,43 @@ impl Default for UpdatePaymentMethodConfigurationIdealDisplayPreference {
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdatePaymentMethodConfigurationIdealDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdatePaymentMethodConfigurationIdealDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdatePaymentMethodConfigurationIdealDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for UpdatePaymentMethodConfigurationIdealDisplayPreferencePreference {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentMethodConfigurationIdealDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdatePaymentMethodConfigurationIdealDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -8819,13 +9646,13 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentMethodConfigurationIdealDisplayPreferencePreference"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// JCB is a credit card company based in Japan.
 /// JCB is currently available in Japan to businesses approved by JCB, and available to all businesses in Australia, Canada, Hong Kong, Japan, New Zealand, Singapore, Switzerland, United Kingdom, United States, and all countries in the European Economic Area except Iceland.
 /// Check this [page](https://support.stripe.com/questions/accepting-japan-credit-bureau-%28jcb%29-payments) for more details.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationJcb {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -8842,7 +9669,7 @@ impl Default for UpdatePaymentMethodConfigurationJcb {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationJcbDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -8859,32 +9686,43 @@ impl Default for UpdatePaymentMethodConfigurationJcbDisplayPreference {
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdatePaymentMethodConfigurationJcbDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdatePaymentMethodConfigurationJcbDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdatePaymentMethodConfigurationJcbDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for UpdatePaymentMethodConfigurationJcbDisplayPreferencePreference {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentMethodConfigurationJcbDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdatePaymentMethodConfigurationJcbDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -8914,15 +9752,11 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for UpdatePaymentMethodConfigurationJcbDisplayPreferencePreference",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Kakao Pay is a popular local wallet available in South Korea.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationKakaoPay {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -8939,7 +9773,7 @@ impl Default for UpdatePaymentMethodConfigurationKakaoPay {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationKakaoPayDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -8956,32 +9790,43 @@ impl Default for UpdatePaymentMethodConfigurationKakaoPayDisplayPreference {
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdatePaymentMethodConfigurationKakaoPayDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdatePaymentMethodConfigurationKakaoPayDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdatePaymentMethodConfigurationKakaoPayDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for UpdatePaymentMethodConfigurationKakaoPayDisplayPreferencePreference {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentMethodConfigurationKakaoPayDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdatePaymentMethodConfigurationKakaoPayDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -9011,14 +9856,14 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentMethodConfigurationKakaoPayDisplayPreferencePreference"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Klarna gives customers a range of [payment options](https://stripe.com/docs/payments/klarna#payment-options) during checkout.
 /// Available payment options vary depending on the customer's billing address and the transaction amount.
 /// These payment options make it convenient for customers to purchase items in all price ranges.
 /// Check this [page](https://stripe.com/docs/payments/klarna) for more details.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationKlarna {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -9035,7 +9880,7 @@ impl Default for UpdatePaymentMethodConfigurationKlarna {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationKlarnaDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -9052,32 +9897,43 @@ impl Default for UpdatePaymentMethodConfigurationKlarnaDisplayPreference {
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdatePaymentMethodConfigurationKlarnaDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdatePaymentMethodConfigurationKlarnaDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdatePaymentMethodConfigurationKlarnaDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for UpdatePaymentMethodConfigurationKlarnaDisplayPreferencePreference {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentMethodConfigurationKlarnaDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdatePaymentMethodConfigurationKlarnaDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -9107,12 +9963,12 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentMethodConfigurationKlarnaDisplayPreferencePreference"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Konbini allows customers in Japan to pay for bills and online purchases at convenience stores with cash.
 /// Check this [page](https://stripe.com/docs/payments/konbini) for more details.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationKonbini {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -9129,7 +9985,7 @@ impl Default for UpdatePaymentMethodConfigurationKonbini {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationKonbiniDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -9146,32 +10002,43 @@ impl Default for UpdatePaymentMethodConfigurationKonbiniDisplayPreference {
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdatePaymentMethodConfigurationKonbiniDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdatePaymentMethodConfigurationKonbiniDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdatePaymentMethodConfigurationKonbiniDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for UpdatePaymentMethodConfigurationKonbiniDisplayPreferencePreference {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentMethodConfigurationKonbiniDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdatePaymentMethodConfigurationKonbiniDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -9201,11 +10068,11 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentMethodConfigurationKonbiniDisplayPreferencePreference"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Korean cards let users pay using locally issued cards from South Korea.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationKrCard {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -9222,7 +10089,7 @@ impl Default for UpdatePaymentMethodConfigurationKrCard {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationKrCardDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -9239,32 +10106,43 @@ impl Default for UpdatePaymentMethodConfigurationKrCardDisplayPreference {
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdatePaymentMethodConfigurationKrCardDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdatePaymentMethodConfigurationKrCardDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdatePaymentMethodConfigurationKrCardDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for UpdatePaymentMethodConfigurationKrCardDisplayPreferencePreference {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentMethodConfigurationKrCardDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdatePaymentMethodConfigurationKrCardDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -9294,12 +10172,12 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentMethodConfigurationKrCardDisplayPreferencePreference"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// [Link](https://stripe.com/docs/payments/link) is a payment method network.
 /// With Link, users save their payment details once, then reuse that information to pay with one click for any business on the network.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationLink {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -9316,7 +10194,7 @@ impl Default for UpdatePaymentMethodConfigurationLink {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationLinkDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -9333,32 +10211,43 @@ impl Default for UpdatePaymentMethodConfigurationLinkDisplayPreference {
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdatePaymentMethodConfigurationLinkDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdatePaymentMethodConfigurationLinkDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdatePaymentMethodConfigurationLinkDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for UpdatePaymentMethodConfigurationLinkDisplayPreferencePreference {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentMethodConfigurationLinkDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdatePaymentMethodConfigurationLinkDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -9388,17 +10277,13 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for UpdatePaymentMethodConfigurationLinkDisplayPreferencePreference",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// MB WAY is the most popular wallet in Portugal.
 /// After entering their phone number in your checkout, customers approve the payment directly in their MB WAY app.
 /// Check this [page](https://stripe.com/docs/payments/mb-way) for more details.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationMbWay {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -9415,7 +10300,7 @@ impl Default for UpdatePaymentMethodConfigurationMbWay {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationMbWayDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -9432,32 +10317,43 @@ impl Default for UpdatePaymentMethodConfigurationMbWayDisplayPreference {
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdatePaymentMethodConfigurationMbWayDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdatePaymentMethodConfigurationMbWayDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdatePaymentMethodConfigurationMbWayDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for UpdatePaymentMethodConfigurationMbWayDisplayPreferencePreference {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentMethodConfigurationMbWayDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdatePaymentMethodConfigurationMbWayDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -9487,13 +10383,13 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentMethodConfigurationMbWayDisplayPreferencePreference"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// MobilePay is a [single-use](https://stripe.com/docs/payments/payment-methods#usage) card wallet payment method used in Denmark and Finland.
 /// It allows customers to [authenticate and approve](https://stripe.com/docs/payments/payment-methods#customer-actions) payments using the MobilePay app.
 /// Check this [page](https://stripe.com/docs/payments/mobilepay) for more details.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationMobilepay {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -9510,7 +10406,7 @@ impl Default for UpdatePaymentMethodConfigurationMobilepay {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationMobilepayDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -9527,32 +10423,43 @@ impl Default for UpdatePaymentMethodConfigurationMobilepayDisplayPreference {
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdatePaymentMethodConfigurationMobilepayDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdatePaymentMethodConfigurationMobilepayDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdatePaymentMethodConfigurationMobilepayDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for UpdatePaymentMethodConfigurationMobilepayDisplayPreferencePreference {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentMethodConfigurationMobilepayDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdatePaymentMethodConfigurationMobilepayDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -9582,11 +10489,11 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentMethodConfigurationMobilepayDisplayPreferencePreference"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Stripe users in Europe and the United States can accept Multibanco payments from customers in Portugal using [Sources](https://stripe.com/docs/sources)—a single integration path for creating payments using any supported method.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationMultibanco {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -9603,7 +10510,7 @@ impl Default for UpdatePaymentMethodConfigurationMultibanco {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationMultibancoDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -9620,32 +10527,43 @@ impl Default for UpdatePaymentMethodConfigurationMultibancoDisplayPreference {
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdatePaymentMethodConfigurationMultibancoDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdatePaymentMethodConfigurationMultibancoDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdatePaymentMethodConfigurationMultibancoDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for UpdatePaymentMethodConfigurationMultibancoDisplayPreferencePreference {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentMethodConfigurationMultibancoDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdatePaymentMethodConfigurationMultibancoDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -9675,11 +10593,11 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentMethodConfigurationMultibancoDisplayPreferencePreference"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Naver Pay is a popular local wallet available in South Korea.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationNaverPay {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -9696,7 +10614,7 @@ impl Default for UpdatePaymentMethodConfigurationNaverPay {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationNaverPayDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -9713,32 +10631,43 @@ impl Default for UpdatePaymentMethodConfigurationNaverPayDisplayPreference {
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdatePaymentMethodConfigurationNaverPayDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdatePaymentMethodConfigurationNaverPayDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdatePaymentMethodConfigurationNaverPayDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for UpdatePaymentMethodConfigurationNaverPayDisplayPreferencePreference {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentMethodConfigurationNaverPayDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdatePaymentMethodConfigurationNaverPayDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -9768,12 +10697,12 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentMethodConfigurationNaverPayDisplayPreferencePreference"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Stripe users in New Zealand can accept Bulk Electronic Clearing System (BECS) direct debit payments from customers with a New Zeland bank account.
 /// Check this [page](https://stripe.com/docs/payments/nz-bank-account) for more details.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationNzBankAccount {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -9790,7 +10719,7 @@ impl Default for UpdatePaymentMethodConfigurationNzBankAccount {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationNzBankAccountDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -9808,19 +10737,23 @@ impl Default for UpdatePaymentMethodConfigurationNzBankAccountDisplayPreference 
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdatePaymentMethodConfigurationNzBankAccountDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdatePaymentMethodConfigurationNzBankAccountDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdatePaymentMethodConfigurationNzBankAccountDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
@@ -9828,14 +10761,21 @@ impl UpdatePaymentMethodConfigurationNzBankAccountDisplayPreferencePreference {
 impl std::str::FromStr
     for UpdatePaymentMethodConfigurationNzBankAccountDisplayPreferencePreference
 {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentMethodConfigurationNzBankAccountDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdatePaymentMethodConfigurationNzBankAccountDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -9867,13 +10807,13 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentMethodConfigurationNzBankAccountDisplayPreferencePreference"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// OXXO is a Mexican chain of convenience stores with thousands of locations across Latin America and represents nearly 20% of online transactions in Mexico.
 /// OXXO allows customers to pay bills and online purchases in-store with cash.
 /// Check this [page](https://stripe.com/docs/payments/oxxo) for more details.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationOxxo {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -9890,7 +10830,7 @@ impl Default for UpdatePaymentMethodConfigurationOxxo {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationOxxoDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -9907,32 +10847,43 @@ impl Default for UpdatePaymentMethodConfigurationOxxoDisplayPreference {
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdatePaymentMethodConfigurationOxxoDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdatePaymentMethodConfigurationOxxoDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdatePaymentMethodConfigurationOxxoDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for UpdatePaymentMethodConfigurationOxxoDisplayPreferencePreference {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentMethodConfigurationOxxoDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdatePaymentMethodConfigurationOxxoDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -9962,17 +10913,13 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for UpdatePaymentMethodConfigurationOxxoDisplayPreferencePreference",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Przelewy24 is a Poland-based payment method aggregator that allows customers to complete transactions online using bank transfers and other methods.
 /// Bank transfers account for 30% of online payments in Poland and Przelewy24 provides a way for customers to pay with over 165 banks.
 /// Check this [page](https://stripe.com/docs/payments/p24) for more details.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationP24 {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -9989,7 +10936,7 @@ impl Default for UpdatePaymentMethodConfigurationP24 {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationP24DisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -10006,32 +10953,43 @@ impl Default for UpdatePaymentMethodConfigurationP24DisplayPreference {
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdatePaymentMethodConfigurationP24DisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdatePaymentMethodConfigurationP24DisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdatePaymentMethodConfigurationP24DisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for UpdatePaymentMethodConfigurationP24DisplayPreferencePreference {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentMethodConfigurationP24DisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdatePaymentMethodConfigurationP24DisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -10061,17 +11019,13 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for UpdatePaymentMethodConfigurationP24DisplayPreferencePreference",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Pay by bank is a redirect payment method backed by bank transfers.
 /// A customer is redirected to their bank to authorize a bank transfer for a given amount.
 /// This removes a lot of the error risks inherent in waiting for the customer to initiate a transfer themselves, and is less expensive than card payments.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationPayByBank {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -10088,7 +11042,7 @@ impl Default for UpdatePaymentMethodConfigurationPayByBank {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationPayByBankDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -10105,32 +11059,43 @@ impl Default for UpdatePaymentMethodConfigurationPayByBankDisplayPreference {
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdatePaymentMethodConfigurationPayByBankDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdatePaymentMethodConfigurationPayByBankDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdatePaymentMethodConfigurationPayByBankDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for UpdatePaymentMethodConfigurationPayByBankDisplayPreferencePreference {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentMethodConfigurationPayByBankDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdatePaymentMethodConfigurationPayByBankDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -10160,11 +11125,11 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentMethodConfigurationPayByBankDisplayPreferencePreference"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// PAYCO is a [single-use](https://docs.stripe.com/payments/payment-methods#usage local wallet available in South Korea.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationPayco {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -10181,7 +11146,7 @@ impl Default for UpdatePaymentMethodConfigurationPayco {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationPaycoDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -10198,32 +11163,43 @@ impl Default for UpdatePaymentMethodConfigurationPaycoDisplayPreference {
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdatePaymentMethodConfigurationPaycoDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdatePaymentMethodConfigurationPaycoDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdatePaymentMethodConfigurationPaycoDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for UpdatePaymentMethodConfigurationPaycoDisplayPreferencePreference {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentMethodConfigurationPaycoDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdatePaymentMethodConfigurationPaycoDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -10253,12 +11229,12 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentMethodConfigurationPaycoDisplayPreferencePreference"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// PayNow is a Singapore-based payment method that allows customers to make a payment using their preferred app from participating banks and participating non-bank financial institutions.
 /// Check this [page](https://stripe.com/docs/payments/paynow) for more details.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationPaynow {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -10275,7 +11251,7 @@ impl Default for UpdatePaymentMethodConfigurationPaynow {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationPaynowDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -10292,32 +11268,43 @@ impl Default for UpdatePaymentMethodConfigurationPaynowDisplayPreference {
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdatePaymentMethodConfigurationPaynowDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdatePaymentMethodConfigurationPaynowDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdatePaymentMethodConfigurationPaynowDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for UpdatePaymentMethodConfigurationPaynowDisplayPreferencePreference {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentMethodConfigurationPaynowDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdatePaymentMethodConfigurationPaynowDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -10347,12 +11334,12 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentMethodConfigurationPaynowDisplayPreferencePreference"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// PayPal, a digital wallet popular with customers in Europe, allows your customers worldwide to pay using their PayPal account.
 /// Check this [page](https://stripe.com/docs/payments/paypal) for more details.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationPaypal {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -10369,7 +11356,7 @@ impl Default for UpdatePaymentMethodConfigurationPaypal {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationPaypalDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -10386,32 +11373,43 @@ impl Default for UpdatePaymentMethodConfigurationPaypalDisplayPreference {
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdatePaymentMethodConfigurationPaypalDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdatePaymentMethodConfigurationPaypalDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdatePaymentMethodConfigurationPaypalDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for UpdatePaymentMethodConfigurationPaypalDisplayPreferencePreference {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentMethodConfigurationPaypalDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdatePaymentMethodConfigurationPaypalDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -10441,13 +11439,13 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentMethodConfigurationPaypalDisplayPreferencePreference"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Pix is a payment method popular in Brazil.
 /// When paying with Pix, customers authenticate and approve payments by scanning a QR code in their preferred banking app.
 /// Check this [page](https://docs.stripe.com/payments/pix) for more details.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationPix {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -10464,7 +11462,7 @@ impl Default for UpdatePaymentMethodConfigurationPix {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationPixDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -10481,32 +11479,43 @@ impl Default for UpdatePaymentMethodConfigurationPixDisplayPreference {
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdatePaymentMethodConfigurationPixDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdatePaymentMethodConfigurationPixDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdatePaymentMethodConfigurationPixDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for UpdatePaymentMethodConfigurationPixDisplayPreferencePreference {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentMethodConfigurationPixDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdatePaymentMethodConfigurationPixDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -10536,16 +11545,12 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for UpdatePaymentMethodConfigurationPixDisplayPreferencePreference",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// PromptPay is a Thailand-based payment method that allows customers to make a payment using their preferred app from participating banks.
 /// Check this [page](https://stripe.com/docs/payments/promptpay) for more details.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationPromptpay {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -10562,7 +11567,7 @@ impl Default for UpdatePaymentMethodConfigurationPromptpay {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationPromptpayDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -10579,32 +11584,43 @@ impl Default for UpdatePaymentMethodConfigurationPromptpayDisplayPreference {
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdatePaymentMethodConfigurationPromptpayDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdatePaymentMethodConfigurationPromptpayDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdatePaymentMethodConfigurationPromptpayDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for UpdatePaymentMethodConfigurationPromptpayDisplayPreferencePreference {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentMethodConfigurationPromptpayDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdatePaymentMethodConfigurationPromptpayDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -10634,12 +11650,12 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentMethodConfigurationPromptpayDisplayPreferencePreference"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Revolut Pay, developed by Revolut, a global finance app, is a digital wallet payment method.
 /// Revolut Pay uses the customer’s stored balance or cards to fund the payment, and offers the option for non-Revolut customers to save their details after their first purchase.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationRevolutPay {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -10656,7 +11672,7 @@ impl Default for UpdatePaymentMethodConfigurationRevolutPay {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationRevolutPayDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -10673,32 +11689,43 @@ impl Default for UpdatePaymentMethodConfigurationRevolutPayDisplayPreference {
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdatePaymentMethodConfigurationRevolutPayDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdatePaymentMethodConfigurationRevolutPayDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdatePaymentMethodConfigurationRevolutPayDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for UpdatePaymentMethodConfigurationRevolutPayDisplayPreferencePreference {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentMethodConfigurationRevolutPayDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdatePaymentMethodConfigurationRevolutPayDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -10728,11 +11755,11 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentMethodConfigurationRevolutPayDisplayPreferencePreference"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Samsung Pay is a [single-use](https://docs.stripe.com/payments/payment-methods#usage local wallet available in South Korea.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationSamsungPay {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -10749,7 +11776,7 @@ impl Default for UpdatePaymentMethodConfigurationSamsungPay {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationSamsungPayDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -10766,32 +11793,43 @@ impl Default for UpdatePaymentMethodConfigurationSamsungPayDisplayPreference {
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdatePaymentMethodConfigurationSamsungPayDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdatePaymentMethodConfigurationSamsungPayDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdatePaymentMethodConfigurationSamsungPayDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for UpdatePaymentMethodConfigurationSamsungPayDisplayPreferencePreference {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentMethodConfigurationSamsungPayDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdatePaymentMethodConfigurationSamsungPayDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -10821,13 +11859,13 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentMethodConfigurationSamsungPayDisplayPreferencePreference"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Satispay is a [single-use](https://docs.stripe.com/payments/payment-methods#usage) payment method where customers are required to [authenticate](/payments/payment-methods#customer-actions) their payment.
 /// Customers pay by being redirected from your website or app, authorizing the payment with Satispay, then returning to your website or app.
 /// You get [immediate notification](/payments/payment-methods#payment-notification) of whether the payment succeeded or failed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationSatispay {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -10844,7 +11882,7 @@ impl Default for UpdatePaymentMethodConfigurationSatispay {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationSatispayDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -10861,32 +11899,43 @@ impl Default for UpdatePaymentMethodConfigurationSatispayDisplayPreference {
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdatePaymentMethodConfigurationSatispayDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdatePaymentMethodConfigurationSatispayDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdatePaymentMethodConfigurationSatispayDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for UpdatePaymentMethodConfigurationSatispayDisplayPreferencePreference {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentMethodConfigurationSatispayDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdatePaymentMethodConfigurationSatispayDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -10916,12 +11965,12 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentMethodConfigurationSatispayDisplayPreferencePreference"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The [Single Euro Payments Area (SEPA)](https://en.wikipedia.org/wiki/Single_Euro_Payments_Area) is an initiative of the European Union to simplify payments within and across member countries.
 /// SEPA established and enforced banking standards to allow for the direct debiting of every EUR-denominated bank account within the SEPA region, check this [page](https://stripe.com/docs/payments/sepa-debit) for more details.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationSepaDebit {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -10938,7 +11987,7 @@ impl Default for UpdatePaymentMethodConfigurationSepaDebit {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationSepaDebitDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -10955,32 +12004,43 @@ impl Default for UpdatePaymentMethodConfigurationSepaDebitDisplayPreference {
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdatePaymentMethodConfigurationSepaDebitDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdatePaymentMethodConfigurationSepaDebitDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdatePaymentMethodConfigurationSepaDebitDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for UpdatePaymentMethodConfigurationSepaDebitDisplayPreferencePreference {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentMethodConfigurationSepaDebitDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdatePaymentMethodConfigurationSepaDebitDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -11010,12 +12070,12 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentMethodConfigurationSepaDebitDisplayPreferencePreference"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Stripe users in Europe and the United States can use the [Payment Intents API](https://stripe.com/docs/payments/payment-intents)—a single integration path for creating payments using any supported method—to accept [Sofort](https://www.sofort.com/) payments from customers.
 /// Check this [page](https://stripe.com/docs/payments/sofort) for more details.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationSofort {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -11032,7 +12092,7 @@ impl Default for UpdatePaymentMethodConfigurationSofort {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationSofortDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -11049,32 +12109,43 @@ impl Default for UpdatePaymentMethodConfigurationSofortDisplayPreference {
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdatePaymentMethodConfigurationSofortDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdatePaymentMethodConfigurationSofortDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdatePaymentMethodConfigurationSofortDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for UpdatePaymentMethodConfigurationSofortDisplayPreferencePreference {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentMethodConfigurationSofortDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdatePaymentMethodConfigurationSofortDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -11104,13 +12175,13 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentMethodConfigurationSofortDisplayPreferencePreference"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Swish is a [real-time](https://stripe.com/docs/payments/real-time) payment method popular in Sweden.
 /// It allows customers to [authenticate and approve](https://stripe.com/docs/payments/payment-methods#customer-actions) payments using the Swish mobile app and the Swedish BankID mobile app.
 /// Check this [page](https://stripe.com/docs/payments/swish) for more details.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationSwish {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -11127,7 +12198,7 @@ impl Default for UpdatePaymentMethodConfigurationSwish {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationSwishDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -11144,32 +12215,43 @@ impl Default for UpdatePaymentMethodConfigurationSwishDisplayPreference {
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdatePaymentMethodConfigurationSwishDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdatePaymentMethodConfigurationSwishDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdatePaymentMethodConfigurationSwishDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for UpdatePaymentMethodConfigurationSwishDisplayPreferencePreference {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentMethodConfigurationSwishDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdatePaymentMethodConfigurationSwishDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -11199,13 +12281,13 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentMethodConfigurationSwishDisplayPreferencePreference"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Twint is a payment method popular in Switzerland.
 /// It allows customers to pay using their mobile phone.
 /// Check this [page](https://docs.stripe.com/payments/twint) for more details.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationTwint {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -11222,7 +12304,7 @@ impl Default for UpdatePaymentMethodConfigurationTwint {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationTwintDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -11239,32 +12321,43 @@ impl Default for UpdatePaymentMethodConfigurationTwintDisplayPreference {
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdatePaymentMethodConfigurationTwintDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdatePaymentMethodConfigurationTwintDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdatePaymentMethodConfigurationTwintDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for UpdatePaymentMethodConfigurationTwintDisplayPreferencePreference {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentMethodConfigurationTwintDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdatePaymentMethodConfigurationTwintDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -11294,12 +12387,12 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentMethodConfigurationTwintDisplayPreferencePreference"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Stripe users in the United States can accept ACH direct debit payments from customers with a US bank account using the Automated Clearing House (ACH) payments system operated by Nacha.
 /// Check this [page](https://stripe.com/docs/payments/ach-direct-debit) for more details.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationUsBankAccount {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -11316,7 +12409,7 @@ impl Default for UpdatePaymentMethodConfigurationUsBankAccount {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationUsBankAccountDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -11334,19 +12427,23 @@ impl Default for UpdatePaymentMethodConfigurationUsBankAccountDisplayPreference 
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdatePaymentMethodConfigurationUsBankAccountDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdatePaymentMethodConfigurationUsBankAccountDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdatePaymentMethodConfigurationUsBankAccountDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
@@ -11354,14 +12451,21 @@ impl UpdatePaymentMethodConfigurationUsBankAccountDisplayPreferencePreference {
 impl std::str::FromStr
     for UpdatePaymentMethodConfigurationUsBankAccountDisplayPreferencePreference
 {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentMethodConfigurationUsBankAccountDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdatePaymentMethodConfigurationUsBankAccountDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -11393,14 +12497,14 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentMethodConfigurationUsBankAccountDisplayPreferencePreference"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// WeChat, owned by Tencent, is China's leading mobile app with over 1 billion monthly active users.
 /// Chinese consumers can use WeChat Pay to pay for goods and services inside of businesses' apps and websites.
 /// WeChat Pay users buy most frequently in gaming, e-commerce, travel, online education, and food/nutrition.
 /// Check this [page](https://stripe.com/docs/payments/wechat-pay) for more details.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationWechatPay {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -11417,7 +12521,7 @@ impl Default for UpdatePaymentMethodConfigurationWechatPay {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationWechatPayDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -11434,32 +12538,43 @@ impl Default for UpdatePaymentMethodConfigurationWechatPayDisplayPreference {
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdatePaymentMethodConfigurationWechatPayDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdatePaymentMethodConfigurationWechatPayDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdatePaymentMethodConfigurationWechatPayDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for UpdatePaymentMethodConfigurationWechatPayDisplayPreferencePreference {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentMethodConfigurationWechatPayDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdatePaymentMethodConfigurationWechatPayDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -11489,12 +12604,12 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for UpdatePaymentMethodConfigurationWechatPayDisplayPreferencePreference"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Zip gives your customers a way to split purchases over a series of payments.
 /// Check this [page](https://stripe.com/docs/payments/zip) for more details like country availability.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationZip {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -11511,7 +12626,7 @@ impl Default for UpdatePaymentMethodConfigurationZip {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationZipDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -11528,32 +12643,43 @@ impl Default for UpdatePaymentMethodConfigurationZipDisplayPreference {
     }
 }
 /// The account's preference for whether or not to display this payment method.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdatePaymentMethodConfigurationZipDisplayPreferencePreference {
     None,
     Off,
     On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdatePaymentMethodConfigurationZipDisplayPreferencePreference {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdatePaymentMethodConfigurationZipDisplayPreferencePreference::*;
         match self {
             None => "none",
             Off => "off",
             On => "on",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for UpdatePaymentMethodConfigurationZipDisplayPreferencePreference {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentMethodConfigurationZipDisplayPreferencePreference::*;
         match s {
             "none" => Ok(None),
             "off" => Ok(Off),
             "on" => Ok(On),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdatePaymentMethodConfigurationZipDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -11583,11 +12709,7 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for UpdatePaymentMethodConfigurationZipDisplayPreferencePreference",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Update payment method configuration

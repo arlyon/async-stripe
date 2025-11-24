@@ -125,7 +125,7 @@ const _: () = {
                 self.charge.take(),
                 self.metadata.take(),
                 self.payment_intent.take(),
-                self.reason,
+                self.reason.take(),
                 self.refund.take(),
                 self.refund_application_fee,
                 self.refund_payment_config,
@@ -192,32 +192,43 @@ const _: () = {
     }
 };
 /// The reason for the refund.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum TerminalReaderReaderResourceRefundPaymentActionReason {
     Duplicate,
     Fraudulent,
     RequestedByCustomer,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl TerminalReaderReaderResourceRefundPaymentActionReason {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use TerminalReaderReaderResourceRefundPaymentActionReason::*;
         match self {
             Duplicate => "duplicate",
             Fraudulent => "fraudulent",
             RequestedByCustomer => "requested_by_customer",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for TerminalReaderReaderResourceRefundPaymentActionReason {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TerminalReaderReaderResourceRefundPaymentActionReason::*;
         match s {
             "duplicate" => Ok(Duplicate),
             "fraudulent" => Ok(Fraudulent),
             "requested_by_customer" => Ok(RequestedByCustomer),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "TerminalReaderReaderResourceRefundPaymentActionReason"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -253,8 +264,7 @@ impl miniserde::de::Visitor
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(
-            TerminalReaderReaderResourceRefundPaymentActionReason::from_str(s)
-                .map_err(|_| miniserde::Error)?,
+            TerminalReaderReaderResourceRefundPaymentActionReason::from_str(s).expect("infallible"),
         );
         Ok(())
     }
@@ -266,10 +276,6 @@ impl<'de> serde::Deserialize<'de> for TerminalReaderReaderResourceRefundPaymentA
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for TerminalReaderReaderResourceRefundPaymentActionReason",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

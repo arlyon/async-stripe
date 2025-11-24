@@ -118,7 +118,7 @@ const _: () = {
                 self.alternatives.take(),
                 self.current_deadline,
                 self.currently_due.take(),
-                self.disabled_reason,
+                self.disabled_reason.take(),
                 self.errors.take(),
                 self.eventually_due.take(),
                 self.past_due.take(),
@@ -179,7 +179,8 @@ const _: () = {
     }
 };
 /// This is typed as an enum for consistency with `requirements.disabled_reason`, but it safe to assume `future_requirements.disabled_reason` is null because fields in `future_requirements` will never disable the account.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum AccountCapabilityFutureRequirementsDisabledReason {
     Other,
     PausedInactivity,
@@ -191,9 +192,11 @@ pub enum AccountCapabilityFutureRequirementsDisabledReason {
     RejectedOther,
     RejectedUnsupportedBusiness,
     RequirementsFieldsNeeded,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl AccountCapabilityFutureRequirementsDisabledReason {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use AccountCapabilityFutureRequirementsDisabledReason::*;
         match self {
             Other => "other",
@@ -206,12 +209,13 @@ impl AccountCapabilityFutureRequirementsDisabledReason {
             RejectedOther => "rejected.other",
             RejectedUnsupportedBusiness => "rejected.unsupported_business",
             RequirementsFieldsNeeded => "requirements.fields_needed",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for AccountCapabilityFutureRequirementsDisabledReason {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use AccountCapabilityFutureRequirementsDisabledReason::*;
         match s {
@@ -225,7 +229,14 @@ impl std::str::FromStr for AccountCapabilityFutureRequirementsDisabledReason {
             "rejected.other" => Ok(RejectedOther),
             "rejected.unsupported_business" => Ok(RejectedUnsupportedBusiness),
             "requirements.fields_needed" => Ok(RequirementsFieldsNeeded),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "AccountCapabilityFutureRequirementsDisabledReason"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -259,8 +270,7 @@ impl miniserde::de::Visitor for crate::Place<AccountCapabilityFutureRequirements
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(
-            AccountCapabilityFutureRequirementsDisabledReason::from_str(s)
-                .map_err(|_| miniserde::Error)?,
+            AccountCapabilityFutureRequirementsDisabledReason::from_str(s).expect("infallible"),
         );
         Ok(())
     }
@@ -272,10 +282,6 @@ impl<'de> serde::Deserialize<'de> for AccountCapabilityFutureRequirementsDisable
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for AccountCapabilityFutureRequirementsDisabledReason",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

@@ -211,27 +211,31 @@ impl stripe_types::Object for FinancialConnectionsSession {
     }
 }
 stripe_types::def_id!(FinancialConnectionsSessionId);
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum FinancialConnectionsSessionPermissions {
     Balances,
     Ownership,
     PaymentMethod,
     Transactions,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl FinancialConnectionsSessionPermissions {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use FinancialConnectionsSessionPermissions::*;
         match self {
             Balances => "balances",
             Ownership => "ownership",
             PaymentMethod => "payment_method",
             Transactions => "transactions",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for FinancialConnectionsSessionPermissions {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use FinancialConnectionsSessionPermissions::*;
         match s {
@@ -239,7 +243,14 @@ impl std::str::FromStr for FinancialConnectionsSessionPermissions {
             "ownership" => Ok(Ownership),
             "payment_method" => Ok(PaymentMethod),
             "transactions" => Ok(Transactions),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "FinancialConnectionsSessionPermissions"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -271,9 +282,7 @@ impl miniserde::Deserialize for FinancialConnectionsSessionPermissions {
 impl miniserde::de::Visitor for crate::Place<FinancialConnectionsSessionPermissions> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            FinancialConnectionsSessionPermissions::from_str(s).map_err(|_| miniserde::Error)?,
-        );
+        self.out = Some(FinancialConnectionsSessionPermissions::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -284,37 +293,46 @@ impl<'de> serde::Deserialize<'de> for FinancialConnectionsSessionPermissions {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for FinancialConnectionsSessionPermissions")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum FinancialConnectionsSessionPrefetch {
     Balances,
     Ownership,
     Transactions,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl FinancialConnectionsSessionPrefetch {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use FinancialConnectionsSessionPrefetch::*;
         match self {
             Balances => "balances",
             Ownership => "ownership",
             Transactions => "transactions",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for FinancialConnectionsSessionPrefetch {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use FinancialConnectionsSessionPrefetch::*;
         match s {
             "balances" => Ok(Balances),
             "ownership" => Ok(Ownership),
             "transactions" => Ok(Transactions),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "FinancialConnectionsSessionPrefetch"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -346,8 +364,7 @@ impl miniserde::Deserialize for FinancialConnectionsSessionPrefetch {
 impl miniserde::de::Visitor for crate::Place<FinancialConnectionsSessionPrefetch> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out =
-            Some(FinancialConnectionsSessionPrefetch::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(FinancialConnectionsSessionPrefetch::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -358,8 +375,6 @@ impl<'de> serde::Deserialize<'de> for FinancialConnectionsSessionPrefetch {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for FinancialConnectionsSessionPrefetch")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

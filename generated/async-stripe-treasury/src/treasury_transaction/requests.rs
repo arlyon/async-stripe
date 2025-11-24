@@ -39,29 +39,40 @@ impl ListTreasuryTransactionBuilder {
 }
 /// The results are in reverse chronological order by `created` or `posted_at`.
 /// The default is `created`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum ListTreasuryTransactionOrderBy {
     Created,
     PostedAt,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl ListTreasuryTransactionOrderBy {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use ListTreasuryTransactionOrderBy::*;
         match self {
             Created => "created",
             PostedAt => "posted_at",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for ListTreasuryTransactionOrderBy {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ListTreasuryTransactionOrderBy::*;
         match s {
             "created" => Ok(Created),
             "posted_at" => Ok(PostedAt),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "ListTreasuryTransactionOrderBy"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -89,9 +100,7 @@ impl<'de> serde::Deserialize<'de> for ListTreasuryTransactionOrderBy {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for ListTreasuryTransactionOrderBy")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// A filter for the `status_transitions.posted_at` timestamp.

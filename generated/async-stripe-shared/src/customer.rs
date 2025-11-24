@@ -283,7 +283,7 @@ const _: () = {
                 self.sources.take(),
                 self.subscriptions.take(),
                 self.tax.take(),
-                self.tax_exempt,
+                self.tax_exempt.take(),
                 self.tax_ids.take(),
                 self.test_clock.take(),
             )
@@ -437,32 +437,39 @@ impl stripe_types::Object for Customer {
     }
 }
 stripe_types::def_id!(CustomerId);
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CustomerTaxExempt {
     Exempt,
     None,
     Reverse,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CustomerTaxExempt {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CustomerTaxExempt::*;
         match self {
             Exempt => "exempt",
             None => "none",
             Reverse => "reverse",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CustomerTaxExempt {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CustomerTaxExempt::*;
         match s {
             "exempt" => Ok(Exempt),
             "none" => Ok(None),
             "reverse" => Ok(Reverse),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CustomerTaxExempt");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -494,7 +501,7 @@ impl miniserde::Deserialize for CustomerTaxExempt {
 impl miniserde::de::Visitor for crate::Place<CustomerTaxExempt> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(CustomerTaxExempt::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(CustomerTaxExempt::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -505,7 +512,6 @@ impl<'de> serde::Deserialize<'de> for CustomerTaxExempt {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for CustomerTaxExempt"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

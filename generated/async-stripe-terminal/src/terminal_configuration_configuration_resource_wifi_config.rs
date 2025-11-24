@@ -94,7 +94,7 @@ const _: () = {
                 self.enterprise_eap_peap.take(),
                 self.enterprise_eap_tls.take(),
                 self.personal_psk.take(),
-                self.type_,
+                self.type_.take(),
             )
             else {
                 return None;
@@ -140,32 +140,43 @@ const _: () = {
 };
 /// Security type of the WiFi network.
 /// The hash with the corresponding name contains the credentials for this security type.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum TerminalConfigurationConfigurationResourceWifiConfigType {
     EnterpriseEapPeap,
     EnterpriseEapTls,
     PersonalPsk,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl TerminalConfigurationConfigurationResourceWifiConfigType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use TerminalConfigurationConfigurationResourceWifiConfigType::*;
         match self {
             EnterpriseEapPeap => "enterprise_eap_peap",
             EnterpriseEapTls => "enterprise_eap_tls",
             PersonalPsk => "personal_psk",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for TerminalConfigurationConfigurationResourceWifiConfigType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TerminalConfigurationConfigurationResourceWifiConfigType::*;
         match s {
             "enterprise_eap_peap" => Ok(EnterpriseEapPeap),
             "enterprise_eap_tls" => Ok(EnterpriseEapTls),
             "personal_psk" => Ok(PersonalPsk),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "TerminalConfigurationConfigurationResourceWifiConfigType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -202,7 +213,7 @@ impl miniserde::de::Visitor
         use std::str::FromStr;
         self.out = Some(
             TerminalConfigurationConfigurationResourceWifiConfigType::from_str(s)
-                .map_err(|_| miniserde::Error)?,
+                .expect("infallible"),
         );
         Ok(())
     }
@@ -216,10 +227,6 @@ impl<'de> serde::Deserialize<'de> for TerminalConfigurationConfigurationResource
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for TerminalConfigurationConfigurationResourceWifiConfigType",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

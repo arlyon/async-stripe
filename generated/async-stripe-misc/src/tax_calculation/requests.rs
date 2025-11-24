@@ -259,29 +259,40 @@ impl CreateTaxCalculationCustomerDetailsAddress {
     }
 }
 /// The type of customer address provided.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxCalculationCustomerDetailsAddressSource {
     Billing,
     Shipping,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxCalculationCustomerDetailsAddressSource {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxCalculationCustomerDetailsAddressSource::*;
         match self {
             Billing => "billing",
             Shipping => "shipping",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxCalculationCustomerDetailsAddressSource {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxCalculationCustomerDetailsAddressSource::*;
         match s {
             "billing" => Ok(Billing),
             "shipping" => Ok(Shipping),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxCalculationCustomerDetailsAddressSource"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -309,11 +320,7 @@ impl<'de> serde::Deserialize<'de> for CreateTaxCalculationCustomerDetailsAddress
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for CreateTaxCalculationCustomerDetailsAddressSource",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The customer's tax IDs.
@@ -686,7 +693,14 @@ impl std::str::FromStr for CreateTaxCalculationCustomerDetailsTaxIdsType {
             "za_vat" => Ok(ZaVat),
             "zm_tin" => Ok(ZmTin),
             "zw_tin" => Ok(ZwTin),
-            v => Ok(Unknown(v.to_owned())),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxCalculationCustomerDetailsTaxIdsType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -714,38 +728,49 @@ impl<'de> serde::Deserialize<'de> for CreateTaxCalculationCustomerDetailsTaxIdsT
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap())
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Overrides the tax calculation result to allow you to not collect tax from your customer.
 /// Use this if you've manually checked your customer's tax exemptions.
 /// Prefer providing the customer's `tax_ids` where possible, which automatically determines whether `reverse_charge` applies.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxCalculationCustomerDetailsTaxabilityOverride {
     CustomerExempt,
     None,
     ReverseCharge,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxCalculationCustomerDetailsTaxabilityOverride {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxCalculationCustomerDetailsTaxabilityOverride::*;
         match self {
             CustomerExempt => "customer_exempt",
             None => "none",
             ReverseCharge => "reverse_charge",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxCalculationCustomerDetailsTaxabilityOverride {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxCalculationCustomerDetailsTaxabilityOverride::*;
         match s {
             "customer_exempt" => Ok(CustomerExempt),
             "none" => Ok(None),
             "reverse_charge" => Ok(ReverseCharge),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxCalculationCustomerDetailsTaxabilityOverride"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -773,11 +798,7 @@ impl<'de> serde::Deserialize<'de> for CreateTaxCalculationCustomerDetailsTaxabil
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for CreateTaxCalculationCustomerDetailsTaxabilityOverride",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// A list of items the customer is purchasing.
@@ -826,29 +847,40 @@ impl CreateTaxCalculationLineItems {
     }
 }
 /// Specifies whether the `amount` includes taxes. Defaults to `exclusive`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxCalculationLineItemsTaxBehavior {
     Exclusive,
     Inclusive,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxCalculationLineItemsTaxBehavior {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxCalculationLineItemsTaxBehavior::*;
         match self {
             Exclusive => "exclusive",
             Inclusive => "inclusive",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxCalculationLineItemsTaxBehavior {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxCalculationLineItemsTaxBehavior::*;
         match s {
             "exclusive" => Ok(Exclusive),
             "inclusive" => Ok(Inclusive),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxCalculationLineItemsTaxBehavior"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -876,9 +908,7 @@ impl<'de> serde::Deserialize<'de> for CreateTaxCalculationLineItemsTaxBehavior {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateTaxCalculationLineItemsTaxBehavior")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Details about the address from which the goods are being shipped.
@@ -960,29 +990,40 @@ impl Default for CreateTaxCalculationShippingCost {
 /// Specifies whether the `amount` includes taxes.
 /// If `tax_behavior=inclusive`, then the amount includes taxes.
 /// Defaults to `exclusive`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTaxCalculationShippingCostTaxBehavior {
     Exclusive,
     Inclusive,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTaxCalculationShippingCostTaxBehavior {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTaxCalculationShippingCostTaxBehavior::*;
         match self {
             Exclusive => "exclusive",
             Inclusive => "inclusive",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTaxCalculationShippingCostTaxBehavior {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTaxCalculationShippingCostTaxBehavior::*;
         match s {
             "exclusive" => Ok(Exclusive),
             "inclusive" => Ok(Inclusive),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxCalculationShippingCostTaxBehavior"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -1010,11 +1051,7 @@ impl<'de> serde::Deserialize<'de> for CreateTaxCalculationShippingCostTaxBehavio
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for CreateTaxCalculationShippingCostTaxBehavior",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Calculates tax based on the input and returns a Tax `Calculation` object.

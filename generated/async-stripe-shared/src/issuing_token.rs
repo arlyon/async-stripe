@@ -134,11 +134,11 @@ const _: () = {
                 self.id.take(),
                 self.last4.take(),
                 self.livemode,
-                self.network,
+                self.network.take(),
                 self.network_data.take(),
                 self.network_updated_at,
-                self.status,
-                self.wallet_provider,
+                self.status.take(),
+                self.wallet_provider.take(),
             )
             else {
                 return None;
@@ -222,29 +222,36 @@ impl serde::Serialize for IssuingToken {
     }
 }
 /// The token service provider / card network associated with the token.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum IssuingTokenNetwork {
     Mastercard,
     Visa,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl IssuingTokenNetwork {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use IssuingTokenNetwork::*;
         match self {
             Mastercard => "mastercard",
             Visa => "visa",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for IssuingTokenNetwork {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use IssuingTokenNetwork::*;
         match s {
             "mastercard" => Ok(Mastercard),
             "visa" => Ok(Visa),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "IssuingTokenNetwork");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -277,7 +284,7 @@ impl miniserde::Deserialize for IssuingTokenNetwork {
 impl miniserde::de::Visitor for crate::Place<IssuingTokenNetwork> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(IssuingTokenNetwork::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(IssuingTokenNetwork::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -288,37 +295,43 @@ impl<'de> serde::Deserialize<'de> for IssuingTokenNetwork {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for IssuingTokenNetwork"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The digital wallet for this token, if one was used.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum IssuingTokenWalletProvider {
     ApplePay,
     GooglePay,
     SamsungPay,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl IssuingTokenWalletProvider {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use IssuingTokenWalletProvider::*;
         match self {
             ApplePay => "apple_pay",
             GooglePay => "google_pay",
             SamsungPay => "samsung_pay",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for IssuingTokenWalletProvider {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use IssuingTokenWalletProvider::*;
         match s {
             "apple_pay" => Ok(ApplePay),
             "google_pay" => Ok(GooglePay),
             "samsung_pay" => Ok(SamsungPay),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "IssuingTokenWalletProvider");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -351,7 +364,7 @@ impl miniserde::Deserialize for IssuingTokenWalletProvider {
 impl miniserde::de::Visitor for crate::Place<IssuingTokenWalletProvider> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(IssuingTokenWalletProvider::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(IssuingTokenWalletProvider::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -362,8 +375,7 @@ impl<'de> serde::Deserialize<'de> for IssuingTokenWalletProvider {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for IssuingTokenWalletProvider"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 impl stripe_types::Object for IssuingToken {
@@ -377,27 +389,31 @@ impl stripe_types::Object for IssuingToken {
     }
 }
 stripe_types::def_id!(IssuingTokenId);
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum IssuingTokenStatus {
     Active,
     Deleted,
     Requested,
     Suspended,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl IssuingTokenStatus {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use IssuingTokenStatus::*;
         match self {
             Active => "active",
             Deleted => "deleted",
             Requested => "requested",
             Suspended => "suspended",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for IssuingTokenStatus {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use IssuingTokenStatus::*;
         match s {
@@ -405,7 +421,10 @@ impl std::str::FromStr for IssuingTokenStatus {
             "deleted" => Ok(Deleted),
             "requested" => Ok(Requested),
             "suspended" => Ok(Suspended),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "IssuingTokenStatus");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -437,7 +456,7 @@ impl miniserde::Deserialize for IssuingTokenStatus {
 impl miniserde::de::Visitor for crate::Place<IssuingTokenStatus> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(IssuingTokenStatus::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(IssuingTokenStatus::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -448,7 +467,6 @@ impl<'de> serde::Deserialize<'de> for IssuingTokenStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for IssuingTokenStatus"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

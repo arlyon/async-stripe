@@ -88,8 +88,8 @@ const _: () = {
                 Some(payment_method_save),
             ) = (
                 self.allow_redisplay_filters.take(),
-                self.payment_method_remove,
-                self.payment_method_save,
+                self.payment_method_remove.take(),
+                self.payment_method_save.take(),
             )
             else {
                 return None;
@@ -138,19 +138,23 @@ const _: () = {
 };
 /// Uses the `allow_redisplay` value of each saved payment method to filter the set presented to a returning customer.
 /// By default, only saved payment methods with ’allow_redisplay: ‘always’ are shown in Checkout.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PaymentPagesCheckoutSessionSavedPaymentMethodOptionsAllowRedisplayFilters {
     Always,
     Limited,
     Unspecified,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl PaymentPagesCheckoutSessionSavedPaymentMethodOptionsAllowRedisplayFilters {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PaymentPagesCheckoutSessionSavedPaymentMethodOptionsAllowRedisplayFilters::*;
         match self {
             Always => "always",
             Limited => "limited",
             Unspecified => "unspecified",
+            Unknown(v) => v,
         }
     }
 }
@@ -158,14 +162,21 @@ impl PaymentPagesCheckoutSessionSavedPaymentMethodOptionsAllowRedisplayFilters {
 impl std::str::FromStr
     for PaymentPagesCheckoutSessionSavedPaymentMethodOptionsAllowRedisplayFilters
 {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentPagesCheckoutSessionSavedPaymentMethodOptionsAllowRedisplayFilters::*;
         match s {
             "always" => Ok(Always),
             "limited" => Ok(Limited),
             "unspecified" => Ok(Unspecified),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PaymentPagesCheckoutSessionSavedPaymentMethodOptionsAllowRedisplayFilters"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -208,7 +219,7 @@ impl miniserde::de::Visitor
         use std::str::FromStr;
         self.out = Some(
             PaymentPagesCheckoutSessionSavedPaymentMethodOptionsAllowRedisplayFilters::from_str(s)
-                .map_err(|_| miniserde::Error)?,
+                .expect("infallible"),
         );
         Ok(())
     }
@@ -224,33 +235,44 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for PaymentPagesCheckoutSessionSavedPaymentMethodOptionsAllowRedisplayFilters"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Enable customers to choose if they wish to remove their saved payment methods. Disabled by default.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PaymentPagesCheckoutSessionSavedPaymentMethodOptionsPaymentMethodRemove {
     Disabled,
     Enabled,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl PaymentPagesCheckoutSessionSavedPaymentMethodOptionsPaymentMethodRemove {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PaymentPagesCheckoutSessionSavedPaymentMethodOptionsPaymentMethodRemove::*;
         match self {
             Disabled => "disabled",
             Enabled => "enabled",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for PaymentPagesCheckoutSessionSavedPaymentMethodOptionsPaymentMethodRemove {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentPagesCheckoutSessionSavedPaymentMethodOptionsPaymentMethodRemove::*;
         match s {
             "disabled" => Ok(Disabled),
             "enabled" => Ok(Enabled),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PaymentPagesCheckoutSessionSavedPaymentMethodOptionsPaymentMethodRemove"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -289,7 +311,7 @@ impl miniserde::de::Visitor
         use std::str::FromStr;
         self.out = Some(
             PaymentPagesCheckoutSessionSavedPaymentMethodOptionsPaymentMethodRemove::from_str(s)
-                .map_err(|_| miniserde::Error)?,
+                .expect("infallible"),
         );
         Ok(())
     }
@@ -305,34 +327,45 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for PaymentPagesCheckoutSessionSavedPaymentMethodOptionsPaymentMethodRemove"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Enable customers to choose if they wish to save their payment method for future use.
 /// Disabled by default.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PaymentPagesCheckoutSessionSavedPaymentMethodOptionsPaymentMethodSave {
     Disabled,
     Enabled,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl PaymentPagesCheckoutSessionSavedPaymentMethodOptionsPaymentMethodSave {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PaymentPagesCheckoutSessionSavedPaymentMethodOptionsPaymentMethodSave::*;
         match self {
             Disabled => "disabled",
             Enabled => "enabled",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for PaymentPagesCheckoutSessionSavedPaymentMethodOptionsPaymentMethodSave {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentPagesCheckoutSessionSavedPaymentMethodOptionsPaymentMethodSave::*;
         match s {
             "disabled" => Ok(Disabled),
             "enabled" => Ok(Enabled),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PaymentPagesCheckoutSessionSavedPaymentMethodOptionsPaymentMethodSave"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -371,7 +404,7 @@ impl miniserde::de::Visitor
         use std::str::FromStr;
         self.out = Some(
             PaymentPagesCheckoutSessionSavedPaymentMethodOptionsPaymentMethodSave::from_str(s)
-                .map_err(|_| miniserde::Error)?,
+                .expect("infallible"),
         );
         Ok(())
     }
@@ -387,6 +420,6 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for PaymentPagesCheckoutSessionSavedPaymentMethodOptionsPaymentMethodSave"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

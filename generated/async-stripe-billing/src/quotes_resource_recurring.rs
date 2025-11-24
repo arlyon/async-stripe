@@ -91,7 +91,7 @@ const _: () = {
             ) = (
                 self.amount_subtotal,
                 self.amount_total,
-                self.interval,
+                self.interval.take(),
                 self.interval_count,
                 self.total_details.take(),
             )
@@ -144,27 +144,31 @@ const _: () = {
     }
 };
 /// The frequency at which a subscription is billed. One of `day`, `week`, `month` or `year`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum QuotesResourceRecurringInterval {
     Day,
     Month,
     Week,
     Year,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl QuotesResourceRecurringInterval {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use QuotesResourceRecurringInterval::*;
         match self {
             Day => "day",
             Month => "month",
             Week => "week",
             Year => "year",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for QuotesResourceRecurringInterval {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use QuotesResourceRecurringInterval::*;
         match s {
@@ -172,7 +176,14 @@ impl std::str::FromStr for QuotesResourceRecurringInterval {
             "month" => Ok(Month),
             "week" => Ok(Week),
             "year" => Ok(Year),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "QuotesResourceRecurringInterval"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -205,8 +216,7 @@ impl miniserde::Deserialize for QuotesResourceRecurringInterval {
 impl miniserde::de::Visitor for crate::Place<QuotesResourceRecurringInterval> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out =
-            Some(QuotesResourceRecurringInterval::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(QuotesResourceRecurringInterval::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -217,8 +227,6 @@ impl<'de> serde::Deserialize<'de> for QuotesResourceRecurringInterval {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for QuotesResourceRecurringInterval")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

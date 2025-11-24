@@ -70,7 +70,8 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(price_type), Some(prices)) = (self.price_type, self.prices.take()) else {
+            let (Some(price_type), Some(prices)) = (self.price_type.take(), self.prices.take())
+            else {
                 return None;
             };
             Some(Self::Out { price_type, prices })
@@ -113,26 +114,37 @@ const _: () = {
 /// We currently only support the `metered` price type.
 /// This refers to prices that have a [Billing Meter](https://docs.stripe.com/api/billing/meter) attached to them.
 /// Cannot be used in combination with `prices`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum BillingCreditGrantsResourceScopePriceType {
     Metered,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl BillingCreditGrantsResourceScopePriceType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use BillingCreditGrantsResourceScopePriceType::*;
         match self {
             Metered => "metered",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for BillingCreditGrantsResourceScopePriceType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use BillingCreditGrantsResourceScopePriceType::*;
         match s {
             "metered" => Ok(Metered),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "BillingCreditGrantsResourceScopePriceType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -165,9 +177,8 @@ impl miniserde::Deserialize for BillingCreditGrantsResourceScopePriceType {
 impl miniserde::de::Visitor for crate::Place<BillingCreditGrantsResourceScopePriceType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            BillingCreditGrantsResourceScopePriceType::from_str(s).map_err(|_| miniserde::Error)?,
-        );
+        self.out =
+            Some(BillingCreditGrantsResourceScopePriceType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -178,8 +189,6 @@ impl<'de> serde::Deserialize<'de> for BillingCreditGrantsResourceScopePriceType 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for BillingCreditGrantsResourceScopePriceType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

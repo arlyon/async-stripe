@@ -1,4 +1,4 @@
-#[derive(Copy, Clone, Debug)]
+#[derive(Clone, Debug)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct MandateUsBankAccount {
@@ -60,7 +60,7 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(collection_method),) = (self.collection_method,) else {
+            let (Some(collection_method),) = (self.collection_method.take(),) else {
                 return None;
             };
             Some(Self::Out { collection_method })
@@ -99,26 +99,37 @@ const _: () = {
     }
 };
 /// Mandate collection method
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum MandateUsBankAccountCollectionMethod {
     Paper,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl MandateUsBankAccountCollectionMethod {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use MandateUsBankAccountCollectionMethod::*;
         match self {
             Paper => "paper",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for MandateUsBankAccountCollectionMethod {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use MandateUsBankAccountCollectionMethod::*;
         match s {
             "paper" => Ok(Paper),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "MandateUsBankAccountCollectionMethod"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -151,8 +162,7 @@ impl miniserde::Deserialize for MandateUsBankAccountCollectionMethod {
 impl miniserde::de::Visitor for crate::Place<MandateUsBankAccountCollectionMethod> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out =
-            Some(MandateUsBankAccountCollectionMethod::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(MandateUsBankAccountCollectionMethod::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -163,8 +173,6 @@ impl<'de> serde::Deserialize<'de> for MandateUsBankAccountCollectionMethod {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for MandateUsBankAccountCollectionMethod")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

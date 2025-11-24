@@ -1,4 +1,4 @@
-#[derive(Copy, Clone, Debug)]
+#[derive(Clone, Debug)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct SetupAttemptPaymentMethodDetailsCardWallet {
@@ -74,7 +74,7 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (Some(apple_pay), Some(google_pay), Some(type_)) =
-                (self.apple_pay, self.google_pay, self.type_)
+                (self.apple_pay, self.google_pay, self.type_.take())
             else {
                 return None;
             };
@@ -118,32 +118,43 @@ const _: () = {
 /// The type of the card wallet, one of `apple_pay`, `google_pay`, or `link`.
 /// An additional hash is included on the Wallet subhash with a name matching this value.
 /// It contains additional information specific to the card wallet type.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum SetupAttemptPaymentMethodDetailsCardWalletType {
     ApplePay,
     GooglePay,
     Link,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl SetupAttemptPaymentMethodDetailsCardWalletType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use SetupAttemptPaymentMethodDetailsCardWalletType::*;
         match self {
             ApplePay => "apple_pay",
             GooglePay => "google_pay",
             Link => "link",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for SetupAttemptPaymentMethodDetailsCardWalletType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use SetupAttemptPaymentMethodDetailsCardWalletType::*;
         match s {
             "apple_pay" => Ok(ApplePay),
             "google_pay" => Ok(GooglePay),
             "link" => Ok(Link),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "SetupAttemptPaymentMethodDetailsCardWalletType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -176,10 +187,8 @@ impl miniserde::Deserialize for SetupAttemptPaymentMethodDetailsCardWalletType {
 impl miniserde::de::Visitor for crate::Place<SetupAttemptPaymentMethodDetailsCardWalletType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            SetupAttemptPaymentMethodDetailsCardWalletType::from_str(s)
-                .map_err(|_| miniserde::Error)?,
-        );
+        self.out =
+            Some(SetupAttemptPaymentMethodDetailsCardWalletType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -190,10 +199,6 @@ impl<'de> serde::Deserialize<'de> for SetupAttemptPaymentMethodDetailsCardWallet
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for SetupAttemptPaymentMethodDetailsCardWalletType",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

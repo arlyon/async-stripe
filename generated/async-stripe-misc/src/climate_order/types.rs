@@ -194,7 +194,7 @@ const _: () = {
                 self.amount_total,
                 self.beneficiary.take(),
                 self.canceled_at,
-                self.cancellation_reason,
+                self.cancellation_reason.take(),
                 self.certificate.take(),
                 self.confirmed_at,
                 self.created,
@@ -209,7 +209,7 @@ const _: () = {
                 self.metric_tons.take(),
                 self.product.take(),
                 self.product_substituted_at,
-                self.status,
+                self.status.take(),
             )
             else {
                 return None;
@@ -327,32 +327,43 @@ impl serde::Serialize for ClimateOrder {
     }
 }
 /// Reason for the cancellation of this order.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum ClimateOrderCancellationReason {
     Expired,
     ProductUnavailable,
     Requested,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl ClimateOrderCancellationReason {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use ClimateOrderCancellationReason::*;
         match self {
             Expired => "expired",
             ProductUnavailable => "product_unavailable",
             Requested => "requested",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for ClimateOrderCancellationReason {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ClimateOrderCancellationReason::*;
         match s {
             "expired" => Ok(Expired),
             "product_unavailable" => Ok(ProductUnavailable),
             "requested" => Ok(Requested),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "ClimateOrderCancellationReason"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -385,7 +396,7 @@ impl miniserde::Deserialize for ClimateOrderCancellationReason {
 impl miniserde::de::Visitor for crate::Place<ClimateOrderCancellationReason> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(ClimateOrderCancellationReason::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(ClimateOrderCancellationReason::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -396,22 +407,23 @@ impl<'de> serde::Deserialize<'de> for ClimateOrderCancellationReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for ClimateOrderCancellationReason")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The current status of this order.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum ClimateOrderStatus {
     AwaitingFunds,
     Canceled,
     Confirmed,
     Delivered,
     Open,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl ClimateOrderStatus {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use ClimateOrderStatus::*;
         match self {
             AwaitingFunds => "awaiting_funds",
@@ -419,12 +431,13 @@ impl ClimateOrderStatus {
             Confirmed => "confirmed",
             Delivered => "delivered",
             Open => "open",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for ClimateOrderStatus {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ClimateOrderStatus::*;
         match s {
@@ -433,7 +446,10 @@ impl std::str::FromStr for ClimateOrderStatus {
             "confirmed" => Ok(Confirmed),
             "delivered" => Ok(Delivered),
             "open" => Ok(Open),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "ClimateOrderStatus");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -466,7 +482,7 @@ impl miniserde::Deserialize for ClimateOrderStatus {
 impl miniserde::de::Visitor for crate::Place<ClimateOrderStatus> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(ClimateOrderStatus::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(ClimateOrderStatus::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -477,8 +493,7 @@ impl<'de> serde::Deserialize<'de> for ClimateOrderStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for ClimateOrderStatus"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 impl stripe_types::Object for ClimateOrder {

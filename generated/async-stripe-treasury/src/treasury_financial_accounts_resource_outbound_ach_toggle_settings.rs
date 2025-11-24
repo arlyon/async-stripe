@@ -78,7 +78,7 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (Some(requested), Some(status), Some(status_details)) =
-                (self.requested, self.status, self.status_details.take())
+                (self.requested, self.status.take(), self.status_details.take())
             else {
                 return None;
             };
@@ -121,32 +121,43 @@ const _: () = {
     }
 };
 /// Whether the Feature is operational.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum TreasuryFinancialAccountsResourceOutboundAchToggleSettingsStatus {
     Active,
     Pending,
     Restricted,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl TreasuryFinancialAccountsResourceOutboundAchToggleSettingsStatus {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use TreasuryFinancialAccountsResourceOutboundAchToggleSettingsStatus::*;
         match self {
             Active => "active",
             Pending => "pending",
             Restricted => "restricted",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for TreasuryFinancialAccountsResourceOutboundAchToggleSettingsStatus {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TreasuryFinancialAccountsResourceOutboundAchToggleSettingsStatus::*;
         match s {
             "active" => Ok(Active),
             "pending" => Ok(Pending),
             "restricted" => Ok(Restricted),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "TreasuryFinancialAccountsResourceOutboundAchToggleSettingsStatus"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -183,7 +194,7 @@ impl miniserde::de::Visitor
         use std::str::FromStr;
         self.out = Some(
             TreasuryFinancialAccountsResourceOutboundAchToggleSettingsStatus::from_str(s)
-                .map_err(|_| miniserde::Error)?,
+                .expect("infallible"),
         );
         Ok(())
     }
@@ -199,6 +210,6 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for TreasuryFinancialAccountsResourceOutboundAchToggleSettingsStatus"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

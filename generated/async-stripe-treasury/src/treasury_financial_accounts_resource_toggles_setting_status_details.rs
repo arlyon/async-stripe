@@ -1,5 +1,5 @@
 /// Additional details on the FinancialAccount Features information.
-#[derive(Copy, Clone, Debug)]
+#[derive(Clone, Debug)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TreasuryFinancialAccountsResourceTogglesSettingStatusDetails {
@@ -77,7 +77,7 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (Some(code), Some(resolution), Some(restriction)) =
-                (self.code, self.resolution, self.restriction)
+                (self.code.take(), self.resolution.take(), self.restriction.take())
             else {
                 return None;
             };
@@ -121,7 +121,8 @@ const _: () = {
     }
 };
 /// Represents the reason why the status is `pending` or `restricted`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsCode {
     Activating,
     CapabilityNotRequested,
@@ -132,9 +133,11 @@ pub enum TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsCode {
     RequirementsPendingVerification,
     RestrictedByPlatform,
     RestrictedOther,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsCode {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsCode::*;
         match self {
             Activating => "activating",
@@ -146,12 +149,13 @@ impl TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsCode {
             RequirementsPendingVerification => "requirements_pending_verification",
             RestrictedByPlatform => "restricted_by_platform",
             RestrictedOther => "restricted_other",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsCode {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsCode::*;
         match s {
@@ -164,7 +168,14 @@ impl std::str::FromStr for TreasuryFinancialAccountsResourceTogglesSettingStatus
             "requirements_pending_verification" => Ok(RequirementsPendingVerification),
             "restricted_by_platform" => Ok(RestrictedByPlatform),
             "restricted_other" => Ok(RestrictedOther),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsCode"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -201,7 +212,7 @@ impl miniserde::de::Visitor
         use std::str::FromStr;
         self.out = Some(
             TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsCode::from_str(s)
-                .map_err(|_| miniserde::Error)?,
+                .expect("infallible"),
         );
         Ok(())
     }
@@ -217,36 +228,47 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsCode"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Represents what the user should do, if anything, to activate the Feature.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsResolution {
     ContactStripe,
     ProvideInformation,
     RemoveRestriction,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsResolution {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsResolution::*;
         match self {
             ContactStripe => "contact_stripe",
             ProvideInformation => "provide_information",
             RemoveRestriction => "remove_restriction",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsResolution {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsResolution::*;
         match s {
             "contact_stripe" => Ok(ContactStripe),
             "provide_information" => Ok(ProvideInformation),
             "remove_restriction" => Ok(RemoveRestriction),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsResolution"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -285,7 +307,7 @@ impl miniserde::de::Visitor
         use std::str::FromStr;
         self.out = Some(
             TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsResolution::from_str(s)
-                .map_err(|_| miniserde::Error)?,
+                .expect("infallible"),
         );
         Ok(())
     }
@@ -301,33 +323,44 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsResolution"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The `platform_restrictions` that are restricting this Feature.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsRestriction {
     InboundFlows,
     OutboundFlows,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsRestriction {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsRestriction::*;
         match self {
             InboundFlows => "inbound_flows",
             OutboundFlows => "outbound_flows",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsRestriction {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsRestriction::*;
         match s {
             "inbound_flows" => Ok(InboundFlows),
             "outbound_flows" => Ok(OutboundFlows),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsRestriction"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -366,7 +399,7 @@ impl miniserde::de::Visitor
         use std::str::FromStr;
         self.out = Some(
             TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsRestriction::from_str(s)
-                .map_err(|_| miniserde::Error)?,
+                .expect("infallible"),
         );
         Ok(())
     }
@@ -382,6 +415,6 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsRestriction"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

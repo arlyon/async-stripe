@@ -81,7 +81,14 @@ const _: () = {
                 "card" => Self::Card(FromValueOpt::from_value(Value::Object(o))?),
                 "source" => Self::Source(FromValueOpt::from_value(Value::Object(o))?),
 
-                _ => return None,
+                _ => {
+                    tracing::warn!(
+                        "Unknown object type '{}' for enum '{}'",
+                        key,
+                        "AccountExternalAccountCreated"
+                    );
+                    return None;
+                }
             })
         }
     }
@@ -177,7 +184,14 @@ const _: () = {
                 "card" => Self::Card(FromValueOpt::from_value(Value::Object(o))?),
                 "source" => Self::Source(FromValueOpt::from_value(Value::Object(o))?),
 
-                _ => return None,
+                _ => {
+                    tracing::warn!(
+                        "Unknown object type '{}' for enum '{}'",
+                        key,
+                        "AccountExternalAccountDeleted"
+                    );
+                    return None;
+                }
             })
         }
     }
@@ -273,7 +287,14 @@ const _: () = {
                 "card" => Self::Card(FromValueOpt::from_value(Value::Object(o))?),
                 "source" => Self::Source(FromValueOpt::from_value(Value::Object(o))?),
 
-                _ => return None,
+                _ => {
+                    tracing::warn!(
+                        "Unknown object type '{}' for enum '{}'",
+                        key,
+                        "AccountExternalAccountUpdated"
+                    );
+                    return None;
+                }
             })
         }
     }
@@ -369,7 +390,14 @@ const _: () = {
                 "card" => Self::Card(FromValueOpt::from_value(Value::Object(o))?),
                 "source" => Self::Source(FromValueOpt::from_value(Value::Object(o))?),
 
-                _ => return None,
+                _ => {
+                    tracing::warn!(
+                        "Unknown object type '{}' for enum '{}'",
+                        key,
+                        "CustomerSourceCreated"
+                    );
+                    return None;
+                }
             })
         }
     }
@@ -465,7 +493,14 @@ const _: () = {
                 "card" => Self::Card(FromValueOpt::from_value(Value::Object(o))?),
                 "source" => Self::Source(FromValueOpt::from_value(Value::Object(o))?),
 
-                _ => return None,
+                _ => {
+                    tracing::warn!(
+                        "Unknown object type '{}' for enum '{}'",
+                        key,
+                        "CustomerSourceDeleted"
+                    );
+                    return None;
+                }
             })
         }
     }
@@ -558,7 +593,14 @@ const _: () = {
                 "card" => Self::Card(FromValueOpt::from_value(Value::Object(o))?),
                 "source" => Self::Source(FromValueOpt::from_value(Value::Object(o))?),
 
-                _ => return None,
+                _ => {
+                    tracing::warn!(
+                        "Unknown object type '{}' for enum '{}'",
+                        key,
+                        "CustomerSourceExpiring"
+                    );
+                    return None;
+                }
             })
         }
     }
@@ -654,7 +696,14 @@ const _: () = {
                 "card" => Self::Card(FromValueOpt::from_value(Value::Object(o))?),
                 "source" => Self::Source(FromValueOpt::from_value(Value::Object(o))?),
 
-                _ => return None,
+                _ => {
+                    tracing::warn!(
+                        "Unknown object type '{}' for enum '{}'",
+                        key,
+                        "CustomerSourceUpdated"
+                    );
+                    return None;
+                }
             })
         }
     }

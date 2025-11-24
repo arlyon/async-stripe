@@ -352,27 +352,31 @@ impl CreateSourceBuilder {
 /// The authentication `flow` of the source to create.
 /// `flow` is one of `redirect`, `receiver`, `code_verification`, `none`.
 /// It is generally inferred unless a type supports multiple flows.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateSourceFlow {
     CodeVerification,
     None,
     Receiver,
     Redirect,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateSourceFlow {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateSourceFlow::*;
         match self {
             CodeVerification => "code_verification",
             None => "none",
             Receiver => "receiver",
             Redirect => "redirect",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateSourceFlow {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateSourceFlow::*;
         match s {
@@ -380,7 +384,10 @@ impl std::str::FromStr for CreateSourceFlow {
             "none" => Ok(None),
             "receiver" => Ok(Receiver),
             "redirect" => Ok(Redirect),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CreateSourceFlow");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -408,8 +415,7 @@ impl<'de> serde::Deserialize<'de> for CreateSourceFlow {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for CreateSourceFlow"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Information about a mandate possibility attached to a source object (generally for bank debits) as well as its acceptance status.
@@ -492,27 +498,31 @@ impl CreateSourceMandateAcceptance {
 }
 /// The status of the mandate acceptance.
 /// Either `accepted` (the mandate was accepted) or `refused` (the mandate was refused).
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateSourceMandateAcceptanceStatus {
     Accepted,
     Pending,
     Refused,
     Revoked,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateSourceMandateAcceptanceStatus {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateSourceMandateAcceptanceStatus::*;
         match self {
             Accepted => "accepted",
             Pending => "pending",
             Refused => "refused",
             Revoked => "revoked",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateSourceMandateAcceptanceStatus {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateSourceMandateAcceptanceStatus::*;
         match s {
@@ -520,7 +530,14 @@ impl std::str::FromStr for CreateSourceMandateAcceptanceStatus {
             "pending" => Ok(Pending),
             "refused" => Ok(Refused),
             "revoked" => Ok(Revoked),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateSourceMandateAcceptanceStatus"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -548,35 +565,44 @@ impl<'de> serde::Deserialize<'de> for CreateSourceMandateAcceptanceStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateSourceMandateAcceptanceStatus")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The type of acceptance information included with the mandate. Either `online` or `offline`
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateSourceMandateAcceptanceType {
     Offline,
     Online,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateSourceMandateAcceptanceType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateSourceMandateAcceptanceType::*;
         match self {
             Offline => "offline",
             Online => "online",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateSourceMandateAcceptanceType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateSourceMandateAcceptanceType::*;
         match s {
             "offline" => Ok(Offline),
             "online" => Ok(Online),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateSourceMandateAcceptanceType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -604,39 +630,48 @@ impl<'de> serde::Deserialize<'de> for CreateSourceMandateAcceptanceType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateSourceMandateAcceptanceType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The interval of debits permitted by the mandate.
 /// Either `one_time` (just permitting a single debit), `scheduled` (with debits on an agreed schedule or for clearly-defined events), or `variable`(for debits with any frequency).
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateSourceMandateInterval {
     OneTime,
     Scheduled,
     Variable,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateSourceMandateInterval {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateSourceMandateInterval::*;
         match self {
             OneTime => "one_time",
             Scheduled => "scheduled",
             Variable => "variable",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateSourceMandateInterval {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateSourceMandateInterval::*;
         match s {
             "one_time" => Ok(OneTime),
             "scheduled" => Ok(Scheduled),
             "variable" => Ok(Variable),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateSourceMandateInterval"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -664,22 +699,24 @@ impl<'de> serde::Deserialize<'de> for CreateSourceMandateInterval {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for CreateSourceMandateInterval"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The method Stripe should use to notify the customer of upcoming debit instructions and/or mandate confirmation as required by the underlying debit network.
 /// Either `email` (an email is sent directly to the customer), `manual` (a `source.mandate_notification` event is sent to your webhooks endpoint and you should handle the notification) or `none` (the underlying debit network does not require any notification).
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateSourceMandateNotificationMethod {
     DeprecatedNone,
     Email,
     Manual,
     None,
     StripeEmail,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateSourceMandateNotificationMethod {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateSourceMandateNotificationMethod::*;
         match self {
             DeprecatedNone => "deprecated_none",
@@ -687,12 +724,13 @@ impl CreateSourceMandateNotificationMethod {
             Manual => "manual",
             None => "none",
             StripeEmail => "stripe_email",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateSourceMandateNotificationMethod {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateSourceMandateNotificationMethod::*;
         match s {
@@ -701,7 +739,14 @@ impl std::str::FromStr for CreateSourceMandateNotificationMethod {
             "manual" => Ok(Manual),
             "none" => Ok(None),
             "stripe_email" => Ok(StripeEmail),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateSourceMandateNotificationMethod"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -729,14 +774,12 @@ impl<'de> serde::Deserialize<'de> for CreateSourceMandateNotificationMethod {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateSourceMandateNotificationMethod")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Optional parameters for the receiver flow.
 /// Can be set only if the source is a receiver (`flow` is `receiver`).
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateSourceReceiver {
     /// The method Stripe should use to request information needed to process a refund or mispayment.
     /// Either `email` (an email is sent directly to the customer) or `manual` (a `source.refund_attributes_required` event is sent to your webhooks endpoint).
@@ -757,32 +800,43 @@ impl Default for CreateSourceReceiver {
 /// The method Stripe should use to request information needed to process a refund or mispayment.
 /// Either `email` (an email is sent directly to the customer) or `manual` (a `source.refund_attributes_required` event is sent to your webhooks endpoint).
 /// Refer to each payment method's documentation to learn which refund attributes may be required.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateSourceReceiverRefundAttributesMethod {
     Email,
     Manual,
     None,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateSourceReceiverRefundAttributesMethod {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateSourceReceiverRefundAttributesMethod::*;
         match self {
             Email => "email",
             Manual => "manual",
             None => "none",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateSourceReceiverRefundAttributesMethod {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateSourceReceiverRefundAttributesMethod::*;
         match s {
             "email" => Ok(Email),
             "manual" => Ok(Manual),
             "none" => Ok(None),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateSourceReceiverRefundAttributesMethod"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -810,9 +864,7 @@ impl<'de> serde::Deserialize<'de> for CreateSourceReceiverRefundAttributesMethod
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateSourceReceiverRefundAttributesMethod")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Parameters required for the redirect flow.
@@ -887,27 +939,31 @@ impl Default for CreateSourceSourceOrderItems {
         Self::new()
     }
 }
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateSourceSourceOrderItemsType {
     Discount,
     Shipping,
     Sku,
     Tax,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateSourceSourceOrderItemsType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateSourceSourceOrderItemsType::*;
         match self {
             Discount => "discount",
             Shipping => "shipping",
             Sku => "sku",
             Tax => "tax",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateSourceSourceOrderItemsType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateSourceSourceOrderItemsType::*;
         match s {
@@ -915,7 +971,14 @@ impl std::str::FromStr for CreateSourceSourceOrderItemsType {
             "shipping" => Ok(Shipping),
             "sku" => Ok(Sku),
             "tax" => Ok(Tax),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateSourceSourceOrderItemsType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -943,34 +1006,39 @@ impl<'de> serde::Deserialize<'de> for CreateSourceSourceOrderItemsType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateSourceSourceOrderItemsType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateSourceUsage {
     Reusable,
     SingleUse,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateSourceUsage {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateSourceUsage::*;
         match self {
             Reusable => "reusable",
             SingleUse => "single_use",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateSourceUsage {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateSourceUsage::*;
         match s {
             "reusable" => Ok(Reusable),
             "single_use" => Ok(SingleUse),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CreateSourceUsage");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -998,8 +1066,7 @@ impl<'de> serde::Deserialize<'de> for CreateSourceUsage {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for CreateSourceUsage"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Creates a new source object.
@@ -1244,27 +1311,31 @@ impl UpdateSourceMandateAcceptance {
 }
 /// The status of the mandate acceptance.
 /// Either `accepted` (the mandate was accepted) or `refused` (the mandate was refused).
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdateSourceMandateAcceptanceStatus {
     Accepted,
     Pending,
     Refused,
     Revoked,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdateSourceMandateAcceptanceStatus {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdateSourceMandateAcceptanceStatus::*;
         match self {
             Accepted => "accepted",
             Pending => "pending",
             Refused => "refused",
             Revoked => "revoked",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for UpdateSourceMandateAcceptanceStatus {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateSourceMandateAcceptanceStatus::*;
         match s {
@@ -1272,7 +1343,14 @@ impl std::str::FromStr for UpdateSourceMandateAcceptanceStatus {
             "pending" => Ok(Pending),
             "refused" => Ok(Refused),
             "revoked" => Ok(Revoked),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdateSourceMandateAcceptanceStatus"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -1300,35 +1378,44 @@ impl<'de> serde::Deserialize<'de> for UpdateSourceMandateAcceptanceStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for UpdateSourceMandateAcceptanceStatus")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The type of acceptance information included with the mandate. Either `online` or `offline`
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdateSourceMandateAcceptanceType {
     Offline,
     Online,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdateSourceMandateAcceptanceType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdateSourceMandateAcceptanceType::*;
         match self {
             Offline => "offline",
             Online => "online",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for UpdateSourceMandateAcceptanceType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateSourceMandateAcceptanceType::*;
         match s {
             "offline" => Ok(Offline),
             "online" => Ok(Online),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdateSourceMandateAcceptanceType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -1356,39 +1443,48 @@ impl<'de> serde::Deserialize<'de> for UpdateSourceMandateAcceptanceType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for UpdateSourceMandateAcceptanceType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The interval of debits permitted by the mandate.
 /// Either `one_time` (just permitting a single debit), `scheduled` (with debits on an agreed schedule or for clearly-defined events), or `variable`(for debits with any frequency).
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdateSourceMandateInterval {
     OneTime,
     Scheduled,
     Variable,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdateSourceMandateInterval {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdateSourceMandateInterval::*;
         match self {
             OneTime => "one_time",
             Scheduled => "scheduled",
             Variable => "variable",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for UpdateSourceMandateInterval {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateSourceMandateInterval::*;
         match s {
             "one_time" => Ok(OneTime),
             "scheduled" => Ok(Scheduled),
             "variable" => Ok(Variable),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdateSourceMandateInterval"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -1416,22 +1512,24 @@ impl<'de> serde::Deserialize<'de> for UpdateSourceMandateInterval {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for UpdateSourceMandateInterval"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The method Stripe should use to notify the customer of upcoming debit instructions and/or mandate confirmation as required by the underlying debit network.
 /// Either `email` (an email is sent directly to the customer), `manual` (a `source.mandate_notification` event is sent to your webhooks endpoint and you should handle the notification) or `none` (the underlying debit network does not require any notification).
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdateSourceMandateNotificationMethod {
     DeprecatedNone,
     Email,
     Manual,
     None,
     StripeEmail,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdateSourceMandateNotificationMethod {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdateSourceMandateNotificationMethod::*;
         match self {
             DeprecatedNone => "deprecated_none",
@@ -1439,12 +1537,13 @@ impl UpdateSourceMandateNotificationMethod {
             Manual => "manual",
             None => "none",
             StripeEmail => "stripe_email",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for UpdateSourceMandateNotificationMethod {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateSourceMandateNotificationMethod::*;
         match s {
@@ -1453,7 +1552,14 @@ impl std::str::FromStr for UpdateSourceMandateNotificationMethod {
             "manual" => Ok(Manual),
             "none" => Ok(None),
             "stripe_email" => Ok(StripeEmail),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdateSourceMandateNotificationMethod"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -1481,9 +1587,7 @@ impl<'de> serde::Deserialize<'de> for UpdateSourceMandateNotificationMethod {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for UpdateSourceMandateNotificationMethod")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Information about the items and shipping associated with the source.
@@ -1545,27 +1649,31 @@ impl Default for UpdateSourceSourceOrderItems {
         Self::new()
     }
 }
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdateSourceSourceOrderItemsType {
     Discount,
     Shipping,
     Sku,
     Tax,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdateSourceSourceOrderItemsType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdateSourceSourceOrderItemsType::*;
         match self {
             Discount => "discount",
             Shipping => "shipping",
             Sku => "sku",
             Tax => "tax",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for UpdateSourceSourceOrderItemsType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateSourceSourceOrderItemsType::*;
         match s {
@@ -1573,7 +1681,14 @@ impl std::str::FromStr for UpdateSourceSourceOrderItemsType {
             "shipping" => Ok(Shipping),
             "sku" => Ok(Sku),
             "tax" => Ok(Tax),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdateSourceSourceOrderItemsType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -1601,9 +1716,7 @@ impl<'de> serde::Deserialize<'de> for UpdateSourceSourceOrderItemsType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for UpdateSourceSourceOrderItemsType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Updates the specified source by setting the values of the parameters passed.

@@ -109,7 +109,7 @@ const _: () = {
                 self.livemode,
                 self.metadata.take(),
                 self.nickname.take(),
-                self.status,
+                self.status.take(),
                 self.version,
             )
             else {
@@ -184,29 +184,40 @@ impl stripe_types::Object for InvoiceRenderingTemplate {
     }
 }
 stripe_types::def_id!(InvoiceRenderingTemplateId);
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum InvoiceRenderingTemplateStatus {
     Active,
     Archived,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl InvoiceRenderingTemplateStatus {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use InvoiceRenderingTemplateStatus::*;
         match self {
             Active => "active",
             Archived => "archived",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for InvoiceRenderingTemplateStatus {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use InvoiceRenderingTemplateStatus::*;
         match s {
             "active" => Ok(Active),
             "archived" => Ok(Archived),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "InvoiceRenderingTemplateStatus"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -238,7 +249,7 @@ impl miniserde::Deserialize for InvoiceRenderingTemplateStatus {
 impl miniserde::de::Visitor for crate::Place<InvoiceRenderingTemplateStatus> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(InvoiceRenderingTemplateStatus::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(InvoiceRenderingTemplateStatus::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -249,8 +260,6 @@ impl<'de> serde::Deserialize<'de> for InvoiceRenderingTemplateStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for InvoiceRenderingTemplateStatus")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

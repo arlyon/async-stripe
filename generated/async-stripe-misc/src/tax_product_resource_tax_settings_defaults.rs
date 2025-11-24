@@ -75,7 +75,7 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (Some(provider), Some(tax_behavior), Some(tax_code)) =
-                (self.provider, self.tax_behavior, self.tax_code.take())
+                (self.provider.take(), self.tax_behavior.take(), self.tax_code.take())
             else {
                 return None;
             };
@@ -118,27 +118,31 @@ const _: () = {
 };
 /// The tax calculation provider this account uses.
 /// Defaults to `stripe` when not using a [third-party provider](/tax/third-party-apps).
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum TaxProductResourceTaxSettingsDefaultsProvider {
     Anrok,
     Avalara,
     Sphere,
     Stripe,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl TaxProductResourceTaxSettingsDefaultsProvider {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use TaxProductResourceTaxSettingsDefaultsProvider::*;
         match self {
             Anrok => "anrok",
             Avalara => "avalara",
             Sphere => "sphere",
             Stripe => "stripe",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for TaxProductResourceTaxSettingsDefaultsProvider {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TaxProductResourceTaxSettingsDefaultsProvider::*;
         match s {
@@ -146,7 +150,14 @@ impl std::str::FromStr for TaxProductResourceTaxSettingsDefaultsProvider {
             "avalara" => Ok(Avalara),
             "sphere" => Ok(Sphere),
             "stripe" => Ok(Stripe),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "TaxProductResourceTaxSettingsDefaultsProvider"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -179,10 +190,8 @@ impl miniserde::Deserialize for TaxProductResourceTaxSettingsDefaultsProvider {
 impl miniserde::de::Visitor for crate::Place<TaxProductResourceTaxSettingsDefaultsProvider> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            TaxProductResourceTaxSettingsDefaultsProvider::from_str(s)
-                .map_err(|_| miniserde::Error)?,
-        );
+        self.out =
+            Some(TaxProductResourceTaxSettingsDefaultsProvider::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -193,41 +202,48 @@ impl<'de> serde::Deserialize<'de> for TaxProductResourceTaxSettingsDefaultsProvi
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for TaxProductResourceTaxSettingsDefaultsProvider",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Default [tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#tax-behavior) used to specify whether the price is considered inclusive of taxes or exclusive of taxes.
 /// If the item's price has a tax behavior set, it will take precedence over the default tax behavior.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum TaxProductResourceTaxSettingsDefaultsTaxBehavior {
     Exclusive,
     Inclusive,
     InferredByCurrency,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl TaxProductResourceTaxSettingsDefaultsTaxBehavior {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use TaxProductResourceTaxSettingsDefaultsTaxBehavior::*;
         match self {
             Exclusive => "exclusive",
             Inclusive => "inclusive",
             InferredByCurrency => "inferred_by_currency",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for TaxProductResourceTaxSettingsDefaultsTaxBehavior {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TaxProductResourceTaxSettingsDefaultsTaxBehavior::*;
         match s {
             "exclusive" => Ok(Exclusive),
             "inclusive" => Ok(Inclusive),
             "inferred_by_currency" => Ok(InferredByCurrency),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "TaxProductResourceTaxSettingsDefaultsTaxBehavior"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -261,8 +277,7 @@ impl miniserde::de::Visitor for crate::Place<TaxProductResourceTaxSettingsDefaul
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(
-            TaxProductResourceTaxSettingsDefaultsTaxBehavior::from_str(s)
-                .map_err(|_| miniserde::Error)?,
+            TaxProductResourceTaxSettingsDefaultsTaxBehavior::from_str(s).expect("infallible"),
         );
         Ok(())
     }
@@ -274,10 +289,6 @@ impl<'de> serde::Deserialize<'de> for TaxProductResourceTaxSettingsDefaultsTaxBe
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for TaxProductResourceTaxSettingsDefaultsTaxBehavior",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

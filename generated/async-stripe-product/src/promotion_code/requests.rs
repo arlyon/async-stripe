@@ -242,26 +242,37 @@ impl CreatePromotionCodePromotion {
     }
 }
 /// Specifies the type of promotion.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreatePromotionCodePromotionType {
     Coupon,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreatePromotionCodePromotionType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreatePromotionCodePromotionType::*;
         match self {
             Coupon => "coupon",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreatePromotionCodePromotionType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePromotionCodePromotionType::*;
         match s {
             "coupon" => Ok(Coupon),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePromotionCodePromotionType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -289,9 +300,7 @@ impl<'de> serde::Deserialize<'de> for CreatePromotionCodePromotionType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreatePromotionCodePromotionType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Settings that restrict the redemption of the promotion code.

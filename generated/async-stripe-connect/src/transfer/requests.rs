@@ -211,32 +211,39 @@ impl CreateTransferBuilder {
 /// The source balance to use for this transfer.
 /// One of `bank_account`, `card`, or `fpx`.
 /// For most users, this will default to `card`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateTransferSourceType {
     BankAccount,
     Card,
     Fpx,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateTransferSourceType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateTransferSourceType::*;
         match self {
             BankAccount => "bank_account",
             Card => "card",
             Fpx => "fpx",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateTransferSourceType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateTransferSourceType::*;
         match s {
             "bank_account" => Ok(BankAccount),
             "card" => Ok(Card),
             "fpx" => Ok(Fpx),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CreateTransferSourceType");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -264,8 +271,7 @@ impl<'de> serde::Deserialize<'de> for CreateTransferSourceType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for CreateTransferSourceType"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// To send funds from your Stripe account to a connected account, you create a new transfer object.

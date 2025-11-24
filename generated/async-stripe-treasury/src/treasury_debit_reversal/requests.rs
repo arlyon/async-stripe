@@ -35,29 +35,40 @@ impl ListTreasuryDebitReversalBuilder {
     }
 }
 /// Only return DebitReversals for a given resolution.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum ListTreasuryDebitReversalResolution {
     Lost,
     Won,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl ListTreasuryDebitReversalResolution {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use ListTreasuryDebitReversalResolution::*;
         match self {
             Lost => "lost",
             Won => "won",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for ListTreasuryDebitReversalResolution {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ListTreasuryDebitReversalResolution::*;
         match s {
             "lost" => Ok(Lost),
             "won" => Ok(Won),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "ListTreasuryDebitReversalResolution"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -85,38 +96,47 @@ impl<'de> serde::Deserialize<'de> for ListTreasuryDebitReversalResolution {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for ListTreasuryDebitReversalResolution")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Only return DebitReversals for a given status.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum ListTreasuryDebitReversalStatus {
     Canceled,
     Completed,
     Processing,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl ListTreasuryDebitReversalStatus {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use ListTreasuryDebitReversalStatus::*;
         match self {
             Canceled => "canceled",
             Completed => "completed",
             Processing => "processing",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for ListTreasuryDebitReversalStatus {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ListTreasuryDebitReversalStatus::*;
         match s {
             "canceled" => Ok(Canceled),
             "completed" => Ok(Completed),
             "processing" => Ok(Processing),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "ListTreasuryDebitReversalStatus"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -144,9 +164,7 @@ impl<'de> serde::Deserialize<'de> for ListTreasuryDebitReversalStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for ListTreasuryDebitReversalStatus")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Returns a list of DebitReversals.

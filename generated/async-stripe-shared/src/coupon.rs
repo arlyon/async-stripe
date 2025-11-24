@@ -173,7 +173,7 @@ const _: () = {
                 self.created,
                 self.currency.take(),
                 self.currency_options.take(),
-                self.duration,
+                self.duration.take(),
                 self.duration_in_months,
                 self.id.take(),
                 self.livemode,
@@ -292,32 +292,39 @@ impl stripe_types::Object for Coupon {
     }
 }
 stripe_types::def_id!(CouponId);
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CouponDuration {
     Forever,
     Once,
     Repeating,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CouponDuration {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CouponDuration::*;
         match self {
             Forever => "forever",
             Once => "once",
             Repeating => "repeating",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CouponDuration {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CouponDuration::*;
         match s {
             "forever" => Ok(Forever),
             "once" => Ok(Once),
             "repeating" => Ok(Repeating),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CouponDuration");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -349,7 +356,7 @@ impl miniserde::Deserialize for CouponDuration {
 impl miniserde::de::Visitor for crate::Place<CouponDuration> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(CouponDuration::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(CouponDuration::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -360,6 +367,6 @@ impl<'de> serde::Deserialize<'de> for CouponDuration {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CouponDuration"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

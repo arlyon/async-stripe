@@ -124,7 +124,7 @@ const _: () = {
                 self.generated_sepa_debit.take(),
                 self.generated_sepa_debit_mandate.take(),
                 self.iban_last4.take(),
-                self.preferred_language,
+                self.preferred_language.take(),
                 self.verified_name.take(),
             )
             else {
@@ -187,7 +187,8 @@ const _: () = {
 };
 /// Preferred language of the SOFORT authorization page that the customer is redirected to.
 /// Can be one of `de`, `en`, `es`, `fr`, `it`, `nl`, or `pl`
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PaymentMethodDetailsSofortPreferredLanguage {
     De,
     En,
@@ -196,9 +197,11 @@ pub enum PaymentMethodDetailsSofortPreferredLanguage {
     It,
     Nl,
     Pl,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl PaymentMethodDetailsSofortPreferredLanguage {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PaymentMethodDetailsSofortPreferredLanguage::*;
         match self {
             De => "de",
@@ -208,12 +211,13 @@ impl PaymentMethodDetailsSofortPreferredLanguage {
             It => "it",
             Nl => "nl",
             Pl => "pl",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for PaymentMethodDetailsSofortPreferredLanguage {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentMethodDetailsSofortPreferredLanguage::*;
         match s {
@@ -224,7 +228,14 @@ impl std::str::FromStr for PaymentMethodDetailsSofortPreferredLanguage {
             "it" => Ok(It),
             "nl" => Ok(Nl),
             "pl" => Ok(Pl),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PaymentMethodDetailsSofortPreferredLanguage"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -257,10 +268,8 @@ impl miniserde::Deserialize for PaymentMethodDetailsSofortPreferredLanguage {
 impl miniserde::de::Visitor for crate::Place<PaymentMethodDetailsSofortPreferredLanguage> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            PaymentMethodDetailsSofortPreferredLanguage::from_str(s)
-                .map_err(|_| miniserde::Error)?,
-        );
+        self.out =
+            Some(PaymentMethodDetailsSofortPreferredLanguage::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -271,10 +280,6 @@ impl<'de> serde::Deserialize<'de> for PaymentMethodDetailsSofortPreferredLanguag
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for PaymentMethodDetailsSofortPreferredLanguage",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

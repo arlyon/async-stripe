@@ -65,7 +65,7 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (Some(required_actions), Some(status)) =
-                (self.required_actions.take(), self.status)
+                (self.required_actions.take(), self.status.take())
             else {
                 return None;
             };
@@ -106,16 +106,19 @@ const _: () = {
     }
 };
 /// List of actions required to qualify dispute for Visa Compelling Evidence 3.0 evidence submission.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum DisputeEnhancedEligibilityVisaCompellingEvidence3RequiredActions {
     MissingCustomerIdentifiers,
     MissingDisputedTransactionDescription,
     MissingMerchandiseOrServices,
     MissingPriorUndisputedTransactionDescription,
     MissingPriorUndisputedTransactions,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl DisputeEnhancedEligibilityVisaCompellingEvidence3RequiredActions {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use DisputeEnhancedEligibilityVisaCompellingEvidence3RequiredActions::*;
         match self {
             MissingCustomerIdentifiers => "missing_customer_identifiers",
@@ -125,12 +128,13 @@ impl DisputeEnhancedEligibilityVisaCompellingEvidence3RequiredActions {
                 "missing_prior_undisputed_transaction_description"
             }
             MissingPriorUndisputedTransactions => "missing_prior_undisputed_transactions",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for DisputeEnhancedEligibilityVisaCompellingEvidence3RequiredActions {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use DisputeEnhancedEligibilityVisaCompellingEvidence3RequiredActions::*;
         match s {
@@ -141,7 +145,14 @@ impl std::str::FromStr for DisputeEnhancedEligibilityVisaCompellingEvidence3Requ
                 Ok(MissingPriorUndisputedTransactionDescription)
             }
             "missing_prior_undisputed_transactions" => Ok(MissingPriorUndisputedTransactions),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "DisputeEnhancedEligibilityVisaCompellingEvidence3RequiredActions"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -178,7 +189,7 @@ impl miniserde::de::Visitor
         use std::str::FromStr;
         self.out = Some(
             DisputeEnhancedEligibilityVisaCompellingEvidence3RequiredActions::from_str(s)
-                .map_err(|_| miniserde::Error)?,
+                .expect("infallible"),
         );
         Ok(())
     }
@@ -194,36 +205,47 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for DisputeEnhancedEligibilityVisaCompellingEvidence3RequiredActions"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Visa Compelling Evidence 3.0 eligibility status.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum DisputeEnhancedEligibilityVisaCompellingEvidence3Status {
     NotQualified,
     Qualified,
     RequiresAction,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl DisputeEnhancedEligibilityVisaCompellingEvidence3Status {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use DisputeEnhancedEligibilityVisaCompellingEvidence3Status::*;
         match self {
             NotQualified => "not_qualified",
             Qualified => "qualified",
             RequiresAction => "requires_action",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for DisputeEnhancedEligibilityVisaCompellingEvidence3Status {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use DisputeEnhancedEligibilityVisaCompellingEvidence3Status::*;
         match s {
             "not_qualified" => Ok(NotQualified),
             "qualified" => Ok(Qualified),
             "requires_action" => Ok(RequiresAction),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "DisputeEnhancedEligibilityVisaCompellingEvidence3Status"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -260,7 +282,7 @@ impl miniserde::de::Visitor
         use std::str::FromStr;
         self.out = Some(
             DisputeEnhancedEligibilityVisaCompellingEvidence3Status::from_str(s)
-                .map_err(|_| miniserde::Error)?,
+                .expect("infallible"),
         );
         Ok(())
     }
@@ -272,10 +294,6 @@ impl<'de> serde::Deserialize<'de> for DisputeEnhancedEligibilityVisaCompellingEv
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for DisputeEnhancedEligibilityVisaCompellingEvidence3Status",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

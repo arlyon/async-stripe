@@ -196,7 +196,10 @@ impl std::str::FromStr for PersonRaceDetailsRace {
             "somali" => Ok(Somali),
             "vietnamese" => Ok(Vietnamese),
             "white" => Ok(White),
-            v => Ok(Unknown(v.to_owned())),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "PersonRaceDetailsRace");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -229,7 +232,7 @@ impl miniserde::Deserialize for PersonRaceDetailsRace {
 impl miniserde::de::Visitor for crate::Place<PersonRaceDetailsRace> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(PersonRaceDetailsRace::from_str(s).unwrap());
+        self.out = Some(PersonRaceDetailsRace::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -240,6 +243,6 @@ impl<'de> serde::Deserialize<'de> for PersonRaceDetailsRace {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap())
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

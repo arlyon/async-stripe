@@ -218,7 +218,7 @@ const _: () = {
                 self.name_kanji.take(),
                 self.owners_provided,
                 self.ownership_declaration.take(),
-                self.ownership_exemption_reason,
+                self.ownership_exemption_reason.take(),
                 self.phone.take(),
                 self.registration_date,
                 self.representative_declaration.take(),
@@ -320,25 +320,29 @@ const _: () = {
 };
 /// This value is used to determine if a business is exempt from providing ultimate beneficial owners.
 /// See [this support article](https://support.stripe.com/questions/exemption-from-providing-ownership-details) and [changelog](https://docs.stripe.com/changelog/acacia/2025-01-27/ownership-exemption-reason-accounts-api) for more details.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum LegalEntityCompanyOwnershipExemptionReason {
     QualifiedEntityExceedsOwnershipThreshold,
     QualifiesAsFinancialInstitution,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl LegalEntityCompanyOwnershipExemptionReason {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use LegalEntityCompanyOwnershipExemptionReason::*;
         match self {
             QualifiedEntityExceedsOwnershipThreshold => {
                 "qualified_entity_exceeds_ownership_threshold"
             }
             QualifiesAsFinancialInstitution => "qualifies_as_financial_institution",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for LegalEntityCompanyOwnershipExemptionReason {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use LegalEntityCompanyOwnershipExemptionReason::*;
         match s {
@@ -346,7 +350,14 @@ impl std::str::FromStr for LegalEntityCompanyOwnershipExemptionReason {
                 Ok(QualifiedEntityExceedsOwnershipThreshold)
             }
             "qualifies_as_financial_institution" => Ok(QualifiesAsFinancialInstitution),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "LegalEntityCompanyOwnershipExemptionReason"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -379,10 +390,8 @@ impl miniserde::Deserialize for LegalEntityCompanyOwnershipExemptionReason {
 impl miniserde::de::Visitor for crate::Place<LegalEntityCompanyOwnershipExemptionReason> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            LegalEntityCompanyOwnershipExemptionReason::from_str(s)
-                .map_err(|_| miniserde::Error)?,
-        );
+        self.out =
+            Some(LegalEntityCompanyOwnershipExemptionReason::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -393,9 +402,7 @@ impl<'de> serde::Deserialize<'de> for LegalEntityCompanyOwnershipExemptionReason
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for LegalEntityCompanyOwnershipExemptionReason")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The category identifying the legal structure of the company or legal entity.
@@ -490,7 +497,14 @@ impl std::str::FromStr for LegalEntityCompanyStructure {
             "unincorporated_association" => Ok(UnincorporatedAssociation),
             "unincorporated_non_profit" => Ok(UnincorporatedNonProfit),
             "unincorporated_partnership" => Ok(UnincorporatedPartnership),
-            v => Ok(Unknown(v.to_owned())),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "LegalEntityCompanyStructure"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -523,7 +537,7 @@ impl miniserde::Deserialize for LegalEntityCompanyStructure {
 impl miniserde::de::Visitor for crate::Place<LegalEntityCompanyStructure> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(LegalEntityCompanyStructure::from_str(s).unwrap());
+        self.out = Some(LegalEntityCompanyStructure::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -534,6 +548,6 @@ impl<'de> serde::Deserialize<'de> for LegalEntityCompanyStructure {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap())
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

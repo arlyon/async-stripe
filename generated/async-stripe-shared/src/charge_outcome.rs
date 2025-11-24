@@ -134,7 +134,7 @@ const _: () = {
                 Some(seller_message),
                 Some(type_),
             ) = (
-                self.advice_code,
+                self.advice_code.take(),
                 self.network_advice_code.take(),
                 self.network_decline_code.take(),
                 self.network_status.take(),
@@ -204,32 +204,39 @@ const _: () = {
     }
 };
 /// An enumerated value providing a more detailed explanation on [how to proceed with an error](https://stripe.com/docs/declines#retrying-issuer-declines).
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum ChargeOutcomeAdviceCode {
     ConfirmCardData,
     DoNotTryAgain,
     TryAgainLater,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl ChargeOutcomeAdviceCode {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use ChargeOutcomeAdviceCode::*;
         match self {
             ConfirmCardData => "confirm_card_data",
             DoNotTryAgain => "do_not_try_again",
             TryAgainLater => "try_again_later",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for ChargeOutcomeAdviceCode {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ChargeOutcomeAdviceCode::*;
         match s {
             "confirm_card_data" => Ok(ConfirmCardData),
             "do_not_try_again" => Ok(DoNotTryAgain),
             "try_again_later" => Ok(TryAgainLater),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "ChargeOutcomeAdviceCode");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -262,7 +269,7 @@ impl miniserde::Deserialize for ChargeOutcomeAdviceCode {
 impl miniserde::de::Visitor for crate::Place<ChargeOutcomeAdviceCode> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(ChargeOutcomeAdviceCode::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(ChargeOutcomeAdviceCode::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -273,7 +280,6 @@ impl<'de> serde::Deserialize<'de> for ChargeOutcomeAdviceCode {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for ChargeOutcomeAdviceCode"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

@@ -75,7 +75,7 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (Some(body), Some(headers), Some(http_method)) =
-                (self.body.take(), self.headers.take(), self.http_method)
+                (self.body.take(), self.headers.take(), self.http_method.take())
             else {
                 return None;
             };
@@ -117,26 +117,37 @@ const _: () = {
     }
 };
 /// The HTTP method used to call the destination endpoint.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum ForwardedRequestDetailsHttpMethod {
     Post,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl ForwardedRequestDetailsHttpMethod {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use ForwardedRequestDetailsHttpMethod::*;
         match self {
             Post => "POST",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for ForwardedRequestDetailsHttpMethod {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ForwardedRequestDetailsHttpMethod::*;
         match s {
             "POST" => Ok(Post),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "ForwardedRequestDetailsHttpMethod"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -169,8 +180,7 @@ impl miniserde::Deserialize for ForwardedRequestDetailsHttpMethod {
 impl miniserde::de::Visitor for crate::Place<ForwardedRequestDetailsHttpMethod> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out =
-            Some(ForwardedRequestDetailsHttpMethod::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(ForwardedRequestDetailsHttpMethod::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -181,8 +191,6 @@ impl<'de> serde::Deserialize<'de> for ForwardedRequestDetailsHttpMethod {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for ForwardedRequestDetailsHttpMethod")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

@@ -78,9 +78,11 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(amount), Some(credits_application_invoice_voided), Some(type_)) =
-                (self.amount.take(), self.credits_application_invoice_voided.take(), self.type_)
-            else {
+            let (Some(amount), Some(credits_application_invoice_voided), Some(type_)) = (
+                self.amount.take(),
+                self.credits_application_invoice_voided.take(),
+                self.type_.take(),
+            ) else {
                 return None;
             };
             Some(Self::Out { amount, credits_application_invoice_voided, type_ })
@@ -123,29 +125,40 @@ const _: () = {
     }
 };
 /// The type of credit transaction.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum BillingCreditGrantsResourceBalanceCreditType {
     CreditsApplicationInvoiceVoided,
     CreditsGranted,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl BillingCreditGrantsResourceBalanceCreditType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use BillingCreditGrantsResourceBalanceCreditType::*;
         match self {
             CreditsApplicationInvoiceVoided => "credits_application_invoice_voided",
             CreditsGranted => "credits_granted",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for BillingCreditGrantsResourceBalanceCreditType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use BillingCreditGrantsResourceBalanceCreditType::*;
         match s {
             "credits_application_invoice_voided" => Ok(CreditsApplicationInvoiceVoided),
             "credits_granted" => Ok(CreditsGranted),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "BillingCreditGrantsResourceBalanceCreditType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -178,10 +191,8 @@ impl miniserde::Deserialize for BillingCreditGrantsResourceBalanceCreditType {
 impl miniserde::de::Visitor for crate::Place<BillingCreditGrantsResourceBalanceCreditType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            BillingCreditGrantsResourceBalanceCreditType::from_str(s)
-                .map_err(|_| miniserde::Error)?,
-        );
+        self.out =
+            Some(BillingCreditGrantsResourceBalanceCreditType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -192,10 +203,6 @@ impl<'de> serde::Deserialize<'de> for BillingCreditGrantsResourceBalanceCreditTy
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for BillingCreditGrantsResourceBalanceCreditType",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

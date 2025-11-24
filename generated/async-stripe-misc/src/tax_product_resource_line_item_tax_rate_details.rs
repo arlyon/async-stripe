@@ -178,7 +178,14 @@ impl std::str::FromStr for TaxProductResourceLineItemTaxRateDetailsTaxType {
             "sales_tax" => Ok(SalesTax),
             "service_tax" => Ok(ServiceTax),
             "vat" => Ok(Vat),
-            v => Ok(Unknown(v.to_owned())),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "TaxProductResourceLineItemTaxRateDetailsTaxType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -211,7 +218,8 @@ impl miniserde::Deserialize for TaxProductResourceLineItemTaxRateDetailsTaxType 
 impl miniserde::de::Visitor for crate::Place<TaxProductResourceLineItemTaxRateDetailsTaxType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(TaxProductResourceLineItemTaxRateDetailsTaxType::from_str(s).unwrap());
+        self.out =
+            Some(TaxProductResourceLineItemTaxRateDetailsTaxType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -222,6 +230,6 @@ impl<'de> serde::Deserialize<'de> for TaxProductResourceLineItemTaxRateDetailsTa
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap())
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

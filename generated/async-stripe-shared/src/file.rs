@@ -302,7 +302,10 @@ impl std::str::FromStr for FilePurpose {
             "tax_document_user_upload" => Ok(TaxDocumentUserUpload),
             "terminal_android_apk" => Ok(TerminalAndroidApk),
             "terminal_reader_splashscreen" => Ok(TerminalReaderSplashscreen),
-            v => Ok(Unknown(v.to_owned())),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "FilePurpose");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -334,7 +337,7 @@ impl miniserde::Deserialize for FilePurpose {
 impl miniserde::de::Visitor for crate::Place<FilePurpose> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(FilePurpose::from_str(s).unwrap());
+        self.out = Some(FilePurpose::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -345,6 +348,6 @@ impl<'de> serde::Deserialize<'de> for FilePurpose {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap())
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

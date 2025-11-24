@@ -80,7 +80,7 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (Some(filters), Some(gte), Some(meter), Some(recurrence)) =
-                (self.filters.take(), self.gte, self.meter.take(), self.recurrence)
+                (self.filters.take(), self.gte, self.meter.take(), self.recurrence.take())
             else {
                 return None;
             };
@@ -123,26 +123,37 @@ const _: () = {
     }
 };
 /// Defines how the alert will behave.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum ThresholdsResourceUsageThresholdConfigRecurrence {
     OneTime,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl ThresholdsResourceUsageThresholdConfigRecurrence {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use ThresholdsResourceUsageThresholdConfigRecurrence::*;
         match self {
             OneTime => "one_time",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for ThresholdsResourceUsageThresholdConfigRecurrence {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ThresholdsResourceUsageThresholdConfigRecurrence::*;
         match s {
             "one_time" => Ok(OneTime),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "ThresholdsResourceUsageThresholdConfigRecurrence"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -176,8 +187,7 @@ impl miniserde::de::Visitor for crate::Place<ThresholdsResourceUsageThresholdCon
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(
-            ThresholdsResourceUsageThresholdConfigRecurrence::from_str(s)
-                .map_err(|_| miniserde::Error)?,
+            ThresholdsResourceUsageThresholdConfigRecurrence::from_str(s).expect("infallible"),
         );
         Ok(())
     }
@@ -189,10 +199,6 @@ impl<'de> serde::Deserialize<'de> for ThresholdsResourceUsageThresholdConfigRecu
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for ThresholdsResourceUsageThresholdConfigRecurrence",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

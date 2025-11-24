@@ -279,7 +279,7 @@ const _: () = {
                 self.application_fee_amount,
                 self.application_fee_percent,
                 self.automatic_tax.take(),
-                self.collection_method,
+                self.collection_method.take(),
                 self.computed.take(),
                 self.created,
                 self.currency.take(),
@@ -299,7 +299,7 @@ const _: () = {
                 self.metadata.take(),
                 self.number.take(),
                 self.on_behalf_of.take(),
-                self.status,
+                self.status.take(),
                 self.status_transitions,
                 self.subscription.take(),
                 self.subscription_data.take(),
@@ -475,29 +475,36 @@ impl stripe_types::Object for Quote {
     }
 }
 stripe_types::def_id!(QuoteId);
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum QuoteCollectionMethod {
     ChargeAutomatically,
     SendInvoice,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl QuoteCollectionMethod {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use QuoteCollectionMethod::*;
         match self {
             ChargeAutomatically => "charge_automatically",
             SendInvoice => "send_invoice",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for QuoteCollectionMethod {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use QuoteCollectionMethod::*;
         match s {
             "charge_automatically" => Ok(ChargeAutomatically),
             "send_invoice" => Ok(SendInvoice),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "QuoteCollectionMethod");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -529,7 +536,7 @@ impl miniserde::Deserialize for QuoteCollectionMethod {
 impl miniserde::de::Visitor for crate::Place<QuoteCollectionMethod> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(QuoteCollectionMethod::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(QuoteCollectionMethod::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -540,31 +547,34 @@ impl<'de> serde::Deserialize<'de> for QuoteCollectionMethod {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for QuoteCollectionMethod"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum QuoteStatus {
     Accepted,
     Canceled,
     Draft,
     Open,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl QuoteStatus {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use QuoteStatus::*;
         match self {
             Accepted => "accepted",
             Canceled => "canceled",
             Draft => "draft",
             Open => "open",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for QuoteStatus {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use QuoteStatus::*;
         match s {
@@ -572,7 +582,10 @@ impl std::str::FromStr for QuoteStatus {
             "canceled" => Ok(Canceled),
             "draft" => Ok(Draft),
             "open" => Ok(Open),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "QuoteStatus");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -604,7 +617,7 @@ impl miniserde::Deserialize for QuoteStatus {
 impl miniserde::de::Visitor for crate::Place<QuoteStatus> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(QuoteStatus::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(QuoteStatus::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -615,6 +628,6 @@ impl<'de> serde::Deserialize<'de> for QuoteStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for QuoteStatus"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

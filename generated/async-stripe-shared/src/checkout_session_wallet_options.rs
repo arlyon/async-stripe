@@ -1,4 +1,4 @@
-#[derive(Copy, Clone, Debug)]
+#[derive(Clone, Debug)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct CheckoutSessionWalletOptions {
@@ -59,7 +59,7 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(link),) = (self.link,) else {
+            let (Some(link),) = (self.link.take(),) else {
                 return None;
             };
             Some(Self::Out { link })

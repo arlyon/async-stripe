@@ -1,4 +1,4 @@
-#[derive(Copy, Clone, Debug)]
+#[derive(Clone, Debug)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct BankConnectionsResourceBalanceRefresh {
@@ -77,7 +77,7 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (Some(last_attempted_at), Some(next_refresh_available_at), Some(status)) =
-                (self.last_attempted_at, self.next_refresh_available_at, self.status)
+                (self.last_attempted_at, self.next_refresh_available_at, self.status.take())
             else {
                 return None;
             };
@@ -121,32 +121,43 @@ const _: () = {
     }
 };
 /// The status of the last refresh attempt.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum BankConnectionsResourceBalanceRefreshStatus {
     Failed,
     Pending,
     Succeeded,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl BankConnectionsResourceBalanceRefreshStatus {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use BankConnectionsResourceBalanceRefreshStatus::*;
         match self {
             Failed => "failed",
             Pending => "pending",
             Succeeded => "succeeded",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for BankConnectionsResourceBalanceRefreshStatus {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use BankConnectionsResourceBalanceRefreshStatus::*;
         match s {
             "failed" => Ok(Failed),
             "pending" => Ok(Pending),
             "succeeded" => Ok(Succeeded),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "BankConnectionsResourceBalanceRefreshStatus"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -179,10 +190,8 @@ impl miniserde::Deserialize for BankConnectionsResourceBalanceRefreshStatus {
 impl miniserde::de::Visitor for crate::Place<BankConnectionsResourceBalanceRefreshStatus> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            BankConnectionsResourceBalanceRefreshStatus::from_str(s)
-                .map_err(|_| miniserde::Error)?,
-        );
+        self.out =
+            Some(BankConnectionsResourceBalanceRefreshStatus::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -193,10 +202,6 @@ impl<'de> serde::Deserialize<'de> for BankConnectionsResourceBalanceRefreshStatu
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for BankConnectionsResourceBalanceRefreshStatus",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

@@ -1,4 +1,4 @@
-#[derive(Copy, Clone, Debug)]
+#[derive(Clone, Debug)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentFlowsPrivatePaymentMethodsCardDetailsApiResourceMulticapture {
@@ -60,7 +60,7 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(status),) = (self.status,) else {
+            let (Some(status),) = (self.status.take(),) else {
                 return None;
             };
             Some(Self::Out { status })
@@ -99,17 +99,21 @@ const _: () = {
     }
 };
 /// Indicates whether or not multiple captures are supported.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PaymentFlowsPrivatePaymentMethodsCardDetailsApiResourceMulticaptureStatus {
     Available,
     Unavailable,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl PaymentFlowsPrivatePaymentMethodsCardDetailsApiResourceMulticaptureStatus {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PaymentFlowsPrivatePaymentMethodsCardDetailsApiResourceMulticaptureStatus::*;
         match self {
             Available => "available",
             Unavailable => "unavailable",
+            Unknown(v) => v,
         }
     }
 }
@@ -117,13 +121,20 @@ impl PaymentFlowsPrivatePaymentMethodsCardDetailsApiResourceMulticaptureStatus {
 impl std::str::FromStr
     for PaymentFlowsPrivatePaymentMethodsCardDetailsApiResourceMulticaptureStatus
 {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentFlowsPrivatePaymentMethodsCardDetailsApiResourceMulticaptureStatus::*;
         match s {
             "available" => Ok(Available),
             "unavailable" => Ok(Unavailable),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PaymentFlowsPrivatePaymentMethodsCardDetailsApiResourceMulticaptureStatus"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -166,7 +177,7 @@ impl miniserde::de::Visitor
         use std::str::FromStr;
         self.out = Some(
             PaymentFlowsPrivatePaymentMethodsCardDetailsApiResourceMulticaptureStatus::from_str(s)
-                .map_err(|_| miniserde::Error)?,
+                .expect("infallible"),
         );
         Ok(())
     }
@@ -182,6 +193,6 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for PaymentFlowsPrivatePaymentMethodsCardDetailsApiResourceMulticaptureStatus"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

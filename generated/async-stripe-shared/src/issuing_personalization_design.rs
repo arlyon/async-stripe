@@ -143,7 +143,7 @@ const _: () = {
                 self.physical_bundle.take(),
                 self.preferences,
                 self.rejection_reasons.take(),
-                self.status,
+                self.status.take(),
             )
             else {
                 return None;
@@ -240,27 +240,31 @@ impl stripe_types::Object for IssuingPersonalizationDesign {
     }
 }
 stripe_types::def_id!(IssuingPersonalizationDesignId);
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum IssuingPersonalizationDesignStatus {
     Active,
     Inactive,
     Rejected,
     Review,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl IssuingPersonalizationDesignStatus {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use IssuingPersonalizationDesignStatus::*;
         match self {
             Active => "active",
             Inactive => "inactive",
             Rejected => "rejected",
             Review => "review",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for IssuingPersonalizationDesignStatus {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use IssuingPersonalizationDesignStatus::*;
         match s {
@@ -268,7 +272,14 @@ impl std::str::FromStr for IssuingPersonalizationDesignStatus {
             "inactive" => Ok(Inactive),
             "rejected" => Ok(Rejected),
             "review" => Ok(Review),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "IssuingPersonalizationDesignStatus"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -300,8 +311,7 @@ impl miniserde::Deserialize for IssuingPersonalizationDesignStatus {
 impl miniserde::de::Visitor for crate::Place<IssuingPersonalizationDesignStatus> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out =
-            Some(IssuingPersonalizationDesignStatus::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(IssuingPersonalizationDesignStatus::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -312,8 +322,6 @@ impl<'de> serde::Deserialize<'de> for IssuingPersonalizationDesignStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for IssuingPersonalizationDesignStatus")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

@@ -82,7 +82,7 @@ const _: () = {
                 self.reference.take(),
                 self.reference_status.take(),
                 self.reference_type.take(),
-                self.type_,
+                self.type_.take(),
             ) else {
                 return None;
             };
@@ -125,32 +125,43 @@ const _: () = {
     }
 };
 /// The type of refund. This can be `refund`, `reversal`, or `pending`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum RefundDestinationDetailsCardType {
     Pending,
     Refund,
     Reversal,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl RefundDestinationDetailsCardType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use RefundDestinationDetailsCardType::*;
         match self {
             Pending => "pending",
             Refund => "refund",
             Reversal => "reversal",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for RefundDestinationDetailsCardType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use RefundDestinationDetailsCardType::*;
         match s {
             "pending" => Ok(Pending),
             "refund" => Ok(Refund),
             "reversal" => Ok(Reversal),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "RefundDestinationDetailsCardType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -183,8 +194,7 @@ impl miniserde::Deserialize for RefundDestinationDetailsCardType {
 impl miniserde::de::Visitor for crate::Place<RefundDestinationDetailsCardType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out =
-            Some(RefundDestinationDetailsCardType::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(RefundDestinationDetailsCardType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -195,8 +205,6 @@ impl<'de> serde::Deserialize<'de> for RefundDestinationDetailsCardType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for RefundDestinationDetailsCardType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

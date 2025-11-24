@@ -126,27 +126,31 @@ const _: () = {
     }
 };
 /// The list of permissions to request. The `payment_method` permission must be included.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum LinkedAccountOptionsCommonPermissions {
     Balances,
     Ownership,
     PaymentMethod,
     Transactions,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl LinkedAccountOptionsCommonPermissions {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use LinkedAccountOptionsCommonPermissions::*;
         match self {
             Balances => "balances",
             Ownership => "ownership",
             PaymentMethod => "payment_method",
             Transactions => "transactions",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for LinkedAccountOptionsCommonPermissions {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use LinkedAccountOptionsCommonPermissions::*;
         match s {
@@ -154,7 +158,14 @@ impl std::str::FromStr for LinkedAccountOptionsCommonPermissions {
             "ownership" => Ok(Ownership),
             "payment_method" => Ok(PaymentMethod),
             "transactions" => Ok(Transactions),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "LinkedAccountOptionsCommonPermissions"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -187,8 +198,7 @@ impl miniserde::Deserialize for LinkedAccountOptionsCommonPermissions {
 impl miniserde::de::Visitor for crate::Place<LinkedAccountOptionsCommonPermissions> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out =
-            Some(LinkedAccountOptionsCommonPermissions::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(LinkedAccountOptionsCommonPermissions::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -199,38 +209,47 @@ impl<'de> serde::Deserialize<'de> for LinkedAccountOptionsCommonPermissions {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for LinkedAccountOptionsCommonPermissions")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Data features requested to be retrieved upon account creation.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum LinkedAccountOptionsCommonPrefetch {
     Balances,
     Ownership,
     Transactions,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl LinkedAccountOptionsCommonPrefetch {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use LinkedAccountOptionsCommonPrefetch::*;
         match self {
             Balances => "balances",
             Ownership => "ownership",
             Transactions => "transactions",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for LinkedAccountOptionsCommonPrefetch {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use LinkedAccountOptionsCommonPrefetch::*;
         match s {
             "balances" => Ok(Balances),
             "ownership" => Ok(Ownership),
             "transactions" => Ok(Transactions),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "LinkedAccountOptionsCommonPrefetch"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -263,8 +282,7 @@ impl miniserde::Deserialize for LinkedAccountOptionsCommonPrefetch {
 impl miniserde::de::Visitor for crate::Place<LinkedAccountOptionsCommonPrefetch> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out =
-            Some(LinkedAccountOptionsCommonPrefetch::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(LinkedAccountOptionsCommonPrefetch::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -275,8 +293,6 @@ impl<'de> serde::Deserialize<'de> for LinkedAccountOptionsCommonPrefetch {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for LinkedAccountOptionsCommonPrefetch")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

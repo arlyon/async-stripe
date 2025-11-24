@@ -98,7 +98,7 @@ const _: () = {
             ) = (
                 self.amount,
                 self.jurisdiction.take(),
-                self.sourcing,
+                self.sourcing.take(),
                 self.tax_rate_details.take(),
                 self.taxability_reason.take(),
                 self.taxable_amount,
@@ -154,29 +154,40 @@ const _: () = {
     }
 };
 /// Indicates whether the jurisdiction was determined by the origin (merchant's address) or destination (customer's address).
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum TaxProductResourceLineItemTaxBreakdownSourcing {
     Destination,
     Origin,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl TaxProductResourceLineItemTaxBreakdownSourcing {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use TaxProductResourceLineItemTaxBreakdownSourcing::*;
         match self {
             Destination => "destination",
             Origin => "origin",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for TaxProductResourceLineItemTaxBreakdownSourcing {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TaxProductResourceLineItemTaxBreakdownSourcing::*;
         match s {
             "destination" => Ok(Destination),
             "origin" => Ok(Origin),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "TaxProductResourceLineItemTaxBreakdownSourcing"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -209,10 +220,8 @@ impl miniserde::Deserialize for TaxProductResourceLineItemTaxBreakdownSourcing {
 impl miniserde::de::Visitor for crate::Place<TaxProductResourceLineItemTaxBreakdownSourcing> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            TaxProductResourceLineItemTaxBreakdownSourcing::from_str(s)
-                .map_err(|_| miniserde::Error)?,
-        );
+        self.out =
+            Some(TaxProductResourceLineItemTaxBreakdownSourcing::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -223,11 +232,7 @@ impl<'de> serde::Deserialize<'de> for TaxProductResourceLineItemTaxBreakdownSour
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for TaxProductResourceLineItemTaxBreakdownSourcing",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The reasoning behind this tax, for example, if the product is tax exempt.
@@ -297,7 +302,14 @@ impl std::str::FromStr for TaxProductResourceLineItemTaxBreakdownTaxabilityReaso
             "standard_rated" => Ok(StandardRated),
             "taxable_basis_reduced" => Ok(TaxableBasisReduced),
             "zero_rated" => Ok(ZeroRated),
-            v => Ok(Unknown(v.to_owned())),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "TaxProductResourceLineItemTaxBreakdownTaxabilityReason"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -332,8 +344,10 @@ impl miniserde::de::Visitor
 {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out =
-            Some(TaxProductResourceLineItemTaxBreakdownTaxabilityReason::from_str(s).unwrap());
+        self.out = Some(
+            TaxProductResourceLineItemTaxBreakdownTaxabilityReason::from_str(s)
+                .expect("infallible"),
+        );
         Ok(())
     }
 }
@@ -344,6 +358,6 @@ impl<'de> serde::Deserialize<'de> for TaxProductResourceLineItemTaxBreakdownTaxa
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap())
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

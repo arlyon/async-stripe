@@ -382,13 +382,13 @@ const _: () = {
                 self.automatic_tax.take(),
                 self.billing_cycle_anchor,
                 self.billing_cycle_anchor_config,
-                self.billing_mode,
+                self.billing_mode.take(),
                 self.billing_thresholds,
                 self.cancel_at,
                 self.cancel_at_period_end,
                 self.canceled_at,
                 self.cancellation_details.take(),
-                self.collection_method,
+                self.collection_method.take(),
                 self.created,
                 self.currency.take(),
                 self.customer.take(),
@@ -407,18 +407,18 @@ const _: () = {
                 self.metadata.take(),
                 self.next_pending_invoice_item_invoice,
                 self.on_behalf_of.take(),
-                self.pause_collection,
+                self.pause_collection.take(),
                 self.payment_settings.take(),
-                self.pending_invoice_item_interval,
+                self.pending_invoice_item_interval.take(),
                 self.pending_setup_intent.take(),
                 self.pending_update.take(),
                 self.schedule.take(),
                 self.start_date,
-                self.status,
+                self.status.take(),
                 self.test_clock.take(),
                 self.transfer_data.take(),
                 self.trial_end,
-                self.trial_settings,
+                self.trial_settings.take(),
                 self.trial_start,
             )
             else {
@@ -636,7 +636,8 @@ impl serde::Serialize for Subscription {
 /// If subscription `collection_method=send_invoice` it becomes `past_due` when its invoice is not paid by the due date, and `canceled` or `unpaid` if it is still not paid by an additional deadline after that.
 /// Note that when a subscription has a status of `unpaid`, no subsequent invoices will be attempted (invoices will be created, but then immediately automatically closed).
 /// After receiving updated payment information from a customer, you may choose to reopen and pay their closed invoices.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum SubscriptionStatus {
     Active,
     Canceled,
@@ -646,9 +647,11 @@ pub enum SubscriptionStatus {
     Paused,
     Trialing,
     Unpaid,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl SubscriptionStatus {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use SubscriptionStatus::*;
         match self {
             Active => "active",
@@ -659,12 +662,13 @@ impl SubscriptionStatus {
             Paused => "paused",
             Trialing => "trialing",
             Unpaid => "unpaid",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for SubscriptionStatus {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use SubscriptionStatus::*;
         match s {
@@ -676,7 +680,10 @@ impl std::str::FromStr for SubscriptionStatus {
             "paused" => Ok(Paused),
             "trialing" => Ok(Trialing),
             "unpaid" => Ok(Unpaid),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "SubscriptionStatus");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -709,7 +716,7 @@ impl miniserde::Deserialize for SubscriptionStatus {
 impl miniserde::de::Visitor for crate::Place<SubscriptionStatus> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(SubscriptionStatus::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(SubscriptionStatus::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -720,8 +727,7 @@ impl<'de> serde::Deserialize<'de> for SubscriptionStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for SubscriptionStatus"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 impl stripe_types::Object for Subscription {
@@ -735,29 +741,40 @@ impl stripe_types::Object for Subscription {
     }
 }
 stripe_types::def_id!(SubscriptionId);
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum SubscriptionCollectionMethod {
     ChargeAutomatically,
     SendInvoice,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl SubscriptionCollectionMethod {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use SubscriptionCollectionMethod::*;
         match self {
             ChargeAutomatically => "charge_automatically",
             SendInvoice => "send_invoice",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for SubscriptionCollectionMethod {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use SubscriptionCollectionMethod::*;
         match s {
             "charge_automatically" => Ok(ChargeAutomatically),
             "send_invoice" => Ok(SendInvoice),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "SubscriptionCollectionMethod"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -789,7 +806,7 @@ impl miniserde::Deserialize for SubscriptionCollectionMethod {
 impl miniserde::de::Visitor for crate::Place<SubscriptionCollectionMethod> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(SubscriptionCollectionMethod::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(SubscriptionCollectionMethod::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -800,7 +817,6 @@ impl<'de> serde::Deserialize<'de> for SubscriptionCollectionMethod {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for SubscriptionCollectionMethod"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

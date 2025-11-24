@@ -78,9 +78,10 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(payment_method_allow_redisplay_filters), Some(payment_method_remove)) =
-                (self.payment_method_allow_redisplay_filters.take(), self.payment_method_remove)
-            else {
+            let (Some(payment_method_allow_redisplay_filters), Some(payment_method_remove)) = (
+                self.payment_method_allow_redisplay_filters.take(),
+                self.payment_method_remove.take(),
+            ) else {
                 return None;
             };
             Some(Self::Out { payment_method_allow_redisplay_filters, payment_method_remove })
@@ -128,34 +129,38 @@ const _: () = {
 ///
 /// If not specified, defaults to ["always"].
 /// In order to display all saved payment methods, specify ["always", "limited", "unspecified"].
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CustomerSessionResourceComponentsResourceCustomerSheetResourceFeaturesPaymentMethodAllowRedisplayFilters
 {
     Always,
     Limited,
     Unspecified,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CustomerSessionResourceComponentsResourceCustomerSheetResourceFeaturesPaymentMethodAllowRedisplayFilters {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CustomerSessionResourceComponentsResourceCustomerSheetResourceFeaturesPaymentMethodAllowRedisplayFilters::*;
         match self {
 Always => "always",
 Limited => "limited",
 Unspecified => "unspecified",
+Unknown(v) => v,
 
         }
     }
 }
 
 impl std::str::FromStr for CustomerSessionResourceComponentsResourceCustomerSheetResourceFeaturesPaymentMethodAllowRedisplayFilters {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CustomerSessionResourceComponentsResourceCustomerSheetResourceFeaturesPaymentMethodAllowRedisplayFilters::*;
         match s {
     "always" => Ok(Always),
 "limited" => Ok(Limited),
 "unspecified" => Ok(Unspecified),
-_ => Err(stripe_types::StripeParseError)
+v => { tracing::warn!("Unknown value '{}' for enum '{}'", v, "CustomerSessionResourceComponentsResourceCustomerSheetResourceFeaturesPaymentMethodAllowRedisplayFilters"); Ok(Unknown(v.to_owned())) }
 
         }
     }
@@ -186,7 +191,7 @@ impl miniserde::Deserialize for CustomerSessionResourceComponentsResourceCustome
 impl miniserde::de::Visitor for crate::Place<CustomerSessionResourceComponentsResourceCustomerSheetResourceFeaturesPaymentMethodAllowRedisplayFilters> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(CustomerSessionResourceComponentsResourceCustomerSheetResourceFeaturesPaymentMethodAllowRedisplayFilters::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(CustomerSessionResourceComponentsResourceCustomerSheetResourceFeaturesPaymentMethodAllowRedisplayFilters::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -197,24 +202,28 @@ impl<'de> serde::Deserialize<'de> for CustomerSessionResourceComponentsResourceC
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CustomerSessionResourceComponentsResourceCustomerSheetResourceFeaturesPaymentMethodAllowRedisplayFilters"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Controls whether the customer sheet displays the option to remove a saved payment method."
 ///
 /// Allowing buyers to remove their saved payment methods impacts subscriptions that depend on that payment method.
 /// Removing the payment method detaches the [`customer` object](https://docs.stripe.com/api/payment_methods/object#payment_method_object-customer) from that [PaymentMethod](https://docs.stripe.com/api/payment_methods).
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CustomerSessionResourceComponentsResourceCustomerSheetResourceFeaturesPaymentMethodRemove {
     Disabled,
     Enabled,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CustomerSessionResourceComponentsResourceCustomerSheetResourceFeaturesPaymentMethodRemove {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CustomerSessionResourceComponentsResourceCustomerSheetResourceFeaturesPaymentMethodRemove::*;
         match self {
             Disabled => "disabled",
             Enabled => "enabled",
+            Unknown(v) => v,
         }
     }
 }
@@ -222,13 +231,20 @@ impl CustomerSessionResourceComponentsResourceCustomerSheetResourceFeaturesPayme
 impl std::str::FromStr
     for CustomerSessionResourceComponentsResourceCustomerSheetResourceFeaturesPaymentMethodRemove
 {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CustomerSessionResourceComponentsResourceCustomerSheetResourceFeaturesPaymentMethodRemove::*;
         match s {
             "disabled" => Ok(Disabled),
             "enabled" => Ok(Enabled),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CustomerSessionResourceComponentsResourceCustomerSheetResourceFeaturesPaymentMethodRemove"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -273,7 +289,7 @@ impl miniserde::de::Visitor
 {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(CustomerSessionResourceComponentsResourceCustomerSheetResourceFeaturesPaymentMethodRemove::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(CustomerSessionResourceComponentsResourceCustomerSheetResourceFeaturesPaymentMethodRemove::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -288,6 +304,6 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CustomerSessionResourceComponentsResourceCustomerSheetResourceFeaturesPaymentMethodRemove"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

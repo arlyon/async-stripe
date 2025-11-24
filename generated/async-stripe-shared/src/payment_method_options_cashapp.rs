@@ -1,4 +1,4 @@
-#[derive(Copy, Clone, Debug)]
+#[derive(Clone, Debug)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentMethodOptionsCashapp {
@@ -75,7 +75,7 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (Some(capture_method), Some(setup_future_usage)) =
-                (self.capture_method, self.setup_future_usage)
+                (self.capture_method.take(), self.setup_future_usage.take())
             else {
                 return None;
             };
@@ -116,26 +116,37 @@ const _: () = {
     }
 };
 /// Controls when the funds will be captured from the customer's account.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PaymentMethodOptionsCashappCaptureMethod {
     Manual,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl PaymentMethodOptionsCashappCaptureMethod {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PaymentMethodOptionsCashappCaptureMethod::*;
         match self {
             Manual => "manual",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for PaymentMethodOptionsCashappCaptureMethod {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentMethodOptionsCashappCaptureMethod::*;
         match s {
             "manual" => Ok(Manual),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PaymentMethodOptionsCashappCaptureMethod"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -168,9 +179,7 @@ impl miniserde::Deserialize for PaymentMethodOptionsCashappCaptureMethod {
 impl miniserde::de::Visitor for crate::Place<PaymentMethodOptionsCashappCaptureMethod> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            PaymentMethodOptionsCashappCaptureMethod::from_str(s).map_err(|_| miniserde::Error)?,
-        );
+        self.out = Some(PaymentMethodOptionsCashappCaptureMethod::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -181,9 +190,7 @@ impl<'de> serde::Deserialize<'de> for PaymentMethodOptionsCashappCaptureMethod {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for PaymentMethodOptionsCashappCaptureMethod")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -194,32 +201,43 @@ impl<'de> serde::Deserialize<'de> for PaymentMethodOptionsCashappCaptureMethod {
 /// If the payment method is `card_present` and isn't a digital wallet, Stripe creates and attaches a [generated_card](/api/charges/object#charge_object-payment_method_details-card_present-generated_card) payment method representing the card to the Customer instead.
 ///
 /// When processing card payments, Stripe uses `setup_future_usage` to help you comply with regional legislation and network rules, such as [SCA](/strong-customer-authentication).
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PaymentMethodOptionsCashappSetupFutureUsage {
     None,
     OffSession,
     OnSession,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl PaymentMethodOptionsCashappSetupFutureUsage {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PaymentMethodOptionsCashappSetupFutureUsage::*;
         match self {
             None => "none",
             OffSession => "off_session",
             OnSession => "on_session",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for PaymentMethodOptionsCashappSetupFutureUsage {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentMethodOptionsCashappSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
             "off_session" => Ok(OffSession),
             "on_session" => Ok(OnSession),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PaymentMethodOptionsCashappSetupFutureUsage"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -252,10 +270,8 @@ impl miniserde::Deserialize for PaymentMethodOptionsCashappSetupFutureUsage {
 impl miniserde::de::Visitor for crate::Place<PaymentMethodOptionsCashappSetupFutureUsage> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            PaymentMethodOptionsCashappSetupFutureUsage::from_str(s)
-                .map_err(|_| miniserde::Error)?,
-        );
+        self.out =
+            Some(PaymentMethodOptionsCashappSetupFutureUsage::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -266,10 +282,6 @@ impl<'de> serde::Deserialize<'de> for PaymentMethodOptionsCashappSetupFutureUsag
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for PaymentMethodOptionsCashappSetupFutureUsage",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

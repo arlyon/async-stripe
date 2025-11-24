@@ -464,32 +464,43 @@ impl ListPaymentMethodsCustomerBuilder {
 }
 /// This field indicates whether this payment method can be shown again to its customer in a checkout flow.
 /// Stripe products such as Checkout and Elements use this field to determine whether a payment method can be shown as a saved payment method in a checkout flow.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum ListPaymentMethodsCustomerAllowRedisplay {
     Always,
     Limited,
     Unspecified,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl ListPaymentMethodsCustomerAllowRedisplay {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use ListPaymentMethodsCustomerAllowRedisplay::*;
         match self {
             Always => "always",
             Limited => "limited",
             Unspecified => "unspecified",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for ListPaymentMethodsCustomerAllowRedisplay {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ListPaymentMethodsCustomerAllowRedisplay::*;
         match s {
             "always" => Ok(Always),
             "limited" => Ok(Limited),
             "unspecified" => Ok(Unspecified),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "ListPaymentMethodsCustomerAllowRedisplay"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -517,9 +528,7 @@ impl<'de> serde::Deserialize<'de> for ListPaymentMethodsCustomerAllowRedisplay {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for ListPaymentMethodsCustomerAllowRedisplay")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// An optional filter on the list, based on the object `type` field.
@@ -695,7 +704,14 @@ impl std::str::FromStr for ListPaymentMethodsCustomerType {
             "us_bank_account" => Ok(UsBankAccount),
             "wechat_pay" => Ok(WechatPay),
             "zip" => Ok(Zip),
-            v => Ok(Unknown(v.to_owned())),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "ListPaymentMethodsCustomerType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -723,7 +739,7 @@ impl<'de> serde::Deserialize<'de> for ListPaymentMethodsCustomerType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap())
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Returns a list of PaymentMethods for a given Customer
@@ -1042,7 +1058,7 @@ impl CreateCustomerBuilder {
     }
 }
 /// Balance information and default balance settings for this customer.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateCustomerCashBalance {
     /// Settings controlling the behavior of the customer's cash balance,
     /// such as reconciliation of funds received.
@@ -1061,7 +1077,7 @@ impl Default for CreateCustomerCashBalance {
 }
 /// Settings controlling the behavior of the customer's cash balance,
 /// such as reconciliation of funds received.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateCustomerCashBalanceSettings {
     /// Controls how funds transferred by the customer are applied to payment intents and invoices.
     /// Valid options are `automatic`, `manual`, or `merchant_default`.
@@ -1082,32 +1098,43 @@ impl Default for CreateCustomerCashBalanceSettings {
 /// Controls how funds transferred by the customer are applied to payment intents and invoices.
 /// Valid options are `automatic`, `manual`, or `merchant_default`.
 /// For more information about these reconciliation modes, see [Reconciliation](https://stripe.com/docs/payments/customer-balance/reconciliation).
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateCustomerCashBalanceSettingsReconciliationMode {
     Automatic,
     Manual,
     MerchantDefault,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateCustomerCashBalanceSettingsReconciliationMode {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateCustomerCashBalanceSettingsReconciliationMode::*;
         match self {
             Automatic => "automatic",
             Manual => "manual",
             MerchantDefault => "merchant_default",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateCustomerCashBalanceSettingsReconciliationMode {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateCustomerCashBalanceSettingsReconciliationMode::*;
         match s {
             "automatic" => Ok(Automatic),
             "manual" => Ok(Manual),
             "merchant_default" => Ok(MerchantDefault),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateCustomerCashBalanceSettingsReconciliationMode"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -1135,11 +1162,7 @@ impl<'de> serde::Deserialize<'de> for CreateCustomerCashBalanceSettingsReconcili
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for CreateCustomerCashBalanceSettingsReconciliationMode",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Default invoice settings for this customer.
@@ -1201,29 +1224,40 @@ impl Default for CreateCustomerInvoiceSettingsRenderingOptions {
 /// One of `exclude_tax` or `include_inclusive_tax`.
 /// `include_inclusive_tax` will include inclusive tax (and exclude exclusive tax) in invoice PDF amounts.
 /// `exclude_tax` will exclude all tax (inclusive and exclusive alike) from invoice PDF amounts.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateCustomerInvoiceSettingsRenderingOptionsAmountTaxDisplay {
     ExcludeTax,
     IncludeInclusiveTax,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateCustomerInvoiceSettingsRenderingOptionsAmountTaxDisplay {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateCustomerInvoiceSettingsRenderingOptionsAmountTaxDisplay::*;
         match self {
             ExcludeTax => "exclude_tax",
             IncludeInclusiveTax => "include_inclusive_tax",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateCustomerInvoiceSettingsRenderingOptionsAmountTaxDisplay {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateCustomerInvoiceSettingsRenderingOptionsAmountTaxDisplay::*;
         match s {
             "exclude_tax" => Ok(ExcludeTax),
             "include_inclusive_tax" => Ok(IncludeInclusiveTax),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateCustomerInvoiceSettingsRenderingOptionsAmountTaxDisplay"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -1253,11 +1287,7 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for CreateCustomerInvoiceSettingsRenderingOptionsAmountTaxDisplay",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Tax details about the customer.
@@ -1285,29 +1315,40 @@ impl Default for CreateCustomerTax {
 }
 /// A flag that indicates when Stripe should validate the customer tax location.
 /// Defaults to `deferred`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateCustomerTaxValidateLocation {
     Deferred,
     Immediately,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateCustomerTaxValidateLocation {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateCustomerTaxValidateLocation::*;
         match self {
             Deferred => "deferred",
             Immediately => "immediately",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateCustomerTaxValidateLocation {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateCustomerTaxValidateLocation::*;
         match s {
             "deferred" => Ok(Deferred),
             "immediately" => Ok(Immediately),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateCustomerTaxValidateLocation"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -1335,9 +1376,7 @@ impl<'de> serde::Deserialize<'de> for CreateCustomerTaxValidateLocation {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateCustomerTaxValidateLocation")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The customer's tax IDs.
@@ -1705,7 +1744,14 @@ impl std::str::FromStr for CreateCustomerTaxIdDataType {
             "za_vat" => Ok(ZaVat),
             "zm_tin" => Ok(ZmTin),
             "zw_tin" => Ok(ZwTin),
-            v => Ok(Unknown(v.to_owned())),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateCustomerTaxIdDataType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -1733,7 +1779,7 @@ impl<'de> serde::Deserialize<'de> for CreateCustomerTaxIdDataType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap())
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Creates a new customer object.
@@ -1976,7 +2022,7 @@ impl UpdateCustomerBuilder {
     }
 }
 /// Balance information and default balance settings for this customer.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdateCustomerCashBalance {
     /// Settings controlling the behavior of the customer's cash balance,
     /// such as reconciliation of funds received.
@@ -1995,7 +2041,7 @@ impl Default for UpdateCustomerCashBalance {
 }
 /// Settings controlling the behavior of the customer's cash balance,
 /// such as reconciliation of funds received.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdateCustomerCashBalanceSettings {
     /// Controls how funds transferred by the customer are applied to payment intents and invoices.
     /// Valid options are `automatic`, `manual`, or `merchant_default`.
@@ -2016,32 +2062,43 @@ impl Default for UpdateCustomerCashBalanceSettings {
 /// Controls how funds transferred by the customer are applied to payment intents and invoices.
 /// Valid options are `automatic`, `manual`, or `merchant_default`.
 /// For more information about these reconciliation modes, see [Reconciliation](https://stripe.com/docs/payments/customer-balance/reconciliation).
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdateCustomerCashBalanceSettingsReconciliationMode {
     Automatic,
     Manual,
     MerchantDefault,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdateCustomerCashBalanceSettingsReconciliationMode {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdateCustomerCashBalanceSettingsReconciliationMode::*;
         match self {
             Automatic => "automatic",
             Manual => "manual",
             MerchantDefault => "merchant_default",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for UpdateCustomerCashBalanceSettingsReconciliationMode {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateCustomerCashBalanceSettingsReconciliationMode::*;
         match s {
             "automatic" => Ok(Automatic),
             "manual" => Ok(Manual),
             "merchant_default" => Ok(MerchantDefault),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdateCustomerCashBalanceSettingsReconciliationMode"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -2069,11 +2126,7 @@ impl<'de> serde::Deserialize<'de> for UpdateCustomerCashBalanceSettingsReconcili
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for UpdateCustomerCashBalanceSettingsReconciliationMode",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Default invoice settings for this customer.
@@ -2135,29 +2188,40 @@ impl Default for UpdateCustomerInvoiceSettingsRenderingOptions {
 /// One of `exclude_tax` or `include_inclusive_tax`.
 /// `include_inclusive_tax` will include inclusive tax (and exclude exclusive tax) in invoice PDF amounts.
 /// `exclude_tax` will exclude all tax (inclusive and exclusive alike) from invoice PDF amounts.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdateCustomerInvoiceSettingsRenderingOptionsAmountTaxDisplay {
     ExcludeTax,
     IncludeInclusiveTax,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdateCustomerInvoiceSettingsRenderingOptionsAmountTaxDisplay {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdateCustomerInvoiceSettingsRenderingOptionsAmountTaxDisplay::*;
         match self {
             ExcludeTax => "exclude_tax",
             IncludeInclusiveTax => "include_inclusive_tax",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for UpdateCustomerInvoiceSettingsRenderingOptionsAmountTaxDisplay {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateCustomerInvoiceSettingsRenderingOptionsAmountTaxDisplay::*;
         match s {
             "exclude_tax" => Ok(ExcludeTax),
             "include_inclusive_tax" => Ok(IncludeInclusiveTax),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdateCustomerInvoiceSettingsRenderingOptionsAmountTaxDisplay"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -2187,11 +2251,7 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for UpdateCustomerInvoiceSettingsRenderingOptionsAmountTaxDisplay",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Tax details about the customer.
@@ -2217,32 +2277,43 @@ impl Default for UpdateCustomerTax {
     }
 }
 /// A flag that indicates when Stripe should validate the customer tax location. Defaults to `auto`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdateCustomerTaxValidateLocation {
     Auto,
     Deferred,
     Immediately,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl UpdateCustomerTaxValidateLocation {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdateCustomerTaxValidateLocation::*;
         match self {
             Auto => "auto",
             Deferred => "deferred",
             Immediately => "immediately",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for UpdateCustomerTaxValidateLocation {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdateCustomerTaxValidateLocation::*;
         match s {
             "auto" => Ok(Auto),
             "deferred" => Ok(Deferred),
             "immediately" => Ok(Immediately),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdateCustomerTaxValidateLocation"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -2270,9 +2341,7 @@ impl<'de> serde::Deserialize<'de> for UpdateCustomerTaxValidateLocation {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for UpdateCustomerTaxValidateLocation")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Updates the specified customer by setting the values of the parameters passed.
@@ -2501,27 +2570,31 @@ impl CreateFundingInstructionsCustomerBankTransferEuBankTransfer {
 /// If not specified, all valid types will be returned.
 ///
 /// Permitted values include: `sort_code`, `zengin`, `iban`, or `spei`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateFundingInstructionsCustomerBankTransferRequestedAddressTypes {
     Iban,
     SortCode,
     Spei,
     Zengin,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateFundingInstructionsCustomerBankTransferRequestedAddressTypes {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateFundingInstructionsCustomerBankTransferRequestedAddressTypes::*;
         match self {
             Iban => "iban",
             SortCode => "sort_code",
             Spei => "spei",
             Zengin => "zengin",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateFundingInstructionsCustomerBankTransferRequestedAddressTypes {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateFundingInstructionsCustomerBankTransferRequestedAddressTypes::*;
         match s {
@@ -2529,7 +2602,14 @@ impl std::str::FromStr for CreateFundingInstructionsCustomerBankTransferRequeste
             "sort_code" => Ok(SortCode),
             "spei" => Ok(Spei),
             "zengin" => Ok(Zengin),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateFundingInstructionsCustomerBankTransferRequestedAddressTypes"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -2559,20 +2639,23 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateFundingInstructionsCustomerBankTransferRequestedAddressTypes"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The type of the `bank_transfer`
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateFundingInstructionsCustomerBankTransferType {
     EuBankTransfer,
     GbBankTransfer,
     JpBankTransfer,
     MxBankTransfer,
     UsBankTransfer,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateFundingInstructionsCustomerBankTransferType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateFundingInstructionsCustomerBankTransferType::*;
         match self {
             EuBankTransfer => "eu_bank_transfer",
@@ -2580,12 +2663,13 @@ impl CreateFundingInstructionsCustomerBankTransferType {
             JpBankTransfer => "jp_bank_transfer",
             MxBankTransfer => "mx_bank_transfer",
             UsBankTransfer => "us_bank_transfer",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateFundingInstructionsCustomerBankTransferType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateFundingInstructionsCustomerBankTransferType::*;
         match s {
@@ -2594,7 +2678,14 @@ impl std::str::FromStr for CreateFundingInstructionsCustomerBankTransferType {
             "jp_bank_transfer" => Ok(JpBankTransfer),
             "mx_bank_transfer" => Ok(MxBankTransfer),
             "us_bank_transfer" => Ok(UsBankTransfer),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateFundingInstructionsCustomerBankTransferType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -2622,34 +2713,41 @@ impl<'de> serde::Deserialize<'de> for CreateFundingInstructionsCustomerBankTrans
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for CreateFundingInstructionsCustomerBankTransferType",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The `funding_type` to get the instructions for.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateFundingInstructionsCustomerFundingType {
     BankTransfer,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateFundingInstructionsCustomerFundingType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateFundingInstructionsCustomerFundingType::*;
         match self {
             BankTransfer => "bank_transfer",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateFundingInstructionsCustomerFundingType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateFundingInstructionsCustomerFundingType::*;
         match s {
             "bank_transfer" => Ok(BankTransfer),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateFundingInstructionsCustomerFundingType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -2677,11 +2775,7 @@ impl<'de> serde::Deserialize<'de> for CreateFundingInstructionsCustomerFundingTy
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for CreateFundingInstructionsCustomerFundingType",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Retrieve funding instructions for a customer cash balance.

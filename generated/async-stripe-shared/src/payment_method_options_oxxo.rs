@@ -1,4 +1,4 @@
-#[derive(Copy, Clone, Debug)]
+#[derive(Clone, Debug)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentMethodOptionsOxxo {
@@ -76,7 +76,7 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (Some(expires_after_days), Some(setup_future_usage)) =
-                (self.expires_after_days, self.setup_future_usage)
+                (self.expires_after_days, self.setup_future_usage.take())
             else {
                 return None;
             };
@@ -124,26 +124,37 @@ const _: () = {
 /// If the payment method is `card_present` and isn't a digital wallet, Stripe creates and attaches a [generated_card](/api/charges/object#charge_object-payment_method_details-card_present-generated_card) payment method representing the card to the Customer instead.
 ///
 /// When processing card payments, Stripe uses `setup_future_usage` to help you comply with regional legislation and network rules, such as [SCA](/strong-customer-authentication).
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PaymentMethodOptionsOxxoSetupFutureUsage {
     None,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl PaymentMethodOptionsOxxoSetupFutureUsage {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PaymentMethodOptionsOxxoSetupFutureUsage::*;
         match self {
             None => "none",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for PaymentMethodOptionsOxxoSetupFutureUsage {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentMethodOptionsOxxoSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PaymentMethodOptionsOxxoSetupFutureUsage"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -176,9 +187,7 @@ impl miniserde::Deserialize for PaymentMethodOptionsOxxoSetupFutureUsage {
 impl miniserde::de::Visitor for crate::Place<PaymentMethodOptionsOxxoSetupFutureUsage> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            PaymentMethodOptionsOxxoSetupFutureUsage::from_str(s).map_err(|_| miniserde::Error)?,
-        );
+        self.out = Some(PaymentMethodOptionsOxxoSetupFutureUsage::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -189,8 +198,6 @@ impl<'de> serde::Deserialize<'de> for PaymentMethodOptionsOxxoSetupFutureUsage {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for PaymentMethodOptionsOxxoSetupFutureUsage")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

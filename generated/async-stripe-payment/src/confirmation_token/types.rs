@@ -159,7 +159,7 @@ const _: () = {
                 self.payment_method_options.take(),
                 self.payment_method_preview.take(),
                 self.return_url.take(),
-                self.setup_future_usage,
+                self.setup_future_usage.take(),
                 self.setup_intent.take(),
                 self.shipping.take(),
                 self.use_stripe_sdk,
@@ -266,29 +266,40 @@ impl stripe_types::Object for ConfirmationToken {
     }
 }
 stripe_types::def_id!(ConfirmationTokenId);
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum ConfirmationTokenSetupFutureUsage {
     OffSession,
     OnSession,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl ConfirmationTokenSetupFutureUsage {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use ConfirmationTokenSetupFutureUsage::*;
         match self {
             OffSession => "off_session",
             OnSession => "on_session",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for ConfirmationTokenSetupFutureUsage {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ConfirmationTokenSetupFutureUsage::*;
         match s {
             "off_session" => Ok(OffSession),
             "on_session" => Ok(OnSession),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "ConfirmationTokenSetupFutureUsage"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -320,8 +331,7 @@ impl miniserde::Deserialize for ConfirmationTokenSetupFutureUsage {
 impl miniserde::de::Visitor for crate::Place<ConfirmationTokenSetupFutureUsage> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out =
-            Some(ConfirmationTokenSetupFutureUsage::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(ConfirmationTokenSetupFutureUsage::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -332,8 +342,6 @@ impl<'de> serde::Deserialize<'de> for ConfirmationTokenSetupFutureUsage {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for ConfirmationTokenSetupFutureUsage")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

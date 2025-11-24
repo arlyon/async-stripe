@@ -91,11 +91,11 @@ const _: () = {
                 Some(trial_period_days),
                 Some(usage_type),
             ) = (
-                self.interval,
+                self.interval.take(),
                 self.interval_count,
                 self.meter.take(),
                 self.trial_period_days,
-                self.usage_type,
+                self.usage_type.take(),
             )
             else {
                 return None;
@@ -140,27 +140,31 @@ const _: () = {
     }
 };
 /// The frequency at which a subscription is billed. One of `day`, `week`, `month` or `year`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum RecurringInterval {
     Day,
     Month,
     Week,
     Year,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl RecurringInterval {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use RecurringInterval::*;
         match self {
             Day => "day",
             Month => "month",
             Week => "week",
             Year => "year",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for RecurringInterval {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use RecurringInterval::*;
         match s {
@@ -168,7 +172,10 @@ impl std::str::FromStr for RecurringInterval {
             "month" => Ok(Month),
             "week" => Ok(Week),
             "year" => Ok(Year),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "RecurringInterval");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -201,7 +208,7 @@ impl miniserde::Deserialize for RecurringInterval {
 impl miniserde::de::Visitor for crate::Place<RecurringInterval> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(RecurringInterval::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(RecurringInterval::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -212,8 +219,7 @@ impl<'de> serde::Deserialize<'de> for RecurringInterval {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for RecurringInterval"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Configures how the quantity per period should be determined.
@@ -221,29 +227,36 @@ impl<'de> serde::Deserialize<'de> for RecurringInterval {
 /// `licensed` automatically bills the `quantity` set when adding it to a subscription.
 /// `metered` aggregates the total usage based on usage records.
 /// Defaults to `licensed`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum RecurringUsageType {
     Licensed,
     Metered,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl RecurringUsageType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use RecurringUsageType::*;
         match self {
             Licensed => "licensed",
             Metered => "metered",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for RecurringUsageType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use RecurringUsageType::*;
         match s {
             "licensed" => Ok(Licensed),
             "metered" => Ok(Metered),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "RecurringUsageType");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -276,7 +289,7 @@ impl miniserde::Deserialize for RecurringUsageType {
 impl miniserde::de::Visitor for crate::Place<RecurringUsageType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(RecurringUsageType::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(RecurringUsageType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -287,7 +300,6 @@ impl<'de> serde::Deserialize<'de> for RecurringUsageType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for RecurringUsageType"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

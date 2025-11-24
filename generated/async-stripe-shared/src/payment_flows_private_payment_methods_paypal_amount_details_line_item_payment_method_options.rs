@@ -86,7 +86,7 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (Some(category), Some(description), Some(sold_by)) =
-                (self.category, self.description.take(), self.sold_by.take())
+                (self.category.take(), self.description.take(), self.sold_by.take())
             else {
                 return None;
             };
@@ -133,19 +133,23 @@ const _: () = {
     }
 };
 /// Type of the line item.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PaymentFlowsPrivatePaymentMethodsPaypalAmountDetailsLineItemPaymentMethodOptionsCategory {
     DigitalGoods,
     Donation,
     PhysicalGoods,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl PaymentFlowsPrivatePaymentMethodsPaypalAmountDetailsLineItemPaymentMethodOptionsCategory {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PaymentFlowsPrivatePaymentMethodsPaypalAmountDetailsLineItemPaymentMethodOptionsCategory::*;
         match self {
             DigitalGoods => "digital_goods",
             Donation => "donation",
             PhysicalGoods => "physical_goods",
+            Unknown(v) => v,
         }
     }
 }
@@ -153,14 +157,21 @@ impl PaymentFlowsPrivatePaymentMethodsPaypalAmountDetailsLineItemPaymentMethodOp
 impl std::str::FromStr
     for PaymentFlowsPrivatePaymentMethodsPaypalAmountDetailsLineItemPaymentMethodOptionsCategory
 {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentFlowsPrivatePaymentMethodsPaypalAmountDetailsLineItemPaymentMethodOptionsCategory::*;
         match s {
             "digital_goods" => Ok(DigitalGoods),
             "donation" => Ok(Donation),
             "physical_goods" => Ok(PhysicalGoods),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PaymentFlowsPrivatePaymentMethodsPaypalAmountDetailsLineItemPaymentMethodOptionsCategory"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -205,7 +216,7 @@ impl miniserde::de::Visitor
 {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(PaymentFlowsPrivatePaymentMethodsPaypalAmountDetailsLineItemPaymentMethodOptionsCategory::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(PaymentFlowsPrivatePaymentMethodsPaypalAmountDetailsLineItemPaymentMethodOptionsCategory::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -220,6 +231,6 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for PaymentFlowsPrivatePaymentMethodsPaypalAmountDetailsLineItemPaymentMethodOptionsCategory"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

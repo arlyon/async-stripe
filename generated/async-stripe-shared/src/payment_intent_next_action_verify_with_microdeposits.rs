@@ -74,9 +74,11 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(arrival_date), Some(hosted_verification_url), Some(microdeposit_type)) =
-                (self.arrival_date, self.hosted_verification_url.take(), self.microdeposit_type)
-            else {
+            let (Some(arrival_date), Some(hosted_verification_url), Some(microdeposit_type)) = (
+                self.arrival_date,
+                self.hosted_verification_url.take(),
+                self.microdeposit_type.take(),
+            ) else {
                 return None;
             };
             Some(Self::Out { arrival_date, hosted_verification_url, microdeposit_type })
@@ -120,29 +122,40 @@ const _: () = {
 };
 /// The type of the microdeposit sent to the customer.
 /// Used to distinguish between different verification methods.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PaymentIntentNextActionVerifyWithMicrodepositsMicrodepositType {
     Amounts,
     DescriptorCode,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl PaymentIntentNextActionVerifyWithMicrodepositsMicrodepositType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PaymentIntentNextActionVerifyWithMicrodepositsMicrodepositType::*;
         match self {
             Amounts => "amounts",
             DescriptorCode => "descriptor_code",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for PaymentIntentNextActionVerifyWithMicrodepositsMicrodepositType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentIntentNextActionVerifyWithMicrodepositsMicrodepositType::*;
         match s {
             "amounts" => Ok(Amounts),
             "descriptor_code" => Ok(DescriptorCode),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PaymentIntentNextActionVerifyWithMicrodepositsMicrodepositType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -179,7 +192,7 @@ impl miniserde::de::Visitor
         use std::str::FromStr;
         self.out = Some(
             PaymentIntentNextActionVerifyWithMicrodepositsMicrodepositType::from_str(s)
-                .map_err(|_| miniserde::Error)?,
+                .expect("infallible"),
         );
         Ok(())
     }
@@ -195,10 +208,6 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for PaymentIntentNextActionVerifyWithMicrodepositsMicrodepositType",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

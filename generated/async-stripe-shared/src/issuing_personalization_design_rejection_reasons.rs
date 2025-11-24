@@ -106,7 +106,8 @@ const _: () = {
     }
 };
 /// The reason(s) the card logo was rejected.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum IssuingPersonalizationDesignRejectionReasonsCardLogo {
     GeographicLocation,
     Inappropriate,
@@ -116,9 +117,11 @@ pub enum IssuingPersonalizationDesignRejectionReasonsCardLogo {
     Other,
     OtherEntity,
     PromotionalMaterial,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl IssuingPersonalizationDesignRejectionReasonsCardLogo {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use IssuingPersonalizationDesignRejectionReasonsCardLogo::*;
         match self {
             GeographicLocation => "geographic_location",
@@ -129,12 +132,13 @@ impl IssuingPersonalizationDesignRejectionReasonsCardLogo {
             Other => "other",
             OtherEntity => "other_entity",
             PromotionalMaterial => "promotional_material",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for IssuingPersonalizationDesignRejectionReasonsCardLogo {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use IssuingPersonalizationDesignRejectionReasonsCardLogo::*;
         match s {
@@ -146,7 +150,14 @@ impl std::str::FromStr for IssuingPersonalizationDesignRejectionReasonsCardLogo 
             "other" => Ok(Other),
             "other_entity" => Ok(OtherEntity),
             "promotional_material" => Ok(PromotionalMaterial),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "IssuingPersonalizationDesignRejectionReasonsCardLogo"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -180,8 +191,7 @@ impl miniserde::de::Visitor for crate::Place<IssuingPersonalizationDesignRejecti
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(
-            IssuingPersonalizationDesignRejectionReasonsCardLogo::from_str(s)
-                .map_err(|_| miniserde::Error)?,
+            IssuingPersonalizationDesignRejectionReasonsCardLogo::from_str(s).expect("infallible"),
         );
         Ok(())
     }
@@ -193,15 +203,12 @@ impl<'de> serde::Deserialize<'de> for IssuingPersonalizationDesignRejectionReaso
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for IssuingPersonalizationDesignRejectionReasonsCardLogo",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The reason(s) the carrier text was rejected.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum IssuingPersonalizationDesignRejectionReasonsCarrierText {
     GeographicLocation,
     Inappropriate,
@@ -210,9 +217,11 @@ pub enum IssuingPersonalizationDesignRejectionReasonsCarrierText {
     Other,
     OtherEntity,
     PromotionalMaterial,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl IssuingPersonalizationDesignRejectionReasonsCarrierText {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use IssuingPersonalizationDesignRejectionReasonsCarrierText::*;
         match self {
             GeographicLocation => "geographic_location",
@@ -222,12 +231,13 @@ impl IssuingPersonalizationDesignRejectionReasonsCarrierText {
             Other => "other",
             OtherEntity => "other_entity",
             PromotionalMaterial => "promotional_material",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for IssuingPersonalizationDesignRejectionReasonsCarrierText {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use IssuingPersonalizationDesignRejectionReasonsCarrierText::*;
         match s {
@@ -238,7 +248,14 @@ impl std::str::FromStr for IssuingPersonalizationDesignRejectionReasonsCarrierTe
             "other" => Ok(Other),
             "other_entity" => Ok(OtherEntity),
             "promotional_material" => Ok(PromotionalMaterial),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "IssuingPersonalizationDesignRejectionReasonsCarrierText"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -275,7 +292,7 @@ impl miniserde::de::Visitor
         use std::str::FromStr;
         self.out = Some(
             IssuingPersonalizationDesignRejectionReasonsCarrierText::from_str(s)
-                .map_err(|_| miniserde::Error)?,
+                .expect("infallible"),
         );
         Ok(())
     }
@@ -287,10 +304,6 @@ impl<'de> serde::Deserialize<'de> for IssuingPersonalizationDesignRejectionReaso
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for IssuingPersonalizationDesignRejectionReasonsCarrierText",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

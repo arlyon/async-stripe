@@ -1,4 +1,4 @@
-#[derive(Copy, Clone, Debug)]
+#[derive(Clone, Debug)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentIntentProcessing {
@@ -64,7 +64,7 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(card), Some(type_)) = (self.card, self.type_) else {
+            let (Some(card), Some(type_)) = (self.card, self.type_.take()) else {
                 return None;
             };
             Some(Self::Out { card, type_ })
@@ -104,26 +104,37 @@ const _: () = {
     }
 };
 /// Type of the payment method for which payment is in `processing` state, one of `card`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PaymentIntentProcessingType {
     Card,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl PaymentIntentProcessingType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PaymentIntentProcessingType::*;
         match self {
             Card => "card",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for PaymentIntentProcessingType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentIntentProcessingType::*;
         match s {
             "card" => Ok(Card),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PaymentIntentProcessingType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -156,7 +167,7 @@ impl miniserde::Deserialize for PaymentIntentProcessingType {
 impl miniserde::de::Visitor for crate::Place<PaymentIntentProcessingType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(PaymentIntentProcessingType::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(PaymentIntentProcessingType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -167,7 +178,6 @@ impl<'de> serde::Deserialize<'de> for PaymentIntentProcessingType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for PaymentIntentProcessingType"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

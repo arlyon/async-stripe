@@ -162,7 +162,7 @@ impl Webhook {
             account: base_evt.account,
             api_version: base_evt
                 .api_version
-                .map(|s| ApiVersion::from_str(&s).unwrap_or(ApiVersion::Unknown(s))),
+                .map(|s| ApiVersion::from_str(&s).expect("infallible")),
             created: base_evt.created,
             data: EventData {
                 object: event_obj,

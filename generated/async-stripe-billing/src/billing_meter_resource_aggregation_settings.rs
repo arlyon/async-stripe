@@ -1,4 +1,4 @@
-#[derive(Copy, Clone, Debug)]
+#[derive(Clone, Debug)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct BillingMeterResourceAggregationSettings {
@@ -60,7 +60,7 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(formula),) = (self.formula,) else {
+            let (Some(formula),) = (self.formula.take(),) else {
                 return None;
             };
             Some(Self::Out { formula })
@@ -99,32 +99,43 @@ const _: () = {
     }
 };
 /// Specifies how events are aggregated.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum BillingMeterResourceAggregationSettingsFormula {
     Count,
     Last,
     Sum,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl BillingMeterResourceAggregationSettingsFormula {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use BillingMeterResourceAggregationSettingsFormula::*;
         match self {
             Count => "count",
             Last => "last",
             Sum => "sum",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for BillingMeterResourceAggregationSettingsFormula {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use BillingMeterResourceAggregationSettingsFormula::*;
         match s {
             "count" => Ok(Count),
             "last" => Ok(Last),
             "sum" => Ok(Sum),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "BillingMeterResourceAggregationSettingsFormula"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -157,10 +168,8 @@ impl miniserde::Deserialize for BillingMeterResourceAggregationSettingsFormula {
 impl miniserde::de::Visitor for crate::Place<BillingMeterResourceAggregationSettingsFormula> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            BillingMeterResourceAggregationSettingsFormula::from_str(s)
-                .map_err(|_| miniserde::Error)?,
-        );
+        self.out =
+            Some(BillingMeterResourceAggregationSettingsFormula::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -171,10 +180,6 @@ impl<'de> serde::Deserialize<'de> for BillingMeterResourceAggregationSettingsFor
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for BillingMeterResourceAggregationSettingsFormula",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

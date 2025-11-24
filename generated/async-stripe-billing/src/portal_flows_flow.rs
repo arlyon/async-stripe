@@ -97,7 +97,7 @@ const _: () = {
                 self.subscription_cancel.take(),
                 self.subscription_update.take(),
                 self.subscription_update_confirm.take(),
-                self.type_,
+                self.type_.take(),
             )
             else {
                 return None;
@@ -150,27 +150,31 @@ const _: () = {
     }
 };
 /// Type of flow that the customer will go through.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PortalFlowsFlowType {
     PaymentMethodUpdate,
     SubscriptionCancel,
     SubscriptionUpdate,
     SubscriptionUpdateConfirm,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl PortalFlowsFlowType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PortalFlowsFlowType::*;
         match self {
             PaymentMethodUpdate => "payment_method_update",
             SubscriptionCancel => "subscription_cancel",
             SubscriptionUpdate => "subscription_update",
             SubscriptionUpdateConfirm => "subscription_update_confirm",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for PortalFlowsFlowType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PortalFlowsFlowType::*;
         match s {
@@ -178,7 +182,10 @@ impl std::str::FromStr for PortalFlowsFlowType {
             "subscription_cancel" => Ok(SubscriptionCancel),
             "subscription_update" => Ok(SubscriptionUpdate),
             "subscription_update_confirm" => Ok(SubscriptionUpdateConfirm),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "PortalFlowsFlowType");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -211,7 +218,7 @@ impl miniserde::Deserialize for PortalFlowsFlowType {
 impl miniserde::de::Visitor for crate::Place<PortalFlowsFlowType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(PortalFlowsFlowType::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(PortalFlowsFlowType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -222,7 +229,6 @@ impl<'de> serde::Deserialize<'de> for PortalFlowsFlowType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for PortalFlowsFlowType"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

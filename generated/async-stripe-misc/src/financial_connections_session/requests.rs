@@ -105,29 +105,40 @@ impl CreateFinancialConnectionsSessionAccountHolder {
     }
 }
 /// Type of account holder to collect accounts for.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateFinancialConnectionsSessionAccountHolderType {
     Account,
     Customer,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateFinancialConnectionsSessionAccountHolderType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateFinancialConnectionsSessionAccountHolderType::*;
         match self {
             Account => "account",
             Customer => "customer",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateFinancialConnectionsSessionAccountHolderType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateFinancialConnectionsSessionAccountHolderType::*;
         match s {
             "account" => Ok(Account),
             "customer" => Ok(Customer),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateFinancialConnectionsSessionAccountHolderType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -155,11 +166,7 @@ impl<'de> serde::Deserialize<'de> for CreateFinancialConnectionsSessionAccountHo
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for CreateFinancialConnectionsSessionAccountHolderType",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Filters to restrict the kinds of accounts to collect.
@@ -186,16 +193,19 @@ impl Default for CreateFinancialConnectionsSessionFilters {
 }
 /// Restricts the Session to subcategories of accounts that can be linked.
 /// Valid subcategories are: `checking`, `savings`, `mortgage`, `line_of_credit`, `credit_card`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateFinancialConnectionsSessionFiltersAccountSubcategories {
     Checking,
     CreditCard,
     LineOfCredit,
     Mortgage,
     Savings,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateFinancialConnectionsSessionFiltersAccountSubcategories {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateFinancialConnectionsSessionFiltersAccountSubcategories::*;
         match self {
             Checking => "checking",
@@ -203,12 +213,13 @@ impl CreateFinancialConnectionsSessionFiltersAccountSubcategories {
             LineOfCredit => "line_of_credit",
             Mortgage => "mortgage",
             Savings => "savings",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateFinancialConnectionsSessionFiltersAccountSubcategories {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateFinancialConnectionsSessionFiltersAccountSubcategories::*;
         match s {
@@ -217,7 +228,14 @@ impl std::str::FromStr for CreateFinancialConnectionsSessionFiltersAccountSubcat
             "line_of_credit" => Ok(LineOfCredit),
             "mortgage" => Ok(Mortgage),
             "savings" => Ok(Savings),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateFinancialConnectionsSessionFiltersAccountSubcategories"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -245,11 +263,7 @@ impl<'de> serde::Deserialize<'de> for CreateFinancialConnectionsSessionFiltersAc
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for CreateFinancialConnectionsSessionFiltersAccountSubcategories",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// To launch the Financial Connections authorization flow, create a `Session`.

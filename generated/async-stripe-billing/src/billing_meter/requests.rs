@@ -199,26 +199,37 @@ impl CreateBillingMeterCustomerMapping {
     }
 }
 /// The method for mapping a meter event to a customer. Must be `by_id`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateBillingMeterCustomerMappingType {
     ById,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateBillingMeterCustomerMappingType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateBillingMeterCustomerMappingType::*;
         match self {
             ById => "by_id",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateBillingMeterCustomerMappingType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateBillingMeterCustomerMappingType::*;
         match s {
             "by_id" => Ok(ById),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateBillingMeterCustomerMappingType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -246,13 +257,11 @@ impl<'de> serde::Deserialize<'de> for CreateBillingMeterCustomerMappingType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateBillingMeterCustomerMappingType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The default settings to aggregate a meter's events with.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateBillingMeterDefaultAggregation {
     /// Specifies how events are aggregated.
     /// Allowed values are `count` to count the number of events, `sum` to sum each event's value and `last` to take the last event's value in the window.
@@ -265,32 +274,43 @@ impl CreateBillingMeterDefaultAggregation {
 }
 /// Specifies how events are aggregated.
 /// Allowed values are `count` to count the number of events, `sum` to sum each event's value and `last` to take the last event's value in the window.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateBillingMeterDefaultAggregationFormula {
     Count,
     Last,
     Sum,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateBillingMeterDefaultAggregationFormula {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateBillingMeterDefaultAggregationFormula::*;
         match self {
             Count => "count",
             Last => "last",
             Sum => "sum",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateBillingMeterDefaultAggregationFormula {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateBillingMeterDefaultAggregationFormula::*;
         match s {
             "count" => Ok(Count),
             "last" => Ok(Last),
             "sum" => Ok(Sum),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateBillingMeterDefaultAggregationFormula"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -318,11 +338,7 @@ impl<'de> serde::Deserialize<'de> for CreateBillingMeterDefaultAggregationFormul
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for CreateBillingMeterDefaultAggregationFormula",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Fields that specify how to calculate a meter event's value.

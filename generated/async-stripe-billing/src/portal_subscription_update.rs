@@ -102,9 +102,9 @@ const _: () = {
                 self.default_allowed_updates.take(),
                 self.enabled,
                 self.products.take(),
-                self.proration_behavior,
+                self.proration_behavior.take(),
                 self.schedule_at_period_end.take(),
-                self.trial_update_behavior,
+                self.trial_update_behavior.take(),
             )
             else {
                 return None;
@@ -164,32 +164,43 @@ const _: () = {
 };
 /// The types of subscription updates that are supported for items listed in the `products` attribute.
 /// When empty, subscriptions are not updateable.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PortalSubscriptionUpdateDefaultAllowedUpdates {
     Price,
     PromotionCode,
     Quantity,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl PortalSubscriptionUpdateDefaultAllowedUpdates {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PortalSubscriptionUpdateDefaultAllowedUpdates::*;
         match self {
             Price => "price",
             PromotionCode => "promotion_code",
             Quantity => "quantity",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for PortalSubscriptionUpdateDefaultAllowedUpdates {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PortalSubscriptionUpdateDefaultAllowedUpdates::*;
         match s {
             "price" => Ok(Price),
             "promotion_code" => Ok(PromotionCode),
             "quantity" => Ok(Quantity),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PortalSubscriptionUpdateDefaultAllowedUpdates"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -222,10 +233,8 @@ impl miniserde::Deserialize for PortalSubscriptionUpdateDefaultAllowedUpdates {
 impl miniserde::de::Visitor for crate::Place<PortalSubscriptionUpdateDefaultAllowedUpdates> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            PortalSubscriptionUpdateDefaultAllowedUpdates::from_str(s)
-                .map_err(|_| miniserde::Error)?,
-        );
+        self.out =
+            Some(PortalSubscriptionUpdateDefaultAllowedUpdates::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -236,42 +245,49 @@ impl<'de> serde::Deserialize<'de> for PortalSubscriptionUpdateDefaultAllowedUpda
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for PortalSubscriptionUpdateDefaultAllowedUpdates",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Determines how to handle prorations resulting from subscription updates.
 /// Valid values are `none`, `create_prorations`, and `always_invoice`.
 /// Defaults to a value of `none` if you don't set it during creation.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PortalSubscriptionUpdateProrationBehavior {
     AlwaysInvoice,
     CreateProrations,
     None,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl PortalSubscriptionUpdateProrationBehavior {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PortalSubscriptionUpdateProrationBehavior::*;
         match self {
             AlwaysInvoice => "always_invoice",
             CreateProrations => "create_prorations",
             None => "none",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for PortalSubscriptionUpdateProrationBehavior {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PortalSubscriptionUpdateProrationBehavior::*;
         match s {
             "always_invoice" => Ok(AlwaysInvoice),
             "create_prorations" => Ok(CreateProrations),
             "none" => Ok(None),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PortalSubscriptionUpdateProrationBehavior"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -304,9 +320,8 @@ impl miniserde::Deserialize for PortalSubscriptionUpdateProrationBehavior {
 impl miniserde::de::Visitor for crate::Place<PortalSubscriptionUpdateProrationBehavior> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            PortalSubscriptionUpdateProrationBehavior::from_str(s).map_err(|_| miniserde::Error)?,
-        );
+        self.out =
+            Some(PortalSubscriptionUpdateProrationBehavior::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -317,37 +332,46 @@ impl<'de> serde::Deserialize<'de> for PortalSubscriptionUpdateProrationBehavior 
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for PortalSubscriptionUpdateProrationBehavior")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Determines how handle updates to trialing subscriptions.
 /// Valid values are `end_trial` and `continue_trial`.
 /// Defaults to a value of `end_trial` if you don't set it during creation.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PortalSubscriptionUpdateTrialUpdateBehavior {
     ContinueTrial,
     EndTrial,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl PortalSubscriptionUpdateTrialUpdateBehavior {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PortalSubscriptionUpdateTrialUpdateBehavior::*;
         match self {
             ContinueTrial => "continue_trial",
             EndTrial => "end_trial",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for PortalSubscriptionUpdateTrialUpdateBehavior {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PortalSubscriptionUpdateTrialUpdateBehavior::*;
         match s {
             "continue_trial" => Ok(ContinueTrial),
             "end_trial" => Ok(EndTrial),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PortalSubscriptionUpdateTrialUpdateBehavior"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -380,10 +404,8 @@ impl miniserde::Deserialize for PortalSubscriptionUpdateTrialUpdateBehavior {
 impl miniserde::de::Visitor for crate::Place<PortalSubscriptionUpdateTrialUpdateBehavior> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            PortalSubscriptionUpdateTrialUpdateBehavior::from_str(s)
-                .map_err(|_| miniserde::Error)?,
-        );
+        self.out =
+            Some(PortalSubscriptionUpdateTrialUpdateBehavior::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -394,10 +416,6 @@ impl<'de> serde::Deserialize<'de> for PortalSubscriptionUpdateTrialUpdateBehavio
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for PortalSubscriptionUpdateTrialUpdateBehavior",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

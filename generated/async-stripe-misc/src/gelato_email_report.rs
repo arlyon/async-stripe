@@ -74,7 +74,7 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (Some(email), Some(error), Some(status)) =
-                (self.email.take(), self.error.take(), self.status)
+                (self.email.take(), self.error.take(), self.status.take())
             else {
                 return None;
             };
@@ -116,29 +116,36 @@ const _: () = {
     }
 };
 /// Status of this `email` check.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum GelatoEmailReportStatus {
     Unverified,
     Verified,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl GelatoEmailReportStatus {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use GelatoEmailReportStatus::*;
         match self {
             Unverified => "unverified",
             Verified => "verified",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for GelatoEmailReportStatus {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use GelatoEmailReportStatus::*;
         match s {
             "unverified" => Ok(Unverified),
             "verified" => Ok(Verified),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "GelatoEmailReportStatus");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -171,7 +178,7 @@ impl miniserde::Deserialize for GelatoEmailReportStatus {
 impl miniserde::de::Visitor for crate::Place<GelatoEmailReportStatus> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(GelatoEmailReportStatus::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(GelatoEmailReportStatus::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -182,7 +189,6 @@ impl<'de> serde::Deserialize<'de> for GelatoEmailReportStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for GelatoEmailReportStatus"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

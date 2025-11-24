@@ -220,26 +220,33 @@ impl CreateRefundBuilder {
     }
 }
 /// Origin of the refund
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateRefundOrigin {
     CustomerBalance,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateRefundOrigin {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateRefundOrigin::*;
         match self {
             CustomerBalance => "customer_balance",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateRefundOrigin {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateRefundOrigin::*;
         match s {
             "customer_balance" => Ok(CustomerBalance),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CreateRefundOrigin");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -267,39 +274,45 @@ impl<'de> serde::Deserialize<'de> for CreateRefundOrigin {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for CreateRefundOrigin"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// String indicating the reason for the refund.
 /// If set, possible values are `duplicate`, `fraudulent`, and `requested_by_customer`.
 /// If you believe the charge to be fraudulent, specifying `fraudulent` as the reason will add the associated card and email to your [block lists](https://stripe.com/docs/radar/lists), and will also help us improve our fraud detection algorithms.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateRefundReason {
     Duplicate,
     Fraudulent,
     RequestedByCustomer,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateRefundReason {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateRefundReason::*;
         match self {
             Duplicate => "duplicate",
             Fraudulent => "fraudulent",
             RequestedByCustomer => "requested_by_customer",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateRefundReason {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateRefundReason::*;
         match s {
             "duplicate" => Ok(Duplicate),
             "fraudulent" => Ok(Fraudulent),
             "requested_by_customer" => Ok(RequestedByCustomer),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CreateRefundReason");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -327,8 +340,7 @@ impl<'de> serde::Deserialize<'de> for CreateRefundReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for CreateRefundReason"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// When you create a new refund, you must specify a Charge or a PaymentIntent object on which to create it.

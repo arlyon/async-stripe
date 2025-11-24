@@ -134,13 +134,13 @@ const _: () = {
             ) = (
                 self.created,
                 self.customer_mapping.take(),
-                self.default_aggregation,
+                self.default_aggregation.take(),
                 self.display_name.take(),
                 self.event_name.take(),
-                self.event_time_window,
+                self.event_time_window.take(),
                 self.id.take(),
                 self.livemode,
-                self.status,
+                self.status.take(),
                 self.status_transitions,
                 self.updated,
                 self.value_settings.take(),
@@ -240,29 +240,40 @@ impl stripe_types::Object for BillingMeter {
     }
 }
 stripe_types::def_id!(BillingMeterId);
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum BillingMeterEventTimeWindow {
     Day,
     Hour,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl BillingMeterEventTimeWindow {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use BillingMeterEventTimeWindow::*;
         match self {
             Day => "day",
             Hour => "hour",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for BillingMeterEventTimeWindow {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use BillingMeterEventTimeWindow::*;
         match s {
             "day" => Ok(Day),
             "hour" => Ok(Hour),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "BillingMeterEventTimeWindow"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -294,7 +305,7 @@ impl miniserde::Deserialize for BillingMeterEventTimeWindow {
 impl miniserde::de::Visitor for crate::Place<BillingMeterEventTimeWindow> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(BillingMeterEventTimeWindow::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(BillingMeterEventTimeWindow::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -305,33 +316,39 @@ impl<'de> serde::Deserialize<'de> for BillingMeterEventTimeWindow {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for BillingMeterEventTimeWindow"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum BillingMeterStatus {
     Active,
     Inactive,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl BillingMeterStatus {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use BillingMeterStatus::*;
         match self {
             Active => "active",
             Inactive => "inactive",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for BillingMeterStatus {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use BillingMeterStatus::*;
         match s {
             "active" => Ok(Active),
             "inactive" => Ok(Inactive),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "BillingMeterStatus");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -363,7 +380,7 @@ impl miniserde::Deserialize for BillingMeterStatus {
 impl miniserde::de::Visitor for crate::Place<BillingMeterStatus> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(BillingMeterStatus::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(BillingMeterStatus::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -374,7 +391,6 @@ impl<'de> serde::Deserialize<'de> for BillingMeterStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for BillingMeterStatus"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

@@ -102,7 +102,7 @@ const _: () = {
                 self.expires_after_days,
                 self.expires_at,
                 self.product_description.take(),
-                self.setup_future_usage,
+                self.setup_future_usage.take(),
             )
             else {
                 return None;
@@ -160,26 +160,37 @@ const _: () = {
 /// If the payment method is `card_present` and isn't a digital wallet, Stripe creates and attaches a [generated_card](/api/charges/object#charge_object-payment_method_details-card_present-generated_card) payment method representing the card to the Customer instead.
 ///
 /// When processing card payments, Stripe uses `setup_future_usage` to help you comply with regional legislation and network rules, such as [SCA](/strong-customer-authentication).
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PaymentMethodOptionsKonbiniSetupFutureUsage {
     None,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl PaymentMethodOptionsKonbiniSetupFutureUsage {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PaymentMethodOptionsKonbiniSetupFutureUsage::*;
         match self {
             None => "none",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for PaymentMethodOptionsKonbiniSetupFutureUsage {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentMethodOptionsKonbiniSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PaymentMethodOptionsKonbiniSetupFutureUsage"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -212,10 +223,8 @@ impl miniserde::Deserialize for PaymentMethodOptionsKonbiniSetupFutureUsage {
 impl miniserde::de::Visitor for crate::Place<PaymentMethodOptionsKonbiniSetupFutureUsage> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            PaymentMethodOptionsKonbiniSetupFutureUsage::from_str(s)
-                .map_err(|_| miniserde::Error)?,
-        );
+        self.out =
+            Some(PaymentMethodOptionsKonbiniSetupFutureUsage::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -226,10 +235,6 @@ impl<'de> serde::Deserialize<'de> for PaymentMethodOptionsKonbiniSetupFutureUsag
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for PaymentMethodOptionsKonbiniSetupFutureUsage",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

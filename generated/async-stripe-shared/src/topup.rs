@@ -175,7 +175,7 @@ const _: () = {
                 self.metadata.take(),
                 self.source.take(),
                 self.statement_descriptor.take(),
-                self.status,
+                self.status.take(),
                 self.transfer_group.take(),
             )
             else {
@@ -274,16 +274,19 @@ impl serde::Serialize for Topup {
     }
 }
 /// The status of the top-up is either `canceled`, `failed`, `pending`, `reversed`, or `succeeded`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum TopupStatus {
     Canceled,
     Failed,
     Pending,
     Reversed,
     Succeeded,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl TopupStatus {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use TopupStatus::*;
         match self {
             Canceled => "canceled",
@@ -291,12 +294,13 @@ impl TopupStatus {
             Pending => "pending",
             Reversed => "reversed",
             Succeeded => "succeeded",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for TopupStatus {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TopupStatus::*;
         match s {
@@ -305,7 +309,10 @@ impl std::str::FromStr for TopupStatus {
             "pending" => Ok(Pending),
             "reversed" => Ok(Reversed),
             "succeeded" => Ok(Succeeded),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "TopupStatus");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -338,7 +345,7 @@ impl miniserde::Deserialize for TopupStatus {
 impl miniserde::de::Visitor for crate::Place<TopupStatus> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(TopupStatus::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(TopupStatus::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -349,7 +356,7 @@ impl<'de> serde::Deserialize<'de> for TopupStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for TopupStatus"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 impl stripe_types::Object for Topup {

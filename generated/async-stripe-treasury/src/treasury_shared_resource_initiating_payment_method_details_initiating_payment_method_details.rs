@@ -103,11 +103,11 @@ Some(financial_account),
 Some(issuing_card),
 Some(type_),
 Some(us_bank_account),
-) = (self.balance,
+) = (self.balance.take(),
 self.billing_details.take(),
 self.financial_account.take(),
 self.issuing_card.take(),
-self.type_,
+self.type_.take(),
 self.us_bank_account.take(),
 ) else {
             return None;
@@ -157,15 +157,19 @@ self.us_bank_account.take(),
     }
 };
 /// Set when `type` is `balance`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethodDetailsBalance {
     Payments,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethodDetailsBalance {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethodDetailsBalance::*;
         match self {
             Payments => "payments",
+            Unknown(v) => v,
         }
     }
 }
@@ -173,12 +177,19 @@ impl TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethod
 impl std::str::FromStr
     for TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethodDetailsBalance
 {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethodDetailsBalance::*;
         match s {
             "payments" => Ok(Payments),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethodDetailsBalance"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -223,7 +234,7 @@ impl miniserde::de::Visitor
 {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethodDetailsBalance::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethodDetailsBalance::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -238,21 +249,24 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethodDetailsBalance"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Polymorphic type matching the originating money movement's source.
 /// This can be an external account, a Stripe balance, or a FinancialAccount.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethodDetailsType {
     Balance,
     FinancialAccount,
     IssuingCard,
     Stripe,
     UsBankAccount,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethodDetailsType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethodDetailsType::*;
         match self {
             Balance => "balance",
@@ -260,6 +274,7 @@ impl TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethod
             IssuingCard => "issuing_card",
             Stripe => "stripe",
             UsBankAccount => "us_bank_account",
+            Unknown(v) => v,
         }
     }
 }
@@ -267,7 +282,7 @@ impl TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethod
 impl std::str::FromStr
     for TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethodDetailsType
 {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethodDetailsType::*;
         match s {
@@ -276,7 +291,14 @@ impl std::str::FromStr
             "issuing_card" => Ok(IssuingCard),
             "stripe" => Ok(Stripe),
             "us_bank_account" => Ok(UsBankAccount),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethodDetailsType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -321,7 +343,7 @@ impl miniserde::de::Visitor
 {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethodDetailsType::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethodDetailsType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -336,6 +358,6 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethodDetailsType"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

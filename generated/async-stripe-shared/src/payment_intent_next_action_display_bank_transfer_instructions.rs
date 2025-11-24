@@ -106,7 +106,7 @@ const _: () = {
                 self.financial_addresses.take(),
                 self.hosted_instructions_url.take(),
                 self.reference.take(),
-                self.type_,
+                self.type_.take(),
             )
             else {
                 return None;
@@ -162,16 +162,19 @@ const _: () = {
     }
 };
 /// Type of bank transfer
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PaymentIntentNextActionDisplayBankTransferInstructionsType {
     EuBankTransfer,
     GbBankTransfer,
     JpBankTransfer,
     MxBankTransfer,
     UsBankTransfer,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl PaymentIntentNextActionDisplayBankTransferInstructionsType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PaymentIntentNextActionDisplayBankTransferInstructionsType::*;
         match self {
             EuBankTransfer => "eu_bank_transfer",
@@ -179,12 +182,13 @@ impl PaymentIntentNextActionDisplayBankTransferInstructionsType {
             JpBankTransfer => "jp_bank_transfer",
             MxBankTransfer => "mx_bank_transfer",
             UsBankTransfer => "us_bank_transfer",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for PaymentIntentNextActionDisplayBankTransferInstructionsType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentIntentNextActionDisplayBankTransferInstructionsType::*;
         match s {
@@ -193,7 +197,14 @@ impl std::str::FromStr for PaymentIntentNextActionDisplayBankTransferInstruction
             "jp_bank_transfer" => Ok(JpBankTransfer),
             "mx_bank_transfer" => Ok(MxBankTransfer),
             "us_bank_transfer" => Ok(UsBankTransfer),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PaymentIntentNextActionDisplayBankTransferInstructionsType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -230,7 +241,7 @@ impl miniserde::de::Visitor
         use std::str::FromStr;
         self.out = Some(
             PaymentIntentNextActionDisplayBankTransferInstructionsType::from_str(s)
-                .map_err(|_| miniserde::Error)?,
+                .expect("infallible"),
         );
         Ok(())
     }
@@ -244,10 +255,6 @@ impl<'de> serde::Deserialize<'de> for PaymentIntentNextActionDisplayBankTransfer
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for PaymentIntentNextActionDisplayBankTransferInstructionsType",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

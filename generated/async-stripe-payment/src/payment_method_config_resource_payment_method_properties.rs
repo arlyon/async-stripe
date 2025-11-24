@@ -1,4 +1,4 @@
-#[derive(Copy, Clone, Debug)]
+#[derive(Clone, Debug)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentMethodConfigResourcePaymentMethodProperties {
@@ -65,7 +65,7 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (Some(available), Some(display_preference)) =
-                (self.available, self.display_preference)
+                (self.available, self.display_preference.take())
             else {
                 return None;
             };

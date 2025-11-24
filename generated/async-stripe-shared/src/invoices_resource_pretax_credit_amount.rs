@@ -86,7 +86,7 @@ const _: () = {
                 self.amount,
                 self.credit_balance_transaction.take(),
                 self.discount.take(),
-                self.type_,
+                self.type_.take(),
             ) else {
                 return None;
             };
@@ -131,29 +131,40 @@ const _: () = {
     }
 };
 /// Type of the pretax credit amount referenced.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum InvoicesResourcePretaxCreditAmountType {
     CreditBalanceTransaction,
     Discount,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl InvoicesResourcePretaxCreditAmountType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use InvoicesResourcePretaxCreditAmountType::*;
         match self {
             CreditBalanceTransaction => "credit_balance_transaction",
             Discount => "discount",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for InvoicesResourcePretaxCreditAmountType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use InvoicesResourcePretaxCreditAmountType::*;
         match s {
             "credit_balance_transaction" => Ok(CreditBalanceTransaction),
             "discount" => Ok(Discount),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "InvoicesResourcePretaxCreditAmountType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -186,9 +197,7 @@ impl miniserde::Deserialize for InvoicesResourcePretaxCreditAmountType {
 impl miniserde::de::Visitor for crate::Place<InvoicesResourcePretaxCreditAmountType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            InvoicesResourcePretaxCreditAmountType::from_str(s).map_err(|_| miniserde::Error)?,
-        );
+        self.out = Some(InvoicesResourcePretaxCreditAmountType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -199,8 +208,6 @@ impl<'de> serde::Deserialize<'de> for InvoicesResourcePretaxCreditAmountType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for InvoicesResourcePretaxCreditAmountType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

@@ -1,4 +1,4 @@
-#[derive(Copy, Clone, Debug)]
+#[derive(Clone, Debug)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct IssuingCardFraudWarning {
@@ -67,7 +67,7 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(started_at), Some(type_)) = (self.started_at, self.type_) else {
+            let (Some(started_at), Some(type_)) = (self.started_at, self.type_.take()) else {
                 return None;
             };
             Some(Self::Out { started_at, type_ })
@@ -109,27 +109,31 @@ const _: () = {
 /// The type of fraud warning that most recently took place on this card.
 /// This field updates with every new fraud warning, so the value changes over time.
 /// If populated, cancel and reissue the card.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum IssuingCardFraudWarningType {
     CardTestingExposure,
     FraudDisputeFiled,
     ThirdPartyReported,
     UserIndicatedFraud,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl IssuingCardFraudWarningType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use IssuingCardFraudWarningType::*;
         match self {
             CardTestingExposure => "card_testing_exposure",
             FraudDisputeFiled => "fraud_dispute_filed",
             ThirdPartyReported => "third_party_reported",
             UserIndicatedFraud => "user_indicated_fraud",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for IssuingCardFraudWarningType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use IssuingCardFraudWarningType::*;
         match s {
@@ -137,7 +141,14 @@ impl std::str::FromStr for IssuingCardFraudWarningType {
             "fraud_dispute_filed" => Ok(FraudDisputeFiled),
             "third_party_reported" => Ok(ThirdPartyReported),
             "user_indicated_fraud" => Ok(UserIndicatedFraud),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "IssuingCardFraudWarningType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -170,7 +181,7 @@ impl miniserde::Deserialize for IssuingCardFraudWarningType {
 impl miniserde::de::Visitor for crate::Place<IssuingCardFraudWarningType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(IssuingCardFraudWarningType::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(IssuingCardFraudWarningType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -181,7 +192,6 @@ impl<'de> serde::Deserialize<'de> for IssuingCardFraudWarningType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for IssuingCardFraudWarningType"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

@@ -1,4 +1,4 @@
-#[derive(Copy, Clone, Debug)]
+#[derive(Clone, Debug)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentFlowsAutomaticPaymentMethodsSetupIntent {
@@ -67,7 +67,8 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(allow_redirects), Some(enabled)) = (self.allow_redirects, self.enabled)
+            let (Some(allow_redirects), Some(enabled)) =
+                (self.allow_redirects.take(), self.enabled)
             else {
                 return None;
             };
@@ -111,29 +112,40 @@ const _: () = {
 ///
 /// Redirect-based payment methods may require your customer to be redirected to a payment method's app or site for authentication or additional steps.
 /// To [confirm](https://stripe.com/docs/api/setup_intents/confirm) this SetupIntent, you may be required to provide a `return_url` to redirect customers back to your site after they authenticate or complete the setup.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PaymentFlowsAutomaticPaymentMethodsSetupIntentAllowRedirects {
     Always,
     Never,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl PaymentFlowsAutomaticPaymentMethodsSetupIntentAllowRedirects {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PaymentFlowsAutomaticPaymentMethodsSetupIntentAllowRedirects::*;
         match self {
             Always => "always",
             Never => "never",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for PaymentFlowsAutomaticPaymentMethodsSetupIntentAllowRedirects {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentFlowsAutomaticPaymentMethodsSetupIntentAllowRedirects::*;
         match s {
             "always" => Ok(Always),
             "never" => Ok(Never),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PaymentFlowsAutomaticPaymentMethodsSetupIntentAllowRedirects"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -170,7 +182,7 @@ impl miniserde::de::Visitor
         use std::str::FromStr;
         self.out = Some(
             PaymentFlowsAutomaticPaymentMethodsSetupIntentAllowRedirects::from_str(s)
-                .map_err(|_| miniserde::Error)?,
+                .expect("infallible"),
         );
         Ok(())
     }
@@ -184,10 +196,6 @@ impl<'de> serde::Deserialize<'de> for PaymentFlowsAutomaticPaymentMethodsSetupIn
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for PaymentFlowsAutomaticPaymentMethodsSetupIntentAllowRedirects",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

@@ -312,29 +312,40 @@ impl CreateReversalTaxTransactionLineItems {
 }
 /// If `partial`, the provided line item or shipping cost amounts are reversed.
 /// If `full`, the original transaction is fully reversed.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateReversalTaxTransactionMode {
     Full,
     Partial,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateReversalTaxTransactionMode {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateReversalTaxTransactionMode::*;
         match self {
             Full => "full",
             Partial => "partial",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateReversalTaxTransactionMode {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateReversalTaxTransactionMode::*;
         match s {
             "full" => Ok(Full),
             "partial" => Ok(Partial),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateReversalTaxTransactionMode"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -362,9 +373,7 @@ impl<'de> serde::Deserialize<'de> for CreateReversalTaxTransactionMode {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateReversalTaxTransactionMode")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The shipping cost to reverse.

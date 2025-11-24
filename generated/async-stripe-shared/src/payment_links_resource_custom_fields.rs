@@ -106,7 +106,7 @@ const _: () = {
                 self.numeric.take(),
                 self.optional,
                 self.text.take(),
-                self.type_,
+                self.type_.take(),
             )
             else {
                 return None;
@@ -153,32 +153,43 @@ const _: () = {
     }
 };
 /// The type of the field.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PaymentLinksResourceCustomFieldsType {
     Dropdown,
     Numeric,
     Text,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl PaymentLinksResourceCustomFieldsType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PaymentLinksResourceCustomFieldsType::*;
         match self {
             Dropdown => "dropdown",
             Numeric => "numeric",
             Text => "text",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for PaymentLinksResourceCustomFieldsType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentLinksResourceCustomFieldsType::*;
         match s {
             "dropdown" => Ok(Dropdown),
             "numeric" => Ok(Numeric),
             "text" => Ok(Text),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PaymentLinksResourceCustomFieldsType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -211,8 +222,7 @@ impl miniserde::Deserialize for PaymentLinksResourceCustomFieldsType {
 impl miniserde::de::Visitor for crate::Place<PaymentLinksResourceCustomFieldsType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out =
-            Some(PaymentLinksResourceCustomFieldsType::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(PaymentLinksResourceCustomFieldsType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -223,8 +233,6 @@ impl<'de> serde::Deserialize<'de> for PaymentLinksResourceCustomFieldsType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for PaymentLinksResourceCustomFieldsType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

@@ -1391,7 +1391,14 @@ impl std::str::FromStr for CreateForceCaptureIssuingTransactionMerchantDataCateg
             "womens_accessory_and_specialty_shops" => Ok(WomensAccessoryAndSpecialtyShops),
             "womens_ready_to_wear_stores" => Ok(WomensReadyToWearStores),
             "wrecking_and_salvage_yards" => Ok(WreckingAndSalvageYards),
-            v => Ok(Unknown(v.to_owned())),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateForceCaptureIssuingTransactionMerchantDataCategory"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -1419,7 +1426,7 @@ impl<'de> serde::Deserialize<'de> for CreateForceCaptureIssuingTransactionMercha
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap())
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Additional purchase information that is optionally provided by the merchant.
@@ -1496,32 +1503,43 @@ impl Default for CreateForceCaptureIssuingTransactionPurchaseDetailsFleet {
     }
 }
 /// The type of purchase. One of `fuel_purchase`, `non_fuel_purchase`, or `fuel_and_non_fuel_purchase`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateForceCaptureIssuingTransactionPurchaseDetailsFleetPurchaseType {
     FuelAndNonFuelPurchase,
     FuelPurchase,
     NonFuelPurchase,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateForceCaptureIssuingTransactionPurchaseDetailsFleetPurchaseType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateForceCaptureIssuingTransactionPurchaseDetailsFleetPurchaseType::*;
         match self {
             FuelAndNonFuelPurchase => "fuel_and_non_fuel_purchase",
             FuelPurchase => "fuel_purchase",
             NonFuelPurchase => "non_fuel_purchase",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateForceCaptureIssuingTransactionPurchaseDetailsFleetPurchaseType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateForceCaptureIssuingTransactionPurchaseDetailsFleetPurchaseType::*;
         match s {
             "fuel_and_non_fuel_purchase" => Ok(FuelAndNonFuelPurchase),
             "fuel_purchase" => Ok(FuelPurchase),
             "non_fuel_purchase" => Ok(NonFuelPurchase),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateForceCaptureIssuingTransactionPurchaseDetailsFleetPurchaseType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -1551,36 +1569,47 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateForceCaptureIssuingTransactionPurchaseDetailsFleetPurchaseType"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The type of fuel service. One of `non_fuel_transaction`, `full_service`, or `self_service`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateForceCaptureIssuingTransactionPurchaseDetailsFleetServiceType {
     FullService,
     NonFuelTransaction,
     SelfService,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateForceCaptureIssuingTransactionPurchaseDetailsFleetServiceType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateForceCaptureIssuingTransactionPurchaseDetailsFleetServiceType::*;
         match self {
             FullService => "full_service",
             NonFuelTransaction => "non_fuel_transaction",
             SelfService => "self_service",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateForceCaptureIssuingTransactionPurchaseDetailsFleetServiceType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateForceCaptureIssuingTransactionPurchaseDetailsFleetServiceType::*;
         match s {
             "full_service" => Ok(FullService),
             "non_fuel_transaction" => Ok(NonFuelTransaction),
             "self_service" => Ok(SelfService),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateForceCaptureIssuingTransactionPurchaseDetailsFleetServiceType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -1610,7 +1639,7 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateForceCaptureIssuingTransactionPurchaseDetailsFleetServiceType"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Information about fuel that was purchased with this transaction.
@@ -1653,16 +1682,19 @@ impl Default for CreateForceCaptureIssuingTransactionPurchaseDetailsFuel {
 }
 /// The type of fuel that was purchased.
 /// One of `diesel`, `unleaded_plus`, `unleaded_regular`, `unleaded_super`, or `other`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateForceCaptureIssuingTransactionPurchaseDetailsFuelType {
     Diesel,
     Other,
     UnleadedPlus,
     UnleadedRegular,
     UnleadedSuper,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateForceCaptureIssuingTransactionPurchaseDetailsFuelType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateForceCaptureIssuingTransactionPurchaseDetailsFuelType::*;
         match self {
             Diesel => "diesel",
@@ -1670,12 +1702,13 @@ impl CreateForceCaptureIssuingTransactionPurchaseDetailsFuelType {
             UnleadedPlus => "unleaded_plus",
             UnleadedRegular => "unleaded_regular",
             UnleadedSuper => "unleaded_super",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateForceCaptureIssuingTransactionPurchaseDetailsFuelType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateForceCaptureIssuingTransactionPurchaseDetailsFuelType::*;
         match s {
@@ -1684,7 +1717,14 @@ impl std::str::FromStr for CreateForceCaptureIssuingTransactionPurchaseDetailsFu
             "unleaded_plus" => Ok(UnleadedPlus),
             "unleaded_regular" => Ok(UnleadedRegular),
             "unleaded_super" => Ok(UnleadedSuper),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateForceCaptureIssuingTransactionPurchaseDetailsFuelType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -1712,16 +1752,13 @@ impl<'de> serde::Deserialize<'de> for CreateForceCaptureIssuingTransactionPurcha
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for CreateForceCaptureIssuingTransactionPurchaseDetailsFuelType",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The units for `quantity_decimal`.
 /// One of `charging_minute`, `imperial_gallon`, `kilogram`, `kilowatt_hour`, `liter`, `pound`, `us_gallon`, or `other`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateForceCaptureIssuingTransactionPurchaseDetailsFuelUnit {
     ChargingMinute,
     ImperialGallon,
@@ -1731,9 +1768,11 @@ pub enum CreateForceCaptureIssuingTransactionPurchaseDetailsFuelUnit {
     Other,
     Pound,
     UsGallon,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateForceCaptureIssuingTransactionPurchaseDetailsFuelUnit {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateForceCaptureIssuingTransactionPurchaseDetailsFuelUnit::*;
         match self {
             ChargingMinute => "charging_minute",
@@ -1744,12 +1783,13 @@ impl CreateForceCaptureIssuingTransactionPurchaseDetailsFuelUnit {
             Other => "other",
             Pound => "pound",
             UsGallon => "us_gallon",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateForceCaptureIssuingTransactionPurchaseDetailsFuelUnit {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateForceCaptureIssuingTransactionPurchaseDetailsFuelUnit::*;
         match s {
@@ -1761,7 +1801,14 @@ impl std::str::FromStr for CreateForceCaptureIssuingTransactionPurchaseDetailsFu
             "other" => Ok(Other),
             "pound" => Ok(Pound),
             "us_gallon" => Ok(UsGallon),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateForceCaptureIssuingTransactionPurchaseDetailsFuelUnit"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -1789,11 +1836,7 @@ impl<'de> serde::Deserialize<'de> for CreateForceCaptureIssuingTransactionPurcha
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for CreateForceCaptureIssuingTransactionPurchaseDetailsFuelUnit",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Allows the user to capture an arbitrary amount, also known as a forced capture.
@@ -2939,7 +2982,14 @@ impl std::str::FromStr for CreateUnlinkedRefundIssuingTransactionMerchantDataCat
             "womens_accessory_and_specialty_shops" => Ok(WomensAccessoryAndSpecialtyShops),
             "womens_ready_to_wear_stores" => Ok(WomensReadyToWearStores),
             "wrecking_and_salvage_yards" => Ok(WreckingAndSalvageYards),
-            v => Ok(Unknown(v.to_owned())),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateUnlinkedRefundIssuingTransactionMerchantDataCategory"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -2967,7 +3017,7 @@ impl<'de> serde::Deserialize<'de> for CreateUnlinkedRefundIssuingTransactionMerc
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap())
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Additional purchase information that is optionally provided by the merchant.
@@ -3045,32 +3095,43 @@ impl Default for CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFleet {
     }
 }
 /// The type of purchase. One of `fuel_purchase`, `non_fuel_purchase`, or `fuel_and_non_fuel_purchase`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFleetPurchaseType {
     FuelAndNonFuelPurchase,
     FuelPurchase,
     NonFuelPurchase,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFleetPurchaseType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFleetPurchaseType::*;
         match self {
             FuelAndNonFuelPurchase => "fuel_and_non_fuel_purchase",
             FuelPurchase => "fuel_purchase",
             NonFuelPurchase => "non_fuel_purchase",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFleetPurchaseType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFleetPurchaseType::*;
         match s {
             "fuel_and_non_fuel_purchase" => Ok(FuelAndNonFuelPurchase),
             "fuel_purchase" => Ok(FuelPurchase),
             "non_fuel_purchase" => Ok(NonFuelPurchase),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFleetPurchaseType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -3100,36 +3161,47 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFleetPurchaseType"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The type of fuel service. One of `non_fuel_transaction`, `full_service`, or `self_service`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFleetServiceType {
     FullService,
     NonFuelTransaction,
     SelfService,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFleetServiceType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFleetServiceType::*;
         match self {
             FullService => "full_service",
             NonFuelTransaction => "non_fuel_transaction",
             SelfService => "self_service",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFleetServiceType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFleetServiceType::*;
         match s {
             "full_service" => Ok(FullService),
             "non_fuel_transaction" => Ok(NonFuelTransaction),
             "self_service" => Ok(SelfService),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFleetServiceType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -3159,7 +3231,7 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFleetServiceType"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Information about fuel that was purchased with this transaction.
@@ -3202,16 +3274,19 @@ impl Default for CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFuel {
 }
 /// The type of fuel that was purchased.
 /// One of `diesel`, `unleaded_plus`, `unleaded_regular`, `unleaded_super`, or `other`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFuelType {
     Diesel,
     Other,
     UnleadedPlus,
     UnleadedRegular,
     UnleadedSuper,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFuelType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFuelType::*;
         match self {
             Diesel => "diesel",
@@ -3219,12 +3294,13 @@ impl CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFuelType {
             UnleadedPlus => "unleaded_plus",
             UnleadedRegular => "unleaded_regular",
             UnleadedSuper => "unleaded_super",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFuelType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFuelType::*;
         match s {
@@ -3233,7 +3309,14 @@ impl std::str::FromStr for CreateUnlinkedRefundIssuingTransactionPurchaseDetails
             "unleaded_plus" => Ok(UnleadedPlus),
             "unleaded_regular" => Ok(UnleadedRegular),
             "unleaded_super" => Ok(UnleadedSuper),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFuelType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -3263,16 +3346,13 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFuelType",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The units for `quantity_decimal`.
 /// One of `charging_minute`, `imperial_gallon`, `kilogram`, `kilowatt_hour`, `liter`, `pound`, `us_gallon`, or `other`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFuelUnit {
     ChargingMinute,
     ImperialGallon,
@@ -3282,9 +3362,11 @@ pub enum CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFuelUnit {
     Other,
     Pound,
     UsGallon,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFuelUnit {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFuelUnit::*;
         match self {
             ChargingMinute => "charging_minute",
@@ -3295,12 +3377,13 @@ impl CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFuelUnit {
             Other => "other",
             Pound => "pound",
             UsGallon => "us_gallon",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFuelUnit {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFuelUnit::*;
         match s {
@@ -3312,7 +3395,14 @@ impl std::str::FromStr for CreateUnlinkedRefundIssuingTransactionPurchaseDetails
             "other" => Ok(Other),
             "pound" => Ok(Pound),
             "us_gallon" => Ok(UsGallon),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFuelUnit"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -3342,11 +3432,7 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFuelUnit",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Allows the user to refund an arbitrary amount, also known as a unlinked refund.

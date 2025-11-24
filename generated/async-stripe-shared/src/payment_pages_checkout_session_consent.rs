@@ -1,4 +1,4 @@
-#[derive(Copy, Clone, Debug)]
+#[derive(Clone, Debug)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentPagesCheckoutSessionConsent {
@@ -66,7 +66,7 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (Some(promotions), Some(terms_of_service)) =
-                (self.promotions, self.terms_of_service)
+                (self.promotions.take(), self.terms_of_service.take())
             else {
                 return None;
             };
@@ -108,29 +108,40 @@ const _: () = {
 };
 /// If `opt_in`, the customer consents to receiving promotional communications
 /// from the merchant about this Checkout Session.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PaymentPagesCheckoutSessionConsentPromotions {
     OptIn,
     OptOut,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl PaymentPagesCheckoutSessionConsentPromotions {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PaymentPagesCheckoutSessionConsentPromotions::*;
         match self {
             OptIn => "opt_in",
             OptOut => "opt_out",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for PaymentPagesCheckoutSessionConsentPromotions {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentPagesCheckoutSessionConsentPromotions::*;
         match s {
             "opt_in" => Ok(OptIn),
             "opt_out" => Ok(OptOut),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PaymentPagesCheckoutSessionConsentPromotions"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -163,10 +174,8 @@ impl miniserde::Deserialize for PaymentPagesCheckoutSessionConsentPromotions {
 impl miniserde::de::Visitor for crate::Place<PaymentPagesCheckoutSessionConsentPromotions> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            PaymentPagesCheckoutSessionConsentPromotions::from_str(s)
-                .map_err(|_| miniserde::Error)?,
-        );
+        self.out =
+            Some(PaymentPagesCheckoutSessionConsentPromotions::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -177,34 +186,41 @@ impl<'de> serde::Deserialize<'de> for PaymentPagesCheckoutSessionConsentPromotio
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for PaymentPagesCheckoutSessionConsentPromotions",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// If `accepted`, the customer in this Checkout Session has agreed to the merchant's terms of service.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PaymentPagesCheckoutSessionConsentTermsOfService {
     Accepted,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl PaymentPagesCheckoutSessionConsentTermsOfService {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PaymentPagesCheckoutSessionConsentTermsOfService::*;
         match self {
             Accepted => "accepted",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for PaymentPagesCheckoutSessionConsentTermsOfService {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentPagesCheckoutSessionConsentTermsOfService::*;
         match s {
             "accepted" => Ok(Accepted),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PaymentPagesCheckoutSessionConsentTermsOfService"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -238,8 +254,7 @@ impl miniserde::de::Visitor for crate::Place<PaymentPagesCheckoutSessionConsentT
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(
-            PaymentPagesCheckoutSessionConsentTermsOfService::from_str(s)
-                .map_err(|_| miniserde::Error)?,
+            PaymentPagesCheckoutSessionConsentTermsOfService::from_str(s).expect("infallible"),
         );
         Ok(())
     }
@@ -251,10 +266,6 @@ impl<'de> serde::Deserialize<'de> for PaymentPagesCheckoutSessionConsentTermsOfS
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for PaymentPagesCheckoutSessionConsentTermsOfService",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

@@ -121,7 +121,7 @@ const _: () = {
                 self.no_valid_authorization.take(),
                 self.not_received.take(),
                 self.other.take(),
-                self.reason,
+                self.reason.take(),
                 self.service_not_as_described.take(),
             )
             else {
@@ -187,7 +187,8 @@ const _: () = {
     }
 };
 /// The reason for filing the dispute. Its value will match the field containing the evidence.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum IssuingDisputeEvidenceReason {
     Canceled,
     Duplicate,
@@ -197,9 +198,11 @@ pub enum IssuingDisputeEvidenceReason {
     NotReceived,
     Other,
     ServiceNotAsDescribed,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl IssuingDisputeEvidenceReason {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use IssuingDisputeEvidenceReason::*;
         match self {
             Canceled => "canceled",
@@ -210,12 +213,13 @@ impl IssuingDisputeEvidenceReason {
             NotReceived => "not_received",
             Other => "other",
             ServiceNotAsDescribed => "service_not_as_described",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for IssuingDisputeEvidenceReason {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use IssuingDisputeEvidenceReason::*;
         match s {
@@ -227,7 +231,14 @@ impl std::str::FromStr for IssuingDisputeEvidenceReason {
             "not_received" => Ok(NotReceived),
             "other" => Ok(Other),
             "service_not_as_described" => Ok(ServiceNotAsDescribed),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "IssuingDisputeEvidenceReason"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -260,7 +271,7 @@ impl miniserde::Deserialize for IssuingDisputeEvidenceReason {
 impl miniserde::de::Visitor for crate::Place<IssuingDisputeEvidenceReason> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(IssuingDisputeEvidenceReason::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(IssuingDisputeEvidenceReason::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -271,7 +282,6 @@ impl<'de> serde::Deserialize<'de> for IssuingDisputeEvidenceReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for IssuingDisputeEvidenceReason"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

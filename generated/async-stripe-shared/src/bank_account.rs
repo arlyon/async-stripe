@@ -320,29 +320,40 @@ impl serde::Serialize for BankAccount {
 }
 /// A set of available payout methods for this bank account.
 /// Only values from this set should be passed as the `method` when creating a payout.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum BankAccountAvailablePayoutMethods {
     Instant,
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl BankAccountAvailablePayoutMethods {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use BankAccountAvailablePayoutMethods::*;
         match self {
             Instant => "instant",
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for BankAccountAvailablePayoutMethods {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use BankAccountAvailablePayoutMethods::*;
         match s {
             "instant" => Ok(Instant),
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "BankAccountAvailablePayoutMethods"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -375,8 +386,7 @@ impl miniserde::Deserialize for BankAccountAvailablePayoutMethods {
 impl miniserde::de::Visitor for crate::Place<BankAccountAvailablePayoutMethods> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out =
-            Some(BankAccountAvailablePayoutMethods::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(BankAccountAvailablePayoutMethods::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -387,9 +397,7 @@ impl<'de> serde::Deserialize<'de> for BankAccountAvailablePayoutMethods {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for BankAccountAvailablePayoutMethods")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 impl stripe_types::Object for BankAccount {

@@ -88,12 +88,12 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (Some(features), Some(id), Some(livemode), Some(name), Some(status), Some(type_)) = (
-                self.features,
+                self.features.take(),
                 self.id.take(),
                 self.livemode,
                 self.name.take(),
-                self.status,
-                self.type_,
+                self.status.take(),
+                self.type_.take(),
             ) else {
                 return None;
             };
@@ -164,32 +164,43 @@ impl stripe_types::Object for IssuingPhysicalBundle {
     }
 }
 stripe_types::def_id!(IssuingPhysicalBundleId);
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum IssuingPhysicalBundleStatus {
     Active,
     Inactive,
     Review,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl IssuingPhysicalBundleStatus {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use IssuingPhysicalBundleStatus::*;
         match self {
             Active => "active",
             Inactive => "inactive",
             Review => "review",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for IssuingPhysicalBundleStatus {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use IssuingPhysicalBundleStatus::*;
         match s {
             "active" => Ok(Active),
             "inactive" => Ok(Inactive),
             "review" => Ok(Review),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "IssuingPhysicalBundleStatus"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -221,7 +232,7 @@ impl miniserde::Deserialize for IssuingPhysicalBundleStatus {
 impl miniserde::de::Visitor for crate::Place<IssuingPhysicalBundleStatus> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(IssuingPhysicalBundleStatus::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(IssuingPhysicalBundleStatus::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -232,33 +243,39 @@ impl<'de> serde::Deserialize<'de> for IssuingPhysicalBundleStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for IssuingPhysicalBundleStatus"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum IssuingPhysicalBundleType {
     Custom,
     Standard,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl IssuingPhysicalBundleType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use IssuingPhysicalBundleType::*;
         match self {
             Custom => "custom",
             Standard => "standard",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for IssuingPhysicalBundleType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use IssuingPhysicalBundleType::*;
         match s {
             "custom" => Ok(Custom),
             "standard" => Ok(Standard),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "IssuingPhysicalBundleType");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -290,7 +307,7 @@ impl miniserde::Deserialize for IssuingPhysicalBundleType {
 impl miniserde::de::Visitor for crate::Place<IssuingPhysicalBundleType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(IssuingPhysicalBundleType::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(IssuingPhysicalBundleType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -301,7 +318,6 @@ impl<'de> serde::Deserialize<'de> for IssuingPhysicalBundleType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for IssuingPhysicalBundleType"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

@@ -105,10 +105,10 @@ const _: () = {
                 Some(statement_descriptor_suffix),
                 Some(transfer_group),
             ) = (
-                self.capture_method,
+                self.capture_method.take(),
                 self.description.take(),
                 self.metadata.take(),
-                self.setup_future_usage,
+                self.setup_future_usage.take(),
                 self.statement_descriptor.take(),
                 self.statement_descriptor_suffix.take(),
                 self.transfer_group.take(),
@@ -168,32 +168,43 @@ const _: () = {
     }
 };
 /// Indicates when the funds will be captured from the customer's account.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PaymentLinksResourcePaymentIntentDataCaptureMethod {
     Automatic,
     AutomaticAsync,
     Manual,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl PaymentLinksResourcePaymentIntentDataCaptureMethod {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PaymentLinksResourcePaymentIntentDataCaptureMethod::*;
         match self {
             Automatic => "automatic",
             AutomaticAsync => "automatic_async",
             Manual => "manual",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for PaymentLinksResourcePaymentIntentDataCaptureMethod {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentLinksResourcePaymentIntentDataCaptureMethod::*;
         match s {
             "automatic" => Ok(Automatic),
             "automatic_async" => Ok(AutomaticAsync),
             "manual" => Ok(Manual),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PaymentLinksResourcePaymentIntentDataCaptureMethod"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -227,8 +238,7 @@ impl miniserde::de::Visitor for crate::Place<PaymentLinksResourcePaymentIntentDa
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(
-            PaymentLinksResourcePaymentIntentDataCaptureMethod::from_str(s)
-                .map_err(|_| miniserde::Error)?,
+            PaymentLinksResourcePaymentIntentDataCaptureMethod::from_str(s).expect("infallible"),
         );
         Ok(())
     }
@@ -240,37 +250,44 @@ impl<'de> serde::Deserialize<'de> for PaymentLinksResourcePaymentIntentDataCaptu
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for PaymentLinksResourcePaymentIntentDataCaptureMethod",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Indicates that you intend to make future payments with the payment method collected during checkout.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PaymentLinksResourcePaymentIntentDataSetupFutureUsage {
     OffSession,
     OnSession,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl PaymentLinksResourcePaymentIntentDataSetupFutureUsage {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PaymentLinksResourcePaymentIntentDataSetupFutureUsage::*;
         match self {
             OffSession => "off_session",
             OnSession => "on_session",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for PaymentLinksResourcePaymentIntentDataSetupFutureUsage {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentLinksResourcePaymentIntentDataSetupFutureUsage::*;
         match s {
             "off_session" => Ok(OffSession),
             "on_session" => Ok(OnSession),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PaymentLinksResourcePaymentIntentDataSetupFutureUsage"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -306,8 +323,7 @@ impl miniserde::de::Visitor
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(
-            PaymentLinksResourcePaymentIntentDataSetupFutureUsage::from_str(s)
-                .map_err(|_| miniserde::Error)?,
+            PaymentLinksResourcePaymentIntentDataSetupFutureUsage::from_str(s).expect("infallible"),
         );
         Ok(())
     }
@@ -319,10 +335,6 @@ impl<'de> serde::Deserialize<'de> for PaymentLinksResourcePaymentIntentDataSetup
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for PaymentLinksResourcePaymentIntentDataSetupFutureUsage",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

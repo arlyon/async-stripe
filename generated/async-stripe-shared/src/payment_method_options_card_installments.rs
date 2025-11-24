@@ -73,7 +73,7 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (Some(available_plans), Some(enabled), Some(plan)) =
-                (self.available_plans.take(), self.enabled, self.plan)
+                (self.available_plans.take(), self.enabled, self.plan.take())
             else {
                 return None;
             };

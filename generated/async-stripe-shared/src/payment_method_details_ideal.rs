@@ -243,7 +243,14 @@ impl std::str::FromStr for PaymentMethodDetailsIdealBank {
             "triodos_bank" => Ok(TriodosBank),
             "van_lanschot" => Ok(VanLanschot),
             "yoursafe" => Ok(Yoursafe),
-            v => Ok(Unknown(v.to_owned())),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PaymentMethodDetailsIdealBank"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -276,7 +283,7 @@ impl miniserde::Deserialize for PaymentMethodDetailsIdealBank {
 impl miniserde::de::Visitor for crate::Place<PaymentMethodDetailsIdealBank> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(PaymentMethodDetailsIdealBank::from_str(s).unwrap());
+        self.out = Some(PaymentMethodDetailsIdealBank::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -287,7 +294,7 @@ impl<'de> serde::Deserialize<'de> for PaymentMethodDetailsIdealBank {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap())
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The Bank Identifier Code of the customer's bank.
@@ -368,7 +375,14 @@ impl std::str::FromStr for PaymentMethodDetailsIdealBic {
             "REVOLT21" => Ok(Revolt21),
             "SNSBNL2A" => Ok(Snsbnl2a),
             "TRIONL2U" => Ok(Trionl2u),
-            v => Ok(Unknown(v.to_owned())),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PaymentMethodDetailsIdealBic"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -401,7 +415,7 @@ impl miniserde::Deserialize for PaymentMethodDetailsIdealBic {
 impl miniserde::de::Visitor for crate::Place<PaymentMethodDetailsIdealBic> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(PaymentMethodDetailsIdealBic::from_str(s).unwrap());
+        self.out = Some(PaymentMethodDetailsIdealBic::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -412,6 +426,6 @@ impl<'de> serde::Deserialize<'de> for PaymentMethodDetailsIdealBic {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap())
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

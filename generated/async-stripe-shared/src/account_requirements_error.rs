@@ -508,7 +508,14 @@ impl std::str::FromStr for AccountRequirementsErrorCode {
                 Ok(VerificationRequiresAdditionalProofOfRegistration)
             }
             "verification_supportability" => Ok(VerificationSupportability),
-            v => Ok(Unknown(v.to_owned())),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "AccountRequirementsErrorCode"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -541,7 +548,7 @@ impl miniserde::Deserialize for AccountRequirementsErrorCode {
 impl miniserde::de::Visitor for crate::Place<AccountRequirementsErrorCode> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(AccountRequirementsErrorCode::from_str(s).unwrap());
+        self.out = Some(AccountRequirementsErrorCode::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -552,6 +559,6 @@ impl<'de> serde::Deserialize<'de> for AccountRequirementsErrorCode {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap())
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

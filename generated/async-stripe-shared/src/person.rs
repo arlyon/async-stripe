@@ -282,7 +282,7 @@ const _: () = {
                 self.metadata.take(),
                 self.nationality.take(),
                 self.phone.take(),
-                self.political_exposure,
+                self.political_exposure.take(),
                 self.registered_address.take(),
                 self.relationship.take(),
                 self.requirements.take(),
@@ -446,29 +446,36 @@ impl stripe_types::Object for Person {
     }
 }
 stripe_types::def_id!(PersonId);
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PersonPoliticalExposure {
     Existing,
     None,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl PersonPoliticalExposure {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PersonPoliticalExposure::*;
         match self {
             Existing => "existing",
             None => "none",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for PersonPoliticalExposure {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PersonPoliticalExposure::*;
         match s {
             "existing" => Ok(Existing),
             "none" => Ok(None),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "PersonPoliticalExposure");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -500,7 +507,7 @@ impl miniserde::Deserialize for PersonPoliticalExposure {
 impl miniserde::de::Visitor for crate::Place<PersonPoliticalExposure> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(PersonPoliticalExposure::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(PersonPoliticalExposure::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -511,7 +518,6 @@ impl<'de> serde::Deserialize<'de> for PersonPoliticalExposure {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for PersonPoliticalExposure"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

@@ -1,4 +1,4 @@
-#[derive(Copy, Clone, Debug)]
+#[derive(Clone, Debug)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PortalResourceScheduleUpdateAtPeriodEndCondition {
@@ -61,7 +61,7 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(type_),) = (self.type_,) else {
+            let (Some(type_),) = (self.type_.take(),) else {
                 return None;
             };
             Some(Self::Out { type_ })
@@ -100,29 +100,40 @@ const _: () = {
     }
 };
 /// The type of condition.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PortalResourceScheduleUpdateAtPeriodEndConditionType {
     DecreasingItemAmount,
     ShorteningInterval,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl PortalResourceScheduleUpdateAtPeriodEndConditionType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PortalResourceScheduleUpdateAtPeriodEndConditionType::*;
         match self {
             DecreasingItemAmount => "decreasing_item_amount",
             ShorteningInterval => "shortening_interval",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for PortalResourceScheduleUpdateAtPeriodEndConditionType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PortalResourceScheduleUpdateAtPeriodEndConditionType::*;
         match s {
             "decreasing_item_amount" => Ok(DecreasingItemAmount),
             "shortening_interval" => Ok(ShorteningInterval),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PortalResourceScheduleUpdateAtPeriodEndConditionType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -156,8 +167,7 @@ impl miniserde::de::Visitor for crate::Place<PortalResourceScheduleUpdateAtPerio
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(
-            PortalResourceScheduleUpdateAtPeriodEndConditionType::from_str(s)
-                .map_err(|_| miniserde::Error)?,
+            PortalResourceScheduleUpdateAtPeriodEndConditionType::from_str(s).expect("infallible"),
         );
         Ok(())
     }
@@ -169,10 +179,6 @@ impl<'de> serde::Deserialize<'de> for PortalResourceScheduleUpdateAtPeriodEndCon
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for PortalResourceScheduleUpdateAtPeriodEndConditionType",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

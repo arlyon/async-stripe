@@ -188,7 +188,7 @@ const _: () = {
                 self.application.take(),
                 self.created,
                 self.customer_details.take(),
-                self.customer_presence,
+                self.customer_presence.take(),
                 self.description.take(),
                 self.id.take(),
                 self.latest_payment_attempt_record.take(),
@@ -318,29 +318,40 @@ impl stripe_types::Object for PaymentRecord {
     }
 }
 stripe_types::def_id!(PaymentRecordId);
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PaymentRecordCustomerPresence {
     OffSession,
     OnSession,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl PaymentRecordCustomerPresence {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PaymentRecordCustomerPresence::*;
         match self {
             OffSession => "off_session",
             OnSession => "on_session",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for PaymentRecordCustomerPresence {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentRecordCustomerPresence::*;
         match s {
             "off_session" => Ok(OffSession),
             "on_session" => Ok(OnSession),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PaymentRecordCustomerPresence"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -372,7 +383,7 @@ impl miniserde::Deserialize for PaymentRecordCustomerPresence {
 impl miniserde::de::Visitor for crate::Place<PaymentRecordCustomerPresence> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(PaymentRecordCustomerPresence::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(PaymentRecordCustomerPresence::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -383,8 +394,6 @@ impl<'de> serde::Deserialize<'de> for PaymentRecordCustomerPresence {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for PaymentRecordCustomerPresence")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

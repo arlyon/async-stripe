@@ -287,12 +287,12 @@ const _: () = {
                 self.application_fee_amount,
                 self.application_fee_percent,
                 self.automatic_tax.take(),
-                self.billing_address_collection,
-                self.consent_collection,
+                self.billing_address_collection.take(),
+                self.consent_collection.take(),
                 self.currency.take(),
                 self.custom_fields.take(),
                 self.custom_text.take(),
-                self.customer_creation,
+                self.customer_creation.take(),
                 self.id.take(),
                 self.inactive_message.take(),
                 self.invoice_creation.take(),
@@ -303,15 +303,15 @@ const _: () = {
                 self.on_behalf_of.take(),
                 self.optional_items.take(),
                 self.payment_intent_data.take(),
-                self.payment_method_collection,
+                self.payment_method_collection.take(),
                 self.payment_method_types.take(),
                 self.phone_number_collection,
                 self.restrictions,
                 self.shipping_address_collection.take(),
                 self.shipping_options.take(),
-                self.submit_type,
+                self.submit_type.take(),
                 self.subscription_data.take(),
-                self.tax_id_collection,
+                self.tax_id_collection.take(),
                 self.transfer_data.take(),
                 self.url.take(),
             )
@@ -480,29 +480,40 @@ impl serde::Serialize for PaymentLink {
     }
 }
 /// Configuration for Customer creation during checkout.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PaymentLinkCustomerCreation {
     Always,
     IfRequired,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl PaymentLinkCustomerCreation {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PaymentLinkCustomerCreation::*;
         match self {
             Always => "always",
             IfRequired => "if_required",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for PaymentLinkCustomerCreation {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentLinkCustomerCreation::*;
         match s {
             "always" => Ok(Always),
             "if_required" => Ok(IfRequired),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PaymentLinkCustomerCreation"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -535,7 +546,7 @@ impl miniserde::Deserialize for PaymentLinkCustomerCreation {
 impl miniserde::de::Visitor for crate::Place<PaymentLinkCustomerCreation> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(PaymentLinkCustomerCreation::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(PaymentLinkCustomerCreation::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -546,34 +557,44 @@ impl<'de> serde::Deserialize<'de> for PaymentLinkCustomerCreation {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for PaymentLinkCustomerCreation"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Configuration for collecting a payment method during checkout. Defaults to `always`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PaymentLinkPaymentMethodCollection {
     Always,
     IfRequired,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl PaymentLinkPaymentMethodCollection {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PaymentLinkPaymentMethodCollection::*;
         match self {
             Always => "always",
             IfRequired => "if_required",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for PaymentLinkPaymentMethodCollection {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentLinkPaymentMethodCollection::*;
         match s {
             "always" => Ok(Always),
             "if_required" => Ok(IfRequired),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PaymentLinkPaymentMethodCollection"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -606,8 +627,7 @@ impl miniserde::Deserialize for PaymentLinkPaymentMethodCollection {
 impl miniserde::de::Visitor for crate::Place<PaymentLinkPaymentMethodCollection> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out =
-            Some(PaymentLinkPaymentMethodCollection::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(PaymentLinkPaymentMethodCollection::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -618,9 +638,7 @@ impl<'de> serde::Deserialize<'de> for PaymentLinkPaymentMethodCollection {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for PaymentLinkPaymentMethodCollection")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 impl stripe_types::Object for PaymentLink {
@@ -634,29 +652,40 @@ impl stripe_types::Object for PaymentLink {
     }
 }
 stripe_types::def_id!(PaymentLinkId);
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PaymentLinkBillingAddressCollection {
     Auto,
     Required,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl PaymentLinkBillingAddressCollection {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PaymentLinkBillingAddressCollection::*;
         match self {
             Auto => "auto",
             Required => "required",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for PaymentLinkBillingAddressCollection {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentLinkBillingAddressCollection::*;
         match s {
             "auto" => Ok(Auto),
             "required" => Ok(Required),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PaymentLinkBillingAddressCollection"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -688,8 +717,7 @@ impl miniserde::Deserialize for PaymentLinkBillingAddressCollection {
 impl miniserde::de::Visitor for crate::Place<PaymentLinkBillingAddressCollection> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out =
-            Some(PaymentLinkBillingAddressCollection::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(PaymentLinkBillingAddressCollection::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -700,9 +728,7 @@ impl<'de> serde::Deserialize<'de> for PaymentLinkBillingAddressCollection {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for PaymentLinkBillingAddressCollection")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 #[derive(Clone, Eq, PartialEq)]
@@ -839,7 +865,14 @@ impl std::str::FromStr for PaymentLinkPaymentMethodTypes {
             "us_bank_account" => Ok(UsBankAccount),
             "wechat_pay" => Ok(WechatPay),
             "zip" => Ok(Zip),
-            v => Ok(Unknown(v.to_owned())),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PaymentLinkPaymentMethodTypes"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -871,7 +904,7 @@ impl miniserde::Deserialize for PaymentLinkPaymentMethodTypes {
 impl miniserde::de::Visitor for crate::Place<PaymentLinkPaymentMethodTypes> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(PaymentLinkPaymentMethodTypes::from_str(s).unwrap());
+        self.out = Some(PaymentLinkPaymentMethodTypes::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -882,19 +915,22 @@ impl<'de> serde::Deserialize<'de> for PaymentLinkPaymentMethodTypes {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap())
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PaymentLinkSubmitType {
     Auto,
     Book,
     Donate,
     Pay,
     Subscribe,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl PaymentLinkSubmitType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PaymentLinkSubmitType::*;
         match self {
             Auto => "auto",
@@ -902,12 +938,13 @@ impl PaymentLinkSubmitType {
             Donate => "donate",
             Pay => "pay",
             Subscribe => "subscribe",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for PaymentLinkSubmitType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentLinkSubmitType::*;
         match s {
@@ -916,7 +953,10 @@ impl std::str::FromStr for PaymentLinkSubmitType {
             "donate" => Ok(Donate),
             "pay" => Ok(Pay),
             "subscribe" => Ok(Subscribe),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "PaymentLinkSubmitType");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -948,7 +988,7 @@ impl miniserde::Deserialize for PaymentLinkSubmitType {
 impl miniserde::de::Visitor for crate::Place<PaymentLinkSubmitType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(PaymentLinkSubmitType::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(PaymentLinkSubmitType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -959,7 +999,6 @@ impl<'de> serde::Deserialize<'de> for PaymentLinkSubmitType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for PaymentLinkSubmitType"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

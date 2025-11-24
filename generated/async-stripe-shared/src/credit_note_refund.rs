@@ -82,7 +82,7 @@ const _: () = {
                 self.amount_refunded,
                 self.payment_record_refund.take(),
                 self.refund.take(),
-                self.type_,
+                self.type_.take(),
             ) else {
                 return None;
             };
@@ -127,29 +127,36 @@ const _: () = {
     }
 };
 /// Type of the refund, one of `refund` or `payment_record_refund`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreditNoteRefundType {
     PaymentRecordRefund,
     Refund,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreditNoteRefundType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreditNoteRefundType::*;
         match self {
             PaymentRecordRefund => "payment_record_refund",
             Refund => "refund",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreditNoteRefundType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreditNoteRefundType::*;
         match s {
             "payment_record_refund" => Ok(PaymentRecordRefund),
             "refund" => Ok(Refund),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CreditNoteRefundType");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -182,7 +189,7 @@ impl miniserde::Deserialize for CreditNoteRefundType {
 impl miniserde::de::Visitor for crate::Place<CreditNoteRefundType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(CreditNoteRefundType::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(CreditNoteRefundType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -193,7 +200,6 @@ impl<'de> serde::Deserialize<'de> for CreditNoteRefundType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for CreditNoteRefundType"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

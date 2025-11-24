@@ -73,7 +73,7 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (Some(comment), Some(feedback), Some(reason)) =
-                (self.comment.take(), self.feedback, self.reason)
+                (self.comment.take(), self.feedback.take(), self.reason.take())
             else {
                 return None;
             };
@@ -115,7 +115,8 @@ const _: () = {
     }
 };
 /// The customer submitted reason for why they canceled, if the subscription was canceled explicitly by the user.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CancellationDetailsFeedback {
     CustomerService,
     LowQuality,
@@ -125,9 +126,11 @@ pub enum CancellationDetailsFeedback {
     TooComplex,
     TooExpensive,
     Unused,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CancellationDetailsFeedback {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CancellationDetailsFeedback::*;
         match self {
             CustomerService => "customer_service",
@@ -138,12 +141,13 @@ impl CancellationDetailsFeedback {
             TooComplex => "too_complex",
             TooExpensive => "too_expensive",
             Unused => "unused",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CancellationDetailsFeedback {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CancellationDetailsFeedback::*;
         match s {
@@ -155,7 +159,14 @@ impl std::str::FromStr for CancellationDetailsFeedback {
             "too_complex" => Ok(TooComplex),
             "too_expensive" => Ok(TooExpensive),
             "unused" => Ok(Unused),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CancellationDetailsFeedback"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -188,7 +199,7 @@ impl miniserde::Deserialize for CancellationDetailsFeedback {
 impl miniserde::de::Visitor for crate::Place<CancellationDetailsFeedback> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(CancellationDetailsFeedback::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(CancellationDetailsFeedback::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -199,37 +210,43 @@ impl<'de> serde::Deserialize<'de> for CancellationDetailsFeedback {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for CancellationDetailsFeedback"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Why this subscription was canceled.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CancellationDetailsReason {
     CancellationRequested,
     PaymentDisputed,
     PaymentFailed,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CancellationDetailsReason {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CancellationDetailsReason::*;
         match self {
             CancellationRequested => "cancellation_requested",
             PaymentDisputed => "payment_disputed",
             PaymentFailed => "payment_failed",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CancellationDetailsReason {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CancellationDetailsReason::*;
         match s {
             "cancellation_requested" => Ok(CancellationRequested),
             "payment_disputed" => Ok(PaymentDisputed),
             "payment_failed" => Ok(PaymentFailed),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CancellationDetailsReason");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -262,7 +279,7 @@ impl miniserde::Deserialize for CancellationDetailsReason {
 impl miniserde::de::Visitor for crate::Place<CancellationDetailsReason> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(CancellationDetailsReason::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(CancellationDetailsReason::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -273,7 +290,6 @@ impl<'de> serde::Deserialize<'de> for CancellationDetailsReason {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for CancellationDetailsReason"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

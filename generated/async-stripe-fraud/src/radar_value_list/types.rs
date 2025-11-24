@@ -123,7 +123,7 @@ const _: () = {
                 self.created,
                 self.created_by.take(),
                 self.id.take(),
-                self.item_type,
+                self.item_type.take(),
                 self.list_items.take(),
                 self.livemode,
                 self.metadata.take(),
@@ -215,7 +215,8 @@ impl stripe_types::Object for RadarValueList {
     }
 }
 stripe_types::def_id!(RadarValueListId);
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum RadarValueListItemType {
     CardBin,
     CardFingerprint,
@@ -227,9 +228,11 @@ pub enum RadarValueListItemType {
     SepaDebitFingerprint,
     String,
     UsBankAccountFingerprint,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl RadarValueListItemType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use RadarValueListItemType::*;
         match self {
             CardBin => "card_bin",
@@ -242,12 +245,13 @@ impl RadarValueListItemType {
             SepaDebitFingerprint => "sepa_debit_fingerprint",
             String => "string",
             UsBankAccountFingerprint => "us_bank_account_fingerprint",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for RadarValueListItemType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use RadarValueListItemType::*;
         match s {
@@ -261,7 +265,10 @@ impl std::str::FromStr for RadarValueListItemType {
             "sepa_debit_fingerprint" => Ok(SepaDebitFingerprint),
             "string" => Ok(String),
             "us_bank_account_fingerprint" => Ok(UsBankAccountFingerprint),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "RadarValueListItemType");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -293,7 +300,7 @@ impl miniserde::Deserialize for RadarValueListItemType {
 impl miniserde::de::Visitor for crate::Place<RadarValueListItemType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(RadarValueListItemType::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(RadarValueListItemType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -304,7 +311,6 @@ impl<'de> serde::Deserialize<'de> for RadarValueListItemType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for RadarValueListItemType"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

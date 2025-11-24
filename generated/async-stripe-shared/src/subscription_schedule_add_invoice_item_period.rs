@@ -1,4 +1,4 @@
-#[derive(Copy, Clone, Debug)]
+#[derive(Clone, Debug)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct SubscriptionScheduleAddInvoiceItemPeriod {
@@ -62,7 +62,7 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(end), Some(start)) = (self.end, self.start) else {
+            let (Some(end), Some(start)) = (self.end.take(), self.start.take()) else {
                 return None;
             };
             Some(Self::Out { end, start })

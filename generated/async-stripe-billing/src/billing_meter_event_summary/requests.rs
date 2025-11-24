@@ -40,29 +40,40 @@ impl ListIdBillingMeterEventSummaryBuilder {
 /// If not specified, a single event summary would be returned for the specified time range.
 /// For hourly granularity, start and end times must align with hour boundaries (e.g., 00:00, 01:00, ..., 23:00).
 /// For daily granularity, start and end times must align with UTC day boundaries (00:00 UTC).
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum ListIdBillingMeterEventSummaryValueGroupingWindow {
     Day,
     Hour,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl ListIdBillingMeterEventSummaryValueGroupingWindow {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use ListIdBillingMeterEventSummaryValueGroupingWindow::*;
         match self {
             Day => "day",
             Hour => "hour",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for ListIdBillingMeterEventSummaryValueGroupingWindow {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ListIdBillingMeterEventSummaryValueGroupingWindow::*;
         match s {
             "day" => Ok(Day),
             "hour" => Ok(Hour),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "ListIdBillingMeterEventSummaryValueGroupingWindow"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -90,11 +101,7 @@ impl<'de> serde::Deserialize<'de> for ListIdBillingMeterEventSummaryValueGroupin
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for ListIdBillingMeterEventSummaryValueGroupingWindow",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Retrieve a list of billing meter event summaries.

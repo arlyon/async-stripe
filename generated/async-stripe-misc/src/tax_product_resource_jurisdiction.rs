@@ -78,9 +78,12 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(country), Some(display_name), Some(level), Some(state)) =
-                (self.country.take(), self.display_name.take(), self.level, self.state.take())
-            else {
+            let (Some(country), Some(display_name), Some(level), Some(state)) = (
+                self.country.take(),
+                self.display_name.take(),
+                self.level.take(),
+                self.state.take(),
+            ) else {
                 return None;
             };
             Some(Self::Out { country, display_name, level, state })
@@ -122,16 +125,19 @@ const _: () = {
     }
 };
 /// Indicates the level of the jurisdiction imposing the tax.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum TaxProductResourceJurisdictionLevel {
     City,
     Country,
     County,
     District,
     State,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl TaxProductResourceJurisdictionLevel {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use TaxProductResourceJurisdictionLevel::*;
         match self {
             City => "city",
@@ -139,12 +145,13 @@ impl TaxProductResourceJurisdictionLevel {
             County => "county",
             District => "district",
             State => "state",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for TaxProductResourceJurisdictionLevel {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TaxProductResourceJurisdictionLevel::*;
         match s {
@@ -153,7 +160,14 @@ impl std::str::FromStr for TaxProductResourceJurisdictionLevel {
             "county" => Ok(County),
             "district" => Ok(District),
             "state" => Ok(State),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "TaxProductResourceJurisdictionLevel"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -186,8 +200,7 @@ impl miniserde::Deserialize for TaxProductResourceJurisdictionLevel {
 impl miniserde::de::Visitor for crate::Place<TaxProductResourceJurisdictionLevel> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out =
-            Some(TaxProductResourceJurisdictionLevel::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(TaxProductResourceJurisdictionLevel::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -198,8 +211,6 @@ impl<'de> serde::Deserialize<'de> for TaxProductResourceJurisdictionLevel {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for TaxProductResourceJurisdictionLevel")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

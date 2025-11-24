@@ -66,7 +66,7 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (Some(account_holder_type), Some(bank)) =
-                (self.account_holder_type, self.bank.take())
+                (self.account_holder_type.take(), self.bank.take())
             else {
                 return None;
             };
@@ -107,29 +107,40 @@ const _: () = {
     }
 };
 /// Account holder type, if provided. Can be one of `individual` or `company`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PaymentMethodFpxAccountHolderType {
     Company,
     Individual,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl PaymentMethodFpxAccountHolderType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PaymentMethodFpxAccountHolderType::*;
         match self {
             Company => "company",
             Individual => "individual",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for PaymentMethodFpxAccountHolderType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentMethodFpxAccountHolderType::*;
         match s {
             "company" => Ok(Company),
             "individual" => Ok(Individual),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PaymentMethodFpxAccountHolderType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -162,8 +173,7 @@ impl miniserde::Deserialize for PaymentMethodFpxAccountHolderType {
 impl miniserde::de::Visitor for crate::Place<PaymentMethodFpxAccountHolderType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out =
-            Some(PaymentMethodFpxAccountHolderType::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(PaymentMethodFpxAccountHolderType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -174,9 +184,7 @@ impl<'de> serde::Deserialize<'de> for PaymentMethodFpxAccountHolderType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for PaymentMethodFpxAccountHolderType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The customer's bank, if provided.
@@ -267,7 +275,10 @@ impl std::str::FromStr for PaymentMethodFpxBank {
             "rhb" => Ok(Rhb),
             "standard_chartered" => Ok(StandardChartered),
             "uob" => Ok(Uob),
-            v => Ok(Unknown(v.to_owned())),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "PaymentMethodFpxBank");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -300,7 +311,7 @@ impl miniserde::Deserialize for PaymentMethodFpxBank {
 impl miniserde::de::Visitor for crate::Place<PaymentMethodFpxBank> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(PaymentMethodFpxBank::from_str(s).unwrap());
+        self.out = Some(PaymentMethodFpxBank::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -311,6 +322,6 @@ impl<'de> serde::Deserialize<'de> for PaymentMethodFpxBank {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap())
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

@@ -168,7 +168,7 @@ const _: () = {
                 self.request_log_url.take(),
                 self.setup_intent.take(),
                 self.source.take(),
-                self.type_,
+                self.type_.take(),
             )
             else {
                 return None;
@@ -870,7 +870,10 @@ impl std::str::FromStr for ApiErrorsCode {
             }
             "transfers_not_allowed" => Ok(TransfersNotAllowed),
             "url_invalid" => Ok(UrlInvalid),
-            v => Ok(Unknown(v.to_owned())),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "ApiErrorsCode");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -903,7 +906,7 @@ impl miniserde::Deserialize for ApiErrorsCode {
 impl miniserde::de::Visitor for crate::Place<ApiErrorsCode> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(ApiErrorsCode::from_str(s).unwrap());
+        self.out = Some(ApiErrorsCode::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -914,32 +917,36 @@ impl<'de> serde::Deserialize<'de> for ApiErrorsCode {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).unwrap())
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The type of error returned.
 /// One of `api_error`, `card_error`, `idempotency_error`, or `invalid_request_error`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum ApiErrorsType {
     ApiError,
     CardError,
     IdempotencyError,
     InvalidRequestError,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl ApiErrorsType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use ApiErrorsType::*;
         match self {
             ApiError => "api_error",
             CardError => "card_error",
             IdempotencyError => "idempotency_error",
             InvalidRequestError => "invalid_request_error",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for ApiErrorsType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ApiErrorsType::*;
         match s {
@@ -947,7 +954,10 @@ impl std::str::FromStr for ApiErrorsType {
             "card_error" => Ok(CardError),
             "idempotency_error" => Ok(IdempotencyError),
             "invalid_request_error" => Ok(InvalidRequestError),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "ApiErrorsType");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -980,7 +990,7 @@ impl miniserde::Deserialize for ApiErrorsType {
 impl miniserde::de::Visitor for crate::Place<ApiErrorsType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(ApiErrorsType::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(ApiErrorsType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -991,6 +1001,6 @@ impl<'de> serde::Deserialize<'de> for ApiErrorsType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for ApiErrorsType"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

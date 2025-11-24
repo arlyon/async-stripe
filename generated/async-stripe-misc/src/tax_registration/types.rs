@@ -121,7 +121,7 @@ const _: () = {
                 self.expires_at,
                 self.id.take(),
                 self.livemode,
-                self.status,
+                self.status.take(),
             )
             else {
                 return None;
@@ -197,32 +197,39 @@ impl serde::Serialize for TaxRegistration {
 }
 /// The status of the registration.
 /// This field is present for convenience and can be deduced from `active_from` and `expires_at`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum TaxRegistrationStatus {
     Active,
     Expired,
     Scheduled,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl TaxRegistrationStatus {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use TaxRegistrationStatus::*;
         match self {
             Active => "active",
             Expired => "expired",
             Scheduled => "scheduled",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for TaxRegistrationStatus {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TaxRegistrationStatus::*;
         match s {
             "active" => Ok(Active),
             "expired" => Ok(Expired),
             "scheduled" => Ok(Scheduled),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "TaxRegistrationStatus");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -255,7 +262,7 @@ impl miniserde::Deserialize for TaxRegistrationStatus {
 impl miniserde::de::Visitor for crate::Place<TaxRegistrationStatus> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(TaxRegistrationStatus::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(TaxRegistrationStatus::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -266,8 +273,7 @@ impl<'de> serde::Deserialize<'de> for TaxRegistrationStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for TaxRegistrationStatus"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 impl stripe_types::Object for TaxRegistration {

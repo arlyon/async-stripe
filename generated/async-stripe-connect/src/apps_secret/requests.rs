@@ -43,29 +43,36 @@ impl ListAppsSecretScope {
     }
 }
 /// The secret scope type.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum ListAppsSecretScopeType {
     Account,
     User,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl ListAppsSecretScopeType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use ListAppsSecretScopeType::*;
         match self {
             Account => "account",
             User => "user",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for ListAppsSecretScopeType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ListAppsSecretScopeType::*;
         match s {
             "account" => Ok(Account),
             "user" => Ok(User),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "ListAppsSecretScopeType");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -93,8 +100,7 @@ impl<'de> serde::Deserialize<'de> for ListAppsSecretScopeType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for ListAppsSecretScopeType"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// List all secrets stored on the given scope.
@@ -194,29 +200,36 @@ impl FindAppsSecretScope {
     }
 }
 /// The secret scope type.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum FindAppsSecretScopeType {
     Account,
     User,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl FindAppsSecretScopeType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use FindAppsSecretScopeType::*;
         match self {
             Account => "account",
             User => "user",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for FindAppsSecretScopeType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use FindAppsSecretScopeType::*;
         match s {
             "account" => Ok(Account),
             "user" => Ok(User),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "FindAppsSecretScopeType");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -244,8 +257,7 @@ impl<'de> serde::Deserialize<'de> for FindAppsSecretScopeType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for FindAppsSecretScopeType"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Finds a secret in the secret store by name and scope.
@@ -332,29 +344,36 @@ impl CreateAppsSecretScope {
     }
 }
 /// The secret scope type.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateAppsSecretScopeType {
     Account,
     User,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateAppsSecretScopeType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateAppsSecretScopeType::*;
         match self {
             Account => "account",
             User => "user",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateAppsSecretScopeType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateAppsSecretScopeType::*;
         match s {
             "account" => Ok(Account),
             "user" => Ok(User),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "CreateAppsSecretScopeType");
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -382,8 +401,7 @@ impl<'de> serde::Deserialize<'de> for CreateAppsSecretScopeType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for CreateAppsSecretScopeType"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Create or replace a secret in the secret store.
@@ -466,29 +484,40 @@ impl DeleteWhereAppsSecretScope {
     }
 }
 /// The secret scope type.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum DeleteWhereAppsSecretScopeType {
     Account,
     User,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl DeleteWhereAppsSecretScopeType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use DeleteWhereAppsSecretScopeType::*;
         match self {
             Account => "account",
             User => "user",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for DeleteWhereAppsSecretScopeType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use DeleteWhereAppsSecretScopeType::*;
         match s {
             "account" => Ok(Account),
             "user" => Ok(User),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "DeleteWhereAppsSecretScopeType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -516,9 +545,7 @@ impl<'de> serde::Deserialize<'de> for DeleteWhereAppsSecretScopeType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for DeleteWhereAppsSecretScopeType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Deletes a secret from the secret store by name and scope.

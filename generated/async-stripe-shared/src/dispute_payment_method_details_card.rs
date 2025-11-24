@@ -75,7 +75,7 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (Some(brand), Some(case_type), Some(network_reason_code)) =
-                (self.brand.take(), self.case_type, self.network_reason_code.take())
+                (self.brand.take(), self.case_type.take(), self.network_reason_code.take())
             else {
                 return None;
             };
@@ -117,16 +117,19 @@ const _: () = {
     }
 };
 /// The type of dispute opened. Different case types may have varying fees and financial impact.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum DisputePaymentMethodDetailsCardCaseType {
     Block,
     Chargeback,
     Compliance,
     Inquiry,
     Resolution,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl DisputePaymentMethodDetailsCardCaseType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use DisputePaymentMethodDetailsCardCaseType::*;
         match self {
             Block => "block",
@@ -134,12 +137,13 @@ impl DisputePaymentMethodDetailsCardCaseType {
             Compliance => "compliance",
             Inquiry => "inquiry",
             Resolution => "resolution",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for DisputePaymentMethodDetailsCardCaseType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use DisputePaymentMethodDetailsCardCaseType::*;
         match s {
@@ -148,7 +152,14 @@ impl std::str::FromStr for DisputePaymentMethodDetailsCardCaseType {
             "compliance" => Ok(Compliance),
             "inquiry" => Ok(Inquiry),
             "resolution" => Ok(Resolution),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "DisputePaymentMethodDetailsCardCaseType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -181,9 +192,7 @@ impl miniserde::Deserialize for DisputePaymentMethodDetailsCardCaseType {
 impl miniserde::de::Visitor for crate::Place<DisputePaymentMethodDetailsCardCaseType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            DisputePaymentMethodDetailsCardCaseType::from_str(s).map_err(|_| miniserde::Error)?,
-        );
+        self.out = Some(DisputePaymentMethodDetailsCardCaseType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -194,8 +203,6 @@ impl<'de> serde::Deserialize<'de> for DisputePaymentMethodDetailsCardCaseType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for DisputePaymentMethodDetailsCardCaseType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

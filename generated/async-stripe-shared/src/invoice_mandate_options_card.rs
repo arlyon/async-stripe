@@ -75,7 +75,7 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (Some(amount), Some(amount_type), Some(description)) =
-                (self.amount, self.amount_type, self.description.take())
+                (self.amount, self.amount_type.take(), self.description.take())
             else {
                 return None;
             };
@@ -119,29 +119,40 @@ const _: () = {
 /// One of `fixed` or `maximum`.
 /// If `fixed`, the `amount` param refers to the exact amount to be charged in future payments.
 /// If `maximum`, the amount charged can be up to the value passed for the `amount` param.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum InvoiceMandateOptionsCardAmountType {
     Fixed,
     Maximum,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl InvoiceMandateOptionsCardAmountType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use InvoiceMandateOptionsCardAmountType::*;
         match self {
             Fixed => "fixed",
             Maximum => "maximum",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for InvoiceMandateOptionsCardAmountType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use InvoiceMandateOptionsCardAmountType::*;
         match s {
             "fixed" => Ok(Fixed),
             "maximum" => Ok(Maximum),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "InvoiceMandateOptionsCardAmountType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -174,8 +185,7 @@ impl miniserde::Deserialize for InvoiceMandateOptionsCardAmountType {
 impl miniserde::de::Visitor for crate::Place<InvoiceMandateOptionsCardAmountType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out =
-            Some(InvoiceMandateOptionsCardAmountType::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(InvoiceMandateOptionsCardAmountType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -186,8 +196,6 @@ impl<'de> serde::Deserialize<'de> for InvoiceMandateOptionsCardAmountType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for InvoiceMandateOptionsCardAmountType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

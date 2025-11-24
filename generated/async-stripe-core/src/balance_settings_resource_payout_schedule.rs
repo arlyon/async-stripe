@@ -76,9 +76,11 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(interval), Some(monthly_payout_days), Some(weekly_payout_days)) =
-                (self.interval, self.monthly_payout_days.take(), self.weekly_payout_days.take())
-            else {
+            let (Some(interval), Some(monthly_payout_days), Some(weekly_payout_days)) = (
+                self.interval.take(),
+                self.monthly_payout_days.take(),
+                self.weekly_payout_days.take(),
+            ) else {
                 return None;
             };
             Some(Self::Out { interval, monthly_payout_days, weekly_payout_days })
@@ -120,27 +122,31 @@ const _: () = {
 };
 /// How frequently funds will be paid out.
 /// One of `manual` (payouts only created via API call), `daily`, `weekly`, or `monthly`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum BalanceSettingsResourcePayoutScheduleInterval {
     Daily,
     Manual,
     Monthly,
     Weekly,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl BalanceSettingsResourcePayoutScheduleInterval {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use BalanceSettingsResourcePayoutScheduleInterval::*;
         match self {
             Daily => "daily",
             Manual => "manual",
             Monthly => "monthly",
             Weekly => "weekly",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for BalanceSettingsResourcePayoutScheduleInterval {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use BalanceSettingsResourcePayoutScheduleInterval::*;
         match s {
@@ -148,7 +154,14 @@ impl std::str::FromStr for BalanceSettingsResourcePayoutScheduleInterval {
             "manual" => Ok(Manual),
             "monthly" => Ok(Monthly),
             "weekly" => Ok(Weekly),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "BalanceSettingsResourcePayoutScheduleInterval"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -181,10 +194,8 @@ impl miniserde::Deserialize for BalanceSettingsResourcePayoutScheduleInterval {
 impl miniserde::de::Visitor for crate::Place<BalanceSettingsResourcePayoutScheduleInterval> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            BalanceSettingsResourcePayoutScheduleInterval::from_str(s)
-                .map_err(|_| miniserde::Error)?,
-        );
+        self.out =
+            Some(BalanceSettingsResourcePayoutScheduleInterval::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -195,25 +206,24 @@ impl<'de> serde::Deserialize<'de> for BalanceSettingsResourcePayoutScheduleInter
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for BalanceSettingsResourcePayoutScheduleInterval",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The days of the week when available funds are paid out, specified as an array, for example, [`monday`, `tuesday`].
 /// Only shown if `interval` is weekly.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum BalanceSettingsResourcePayoutScheduleWeeklyPayoutDays {
     Friday,
     Monday,
     Thursday,
     Tuesday,
     Wednesday,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl BalanceSettingsResourcePayoutScheduleWeeklyPayoutDays {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use BalanceSettingsResourcePayoutScheduleWeeklyPayoutDays::*;
         match self {
             Friday => "friday",
@@ -221,12 +231,13 @@ impl BalanceSettingsResourcePayoutScheduleWeeklyPayoutDays {
             Thursday => "thursday",
             Tuesday => "tuesday",
             Wednesday => "wednesday",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for BalanceSettingsResourcePayoutScheduleWeeklyPayoutDays {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use BalanceSettingsResourcePayoutScheduleWeeklyPayoutDays::*;
         match s {
@@ -235,7 +246,14 @@ impl std::str::FromStr for BalanceSettingsResourcePayoutScheduleWeeklyPayoutDays
             "thursday" => Ok(Thursday),
             "tuesday" => Ok(Tuesday),
             "wednesday" => Ok(Wednesday),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "BalanceSettingsResourcePayoutScheduleWeeklyPayoutDays"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -271,8 +289,7 @@ impl miniserde::de::Visitor
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(
-            BalanceSettingsResourcePayoutScheduleWeeklyPayoutDays::from_str(s)
-                .map_err(|_| miniserde::Error)?,
+            BalanceSettingsResourcePayoutScheduleWeeklyPayoutDays::from_str(s).expect("infallible"),
         );
         Ok(())
     }
@@ -284,10 +301,6 @@ impl<'de> serde::Deserialize<'de> for BalanceSettingsResourcePayoutScheduleWeekl
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for BalanceSettingsResourcePayoutScheduleWeeklyPayoutDays",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

@@ -80,7 +80,7 @@ const _: () = {
             let (Some(invoice_item_details), Some(subscription_item_details), Some(type_)) = (
                 self.invoice_item_details.take(),
                 self.subscription_item_details.take(),
-                self.type_,
+                self.type_.take(),
             ) else {
                 return None;
             };
@@ -126,29 +126,40 @@ const _: () = {
     }
 };
 /// The type of parent that generated this line item
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum BillingBillResourceInvoicingLinesParentsInvoiceLineItemParentType {
     InvoiceItemDetails,
     SubscriptionItemDetails,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl BillingBillResourceInvoicingLinesParentsInvoiceLineItemParentType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use BillingBillResourceInvoicingLinesParentsInvoiceLineItemParentType::*;
         match self {
             InvoiceItemDetails => "invoice_item_details",
             SubscriptionItemDetails => "subscription_item_details",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for BillingBillResourceInvoicingLinesParentsInvoiceLineItemParentType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use BillingBillResourceInvoicingLinesParentsInvoiceLineItemParentType::*;
         match s {
             "invoice_item_details" => Ok(InvoiceItemDetails),
             "subscription_item_details" => Ok(SubscriptionItemDetails),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "BillingBillResourceInvoicingLinesParentsInvoiceLineItemParentType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -185,7 +196,7 @@ impl miniserde::de::Visitor
         use std::str::FromStr;
         self.out = Some(
             BillingBillResourceInvoicingLinesParentsInvoiceLineItemParentType::from_str(s)
-                .map_err(|_| miniserde::Error)?,
+                .expect("infallible"),
         );
         Ok(())
     }
@@ -201,6 +212,6 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for BillingBillResourceInvoicingLinesParentsInvoiceLineItemParentType"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

@@ -104,21 +104,25 @@ const _: () = {
 };
 /// Specify the card brands to block in the Checkout Session.
 /// If a customer enters or selects a card belonging to a blocked brand, they can't complete the Session.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PaymentPagesPrivateCardPaymentMethodOptionsResourceRestrictionsBrandsBlocked {
     AmericanExpress,
     DiscoverGlobalNetwork,
     Mastercard,
     Visa,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl PaymentPagesPrivateCardPaymentMethodOptionsResourceRestrictionsBrandsBlocked {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PaymentPagesPrivateCardPaymentMethodOptionsResourceRestrictionsBrandsBlocked::*;
         match self {
             AmericanExpress => "american_express",
             DiscoverGlobalNetwork => "discover_global_network",
             Mastercard => "mastercard",
             Visa => "visa",
+            Unknown(v) => v,
         }
     }
 }
@@ -126,7 +130,7 @@ impl PaymentPagesPrivateCardPaymentMethodOptionsResourceRestrictionsBrandsBlocke
 impl std::str::FromStr
     for PaymentPagesPrivateCardPaymentMethodOptionsResourceRestrictionsBrandsBlocked
 {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentPagesPrivateCardPaymentMethodOptionsResourceRestrictionsBrandsBlocked::*;
         match s {
@@ -134,7 +138,14 @@ impl std::str::FromStr
             "discover_global_network" => Ok(DiscoverGlobalNetwork),
             "mastercard" => Ok(Mastercard),
             "visa" => Ok(Visa),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PaymentPagesPrivateCardPaymentMethodOptionsResourceRestrictionsBrandsBlocked"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -181,7 +192,7 @@ impl miniserde::de::Visitor
             PaymentPagesPrivateCardPaymentMethodOptionsResourceRestrictionsBrandsBlocked::from_str(
                 s,
             )
-            .map_err(|_| miniserde::Error)?,
+            .expect("infallible"),
         );
         Ok(())
     }
@@ -197,6 +208,6 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for PaymentPagesPrivateCardPaymentMethodOptionsResourceRestrictionsBrandsBlocked"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

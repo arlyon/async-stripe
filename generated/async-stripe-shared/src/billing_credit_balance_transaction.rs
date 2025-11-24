@@ -122,7 +122,7 @@ const _: () = {
                 self.id.take(),
                 self.livemode,
                 self.test_clock.take(),
-                self.type_,
+                self.type_.take(),
             )
             else {
                 return None;
@@ -200,29 +200,40 @@ impl serde::Serialize for BillingCreditBalanceTransaction {
     }
 }
 /// The type of credit balance transaction (credit or debit).
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum BillingCreditBalanceTransactionType {
     Credit,
     Debit,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl BillingCreditBalanceTransactionType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use BillingCreditBalanceTransactionType::*;
         match self {
             Credit => "credit",
             Debit => "debit",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for BillingCreditBalanceTransactionType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use BillingCreditBalanceTransactionType::*;
         match s {
             "credit" => Ok(Credit),
             "debit" => Ok(Debit),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "BillingCreditBalanceTransactionType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -255,8 +266,7 @@ impl miniserde::Deserialize for BillingCreditBalanceTransactionType {
 impl miniserde::de::Visitor for crate::Place<BillingCreditBalanceTransactionType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out =
-            Some(BillingCreditBalanceTransactionType::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(BillingCreditBalanceTransactionType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -267,9 +277,7 @@ impl<'de> serde::Deserialize<'de> for BillingCreditBalanceTransactionType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for BillingCreditBalanceTransactionType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 impl stripe_types::Object for BillingCreditBalanceTransaction {

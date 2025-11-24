@@ -65,7 +65,7 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (Some(disabled_reason), Some(past_due)) =
-                (self.disabled_reason, self.past_due.take())
+                (self.disabled_reason.take(), self.past_due.take())
             else {
                 return None;
             };
@@ -106,27 +106,31 @@ const _: () = {
     }
 };
 /// If `disabled_reason` is present, all cards will decline authorizations with `cardholder_verification_required` reason.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum IssuingCardholderRequirementsDisabledReason {
     Listed,
     RejectedListed,
     RequirementsPastDue,
     UnderReview,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl IssuingCardholderRequirementsDisabledReason {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use IssuingCardholderRequirementsDisabledReason::*;
         match self {
             Listed => "listed",
             RejectedListed => "rejected.listed",
             RequirementsPastDue => "requirements.past_due",
             UnderReview => "under_review",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for IssuingCardholderRequirementsDisabledReason {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use IssuingCardholderRequirementsDisabledReason::*;
         match s {
@@ -134,7 +138,14 @@ impl std::str::FromStr for IssuingCardholderRequirementsDisabledReason {
             "rejected.listed" => Ok(RejectedListed),
             "requirements.past_due" => Ok(RequirementsPastDue),
             "under_review" => Ok(UnderReview),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "IssuingCardholderRequirementsDisabledReason"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -167,10 +178,8 @@ impl miniserde::Deserialize for IssuingCardholderRequirementsDisabledReason {
 impl miniserde::de::Visitor for crate::Place<IssuingCardholderRequirementsDisabledReason> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            IssuingCardholderRequirementsDisabledReason::from_str(s)
-                .map_err(|_| miniserde::Error)?,
-        );
+        self.out =
+            Some(IssuingCardholderRequirementsDisabledReason::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -181,15 +190,12 @@ impl<'de> serde::Deserialize<'de> for IssuingCardholderRequirementsDisabledReaso
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for IssuingCardholderRequirementsDisabledReason",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Array of fields that need to be collected in order to verify and re-enable the cardholder.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum IssuingCardholderRequirementsPastDue {
     CompanyTaxId,
     IndividualCardIssuingUserTermsAcceptanceDate,
@@ -200,9 +206,11 @@ pub enum IssuingCardholderRequirementsPastDue {
     IndividualFirstName,
     IndividualLastName,
     IndividualVerificationDocument,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl IssuingCardholderRequirementsPastDue {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use IssuingCardholderRequirementsPastDue::*;
         match self {
             CompanyTaxId => "company.tax_id",
@@ -218,12 +226,13 @@ impl IssuingCardholderRequirementsPastDue {
             IndividualFirstName => "individual.first_name",
             IndividualLastName => "individual.last_name",
             IndividualVerificationDocument => "individual.verification.document",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for IssuingCardholderRequirementsPastDue {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use IssuingCardholderRequirementsPastDue::*;
         match s {
@@ -240,7 +249,14 @@ impl std::str::FromStr for IssuingCardholderRequirementsPastDue {
             "individual.first_name" => Ok(IndividualFirstName),
             "individual.last_name" => Ok(IndividualLastName),
             "individual.verification.document" => Ok(IndividualVerificationDocument),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "IssuingCardholderRequirementsPastDue"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -273,8 +289,7 @@ impl miniserde::Deserialize for IssuingCardholderRequirementsPastDue {
 impl miniserde::de::Visitor for crate::Place<IssuingCardholderRequirementsPastDue> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out =
-            Some(IssuingCardholderRequirementsPastDue::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(IssuingCardholderRequirementsPastDue::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -285,8 +300,6 @@ impl<'de> serde::Deserialize<'de> for IssuingCardholderRequirementsPastDue {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for IssuingCardholderRequirementsPastDue")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

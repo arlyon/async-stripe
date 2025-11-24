@@ -111,32 +111,43 @@ impl CreateBillingPortalSessionFlowDataAfterCompletionRedirect {
     }
 }
 /// The specified behavior after the flow is completed.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateBillingPortalSessionFlowDataAfterCompletionType {
     HostedConfirmation,
     PortalHomepage,
     Redirect,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateBillingPortalSessionFlowDataAfterCompletionType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateBillingPortalSessionFlowDataAfterCompletionType::*;
         match self {
             HostedConfirmation => "hosted_confirmation",
             PortalHomepage => "portal_homepage",
             Redirect => "redirect",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateBillingPortalSessionFlowDataAfterCompletionType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateBillingPortalSessionFlowDataAfterCompletionType::*;
         match s {
             "hosted_confirmation" => Ok(HostedConfirmation),
             "portal_homepage" => Ok(PortalHomepage),
             "redirect" => Ok(Redirect),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateBillingPortalSessionFlowDataAfterCompletionType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -164,11 +175,7 @@ impl<'de> serde::Deserialize<'de> for CreateBillingPortalSessionFlowDataAfterCom
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for CreateBillingPortalSessionFlowDataAfterCompletionType",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Configuration when `flow_data.type=subscription_cancel`.
@@ -216,26 +223,37 @@ impl CreateBillingPortalSessionFlowDataSubscriptionCancelRetentionCouponOffer {
     }
 }
 /// Type of retention strategy to use with the customer.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateBillingPortalSessionFlowDataSubscriptionCancelRetentionType {
     CouponOffer,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateBillingPortalSessionFlowDataSubscriptionCancelRetentionType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateBillingPortalSessionFlowDataSubscriptionCancelRetentionType::*;
         match self {
             CouponOffer => "coupon_offer",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateBillingPortalSessionFlowDataSubscriptionCancelRetentionType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateBillingPortalSessionFlowDataSubscriptionCancelRetentionType::*;
         match s {
             "coupon_offer" => Ok(CouponOffer),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateBillingPortalSessionFlowDataSubscriptionCancelRetentionType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -265,7 +283,7 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateBillingPortalSessionFlowDataSubscriptionCancelRetentionType"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Configuration when `flow_data.type=subscription_update`.
@@ -340,27 +358,31 @@ impl CreateBillingPortalSessionFlowDataSubscriptionUpdateConfirmItems {
     }
 }
 /// Type of flow that the customer will go through.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateBillingPortalSessionFlowDataType {
     PaymentMethodUpdate,
     SubscriptionCancel,
     SubscriptionUpdate,
     SubscriptionUpdateConfirm,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CreateBillingPortalSessionFlowDataType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateBillingPortalSessionFlowDataType::*;
         match self {
             PaymentMethodUpdate => "payment_method_update",
             SubscriptionCancel => "subscription_cancel",
             SubscriptionUpdate => "subscription_update",
             SubscriptionUpdateConfirm => "subscription_update_confirm",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateBillingPortalSessionFlowDataType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateBillingPortalSessionFlowDataType::*;
         match s {
@@ -368,7 +390,14 @@ impl std::str::FromStr for CreateBillingPortalSessionFlowDataType {
             "subscription_cancel" => Ok(SubscriptionCancel),
             "subscription_update" => Ok(SubscriptionUpdate),
             "subscription_update_confirm" => Ok(SubscriptionUpdateConfirm),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateBillingPortalSessionFlowDataType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -396,9 +425,7 @@ impl<'de> serde::Deserialize<'de> for CreateBillingPortalSessionFlowDataType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CreateBillingPortalSessionFlowDataType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Creates a session of the customer portal.

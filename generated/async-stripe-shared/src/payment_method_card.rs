@@ -185,7 +185,7 @@ const _: () = {
                 self.issuer.take(),
                 self.last4.take(),
                 self.networks.take(),
-                self.regulated_status,
+                self.regulated_status.take(),
                 self.three_d_secure_usage,
                 self.wallet.take(),
             )
@@ -262,29 +262,40 @@ const _: () = {
     }
 };
 /// Status of a card based on the card issuer.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PaymentMethodCardRegulatedStatus {
     Regulated,
     Unregulated,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl PaymentMethodCardRegulatedStatus {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PaymentMethodCardRegulatedStatus::*;
         match self {
             Regulated => "regulated",
             Unregulated => "unregulated",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for PaymentMethodCardRegulatedStatus {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentMethodCardRegulatedStatus::*;
         match s {
             "regulated" => Ok(Regulated),
             "unregulated" => Ok(Unregulated),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PaymentMethodCardRegulatedStatus"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -317,8 +328,7 @@ impl miniserde::Deserialize for PaymentMethodCardRegulatedStatus {
 impl miniserde::de::Visitor for crate::Place<PaymentMethodCardRegulatedStatus> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out =
-            Some(PaymentMethodCardRegulatedStatus::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(PaymentMethodCardRegulatedStatus::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -329,8 +339,6 @@ impl<'de> serde::Deserialize<'de> for PaymentMethodCardRegulatedStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for PaymentMethodCardRegulatedStatus")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

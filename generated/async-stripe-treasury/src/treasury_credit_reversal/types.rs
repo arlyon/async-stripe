@@ -149,9 +149,9 @@ const _: () = {
                 self.id.take(),
                 self.livemode,
                 self.metadata.take(),
-                self.network,
+                self.network.take(),
                 self.received_credit.take(),
-                self.status,
+                self.status.take(),
                 self.status_transitions,
                 self.transaction.take(),
             )
@@ -245,29 +245,40 @@ impl serde::Serialize for TreasuryCreditReversal {
     }
 }
 /// The rails used to reverse the funds.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum TreasuryCreditReversalNetwork {
     Ach,
     Stripe,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl TreasuryCreditReversalNetwork {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use TreasuryCreditReversalNetwork::*;
         match self {
             Ach => "ach",
             Stripe => "stripe",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for TreasuryCreditReversalNetwork {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TreasuryCreditReversalNetwork::*;
         match s {
             "ach" => Ok(Ach),
             "stripe" => Ok(Stripe),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "TreasuryCreditReversalNetwork"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -300,7 +311,7 @@ impl miniserde::Deserialize for TreasuryCreditReversalNetwork {
 impl miniserde::de::Visitor for crate::Place<TreasuryCreditReversalNetwork> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(TreasuryCreditReversalNetwork::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(TreasuryCreditReversalNetwork::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -311,9 +322,7 @@ impl<'de> serde::Deserialize<'de> for TreasuryCreditReversalNetwork {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for TreasuryCreditReversalNetwork")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 impl stripe_types::Object for TreasuryCreditReversal {
@@ -327,32 +336,43 @@ impl stripe_types::Object for TreasuryCreditReversal {
     }
 }
 stripe_types::def_id!(TreasuryCreditReversalId);
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum TreasuryCreditReversalStatus {
     Canceled,
     Posted,
     Processing,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl TreasuryCreditReversalStatus {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use TreasuryCreditReversalStatus::*;
         match self {
             Canceled => "canceled",
             Posted => "posted",
             Processing => "processing",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for TreasuryCreditReversalStatus {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use TreasuryCreditReversalStatus::*;
         match s {
             "canceled" => Ok(Canceled),
             "posted" => Ok(Posted),
             "processing" => Ok(Processing),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "TreasuryCreditReversalStatus"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -384,7 +404,7 @@ impl miniserde::Deserialize for TreasuryCreditReversalStatus {
 impl miniserde::de::Visitor for crate::Place<TreasuryCreditReversalStatus> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(TreasuryCreditReversalStatus::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(TreasuryCreditReversalStatus::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -395,7 +415,6 @@ impl<'de> serde::Deserialize<'de> for TreasuryCreditReversalStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for TreasuryCreditReversalStatus"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

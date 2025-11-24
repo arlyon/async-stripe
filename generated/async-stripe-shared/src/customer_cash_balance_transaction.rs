@@ -164,7 +164,7 @@ const _: () = {
                 self.net_amount,
                 self.refunded_from_payment.take(),
                 self.transferred_to_balance.take(),
-                self.type_,
+                self.type_.take(),
                 self.unapplied_from_payment.take(),
             )
             else {
@@ -268,7 +268,8 @@ impl serde::Serialize for CustomerCashBalanceTransaction {
 /// The type of the cash balance transaction.
 /// New types may be added in future.
 /// See [Customer Balance](https://stripe.com/docs/payments/customer-balance#types) to learn more about these types.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CustomerCashBalanceTransactionType {
     AdjustedForOverdraft,
     AppliedToPayment,
@@ -279,9 +280,11 @@ pub enum CustomerCashBalanceTransactionType {
     ReturnInitiated,
     TransferredToBalance,
     UnappliedFromPayment,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl CustomerCashBalanceTransactionType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CustomerCashBalanceTransactionType::*;
         match self {
             AdjustedForOverdraft => "adjusted_for_overdraft",
@@ -293,12 +296,13 @@ impl CustomerCashBalanceTransactionType {
             ReturnInitiated => "return_initiated",
             TransferredToBalance => "transferred_to_balance",
             UnappliedFromPayment => "unapplied_from_payment",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CustomerCashBalanceTransactionType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CustomerCashBalanceTransactionType::*;
         match s {
@@ -311,7 +315,14 @@ impl std::str::FromStr for CustomerCashBalanceTransactionType {
             "return_initiated" => Ok(ReturnInitiated),
             "transferred_to_balance" => Ok(TransferredToBalance),
             "unapplied_from_payment" => Ok(UnappliedFromPayment),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CustomerCashBalanceTransactionType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -344,8 +355,7 @@ impl miniserde::Deserialize for CustomerCashBalanceTransactionType {
 impl miniserde::de::Visitor for crate::Place<CustomerCashBalanceTransactionType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out =
-            Some(CustomerCashBalanceTransactionType::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(CustomerCashBalanceTransactionType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -356,9 +366,7 @@ impl<'de> serde::Deserialize<'de> for CustomerCashBalanceTransactionType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for CustomerCashBalanceTransactionType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 impl stripe_types::Object for CustomerCashBalanceTransaction {

@@ -67,7 +67,7 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (Some(bank_transfer), Some(funding_type)) =
-                (self.bank_transfer.take(), self.funding_type)
+                (self.bank_transfer.take(), self.funding_type.take())
             else {
                 return None;
             };
@@ -109,26 +109,37 @@ const _: () = {
 };
 /// The funding method type to be used when there are not enough funds in the customer balance.
 /// Permitted values include: `bank_transfer`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum InvoicePaymentMethodOptionsCustomerBalanceFundingType {
     BankTransfer,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
 }
 impl InvoicePaymentMethodOptionsCustomerBalanceFundingType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use InvoicePaymentMethodOptionsCustomerBalanceFundingType::*;
         match self {
             BankTransfer => "bank_transfer",
+            Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for InvoicePaymentMethodOptionsCustomerBalanceFundingType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use InvoicePaymentMethodOptionsCustomerBalanceFundingType::*;
         match s {
             "bank_transfer" => Ok(BankTransfer),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "InvoicePaymentMethodOptionsCustomerBalanceFundingType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -164,8 +175,7 @@ impl miniserde::de::Visitor
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(
-            InvoicePaymentMethodOptionsCustomerBalanceFundingType::from_str(s)
-                .map_err(|_| miniserde::Error)?,
+            InvoicePaymentMethodOptionsCustomerBalanceFundingType::from_str(s).expect("infallible"),
         );
         Ok(())
     }
@@ -177,10 +187,6 @@ impl<'de> serde::Deserialize<'de> for InvoicePaymentMethodOptionsCustomerBalance
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for InvoicePaymentMethodOptionsCustomerBalanceFundingType",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
