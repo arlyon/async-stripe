@@ -39,7 +39,7 @@ impl SharedConfigBuilder {
 
         // some basic sanity checks
         // TODO: maybe a full-blown type here rather than a warning?
-        if secret.trim() != secret || !secret.starts_with("sk_") {
+        if secret.trim() != secret || !(secret.starts_with("sk_") || secret.starts_with("rk_")) {
             tracing::warn!("suspiciously formatted secret key")
         }
 
