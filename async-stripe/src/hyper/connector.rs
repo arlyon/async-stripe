@@ -1,6 +1,11 @@
 #[cfg(not(any(feature = "default-tls", feature = "__rustls")))]
 compile_error!("Either default-tls or a rustls feature must be enabled");
 
+#[cfg(all(feature = "__rustls", not(any(feature = "rustls-aws-lc-rs", feature = "rustls-ring"))))]
+compile_error!(
+    "When using rustls, you must enable either 'rustls-aws-lc-rs' (recommended) or 'rustls-ring' to select a crypto provider"
+);
+
 #[cfg(feature = "default-tls")]
 mod default_tls {
     use hyper_tls::HttpsConnector;
