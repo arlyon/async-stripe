@@ -60,6 +60,68 @@ pub struct Webhook {
 }
 
 impl Webhook {
+    /// Generate a test signature header for webhook testing.
+    ///
+    /// This method generates a properly formatted Stripe signature header that can be used
+    /// to test webhook signature verification end-to-end. It's particularly useful for
+    /// integration tests where you want to verify the entire webhook flow.
+    ///
+    /// # Arguments
+    ///
+    /// * `payload` - The webhook payload (JSON string) to generate a signature for
+    /// * `secret` - The webhook signing secret (e.g., "whsec_test_secret")
+    /// * `timestamp` - Optional Unix timestamp to use for the signature. If None, uses current time.
+    ///
+    /// # Returns
+    ///
+    /// A signature header string in the format: "t={timestamp},v1={signature}"
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use stripe_webhook::Webhook;
+    ///
+    /// let payload = r#"{
+    ///     "id": "evt_test",
+    ///     "object": "event",
+    ///     "api_version": "2017-05-25",
+    ///     "created": 1492774577,
+    ///     "livemode": false,
+    ///     "pending_webhooks": 1,
+    ///     "data": {
+    ///         "object": {
+    ///             "object": "bank_account",
+    ///             "country": "us",
+    ///             "currency": "usd",
+    ///             "id": "ba_test",
+    ///             "last4": "6789",
+    ///             "status": "verified"
+    ///         }
+    ///     },
+    ///     "type": "account.external_account.created"
+    /// }"#;
+    /// let secret = "whsec_test_secret";
+    ///
+    /// // Generate a test signature
+    /// let signature = Webhook::generate_test_header(payload, secret, None);
+    ///
+    /// // Use it to verify the webhook
+    /// let event = Webhook::construct_event(payload, &signature, secret).unwrap();
+    /// assert_eq!(event.id.as_str(), "evt_test");
+    /// ```
+    pub fn generate_test_header(payload: &str, secret: &str, timestamp: Option<i64>) -> String {
+        let timestamp = timestamp.unwrap_or_else(|| Utc::now().timestamp());
+        let signed_payload = format!("{timestamp}.{payload}");
+
+        let mut mac = Hmac::<Sha256>::new_from_slice(secret.as_bytes())
+            .expect("HMAC can take key of any size");
+        mac.update(signed_payload.as_bytes());
+        let result = mac.finalize().into_bytes();
+        let v1 = hex::encode(&result[..]);
+
+        format!("t={timestamp},v1={v1}")
+    }
+
     /// Construct an event from a webhook payload, **ignoring the secret**.
     ///
     /// This method is considered insecure and intended for early-stage local testing only.
@@ -235,15 +297,91 @@ mod tests {
         );
     }
 
+    #[test]
+    fn test_generate_test_header() {
+        let payload = json!({
+            "id": "evt_test",
+            "object": "event",
+            "api_version": "2017-05-25",
+            "created": 1492774577,
+            "livemode": false,
+            "pending_webhooks": 1,
+            "data": {
+                "object": {
+                    "object": "bank_account",
+                    "country": "us",
+                    "currency": "usd",
+                    "id": "ba_test",
+                    "last4": "6789",
+                    "status": "verified",
+                }
+            },
+            "type": "account.external_account.created"
+        })
+        .to_string();
+        let secret = "whsec_test_secret";
+        let timestamp = 1492774577;
+
+        // Generate a test signature with explicit timestamp
+        let signature = Webhook::generate_test_header(&payload, secret, Some(timestamp));
+
+        // Verify the signature format
+        assert!(signature.starts_with("t=1492774577,v1="));
+
+        // Verify the signature can be used to construct an event
+        let event =
+            Webhook::construct_event_with_timestamp(&payload, &signature, secret, timestamp);
+        match event {
+            Ok(e) => {
+                assert_eq!(e.id.as_str(), "evt_test");
+                assert_eq!(e.type_, EventType::AccountExternalAccountCreated);
+            }
+            Err(e) => panic!("panic! {}", e),
+        }
+    }
+
+    #[test]
+    fn test_generate_test_header_integration() {
+        // This test demonstrates end-to-end webhook signature testing
+        let payload = json!({
+            "id": "evt_test_webhook",
+            "object": "event",
+            "api_version": "2017-05-25",
+            "created": 1533204620,
+            "livemode": false,
+            "pending_webhooks": 1,
+            "data": {
+                "object": {
+                    "object": "bank_account",
+                    "country": "us",
+                    "currency": "usd",
+                    "id": "ba_test",
+                    "last4": "6789",
+                    "status": "verified",
+                }
+            },
+            "type": "account.external_account.created"
+        })
+        .to_string();
+
+        let secret = "whsec_test_secret";
+        let timestamp = Utc::now().timestamp();
+
+        // Generate test signature
+        let signature = Webhook::generate_test_header(&payload, secret, Some(timestamp));
+
+        // Verify it works with construct_event_with_timestamp
+        let result =
+            Webhook::construct_event_with_timestamp(&payload, &signature, secret, timestamp);
+        assert!(result.is_ok());
+
+        let event = result.unwrap();
+        assert_eq!(event.id.as_str(), "evt_test_webhook");
+        assert_eq!(event.type_, EventType::AccountExternalAccountCreated);
+    }
+
     fn get_mock_stripe_sig(msg: &str, timestamp: i64) -> String {
-        let signed_payload = format!("{timestamp}.{msg}");
-
-        let mut mac = Hmac::<Sha256>::new_from_slice(WEBHOOK_SECRET.as_bytes()).unwrap();
-
-        mac.update(signed_payload.as_bytes());
-        let result = mac.finalize().into_bytes();
-        let v1 = hex::encode(&result[..]);
-        format!("t={timestamp},v1={v1}")
+        Webhook::generate_test_header(msg, WEBHOOK_SECRET, Some(timestamp))
     }
 
     fn mock_webhook_event(event_type: &EventType, data: Value) -> Value {
