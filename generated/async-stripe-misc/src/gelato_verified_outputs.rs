@@ -133,7 +133,7 @@ const _: () = {
                 self.id_number_type.take(),
                 self.last_name.take(),
                 self.phone.take(),
-                self.sex,
+                self.sex.take(),
                 self.unparsed_place_of_birth.take(),
                 self.unparsed_sex.take(),
             )
@@ -284,27 +284,32 @@ impl<'de> serde::Deserialize<'de> for GelatoVerifiedOutputsIdNumberType {
     }
 }
 /// The user's verified sex.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum GelatoVerifiedOutputsSex {
     Redacted,
     Female,
     Male,
     Unknown,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    /// This variant is prefixed with an underscore to avoid conflicts with Stripe's 'Unknown' variant.
+    _Unknown(String),
 }
 impl GelatoVerifiedOutputsSex {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use GelatoVerifiedOutputsSex::*;
         match self {
             Redacted => "[redacted]",
             Female => "female",
             Male => "male",
             Unknown => "unknown",
+            _Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for GelatoVerifiedOutputsSex {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use GelatoVerifiedOutputsSex::*;
         match s {
@@ -312,7 +317,10 @@ impl std::str::FromStr for GelatoVerifiedOutputsSex {
             "female" => Ok(Female),
             "male" => Ok(Male),
             "unknown" => Ok(Unknown),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "GelatoVerifiedOutputsSex");
+                Ok(_Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -345,7 +353,7 @@ impl miniserde::Deserialize for GelatoVerifiedOutputsSex {
 impl miniserde::de::Visitor for crate::Place<GelatoVerifiedOutputsSex> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(GelatoVerifiedOutputsSex::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(GelatoVerifiedOutputsSex::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -356,7 +364,6 @@ impl<'de> serde::Deserialize<'de> for GelatoVerifiedOutputsSex {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s)
-            .map_err(|_| serde::de::Error::custom("Unknown value for GelatoVerifiedOutputsSex"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

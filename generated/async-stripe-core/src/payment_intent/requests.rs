@@ -5233,7 +5233,8 @@ impl<'de> serde::Deserialize<'de>
 /// Selected network to process this PaymentIntent on.
 /// Depends on the available networks of the card attached to the PaymentIntent.
 /// Can be only set confirm-time.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreatePaymentIntentPaymentMethodOptionsCardNetwork {
     Amex,
     CartesBancaires,
@@ -5248,9 +5249,12 @@ pub enum CreatePaymentIntentPaymentMethodOptionsCardNetwork {
     Unionpay,
     Unknown,
     Visa,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    /// This variant is prefixed with an underscore to avoid conflicts with Stripe's 'Unknown' variant.
+    _Unknown(String),
 }
 impl CreatePaymentIntentPaymentMethodOptionsCardNetwork {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreatePaymentIntentPaymentMethodOptionsCardNetwork::*;
         match self {
             Amex => "amex",
@@ -5266,12 +5270,13 @@ impl CreatePaymentIntentPaymentMethodOptionsCardNetwork {
             Unionpay => "unionpay",
             Unknown => "unknown",
             Visa => "visa",
+            _Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsCardNetwork {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreatePaymentIntentPaymentMethodOptionsCardNetwork::*;
         match s {
@@ -5288,7 +5293,14 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsCardNetwork {
             "unionpay" => Ok(Unionpay),
             "unknown" => Ok(Unknown),
             "visa" => Ok(Visa),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePaymentIntentPaymentMethodOptionsCardNetwork"
+                );
+                Ok(_Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -5316,11 +5328,7 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodOptionsCar
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for CreatePaymentIntentPaymentMethodOptionsCardNetwork",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Request ability to [capture beyond the standard authorization validity window](https://stripe.com/docs/payments/extended-authorization) for this PaymentIntent.
@@ -17483,7 +17491,8 @@ impl<'de> serde::Deserialize<'de>
 /// Selected network to process this PaymentIntent on.
 /// Depends on the available networks of the card attached to the PaymentIntent.
 /// Can be only set confirm-time.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum UpdatePaymentIntentPaymentMethodOptionsCardNetwork {
     Amex,
     CartesBancaires,
@@ -17498,9 +17507,12 @@ pub enum UpdatePaymentIntentPaymentMethodOptionsCardNetwork {
     Unionpay,
     Unknown,
     Visa,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    /// This variant is prefixed with an underscore to avoid conflicts with Stripe's 'Unknown' variant.
+    _Unknown(String),
 }
 impl UpdatePaymentIntentPaymentMethodOptionsCardNetwork {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use UpdatePaymentIntentPaymentMethodOptionsCardNetwork::*;
         match self {
             Amex => "amex",
@@ -17516,12 +17528,13 @@ impl UpdatePaymentIntentPaymentMethodOptionsCardNetwork {
             Unionpay => "unionpay",
             Unknown => "unknown",
             Visa => "visa",
+            _Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsCardNetwork {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use UpdatePaymentIntentPaymentMethodOptionsCardNetwork::*;
         match s {
@@ -17538,7 +17551,14 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsCardNetwork {
             "unionpay" => Ok(Unionpay),
             "unknown" => Ok(Unknown),
             "visa" => Ok(Visa),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdatePaymentIntentPaymentMethodOptionsCardNetwork"
+                );
+                Ok(_Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -17566,11 +17586,7 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodOptionsCar
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for UpdatePaymentIntentPaymentMethodOptionsCardNetwork",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Request ability to [capture beyond the standard authorization validity window](https://stripe.com/docs/payments/extended-authorization) for this PaymentIntent.
@@ -30558,7 +30574,8 @@ impl<'de> serde::Deserialize<'de>
 /// Selected network to process this PaymentIntent on.
 /// Depends on the available networks of the card attached to the PaymentIntent.
 /// Can be only set confirm-time.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsCardNetwork {
     Amex,
     CartesBancaires,
@@ -30573,9 +30590,12 @@ pub enum ConfirmPaymentIntentPaymentMethodOptionsCardNetwork {
     Unionpay,
     Unknown,
     Visa,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    /// This variant is prefixed with an underscore to avoid conflicts with Stripe's 'Unknown' variant.
+    _Unknown(String),
 }
 impl ConfirmPaymentIntentPaymentMethodOptionsCardNetwork {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use ConfirmPaymentIntentPaymentMethodOptionsCardNetwork::*;
         match self {
             Amex => "amex",
@@ -30591,12 +30611,13 @@ impl ConfirmPaymentIntentPaymentMethodOptionsCardNetwork {
             Unionpay => "unionpay",
             Unknown => "unknown",
             Visa => "visa",
+            _Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsCardNetwork {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use ConfirmPaymentIntentPaymentMethodOptionsCardNetwork::*;
         match s {
@@ -30613,7 +30634,14 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsCardNetwork {
             "unionpay" => Ok(Unionpay),
             "unknown" => Ok(Unknown),
             "visa" => Ok(Visa),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "ConfirmPaymentIntentPaymentMethodOptionsCardNetwork"
+                );
+                Ok(_Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -30641,11 +30669,7 @@ impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentMethodOptionsCa
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for ConfirmPaymentIntentPaymentMethodOptionsCardNetwork",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Request ability to [capture beyond the standard authorization validity window](https://stripe.com/docs/payments/extended-authorization) for this PaymentIntent.

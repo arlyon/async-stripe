@@ -82,7 +82,14 @@ impl ObjectWriter<'_> {
                 enum_body,
                 "/// An unrecognized object type from Stripe. Should not be used as a request parameter."
             );
-            let _ = writeln!(enum_body, "Unknown");
+            if self.use_underscore_unknown {
+                let _ = writeln!(
+                    enum_body,
+                    "/// This variant is prefixed with an underscore to avoid conflicts with Stripe's 'Unknown' variant."
+                );
+            }
+            let unknown_variant = if self.use_underscore_unknown { "_Unknown" } else { "Unknown" };
+            let _ = writeln!(enum_body, "{unknown_variant}");
         }
 
         write_derives_line(out, self.derives);
@@ -116,13 +123,18 @@ impl ObjectWriter<'_> {
             let _ = writeln!(enum_def_body, "{variant_name},");
         }
         if self.provide_unknown_variant {
-            let _ = writedoc!(
+            let _ = writeln!(
                 enum_def_body,
-                r"
-            /// An unrecognized value from Stripe. Should not be used as a request parameter.
-            Unknown(String),
-        "
+                "/// An unrecognized value from Stripe. Should not be used as a request parameter."
             );
+            if self.use_underscore_unknown {
+                let _ = writeln!(
+                    enum_def_body,
+                    "/// This variant is prefixed with an underscore to avoid conflicts with Stripe's 'Unknown' variant."
+                );
+            }
+            let unknown_variant = if self.use_underscore_unknown { "_Unknown" } else { "Unknown" };
+            let _ = writeln!(enum_def_body, "{unknown_variant}(String),");
         }
 
         // Build the body of the `as_str` implementation
@@ -131,7 +143,9 @@ impl ObjectWriter<'_> {
             let _ = writeln!(as_str_body, r#"{variant_name} => "{wire_name}","#);
         }
         if self.provide_unknown_variant {
-            let _ = writeln!(as_str_body, r"Unknown(v) => v,");
+            let unknown_pattern =
+                if self.use_underscore_unknown { "_Unknown(v)" } else { "Unknown(v)" };
+            let _ = writeln!(as_str_body, r"{unknown_pattern} => v,");
         }
         let as_str_fn = if self.provide_unknown_variant {
             "pub fn as_str(&self) -> &str"
@@ -146,9 +160,10 @@ impl ObjectWriter<'_> {
         }
 
         let from_str_err = if self.provide_unknown_variant {
+            let unknown_variant = if self.use_underscore_unknown { "_Unknown" } else { "Unknown" };
             let _ = writeln!(
                 from_str_body,
-                r#"v => {{ tracing::warn!("Unknown value '{{}}' for enum '{{}}'", v, "{enum_name}"); Ok(Unknown(v.to_owned())) }}"#
+                r#"v => {{ tracing::warn!("Unknown value '{{}}' for enum '{{}}'", v, "{enum_name}"); Ok({unknown_variant}(v.to_owned())) }}"#
             );
             "std::convert::Infallible"
         } else {

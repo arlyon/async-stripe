@@ -75,9 +75,11 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(mandate_options), Some(network), Some(request_three_d_secure)) =
-                (self.mandate_options.take(), self.network, self.request_three_d_secure.take())
-            else {
+            let (Some(mandate_options), Some(network), Some(request_three_d_secure)) = (
+                self.mandate_options.take(),
+                self.network.take(),
+                self.request_three_d_secure.take(),
+            ) else {
                 return None;
             };
             Some(Self::Out { mandate_options, network, request_three_d_secure })
@@ -122,7 +124,8 @@ const _: () = {
 /// Selected network to process this Subscription on.
 /// Depends on the available networks of the card attached to the Subscription.
 /// Can be only set confirm-time.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum SubscriptionPaymentMethodOptionsCardNetwork {
     Amex,
     CartesBancaires,
@@ -137,9 +140,12 @@ pub enum SubscriptionPaymentMethodOptionsCardNetwork {
     Unionpay,
     Unknown,
     Visa,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    /// This variant is prefixed with an underscore to avoid conflicts with Stripe's 'Unknown' variant.
+    _Unknown(String),
 }
 impl SubscriptionPaymentMethodOptionsCardNetwork {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use SubscriptionPaymentMethodOptionsCardNetwork::*;
         match self {
             Amex => "amex",
@@ -155,12 +161,13 @@ impl SubscriptionPaymentMethodOptionsCardNetwork {
             Unionpay => "unionpay",
             Unknown => "unknown",
             Visa => "visa",
+            _Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for SubscriptionPaymentMethodOptionsCardNetwork {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use SubscriptionPaymentMethodOptionsCardNetwork::*;
         match s {
@@ -177,7 +184,14 @@ impl std::str::FromStr for SubscriptionPaymentMethodOptionsCardNetwork {
             "unionpay" => Ok(Unionpay),
             "unknown" => Ok(Unknown),
             "visa" => Ok(Visa),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "SubscriptionPaymentMethodOptionsCardNetwork"
+                );
+                Ok(_Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -210,10 +224,8 @@ impl miniserde::Deserialize for SubscriptionPaymentMethodOptionsCardNetwork {
 impl miniserde::de::Visitor for crate::Place<SubscriptionPaymentMethodOptionsCardNetwork> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            SubscriptionPaymentMethodOptionsCardNetwork::from_str(s)
-                .map_err(|_| miniserde::Error)?,
-        );
+        self.out =
+            Some(SubscriptionPaymentMethodOptionsCardNetwork::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -224,11 +236,7 @@ impl<'de> serde::Deserialize<'de> for SubscriptionPaymentMethodOptionsCardNetwor
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for SubscriptionPaymentMethodOptionsCardNetwork",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// We strongly recommend that you rely on our SCA Engine to automatically prompt your customers for authentication based on risk level and [other requirements](https://stripe.com/docs/strong-customer-authentication).

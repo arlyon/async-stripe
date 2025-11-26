@@ -66,11 +66,31 @@ impl ObjectMetadata {
 }
 
 impl RustObject {
-    /// Should we provide an unknown variant? (only when `FieldlessEnum`)
+    /// Should we provide an unknown variant?
     pub fn provide_unknown_variant(&self) -> bool {
         match self {
+            Self::FieldlessEnum(_) => {
+                // Always provide unknown variant for fieldless enums
+                true
+            }
+            Self::Enum(_) => {
+                // Provide unknown variant for enum of objects
+                true
+            }
+            _ => false,
+        }
+    }
+
+    /// Check if we need to use '_Unknown' instead of 'Unknown' due to a conflict
+    /// with Stripe's own 'unknown' variant
+    pub fn use_underscore_unknown(&self) -> bool {
+        match self {
             Self::FieldlessEnum(variants) => {
-                !variants.iter().any(|v| v.variant_name.as_ref() == "Unknown")
+                variants.iter().any(|v| v.variant_name.as_ref() == "Unknown")
+            }
+            Self::Enum(_) => {
+                // EnumOfObjects don't have fieldless variants, so no conflict
+                false
             }
             _ => false,
         }
@@ -80,7 +100,8 @@ impl RustObject {
     pub fn is_copy(&self, components: &Components) -> bool {
         match self {
             Self::Struct(struct_) => struct_.fields.iter().all(|f| f.rust_type.is_copy(components)),
-            Self::FieldlessEnum(_) => !self.provide_unknown_variant(),
+            // FieldlessEnum cannot be Copy if it has an Unknown(String) variant
+            Self::FieldlessEnum(_) => false,
             Self::Enum(variants) => variants.iter().all(|f| match &f.rust_type {
                 None => true,
                 Some(typ) => typ.is_copy(components),

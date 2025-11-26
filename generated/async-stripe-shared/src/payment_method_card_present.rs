@@ -189,7 +189,7 @@ const _: () = {
                 self.offline.take(),
                 self.preferred_locales.take(),
                 self.read_method.take(),
-                self.wallet,
+                self.wallet.take(),
             )
             else {
                 return None;

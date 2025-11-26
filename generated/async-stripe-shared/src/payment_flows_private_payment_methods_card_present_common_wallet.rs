@@ -1,4 +1,4 @@
-#[derive(Copy, Clone, Debug)]
+#[derive(Clone, Debug)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentFlowsPrivatePaymentMethodsCardPresentCommonWallet {
@@ -62,7 +62,7 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(type_),) = (self.type_,) else {
+            let (Some(type_),) = (self.type_.take(),) else {
                 return None;
             };
             Some(Self::Out { type_ })
@@ -102,27 +102,32 @@ const _: () = {
     }
 };
 /// The type of mobile wallet, one of `apple_pay`, `google_pay`, `samsung_pay`, or `unknown`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PaymentFlowsPrivatePaymentMethodsCardPresentCommonWalletType {
     ApplePay,
     GooglePay,
     SamsungPay,
     Unknown,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    /// This variant is prefixed with an underscore to avoid conflicts with Stripe's 'Unknown' variant.
+    _Unknown(String),
 }
 impl PaymentFlowsPrivatePaymentMethodsCardPresentCommonWalletType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PaymentFlowsPrivatePaymentMethodsCardPresentCommonWalletType::*;
         match self {
             ApplePay => "apple_pay",
             GooglePay => "google_pay",
             SamsungPay => "samsung_pay",
             Unknown => "unknown",
+            _Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for PaymentFlowsPrivatePaymentMethodsCardPresentCommonWalletType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentFlowsPrivatePaymentMethodsCardPresentCommonWalletType::*;
         match s {
@@ -130,7 +135,14 @@ impl std::str::FromStr for PaymentFlowsPrivatePaymentMethodsCardPresentCommonWal
             "google_pay" => Ok(GooglePay),
             "samsung_pay" => Ok(SamsungPay),
             "unknown" => Ok(Unknown),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PaymentFlowsPrivatePaymentMethodsCardPresentCommonWalletType"
+                );
+                Ok(_Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -167,7 +179,7 @@ impl miniserde::de::Visitor
         use std::str::FromStr;
         self.out = Some(
             PaymentFlowsPrivatePaymentMethodsCardPresentCommonWalletType::from_str(s)
-                .map_err(|_| miniserde::Error)?,
+                .expect("infallible"),
         );
         Ok(())
     }
@@ -181,10 +193,6 @@ impl<'de> serde::Deserialize<'de> for PaymentFlowsPrivatePaymentMethodsCardPrese
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for PaymentFlowsPrivatePaymentMethodsCardPresentCommonWalletType",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
