@@ -5,6 +5,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [1.0.0-alpha.8](https://github.com/arlyon/async-stripe/compare/async-stripe-client-core-v1.0.0-alpha.7...async-stripe-client-core-v1.0.0-alpha.8) - 2025-11-26
+
+### Fixed
+
+- allow restricted key (rk_) prefix in secret key validation
+- fix clippy lints in tests
+
 ## [1.0.0-alpha.4](https://github.com/arlyon/async-stripe/compare/async-stripe-client-core-v1.0.0-alpha.3...async-stripe-client-core-v1.0.0-alpha.4) - 2025-10-02
 
 ### Other
