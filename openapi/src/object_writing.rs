@@ -54,6 +54,7 @@ impl Components {
             }
             RustObject::FieldlessEnum(variants) => {
                 writer.provide_unknown_variant(obj.provide_unknown_variant());
+                writer.use_underscore_unknown(obj.use_underscore_unknown());
                 writer.write_fieldless_enum_variants(out, variants);
             }
             RustObject::Enum(variants) => {

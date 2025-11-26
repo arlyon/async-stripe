@@ -13,6 +13,7 @@ pub struct ObjectWriter<'a> {
     pub derives: Derives,
     pub ident: &'a RustIdent,
     pub provide_unknown_variant: bool,
+    pub use_underscore_unknown: bool,
     pub usage: ObjectUsage,
 }
 
@@ -24,6 +25,7 @@ impl<'a> ObjectWriter<'a> {
             derives: Derives::new(),
             ident,
             provide_unknown_variant: false,
+            use_underscore_unknown: false,
             usage,
         }
     }
@@ -35,6 +37,11 @@ impl<'a> ObjectWriter<'a> {
 
     pub fn provide_unknown_variant(&mut self, unknown_variant: bool) -> &mut Self {
         self.provide_unknown_variant = unknown_variant;
+        self
+    }
+
+    pub fn use_underscore_unknown(&mut self, use_underscore: bool) -> &mut Self {
+        self.use_underscore_unknown = use_underscore;
         self
     }
 
