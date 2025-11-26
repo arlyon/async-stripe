@@ -65,7 +65,7 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(type_), Some(value)) = (self.type_, self.value.take()) else {
+            let (Some(type_), Some(value)) = (self.type_.take(), self.value.take()) else {
                 return None;
             };
             Some(Self::Out { type_, value })
@@ -105,7 +105,8 @@ const _: () = {
     }
 };
 /// The type of the tax ID, one of `ad_nrt`, `ar_cuit`, `eu_vat`, `bo_tin`, `br_cnpj`, `br_cpf`, `cn_tin`, `co_nit`, `cr_tin`, `do_rcn`, `ec_ruc`, `eu_oss_vat`, `hr_oib`, `pe_ruc`, `ro_tin`, `rs_pib`, `sv_nit`, `uy_ruc`, `ve_rif`, `vn_tin`, `gb_vat`, `nz_gst`, `au_abn`, `au_arn`, `in_gst`, `no_vat`, `no_voec`, `za_vat`, `ch_vat`, `mx_rfc`, `sg_uen`, `ru_inn`, `ru_kpp`, `ca_bn`, `hk_br`, `es_cif`, `tw_vat`, `th_vat`, `jp_cn`, `jp_rn`, `jp_trn`, `li_uid`, `li_vat`, `my_itn`, `us_ein`, `kr_brn`, `ca_qst`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `my_sst`, `sg_gst`, `ae_trn`, `cl_tin`, `sa_vat`, `id_npwp`, `my_frp`, `il_vat`, `ge_vat`, `ua_vat`, `is_vat`, `bg_uic`, `hu_tin`, `si_tin`, `ke_pin`, `tr_tin`, `eg_tin`, `ph_tin`, `al_tin`, `bh_vat`, `kz_bin`, `ng_tin`, `om_vat`, `de_stn`, `ch_uid`, `tz_vat`, `uz_vat`, `uz_tin`, `md_vat`, `ma_vat`, `by_tin`, `ao_tin`, `bs_tin`, `bb_tin`, `cd_nif`, `mr_nif`, `me_pib`, `zw_tin`, `ba_tin`, `gn_nif`, `mk_vat`, `sr_fin`, `sn_ninea`, `am_tin`, `np_pan`, `tj_tin`, `ug_tin`, `zm_tin`, `kh_tin`, `aw_tin`, `az_tin`, `bd_bin`, `bj_ifu`, `et_tin`, `kg_tin`, `la_tin`, `cm_niu`, `cv_nif`, `bf_ifu`, or `unknown`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum InvoicesResourceInvoiceTaxIdType {
     AdNrt,
     AeTrn,
@@ -218,9 +219,12 @@ pub enum InvoicesResourceInvoiceTaxIdType {
     ZaVat,
     ZmTin,
     ZwTin,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    /// This variant is prefixed with an underscore to avoid conflicts with Stripe's 'Unknown' variant.
+    _Unknown(String),
 }
 impl InvoicesResourceInvoiceTaxIdType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use InvoicesResourceInvoiceTaxIdType::*;
         match self {
             AdNrt => "ad_nrt",
@@ -334,12 +338,13 @@ impl InvoicesResourceInvoiceTaxIdType {
             ZaVat => "za_vat",
             ZmTin => "zm_tin",
             ZwTin => "zw_tin",
+            _Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for InvoicesResourceInvoiceTaxIdType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use InvoicesResourceInvoiceTaxIdType::*;
         match s {
@@ -454,7 +459,14 @@ impl std::str::FromStr for InvoicesResourceInvoiceTaxIdType {
             "za_vat" => Ok(ZaVat),
             "zm_tin" => Ok(ZmTin),
             "zw_tin" => Ok(ZwTin),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "InvoicesResourceInvoiceTaxIdType"
+                );
+                Ok(_Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -487,8 +499,7 @@ impl miniserde::Deserialize for InvoicesResourceInvoiceTaxIdType {
 impl miniserde::de::Visitor for crate::Place<InvoicesResourceInvoiceTaxIdType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out =
-            Some(InvoicesResourceInvoiceTaxIdType::from_str(s).map_err(|_| miniserde::Error)?);
+        self.out = Some(InvoicesResourceInvoiceTaxIdType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -499,8 +510,6 @@ impl<'de> serde::Deserialize<'de> for InvoicesResourceInvoiceTaxIdType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for InvoicesResourceInvoiceTaxIdType")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

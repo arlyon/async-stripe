@@ -65,7 +65,8 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(claimed_by), Some(type_)) = (self.claimed_by.take(), self.type_) else {
+            let (Some(claimed_by), Some(type_)) = (self.claimed_by.take(), self.type_.take())
+            else {
                 return None;
             };
             Some(Self::Out { claimed_by, type_ })
@@ -188,32 +189,44 @@ impl<'de> serde::Deserialize<'de> for IssuingAuthorizationAuthenticationExemptio
     }
 }
 /// The specific exemption claimed for this authorization.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum IssuingAuthorizationAuthenticationExemptionType {
     LowValueTransaction,
     TransactionRiskAnalysis,
     Unknown,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    /// This variant is prefixed with an underscore to avoid conflicts with Stripe's 'Unknown' variant.
+    _Unknown(String),
 }
 impl IssuingAuthorizationAuthenticationExemptionType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use IssuingAuthorizationAuthenticationExemptionType::*;
         match self {
             LowValueTransaction => "low_value_transaction",
             TransactionRiskAnalysis => "transaction_risk_analysis",
             Unknown => "unknown",
+            _Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for IssuingAuthorizationAuthenticationExemptionType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use IssuingAuthorizationAuthenticationExemptionType::*;
         match s {
             "low_value_transaction" => Ok(LowValueTransaction),
             "transaction_risk_analysis" => Ok(TransactionRiskAnalysis),
             "unknown" => Ok(Unknown),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "IssuingAuthorizationAuthenticationExemptionType"
+                );
+                Ok(_Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -246,10 +259,8 @@ impl miniserde::Deserialize for IssuingAuthorizationAuthenticationExemptionType 
 impl miniserde::de::Visitor for crate::Place<IssuingAuthorizationAuthenticationExemptionType> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            IssuingAuthorizationAuthenticationExemptionType::from_str(s)
-                .map_err(|_| miniserde::Error)?,
-        );
+        self.out =
+            Some(IssuingAuthorizationAuthenticationExemptionType::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -260,10 +271,6 @@ impl<'de> serde::Deserialize<'de> for IssuingAuthorizationAuthenticationExemptio
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for IssuingAuthorizationAuthenticationExemptionType",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

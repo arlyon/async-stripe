@@ -161,17 +161,17 @@ const _: () = {
                 Some(three_d_secure),
                 Some(wallet),
             ) = (
-                self.brand,
+                self.brand.take(),
                 self.capture_before,
                 self.checks.take(),
                 self.country.take(),
                 self.exp_month,
                 self.exp_year,
                 self.fingerprint.take(),
-                self.funding,
+                self.funding.take(),
                 self.last4.take(),
                 self.moto,
-                self.network,
+                self.network.take(),
                 self.network_token,
                 self.network_transaction_id.take(),
                 self.three_d_secure.take(),
@@ -249,7 +249,8 @@ const _: () = {
 };
 /// Card brand.
 /// Can be `amex`, `cartes_bancaires`, `diners`, `discover`, `eftpos_au`, `jcb`, `link`, `mastercard`, `unionpay`, `visa` or `unknown`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsBrand {
     Amex,
     CartesBancaires,
@@ -263,9 +264,12 @@ pub enum PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsBrand {
     Unionpay,
     Unknown,
     Visa,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    /// This variant is prefixed with an underscore to avoid conflicts with Stripe's 'Unknown' variant.
+    _Unknown(String),
 }
 impl PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsBrand {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsBrand::*;
         match self {
             Amex => "amex",
@@ -280,12 +284,13 @@ impl PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsBrand {
             Unionpay => "unionpay",
             Unknown => "unknown",
             Visa => "visa",
+            _Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsBrand {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsBrand::*;
         match s {
@@ -301,7 +306,14 @@ impl std::str::FromStr for PaymentsPrimitivesPaymentRecordsResourcePaymentMethod
             "unionpay" => Ok(Unionpay),
             "unknown" => Ok(Unknown),
             "visa" => Ok(Visa),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsBrand"
+                );
+                Ok(_Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -340,7 +352,7 @@ impl miniserde::de::Visitor
         use std::str::FromStr;
         self.out = Some(
             PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsBrand::from_str(s)
-                .map_err(|_| miniserde::Error)?,
+                .expect("infallible"),
         );
         Ok(())
     }
@@ -356,31 +368,36 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsBrand"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Card funding type. Can be `credit`, `debit`, `prepaid`, or `unknown`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsFunding {
     Credit,
     Debit,
     Prepaid,
     Unknown,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    /// This variant is prefixed with an underscore to avoid conflicts with Stripe's 'Unknown' variant.
+    _Unknown(String),
 }
 impl PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsFunding {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsFunding::*;
         match self {
             Credit => "credit",
             Debit => "debit",
             Prepaid => "prepaid",
             Unknown => "unknown",
+            _Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsFunding {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsFunding::*;
         match s {
@@ -388,7 +405,14 @@ impl std::str::FromStr for PaymentsPrimitivesPaymentRecordsResourcePaymentMethod
             "debit" => Ok(Debit),
             "prepaid" => Ok(Prepaid),
             "unknown" => Ok(Unknown),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsFunding"
+                );
+                Ok(_Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -427,7 +451,7 @@ impl miniserde::de::Visitor
         use std::str::FromStr;
         self.out = Some(
             PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsFunding::from_str(s)
-                .map_err(|_| miniserde::Error)?,
+                .expect("infallible"),
         );
         Ok(())
     }
@@ -443,12 +467,13 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsFunding"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Identifies which network this charge was processed on.
 /// Can be `amex`, `cartes_bancaires`, `diners`, `discover`, `eftpos_au`, `interac`, `jcb`, `link`, `mastercard`, `unionpay`, `visa`, or `unknown`.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsNetwork {
     Amex,
     CartesBancaires,
@@ -462,9 +487,12 @@ pub enum PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsNetwork
     Unionpay,
     Unknown,
     Visa,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    /// This variant is prefixed with an underscore to avoid conflicts with Stripe's 'Unknown' variant.
+    _Unknown(String),
 }
 impl PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsNetwork {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsNetwork::*;
         match self {
             Amex => "amex",
@@ -479,12 +507,13 @@ impl PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsNetwork {
             Unionpay => "unionpay",
             Unknown => "unknown",
             Visa => "visa",
+            _Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsNetwork {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsNetwork::*;
         match s {
@@ -500,7 +529,14 @@ impl std::str::FromStr for PaymentsPrimitivesPaymentRecordsResourcePaymentMethod
             "unionpay" => Ok(Unionpay),
             "unknown" => Ok(Unknown),
             "visa" => Ok(Visa),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsNetwork"
+                );
+                Ok(_Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -539,7 +575,7 @@ impl miniserde::de::Visitor
         use std::str::FromStr;
         self.out = Some(
             PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsNetwork::from_str(s)
-                .map_err(|_| miniserde::Error)?,
+                .expect("infallible"),
         );
         Ok(())
     }
@@ -555,6 +591,6 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsNetwork"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

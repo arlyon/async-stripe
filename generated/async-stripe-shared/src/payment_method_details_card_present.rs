@@ -252,7 +252,7 @@ const _: () = {
                 self.preferred_locales.take(),
                 self.read_method.take(),
                 self.receipt.take(),
-                self.wallet,
+                self.wallet.take(),
             )
             else {
                 return None;

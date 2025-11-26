@@ -129,7 +129,7 @@ const _: () = {
                 Some(terminal_verification_results),
                 Some(transaction_status_information),
             ) = (
-                self.account_type,
+                self.account_type.take(),
                 self.application_cryptogram.take(),
                 self.application_preferred_name.take(),
                 self.authorization_code.take(),
@@ -208,27 +208,32 @@ const _: () = {
     }
 };
 /// The type of account being debited or credited
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum PaymentMethodDetailsCardPresentReceiptAccountType {
     Checking,
     Credit,
     Prepaid,
     Unknown,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    /// This variant is prefixed with an underscore to avoid conflicts with Stripe's 'Unknown' variant.
+    _Unknown(String),
 }
 impl PaymentMethodDetailsCardPresentReceiptAccountType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use PaymentMethodDetailsCardPresentReceiptAccountType::*;
         match self {
             Checking => "checking",
             Credit => "credit",
             Prepaid => "prepaid",
             Unknown => "unknown",
+            _Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for PaymentMethodDetailsCardPresentReceiptAccountType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentMethodDetailsCardPresentReceiptAccountType::*;
         match s {
@@ -236,7 +241,14 @@ impl std::str::FromStr for PaymentMethodDetailsCardPresentReceiptAccountType {
             "credit" => Ok(Credit),
             "prepaid" => Ok(Prepaid),
             "unknown" => Ok(Unknown),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PaymentMethodDetailsCardPresentReceiptAccountType"
+                );
+                Ok(_Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -270,8 +282,7 @@ impl miniserde::de::Visitor for crate::Place<PaymentMethodDetailsCardPresentRece
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
         self.out = Some(
-            PaymentMethodDetailsCardPresentReceiptAccountType::from_str(s)
-                .map_err(|_| miniserde::Error)?,
+            PaymentMethodDetailsCardPresentReceiptAccountType::from_str(s).expect("infallible"),
         );
         Ok(())
     }
@@ -283,10 +294,6 @@ impl<'de> serde::Deserialize<'de> for PaymentMethodDetailsCardPresentReceiptAcco
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for PaymentMethodDetailsCardPresentReceiptAccountType",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }

@@ -78,9 +78,11 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(mandate_options), Some(network), Some(request_three_d_secure)) =
-                (self.mandate_options.take(), self.network, self.request_three_d_secure.take())
-            else {
+            let (Some(mandate_options), Some(network), Some(request_three_d_secure)) = (
+                self.mandate_options.take(),
+                self.network.take(),
+                self.request_three_d_secure.take(),
+            ) else {
                 return None;
             };
             Some(Self::Out { mandate_options, network, request_three_d_secure })
@@ -125,7 +127,8 @@ const _: () = {
 /// Selected network to process this SetupIntent on.
 /// Depends on the available networks of the card attached to the setup intent.
 /// Can be only set confirm-time.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum SetupIntentPaymentMethodOptionsCardNetwork {
     Amex,
     CartesBancaires,
@@ -140,9 +143,12 @@ pub enum SetupIntentPaymentMethodOptionsCardNetwork {
     Unionpay,
     Unknown,
     Visa,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    /// This variant is prefixed with an underscore to avoid conflicts with Stripe's 'Unknown' variant.
+    _Unknown(String),
 }
 impl SetupIntentPaymentMethodOptionsCardNetwork {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use SetupIntentPaymentMethodOptionsCardNetwork::*;
         match self {
             Amex => "amex",
@@ -158,12 +164,13 @@ impl SetupIntentPaymentMethodOptionsCardNetwork {
             Unionpay => "unionpay",
             Unknown => "unknown",
             Visa => "visa",
+            _Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for SetupIntentPaymentMethodOptionsCardNetwork {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use SetupIntentPaymentMethodOptionsCardNetwork::*;
         match s {
@@ -180,7 +187,14 @@ impl std::str::FromStr for SetupIntentPaymentMethodOptionsCardNetwork {
             "unionpay" => Ok(Unionpay),
             "unknown" => Ok(Unknown),
             "visa" => Ok(Visa),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "SetupIntentPaymentMethodOptionsCardNetwork"
+                );
+                Ok(_Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -213,10 +227,8 @@ impl miniserde::Deserialize for SetupIntentPaymentMethodOptionsCardNetwork {
 impl miniserde::de::Visitor for crate::Place<SetupIntentPaymentMethodOptionsCardNetwork> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(
-            SetupIntentPaymentMethodOptionsCardNetwork::from_str(s)
-                .map_err(|_| miniserde::Error)?,
-        );
+        self.out =
+            Some(SetupIntentPaymentMethodOptionsCardNetwork::from_str(s).expect("infallible"));
         Ok(())
     }
 }
@@ -227,9 +239,7 @@ impl<'de> serde::Deserialize<'de> for SetupIntentPaymentMethodOptionsCardNetwork
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom("Unknown value for SetupIntentPaymentMethodOptionsCardNetwork")
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// We strongly recommend that you rely on our SCA Engine to automatically prompt your customers for authentication based on risk level and [other requirements](https://stripe.com/docs/strong-customer-authentication).

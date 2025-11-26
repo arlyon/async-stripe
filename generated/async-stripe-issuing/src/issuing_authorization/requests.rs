@@ -670,27 +670,32 @@ impl<'de> serde::Deserialize<'de> for CreateIssuingAuthorizationFleetServiceType
 }
 /// Probability that this transaction can be disputed in the event of fraud.
 /// Assessed by comparing the characteristics of the authorization to card network rules.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateIssuingAuthorizationFraudDisputabilityLikelihood {
     Neutral,
     Unknown,
     VeryLikely,
     VeryUnlikely,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    /// This variant is prefixed with an underscore to avoid conflicts with Stripe's 'Unknown' variant.
+    _Unknown(String),
 }
 impl CreateIssuingAuthorizationFraudDisputabilityLikelihood {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateIssuingAuthorizationFraudDisputabilityLikelihood::*;
         match self {
             Neutral => "neutral",
             Unknown => "unknown",
             VeryLikely => "very_likely",
             VeryUnlikely => "very_unlikely",
+            _Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateIssuingAuthorizationFraudDisputabilityLikelihood {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateIssuingAuthorizationFraudDisputabilityLikelihood::*;
         match s {
@@ -698,7 +703,14 @@ impl std::str::FromStr for CreateIssuingAuthorizationFraudDisputabilityLikelihoo
             "unknown" => Ok(Unknown),
             "very_likely" => Ok(VeryLikely),
             "very_unlikely" => Ok(VeryUnlikely),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateIssuingAuthorizationFraudDisputabilityLikelihood"
+                );
+                Ok(_Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -726,11 +738,7 @@ impl<'de> serde::Deserialize<'de> for CreateIssuingAuthorizationFraudDisputabili
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for CreateIssuingAuthorizationFraudDisputabilityLikelihood",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Information about fuel that was purchased with this transaction.
@@ -2035,7 +2043,7 @@ impl Default for CreateIssuingAuthorizationNetworkData {
     }
 }
 /// Stripe’s assessment of the fraud risk for this authorization.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateIssuingAuthorizationRiskAssessment {
     /// Stripe's assessment of this authorization's likelihood of being card testing activity.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2058,7 +2066,7 @@ impl Default for CreateIssuingAuthorizationRiskAssessment {
     }
 }
 /// Stripe's assessment of this authorization's likelihood of being card testing activity.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateIssuingAuthorizationRiskAssessmentCardTestingRisk {
     /// The % of declines due to a card number not existing in the past hour, taking place at the same merchant.
     /// Higher rates correspond to a greater probability of card testing activity, meaning bad actors may be attempting different card number combinations to guess a correct one.
@@ -2087,7 +2095,8 @@ impl CreateIssuingAuthorizationRiskAssessmentCardTestingRisk {
 }
 /// The likelihood that this authorization is associated with card testing activity.
 /// This is assessed by evaluating decline activity over the last hour.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateIssuingAuthorizationRiskAssessmentCardTestingRiskRiskLevel {
     Elevated,
     Highest,
@@ -2095,9 +2104,12 @@ pub enum CreateIssuingAuthorizationRiskAssessmentCardTestingRiskRiskLevel {
     Normal,
     NotAssessed,
     Unknown,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    /// This variant is prefixed with an underscore to avoid conflicts with Stripe's 'Unknown' variant.
+    _Unknown(String),
 }
 impl CreateIssuingAuthorizationRiskAssessmentCardTestingRiskRiskLevel {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateIssuingAuthorizationRiskAssessmentCardTestingRiskRiskLevel::*;
         match self {
             Elevated => "elevated",
@@ -2106,12 +2118,13 @@ impl CreateIssuingAuthorizationRiskAssessmentCardTestingRiskRiskLevel {
             Normal => "normal",
             NotAssessed => "not_assessed",
             Unknown => "unknown",
+            _Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateIssuingAuthorizationRiskAssessmentCardTestingRiskRiskLevel {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateIssuingAuthorizationRiskAssessmentCardTestingRiskRiskLevel::*;
         match s {
@@ -2121,7 +2134,14 @@ impl std::str::FromStr for CreateIssuingAuthorizationRiskAssessmentCardTestingRi
             "normal" => Ok(Normal),
             "not_assessed" => Ok(NotAssessed),
             "unknown" => Ok(Unknown),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateIssuingAuthorizationRiskAssessmentCardTestingRiskRiskLevel"
+                );
+                Ok(_Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -2151,11 +2171,11 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateIssuingAuthorizationRiskAssessmentCardTestingRiskRiskLevel"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Stripe’s assessment of this authorization’s likelihood to be fraudulent.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateIssuingAuthorizationRiskAssessmentFraudRisk {
     /// Stripe’s assessment of the likelihood of fraud on an authorization.
     pub level: CreateIssuingAuthorizationRiskAssessmentFraudRiskLevel,
@@ -2170,7 +2190,8 @@ impl CreateIssuingAuthorizationRiskAssessmentFraudRisk {
     }
 }
 /// Stripe’s assessment of the likelihood of fraud on an authorization.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateIssuingAuthorizationRiskAssessmentFraudRiskLevel {
     Elevated,
     Highest,
@@ -2178,9 +2199,12 @@ pub enum CreateIssuingAuthorizationRiskAssessmentFraudRiskLevel {
     Normal,
     NotAssessed,
     Unknown,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    /// This variant is prefixed with an underscore to avoid conflicts with Stripe's 'Unknown' variant.
+    _Unknown(String),
 }
 impl CreateIssuingAuthorizationRiskAssessmentFraudRiskLevel {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateIssuingAuthorizationRiskAssessmentFraudRiskLevel::*;
         match self {
             Elevated => "elevated",
@@ -2189,12 +2213,13 @@ impl CreateIssuingAuthorizationRiskAssessmentFraudRiskLevel {
             Normal => "normal",
             NotAssessed => "not_assessed",
             Unknown => "unknown",
+            _Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateIssuingAuthorizationRiskAssessmentFraudRiskLevel {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateIssuingAuthorizationRiskAssessmentFraudRiskLevel::*;
         match s {
@@ -2204,7 +2229,14 @@ impl std::str::FromStr for CreateIssuingAuthorizationRiskAssessmentFraudRiskLeve
             "normal" => Ok(Normal),
             "not_assessed" => Ok(NotAssessed),
             "unknown" => Ok(Unknown),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateIssuingAuthorizationRiskAssessmentFraudRiskLevel"
+                );
+                Ok(_Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -2232,15 +2264,11 @@ impl<'de> serde::Deserialize<'de> for CreateIssuingAuthorizationRiskAssessmentFr
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| {
-            serde::de::Error::custom(
-                "Unknown value for CreateIssuingAuthorizationRiskAssessmentFraudRiskLevel",
-            )
-        })
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The dispute risk of the merchant (the seller on a purchase) on an authorization based on all Stripe Issuing activity.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateIssuingAuthorizationRiskAssessmentMerchantDisputeRisk {
     /// The dispute rate observed across all Stripe Issuing authorizations for this merchant.
     /// For example, a value of 50 means 50% of authorizations from this merchant on Stripe Issuing have resulted in a dispute.
@@ -2259,7 +2287,8 @@ impl CreateIssuingAuthorizationRiskAssessmentMerchantDisputeRisk {
     }
 }
 /// The likelihood that authorizations from this merchant will result in a dispute based on their history on Stripe Issuing.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateIssuingAuthorizationRiskAssessmentMerchantDisputeRiskRiskLevel {
     Elevated,
     Highest,
@@ -2267,9 +2296,12 @@ pub enum CreateIssuingAuthorizationRiskAssessmentMerchantDisputeRiskRiskLevel {
     Normal,
     NotAssessed,
     Unknown,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    /// This variant is prefixed with an underscore to avoid conflicts with Stripe's 'Unknown' variant.
+    _Unknown(String),
 }
 impl CreateIssuingAuthorizationRiskAssessmentMerchantDisputeRiskRiskLevel {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateIssuingAuthorizationRiskAssessmentMerchantDisputeRiskRiskLevel::*;
         match self {
             Elevated => "elevated",
@@ -2278,12 +2310,13 @@ impl CreateIssuingAuthorizationRiskAssessmentMerchantDisputeRiskRiskLevel {
             Normal => "normal",
             NotAssessed => "not_assessed",
             Unknown => "unknown",
+            _Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateIssuingAuthorizationRiskAssessmentMerchantDisputeRiskRiskLevel {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateIssuingAuthorizationRiskAssessmentMerchantDisputeRiskRiskLevel::*;
         match s {
@@ -2293,7 +2326,14 @@ impl std::str::FromStr for CreateIssuingAuthorizationRiskAssessmentMerchantDispu
             "normal" => Ok(Normal),
             "not_assessed" => Ok(NotAssessed),
             "unknown" => Ok(Unknown),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateIssuingAuthorizationRiskAssessmentMerchantDisputeRiskRiskLevel"
+                );
+                Ok(_Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -2323,7 +2363,7 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateIssuingAuthorizationRiskAssessmentMerchantDisputeRiskRiskLevel"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Verifications that Stripe performed on information that the cardholder provided to the merchant.
@@ -2600,32 +2640,44 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// The specific exemption claimed for this authorization.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum CreateIssuingAuthorizationVerificationDataAuthenticationExemptionType {
     LowValueTransaction,
     TransactionRiskAnalysis,
     Unknown,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    /// This variant is prefixed with an underscore to avoid conflicts with Stripe's 'Unknown' variant.
+    _Unknown(String),
 }
 impl CreateIssuingAuthorizationVerificationDataAuthenticationExemptionType {
-    pub fn as_str(self) -> &'static str {
+    pub fn as_str(&self) -> &str {
         use CreateIssuingAuthorizationVerificationDataAuthenticationExemptionType::*;
         match self {
             LowValueTransaction => "low_value_transaction",
             TransactionRiskAnalysis => "transaction_risk_analysis",
             Unknown => "unknown",
+            _Unknown(v) => v,
         }
     }
 }
 
 impl std::str::FromStr for CreateIssuingAuthorizationVerificationDataAuthenticationExemptionType {
-    type Err = stripe_types::StripeParseError;
+    type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CreateIssuingAuthorizationVerificationDataAuthenticationExemptionType::*;
         match s {
             "low_value_transaction" => Ok(LowValueTransaction),
             "transaction_risk_analysis" => Ok(TransactionRiskAnalysis),
             "unknown" => Ok(Unknown),
-            _ => Err(stripe_types::StripeParseError),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateIssuingAuthorizationVerificationDataAuthenticationExemptionType"
+                );
+                Ok(_Unknown(v.to_owned()))
+            }
         }
     }
 }
@@ -2655,7 +2707,7 @@ impl<'de> serde::Deserialize<'de>
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Self::from_str(&s).map_err(|_| serde::de::Error::custom("Unknown value for CreateIssuingAuthorizationVerificationDataAuthenticationExemptionType"))
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Whether the cardholder provided a CVC and if it matched Stripe’s record.
