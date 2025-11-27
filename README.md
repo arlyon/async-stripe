@@ -12,6 +12,14 @@ surface. It's generated directly from Stripe's official OpenAPI
 specification and is **updated weekly via CI** to ensure it's always
 up-to-date with the latest API changes.
 
+## 📚 Documentation
+
+For comprehensive guides, tutorials, and API documentation, visit:
+
+- **[async-stripe Documentation Site](https://payments.rs/docs)** - Complete guides on working with expandable fields, error handling, webhooks, testing, and more
+- **[API Reference on docs.rs](https://docs.rs/async-stripe)** - Full API documentation for all types and methods
+- **[Examples](https://github.com/arlyon/async-stripe/tree/master/examples)** - Real-world examples for common Stripe operations
+
 ## ✨ Key Features
 
 - **Complete & Current API Coverage**: Generated from the official
