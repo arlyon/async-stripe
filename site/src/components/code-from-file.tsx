@@ -1,3 +1,4 @@
+import { transformerMetaHighlight } from "@shikijs/transformers";
 import { readFileSync } from "fs";
 import { highlight } from "fumadocs-core/highlight";
 import * as Base from "fumadocs-ui/components/codeblock";
@@ -64,10 +65,11 @@ export async function CodeFromFile({
 
 	const rendered = await highlight(content, {
 		lang,
-		meta,
+		meta: { __raw: meta },
 		components: {
 			pre: (props) => <Base.Pre {...props} />,
 		},
+		transformers: [transformerMetaHighlight()],
 	});
 
 	const text = title ?? file;
@@ -92,8 +94,7 @@ export async function CodeFromFile({
 
 	return (
 		<Base.CodeBlock
-			title={titleC}
-			code={rendered}
+			title={titleC as string}
 			lang={lang}
 			data-line-numbers
 			data-line-numbers-start={startLine}

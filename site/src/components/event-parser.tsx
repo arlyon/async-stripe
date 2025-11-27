@@ -1,6 +1,5 @@
 "use client";
 
-import { CodeBlock } from "fumadocs-ui/components/codeblock";
 import { AlertTriangle } from "lucide-react";
 import { useState } from "react";
 
@@ -9,7 +8,7 @@ export function EventParser() {
 	const [result, setResult] = useState<{
 		success: boolean;
 		message: string;
-		parsed?: unknown;
+		parsed?: any;
 	} | null>(null);
 
 	const handleParse = async () => {
