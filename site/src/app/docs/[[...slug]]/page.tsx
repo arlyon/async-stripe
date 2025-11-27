@@ -18,6 +18,8 @@ export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
 
 	const MDX = page.data.body;
 
+	const githubUrl = `https://github.com/arlyon/async-stripe/blob/master/site/content${page.url}.mdx`;
+
 	return (
 		<DocsPage
 			toc={page.data.toc}
@@ -28,10 +30,7 @@ export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
 			<DocsDescription>{page.data.description}</DocsDescription>
 			<div className="flex flex-row gap-2 items-center border-b pt-2 pb-6">
 				<LLMCopyButton markdownUrl={`${page.url}.mdx`} />
-				<ViewOptions
-					markdownUrl={`${page.url}.mdx`}
-					githubUrl="https://github.com/arlyon/stripe.rs"
-				/>
+				<ViewOptions markdownUrl={`${page.url}.mdx`} githubUrl={githubUrl} />
 			</div>
 			<DocsBody>
 				<MDX

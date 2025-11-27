@@ -112,19 +112,16 @@ Test clocks only work in test mode. All objects created with a test clock will b
 
 **Delete test clocks after testing** to clean up test data:
 
-```rust
-TestHelpersTestClock::delete(&client, &clock.id).await?;
-```
+<CodeFromFile
+  file="examples/test-clocks.rs"
+  href={{base: "https://github.com/arlyon/async-stripe/blob/master/"}}
+  lang="rust"
+  startLine={73}
+  endLine={76}
+  dedent
+/>
 
-**Use descriptive names** to identify which test created which clock:
-
-```rust
-CreateTestHelpersTestClock {
-    frozen_time: 1672531200,
-    name: Some("test_annual_subscription_renewal"),
-    ..Default::default()
-}
-```
+**Use descriptive names** to identify which test created which clock - the example uses `"Example test clock 1"` but in real tests you'd use something like `"test_annual_subscription_renewal"`.
 
 **Advance time incrementally** to observe state changes at each step rather than jumping too far ahead at once.
 
