@@ -89,6 +89,7 @@ impl Client {
         Ok((builder, body))
     }
 
+    #[tracing::instrument(skip(self, body, req_builder), fields(strategy = ?strategy, retry_count))]
     async fn send_inner(
         &self,
         body: Option<Bytes>,
@@ -103,21 +104,30 @@ impl Client {
         if let Some(key) = strategy.get_key() {
             const HEADER_NAME: HeaderName = HeaderName::from_static("idempotency-key");
             req_builder = req_builder.header(HEADER_NAME, key.as_str());
+            tracing::debug!("using idempotency key");
         }
 
         let req = req_builder.body(Full::new(body.unwrap_or_default()))?;
 
         loop {
+            tracing::Span::current().record("retry_count", tries);
+
             return match strategy.test(last_status.map(|s| s.as_u16()), last_retry_header, tries) {
-                Outcome::Stop => Err(last_error),
+                Outcome::Stop => {
+                    tracing::warn!("request failed after {} attempts", tries);
+                    Err(last_error)
+                }
                 Outcome::Continue(duration) => {
                     if let Some(duration) = duration {
+                        tracing::debug!("backing off for {:?}", duration);
                         tokio::time::sleep(duration).await;
                     }
 
+                    tracing::debug!("sending request (attempt {})", tries + 1);
                     let response = match self.client.request(req.clone()).await {
                         Ok(resp) => resp,
                         Err(err) => {
+                            tracing::warn!("request failed: {}", err);
                             last_error = StripeError::from(err);
                             tries += 1;
                             continue;
@@ -133,6 +143,7 @@ impl Client {
                     let bytes = response.into_body().collect().await?.to_bytes();
                     if !status.is_success() {
                         tries += 1;
+                        tracing::warn!("request returned error status: {}", status);
 
                         let str = std::str::from_utf8(bytes.as_ref()).map_err(|_| {
                             StripeError::JSONDeserialize("Response was not valid UTF-8".into())
@@ -150,6 +161,7 @@ impl Client {
                         last_retry_header = retry;
                         continue;
                     }
+                    tracing::debug!("request successful");
                     Ok(bytes)
                 }
             };
@@ -168,8 +180,13 @@ fn conv_stripe_method(method: StripeMethod) -> hyper::Method {
 impl stripe_client_core::StripeClient for Client {
     type Err = StripeError;
 
+    #[tracing::instrument(skip(self, req_full), fields(method, path))]
     async fn execute(&self, req_full: CustomizedStripeRequest) -> Result<Bytes, Self::Err> {
         let (req, config) = req_full.into_pieces();
+
+        tracing::Span::current().record("method", tracing::field::debug(&req.method));
+        tracing::Span::current().record("path", &req.path);
+
         let (builder, body) = self.construct_request(req, config.account_id)?;
 
         let request_strategy =
