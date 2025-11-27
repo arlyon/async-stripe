@@ -130,6 +130,10 @@ impl Webhook {
     /// # Errors
     ///
     /// This function will return a WebhookError if the payload could not be parsed
+    #[deprecated(
+        since = "0.20.0",
+        note = "This method bypasses signature verification and should only be used for local testing. Use `construct_event` for production code."
+    )]
     pub fn insecure(payload: &str) -> Result<Event, WebhookError> {
         Self { current_timestamp: 0 }.parse_payload(payload)
     }
