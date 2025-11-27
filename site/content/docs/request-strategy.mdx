@@ -44,3 +44,43 @@ You can apply a strategy globally to the client (for all requests) or override i
   endLine={29}
   highlightLines={[8,9]}
 />
+
+## Custom Idempotency Keys
+
+For critical operations where you need precise control over deduplication (e.g., linking payment creation to your own order IDs), you can provide your own idempotency key instead of using an auto-generated UUID.
+
+The `IdempotencyKey` type validates that your key:
+- Is not empty
+- Does not exceed 255 characters (Stripe's limit)
+
+```rust
+use stripe::{Client, CreatePaymentIntent, Currency, RequestStrategy, IdempotencyKey};
+
+let client = Client::new(secret_key);
+
+// Use your own unique identifier (e.g., from your database)
+let key = IdempotencyKey::new("order_12345_attempt_1").unwrap();
+
+CreatePaymentIntent::new(1000, Currency::USD)
+    .request_strategy(RequestStrategy::Idempotent(key))
+    .send(&client)
+    .await?;
+```
+
+This ensures that even if your application retries the request due to a network failure, Stripe will recognize it as the same operation and not create duplicate charges.
+
+import { Callout } from "fumadocs-ui/components/callout"
+
+<Callout type="info">
+Idempotency keys are valid for 24 hours. After that, Stripe will treat a request with the same key as a new operation.
+</Callout>
+
+### When to Use Custom Keys
+
+- **Order processing**: Use `order_{id}_payment` to tie payment creation to order IDs
+- **Subscription operations**: Use `subscription_{id}_cancel_{timestamp}` for cancellations
+- **Multi-step flows**: Maintain idempotency across application restarts by persisting keys
+
+### When to Use Auto-Generated Keys
+
+For most operations, the auto-generated UUID keys from `RequestStrategy::Retry(n)` or `RequestStrategy::ExponentialBackoff(n)` are sufficient and more convenient.

@@ -1,0 +1,131 @@
+---
+title: Testing
+description: Tools and techniques for testing Stripe integrations
+icon: TestTube
+---
+
+import { Callout } from "fumadocs-ui/components/callout"
+import { CodeFromFile } from "@/components/code-from-file"
+
+Testing Stripe integrations can be challenging. This guide covers the tools and techniques available for testing your Stripe integration without affecting production data or waiting for real-time events.
+
+## Testing with stripe-mock
+
+For fast, offline testing without hitting the real Stripe API, you can use [stripe-mock](https://github.com/stripe/stripe-mock), Stripe's official API mocking server. Point your client to the mock server using the `.url()` method:
+
+```rust
+use stripe::Client;
+
+// Start stripe-mock on port 12111
+// docker run -p 12111:12111 stripe/stripe-mock
+
+let client = Client::builder("sk_test_123")
+    .url("http://localhost:12111")
+    .build();
+
+// This request will hit stripe-mock instead of the real API
+let customer = Customer::create(&client, CreateCustomer::new()).send().await?;
+```
+
+<Callout type="info">
+stripe-mock provides realistic API responses but doesn't maintain state. It's ideal for integration tests that verify request formatting and response parsing without side effects.
+</Callout>
+
+### Benefits of stripe-mock
+
+- **Fast**: No network latency
+- **Offline**: Works without internet connection
+- **Deterministic**: Same inputs always produce same outputs
+- **Free**: No API usage counted against your account
+- **Safe**: No risk of accidental charges or data changes
+
+### Running stripe-mock
+
+```bash
+# Using Docker (recommended)
+docker run -p 12111:12111 stripe/stripe-mock
+
+# Or install directly
+go install github.com/stripe/stripe-mock@latest
+stripe-mock -http-port 12111
+```
+
+<Callout type="warn">
+stripe-mock is for testing only. Always use the real Stripe API in production.
+</Callout>
+
+## Time Travel with Test Clocks
+
+Testing subscription logic that spans months or years is difficult in real-time. async-stripe supports [Test Clocks](https://stripe.com/docs/billing/testing/test-clocks), allowing you to simulate the passage of time for customers without waiting.
+
+### Creating a Test Clock
+
+Create a test clock frozen at a specific time (Unix timestamp):
+
+<CodeFromFile
+  file="examples/test-clocks.rs"
+  href={{base: "https://github.com/arlyon/async-stripe/blob/master/"}}
+  lang="rust"
+  startLine={17}
+  endLine={25}
+  dedent
+/>
+
+### Advancing Time
+
+Once you have a test clock, you can advance it to trigger time-based events like subscription renewals:
+
+<CodeFromFile
+  file="examples/test-clocks.rs"
+  href={{base: "https://github.com/arlyon/async-stripe/blob/master/"}}
+  lang="rust"
+  startLine={53}
+  endLine={62}
+  dedent
+/>
+
+Advancing a test clock is an asynchronous operation on Stripe's side. You can poll the status to wait for completion:
+
+<CodeFromFile
+  file="examples/test-clocks.rs"
+  href={{base: "https://github.com/arlyon/async-stripe/blob/master/"}}
+  lang="rust"
+  startLine={64}
+  endLine={71}
+  dedent
+/>
+
+### What Test Clocks Affect
+
+Test clocks control the timing for:
+- **Subscription billing cycles** - Trigger renewals without waiting
+- **Trial periods** - Fast-forward through trial expirations
+- **Invoice finalization** - Control when invoices are created and charged
+- **Dunning** - Test retry logic for failed payments
+- **Prorations** - Verify proration calculations when changing plans
+
+<Callout type="info">
+Test clocks only work in test mode. All objects created with a test clock will be deleted when the clock is deleted.
+</Callout>
+
+### Best Practices
+
+**Delete test clocks after testing** to clean up test data:
+
+```rust
+TestHelpersTestClock::delete(&client, &clock.id).await?;
+```
+
+**Use descriptive names** to identify which test created which clock:
+
+```rust
+CreateTestHelpersTestClock {
+    frozen_time: 1672531200,
+    name: Some("test_annual_subscription_renewal"),
+    ..Default::default()
+}
+```
+
+**Advance time incrementally** to observe state changes at each step rather than jumping too far ahead at once.
+
+For more details, see the [Stripe Test Clocks documentation](https://stripe.com/docs/billing/testing/test-clocks).

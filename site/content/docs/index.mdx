@@ -96,3 +96,104 @@ The new API uses a builder pattern that flows naturally from request creation to
   startLine={14}
   endLine={20}
 />
+
+## Working with Expandable Fields
+
+Many Stripe API responses contain related objects that are returned as IDs by default. You can use the `expand` parameter to request the full object instead. The library represents these fields using the `Expandable<T>` type.
+
+### Always Get the ID
+
+Regardless of whether a field is expanded or not, you can always safely extract the ID:
+
+```rust
+use stripe::{Client, Charge};
+
+let client = Client::new(secret_key);
+let charge = Charge::retrieve(&client, &charge_id, &[]).await?;
+
+// Works whether customer is an ID or expanded object
+let customer_id = charge.customer.id();
+println!("Customer ID: {}", customer_id);
+```
+
+### Accessing the Expanded Object
+
+When you expand a field, you can access the full object:
+
+```rust
+use stripe::{Client, Charge};
+
+let client = Client::new(secret_key);
+
+// Request the customer object to be expanded
+let charge = Charge::retrieve(&client, &charge_id, &["customer"]).await?;
+
+// Check if we got the full object
+if let Some(customer) = charge.customer.as_object() {
+    println!("Customer email: {:?}", customer.email);
+} else {
+    println!("Customer was not expanded");
+}
+```
+
+### Available Methods
+
+The `Expandable<T>` enum provides several convenience methods:
+
+- `.id()` - Get the ID (always works, whether expanded or not)
+- `.is_object()` - Check if the field contains the full object
+- `.as_object()` - Get a reference to the object if available
+- `.into_object()` - Take ownership of the object if available
+- `.into_id()` - Take ownership of the ID
+
+<Callout type="info">
+For more details on object expansion in the Stripe API, see the [official documentation](https://stripe.com/docs/api/expanding_objects).
+</Callout>
+
+## Known Limitations
+
+Due to the current architecture of the OpenAPI generator, the following Stripe features are not yet supported by async-stripe:
+
+### File Uploads
+
+Endpoints requiring `multipart/form-data` (e.g., uploading Identity verification documents or Dispute evidence) are not currently generated.
+
+**Workaround**: Use a raw HTTP client like `reqwest` to upload files directly:
+
+```rust
+use reqwest::multipart;
+
+let form = multipart::Form::new()
+    .text("purpose", "dispute_evidence")
+    .part("file", multipart::Part::bytes(file_data)
+        .file_name("evidence.pdf")
+        .mime_str("application/pdf")?);
+
+let response = reqwest::Client::new()
+    .post("https://files.stripe.com/v1/files")
+    .bearer_auth(&secret_key)
+    .multipart(form)
+    .send()
+    .await?;
+```
+
+### Binary Downloads
+
+Endpoints returning binary data (e.g., PDF invoices via `/v1/invoices/:id/pdf`) are not currently generated.
+
+**Workaround**: Use a raw HTTP client to download binary content:
+
+```rust
+let response = reqwest::Client::new()
+    .get(format!("https://api.stripe.com/v1/invoices/{}/pdf", invoice_id))
+    .bearer_auth(&secret_key)
+    .send()
+    .await?;
+
+let pdf_bytes = response.bytes().await?;
+std::fs::write("invoice.pdf", pdf_bytes)?;
+```
+
+<Callout type="info">
+We're tracking these limitations and plan to add support in future releases. You can use async-stripe for the vast majority of Stripe operations alongside a raw HTTP client for these specific cases.
+</Callout>

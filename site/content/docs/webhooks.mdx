@@ -131,6 +131,28 @@ stripe trigger checkout.session.completed
 stripe trigger payment_intent.succeeded
 ```
 
+### Bypassing Signature Verification (Development Only)
+
+For early-stage local testing where you don't want to set up the Stripe CLI or need to test with manually crafted payloads, you can use the `insecure()` method to bypass signature verification:
+
+```rust
+use stripe_webhook::{Event, Webhook};
+
+// ONLY use this in development/testing environments
+let event = Webhook::insecure(payload)?;
+```
+
+<Callout type="warn" title="Security Warning">
+**Never use `Webhook::insecure()` in production.** This method completely bypasses signature verification, making your application vulnerable to webhook spoofing and tampering. Always use `construct_event()` with proper signature verification in production environments.
+</Callout>
+
+This is useful for:
+- Local development without the Stripe CLI
+- Unit testing with fixture data
+- Integration testing in CI/CD environments
+
+For production-like testing, always use the Stripe CLI with proper webhook secrets.
+
 ## Event Types
 
 The `EventObject` enum contains variants for all Stripe webhook events. Common event types include:
@@ -141,6 +163,8 @@ The `EventObject` enum contains variants for all Stripe webhook events. Common e
 - `CustomerCreated` - A new customer was created
 - `InvoicePaid` - An invoice was successfully paid
 - `SubscriptionCreated` / `SubscriptionUpdated` / `SubscriptionDeleted` - Subscription lifecycle events
+
+For a complete list of all available event types, see the [Stripe Event Types documentation](https://stripe.com/docs/api/events/types).
 
 <Callout type="info">
 Not all Stripe events may be represented in the `EventObject` enum yet. Use the catch-all pattern `_` to handle unknown events gracefully.
