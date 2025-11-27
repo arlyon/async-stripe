@@ -1,0 +1,98 @@
+---
+title: Quick Start
+description: Get up and running as quickly as possible.
+icon: Zap
+---
+
+import { Cards, Card } from "fumadocs-ui/components/card"
+import { BookOpen, Code, ExternalLink, FileText } from "lucide-react"
+import { CodeFromFile } from "@/components/code-from-file"
+import { Callout } from "fumadocs-ui/components/callout"
+import { CurrentVersion } from "@/components/current-version"
+
+Welcome to the **async-stripe** documentation. This library provides strongly-typed, safe, and performant Rust bindings for the Stripe API. It is designed to be modular, allowing you to pull in only the specific Stripe resources you need for your application.
+
+<Cards>
+  <Card
+    icon={<BookOpen />}
+    title="API Documentation"
+    description="Complete API reference and type documentation on docs.rs"
+    href="https://docs.rs/async-stripe/latest/stripe"
+    external
+  />
+  <Card
+    icon={<Code />}
+    title="Examples"
+    description="Browse real-world examples for common Stripe operations"
+    href="https://github.com/arlyon/async-stripe/tree/master/examples"
+    external
+  />
+  <Card
+    icon={<FileText />}
+    title="Stripe API Reference"
+    description="Official Stripe API documentation and reference"
+    href="https://docs.stripe.com/api"
+    external
+  />
+  <Card
+    icon={<ExternalLink />}
+    title="Stripe Docs"
+    description="Official guides, tutorials, and integration docs from Stripe"
+    href="https://docs.stripe.com"
+    external
+  />
+</Cards>
+
+
+## API Version
+
+
+The current API version for async-stripe <CurrentVersion /> is:
+
+<CodeFromFile
+  file="generated/async-stripe-shared/src/version.rs"
+  href={{base: "https://github.com/arlyon/async-stripe/blob/master/"}}
+  lang="rust"
+  startLine={1}
+  endLine={1}
+  dedent
+/>
+
+This means all API requests will use this version regardless of your Stripe account's default API version. This ensures consistent behavior and prevents breaking changes from affecting your application unexpectedly.
+
+<Callout type="warn" title="Compatibility">
+`async-stripe` is pinned to a specific Stripe API version. Each week, we sync against the official APIs and bump our types to match. **It is critically important** that you understand which version you're using, as mismatches between the library version and your expectations can lead to unexpected behavior, missing features, or parsing errors. As a result, you should when possible be regularly updating the both this library, and your Stripe account's api, to the latest available version.
+
+We do not currently have the resources to backport fixes to older APIs.
+</Callout>
+
+Any webhooks received that to not match this version will publish a warning via `tracing`.
+
+## Quick Start
+
+Here's a quick example of how to create a new Stripe Customer.
+
+### 1. Add dependencies to your `Cargo.toml`
+
+You'll need the main `async-stripe` crate for the client and a resource crate for the APIs you want to use (e.g., `stripe-core` for customers).
+
+<CodeFromFile
+  file="README.md"
+  title="Cargo.toml"
+  href={{base: "https://github.com/arlyon/async-stripe/blob/master/"}}
+  dedent
+  startLine={46}
+  endLine={49}
+/>
+
+### 2. Create a Customer
+
+The new API uses a builder pattern that flows naturally from request creation to sending.
+
+<CodeFromFile
+  file="examples/endpoints/src/customer.rs"
+  href={{base: "https://github.com/arlyon/async-stripe/blob/master/"}}
+  dedent
+  startLine={14}
+  endLine={20}
+/>

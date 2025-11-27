@@ -1,0 +1,17 @@
+{
+	"title": "Developers",
+	"description": "The description of root folder (optional)",
+	"pages": [
+		"---Get Started---",
+		"index",
+		"migration",
+		"changelog",
+		"---Documentation---",
+		"...",
+		"---Developers---",
+		"tooling",
+		"contributing",
+		"codegen",
+		"releases"
+	]
+}

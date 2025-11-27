@@ -1,0 +1,47 @@
+---
+title: Architecture & Crates
+description: An overview of the modular crate ecosystem and feature flag system.
+icon: Boxes
+---
+
+Unlike many API clients that bundle every possible resource into a single heavy compilation unit, **async-stripe** utilizes a modular workspace architecture. This approach significantly improves compile times and reduces binary bloat.
+
+## The Crate Ecosystem
+
+The library is split into three layers:
+
+- **Client Layer**: The HTTP runtime and configuration
+- **Shared Layer**: Common types (IDs, Currency, Errors) used across resources
+- **Resource Layer**: Specific Stripe domains (Billing, Connect, Payments, etc.)
+
+### Available Crates
+
+| Crate Name | Description |
+|------------|-------------|
+| `async-stripe` | **Required**. The core client entry point. Handles HTTP transport, authentication, and configuration. |
+| `async-stripe-billing` | Subscription logic: Invoices, Plans, Quotes, Subscriptions, Credit Notes, Billing Meters, and Portal. |
+| `async-stripe-checkout` | Stripe Checkout Sessions and related types. |
+| `async-stripe-connect` | Connect Accounts, capabilities, transfers, and external accounts. |
+| `async-stripe-core` | Fundamental resources: Customers, Charges, PaymentIntents, Refunds, Balance, Events. |
+| `async-stripe-fraud` | Radar fraud prevention: Early fraud warnings, value lists, and reviews. |
+| `async-stripe-issuing` | Card issuing: Authorizations, cards, cardholders, disputes, tokens, and transactions. |
+| `async-stripe-misc` | Additional resources: Financial Connections, Identity, Tax, Reporting, Climate, and more. |
+| `async-stripe-payment` | Payment methods: Cards, bank accounts, payment links, payment method configurations. |
+| `async-stripe-product` | Product catalog: Products, prices, coupons, promotion codes, shipping rates, tax codes/rates. |
+| `async-stripe-terminal` | Terminal resources: Readers, locations, configurations, and connection tokens. |
+| `async-stripe-treasury` | Treasury features: Financial accounts, transfers, payments, and transactions. |
+| `async-stripe-webhook` | Utilities for verifying and deserializing webhook events securely. |
+
+## Feature Flags
+
+To use specific resources, you must add the crate and enable the specific feature for the object you need. This granular control ensures you don't compile code for Stripe products you don't use.
+
+```toml
+[dependencies]
+# The main client
+async-stripe = { version = "1.0.0-alpha.8", features = ["runtime-tokio-hyper"] }
+
+# Resource crates with specific objects enabled
+stripe-core = { version = "1.0.0-alpha.8", features = ["customer", "balance"] }
+stripe-billing = { version = "1.0.0-alpha.8", features = ["invoice", "subscription"] }
+```

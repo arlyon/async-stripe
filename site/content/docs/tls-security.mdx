@@ -1,0 +1,34 @@
+---
+title: "TLS: Rustls & Ring"
+description: Configure TLS and cryptographic backends for secure, consistent payment processing across all platforms.
+icon: LockOpen
+---
+
+Security is paramount when dealing with payments. By default, **async-stripe** may use native system TLS (via OpenSSL on Linux, SecureTransport on macOS, SChannel on Windows). However, for consistent security across platforms or to avoid C-dependency linking issues, we fully support `rustls`.
+
+## Crypto Providers
+
+When enabling `rustls`, you must choose a cryptographic backend. This is handled via feature flags in `async-stripe` to avoid conflicts.
+
+- **`rustls-aws-lc-rs`**: *(Default/Recommended)* Uses AWS's `aws-lc-rs` crypto provider. Fast and formally verified.
+- **`rustls-ring`**: Uses the `ring` crypto library.
+
+## Configuring Cargo.toml
+
+To use Rustls with the Ring provider, you must disable default features and opt-in explicitly.
+
+```toml
+[dependencies.async-stripe]
+version = "1.0.0-alpha.8"
+default-features = false
+features = [
+    "runtime-tokio-hyper",      # The runtime
+    "rustls-tls-native",        # Use rustls with native root certs
+    # "rustls-tls-webpki-roots", # Alternative: use webpki-roots instead of system certs
+    "rustls-ring"               # Explicitly opt-in to Ring provider
+]
+```
+
+<Callout type="warn">
+  If you encounter compilation errors regarding missing crypto providers when using `rustls`, ensure you have explicitly enabled either `rustls-aws-lc-rs` or `rustls-ring`.
+</Callout>

@@ -1,0 +1,45 @@
+---
+title: Request Strategies
+description: Handle network failures gracefully with automatic retries and idempotency keys to prevent duplicate charges and ensure reliable payment processing.
+icon: Send
+---
+
+import { CodeFromFile } from "@/components/code-from-file"
+
+Network requests fail. **async-stripe** provides a robust `RequestStrategy` API to handle idempotency keys and retries automatically, ensuring your application handles transient failures gracefully without double-charging customers.
+
+## Strategy Options
+
+The library implements the "Full Jitter" exponential backoff algorithm recommended by Stripe engineering to prevent thundering herd problems.
+
+| Strategy | Description | Use Case |
+|----------|-------------|----------|
+| `Once` | Fire and forget. No retries. | You are handling retries manually |
+| `Idempotent(key)` | Fire once with a specific, user-provided Idempotency Key | Critical payment creation flows where you need control over the idempotency key |
+| `Retry(n)` | Retry `n` times with a random UUID idempotency key | General retry logic without backoff |
+| `ExponentialBackoff(n)` | Retry `n` times with exponential backoff (0.5s base, up to 8s max) and randomized jitter | Recommended for production to handle transient failures gracefully |
+
+## Usage
+
+You can apply a strategy globally to the client (for all requests) or override it on a per-request basis.
+
+### Global Client Strategy
+
+<CodeFromFile
+  file="examples/endpoints/src/strategy.rs"
+  href={{base: "https://github.com/arlyon/async-stripe/blob/master/"}}
+  dedent
+  startLine={7}
+  endLine={9}
+/>
+
+### Per-Request Strategy
+
+<CodeFromFile
+  file="examples/endpoints/src/strategy.rs"
+  href={{base: "https://github.com/arlyon/async-stripe/blob/master/"}}
+  dedent
+  startLine={19}
+  endLine={29}
+  highlightLines={[22]}
+/>

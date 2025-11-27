@@ -1,0 +1,77 @@
+---
+title: Pagination
+description: Handle cursor-based pagination in Stripe API responses
+icon: Layers
+---
+
+import { Cards, Card } from "fumadocs-ui/components/card"
+import { ExternalLink } from "lucide-react"
+import { CodeFromFile } from "@/components/code-from-file"
+
+Many Stripe API endpoints return lists of objects. Stripe uses cursor-based pagination. async-stripe provides ergonomic abstractions to handle cursor management automatically, exposing the results as an asynchronous stream.
+
+<Cards>
+  <Card
+    icon={<ExternalLink />}
+    title="Stream Trait"
+    description="Learn about the Stream trait from the futures crate"
+    href="https://docs.rs/futures/latest/futures/stream/trait.Stream.html"
+    external
+  />
+  <Card
+    icon={<ExternalLink />}
+    title="TryStreamExt Trait"
+    description="Extension trait for Stream with convenient combinators"
+    href="https://docs.rs/futures/latest/futures/stream/trait.TryStreamExt.html"
+    external
+  />
+</Cards>
+
+## Request-Based Pagination (Recommended)
+
+The most common way to paginate is directly from the API request builder. All `List*` and `Search*` request structs (e.g., `ListCustomer`, `ListInvoice`) generate a `.paginate()` method.
+
+This method returns a `ListPaginator` which implements a stream, lazily fetching pages as you iterate.
+
+<CodeFromFile
+  file="examples/pagination/src/main.rs"
+  href={{base: "https://github.com/arlyon/async-stripe/blob/master/"}}
+  startLine={9}
+  endLine={18}
+  lang="rust"
+  dedent
+/>
+
+## The PaginationExt Trait
+
+Sometimes you already have a `List<T>` object returned from another API call (e.g., `CheckoutSession.line_items` or `Customer.sources`). To paginate continuation from this existing list, you must use the `PaginationExt` trait.
+
+<Callout type="warn">
+This trait is often "hidden" from IDE autocompletion until imported.
+</Callout>
+
+<CodeFromFile
+  file="examples/endpoints/src/pagination_ext.rs"
+  href={{base: "https://github.com/arlyon/async-stripe/blob/master/"}}
+  startLine={11}
+  endLine={36}
+  highlightLines={[12]}
+  lang="rust"
+  dedent
+/>
+
+### How it works
+
+Calling `.into_paginator()` on a `List<T>` extracts the url and the last object's ID (cursor) from the list to configure the paginator automatically.
+
+## Manual Pagination
+
+If you prefer not to use streams, you can handle cursors manually using the `starting_after` parameter available on all List request structs.
+
+<CodeFromFile
+  file="examples/pagination/src/main.rs"
+  href={{base: "https://github.com/arlyon/async-stripe/blob/master/"}}
+  startLine={22}
+  endLine={46}
+  dedent
+/>

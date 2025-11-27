@@ -7,8 +7,10 @@ use crate::strategy::run_strategy_example;
 use crate::subscriptions::run_subscriptions_example;
 
 mod checkout;
+mod client_config;
 mod connect;
 mod customer;
+mod pagination_ext;
 mod payment_intent;
 mod payment_link;
 mod strategy;

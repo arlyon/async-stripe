@@ -44,8 +44,8 @@ You'll need the main `async-stripe` crate for the client and a resource
 crate for the APIs you want to use (e.g., `stripe-core` for customers).
 
     [dependencies]
-    async-stripe = "1.0.0-alpha.2"
-    stripe-core = { version = "1.0.0-alpha.2", features = ["customer"] }
+    async-stripe = "=1.0.0-alpha.8"
+    stripe-core = { version = "=1.0.0-alpha.8", features = ["customer"] }
     tokio = { version = "1", features = ["full"] }
 
 **2. Create a Customer:**

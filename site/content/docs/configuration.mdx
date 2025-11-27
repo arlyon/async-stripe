@@ -1,0 +1,40 @@
+---
+title: Client Configuration
+description: Configuring the client runtime, authentication, and Connect account settings.
+icon: Computer
+---
+
+import { CodeFromFile } from "@/components/code-from-file"
+
+**async-stripe** is runtime-agnostic but provides convenient defaults. You must select a runtime feature flag in the `async-stripe` crate.
+
+## Runtime Selection
+
+- **`runtime-tokio-hyper`**: *(Recommended)* Uses `tokio` and `hyper`. Best for general-purpose async applications.
+- **`runtime-async-std-surf`**: Uses `async-std` and `surf`.
+- **`blocking`**: A synchronous blocking client. Note that this wraps Tokio internally to provide a synchronous API.
+
+## Initialization
+
+Basic initialization uses your secret key and default settings.
+
+<CodeFromFile
+  file="examples/pagination/src/main.rs"
+  href={{base: "https://github.com/arlyon/async-stripe/blob/master/"}}
+  startLine={7}
+  endLine={8}
+  dedent
+/>
+
+## Advanced Configuration
+
+You can use the `ClientBuilder` to configure headers, app info, or specific account masquerading (for Connect platforms).
+
+<CodeFromFile
+  file="examples/endpoints/src/client_config.rs"
+  href={{base: "https://github.com/arlyon/async-stripe/blob/master/"}}
+  startLine={12}
+  endLine={21}
+  highlightLines={[12]}
+  dedent
+/>

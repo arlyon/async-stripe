@@ -1,0 +1,66 @@
+---
+title: Development Environment
+description: Setting up your development environment with Mise
+icon: Wrench
+---
+
+## Development Environment (Mise)
+
+This project uses [mise](https://mise.jdx.dev) (formerly rtx) to manage development tool versions. This ensures that all contributors and CI environments use the exact same version of the Rust toolchain, preventing "it works on my machine" issues related to compiler versions.
+
+### Why Mise?
+
+- **Reproducible Builds**: Pins the exact Rust version defined in `mise.toml`
+- **Fast**: Written in Rust, it is significantly faster than alternatives like asdf
+- **Seamless Integration**: Automatically switches tool versions when you enter the project directory
+
+## Setup
+
+### 1. Install Mise
+
+Follow the [official installation guide](https://mise.jdx.dev/getting-started.html) for your OS.
+
+```bash
+# Example (MacOS/Linux)
+curl https://mise.run | sh
+```
+
+### 2. Install Project Tools
+
+Navigate to the project root and run:
+
+```bash
+mise install
+```
+
+This will read the `mise.toml` file and install the pinned Rust version.
+
+## Configuration
+
+The tool versions are defined in `mise.toml` at the root of the repository. We strictly pin the Rust version to match our CI environment and `Cargo.toml` rust-version requirements.
+
+```toml
+[tools]
+# We pin to a specific stable version to ensure consistent behavior
+# across all developer machines.
+rust = "1.88"
+```
+
+## Workflow
+
+Once installed and hooked into your shell, mise automatically activates the correct tool versions when you `cd` into the directory.
+
+### Check active version
+
+```bash
+mise current
+# Output: rust 1.88
+```
+
+### Run a one-off command
+
+If you haven't added the shell hook, you can run commands in the environment explicitly:
+
+```bash
+mise exec -- cargo test
+```

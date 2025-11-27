@@ -1,0 +1,197 @@
+---
+title: Webhooks
+description: Handle Stripe webhook events securely in your application
+icon: Webhook
+---
+
+import { Cards, Card } from "fumadocs-ui/components/card"
+import { Code, ExternalLink } from "lucide-react"
+import { CodeFromFile } from "@/components/code-from-file"
+import { Callout } from "fumadocs-ui/components/callout"
+
+Stripe uses webhooks to notify your application when events happen in your account. async-stripe provides utilities to securely verify and parse webhook events.
+
+<Cards>
+  <Card
+    icon={<ExternalLink />}
+    title="Stripe Webhooks Guide"
+    description="Official Stripe documentation on webhooks"
+    href="https://stripe.com/docs/webhooks"
+    external
+  />
+  <Card
+    icon={<ExternalLink />}
+    title="Testing Webhooks"
+    description="Learn how to test webhooks with the Stripe CLI"
+    href="https://stripe.com/docs/webhooks/test"
+    external
+  />
+</Cards>
+
+## Overview
+
+Webhooks allow Stripe to push real-time notifications to your application when events occur, such as successful payments, failed charges, or subscription updates. This is more reliable than polling the API and ensures you can respond to events immediately.
+
+## Webhook Signature Verification
+
+Stripe signs webhook payloads with a secret key to prevent tampering and spoofing. You must verify the signature before processing any webhook event.
+
+<Callout type="warn">
+Always verify webhook signatures in production. Processing unverified webhooks is a security risk.
+</Callout>
+
+### Using the Webhook Module
+
+The `stripe_webhook` crate provides the `Webhook::construct_event` function to verify and parse webhook events in one step:
+
+```rust
+use stripe_webhook::{Event, Webhook};
+
+let event = Webhook::construct_event(
+    &payload,           // Raw request body as string
+    &signature_header,  // stripe-signature header value
+    "whsec_xxxxx"      // Your webhook signing secret
+)?;
+```
+
+## Framework Examples
+
+async-stripe includes webhook examples for popular Rust web frameworks:
+
+<Cards>
+  <Card
+    icon={<Code />}
+    title="Axum"
+    description="Webhook handling with Axum using a custom extractor"
+    href="https://github.com/arlyon/async-stripe/tree/master/examples/webhook-axum"
+    external
+  />
+  <Card
+    icon={<Code />}
+    title="Rocket"
+    description="Webhook handling with Rocket using request guards"
+    href="https://github.com/arlyon/async-stripe/tree/master/examples/webhook-rocket"
+    external
+  />
+  <Card
+    icon={<Code />}
+    title="Actix Web"
+    description="Webhook handling with Actix Web"
+    href="https://github.com/arlyon/async-stripe/tree/master/examples/webhook-actix"
+    external
+  />
+</Cards>
+
+## Axum Integration
+
+Here's a complete example of handling webhooks in an Axum application with automatic signature verification:
+
+<CodeFromFile
+  file="examples/webhook-axum/src/main.rs"
+  href={{base: "https://github.com/arlyon/async-stripe/blob/master/"}}
+  startLine={39}
+  endLine={63}
+  lang="rust"
+  dedent
+/>
+
+The `StripeEvent` extractor automatically:
+1. Extracts the `stripe-signature` header
+2. Reads the raw request body
+3. Verifies the signature
+4. Parses the event
+5. Returns a 400 Bad Request if verification fails
+
+### Handling Events
+
+Once you have a verified event, pattern match on the event type:
+
+<CodeFromFile
+  file="examples/webhook-axum/src/main.rs"
+  href={{base: "https://github.com/arlyon/async-stripe/blob/master/"}}
+  startLine={65}
+  endLine={76}
+  lang="rust"
+  dedent
+/>
+
+## Testing Webhooks Locally
+
+Use the Stripe CLI to forward webhook events to your local development server:
+
+```bash
+# Install the Stripe CLI
+# https://stripe.com/docs/stripe-cli
+
+# Forward events to your local endpoint
+stripe listen --forward-to localhost:4242/stripe_webhooks
+
+# In another terminal, trigger test events
+stripe trigger checkout.session.completed
+stripe trigger payment_intent.succeeded
+```
+
+## Event Types
+
+The `EventObject` enum contains variants for all Stripe webhook events. Common event types include:
+
+- `CheckoutSessionCompleted` - A Checkout Session was successfully completed
+- `PaymentIntentSucceeded` - A PaymentIntent successfully completed
+- `PaymentIntentFailed` - A PaymentIntent failed
+- `CustomerCreated` - A new customer was created
+- `InvoicePaid` - An invoice was successfully paid
+- `SubscriptionCreated` / `SubscriptionUpdated` / `SubscriptionDeleted` - Subscription lifecycle events
+
+<Callout type="info">
+Not all Stripe events may be represented in the `EventObject` enum yet. Use the catch-all pattern `_` to handle unknown events gracefully.
+</Callout>
+
+## Best Practices
+
+### Return 200 Quickly
+
+Stripe expects a 200 response within a few seconds. Process webhooks asynchronously if they require long-running operations:
+
+```rust
+async fn handle_webhook(StripeEvent(event): StripeEvent) -> StatusCode {
+    // Spawn background task for heavy processing
+    tokio::spawn(async move {
+        process_event(event).await;
+    });
+
+    // Return immediately
+    StatusCode::OK
+}
+```
+
+### Handle Idempotency
+
+Stripe may send the same webhook multiple times. Use the `event.id` to track processed events and avoid duplicate processing:
+
+```rust
+async fn handle_webhook(StripeEvent(event): StripeEvent) {
+    if already_processed(&event.id).await {
+        return; // Skip duplicate
+    }
+
+    process_event(event).await;
+    mark_as_processed(&event.id).await;
+}
+```
+
+### Secure Your Endpoint
+
+- Use HTTPS in production
+- Keep your webhook signing secret secure (use environment variables)
+- Verify signatures on every request
+- Return appropriate status codes (200 for success, 400 for bad requests)
+- Log webhook failures for debugging
+
+## Other Web Frameworks
+
+While this guide shows Axum integration, the same principles apply to other frameworks:
+
+- Extract the `stripe-signature` header
+- Read the raw request body as a string
+- Call `Webhook::construct_event` with the payload, signature, and secret
+- Return 400 if verification fails, 200 on success

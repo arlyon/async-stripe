@@ -1,0 +1,56 @@
+---
+title: Performance
+description: How async-stripe achieves fast compile times and small binary sizes
+icon: Zap
+---
+
+import { Callout } from "fumadocs-ui/components/callout"
+import { EventParser } from "@/components/event-parser"
+
+The Stripe API has a massive surface area, and the code generation process creates a very large number of types. Using `serde` for both serialization and deserialization in previous versions resulted in excessive codegen size and long compile times. To solve this, `async-stripe` now uses a hybrid approach.
+
+## Hybrid Serialization Strategy
+
+`async-stripe` uses different libraries for serialization and deserialization to optimize both performance and compile times:
+
+| Operation | Library | Why |
+|-----------|---------|-----|
+| **Serialization** (requests → Stripe) | `serde` | Rich feature set ideal for building complex request parameters. Full control over field naming, optional fields, and nested structures. |
+| **Deserialization** (Stripe → responses) | `miniserde` | Minimal, high-performance JSON library that significantly reduces compile times and binary size. Optimized for the common case of deserializing API responses. |
+
+### Benefits
+
+- **Faster Compile Times**: `miniserde` has minimal proc-macro overhead compared to full `serde` derives
+- **Smaller Binary Size**: Less codegen means smaller final binaries
+- **Same API Surface**: You don't need to change how you use the library
+
+<Callout type="warn" title="Limited Error Reporting">
+`miniserde` provides minimal error messages when deserialization fails. If you encounter a deserialization error and need detailed diagnostics about which field failed and why, enable the `deserialize` feature to use `serde` instead, which provides comprehensive error context. You can also paste the raw json event into the [Stripe Event Parser](/docs/performance#try-it-out) to see exactly where the error occurred.
+</Callout>
+
+## Using `serde::Deserialize`
+
+If you need to use `serde::Deserialize` on Stripe response types within your own application (for example, to store them in a database or serialize them for caching), you can enable the `deserialize` feature on any of the `stripe-*` crates.
+
+```toml
+[dependencies]
+stripe-core = { version = "1.0.0-alpha.8", features = ["customer", "deserialize"] }
+```
+
+This adds `serde::Deserialize` implementations to all Stripe types in that crate, allowing you to use them with any `serde`-compatible serialization format (JSON, TOML, MessagePack, etc.).
+
+## Performance Considerations
+
+The hybrid approach means:
+
+1. **Request serialization** remains flexible and feature-rich
+2. **Response deserialization** is optimized for speed and compile time
+3. **Opt-in `serde` support** for advanced use cases that need it
+
+This design ensures `async-stripe` scales well even as the Stripe API continues to grow, without imposing long compile times on all users.
+
+## Try It Out
+
+Want to see how async-stripe parses Stripe events? Try pasting an event JSON below. It uses the library `serde_path_to_error` and can report exactly where deserialization failed.
+
+<EventParser />
