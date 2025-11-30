@@ -10,7 +10,6 @@ use crate::{EventObject, WebhookError};
 
 #[derive(Clone, Debug)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
-#[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct Event {
     /// The connected account that originated the event.
     pub account: Option<String>,
@@ -52,6 +51,81 @@ pub struct EventData {
         serde(with = "stripe_types::with_serde_json_opt")
     )]
     pub previous_attributes: Option<miniserde::json::Value>,
+}
+
+// Custom Deserialize implementation for Event using the Shadow Struct pattern.
+// This allows us to use the `type` field to determine how to deserialize `data.object`.
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for Event {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        use serde::de::Error;
+
+        // Shadow struct that mirrors Event but keeps data as raw JSON
+        #[derive(serde::Deserialize)]
+        struct EventProxy {
+            pub account: Option<String>,
+            pub api_version: Option<ApiVersion>,
+            pub created: stripe_types::Timestamp,
+            pub id: stripe_shared::event::EventId,
+            pub livemode: bool,
+            #[serde(rename = "object")]
+            #[allow(dead_code)]
+            pub object_type: String, // This will be "event", we just ignore it
+            pub pending_webhooks: i64,
+            pub request: Option<stripe_shared::NotificationEventRequest>,
+            #[serde(rename = "type")]
+            pub type_: EventType,
+            pub data: serde_json::Value,
+        }
+
+        // Let Serde do the heavy lifting
+        let proxy = EventProxy::deserialize(deserializer)?;
+
+        // Extract data.object
+        let object_value =
+            proxy.data.get("object").ok_or_else(|| Error::missing_field("data.object"))?.clone();
+
+        // Use EventObject::from_json_value with the event type
+        let object =
+            EventObject::from_json_value(proxy.type_.as_str(), object_value).map_err(|e| {
+                // If the error already has a path (like "customer: missing field"),
+                // prefix it with "data.object."
+                if e.contains(':') {
+                    Error::custom(format!("data.object.{e}"))
+                } else {
+                    // For errors without paths (like "unknown event type"), just prefix with "data.object: "
+                    Error::custom(format!("data.object: {e}"))
+                }
+            })?;
+
+        // Extract previous_attributes if present and convert to miniserde::json::Value
+        let previous_attributes =
+            if let Some(prev_attrs) = proxy.data.get("previous_attributes") {
+                let prev_attrs_str = serde_json::to_string(prev_attrs).map_err(|e| {
+                    Error::custom(format!("Failed to serialize previous_attributes: {e}"))
+                })?;
+                Some(miniserde::json::from_str(&prev_attrs_str).map_err(|e| {
+                    Error::custom(format!("Failed to parse previous_attributes: {e}"))
+                })?)
+            } else {
+                None
+            };
+
+        Ok(Event {
+            account: proxy.account,
+            api_version: proxy.api_version,
+            created: proxy.created,
+            data: EventData { object, previous_attributes },
+            id: proxy.id,
+            livemode: proxy.livemode,
+            pending_webhooks: proxy.pending_webhooks,
+            request: proxy.request,
+            type_: proxy.type_,
+        })
+    }
 }
 
 #[derive(Debug)]

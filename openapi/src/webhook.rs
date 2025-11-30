@@ -27,6 +27,7 @@ fn write_event_object(components: &Components, out_path: &Path) -> anyhow::Resul
     let mut out = String::new();
     let mut enum_body = String::new();
     let mut match_inner = String::new();
+    let mut match_inner_serde = String::new();
     for webhook_obj in &components.webhook_objs {
         let ident = RustIdent::create(&webhook_obj.event_type);
 
@@ -70,10 +71,15 @@ fn write_event_object(components: &Components, out_path: &Path) -> anyhow::Resul
 
         if let Some(gate) = &feature_gate {
             let _ = writeln!(match_inner, r#"#[cfg(feature = "{gate}")]"#);
+            let _ = writeln!(match_inner_serde, r#"#[cfg(feature = "{gate}")]"#);
         }
         let evt_type = &webhook_obj.event_type;
         let _ = writeln!(
             match_inner,
+            r#"if typ == "{evt_type}" {{ return parse_and_box(data).map(Self::{ident}); }}"#
+        );
+        let _ = writeln!(
+            match_inner_serde,
             r#"if typ == "{evt_type}" {{ return parse_and_box(data).map(Self::{ident}); }}"#
         );
     }
@@ -111,6 +117,30 @@ fn write_event_object(components: &Components, out_path: &Path) -> anyhow::Resul
             {match_inner}
 
             Some(Self::Unknown(data))
+        }}
+
+        #[cfg(feature = "deserialize")]
+        #[inline(never)]
+        pub(crate) fn from_json_value(typ: &str, data: serde_json::Value) -> Result<Self, String> {{
+            // Helper to avoid stack allocation for each branch
+            #[inline(always)]
+            fn parse_and_box<T: serde::de::DeserializeOwned>(data: serde_json::Value) -> Result<Box<T>, String> {{
+                use serde::de::IntoDeserializer;
+                let deserializer = data.into_deserializer();
+                #[cfg(feature = "detailed-errors")]
+                {{
+                serde_path_to_error::deserialize(deserializer).map(Box::new).map_err(|e| e.to_string())
+                }}
+                #[cfg(not(feature = "detailed-errors"))]
+                {{
+                T::deserialize(deserializer).map(Box::new).map_err(|e| e.to_string())
+                }}
+            }}
+
+            {match_inner_serde}
+
+            // Unknown event type - error instead of silently accepting
+            Err(format!("unknown event type '{{typ}}'"))
         }}
     }}
     "#};

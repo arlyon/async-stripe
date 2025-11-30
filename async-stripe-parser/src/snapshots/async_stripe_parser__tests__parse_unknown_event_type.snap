@@ -1,0 +1,5 @@
+---
+source: async-stripe-parser/src/lib.rs
+expression: result.unwrap_err()
+---
+data.object: unknown event type 'entitlements.active_entitlement_summary.upated'

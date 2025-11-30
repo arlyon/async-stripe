@@ -2199,4 +2199,873 @@ impl EventObject {
 
         Some(Self::Unknown(data))
     }
+
+    #[cfg(feature = "deserialize")]
+    #[inline(never)]
+    pub(crate) fn from_json_value(typ: &str, data: serde_json::Value) -> Result<Self, String> {
+        // Helper to avoid stack allocation for each branch
+        #[inline(always)]
+        fn parse_and_box<T: serde::de::DeserializeOwned>(
+            data: serde_json::Value,
+        ) -> Result<Box<T>, String> {
+            use serde::de::IntoDeserializer;
+            let deserializer = data.into_deserializer();
+            #[cfg(feature = "detailed-errors")]
+            {
+                serde_path_to_error::deserialize(deserializer)
+                    .map(Box::new)
+                    .map_err(|e| e.to_string())
+            }
+            #[cfg(not(feature = "detailed-errors"))]
+            {
+                T::deserialize(deserializer).map(Box::new).map_err(|e| e.to_string())
+            }
+        }
+
+        if typ == "account.application.authorized" {
+            return parse_and_box(data).map(Self::AccountApplicationAuthorized);
+        }
+        if typ == "account.application.deauthorized" {
+            return parse_and_box(data).map(Self::AccountApplicationDeauthorized);
+        }
+        if typ == "account.external_account.created" {
+            return parse_and_box(data).map(Self::AccountExternalAccountCreated);
+        }
+        if typ == "account.external_account.deleted" {
+            return parse_and_box(data).map(Self::AccountExternalAccountDeleted);
+        }
+        if typ == "account.external_account.updated" {
+            return parse_and_box(data).map(Self::AccountExternalAccountUpdated);
+        }
+        if typ == "account.updated" {
+            return parse_and_box(data).map(Self::AccountUpdated);
+        }
+        if typ == "application_fee.created" {
+            return parse_and_box(data).map(Self::ApplicationFeeCreated);
+        }
+        if typ == "application_fee.refund.updated" {
+            return parse_and_box(data).map(Self::ApplicationFeeRefundUpdated);
+        }
+        if typ == "application_fee.refunded" {
+            return parse_and_box(data).map(Self::ApplicationFeeRefunded);
+        }
+        #[cfg(feature = "async-stripe-core")]
+        if typ == "balance.available" {
+            return parse_and_box(data).map(Self::BalanceAvailable);
+        }
+        #[cfg(feature = "async-stripe-core")]
+        if typ == "balance_settings.updated" {
+            return parse_and_box(data).map(Self::BalanceSettingsUpdated);
+        }
+        #[cfg(feature = "async-stripe-billing")]
+        if typ == "billing.alert.triggered" {
+            return parse_and_box(data).map(Self::BillingAlertTriggered);
+        }
+        if typ == "billing.credit_balance_transaction.created" {
+            return parse_and_box(data).map(Self::BillingCreditBalanceTransactionCreated);
+        }
+        if typ == "billing.credit_grant.created" {
+            return parse_and_box(data).map(Self::BillingCreditGrantCreated);
+        }
+        if typ == "billing.credit_grant.updated" {
+            return parse_and_box(data).map(Self::BillingCreditGrantUpdated);
+        }
+        #[cfg(feature = "async-stripe-billing")]
+        if typ == "billing.meter.created" {
+            return parse_and_box(data).map(Self::BillingMeterCreated);
+        }
+        #[cfg(feature = "async-stripe-billing")]
+        if typ == "billing.meter.deactivated" {
+            return parse_and_box(data).map(Self::BillingMeterDeactivated);
+        }
+        #[cfg(feature = "async-stripe-billing")]
+        if typ == "billing.meter.reactivated" {
+            return parse_and_box(data).map(Self::BillingMeterReactivated);
+        }
+        #[cfg(feature = "async-stripe-billing")]
+        if typ == "billing.meter.updated" {
+            return parse_and_box(data).map(Self::BillingMeterUpdated);
+        }
+        #[cfg(feature = "async-stripe-billing")]
+        if typ == "billing_portal.configuration.created" {
+            return parse_and_box(data).map(Self::BillingPortalConfigurationCreated);
+        }
+        #[cfg(feature = "async-stripe-billing")]
+        if typ == "billing_portal.configuration.updated" {
+            return parse_and_box(data).map(Self::BillingPortalConfigurationUpdated);
+        }
+        #[cfg(feature = "async-stripe-billing")]
+        if typ == "billing_portal.session.created" {
+            return parse_and_box(data).map(Self::BillingPortalSessionCreated);
+        }
+        if typ == "capability.updated" {
+            return parse_and_box(data).map(Self::CapabilityUpdated);
+        }
+        if typ == "cash_balance.funds_available" {
+            return parse_and_box(data).map(Self::CashBalanceFundsAvailable);
+        }
+        if typ == "charge.captured" {
+            return parse_and_box(data).map(Self::ChargeCaptured);
+        }
+        if typ == "charge.dispute.closed" {
+            return parse_and_box(data).map(Self::ChargeDisputeClosed);
+        }
+        if typ == "charge.dispute.created" {
+            return parse_and_box(data).map(Self::ChargeDisputeCreated);
+        }
+        if typ == "charge.dispute.funds_reinstated" {
+            return parse_and_box(data).map(Self::ChargeDisputeFundsReinstated);
+        }
+        if typ == "charge.dispute.funds_withdrawn" {
+            return parse_and_box(data).map(Self::ChargeDisputeFundsWithdrawn);
+        }
+        if typ == "charge.dispute.updated" {
+            return parse_and_box(data).map(Self::ChargeDisputeUpdated);
+        }
+        if typ == "charge.expired" {
+            return parse_and_box(data).map(Self::ChargeExpired);
+        }
+        if typ == "charge.failed" {
+            return parse_and_box(data).map(Self::ChargeFailed);
+        }
+        if typ == "charge.pending" {
+            return parse_and_box(data).map(Self::ChargePending);
+        }
+        if typ == "charge.refund.updated" {
+            return parse_and_box(data).map(Self::ChargeRefundUpdated);
+        }
+        if typ == "charge.refunded" {
+            return parse_and_box(data).map(Self::ChargeRefunded);
+        }
+        if typ == "charge.succeeded" {
+            return parse_and_box(data).map(Self::ChargeSucceeded);
+        }
+        if typ == "charge.updated" {
+            return parse_and_box(data).map(Self::ChargeUpdated);
+        }
+        if typ == "checkout.session.async_payment_failed" {
+            return parse_and_box(data).map(Self::CheckoutSessionAsyncPaymentFailed);
+        }
+        if typ == "checkout.session.async_payment_succeeded" {
+            return parse_and_box(data).map(Self::CheckoutSessionAsyncPaymentSucceeded);
+        }
+        if typ == "checkout.session.completed" {
+            return parse_and_box(data).map(Self::CheckoutSessionCompleted);
+        }
+        if typ == "checkout.session.expired" {
+            return parse_and_box(data).map(Self::CheckoutSessionExpired);
+        }
+        #[cfg(feature = "async-stripe-misc")]
+        if typ == "climate.order.canceled" {
+            return parse_and_box(data).map(Self::ClimateOrderCanceled);
+        }
+        #[cfg(feature = "async-stripe-misc")]
+        if typ == "climate.order.created" {
+            return parse_and_box(data).map(Self::ClimateOrderCreated);
+        }
+        #[cfg(feature = "async-stripe-misc")]
+        if typ == "climate.order.delayed" {
+            return parse_and_box(data).map(Self::ClimateOrderDelayed);
+        }
+        #[cfg(feature = "async-stripe-misc")]
+        if typ == "climate.order.delivered" {
+            return parse_and_box(data).map(Self::ClimateOrderDelivered);
+        }
+        #[cfg(feature = "async-stripe-misc")]
+        if typ == "climate.order.product_substituted" {
+            return parse_and_box(data).map(Self::ClimateOrderProductSubstituted);
+        }
+        #[cfg(feature = "async-stripe-misc")]
+        if typ == "climate.product.created" {
+            return parse_and_box(data).map(Self::ClimateProductCreated);
+        }
+        #[cfg(feature = "async-stripe-misc")]
+        if typ == "climate.product.pricing_updated" {
+            return parse_and_box(data).map(Self::ClimateProductPricingUpdated);
+        }
+        if typ == "coupon.created" {
+            return parse_and_box(data).map(Self::CouponCreated);
+        }
+        if typ == "coupon.deleted" {
+            return parse_and_box(data).map(Self::CouponDeleted);
+        }
+        if typ == "coupon.updated" {
+            return parse_and_box(data).map(Self::CouponUpdated);
+        }
+        if typ == "credit_note.created" {
+            return parse_and_box(data).map(Self::CreditNoteCreated);
+        }
+        if typ == "credit_note.updated" {
+            return parse_and_box(data).map(Self::CreditNoteUpdated);
+        }
+        if typ == "credit_note.voided" {
+            return parse_and_box(data).map(Self::CreditNoteVoided);
+        }
+        if typ == "customer.created" {
+            return parse_and_box(data).map(Self::CustomerCreated);
+        }
+        if typ == "customer.deleted" {
+            return parse_and_box(data).map(Self::CustomerDeleted);
+        }
+        if typ == "customer.discount.created" {
+            return parse_and_box(data).map(Self::CustomerDiscountCreated);
+        }
+        if typ == "customer.discount.deleted" {
+            return parse_and_box(data).map(Self::CustomerDiscountDeleted);
+        }
+        if typ == "customer.discount.updated" {
+            return parse_and_box(data).map(Self::CustomerDiscountUpdated);
+        }
+        if typ == "customer.source.created" {
+            return parse_and_box(data).map(Self::CustomerSourceCreated);
+        }
+        if typ == "customer.source.deleted" {
+            return parse_and_box(data).map(Self::CustomerSourceDeleted);
+        }
+        if typ == "customer.source.expiring" {
+            return parse_and_box(data).map(Self::CustomerSourceExpiring);
+        }
+        if typ == "customer.source.updated" {
+            return parse_and_box(data).map(Self::CustomerSourceUpdated);
+        }
+        if typ == "customer.subscription.created" {
+            return parse_and_box(data).map(Self::CustomerSubscriptionCreated);
+        }
+        if typ == "customer.subscription.deleted" {
+            return parse_and_box(data).map(Self::CustomerSubscriptionDeleted);
+        }
+        if typ == "customer.subscription.paused" {
+            return parse_and_box(data).map(Self::CustomerSubscriptionPaused);
+        }
+        if typ == "customer.subscription.pending_update_applied" {
+            return parse_and_box(data).map(Self::CustomerSubscriptionPendingUpdateApplied);
+        }
+        if typ == "customer.subscription.pending_update_expired" {
+            return parse_and_box(data).map(Self::CustomerSubscriptionPendingUpdateExpired);
+        }
+        if typ == "customer.subscription.resumed" {
+            return parse_and_box(data).map(Self::CustomerSubscriptionResumed);
+        }
+        if typ == "customer.subscription.trial_will_end" {
+            return parse_and_box(data).map(Self::CustomerSubscriptionTrialWillEnd);
+        }
+        if typ == "customer.subscription.updated" {
+            return parse_and_box(data).map(Self::CustomerSubscriptionUpdated);
+        }
+        if typ == "customer.tax_id.created" {
+            return parse_and_box(data).map(Self::CustomerTaxIdCreated);
+        }
+        if typ == "customer.tax_id.deleted" {
+            return parse_and_box(data).map(Self::CustomerTaxIdDeleted);
+        }
+        if typ == "customer.tax_id.updated" {
+            return parse_and_box(data).map(Self::CustomerTaxIdUpdated);
+        }
+        if typ == "customer.updated" {
+            return parse_and_box(data).map(Self::CustomerUpdated);
+        }
+        if typ == "customer_cash_balance_transaction.created" {
+            return parse_and_box(data).map(Self::CustomerCashBalanceTransactionCreated);
+        }
+        #[cfg(feature = "async-stripe-misc")]
+        if typ == "entitlements.active_entitlement_summary.updated" {
+            return parse_and_box(data).map(Self::EntitlementsActiveEntitlementSummaryUpdated);
+        }
+        if typ == "file.created" {
+            return parse_and_box(data).map(Self::FileCreated);
+        }
+        #[cfg(feature = "async-stripe-misc")]
+        if typ == "financial_connections.account.account_numbers_updated" {
+            return parse_and_box(data).map(Self::FinancialConnectionsAccountAccountNumbersUpdated);
+        }
+        #[cfg(feature = "async-stripe-misc")]
+        if typ == "financial_connections.account.created" {
+            return parse_and_box(data).map(Self::FinancialConnectionsAccountCreated);
+        }
+        #[cfg(feature = "async-stripe-misc")]
+        if typ == "financial_connections.account.deactivated" {
+            return parse_and_box(data).map(Self::FinancialConnectionsAccountDeactivated);
+        }
+        #[cfg(feature = "async-stripe-misc")]
+        if typ == "financial_connections.account.disconnected" {
+            return parse_and_box(data).map(Self::FinancialConnectionsAccountDisconnected);
+        }
+        #[cfg(feature = "async-stripe-misc")]
+        if typ == "financial_connections.account.reactivated" {
+            return parse_and_box(data).map(Self::FinancialConnectionsAccountReactivated);
+        }
+        #[cfg(feature = "async-stripe-misc")]
+        if typ == "financial_connections.account.refreshed_balance" {
+            return parse_and_box(data).map(Self::FinancialConnectionsAccountRefreshedBalance);
+        }
+        #[cfg(feature = "async-stripe-misc")]
+        if typ == "financial_connections.account.refreshed_ownership" {
+            return parse_and_box(data).map(Self::FinancialConnectionsAccountRefreshedOwnership);
+        }
+        #[cfg(feature = "async-stripe-misc")]
+        if typ == "financial_connections.account.refreshed_transactions" {
+            return parse_and_box(data).map(Self::FinancialConnectionsAccountRefreshedTransactions);
+        }
+        #[cfg(feature = "async-stripe-misc")]
+        if typ == "financial_connections.account.upcoming_account_number_expiry" {
+            return parse_and_box(data)
+                .map(Self::FinancialConnectionsAccountUpcomingAccountNumberExpiry);
+        }
+        #[cfg(feature = "async-stripe-misc")]
+        if typ == "identity.verification_session.canceled" {
+            return parse_and_box(data).map(Self::IdentityVerificationSessionCanceled);
+        }
+        #[cfg(feature = "async-stripe-misc")]
+        if typ == "identity.verification_session.created" {
+            return parse_and_box(data).map(Self::IdentityVerificationSessionCreated);
+        }
+        #[cfg(feature = "async-stripe-misc")]
+        if typ == "identity.verification_session.processing" {
+            return parse_and_box(data).map(Self::IdentityVerificationSessionProcessing);
+        }
+        #[cfg(feature = "async-stripe-misc")]
+        if typ == "identity.verification_session.redacted" {
+            return parse_and_box(data).map(Self::IdentityVerificationSessionRedacted);
+        }
+        #[cfg(feature = "async-stripe-misc")]
+        if typ == "identity.verification_session.requires_input" {
+            return parse_and_box(data).map(Self::IdentityVerificationSessionRequiresInput);
+        }
+        #[cfg(feature = "async-stripe-misc")]
+        if typ == "identity.verification_session.verified" {
+            return parse_and_box(data).map(Self::IdentityVerificationSessionVerified);
+        }
+        if typ == "invoice.created" {
+            return parse_and_box(data).map(Self::InvoiceCreated);
+        }
+        if typ == "invoice.deleted" {
+            return parse_and_box(data).map(Self::InvoiceDeleted);
+        }
+        if typ == "invoice.finalization_failed" {
+            return parse_and_box(data).map(Self::InvoiceFinalizationFailed);
+        }
+        if typ == "invoice.finalized" {
+            return parse_and_box(data).map(Self::InvoiceFinalized);
+        }
+        if typ == "invoice.marked_uncollectible" {
+            return parse_and_box(data).map(Self::InvoiceMarkedUncollectible);
+        }
+        if typ == "invoice.overdue" {
+            return parse_and_box(data).map(Self::InvoiceOverdue);
+        }
+        if typ == "invoice.overpaid" {
+            return parse_and_box(data).map(Self::InvoiceOverpaid);
+        }
+        if typ == "invoice.paid" {
+            return parse_and_box(data).map(Self::InvoicePaid);
+        }
+        if typ == "invoice.payment_action_required" {
+            return parse_and_box(data).map(Self::InvoicePaymentActionRequired);
+        }
+        if typ == "invoice.payment_attempt_required" {
+            return parse_and_box(data).map(Self::InvoicePaymentAttemptRequired);
+        }
+        if typ == "invoice.payment_failed" {
+            return parse_and_box(data).map(Self::InvoicePaymentFailed);
+        }
+        if typ == "invoice.payment_succeeded" {
+            return parse_and_box(data).map(Self::InvoicePaymentSucceeded);
+        }
+        if typ == "invoice.sent" {
+            return parse_and_box(data).map(Self::InvoiceSent);
+        }
+        if typ == "invoice.upcoming" {
+            return parse_and_box(data).map(Self::InvoiceUpcoming);
+        }
+        if typ == "invoice.updated" {
+            return parse_and_box(data).map(Self::InvoiceUpdated);
+        }
+        if typ == "invoice.voided" {
+            return parse_and_box(data).map(Self::InvoiceVoided);
+        }
+        if typ == "invoice.will_be_due" {
+            return parse_and_box(data).map(Self::InvoiceWillBeDue);
+        }
+        if typ == "invoice_payment.paid" {
+            return parse_and_box(data).map(Self::InvoicePaymentPaid);
+        }
+        #[cfg(feature = "async-stripe-billing")]
+        if typ == "invoiceitem.created" {
+            return parse_and_box(data).map(Self::InvoiceitemCreated);
+        }
+        #[cfg(feature = "async-stripe-billing")]
+        if typ == "invoiceitem.deleted" {
+            return parse_and_box(data).map(Self::InvoiceitemDeleted);
+        }
+        if typ == "issuing_authorization.created" {
+            return parse_and_box(data).map(Self::IssuingAuthorizationCreated);
+        }
+        if typ == "issuing_authorization.request" {
+            return parse_and_box(data).map(Self::IssuingAuthorizationRequest);
+        }
+        if typ == "issuing_authorization.updated" {
+            return parse_and_box(data).map(Self::IssuingAuthorizationUpdated);
+        }
+        if typ == "issuing_card.created" {
+            return parse_and_box(data).map(Self::IssuingCardCreated);
+        }
+        if typ == "issuing_card.updated" {
+            return parse_and_box(data).map(Self::IssuingCardUpdated);
+        }
+        if typ == "issuing_cardholder.created" {
+            return parse_and_box(data).map(Self::IssuingCardholderCreated);
+        }
+        if typ == "issuing_cardholder.updated" {
+            return parse_and_box(data).map(Self::IssuingCardholderUpdated);
+        }
+        if typ == "issuing_dispute.closed" {
+            return parse_and_box(data).map(Self::IssuingDisputeClosed);
+        }
+        if typ == "issuing_dispute.created" {
+            return parse_and_box(data).map(Self::IssuingDisputeCreated);
+        }
+        if typ == "issuing_dispute.funds_reinstated" {
+            return parse_and_box(data).map(Self::IssuingDisputeFundsReinstated);
+        }
+        if typ == "issuing_dispute.funds_rescinded" {
+            return parse_and_box(data).map(Self::IssuingDisputeFundsRescinded);
+        }
+        if typ == "issuing_dispute.submitted" {
+            return parse_and_box(data).map(Self::IssuingDisputeSubmitted);
+        }
+        if typ == "issuing_dispute.updated" {
+            return parse_and_box(data).map(Self::IssuingDisputeUpdated);
+        }
+        if typ == "issuing_personalization_design.activated" {
+            return parse_and_box(data).map(Self::IssuingPersonalizationDesignActivated);
+        }
+        if typ == "issuing_personalization_design.deactivated" {
+            return parse_and_box(data).map(Self::IssuingPersonalizationDesignDeactivated);
+        }
+        if typ == "issuing_personalization_design.rejected" {
+            return parse_and_box(data).map(Self::IssuingPersonalizationDesignRejected);
+        }
+        if typ == "issuing_personalization_design.updated" {
+            return parse_and_box(data).map(Self::IssuingPersonalizationDesignUpdated);
+        }
+        if typ == "issuing_token.created" {
+            return parse_and_box(data).map(Self::IssuingTokenCreated);
+        }
+        if typ == "issuing_token.updated" {
+            return parse_and_box(data).map(Self::IssuingTokenUpdated);
+        }
+        if typ == "issuing_transaction.created" {
+            return parse_and_box(data).map(Self::IssuingTransactionCreated);
+        }
+        if typ == "issuing_transaction.purchase_details_receipt_updated" {
+            return parse_and_box(data).map(Self::IssuingTransactionPurchaseDetailsReceiptUpdated);
+        }
+        if typ == "issuing_transaction.updated" {
+            return parse_and_box(data).map(Self::IssuingTransactionUpdated);
+        }
+        if typ == "mandate.updated" {
+            return parse_and_box(data).map(Self::MandateUpdated);
+        }
+        if typ == "payment_intent.amount_capturable_updated" {
+            return parse_and_box(data).map(Self::PaymentIntentAmountCapturableUpdated);
+        }
+        if typ == "payment_intent.canceled" {
+            return parse_and_box(data).map(Self::PaymentIntentCanceled);
+        }
+        if typ == "payment_intent.created" {
+            return parse_and_box(data).map(Self::PaymentIntentCreated);
+        }
+        if typ == "payment_intent.partially_funded" {
+            return parse_and_box(data).map(Self::PaymentIntentPartiallyFunded);
+        }
+        if typ == "payment_intent.payment_failed" {
+            return parse_and_box(data).map(Self::PaymentIntentPaymentFailed);
+        }
+        if typ == "payment_intent.processing" {
+            return parse_and_box(data).map(Self::PaymentIntentProcessing);
+        }
+        if typ == "payment_intent.requires_action" {
+            return parse_and_box(data).map(Self::PaymentIntentRequiresAction);
+        }
+        if typ == "payment_intent.succeeded" {
+            return parse_and_box(data).map(Self::PaymentIntentSucceeded);
+        }
+        if typ == "payment_link.created" {
+            return parse_and_box(data).map(Self::PaymentLinkCreated);
+        }
+        if typ == "payment_link.updated" {
+            return parse_and_box(data).map(Self::PaymentLinkUpdated);
+        }
+        if typ == "payment_method.attached" {
+            return parse_and_box(data).map(Self::PaymentMethodAttached);
+        }
+        if typ == "payment_method.automatically_updated" {
+            return parse_and_box(data).map(Self::PaymentMethodAutomaticallyUpdated);
+        }
+        if typ == "payment_method.detached" {
+            return parse_and_box(data).map(Self::PaymentMethodDetached);
+        }
+        if typ == "payment_method.updated" {
+            return parse_and_box(data).map(Self::PaymentMethodUpdated);
+        }
+        if typ == "payout.canceled" {
+            return parse_and_box(data).map(Self::PayoutCanceled);
+        }
+        if typ == "payout.created" {
+            return parse_and_box(data).map(Self::PayoutCreated);
+        }
+        if typ == "payout.failed" {
+            return parse_and_box(data).map(Self::PayoutFailed);
+        }
+        if typ == "payout.paid" {
+            return parse_and_box(data).map(Self::PayoutPaid);
+        }
+        if typ == "payout.reconciliation_completed" {
+            return parse_and_box(data).map(Self::PayoutReconciliationCompleted);
+        }
+        if typ == "payout.updated" {
+            return parse_and_box(data).map(Self::PayoutUpdated);
+        }
+        if typ == "person.created" {
+            return parse_and_box(data).map(Self::PersonCreated);
+        }
+        if typ == "person.deleted" {
+            return parse_and_box(data).map(Self::PersonDeleted);
+        }
+        if typ == "person.updated" {
+            return parse_and_box(data).map(Self::PersonUpdated);
+        }
+        if typ == "plan.created" {
+            return parse_and_box(data).map(Self::PlanCreated);
+        }
+        if typ == "plan.deleted" {
+            return parse_and_box(data).map(Self::PlanDeleted);
+        }
+        if typ == "plan.updated" {
+            return parse_and_box(data).map(Self::PlanUpdated);
+        }
+        if typ == "price.created" {
+            return parse_and_box(data).map(Self::PriceCreated);
+        }
+        if typ == "price.deleted" {
+            return parse_and_box(data).map(Self::PriceDeleted);
+        }
+        if typ == "price.updated" {
+            return parse_and_box(data).map(Self::PriceUpdated);
+        }
+        if typ == "product.created" {
+            return parse_and_box(data).map(Self::ProductCreated);
+        }
+        if typ == "product.deleted" {
+            return parse_and_box(data).map(Self::ProductDeleted);
+        }
+        if typ == "product.updated" {
+            return parse_and_box(data).map(Self::ProductUpdated);
+        }
+        if typ == "promotion_code.created" {
+            return parse_and_box(data).map(Self::PromotionCodeCreated);
+        }
+        if typ == "promotion_code.updated" {
+            return parse_and_box(data).map(Self::PromotionCodeUpdated);
+        }
+        #[cfg(feature = "async-stripe-billing")]
+        if typ == "quote.accepted" {
+            return parse_and_box(data).map(Self::QuoteAccepted);
+        }
+        #[cfg(feature = "async-stripe-billing")]
+        if typ == "quote.canceled" {
+            return parse_and_box(data).map(Self::QuoteCanceled);
+        }
+        #[cfg(feature = "async-stripe-billing")]
+        if typ == "quote.created" {
+            return parse_and_box(data).map(Self::QuoteCreated);
+        }
+        #[cfg(feature = "async-stripe-billing")]
+        if typ == "quote.finalized" {
+            return parse_and_box(data).map(Self::QuoteFinalized);
+        }
+        #[cfg(feature = "async-stripe-fraud")]
+        if typ == "radar.early_fraud_warning.created" {
+            return parse_and_box(data).map(Self::RadarEarlyFraudWarningCreated);
+        }
+        #[cfg(feature = "async-stripe-fraud")]
+        if typ == "radar.early_fraud_warning.updated" {
+            return parse_and_box(data).map(Self::RadarEarlyFraudWarningUpdated);
+        }
+        if typ == "refund.created" {
+            return parse_and_box(data).map(Self::RefundCreated);
+        }
+        if typ == "refund.failed" {
+            return parse_and_box(data).map(Self::RefundFailed);
+        }
+        if typ == "refund.updated" {
+            return parse_and_box(data).map(Self::RefundUpdated);
+        }
+        #[cfg(feature = "async-stripe-misc")]
+        if typ == "reporting.report_run.failed" {
+            return parse_and_box(data).map(Self::ReportingReportRunFailed);
+        }
+        #[cfg(feature = "async-stripe-misc")]
+        if typ == "reporting.report_run.succeeded" {
+            return parse_and_box(data).map(Self::ReportingReportRunSucceeded);
+        }
+        #[cfg(feature = "async-stripe-misc")]
+        if typ == "reporting.report_type.updated" {
+            return parse_and_box(data).map(Self::ReportingReportTypeUpdated);
+        }
+        if typ == "review.closed" {
+            return parse_and_box(data).map(Self::ReviewClosed);
+        }
+        if typ == "review.opened" {
+            return parse_and_box(data).map(Self::ReviewOpened);
+        }
+        if typ == "setup_intent.canceled" {
+            return parse_and_box(data).map(Self::SetupIntentCanceled);
+        }
+        if typ == "setup_intent.created" {
+            return parse_and_box(data).map(Self::SetupIntentCreated);
+        }
+        if typ == "setup_intent.requires_action" {
+            return parse_and_box(data).map(Self::SetupIntentRequiresAction);
+        }
+        if typ == "setup_intent.setup_failed" {
+            return parse_and_box(data).map(Self::SetupIntentSetupFailed);
+        }
+        if typ == "setup_intent.succeeded" {
+            return parse_and_box(data).map(Self::SetupIntentSucceeded);
+        }
+        #[cfg(feature = "async-stripe-misc")]
+        if typ == "sigma.scheduled_query_run.created" {
+            return parse_and_box(data).map(Self::SigmaScheduledQueryRunCreated);
+        }
+        if typ == "source.canceled" {
+            return parse_and_box(data).map(Self::SourceCanceled);
+        }
+        if typ == "source.chargeable" {
+            return parse_and_box(data).map(Self::SourceChargeable);
+        }
+        if typ == "source.failed" {
+            return parse_and_box(data).map(Self::SourceFailed);
+        }
+        #[cfg(feature = "async-stripe-payment")]
+        if typ == "source.mandate_notification" {
+            return parse_and_box(data).map(Self::SourceMandateNotification);
+        }
+        if typ == "source.refund_attributes_required" {
+            return parse_and_box(data).map(Self::SourceRefundAttributesRequired);
+        }
+        if typ == "source.transaction.created" {
+            return parse_and_box(data).map(Self::SourceTransactionCreated);
+        }
+        if typ == "source.transaction.updated" {
+            return parse_and_box(data).map(Self::SourceTransactionUpdated);
+        }
+        if typ == "subscription_schedule.aborted" {
+            return parse_and_box(data).map(Self::SubscriptionScheduleAborted);
+        }
+        if typ == "subscription_schedule.canceled" {
+            return parse_and_box(data).map(Self::SubscriptionScheduleCanceled);
+        }
+        if typ == "subscription_schedule.completed" {
+            return parse_and_box(data).map(Self::SubscriptionScheduleCompleted);
+        }
+        if typ == "subscription_schedule.created" {
+            return parse_and_box(data).map(Self::SubscriptionScheduleCreated);
+        }
+        if typ == "subscription_schedule.expiring" {
+            return parse_and_box(data).map(Self::SubscriptionScheduleExpiring);
+        }
+        if typ == "subscription_schedule.released" {
+            return parse_and_box(data).map(Self::SubscriptionScheduleReleased);
+        }
+        if typ == "subscription_schedule.updated" {
+            return parse_and_box(data).map(Self::SubscriptionScheduleUpdated);
+        }
+        #[cfg(feature = "async-stripe-misc")]
+        if typ == "tax.settings.updated" {
+            return parse_and_box(data).map(Self::TaxSettingsUpdated);
+        }
+        if typ == "tax_rate.created" {
+            return parse_and_box(data).map(Self::TaxRateCreated);
+        }
+        if typ == "tax_rate.updated" {
+            return parse_and_box(data).map(Self::TaxRateUpdated);
+        }
+        #[cfg(feature = "async-stripe-terminal")]
+        if typ == "terminal.reader.action_failed" {
+            return parse_and_box(data).map(Self::TerminalReaderActionFailed);
+        }
+        #[cfg(feature = "async-stripe-terminal")]
+        if typ == "terminal.reader.action_succeeded" {
+            return parse_and_box(data).map(Self::TerminalReaderActionSucceeded);
+        }
+        #[cfg(feature = "async-stripe-terminal")]
+        if typ == "terminal.reader.action_updated" {
+            return parse_and_box(data).map(Self::TerminalReaderActionUpdated);
+        }
+        if typ == "test_helpers.test_clock.advancing" {
+            return parse_and_box(data).map(Self::TestHelpersTestClockAdvancing);
+        }
+        if typ == "test_helpers.test_clock.created" {
+            return parse_and_box(data).map(Self::TestHelpersTestClockCreated);
+        }
+        if typ == "test_helpers.test_clock.deleted" {
+            return parse_and_box(data).map(Self::TestHelpersTestClockDeleted);
+        }
+        if typ == "test_helpers.test_clock.internal_failure" {
+            return parse_and_box(data).map(Self::TestHelpersTestClockInternalFailure);
+        }
+        if typ == "test_helpers.test_clock.ready" {
+            return parse_and_box(data).map(Self::TestHelpersTestClockReady);
+        }
+        if typ == "topup.canceled" {
+            return parse_and_box(data).map(Self::TopupCanceled);
+        }
+        if typ == "topup.created" {
+            return parse_and_box(data).map(Self::TopupCreated);
+        }
+        if typ == "topup.failed" {
+            return parse_and_box(data).map(Self::TopupFailed);
+        }
+        if typ == "topup.reversed" {
+            return parse_and_box(data).map(Self::TopupReversed);
+        }
+        if typ == "topup.succeeded" {
+            return parse_and_box(data).map(Self::TopupSucceeded);
+        }
+        if typ == "transfer.created" {
+            return parse_and_box(data).map(Self::TransferCreated);
+        }
+        if typ == "transfer.reversed" {
+            return parse_and_box(data).map(Self::TransferReversed);
+        }
+        if typ == "transfer.updated" {
+            return parse_and_box(data).map(Self::TransferUpdated);
+        }
+        #[cfg(feature = "async-stripe-treasury")]
+        if typ == "treasury.credit_reversal.created" {
+            return parse_and_box(data).map(Self::TreasuryCreditReversalCreated);
+        }
+        #[cfg(feature = "async-stripe-treasury")]
+        if typ == "treasury.credit_reversal.posted" {
+            return parse_and_box(data).map(Self::TreasuryCreditReversalPosted);
+        }
+        #[cfg(feature = "async-stripe-treasury")]
+        if typ == "treasury.debit_reversal.completed" {
+            return parse_and_box(data).map(Self::TreasuryDebitReversalCompleted);
+        }
+        #[cfg(feature = "async-stripe-treasury")]
+        if typ == "treasury.debit_reversal.created" {
+            return parse_and_box(data).map(Self::TreasuryDebitReversalCreated);
+        }
+        #[cfg(feature = "async-stripe-treasury")]
+        if typ == "treasury.debit_reversal.initial_credit_granted" {
+            return parse_and_box(data).map(Self::TreasuryDebitReversalInitialCreditGranted);
+        }
+        #[cfg(feature = "async-stripe-treasury")]
+        if typ == "treasury.financial_account.closed" {
+            return parse_and_box(data).map(Self::TreasuryFinancialAccountClosed);
+        }
+        #[cfg(feature = "async-stripe-treasury")]
+        if typ == "treasury.financial_account.created" {
+            return parse_and_box(data).map(Self::TreasuryFinancialAccountCreated);
+        }
+        #[cfg(feature = "async-stripe-treasury")]
+        if typ == "treasury.financial_account.features_status_updated" {
+            return parse_and_box(data).map(Self::TreasuryFinancialAccountFeaturesStatusUpdated);
+        }
+        #[cfg(feature = "async-stripe-treasury")]
+        if typ == "treasury.inbound_transfer.canceled" {
+            return parse_and_box(data).map(Self::TreasuryInboundTransferCanceled);
+        }
+        #[cfg(feature = "async-stripe-treasury")]
+        if typ == "treasury.inbound_transfer.created" {
+            return parse_and_box(data).map(Self::TreasuryInboundTransferCreated);
+        }
+        #[cfg(feature = "async-stripe-treasury")]
+        if typ == "treasury.inbound_transfer.failed" {
+            return parse_and_box(data).map(Self::TreasuryInboundTransferFailed);
+        }
+        #[cfg(feature = "async-stripe-treasury")]
+        if typ == "treasury.inbound_transfer.succeeded" {
+            return parse_and_box(data).map(Self::TreasuryInboundTransferSucceeded);
+        }
+        #[cfg(feature = "async-stripe-treasury")]
+        if typ == "treasury.outbound_payment.canceled" {
+            return parse_and_box(data).map(Self::TreasuryOutboundPaymentCanceled);
+        }
+        #[cfg(feature = "async-stripe-treasury")]
+        if typ == "treasury.outbound_payment.created" {
+            return parse_and_box(data).map(Self::TreasuryOutboundPaymentCreated);
+        }
+        #[cfg(feature = "async-stripe-treasury")]
+        if typ == "treasury.outbound_payment.expected_arrival_date_updated" {
+            return parse_and_box(data)
+                .map(Self::TreasuryOutboundPaymentExpectedArrivalDateUpdated);
+        }
+        #[cfg(feature = "async-stripe-treasury")]
+        if typ == "treasury.outbound_payment.failed" {
+            return parse_and_box(data).map(Self::TreasuryOutboundPaymentFailed);
+        }
+        #[cfg(feature = "async-stripe-treasury")]
+        if typ == "treasury.outbound_payment.posted" {
+            return parse_and_box(data).map(Self::TreasuryOutboundPaymentPosted);
+        }
+        #[cfg(feature = "async-stripe-treasury")]
+        if typ == "treasury.outbound_payment.returned" {
+            return parse_and_box(data).map(Self::TreasuryOutboundPaymentReturned);
+        }
+        #[cfg(feature = "async-stripe-treasury")]
+        if typ == "treasury.outbound_payment.tracking_details_updated" {
+            return parse_and_box(data).map(Self::TreasuryOutboundPaymentTrackingDetailsUpdated);
+        }
+        #[cfg(feature = "async-stripe-treasury")]
+        if typ == "treasury.outbound_transfer.canceled" {
+            return parse_and_box(data).map(Self::TreasuryOutboundTransferCanceled);
+        }
+        #[cfg(feature = "async-stripe-treasury")]
+        if typ == "treasury.outbound_transfer.created" {
+            return parse_and_box(data).map(Self::TreasuryOutboundTransferCreated);
+        }
+        #[cfg(feature = "async-stripe-treasury")]
+        if typ == "treasury.outbound_transfer.expected_arrival_date_updated" {
+            return parse_and_box(data)
+                .map(Self::TreasuryOutboundTransferExpectedArrivalDateUpdated);
+        }
+        #[cfg(feature = "async-stripe-treasury")]
+        if typ == "treasury.outbound_transfer.failed" {
+            return parse_and_box(data).map(Self::TreasuryOutboundTransferFailed);
+        }
+        #[cfg(feature = "async-stripe-treasury")]
+        if typ == "treasury.outbound_transfer.posted" {
+            return parse_and_box(data).map(Self::TreasuryOutboundTransferPosted);
+        }
+        #[cfg(feature = "async-stripe-treasury")]
+        if typ == "treasury.outbound_transfer.returned" {
+            return parse_and_box(data).map(Self::TreasuryOutboundTransferReturned);
+        }
+        #[cfg(feature = "async-stripe-treasury")]
+        if typ == "treasury.outbound_transfer.tracking_details_updated" {
+            return parse_and_box(data).map(Self::TreasuryOutboundTransferTrackingDetailsUpdated);
+        }
+        #[cfg(feature = "async-stripe-treasury")]
+        if typ == "treasury.received_credit.created" {
+            return parse_and_box(data).map(Self::TreasuryReceivedCreditCreated);
+        }
+        #[cfg(feature = "async-stripe-treasury")]
+        if typ == "treasury.received_credit.failed" {
+            return parse_and_box(data).map(Self::TreasuryReceivedCreditFailed);
+        }
+        #[cfg(feature = "async-stripe-treasury")]
+        if typ == "treasury.received_credit.succeeded" {
+            return parse_and_box(data).map(Self::TreasuryReceivedCreditSucceeded);
+        }
+        #[cfg(feature = "async-stripe-treasury")]
+        if typ == "treasury.received_debit.created" {
+            return parse_and_box(data).map(Self::TreasuryReceivedDebitCreated);
+        }
+
+        // Unknown event type - error instead of silently accepting
+        Err(format!("unknown event type '{typ}'"))
+    }
 }

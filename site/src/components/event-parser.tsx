@@ -1,49 +1,98 @@
 "use client";
 
-import { AlertTriangle } from "lucide-react";
-import { useState } from "react";
+import init, { parse, list_types } from "@arlyon/async-stripe-parser";
+import { useEffect, useState } from "react";
 
 export function EventParser() {
 	const [eventJson, setEventJson] = useState("");
+	const [selectedType, setSelectedType] = useState("Event");
+	const [availableTypes, setAvailableTypes] = useState<string[]>([]);
 	const [result, setResult] = useState<{
 		success: boolean;
 		message: string;
 		parsed?: any;
 	} | null>(null);
+	const [wasmReady, setWasmReady] = useState(false);
+
+	// Initialize WASM module
+	useEffect(() => {
+		init()
+			.then(() => {
+				setWasmReady(true);
+				const types = list_types();
+				setAvailableTypes(types);
+				if (types.length > 0) {
+					setSelectedType(types[0]);
+				}
+			})
+			.catch((error) => {
+				console.error("Failed to initialize WASM:", error);
+			});
+	}, []);
 
 	const handleParse = async () => {
+		if (!wasmReady) {
+			setResult({
+				success: false,
+				message: "WASM module is still loading...",
+			});
+			return;
+		}
+
 		try {
-			// For now, just parse the JSON to validate it
-			// TODO: Replace with WASM parser when ready
+			// Parse the JSON first to validate and get the parsed object
 			const parsed = JSON.parse(eventJson);
+
+			// Use the WASM parser to validate the event structure
+			// This will throw an error with path information if validation fails
+			parse(selectedType, eventJson);
+
 			setResult({
 				success: true,
-				message: "Event parsed successfully!",
+				message: "Event parsed and validated successfully!",
 				parsed,
 			});
 		} catch (error) {
-			setResult({
-				success: false,
-				message:
-					error instanceof Error ? error.message : "Failed to parse JSON",
-			});
+			if (typeof error === "string") {
+				console.log(error);
+				setResult({
+					success: false,
+					message: error,
+				});
+			} else {
+				setResult({
+					success: false,
+					message: error instanceof Error ? error.message : "Unknown error",
+					parsed: error,
+				});
+			}
 		}
 	};
 
 	return (
-		<div className="border border-dashed border-yellow-500 rounded-lg p-6 bg-yellow-50 dark:bg-yellow-950/20 not-prose">
-			{/* Under Construction Header */}
-			<div className="flex items-center gap-2 mb-4 text-yellow-700 dark:text-yellow-500">
-				<AlertTriangle />
-				<h3 className="font-bold text-lg">Under Construction</h3>
-			</div>
-
-			<p className="text-sm text-yellow-800 dark:text-yellow-400 mb-4">
-				This feature is being built! Eventually this will use WASM to parse
-				Stripe events using the actual async-stripe library.
-			</p>
-
+		<div className="border border-gray-200 dark:border-gray-800 rounded-lg p-6 bg-gray-50 dark:bg-gray-950/20 not-prose">
 			<div className="space-y-4">
+				<div>
+					<label
+						htmlFor="event-type"
+						className="block text-sm font-medium mb-2"
+					>
+						Type:
+					</label>
+					<select
+						id="event-type"
+						className="w-full p-2 border rounded-md bg-white dark:bg-gray-950"
+						value={selectedType}
+						onChange={(e) => setSelectedType(e.target.value)}
+						disabled={!wasmReady}
+					>
+						{availableTypes.map((type) => (
+							<option key={type} value={type}>
+								{type}
+							</option>
+						))}
+					</select>
+				</div>
 				<div>
 					<label
 						htmlFor="event-json"
@@ -57,15 +106,26 @@ export function EventParser() {
 						placeholder='{\n  "id": "evt_...",\n  "object": "event",\n  ...\n}'
 						value={eventJson}
 						onChange={(e) => setEventJson(e.target.value)}
+						onKeyDown={(e) => {
+							if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
+								e.preventDefault();
+								handleParse();
+							}
+						}}
+						onPaste={() => {
+							// Trigger parse after paste (give it a moment for the value to update)
+							setTimeout(() => handleParse(), 100);
+						}}
 					/>
 				</div>
 
 				<button
 					type="button"
 					onClick={handleParse}
-					className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+					disabled={!wasmReady}
+					className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
 				>
-					Parse Event
+					{wasmReady ? "Parse Event" : "Loading..."}
 				</button>
 
 				{result && (

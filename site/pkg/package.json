@@ -1,0 +1,34 @@
+{
+  "name": "@arlyon/async-stripe-parser",
+  "type": "module",
+  "collaborators": [
+    "Anna Baldwin <abaldwin@developers.wyyerd.com>",
+    "Kevin Stenerson <kestred@users.noreply.github.com>",
+    "Alexander Lyon <arlyon@me.com>",
+    "Matthew Zeitlin <mzeitlin11@gmail.com>"
+  ],
+  "description": "API bindings for the Stripe HTTP API",
+  "version": "1.0.0-alpha.8",
+  "license": "MIT OR Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/arlyon/async-stripe"
+  },
+  "files": [
+    "async_stripe_parser_bg.wasm",
+    "async_stripe_parser.js",
+    "async_stripe_parser.d.ts"
+  ],
+  "main": "async_stripe_parser.js",
+  "homepage": "https://github.com/arlyon/async-stripe",
+  "types": "async_stripe_parser.d.ts",
+  "sideEffects": [
+    "./snippets/*"
+  ],
+  "keywords": [
+    "stripe",
+    "v1",
+    "api",
+    "async"
+  ]
+}

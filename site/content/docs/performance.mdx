@@ -51,6 +51,6 @@ This design ensures `async-stripe` scales well even as the Stripe API continues 
 
 ## Try It Out
 
-Want to see how async-stripe parses Stripe events? Try pasting an event JSON below. It uses the library `serde_path_to_error` and can report exactly where deserialization failed.
+Want to see how async-stripe parses Stripe events? Try pasting an event JSON below. This uses the actual async-stripe parser compiled to WebAssembly with `serde_path_to_error`, which reports exactly where deserialization failed.
 
 <EventParser />
