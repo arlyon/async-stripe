@@ -1,2 +1,12 @@
 [tools]
+"cargo:cargo-insta" = "latest"
+"cargo:wasm-pack" = "latest"
 rust = "1.88"
+
+[tasks.build-web]
+description = "Build WASM package for web target"
+dir = "async-stripe-parser"
+run = [
+    "echo 'Building WASM package for web target...'",
+    "wasm-pack build --target web --out-dir ../site/pkg --scope arlyon"
+]

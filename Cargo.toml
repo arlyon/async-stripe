@@ -2,6 +2,7 @@
 members = [
     "async-stripe-types",
     "async-stripe-webhook",
+    "async-stripe-parser",
     "tests",
     "generated/*",
     "examples/*",

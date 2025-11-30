@@ -6,6 +6,7 @@ icon: TriangleAlert
 
 import { Callout } from "fumadocs-ui/components/callout"
 import { CodeFromFile } from "@/components/code-from-file"
+import { EventParser } from "@/components/event-parser"
 
 Stripe API requests can fail for various reasons: invalid parameters, authentication issues, card declines, rate limits, and network failures. The `StripeError` enum provides structured error information to help you handle these cases appropriately.
 
@@ -74,6 +75,51 @@ Stripe includes error codes in the `ApiErrors` struct that provide more specific
 
 <Callout type="info">
 For a complete list of error codes, see the [Stripe Error Codes documentation](https://stripe.com/docs/error-codes).
+</Callout>
+
+## Parsing Errors
+
+By default, `async-stripe` uses [`miniserde`](https://github.com/dtolnay/miniserde) for deserializing API responses. This significantly reduces compile times and binary size, but provides minimal error messages when deserialization fails.
+
+### Understanding Deserialization Failures
+
+If you receive a deserialization error, it may look like:
+
+```
+Error: failed to deserialize response
+```
+
+This typically means the JSON response from Stripe doesn't match the expected structure. This can happen when:
+
+- Stripe adds new fields to their API
+- You're using an outdated version of `async-stripe`
+- The response contains unexpected values
+
+### Getting Better Error Messages
+
+For detailed diagnostics about which field failed and why, enable the `deserialize` feature to use `serde` instead:
+
+```toml
+[dependencies]
+stripe-core = { version = "1.0.0-alpha.8", features = ["customer", "deserialize"] }
+```
+
+This provides comprehensive error context with `serde_path_to_error`, showing exactly where in the JSON structure the error occurred
+ _at the cost of significantly increased compile times, link times, and binary size_. For context, the parser below needs 14MB just
+ to parse webhook data.
+
+<Callout type="warn" title="Why Not serde_json?">
+The compile-time and binary size impact of `serde_json` is substantial due to monomorphization. Each generic serde function gets compiled separately for every type, leading to code bloat. With hundreds of Stripe types, this results in massive binaries and slow compile times, since stripe needs to generate X00,000 lines of code to define how to deserialize each type. `miniserde` avoids this by using trait objects instead of generics, dramatically reducing the amount of generated code. For a deep dive into this topic, see [The Dark Side of Inlining and Monomorphization](https://nickb.dev/blog/the-dark-side-of-inlining-and-monomorphization/).
+</Callout>
+
+### Testing Event Parsing
+
+You can test how `async-stripe` parses Stripe events using the interactive parser below. This uses the actual async-stripe parser compiled to WebAssembly with `serde_path_to_error`, which reports exactly where deserialization failed:
+
+<EventParser />
+
+<Callout type="info">
+See the [Performance](/docs/performance) documentation for more details on the hybrid serialization strategy and when to use the `deserialize` feature.
 </Callout>
 
 ## Retry Strategies

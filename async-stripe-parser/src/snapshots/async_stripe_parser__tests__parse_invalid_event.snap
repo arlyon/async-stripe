@@ -1,0 +1,5 @@
+---
+source: async-stripe-parser/src/lib.rs
+expression: result.unwrap_err()
+---
+data.object.entitlements.data[0]: missing field `feature`
