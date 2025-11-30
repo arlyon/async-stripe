@@ -28,84 +28,27 @@ The most common error type is `StripeError::Stripe`, which contains the error de
 
 ### Basic Error Handling
 
-```rust
-use stripe::{Client, Customer, CreateCustomer, StripeError};
-
-let client = Client::new(secret_key);
-
-match Customer::create(&client, CreateCustomer::new()).send().await {
-    Ok(customer) => println!("Created customer: {}", customer.id),
-    Err(err) => match err {
-        StripeError::Stripe(api_error, status_code) => {
-            eprintln!("Stripe API error ({}): {:?}", status_code, api_error.message);
-        }
-        StripeError::ClientError(msg) => {
-            eprintln!("Network error: {}", msg);
-        }
-        _ => {
-            eprintln!("Other error: {}", err);
-        }
-    }
-}
-```
+<CodeFromFile
+  file="examples/error-handling-basic.rs"
+  href={{base: "https://github.com/arlyon/async-stripe/blob/master/"}}
+  lang="rust"
+  startLine={17}
+  endLine={30}
+  dedent
+/>
 
 ### Handling Specific HTTP Status Codes
 
 Different status codes indicate different types of failures:
 
-```rust
-use stripe::{Client, PaymentIntent, StripeError};
-
-match PaymentIntent::retrieve(&client, &payment_intent_id, &[]).await {
-    Ok(payment) => {
-        println!("Payment status: {:?}", payment.status);
-    }
-    Err(StripeError::Stripe(api_error, status)) => {
-        match status {
-            400 => {
-                // Bad Request - Invalid parameters
-                eprintln!("Invalid request: {:?}", api_error.message);
-            }
-            401 => {
-                // Unauthorized - Invalid API key
-                eprintln!("Authentication failed - check your API key");
-            }
-            402 => {
-                // Payment Required - Card declined or insufficient funds
-                eprintln!("Payment failed: {:?}", api_error.message);
-
-                // The error may contain a decline code
-                if let Some(code) = &api_error.code {
-                    match code.as_str() {
-                        "card_declined" => eprintln!("Card was declined"),
-                        "insufficient_funds" => eprintln!("Insufficient funds"),
-                        "expired_card" => eprintln!("Card has expired"),
-                        _ => eprintln!("Payment error code: {}", code),
-                    }
-                }
-            }
-            404 => {
-                // Not Found - Resource doesn't exist
-                eprintln!("Resource not found");
-            }
-            429 => {
-                // Too Many Requests - Rate limited
-                eprintln!("Rate limited - slow down requests");
-            }
-            500 | 502 | 503 | 504 => {
-                // Server errors - retry with backoff
-                eprintln!("Stripe server error - retry later");
-            }
-            _ => {
-                eprintln!("HTTP {}: {:?}", status, api_error.message);
-            }
-        }
-    }
-    Err(e) => {
-        eprintln!("Non-API error: {}", e);
-    }
-}
-```
+<CodeFromFile
+  file="examples/error-handling-status-codes.rs"
+  href={{base: "https://github.com/arlyon/async-stripe/blob/master/"}}
+  lang="rust"
+  startLine={20}
+  endLine={67}
+  dedent
+/>
 
 ## Common Error Codes
 
@@ -137,16 +80,15 @@ For a complete list of error codes, see the [Stripe Error Codes documentation](h
 
 For transient errors (network issues, server errors), use the built-in retry strategies:
 
-```rust
-use stripe::{Client, RequestStrategy};
-
-let client = Client::builder(secret_key)
-    .request_strategy(RequestStrategy::ExponentialBackoff(3))
-    .build();
-
-// This request will automatically retry up to 3 times with backoff
-let customer = Customer::retrieve(&client, &customer_id, &[]).await?;
-```
+<CodeFromFile
+  file="examples/error-handling-retry.rs"
+  href={{base: "https://github.com/arlyon/async-stripe/blob/master/"}}
+  lang="rust"
+  startLine={16}
+  endLine={29}
+  highlightLines={[2]}
+  dedent
+/>
 
 See the [Request Strategies](/docs/request-strategy) documentation for more details on retry behavior.
 
@@ -156,57 +98,40 @@ See the [Request Strategies](/docs/request-strategy) documentation for more deta
 
 Don't just log all errors the same way. Handle payment failures differently from configuration errors:
 
-```rust
-match result {
-    Err(StripeError::Stripe(api_error, 402)) => {
-        // Show user-friendly message for payment failures
-        show_payment_error_to_user(&api_error);
-    }
-    Err(StripeError::Stripe(api_error, 400)) => {
-        // Log parameter errors for debugging
-        log::error!("Invalid parameters: {:?}", api_error);
-    }
-    Err(e) => {
-        // Log unexpected errors and alert monitoring
-        log::error!("Unexpected Stripe error: {}", e);
-    }
-    Ok(result) => {
-        // Success
-    }
-}
-```
+<CodeFromFile
+  file="examples/error-handling-best-practices.rs"
+  href={{base: "https://github.com/arlyon/async-stripe/blob/master/"}}
+  lang="rust"
+  startLine={36}
+  endLine={53}
+  dedent
+/>
 
 ### 2. Use Idempotency Keys
 
 For critical operations (especially payment creation), always use idempotency keys to prevent accidental duplicate charges:
 
-```rust
-use stripe::{RequestStrategy, IdempotencyKey};
-
-let key = IdempotencyKey::new("order_12345").unwrap();
-
-let payment = CreatePaymentIntent::new(amount, currency)
-    .request_strategy(RequestStrategy::Idempotent(key))
-    .send(&client)
-    .await?;
-```
+<CodeFromFile
+  file="examples/error-handling-best-practices.rs"
+  href={{base: "https://github.com/arlyon/async-stripe/blob/master/"}}
+  lang="rust"
+  startLine={64}
+  endLine={78}
+  dedent
+/>
 
 ### 3. Log Error Details
 
 The `ApiErrors` struct contains useful debugging information:
 
-```rust
-Err(StripeError::Stripe(api_error, status)) => {
-    log::error!(
-        "Stripe error: status={}, type={:?}, code={:?}, message={:?}, param={:?}",
-        status,
-        api_error.error_type,
-        api_error.code,
-        api_error.message,
-        api_error.param
-    );
-}
-```
+<CodeFromFile
+  file="examples/error-handling-best-practices.rs"
+  href={{base: "https://github.com/arlyon/async-stripe/blob/master/"}}
+  lang="rust"
+  startLine={83}
+  endLine={94}
+  dedent
+/>
 
 ### 4. Don't Retry Client Errors
 
