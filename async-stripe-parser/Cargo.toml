@@ -1,5 +1,6 @@
 [package]
 name = "async-stripe-parser"
+publish = false
 version.workspace = true
 description.workspace = true
 rust-version.workspace = true
