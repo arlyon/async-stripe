@@ -51,7 +51,7 @@ async fn retry() {
     // Create a mock on the server.
     let mock = server.mock(|when, then| {
         when.method(GET).path("/v1/server-errors");
-        then.status(500);
+        then.status(500).header("Stripe-Should-Retry", "true");
     });
 
     let res = server_errors_req().send(&client).await;
@@ -66,7 +66,7 @@ async fn retry() {
     // Create a mock on the server.
     let mock = server.mock(|when, then| {
         when.method(GET).path("/v1/server-errors");
-        then.status(500);
+        then.status(500).header("Stripe-Should-Retry", "true");
     });
 
     let res = server_errors_req().request_strategy(RequestStrategy::Retry(5)).send(&client).await;
@@ -182,7 +182,7 @@ async fn retry_with_body() {
             .path("/v1/server-errors")
             .header("content-type", "application/x-www-form-urlencoded")
             .x_www_form_urlencoded_tuple("id", TEST_DATA_ID);
-        then.status(500);
+        then.status(500).header("Stripe-Should-Retry", "true");
     });
 
     let req = RequestBuilder::new(StripeMethod::Post, "/server-errors").form(&TestData::new());

@@ -1,7 +1,7 @@
 use std::time::Duration;
 
 fn is_status_client_error(status: u16) -> bool {
-    (400..500).contains(&status)
+    (400..500).contains(&status) && status != 429
 }
 
 /// Possible strategies for sending Stripe API requests, including retry behavior
