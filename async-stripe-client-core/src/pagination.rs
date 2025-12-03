@@ -1,3 +1,5 @@
+use std::collections::VecDeque;
+
 use miniserde::Deserialize;
 use serde::Serialize;
 use serde_json::Value;
@@ -40,7 +42,7 @@ pub trait PaginableList: Deserialize {
 pub struct ListParts<T> {
     pub total_count: Option<u64>,
     pub url: String,
-    pub data: Vec<T>,
+    pub data: VecDeque<T>,
     pub has_more: bool,
 }
 
@@ -57,13 +59,13 @@ where
             // claims search pagination can still include `total_count` if requested
             total_count: None,
             url: self.url,
-            data: self.data,
+            data: VecDeque::from(self.data),
             has_more: self.has_more,
         }
     }
 
     fn from_parts(parts: ListParts<Self::Data>) -> Self {
-        Self { data: parts.data, has_more: parts.has_more, url: parts.url }
+        Self { data: Vec::from(parts.data), has_more: parts.has_more, url: parts.url }
     }
 
     fn update_params(&mut self, params: &mut Value) {
@@ -87,7 +89,7 @@ where
         ListParts {
             total_count: self.total_count,
             url: self.url,
-            data: self.data,
+            data: VecDeque::from(self.data),
             has_more: self.has_more,
         }
     }
@@ -96,7 +98,7 @@ where
         Self {
             url: parts.url,
             has_more: parts.has_more,
-            data: parts.data,
+            data: Vec::from(parts.data),
             next_page: None,
             total_count: parts.total_count,
         }
@@ -206,7 +208,7 @@ where
     /// # Errors
     /// If any pagination request returns an error.
     pub fn get_all<C: StripeBlockingClient>(self, client: &C) -> Result<Vec<T::Data>, C::Err> {
-        let mut data = vec![];
+        let mut data = VecDeque::new();
         let mut parts = self.page.into_parts();
         let mut params = self.params;
         loop {
@@ -222,7 +224,7 @@ where
             next_page.update_params(&mut params);
             parts = next_page.into_parts();
         }
-        Ok(data)
+        Ok(Vec::from(data))
     }
 
     /// Get all values in this List, consuming self and lazily paginating until all values are fetched.
@@ -233,15 +235,8 @@ where
         self,
         client: &C,
     ) -> impl futures_util::Stream<Item = Result<T::Data, C::Err>> + Unpin {
-        // We are going to be popping items off the end of the list, so we need to reverse it.
-        let mut page = self.page.into_parts();
-        page.data.reverse();
-        let paginator = ListPaginator { page: T::from_parts(page), params: self.params };
-
-        Box::pin(futures_util::stream::unfold(
-            Some((paginator, client.clone())),
-            Self::unfold_stream,
-        ))
+        // Using VecDeque, we can pop from the front without needing to reverse
+        Box::pin(futures_util::stream::unfold(Some((self, client.clone())), Self::unfold_stream))
     }
 
     /// Unfold a single item from the stream.
@@ -250,7 +245,7 @@ where
     ) -> Option<(Result<T::Data, C::Err>, Option<(Self, C)>)> {
         let (paginator, client) = state?; // If none, our last request was an error, so stop here
         let mut parts = paginator.page.into_parts();
-        if let Some(next_val) = parts.data.pop() {
+        if let Some(next_val) = parts.data.pop_front() {
             // We have more data on this page
             return Some((
                 Ok(next_val),
@@ -271,10 +266,7 @@ where
 
                 let mut parts = next_page.into_parts();
 
-                // We are going to be popping items off the end of the list, so we need to reverse it.
-                parts.data.reverse();
-
-                let next_val = parts.data.pop()?;
+                let next_val = parts.data.pop_front()?;
 
                 // Yield last value of this page, the next page (and client) becomes the state
                 Some((Ok(next_val), Some((Self { page: T::from_parts(parts), params }, client))))
