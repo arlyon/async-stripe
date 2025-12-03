@@ -205,6 +205,12 @@ impl Webhook {
     ///
     /// This function will return a WebhookError if the payload could not be parsed
     pub fn insecure(payload: &str) -> Result<Event, WebhookError> {
+        if !cfg!(debug_assertions) {
+            tracing::warn!(
+                "Webhook::insecure() bypasses signature verification and should only be used for local testing. \
+                Use Webhook::construct_event() for production code."
+            );
+        }
         Self { current_timestamp: 0 }.parse_payload(payload)
     }
 
