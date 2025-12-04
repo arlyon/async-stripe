@@ -56,4 +56,4 @@ uuid = ["async-stripe-client-core/uuid"]
 [dev-dependencies]
 serde.workspace = true
 serde_json.workspace = true
-httpmock = { version = "0.7.0", default-features = false }
+httpmock = { version = "0.8.2", default-features = false }
