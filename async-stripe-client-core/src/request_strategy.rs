@@ -1,7 +1,7 @@
 use std::time::Duration;
 
 fn is_status_client_error(status: u16) -> bool {
-    (400..500).contains(&status)
+    (400..500).contains(&status) && status != 429
 }
 
 /// Possible strategies for sending Stripe API requests, including retry behavior
@@ -33,12 +33,23 @@ impl RequestStrategy {
         stripe_should_retry: Option<bool>,
         retry_count: u32,
     ) -> Outcome {
-        // if stripe explicitly says not to retry then don't
-        if !stripe_should_retry.unwrap_or(true) {
-            return Outcome::Stop;
-        }
-
         use RequestStrategy::*;
+
+        // Handle Stripe-Should-Retry header
+        match stripe_should_retry {
+            // If Stripe explicitly says not to retry, never retry
+            Some(false) => return Outcome::Stop,
+            // If Stripe explicitly says to retry, continue with retry logic
+            Some(true) => {}
+            // If header is absent, only retry for 429 (Too Many Requests)
+            None => {
+                if let Some(s) = status {
+                    if s != 429 {
+                        return Outcome::Stop;
+                    }
+                }
+            }
+        }
 
         match (self, status, retry_count) {
             // a strategy of once or idempotent should run once
@@ -226,5 +237,82 @@ mod tests {
     fn test_retry_header() {
         let strategy = RequestStrategy::Retry(3);
         assert_eq!(strategy.test(None, Some(false), 0), Outcome::Stop);
+    }
+
+    #[test]
+    fn test_stripe_should_retry_true() {
+        let strategy = RequestStrategy::Retry(3);
+        // When Stripe-Should-Retry is true, should retry regardless of status code
+        assert_eq!(strategy.test(Some(500), Some(true), 0), Outcome::Continue(None));
+        assert_eq!(strategy.test(Some(503), Some(true), 0), Outcome::Continue(None));
+        // Except for client errors (4xx)
+        assert_eq!(strategy.test(Some(400), Some(true), 0), Outcome::Stop);
+        assert_eq!(strategy.test(Some(404), Some(true), 0), Outcome::Stop);
+    }
+
+    #[test]
+    fn test_stripe_should_retry_false() {
+        let strategy = RequestStrategy::Retry(3);
+        // When Stripe-Should-Retry is false, never retry
+        assert_eq!(strategy.test(Some(429), Some(false), 0), Outcome::Stop);
+        assert_eq!(strategy.test(Some(500), Some(false), 0), Outcome::Stop);
+        assert_eq!(strategy.test(Some(200), Some(false), 0), Outcome::Stop);
+    }
+
+    #[test]
+    fn test_stripe_should_retry_absent_429() {
+        let strategy = RequestStrategy::Retry(3);
+        // When header is absent and status is 429, should retry
+        assert_eq!(strategy.test(Some(429), None, 0), Outcome::Continue(None));
+        assert_eq!(strategy.test(Some(429), None, 1), Outcome::Continue(None));
+    }
+
+    #[test]
+    fn test_stripe_should_retry_absent_500() {
+        let strategy = RequestStrategy::Retry(3);
+        // When header is absent and status is 500, should NOT retry
+        assert_eq!(strategy.test(Some(500), None, 0), Outcome::Stop);
+        assert_eq!(strategy.test(Some(503), None, 0), Outcome::Stop);
+    }
+
+    #[test]
+    fn test_stripe_should_retry_absent_4xx() {
+        let strategy = RequestStrategy::Retry(3);
+        // When header is absent and status is 4xx, should NOT retry
+        assert_eq!(strategy.test(Some(400), None, 0), Outcome::Stop);
+        assert_eq!(strategy.test(Some(404), None, 0), Outcome::Stop);
+    }
+
+    #[test]
+    fn test_backoff_with_stripe_should_retry() {
+        let strategy = RequestStrategy::ExponentialBackoff(3);
+        // Test that exponential backoff works with Stripe-Should-Retry=true
+        assert_eq!(
+            strategy.test(Some(500), Some(true), 0),
+            Outcome::Continue(Some(Duration::from_secs(1)))
+        );
+        assert_eq!(
+            strategy.test(Some(500), Some(true), 1),
+            Outcome::Continue(Some(Duration::from_secs(2)))
+        );
+        assert_eq!(
+            strategy.test(Some(500), Some(true), 2),
+            Outcome::Continue(Some(Duration::from_secs(4)))
+        );
+        assert_eq!(strategy.test(Some(500), Some(true), 3), Outcome::Stop);
+    }
+
+    #[test]
+    fn test_backoff_with_429_no_header() {
+        let strategy = RequestStrategy::ExponentialBackoff(3);
+        // Test that exponential backoff works with 429 when header is absent
+        assert_eq!(
+            strategy.test(Some(429), None, 0),
+            Outcome::Continue(Some(Duration::from_secs(1)))
+        );
+        assert_eq!(
+            strategy.test(Some(429), None, 1),
+            Outcome::Continue(Some(Duration::from_secs(2)))
+        );
     }
 }
