@@ -5,6 +5,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [1.0.0-alpha.9](https://github.com/arlyon/async-stripe/compare/async-stripe-client-core-v1.0.0-alpha.8...async-stripe-client-core-v1.0.0-alpha.9) - 2025-12-04
+
+### Fixed
+
+- fix tests
+
+### Other
+
+- Merge pull request #804 from arlyon/claude/issue-722-20251126-2114
+- Fix retry mechanism to follow Stripe documentation
+- update readme
+- make site public and add docs
+
 ## [1.0.0-alpha.8](https://github.com/arlyon/async-stripe/compare/async-stripe-client-core-v1.0.0-alpha.7...async-stripe-client-core-v1.0.0-alpha.8) - 2025-11-26
 
 ### Fixed
