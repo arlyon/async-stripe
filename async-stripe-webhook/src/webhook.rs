@@ -12,10 +12,12 @@ use crate::{EventObject, WebhookError};
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 pub struct Event {
     /// The connected account that originated the event.
+    #[cfg_attr(feature = "serialize", serde(skip_serializing_if = "Option::is_none"))]
     pub account: Option<String>,
     /// The Stripe API version used to render `data`.
     ///
     /// *Note: This property is populated only for events on or after October 31, 2014*.
+    #[cfg_attr(feature = "serialize", serde(skip_serializing_if = "Option::is_none"))]
     pub api_version: Option<ApiVersion>,
     /// Time at which the object was created.
     ///
@@ -26,12 +28,26 @@ pub struct Event {
     pub id: stripe_shared::event::EventId,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
+    /// String representing the object's type. Always has the value "event".
+    #[cfg_attr(feature = "serialize", serde(rename = "object"))]
+    pub object: EventObjectType,
     /// Number of webhooks that have yet to be successfully delivered (i.e., to return a 20x response) to the URLs you've specified.
     pub pending_webhooks: i64,
     /// Information on the API request that instigated the event.
+    #[cfg_attr(feature = "serialize", serde(skip_serializing_if = "Option::is_none"))]
     pub request: Option<stripe_shared::NotificationEventRequest>,
     /// Description of the event (e.g., `invoice.created` or `charge.refunded`).
+    #[cfg_attr(feature = "serialize", serde(rename = "type"))]
     pub type_: EventType,
+}
+
+/// The object type for Event. Always has the value "event".
+#[derive(Clone, Debug, PartialEq, Eq)]
+#[cfg_attr(feature = "serialize", derive(serde::Serialize))]
+#[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
+pub enum EventObjectType {
+    #[cfg_attr(any(feature = "serialize", feature = "deserialize"), serde(rename = "event"))]
+    Event,
 }
 
 #[derive(Clone, Debug)]
@@ -50,6 +66,7 @@ pub struct EventData {
         any(feature = "deserialize", feature = "serialize"),
         serde(with = "stripe_types::with_serde_json_opt")
     )]
+    #[cfg_attr(feature = "serialize", serde(skip_serializing_if = "Option::is_none"))]
     pub previous_attributes: Option<miniserde::json::Value>,
 }
 
@@ -121,6 +138,7 @@ impl<'de> serde::Deserialize<'de> for Event {
             data: EventData { object, previous_attributes },
             id: proxy.id,
             livemode: proxy.livemode,
+            object: EventObjectType::Event,
             pending_webhooks: proxy.pending_webhooks,
             request: proxy.request,
             type_: proxy.type_,
@@ -312,6 +330,7 @@ impl Webhook {
             },
             id: base_evt.id,
             livemode: base_evt.livemode,
+            object: EventObjectType::Event,
             pending_webhooks: base_evt.pending_webhooks,
             request: base_evt.request,
             type_: base_evt.type_,

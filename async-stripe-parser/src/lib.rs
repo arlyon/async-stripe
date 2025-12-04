@@ -207,4 +207,60 @@ mod tests {
         let result = parse("Event", payload);
         insta::assert_snapshot!(result.unwrap_err());
     }
+    #[test]
+    fn test_roundtrip() {
+        let payload = r#"{
+          "id": "evt_1SYARgFuzxtsmcCa56A419qD",
+          "object": "event",
+          "api_version": "2024-06-20",
+          "created": 1764270096,
+          "data": {
+            "object": {
+              "object": "entitlements.active_entitlement_summary",
+              "customer": "cus_TVAmqNlyaYgEBn",
+              "entitlements": {
+                "object": "list",
+                "data": [
+                  {
+                    "id": "ent_61ThYP2iCNV4w0FC341FuzxtsmcCaIqu",
+                    "object": "entitlements.active_entitlement",
+                    "feature": "feat_61RwMxrXpU9nzwARs41FuzxtsmcCa6hs",
+                    "livemode": true,
+                    "lookup_key": "ai-insights"
+                  }
+                ],
+                "has_more": false,
+                "url": "/v1/customer/cus_TVAmqNlyaYgEBn/entitlements"
+              },
+              "livemode": true
+            },
+            "previous_attributes": {
+              "entitlements": {
+                "data": []
+              }
+            }
+          },
+          "livemode": true,
+          "pending_webhooks": 2,
+          "request": {
+            "id": null,
+            "idempotency_key": null
+          },
+          "type": "entitlements.active_entitlement_summary.updated"
+        }"#;
+
+        let event: stripe_webhook::Event =
+            serde_json::from_str(payload).expect("Failed to deserialize");
+        let serialized = serde_json::to_string(&event).expect("Failed to serialize");
+        println!("{}", serialized);
+        let event_2: stripe_webhook::Event =
+            serde_json::from_str(&serialized).expect("Failed to deserialize");
+
+        let original_value: serde_json::Value = serde_json::from_str(payload).unwrap();
+        let serialized_value: serde_json::Value = serde_json::from_str(&serialized).unwrap();
+
+        println!("{:#?}\n\n{:#?}", event, event_2);
+
+        assert_eq!(original_value, serialized_value);
+    }
 }

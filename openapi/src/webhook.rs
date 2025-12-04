@@ -95,6 +95,7 @@ fn write_event_object(components: &Components, out_path: &Path) -> anyhow::Resul
     let _ = writedoc! {out, r#"
     #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
     #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
+    #[cfg_attr(any(feature = "serialize", feature = "deserialize"), serde(untagged))]
     #[non_exhaustive]
     /// The event data for a webhook event.
     pub enum EventObject {{

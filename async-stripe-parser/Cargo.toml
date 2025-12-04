@@ -30,7 +30,7 @@ async-stripe-product = { features = ["full", "deserialize"],version = "1.0.0-alp
 async-stripe-shared = { features = ["deserialize"],version = "1.0.0-alpha.8", path = "../generated/async-stripe-shared" }
 async-stripe-terminal = {features = ["full", "deserialize"], version = "1.0.0-alpha.8", path = "../generated/async-stripe-terminal" }
 async-stripe-treasury = {features = ["full", "deserialize"], version = "1.0.0-alpha.8", path = "../generated/async-stripe-treasury" }
-async-stripe-webhook = { version = "1.0.0-alpha.8", path = "../async-stripe-webhook", features = ["deserialize", "full", "detailed-errors"] }
+async-stripe-webhook = { version = "1.0.0-alpha.8", path = "../async-stripe-webhook", features = ["deserialize", "serialize", "full", "detailed-errors"] }
 serde.workspace = true
 serde_json.workspace = true
 serde_path_to_error = "0.1.20"
