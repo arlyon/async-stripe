@@ -1,6 +1,6 @@
 /// Issue a credit note to adjust an invoice's amount after the invoice is finalized.
 ///
-/// Related guide: [Credit notes](https://stripe.com/docs/billing/invoices/credit-notes)
+/// Related guide: [Credit notes](https://docs.stripe.com/billing/invoices/credit-notes)
 ///
 /// For more details see <<https://stripe.com/docs/api/credit_notes/object>>.
 #[derive(Clone, Debug)]
@@ -17,6 +17,8 @@ pub struct CreditNote {
     pub currency: stripe_types::Currency,
     /// ID of the customer.
     pub customer: stripe_types::Expandable<stripe_shared::Customer>,
+    /// ID of the account representing the customer.
+    pub customer_account: Option<String>,
     /// Customer balance transaction related to this credit note.
     pub customer_balance_transaction:
         Option<stripe_types::Expandable<stripe_shared::CustomerBalanceTransaction>>,
@@ -38,7 +40,7 @@ pub struct CreditNote {
     pub livemode: bool,
     /// Customer-facing text that appears on the credit note PDF.
     pub memo: Option<String>,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: Option<std::collections::HashMap<String, String>>,
     /// A unique number that identifies this particular credit note and appears on the PDF of the credit note and its associated invoice.
@@ -60,7 +62,7 @@ pub struct CreditNote {
     /// The details of the cost of shipping, including the ShippingRate applied to the invoice.
     pub shipping_cost: Option<stripe_shared::InvoicesResourceShippingCost>,
     /// Status of this credit note, one of `issued` or `void`.
-    /// Learn more about [voiding credit notes](https://stripe.com/docs/billing/invoices/credit-notes#voiding).
+    /// Learn more about [voiding credit notes](https://docs.stripe.com/billing/invoices/credit-notes#voiding).
     pub status: CreditNoteStatus,
     /// The integer amount in cents (or local equivalent) representing the amount of the credit note, excluding exclusive tax and invoice level discounts.
     pub subtotal: i64,
@@ -87,6 +89,7 @@ pub struct CreditNoteBuilder {
     created: Option<stripe_types::Timestamp>,
     currency: Option<stripe_types::Currency>,
     customer: Option<stripe_types::Expandable<stripe_shared::Customer>>,
+    customer_account: Option<Option<String>>,
     customer_balance_transaction:
         Option<Option<stripe_types::Expandable<stripe_shared::CustomerBalanceTransaction>>>,
     discount_amount: Option<i64>,
@@ -162,6 +165,7 @@ const _: () = {
                 "created" => Deserialize::begin(&mut self.created),
                 "currency" => Deserialize::begin(&mut self.currency),
                 "customer" => Deserialize::begin(&mut self.customer),
+                "customer_account" => Deserialize::begin(&mut self.customer_account),
                 "customer_balance_transaction" => {
                     Deserialize::begin(&mut self.customer_balance_transaction)
                 }
@@ -202,6 +206,7 @@ const _: () = {
                 created: Deserialize::default(),
                 currency: Deserialize::default(),
                 customer: Deserialize::default(),
+                customer_account: Deserialize::default(),
                 customer_balance_transaction: Deserialize::default(),
                 discount_amount: Deserialize::default(),
                 discount_amounts: Deserialize::default(),
@@ -239,6 +244,7 @@ const _: () = {
                 Some(created),
                 Some(currency),
                 Some(customer),
+                Some(customer_account),
                 Some(customer_balance_transaction),
                 Some(discount_amount),
                 Some(discount_amounts),
@@ -272,6 +278,7 @@ const _: () = {
                 self.created,
                 self.currency.take(),
                 self.customer.take(),
+                self.customer_account.take(),
                 self.customer_balance_transaction.take(),
                 self.discount_amount,
                 self.discount_amounts.take(),
@@ -309,6 +316,7 @@ const _: () = {
                 created,
                 currency,
                 customer,
+                customer_account,
                 customer_balance_transaction,
                 discount_amount,
                 discount_amounts,
@@ -368,6 +376,7 @@ const _: () = {
                     "created" => b.created = FromValueOpt::from_value(v),
                     "currency" => b.currency = FromValueOpt::from_value(v),
                     "customer" => b.customer = FromValueOpt::from_value(v),
+                    "customer_account" => b.customer_account = FromValueOpt::from_value(v),
                     "customer_balance_transaction" => {
                         b.customer_balance_transaction = FromValueOpt::from_value(v)
                     }
@@ -412,12 +421,13 @@ const _: () = {
 impl serde::Serialize for CreditNote {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("CreditNote", 33)?;
+        let mut s = s.serialize_struct("CreditNote", 34)?;
         s.serialize_field("amount", &self.amount)?;
         s.serialize_field("amount_shipping", &self.amount_shipping)?;
         s.serialize_field("created", &self.created)?;
         s.serialize_field("currency", &self.currency)?;
         s.serialize_field("customer", &self.customer)?;
+        s.serialize_field("customer_account", &self.customer_account)?;
         s.serialize_field("customer_balance_transaction", &self.customer_balance_transaction)?;
         s.serialize_field("discount_amount", &self.discount_amount)?;
         s.serialize_field("discount_amounts", &self.discount_amounts)?;
@@ -451,7 +461,7 @@ impl serde::Serialize for CreditNote {
     }
 }
 /// Status of this credit note, one of `issued` or `void`.
-/// Learn more about [voiding credit notes](https://stripe.com/docs/billing/invoices/credit-notes#voiding).
+/// Learn more about [voiding credit notes](https://docs.stripe.com/billing/invoices/credit-notes#voiding).
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum CreditNoteStatus {

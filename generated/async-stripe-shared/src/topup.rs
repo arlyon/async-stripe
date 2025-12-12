@@ -2,7 +2,7 @@
 /// individual top-ups, as well as list all top-ups. Top-ups are identified by a
 /// unique, random ID.
 ///
-/// Related guide: [Topping up your platform account](https://stripe.com/docs/connect/top-ups)
+/// Related guide: [Topping up your platform account](https://docs.stripe.com/connect/top-ups)
 ///
 /// For more details see <<https://stripe.com/docs/api/topups/object>>.
 #[derive(Clone, Debug)]
@@ -24,7 +24,7 @@ pub struct Topup {
     /// This factors in delays like weekends or bank holidays.
     /// May not be specified depending on status of top-up.
     pub expected_availability_date: Option<stripe_types::Timestamp>,
-    /// Error code explaining reason for top-up failure if available (see [the errors section](https://stripe.com/docs/api#errors) for a list of codes).
+    /// Error code explaining reason for top-up failure if available (see [the errors section](https://docs.stripe.com/api#errors) for a list of codes).
     pub failure_code: Option<String>,
     /// Message to user further explaining reason for top-up failure if available.
     pub failure_message: Option<String>,
@@ -32,7 +32,7 @@ pub struct Topup {
     pub id: stripe_shared::TopupId,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: std::collections::HashMap<String, String>,
     /// The source field is deprecated. It might not always be present in the API response.

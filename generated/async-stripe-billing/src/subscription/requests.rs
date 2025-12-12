@@ -257,6 +257,8 @@ struct ListSubscriptionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     customer: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    customer_account: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -282,6 +284,7 @@ impl ListSubscriptionBuilder {
             current_period_end: None,
             current_period_start: None,
             customer: None,
+            customer_account: None,
             ending_before: None,
             expand: None,
             limit: None,
@@ -306,7 +309,7 @@ impl ListSubscriptionAutomaticTax {
 }
 /// The status of the subscriptions to retrieve.
 /// Passing in a value of `canceled` will return all canceled subscriptions, including those belonging to deleted customers.
-/// Pass `ended` to find subscriptions that are canceled and subscriptions that are expired due to [incomplete payment](https://stripe.com/docs/billing/subscriptions/overview#subscription-statuses).
+/// Pass `ended` to find subscriptions that are canceled and subscriptions that are expired due to [incomplete payment](https://docs.stripe.com/billing/subscriptions/overview#subscription-statuses).
 /// Passing in a value of `all` will return subscriptions of all statuses.
 /// If no value is supplied, all subscriptions that have not been canceled are returned.
 #[derive(Clone, Eq, PartialEq)]
@@ -439,9 +442,14 @@ impl ListSubscription {
         self.inner.current_period_start = Some(current_period_start.into());
         self
     }
-    /// The ID of the customer whose subscriptions will be retrieved.
+    /// The ID of the customer whose subscriptions you're retrieving.
     pub fn customer(mut self, customer: impl Into<String>) -> Self {
         self.inner.customer = Some(customer.into());
+        self
+    }
+    /// The ID of the account representing the customer whose subscriptions you're retrieving.
+    pub fn customer_account(mut self, customer_account: impl Into<String>) -> Self {
+        self.inner.customer_account = Some(customer_account.into());
         self
     }
     /// A cursor for use in pagination.
@@ -481,7 +489,7 @@ impl ListSubscription {
     }
     /// The status of the subscriptions to retrieve.
     /// Passing in a value of `canceled` will return all canceled subscriptions, including those belonging to deleted customers.
-    /// Pass `ended` to find subscriptions that are canceled and subscriptions that are expired due to [incomplete payment](https://stripe.com/docs/billing/subscriptions/overview#subscription-statuses).
+    /// Pass `ended` to find subscriptions that are canceled and subscriptions that are expired due to [incomplete payment](https://docs.stripe.com/billing/subscriptions/overview#subscription-statuses).
     /// Passing in a value of `all` will return subscriptions of all statuses.
     /// If no value is supplied, all subscriptions that have not been canceled are returned.
     pub fn status(mut self, status: impl Into<ListSubscriptionStatus>) -> Self {
@@ -695,7 +703,10 @@ struct CreateSubscriptionBuilder {
     collection_method: Option<stripe_shared::SubscriptionCollectionMethod>,
     #[serde(skip_serializing_if = "Option::is_none")]
     currency: Option<stripe_types::Currency>,
-    customer: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    customer: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    customer_account: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     days_until_due: Option<u32>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -740,7 +751,7 @@ struct CreateSubscriptionBuilder {
     trial_settings: Option<CreateSubscriptionTrialSettings>,
 }
 impl CreateSubscriptionBuilder {
-    fn new(customer: impl Into<String>) -> Self {
+    fn new() -> Self {
         Self {
             add_invoice_items: None,
             application_fee_percent: None,
@@ -754,7 +765,8 @@ impl CreateSubscriptionBuilder {
             cancel_at_period_end: None,
             collection_method: None,
             currency: None,
-            customer: customer.into(),
+            customer: None,
+            customer_account: None,
             days_until_due: None,
             default_payment_method: None,
             default_source: None,
@@ -786,7 +798,7 @@ pub struct CreateSubscriptionAddInvoiceItems {
     /// The coupons to redeem into discounts for the item.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub discounts: Option<Vec<DiscountsDataParam>>,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
@@ -799,7 +811,7 @@ pub struct CreateSubscriptionAddInvoiceItems {
     /// The ID of the price object. One of `price` or `price_data` is required.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub price: Option<String>,
-    /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
+    /// Data used to generate a new [Price](https://docs.stripe.com/api/prices) object inline.
     /// One of `price` or `price_data` is required.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub price_data: Option<CreateSubscriptionAddInvoiceItemsPriceData>,
@@ -1010,7 +1022,7 @@ impl<'de> serde::Deserialize<'de> for CreateSubscriptionAddInvoiceItemsPeriodSta
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-/// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
+/// Data used to generate a new [Price](https://docs.stripe.com/api/prices) object inline.
 /// One of `price` or `price_data` is required.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateSubscriptionAddInvoiceItemsPriceData {
@@ -1019,7 +1031,7 @@ pub struct CreateSubscriptionAddInvoiceItemsPriceData {
     pub currency: stripe_types::Currency,
     /// The ID of the [Product](https://docs.stripe.com/api/products) that this [Price](https://docs.stripe.com/api/prices) will belong to.
     pub product: String,
-    /// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
+    /// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
     /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
     /// One of `inclusive`, `exclusive`, or `unspecified`.
     /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
@@ -1044,7 +1056,7 @@ impl CreateSubscriptionAddInvoiceItemsPriceData {
         }
     }
 }
-/// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
+/// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
 /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
 /// One of `inclusive`, `exclusive`, or `unspecified`.
 /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
@@ -1531,7 +1543,7 @@ pub struct CreateSubscriptionItems {
     /// The coupons to redeem into discounts for the subscription item.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub discounts: Option<Vec<DiscountsDataParam>>,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
@@ -1543,14 +1555,14 @@ pub struct CreateSubscriptionItems {
     /// The ID of the price object.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub price: Option<String>,
-    /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
+    /// Data used to generate a new [Price](https://docs.stripe.com/api/prices) object inline.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub price_data: Option<CreateSubscriptionItemsPriceData>,
     /// Quantity for this item.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub quantity: Option<u64>,
-    /// A list of [Tax Rate](https://stripe.com/docs/api/tax_rates) ids.
-    /// These Tax Rates will override the [`default_tax_rates`](https://stripe.com/docs/api/subscriptions/create#create_subscription-default_tax_rates) on the Subscription.
+    /// A list of [Tax Rate](https://docs.stripe.com/api/tax_rates) ids.
+    /// These Tax Rates will override the [`default_tax_rates`](https://docs.stripe.com/api/subscriptions/create#create_subscription-default_tax_rates) on the Subscription.
     /// When updating, pass an empty string to remove previously-defined tax rates.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_rates: Option<Vec<String>>,
@@ -1574,7 +1586,7 @@ impl Default for CreateSubscriptionItems {
         Self::new()
     }
 }
-/// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
+/// Data used to generate a new [Price](https://docs.stripe.com/api/prices) object inline.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateSubscriptionItemsPriceData {
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
@@ -1584,7 +1596,7 @@ pub struct CreateSubscriptionItemsPriceData {
     pub product: String,
     /// The recurring components of a price such as `interval` and `interval_count`.
     pub recurring: CreateSubscriptionItemsPriceDataRecurring,
-    /// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
+    /// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
     /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
     /// One of `inclusive`, `exclusive`, or `unspecified`.
     /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
@@ -1701,7 +1713,7 @@ impl<'de> serde::Deserialize<'de> for CreateSubscriptionItemsPriceDataRecurringI
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-/// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
+/// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
 /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
 /// One of `inclusive`, `exclusive`, or `unspecified`.
 /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
@@ -1777,18 +1789,18 @@ impl<'de> serde::Deserialize<'de> for CreateSubscriptionItemsPriceDataTaxBehavio
 /// Use `allow_incomplete` to create Subscriptions with `status=incomplete` if the first invoice can't be paid.
 /// Creating Subscriptions with this status allows you to manage scenarios where additional customer actions are needed to pay a subscription's invoice.
 /// For example, SCA regulation may require 3DS authentication to complete payment.
-/// See the [SCA Migration Guide](https://stripe.com/docs/billing/migration/strong-customer-authentication) for Billing to learn more.
+/// See the [SCA Migration Guide](https://docs.stripe.com/billing/migration/strong-customer-authentication) for Billing to learn more.
 /// This is the default behavior.
 ///
 /// Use `default_incomplete` to create Subscriptions with `status=incomplete` when the first invoice requires payment, otherwise start as active.
 /// Subscriptions transition to `status=active` when successfully confirming the PaymentIntent on the first invoice.
-/// This allows simpler management of scenarios where additional customer actions are needed to pay a subscription’s invoice, such as failed payments, [SCA regulation](https://stripe.com/docs/billing/migration/strong-customer-authentication), or collecting a mandate for a bank debit payment method.
+/// This allows simpler management of scenarios where additional customer actions are needed to pay a subscription’s invoice, such as failed payments, [SCA regulation](https://docs.stripe.com/billing/migration/strong-customer-authentication), or collecting a mandate for a bank debit payment method.
 /// If the PaymentIntent is not confirmed within 23 hours Subscriptions transition to `status=incomplete_expired`, which is a terminal state.
 ///
 /// Use `error_if_incomplete` if you want Stripe to return an HTTP 402 status code if a subscription's first invoice can't be paid.
 /// For example, if a payment method requires 3DS authentication due to SCA regulation and further customer action is needed, this parameter doesn't create a Subscription and returns an error instead.
 /// This was the default behavior for API versions prior to 2019-03-14.
-/// See the [changelog](https://stripe.com/docs/upgrades#2019-03-14) to learn more.
+/// See the [changelog](https://docs.stripe.com/upgrades#2019-03-14) to learn more.
 ///
 /// `pending_if_incomplete` is only used with updates and cannot be passed when creating a Subscription.
 ///
@@ -1914,6 +1926,9 @@ pub struct CreateSubscriptionPaymentSettingsPaymentMethodOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
     pub konbini: Option<miniserde::json::Value>,
+    /// This sub-hash contains details about the PayTo payment method options to pass to the invoice’s PaymentIntent.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payto: Option<CreateSubscriptionPaymentSettingsPaymentMethodOptionsPayto>,
     /// This sub-hash contains details about the SEPA Direct Debit payment method options to pass to the invoice’s PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
@@ -1930,6 +1945,7 @@ impl CreateSubscriptionPaymentSettingsPaymentMethodOptions {
             card: None,
             customer_balance: None,
             konbini: None,
+            payto: None,
             sepa_debit: None,
             us_bank_account: None,
         }
@@ -2246,9 +2262,9 @@ pub struct CreateSubscriptionPaymentSettingsPaymentMethodOptionsCard {
     /// Can be only set confirm-time.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub network: Option<CreateSubscriptionPaymentSettingsPaymentMethodOptionsCardNetwork>,
-    /// We strongly recommend that you rely on our SCA Engine to automatically prompt your customers for authentication based on risk level and [other requirements](https://stripe.com/docs/strong-customer-authentication).
+    /// We strongly recommend that you rely on our SCA Engine to automatically prompt your customers for authentication based on risk level and [other requirements](https://docs.stripe.com/strong-customer-authentication).
     /// However, if you wish to request 3D Secure based on logic from your own fraud engine, provide this option.
-    /// Read our guide on [manually requesting 3D Secure](https://stripe.com/docs/payments/3d-secure/authentication-flow#manual-three-ds) for more information on how this configuration interacts with Radar and our SCA Engine.
+    /// Read our guide on [manually requesting 3D Secure](https://docs.stripe.com/payments/3d-secure/authentication-flow#manual-three-ds) for more information on how this configuration interacts with Radar and our SCA Engine.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub request_three_d_secure:
         Option<CreateSubscriptionPaymentSettingsPaymentMethodOptionsCardRequestThreeDSecure>,
@@ -2469,9 +2485,9 @@ impl<'de> serde::Deserialize<'de>
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-/// We strongly recommend that you rely on our SCA Engine to automatically prompt your customers for authentication based on risk level and [other requirements](https://stripe.com/docs/strong-customer-authentication).
+/// We strongly recommend that you rely on our SCA Engine to automatically prompt your customers for authentication based on risk level and [other requirements](https://docs.stripe.com/strong-customer-authentication).
 /// However, if you wish to request 3D Secure based on logic from your own fraud engine, provide this option.
-/// Read our guide on [manually requesting 3D Secure](https://stripe.com/docs/payments/3d-secure/authentication-flow#manual-three-ds) for more information on how this configuration interacts with Radar and our SCA Engine.
+/// Read our guide on [manually requesting 3D Secure](https://docs.stripe.com/payments/3d-secure/authentication-flow#manual-three-ds) for more information on how this configuration interacts with Radar and our SCA Engine.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum CreateSubscriptionPaymentSettingsPaymentMethodOptionsCardRequestThreeDSecure {
@@ -2542,6 +2558,148 @@ impl serde::Serialize
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de>
     for CreateSubscriptionPaymentSettingsPaymentMethodOptionsCardRequestThreeDSecure
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// This sub-hash contains details about the PayTo payment method options to pass to the invoice’s PaymentIntent.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateSubscriptionPaymentSettingsPaymentMethodOptionsPayto {
+    /// Additional fields for Mandate creation.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mandate_options:
+        Option<CreateSubscriptionPaymentSettingsPaymentMethodOptionsPaytoMandateOptions>,
+}
+impl CreateSubscriptionPaymentSettingsPaymentMethodOptionsPayto {
+    pub fn new() -> Self {
+        Self { mandate_options: None }
+    }
+}
+impl Default for CreateSubscriptionPaymentSettingsPaymentMethodOptionsPayto {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Additional fields for Mandate creation.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateSubscriptionPaymentSettingsPaymentMethodOptionsPaytoMandateOptions {
+    /// The maximum amount that can be collected in a single invoice.
+    /// If you don't specify a maximum, then there is no limit.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount: Option<i64>,
+    /// The purpose for which payments are made. Has a default value based on your merchant category code.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub purpose:
+        Option<CreateSubscriptionPaymentSettingsPaymentMethodOptionsPaytoMandateOptionsPurpose>,
+}
+impl CreateSubscriptionPaymentSettingsPaymentMethodOptionsPaytoMandateOptions {
+    pub fn new() -> Self {
+        Self { amount: None, purpose: None }
+    }
+}
+impl Default for CreateSubscriptionPaymentSettingsPaymentMethodOptionsPaytoMandateOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The purpose for which payments are made. Has a default value based on your merchant category code.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreateSubscriptionPaymentSettingsPaymentMethodOptionsPaytoMandateOptionsPurpose {
+    DependantSupport,
+    Government,
+    Loan,
+    Mortgage,
+    Other,
+    Pension,
+    Personal,
+    Retail,
+    Salary,
+    Tax,
+    Utility,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreateSubscriptionPaymentSettingsPaymentMethodOptionsPaytoMandateOptionsPurpose {
+    pub fn as_str(&self) -> &str {
+        use CreateSubscriptionPaymentSettingsPaymentMethodOptionsPaytoMandateOptionsPurpose::*;
+        match self {
+            DependantSupport => "dependant_support",
+            Government => "government",
+            Loan => "loan",
+            Mortgage => "mortgage",
+            Other => "other",
+            Pension => "pension",
+            Personal => "personal",
+            Retail => "retail",
+            Salary => "salary",
+            Tax => "tax",
+            Utility => "utility",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr
+    for CreateSubscriptionPaymentSettingsPaymentMethodOptionsPaytoMandateOptionsPurpose
+{
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateSubscriptionPaymentSettingsPaymentMethodOptionsPaytoMandateOptionsPurpose::*;
+        match s {
+            "dependant_support" => Ok(DependantSupport),
+            "government" => Ok(Government),
+            "loan" => Ok(Loan),
+            "mortgage" => Ok(Mortgage),
+            "other" => Ok(Other),
+            "pension" => Ok(Pension),
+            "personal" => Ok(Personal),
+            "retail" => Ok(Retail),
+            "salary" => Ok(Salary),
+            "tax" => Ok(Tax),
+            "utility" => Ok(Utility),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateSubscriptionPaymentSettingsPaymentMethodOptionsPaytoMandateOptionsPurpose"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display
+    for CreateSubscriptionPaymentSettingsPaymentMethodOptionsPaytoMandateOptionsPurpose
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug
+    for CreateSubscriptionPaymentSettingsPaymentMethodOptionsPaytoMandateOptionsPurpose
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize
+    for CreateSubscriptionPaymentSettingsPaymentMethodOptionsPaytoMandateOptionsPurpose
+{
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateSubscriptionPaymentSettingsPaymentMethodOptionsPaytoMandateOptionsPurpose
 {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
@@ -2924,6 +3082,7 @@ pub enum CreateSubscriptionPaymentSettingsPaymentMethodTypes {
     Payco,
     Paynow,
     Paypal,
+    Payto,
     Promptpay,
     RevolutPay,
     SepaCreditTransfer,
@@ -2971,6 +3130,7 @@ impl CreateSubscriptionPaymentSettingsPaymentMethodTypes {
             Payco => "payco",
             Paynow => "paynow",
             Paypal => "paypal",
+            Payto => "payto",
             Promptpay => "promptpay",
             RevolutPay => "revolut_pay",
             SepaCreditTransfer => "sepa_credit_transfer",
@@ -3021,6 +3181,7 @@ impl std::str::FromStr for CreateSubscriptionPaymentSettingsPaymentMethodTypes {
             "payco" => Ok(Payco),
             "paynow" => Ok(Paynow),
             "paypal" => Ok(Paypal),
+            "payto" => Ok(Payto),
             "promptpay" => Ok(Promptpay),
             "revolut_pay" => Ok(RevolutPay),
             "sepa_credit_transfer" => Ok(SepaCreditTransfer),
@@ -3134,7 +3295,7 @@ impl<'de> serde::Deserialize<'de> for CreateSubscriptionPaymentSettingsSaveDefau
     }
 }
 /// Specifies an interval for how often to bill for any pending invoice items.
-/// It is analogous to calling [Create an invoice](https://stripe.com/docs/api#create_invoice) for the given subscription at the specified interval.
+/// It is analogous to calling [Create an invoice](https://docs.stripe.com/api#create_invoice) for the given subscription at the specified interval.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateSubscriptionPendingInvoiceItemInterval {
     /// Specifies invoicing frequency. Either `day`, `week`, `month` or `year`.
@@ -3221,7 +3382,7 @@ impl<'de> serde::Deserialize<'de> for CreateSubscriptionPendingInvoiceItemInterv
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-/// Determines how to handle [prorations](https://stripe.com/docs/billing/subscriptions/prorations) resulting from the `billing_cycle_anchor`.
+/// Determines how to handle [prorations](https://docs.stripe.com/billing/subscriptions/prorations) resulting from the `billing_cycle_anchor`.
 /// If no value is passed, the default is `create_prorations`.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
@@ -3294,7 +3455,7 @@ impl<'de> serde::Deserialize<'de> for CreateSubscriptionProrationBehavior {
 /// If set, trial_end will override the default trial period of the plan the customer is being subscribed to.
 /// The special value `now` can be provided to end the customer's trial immediately.
 /// Can be at most two years from `billing_cycle_anchor`.
-/// See [Using trial periods on subscriptions](https://stripe.com/docs/billing/subscriptions/trials) to learn more.
+/// See [Using trial periods on subscriptions](https://docs.stripe.com/billing/subscriptions/trials) to learn more.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 #[serde(rename_all = "snake_case")]
 pub enum CreateSubscriptionTrialEnd {
@@ -3412,8 +3573,8 @@ pub struct CreateSubscription {
 }
 impl CreateSubscription {
     /// Construct a new `CreateSubscription`.
-    pub fn new(customer: impl Into<String>) -> Self {
-        Self { inner: CreateSubscriptionBuilder::new(customer.into()) }
+    pub fn new() -> Self {
+        Self { inner: CreateSubscriptionBuilder::new() }
     }
     /// A list of prices and quantities that will generate invoice items appended to the next invoice for this subscription.
     /// You may pass up to 20 items.
@@ -3450,7 +3611,7 @@ impl CreateSubscription {
         self.inner.backdate_start_date = Some(backdate_start_date.into());
         self
     }
-    /// A future timestamp in UTC format to anchor the subscription's [billing cycle](https://stripe.com/docs/subscriptions/billing-cycle).
+    /// A future timestamp in UTC format to anchor the subscription's [billing cycle](https://docs.stripe.com/subscriptions/billing-cycle).
     /// The anchor is the reference point that aligns future billing cycle dates.
     /// It sets the day of week for `week` intervals, the day of month for `month` and `year` intervals, and the month of year for `year` intervals.
     pub fn billing_cycle_anchor(
@@ -3513,6 +3674,16 @@ impl CreateSubscription {
         self.inner.currency = Some(currency.into());
         self
     }
+    /// The identifier of the customer to subscribe.
+    pub fn customer(mut self, customer: impl Into<String>) -> Self {
+        self.inner.customer = Some(customer.into());
+        self
+    }
+    /// The identifier of the account representing the customer to subscribe.
+    pub fn customer_account(mut self, customer_account: impl Into<String>) -> Self {
+        self.inner.customer_account = Some(customer_account.into());
+        self
+    }
     /// Number of days a customer has to pay invoices generated by this subscription.
     /// Valid only for subscriptions where `collection_method` is set to `send_invoice`.
     pub fn days_until_due(mut self, days_until_due: impl Into<u32>) -> Self {
@@ -3522,7 +3693,7 @@ impl CreateSubscription {
     /// ID of the default payment method for the subscription.
     /// It must belong to the customer associated with the subscription.
     /// This takes precedence over `default_source`.
-    /// If neither are set, invoices will use the customer's [invoice_settings.default_payment_method](https://stripe.com/docs/api/customers/object#customer_object-invoice_settings-default_payment_method) or [default_source](https://stripe.com/docs/api/customers/object#customer_object-default_source).
+    /// If neither are set, invoices will use the customer's [invoice_settings.default_payment_method](https://docs.stripe.com/api/customers/object#customer_object-invoice_settings-default_payment_method) or [default_source](https://docs.stripe.com/api/customers/object#customer_object-default_source).
     pub fn default_payment_method(mut self, default_payment_method: impl Into<String>) -> Self {
         self.inner.default_payment_method = Some(default_payment_method.into());
         self
@@ -3530,7 +3701,7 @@ impl CreateSubscription {
     /// ID of the default payment source for the subscription.
     /// It must belong to the customer associated with the subscription and be in a chargeable state.
     /// If `default_payment_method` is also set, `default_payment_method` will take precedence.
-    /// If neither are set, invoices will use the customer's [invoice_settings.default_payment_method](https://stripe.com/docs/api/customers/object#customer_object-invoice_settings-default_payment_method) or [default_source](https://stripe.com/docs/api/customers/object#customer_object-default_source).
+    /// If neither are set, invoices will use the customer's [invoice_settings.default_payment_method](https://docs.stripe.com/api/customers/object#customer_object-invoice_settings-default_payment_method) or [default_source](https://docs.stripe.com/api/customers/object#customer_object-default_source).
     pub fn default_source(mut self, default_source: impl Into<String>) -> Self {
         self.inner.default_source = Some(default_source.into());
         self
@@ -3571,7 +3742,7 @@ impl CreateSubscription {
         self.inner.items = Some(items.into());
         self
     }
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
@@ -3598,18 +3769,18 @@ impl CreateSubscription {
     /// Use `allow_incomplete` to create Subscriptions with `status=incomplete` if the first invoice can't be paid.
     /// Creating Subscriptions with this status allows you to manage scenarios where additional customer actions are needed to pay a subscription's invoice.
     /// For example, SCA regulation may require 3DS authentication to complete payment.
-    /// See the [SCA Migration Guide](https://stripe.com/docs/billing/migration/strong-customer-authentication) for Billing to learn more.
+    /// See the [SCA Migration Guide](https://docs.stripe.com/billing/migration/strong-customer-authentication) for Billing to learn more.
     /// This is the default behavior.
     ///
     /// Use `default_incomplete` to create Subscriptions with `status=incomplete` when the first invoice requires payment, otherwise start as active.
     /// Subscriptions transition to `status=active` when successfully confirming the PaymentIntent on the first invoice.
-    /// This allows simpler management of scenarios where additional customer actions are needed to pay a subscription’s invoice, such as failed payments, [SCA regulation](https://stripe.com/docs/billing/migration/strong-customer-authentication), or collecting a mandate for a bank debit payment method.
+    /// This allows simpler management of scenarios where additional customer actions are needed to pay a subscription’s invoice, such as failed payments, [SCA regulation](https://docs.stripe.com/billing/migration/strong-customer-authentication), or collecting a mandate for a bank debit payment method.
     /// If the PaymentIntent is not confirmed within 23 hours Subscriptions transition to `status=incomplete_expired`, which is a terminal state.
     ///
     /// Use `error_if_incomplete` if you want Stripe to return an HTTP 402 status code if a subscription's first invoice can't be paid.
     /// For example, if a payment method requires 3DS authentication due to SCA regulation and further customer action is needed, this parameter doesn't create a Subscription and returns an error instead.
     /// This was the default behavior for API versions prior to 2019-03-14.
-    /// See the [changelog](https://stripe.com/docs/upgrades#2019-03-14) to learn more.
+    /// See the [changelog](https://docs.stripe.com/upgrades#2019-03-14) to learn more.
     ///
     /// `pending_if_incomplete` is only used with updates and cannot be passed when creating a Subscription.
     ///
@@ -3630,7 +3801,7 @@ impl CreateSubscription {
         self
     }
     /// Specifies an interval for how often to bill for any pending invoice items.
-    /// It is analogous to calling [Create an invoice](https://stripe.com/docs/api#create_invoice) for the given subscription at the specified interval.
+    /// It is analogous to calling [Create an invoice](https://docs.stripe.com/api#create_invoice) for the given subscription at the specified interval.
     pub fn pending_invoice_item_interval(
         mut self,
         pending_invoice_item_interval: impl Into<CreateSubscriptionPendingInvoiceItemInterval>,
@@ -3638,7 +3809,7 @@ impl CreateSubscription {
         self.inner.pending_invoice_item_interval = Some(pending_invoice_item_interval.into());
         self
     }
-    /// Determines how to handle [prorations](https://stripe.com/docs/billing/subscriptions/prorations) resulting from the `billing_cycle_anchor`.
+    /// Determines how to handle [prorations](https://docs.stripe.com/billing/subscriptions/prorations) resulting from the `billing_cycle_anchor`.
     /// If no value is passed, the default is `create_prorations`.
     pub fn proration_behavior(
         mut self,
@@ -3656,7 +3827,7 @@ impl CreateSubscription {
     /// If set, trial_end will override the default trial period of the plan the customer is being subscribed to.
     /// The special value `now` can be provided to end the customer's trial immediately.
     /// Can be at most two years from `billing_cycle_anchor`.
-    /// See [Using trial periods on subscriptions](https://stripe.com/docs/billing/subscriptions/trials) to learn more.
+    /// See [Using trial periods on subscriptions](https://docs.stripe.com/billing/subscriptions/trials) to learn more.
     pub fn trial_end(mut self, trial_end: impl Into<CreateSubscriptionTrialEnd>) -> Self {
         self.inner.trial_end = Some(trial_end.into());
         self
@@ -3664,14 +3835,14 @@ impl CreateSubscription {
     /// Indicates if a plan's `trial_period_days` should be applied to the subscription.
     /// Setting `trial_end` per subscription is preferred, and this defaults to `false`.
     /// Setting this flag to `true` together with `trial_end` is not allowed.
-    /// See [Using trial periods on subscriptions](https://stripe.com/docs/billing/subscriptions/trials) to learn more.
+    /// See [Using trial periods on subscriptions](https://docs.stripe.com/billing/subscriptions/trials) to learn more.
     pub fn trial_from_plan(mut self, trial_from_plan: impl Into<bool>) -> Self {
         self.inner.trial_from_plan = Some(trial_from_plan.into());
         self
     }
     /// Integer representing the number of trial period days before the customer is charged for the first time.
     /// This will always overwrite any trials that might apply via a subscribed plan.
-    /// See [Using trial periods on subscriptions](https://stripe.com/docs/billing/subscriptions/trials) to learn more.
+    /// See [Using trial periods on subscriptions](https://docs.stripe.com/billing/subscriptions/trials) to learn more.
     pub fn trial_period_days(mut self, trial_period_days: impl Into<u32>) -> Self {
         self.inner.trial_period_days = Some(trial_period_days.into());
         self
@@ -3683,6 +3854,11 @@ impl CreateSubscription {
     ) -> Self {
         self.inner.trial_settings = Some(trial_settings.into());
         self
+    }
+}
+impl Default for CreateSubscription {
+    fn default() -> Self {
+        Self::new()
     }
 }
 impl CreateSubscription {
@@ -3954,7 +4130,7 @@ impl ResumeSubscriptionBuilder {
 /// The billing cycle anchor that applies when the subscription is resumed.
 /// Either `now` or `unchanged`.
 /// The default is `now`.
-/// For more information, see the billing cycle [documentation](https://stripe.com/docs/billing/subscriptions/billing-cycle).
+/// For more information, see the billing cycle [documentation](https://docs.stripe.com/billing/subscriptions/billing-cycle).
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum ResumeSubscriptionBillingCycleAnchor {
@@ -4019,7 +4195,7 @@ impl<'de> serde::Deserialize<'de> for ResumeSubscriptionBillingCycleAnchor {
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-/// Determines how to handle [prorations](https://stripe.com/docs/billing/subscriptions/prorations) resulting from the `billing_cycle_anchor` being `unchanged`.
+/// Determines how to handle [prorations](https://docs.stripe.com/billing/subscriptions/prorations) resulting from the `billing_cycle_anchor` being `unchanged`.
 /// When the `billing_cycle_anchor` is set to `now` (default value), no prorations are generated.
 /// If no value is passed, the default is `create_prorations`.
 #[derive(Clone, Eq, PartialEq)]
@@ -4106,7 +4282,7 @@ impl ResumeSubscription {
     /// The billing cycle anchor that applies when the subscription is resumed.
     /// Either `now` or `unchanged`.
     /// The default is `now`.
-    /// For more information, see the billing cycle [documentation](https://stripe.com/docs/billing/subscriptions/billing-cycle).
+    /// For more information, see the billing cycle [documentation](https://docs.stripe.com/billing/subscriptions/billing-cycle).
     pub fn billing_cycle_anchor(
         mut self,
         billing_cycle_anchor: impl Into<ResumeSubscriptionBillingCycleAnchor>,
@@ -4119,7 +4295,7 @@ impl ResumeSubscription {
         self.inner.expand = Some(expand.into());
         self
     }
-    /// Determines how to handle [prorations](https://stripe.com/docs/billing/subscriptions/prorations) resulting from the `billing_cycle_anchor` being `unchanged`.
+    /// Determines how to handle [prorations](https://docs.stripe.com/billing/subscriptions/prorations) resulting from the `billing_cycle_anchor` being `unchanged`.
     /// When the `billing_cycle_anchor` is set to `now` (default value), no prorations are generated.
     /// If no value is passed, the default is `create_prorations`.
     pub fn proration_behavior(
@@ -4272,7 +4448,7 @@ pub struct UpdateSubscriptionAddInvoiceItems {
     /// The coupons to redeem into discounts for the item.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub discounts: Option<Vec<DiscountsDataParam>>,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
@@ -4285,7 +4461,7 @@ pub struct UpdateSubscriptionAddInvoiceItems {
     /// The ID of the price object. One of `price` or `price_data` is required.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub price: Option<String>,
-    /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
+    /// Data used to generate a new [Price](https://docs.stripe.com/api/prices) object inline.
     /// One of `price` or `price_data` is required.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub price_data: Option<UpdateSubscriptionAddInvoiceItemsPriceData>,
@@ -4496,7 +4672,7 @@ impl<'de> serde::Deserialize<'de> for UpdateSubscriptionAddInvoiceItemsPeriodSta
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-/// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
+/// Data used to generate a new [Price](https://docs.stripe.com/api/prices) object inline.
 /// One of `price` or `price_data` is required.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdateSubscriptionAddInvoiceItemsPriceData {
@@ -4505,7 +4681,7 @@ pub struct UpdateSubscriptionAddInvoiceItemsPriceData {
     pub currency: stripe_types::Currency,
     /// The ID of the [Product](https://docs.stripe.com/api/products) that this [Price](https://docs.stripe.com/api/prices) will belong to.
     pub product: String,
-    /// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
+    /// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
     /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
     /// One of `inclusive`, `exclusive`, or `unspecified`.
     /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
@@ -4530,7 +4706,7 @@ impl UpdateSubscriptionAddInvoiceItemsPriceData {
         }
     }
 }
-/// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
+/// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
 /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
 /// One of `inclusive`, `exclusive`, or `unspecified`.
 /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
@@ -4702,7 +4878,7 @@ impl<'de> serde::Deserialize<'de> for UpdateSubscriptionAutomaticTaxLiabilityTyp
 }
 /// Either `now` or `unchanged`.
 /// Setting the value to `now` resets the subscription's billing cycle anchor to the current time (in UTC).
-/// For more information, see the billing cycle [documentation](https://stripe.com/docs/billing/subscriptions/billing-cycle).
+/// For more information, see the billing cycle [documentation](https://docs.stripe.com/billing/subscriptions/billing-cycle).
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum UpdateSubscriptionBillingCycleAnchor {
@@ -5005,7 +5181,7 @@ pub struct UpdateSubscriptionItems {
     /// Subscription item to update.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
@@ -5019,15 +5195,15 @@ pub struct UpdateSubscriptionItems {
     /// When changing a subscription item's price, `quantity` is set to 1 unless a `quantity` parameter is provided.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub price: Option<String>,
-    /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
+    /// Data used to generate a new [Price](https://docs.stripe.com/api/prices) object inline.
     /// One of `price` or `price_data` is required.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub price_data: Option<UpdateSubscriptionItemsPriceData>,
     /// Quantity for this item.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub quantity: Option<u64>,
-    /// A list of [Tax Rate](https://stripe.com/docs/api/tax_rates) ids.
-    /// These Tax Rates will override the [`default_tax_rates`](https://stripe.com/docs/api/subscriptions/create#create_subscription-default_tax_rates) on the Subscription.
+    /// A list of [Tax Rate](https://docs.stripe.com/api/tax_rates) ids.
+    /// These Tax Rates will override the [`default_tax_rates`](https://docs.stripe.com/api/subscriptions/create#create_subscription-default_tax_rates) on the Subscription.
     /// When updating, pass an empty string to remove previously-defined tax rates.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_rates: Option<Vec<String>>,
@@ -5054,7 +5230,7 @@ impl Default for UpdateSubscriptionItems {
         Self::new()
     }
 }
-/// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
+/// Data used to generate a new [Price](https://docs.stripe.com/api/prices) object inline.
 /// One of `price` or `price_data` is required.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdateSubscriptionItemsPriceData {
@@ -5065,7 +5241,7 @@ pub struct UpdateSubscriptionItemsPriceData {
     pub product: String,
     /// The recurring components of a price such as `interval` and `interval_count`.
     pub recurring: UpdateSubscriptionItemsPriceDataRecurring,
-    /// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
+    /// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
     /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
     /// One of `inclusive`, `exclusive`, or `unspecified`.
     /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
@@ -5182,7 +5358,7 @@ impl<'de> serde::Deserialize<'de> for UpdateSubscriptionItemsPriceDataRecurringI
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-/// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
+/// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
 /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
 /// One of `inclusive`, `exclusive`, or `unspecified`.
 /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
@@ -5255,7 +5431,7 @@ impl<'de> serde::Deserialize<'de> for UpdateSubscriptionItemsPriceDataTaxBehavio
 }
 /// If specified, payment collection for this subscription will be paused.
 /// Note that the subscription status will be unchanged and will not be updated to `paused`.
-/// Learn more about [pausing collection](https://stripe.com/docs/billing/subscriptions/pause-payment).
+/// Learn more about [pausing collection](https://docs.stripe.com/billing/subscriptions/pause-payment).
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdateSubscriptionPauseCollection {
     /// The payment collection behavior for this subscription while paused.
@@ -5342,15 +5518,15 @@ impl<'de> serde::Deserialize<'de> for UpdateSubscriptionPauseCollectionBehavior 
 /// Use `allow_incomplete` to transition the subscription to `status=past_due` if a payment is required but cannot be paid.
 /// This allows you to manage scenarios where additional user actions are needed to pay a subscription's invoice.
 /// For example, SCA regulation may require 3DS authentication to complete payment.
-/// See the [SCA Migration Guide](https://stripe.com/docs/billing/migration/strong-customer-authentication) for Billing to learn more.
+/// See the [SCA Migration Guide](https://docs.stripe.com/billing/migration/strong-customer-authentication) for Billing to learn more.
 /// This is the default behavior.
 ///
 /// Use `default_incomplete` to transition the subscription to `status=past_due` when payment is required and await explicit confirmation of the invoice's payment intent.
 /// This allows simpler management of scenarios where additional user actions are needed to pay a subscription’s invoice.
-/// Such as failed payments, [SCA regulation](https://stripe.com/docs/billing/migration/strong-customer-authentication), or collecting a mandate for a bank debit payment method.
+/// Such as failed payments, [SCA regulation](https://docs.stripe.com/billing/migration/strong-customer-authentication), or collecting a mandate for a bank debit payment method.
 ///
-/// Use `pending_if_incomplete` to update the subscription using [pending updates](https://stripe.com/docs/billing/subscriptions/pending-updates).
-/// When you use `pending_if_incomplete` you can only pass the parameters [supported by pending updates](https://stripe.com/docs/billing/pending-updates-reference#supported-attributes).
+/// Use `pending_if_incomplete` to update the subscription using [pending updates](https://docs.stripe.com/billing/subscriptions/pending-updates).
+/// When you use `pending_if_incomplete` you can only pass the parameters [supported by pending updates](https://docs.stripe.com/billing/pending-updates-reference#supported-attributes).
 ///
 /// Use `error_if_incomplete` if you want Stripe to return an HTTP 402 status code if a subscription's invoice cannot be paid.
 /// For example, if a payment method requires 3DS authentication due to SCA regulation and further user action is needed, this parameter does not update the subscription and returns an error instead.
@@ -5477,6 +5653,9 @@ pub struct UpdateSubscriptionPaymentSettingsPaymentMethodOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
     pub konbini: Option<miniserde::json::Value>,
+    /// This sub-hash contains details about the PayTo payment method options to pass to the invoice’s PaymentIntent.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payto: Option<UpdateSubscriptionPaymentSettingsPaymentMethodOptionsPayto>,
     /// This sub-hash contains details about the SEPA Direct Debit payment method options to pass to the invoice’s PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
@@ -5493,6 +5672,7 @@ impl UpdateSubscriptionPaymentSettingsPaymentMethodOptions {
             card: None,
             customer_balance: None,
             konbini: None,
+            payto: None,
             sepa_debit: None,
             us_bank_account: None,
         }
@@ -5809,9 +5989,9 @@ pub struct UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCard {
     /// Can be only set confirm-time.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub network: Option<UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCardNetwork>,
-    /// We strongly recommend that you rely on our SCA Engine to automatically prompt your customers for authentication based on risk level and [other requirements](https://stripe.com/docs/strong-customer-authentication).
+    /// We strongly recommend that you rely on our SCA Engine to automatically prompt your customers for authentication based on risk level and [other requirements](https://docs.stripe.com/strong-customer-authentication).
     /// However, if you wish to request 3D Secure based on logic from your own fraud engine, provide this option.
-    /// Read our guide on [manually requesting 3D Secure](https://stripe.com/docs/payments/3d-secure/authentication-flow#manual-three-ds) for more information on how this configuration interacts with Radar and our SCA Engine.
+    /// Read our guide on [manually requesting 3D Secure](https://docs.stripe.com/payments/3d-secure/authentication-flow#manual-three-ds) for more information on how this configuration interacts with Radar and our SCA Engine.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub request_three_d_secure:
         Option<UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCardRequestThreeDSecure>,
@@ -6032,9 +6212,9 @@ impl<'de> serde::Deserialize<'de>
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-/// We strongly recommend that you rely on our SCA Engine to automatically prompt your customers for authentication based on risk level and [other requirements](https://stripe.com/docs/strong-customer-authentication).
+/// We strongly recommend that you rely on our SCA Engine to automatically prompt your customers for authentication based on risk level and [other requirements](https://docs.stripe.com/strong-customer-authentication).
 /// However, if you wish to request 3D Secure based on logic from your own fraud engine, provide this option.
-/// Read our guide on [manually requesting 3D Secure](https://stripe.com/docs/payments/3d-secure/authentication-flow#manual-three-ds) for more information on how this configuration interacts with Radar and our SCA Engine.
+/// Read our guide on [manually requesting 3D Secure](https://docs.stripe.com/payments/3d-secure/authentication-flow#manual-three-ds) for more information on how this configuration interacts with Radar and our SCA Engine.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCardRequestThreeDSecure {
@@ -6105,6 +6285,148 @@ impl serde::Serialize
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de>
     for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCardRequestThreeDSecure
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// This sub-hash contains details about the PayTo payment method options to pass to the invoice’s PaymentIntent.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpdateSubscriptionPaymentSettingsPaymentMethodOptionsPayto {
+    /// Additional fields for Mandate creation.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mandate_options:
+        Option<UpdateSubscriptionPaymentSettingsPaymentMethodOptionsPaytoMandateOptions>,
+}
+impl UpdateSubscriptionPaymentSettingsPaymentMethodOptionsPayto {
+    pub fn new() -> Self {
+        Self { mandate_options: None }
+    }
+}
+impl Default for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsPayto {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Additional fields for Mandate creation.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpdateSubscriptionPaymentSettingsPaymentMethodOptionsPaytoMandateOptions {
+    /// The maximum amount that can be collected in a single invoice.
+    /// If you don't specify a maximum, then there is no limit.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount: Option<i64>,
+    /// The purpose for which payments are made. Has a default value based on your merchant category code.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub purpose:
+        Option<UpdateSubscriptionPaymentSettingsPaymentMethodOptionsPaytoMandateOptionsPurpose>,
+}
+impl UpdateSubscriptionPaymentSettingsPaymentMethodOptionsPaytoMandateOptions {
+    pub fn new() -> Self {
+        Self { amount: None, purpose: None }
+    }
+}
+impl Default for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsPaytoMandateOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The purpose for which payments are made. Has a default value based on your merchant category code.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum UpdateSubscriptionPaymentSettingsPaymentMethodOptionsPaytoMandateOptionsPurpose {
+    DependantSupport,
+    Government,
+    Loan,
+    Mortgage,
+    Other,
+    Pension,
+    Personal,
+    Retail,
+    Salary,
+    Tax,
+    Utility,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl UpdateSubscriptionPaymentSettingsPaymentMethodOptionsPaytoMandateOptionsPurpose {
+    pub fn as_str(&self) -> &str {
+        use UpdateSubscriptionPaymentSettingsPaymentMethodOptionsPaytoMandateOptionsPurpose::*;
+        match self {
+            DependantSupport => "dependant_support",
+            Government => "government",
+            Loan => "loan",
+            Mortgage => "mortgage",
+            Other => "other",
+            Pension => "pension",
+            Personal => "personal",
+            Retail => "retail",
+            Salary => "salary",
+            Tax => "tax",
+            Utility => "utility",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr
+    for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsPaytoMandateOptionsPurpose
+{
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdateSubscriptionPaymentSettingsPaymentMethodOptionsPaytoMandateOptionsPurpose::*;
+        match s {
+            "dependant_support" => Ok(DependantSupport),
+            "government" => Ok(Government),
+            "loan" => Ok(Loan),
+            "mortgage" => Ok(Mortgage),
+            "other" => Ok(Other),
+            "pension" => Ok(Pension),
+            "personal" => Ok(Personal),
+            "retail" => Ok(Retail),
+            "salary" => Ok(Salary),
+            "tax" => Ok(Tax),
+            "utility" => Ok(Utility),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdateSubscriptionPaymentSettingsPaymentMethodOptionsPaytoMandateOptionsPurpose"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display
+    for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsPaytoMandateOptionsPurpose
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug
+    for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsPaytoMandateOptionsPurpose
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize
+    for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsPaytoMandateOptionsPurpose
+{
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsPaytoMandateOptionsPurpose
 {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
@@ -6487,6 +6809,7 @@ pub enum UpdateSubscriptionPaymentSettingsPaymentMethodTypes {
     Payco,
     Paynow,
     Paypal,
+    Payto,
     Promptpay,
     RevolutPay,
     SepaCreditTransfer,
@@ -6534,6 +6857,7 @@ impl UpdateSubscriptionPaymentSettingsPaymentMethodTypes {
             Payco => "payco",
             Paynow => "paynow",
             Paypal => "paypal",
+            Payto => "payto",
             Promptpay => "promptpay",
             RevolutPay => "revolut_pay",
             SepaCreditTransfer => "sepa_credit_transfer",
@@ -6584,6 +6908,7 @@ impl std::str::FromStr for UpdateSubscriptionPaymentSettingsPaymentMethodTypes {
             "payco" => Ok(Payco),
             "paynow" => Ok(Paynow),
             "paypal" => Ok(Paypal),
+            "payto" => Ok(Payto),
             "promptpay" => Ok(Promptpay),
             "revolut_pay" => Ok(RevolutPay),
             "sepa_credit_transfer" => Ok(SepaCreditTransfer),
@@ -6697,7 +7022,7 @@ impl<'de> serde::Deserialize<'de> for UpdateSubscriptionPaymentSettingsSaveDefau
     }
 }
 /// Specifies an interval for how often to bill for any pending invoice items.
-/// It is analogous to calling [Create an invoice](https://stripe.com/docs/api#create_invoice) for the given subscription at the specified interval.
+/// It is analogous to calling [Create an invoice](https://docs.stripe.com/api#create_invoice) for the given subscription at the specified interval.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdateSubscriptionPendingInvoiceItemInterval {
     /// Specifies invoicing frequency. Either `day`, `week`, `month` or `year`.
@@ -6784,7 +7109,7 @@ impl<'de> serde::Deserialize<'de> for UpdateSubscriptionPendingInvoiceItemInterv
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-/// Determines how to handle [prorations](https://stripe.com/docs/billing/subscriptions/prorations) when the billing cycle changes (e.g., when switching plans, resetting `billing_cycle_anchor=now`, or starting a trial), or if an item's `quantity` changes.
+/// Determines how to handle [prorations](https://docs.stripe.com/billing/subscriptions/prorations) when the billing cycle changes (e.g., when switching plans, resetting `billing_cycle_anchor=now`, or starting a trial), or if an item's `quantity` changes.
 /// The default value is `create_prorations`.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
@@ -7035,7 +7360,7 @@ impl UpdateSubscription {
     }
     /// Either `now` or `unchanged`.
     /// Setting the value to `now` resets the subscription's billing cycle anchor to the current time (in UTC).
-    /// For more information, see the billing cycle [documentation](https://stripe.com/docs/billing/subscriptions/billing-cycle).
+    /// For more information, see the billing cycle [documentation](https://docs.stripe.com/billing/subscriptions/billing-cycle).
     pub fn billing_cycle_anchor(
         mut self,
         billing_cycle_anchor: impl Into<UpdateSubscriptionBillingCycleAnchor>,
@@ -7093,7 +7418,7 @@ impl UpdateSubscription {
     /// ID of the default payment method for the subscription.
     /// It must belong to the customer associated with the subscription.
     /// This takes precedence over `default_source`.
-    /// If neither are set, invoices will use the customer's [invoice_settings.default_payment_method](https://stripe.com/docs/api/customers/object#customer_object-invoice_settings-default_payment_method) or [default_source](https://stripe.com/docs/api/customers/object#customer_object-default_source).
+    /// If neither are set, invoices will use the customer's [invoice_settings.default_payment_method](https://docs.stripe.com/api/customers/object#customer_object-invoice_settings-default_payment_method) or [default_source](https://docs.stripe.com/api/customers/object#customer_object-default_source).
     pub fn default_payment_method(mut self, default_payment_method: impl Into<String>) -> Self {
         self.inner.default_payment_method = Some(default_payment_method.into());
         self
@@ -7101,7 +7426,7 @@ impl UpdateSubscription {
     /// ID of the default payment source for the subscription.
     /// It must belong to the customer associated with the subscription and be in a chargeable state.
     /// If `default_payment_method` is also set, `default_payment_method` will take precedence.
-    /// If neither are set, invoices will use the customer's [invoice_settings.default_payment_method](https://stripe.com/docs/api/customers/object#customer_object-invoice_settings-default_payment_method) or [default_source](https://stripe.com/docs/api/customers/object#customer_object-default_source).
+    /// If neither are set, invoices will use the customer's [invoice_settings.default_payment_method](https://docs.stripe.com/api/customers/object#customer_object-invoice_settings-default_payment_method) or [default_source](https://docs.stripe.com/api/customers/object#customer_object-default_source).
     pub fn default_source(mut self, default_source: impl Into<String>) -> Self {
         self.inner.default_source = Some(default_source.into());
         self
@@ -7143,7 +7468,7 @@ impl UpdateSubscription {
         self.inner.items = Some(items.into());
         self
     }
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
@@ -7167,7 +7492,7 @@ impl UpdateSubscription {
     }
     /// If specified, payment collection for this subscription will be paused.
     /// Note that the subscription status will be unchanged and will not be updated to `paused`.
-    /// Learn more about [pausing collection](https://stripe.com/docs/billing/subscriptions/pause-payment).
+    /// Learn more about [pausing collection](https://docs.stripe.com/billing/subscriptions/pause-payment).
     pub fn pause_collection(
         mut self,
         pause_collection: impl Into<UpdateSubscriptionPauseCollection>,
@@ -7178,15 +7503,15 @@ impl UpdateSubscription {
     /// Use `allow_incomplete` to transition the subscription to `status=past_due` if a payment is required but cannot be paid.
     /// This allows you to manage scenarios where additional user actions are needed to pay a subscription's invoice.
     /// For example, SCA regulation may require 3DS authentication to complete payment.
-    /// See the [SCA Migration Guide](https://stripe.com/docs/billing/migration/strong-customer-authentication) for Billing to learn more.
+    /// See the [SCA Migration Guide](https://docs.stripe.com/billing/migration/strong-customer-authentication) for Billing to learn more.
     /// This is the default behavior.
     ///
     /// Use `default_incomplete` to transition the subscription to `status=past_due` when payment is required and await explicit confirmation of the invoice's payment intent.
     /// This allows simpler management of scenarios where additional user actions are needed to pay a subscription’s invoice.
-    /// Such as failed payments, [SCA regulation](https://stripe.com/docs/billing/migration/strong-customer-authentication), or collecting a mandate for a bank debit payment method.
+    /// Such as failed payments, [SCA regulation](https://docs.stripe.com/billing/migration/strong-customer-authentication), or collecting a mandate for a bank debit payment method.
     ///
-    /// Use `pending_if_incomplete` to update the subscription using [pending updates](https://stripe.com/docs/billing/subscriptions/pending-updates).
-    /// When you use `pending_if_incomplete` you can only pass the parameters [supported by pending updates](https://stripe.com/docs/billing/pending-updates-reference#supported-attributes).
+    /// Use `pending_if_incomplete` to update the subscription using [pending updates](https://docs.stripe.com/billing/subscriptions/pending-updates).
+    /// When you use `pending_if_incomplete` you can only pass the parameters [supported by pending updates](https://docs.stripe.com/billing/pending-updates-reference#supported-attributes).
     ///
     /// Use `error_if_incomplete` if you want Stripe to return an HTTP 402 status code if a subscription's invoice cannot be paid.
     /// For example, if a payment method requires 3DS authentication due to SCA regulation and further user action is needed, this parameter does not update the subscription and returns an error instead.
@@ -7208,7 +7533,7 @@ impl UpdateSubscription {
         self
     }
     /// Specifies an interval for how often to bill for any pending invoice items.
-    /// It is analogous to calling [Create an invoice](https://stripe.com/docs/api#create_invoice) for the given subscription at the specified interval.
+    /// It is analogous to calling [Create an invoice](https://docs.stripe.com/api#create_invoice) for the given subscription at the specified interval.
     pub fn pending_invoice_item_interval(
         mut self,
         pending_invoice_item_interval: impl Into<UpdateSubscriptionPendingInvoiceItemInterval>,
@@ -7216,7 +7541,7 @@ impl UpdateSubscription {
         self.inner.pending_invoice_item_interval = Some(pending_invoice_item_interval.into());
         self
     }
-    /// Determines how to handle [prorations](https://stripe.com/docs/billing/subscriptions/prorations) when the billing cycle changes (e.g., when switching plans, resetting `billing_cycle_anchor=now`, or starting a trial), or if an item's `quantity` changes.
+    /// Determines how to handle [prorations](https://docs.stripe.com/billing/subscriptions/prorations) when the billing cycle changes (e.g., when switching plans, resetting `billing_cycle_anchor=now`, or starting a trial), or if an item's `quantity` changes.
     /// The default value is `create_prorations`.
     pub fn proration_behavior(
         mut self,
@@ -7251,7 +7576,7 @@ impl UpdateSubscription {
     /// Indicates if a plan's `trial_period_days` should be applied to the subscription.
     /// Setting `trial_end` per subscription is preferred, and this defaults to `false`.
     /// Setting this flag to `true` together with `trial_end` is not allowed.
-    /// See [Using trial periods on subscriptions](https://stripe.com/docs/billing/subscriptions/trials) to learn more.
+    /// See [Using trial periods on subscriptions](https://docs.stripe.com/billing/subscriptions/trials) to learn more.
     pub fn trial_from_plan(mut self, trial_from_plan: impl Into<bool>) -> Self {
         self.inner.trial_from_plan = Some(trial_from_plan.into());
         self
@@ -7337,7 +7662,7 @@ impl Default for BillingThresholdsParam {
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct ItemBillingThresholdsParam {
-    /// Number of units that meets the billing threshold to advance the subscription to a new billing period (e.g., it takes 10 $5 units to meet a $50 [monetary threshold](https://stripe.com/docs/api/subscriptions/update#update_subscription-billing_thresholds-amount_gte)).
+    /// Number of units that meets the billing threshold to advance the subscription to a new billing period (e.g., it takes 10 $5 units to meet a $50 [monetary threshold](https://docs.stripe.com/api/subscriptions/update#update_subscription-billing_thresholds-amount_gte)).
     pub usage_gte: i64,
 }
 impl ItemBillingThresholdsParam {

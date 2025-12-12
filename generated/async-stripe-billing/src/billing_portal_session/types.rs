@@ -21,8 +21,10 @@ pub struct BillingPortalSession {
     pub created: stripe_types::Timestamp,
     /// The ID of the customer for this session.
     pub customer: String,
+    /// The ID of the account for this session.
+    pub customer_account: Option<String>,
     /// Information about a specific flow for the customer to go through.
-    /// See the [docs](https://stripe.com/docs/customer-management/portal-deep-links) to learn more about using customer portal deep links and flows.
+    /// See the [docs](https://docs.stripe.com/customer-management/portal-deep-links) to learn more about using customer portal deep links and flows.
     pub flow: Option<stripe_billing::PortalFlowsFlow>,
     /// Unique identifier for the object.
     pub id: stripe_billing::BillingPortalSessionId,
@@ -33,8 +35,8 @@ pub struct BillingPortalSession {
     pub locale: Option<stripe_billing::BillingPortalSessionLocale>,
     /// The account for which the session was created on behalf of.
     /// When specified, only subscriptions and invoices with this `on_behalf_of` account appear in the portal.
-    /// For more information, see the [docs](https://stripe.com/docs/connect/separate-charges-and-transfers#settlement-merchant).
-    /// Use the [Accounts API](https://stripe.com/docs/api/accounts/object#account_object-settings-branding) to modify the `on_behalf_of` account's branding settings, which the portal displays.
+    /// For more information, see the [docs](https://docs.stripe.com/connect/separate-charges-and-transfers#settlement-merchant).
+    /// Use the [Accounts API](https://docs.stripe.com/api/accounts/object#account_object-settings-branding) to modify the `on_behalf_of` account's branding settings, which the portal displays.
     pub on_behalf_of: Option<String>,
     /// The URL to redirect customers to when they click on the portal's link to return to your website.
     pub return_url: Option<String>,
@@ -46,6 +48,7 @@ pub struct BillingPortalSessionBuilder {
     configuration: Option<stripe_types::Expandable<stripe_billing::BillingPortalConfiguration>>,
     created: Option<stripe_types::Timestamp>,
     customer: Option<String>,
+    customer_account: Option<Option<String>>,
     flow: Option<Option<stripe_billing::PortalFlowsFlow>>,
     id: Option<stripe_billing::BillingPortalSessionId>,
     livemode: Option<bool>,
@@ -98,6 +101,7 @@ const _: () = {
                 "configuration" => Deserialize::begin(&mut self.configuration),
                 "created" => Deserialize::begin(&mut self.created),
                 "customer" => Deserialize::begin(&mut self.customer),
+                "customer_account" => Deserialize::begin(&mut self.customer_account),
                 "flow" => Deserialize::begin(&mut self.flow),
                 "id" => Deserialize::begin(&mut self.id),
                 "livemode" => Deserialize::begin(&mut self.livemode),
@@ -114,6 +118,7 @@ const _: () = {
                 configuration: Deserialize::default(),
                 created: Deserialize::default(),
                 customer: Deserialize::default(),
+                customer_account: Deserialize::default(),
                 flow: Deserialize::default(),
                 id: Deserialize::default(),
                 livemode: Deserialize::default(),
@@ -129,6 +134,7 @@ const _: () = {
                 Some(configuration),
                 Some(created),
                 Some(customer),
+                Some(customer_account),
                 Some(flow),
                 Some(id),
                 Some(livemode),
@@ -140,6 +146,7 @@ const _: () = {
                 self.configuration.take(),
                 self.created,
                 self.customer.take(),
+                self.customer_account.take(),
                 self.flow.take(),
                 self.id.take(),
                 self.livemode,
@@ -155,6 +162,7 @@ const _: () = {
                 configuration,
                 created,
                 customer,
+                customer_account,
                 flow,
                 id,
                 livemode,
@@ -192,6 +200,7 @@ const _: () = {
                     "configuration" => b.configuration = FromValueOpt::from_value(v),
                     "created" => b.created = FromValueOpt::from_value(v),
                     "customer" => b.customer = FromValueOpt::from_value(v),
+                    "customer_account" => b.customer_account = FromValueOpt::from_value(v),
                     "flow" => b.flow = FromValueOpt::from_value(v),
                     "id" => b.id = FromValueOpt::from_value(v),
                     "livemode" => b.livemode = FromValueOpt::from_value(v),
@@ -210,10 +219,11 @@ const _: () = {
 impl serde::Serialize for BillingPortalSession {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("BillingPortalSession", 11)?;
+        let mut s = s.serialize_struct("BillingPortalSession", 12)?;
         s.serialize_field("configuration", &self.configuration)?;
         s.serialize_field("created", &self.created)?;
         s.serialize_field("customer", &self.customer)?;
+        s.serialize_field("customer_account", &self.customer_account)?;
         s.serialize_field("flow", &self.flow)?;
         s.serialize_field("id", &self.id)?;
         s.serialize_field("livemode", &self.livemode)?;

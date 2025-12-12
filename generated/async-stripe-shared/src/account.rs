@@ -47,7 +47,7 @@ pub struct Account {
     /// Unique identifier for the object.
     pub id: stripe_shared::AccountId,
     pub individual: Option<stripe_shared::Person>,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: Option<std::collections::HashMap<String, String>>,
     /// Whether the funds in this account can be paid out.

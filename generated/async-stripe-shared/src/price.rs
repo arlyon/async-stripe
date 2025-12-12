@@ -1,11 +1,11 @@
 /// Prices define the unit cost, currency, and (optional) billing cycle for both recurring and one-time purchases of products.
-/// [Products](https://stripe.com/docs/api#products) help you track inventory or provisioning, and prices help you track payment terms.
+/// [Products](https://api.stripe.com#products) help you track inventory or provisioning, and prices help you track payment terms.
 /// Different physical goods or levels of service should be represented by products, and pricing options should be represented by prices.
 /// This approach lets you change prices without having to change your provisioning scheme.
 ///
 /// For example, you might have a single "gold" product that has prices for $10/month, $100/year, and €9 once.
 ///
-/// Related guides: [Set up a subscription](https://stripe.com/docs/billing/subscriptions/set-up-subscription), [create an invoice](https://stripe.com/docs/billing/invoices/create), and more about [products and prices](https://stripe.com/docs/products-prices/overview).
+/// Related guides: [Set up a subscription](https://docs.stripe.com/billing/subscriptions/set-up-subscription), [create an invoice](https://docs.stripe.com/billing/invoices/create), and more about [products and prices](https://docs.stripe.com/products-prices/overview).
 ///
 /// For more details see <<https://stripe.com/docs/api/prices/object>>.
 #[derive(Clone, Debug)]
@@ -36,7 +36,7 @@ pub struct Price {
     /// A lookup key used to retrieve prices dynamically from a static string.
     /// This may be up to 200 characters.
     pub lookup_key: Option<String>,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: std::collections::HashMap<String, String>,
     /// A brief description of the price, hidden from customers.
@@ -45,7 +45,7 @@ pub struct Price {
     pub product: stripe_types::Expandable<stripe_shared::Product>,
     /// The recurring components of a price such as `interval` and `usage_type`.
     pub recurring: Option<stripe_shared::Recurring>,
-    /// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
+    /// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
     /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
     /// One of `inclusive`, `exclusive`, or `unspecified`.
     /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.

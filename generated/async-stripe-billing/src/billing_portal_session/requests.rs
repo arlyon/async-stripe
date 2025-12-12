@@ -6,7 +6,10 @@ use stripe_client_core::{
 struct CreateBillingPortalSessionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     configuration: Option<String>,
-    customer: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    customer: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    customer_account: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -19,10 +22,11 @@ struct CreateBillingPortalSessionBuilder {
     return_url: Option<String>,
 }
 impl CreateBillingPortalSessionBuilder {
-    fn new(customer: impl Into<String>) -> Self {
+    fn new() -> Self {
         Self {
             configuration: None,
-            customer: customer.into(),
+            customer: None,
+            customer_account: None,
             expand: None,
             flow_data: None,
             locale: None,
@@ -32,7 +36,7 @@ impl CreateBillingPortalSessionBuilder {
     }
 }
 /// Information about a specific flow for the customer to go through.
-/// See the [docs](https://stripe.com/docs/customer-management/portal-deep-links) to learn more about using customer portal deep links and flows.
+/// See the [docs](https://docs.stripe.com/customer-management/portal-deep-links) to learn more about using customer portal deep links and flows.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateBillingPortalSessionFlowData {
     /// Behavior after the flow is completed.
@@ -304,7 +308,7 @@ pub struct CreateBillingPortalSessionFlowDataSubscriptionUpdateConfirm {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub discounts:
         Option<Vec<CreateBillingPortalSessionFlowDataSubscriptionUpdateConfirmDiscounts>>,
-    /// The [subscription item](https://stripe.com/docs/api/subscription_items) to be updated through this flow.
+    /// The [subscription item](https://docs.stripe.com/api/subscription_items) to be updated through this flow.
     /// Currently, only up to one may be specified and subscriptions with multiple items are not updatable.
     pub items: Vec<CreateBillingPortalSessionFlowDataSubscriptionUpdateConfirmItems>,
     /// The ID of the subscription to be updated.
@@ -338,17 +342,17 @@ impl Default for CreateBillingPortalSessionFlowDataSubscriptionUpdateConfirmDisc
         Self::new()
     }
 }
-/// The [subscription item](https://stripe.com/docs/api/subscription_items) to be updated through this flow.
+/// The [subscription item](https://docs.stripe.com/api/subscription_items) to be updated through this flow.
 /// Currently, only up to one may be specified and subscriptions with multiple items are not updatable.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateBillingPortalSessionFlowDataSubscriptionUpdateConfirmItems {
-    /// The ID of the [subscription item](https://stripe.com/docs/api/subscriptions/object#subscription_object-items-data-id) to be updated.
+    /// The ID of the [subscription item](https://docs.stripe.com/api/subscriptions/object#subscription_object-items-data-id) to be updated.
     pub id: String,
     /// The price the customer should subscribe to through this flow.
-    /// The price must also be included in the configuration's [`features.subscription_update.products`](https://stripe.com/docs/api/customer_portal/configuration#portal_configuration_object-features-subscription_update-products).
+    /// The price must also be included in the configuration's [`features.subscription_update.products`](https://docs.stripe.com/api/customer_portal/configuration#portal_configuration_object-features-subscription_update-products).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub price: Option<String>,
-    /// [Quantity](https://stripe.com/docs/subscriptions/quantities) for this item that the customer should subscribe to through this flow.
+    /// [Quantity](https://docs.stripe.com/subscriptions/quantities) for this item that the customer should subscribe to through this flow.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub quantity: Option<u64>,
 }
@@ -435,13 +439,23 @@ pub struct CreateBillingPortalSession {
 }
 impl CreateBillingPortalSession {
     /// Construct a new `CreateBillingPortalSession`.
-    pub fn new(customer: impl Into<String>) -> Self {
-        Self { inner: CreateBillingPortalSessionBuilder::new(customer.into()) }
+    pub fn new() -> Self {
+        Self { inner: CreateBillingPortalSessionBuilder::new() }
     }
-    /// The ID of an existing [configuration](https://stripe.com/docs/api/customer_portal/configuration) to use for this session, describing its functionality and features.
+    /// The ID of an existing [configuration](https://docs.stripe.com/api/customer_portal/configuration) to use for this session, describing its functionality and features.
     /// If not specified, the session uses the default configuration.
     pub fn configuration(mut self, configuration: impl Into<String>) -> Self {
         self.inner.configuration = Some(configuration.into());
+        self
+    }
+    /// The ID of an existing customer.
+    pub fn customer(mut self, customer: impl Into<String>) -> Self {
+        self.inner.customer = Some(customer.into());
+        self
+    }
+    /// The ID of an existing account.
+    pub fn customer_account(mut self, customer_account: impl Into<String>) -> Self {
+        self.inner.customer_account = Some(customer_account.into());
         self
     }
     /// Specifies which fields in the response should be expanded.
@@ -450,7 +464,7 @@ impl CreateBillingPortalSession {
         self
     }
     /// Information about a specific flow for the customer to go through.
-    /// See the [docs](https://stripe.com/docs/customer-management/portal-deep-links) to learn more about using customer portal deep links and flows.
+    /// See the [docs](https://docs.stripe.com/customer-management/portal-deep-links) to learn more about using customer portal deep links and flows.
     pub fn flow_data(mut self, flow_data: impl Into<CreateBillingPortalSessionFlowData>) -> Self {
         self.inner.flow_data = Some(flow_data.into());
         self
@@ -463,8 +477,8 @@ impl CreateBillingPortalSession {
     }
     /// The `on_behalf_of` account to use for this session.
     /// When specified, only subscriptions and invoices with this `on_behalf_of` account appear in the portal.
-    /// For more information, see the [docs](https://stripe.com/docs/connect/separate-charges-and-transfers#settlement-merchant).
-    /// Use the [Accounts API](https://stripe.com/docs/api/accounts/object#account_object-settings-branding) to modify the `on_behalf_of` account's branding settings, which the portal displays.
+    /// For more information, see the [docs](https://docs.stripe.com/connect/separate-charges-and-transfers#settlement-merchant).
+    /// Use the [Accounts API](https://docs.stripe.com/api/accounts/object#account_object-settings-branding) to modify the `on_behalf_of` account's branding settings, which the portal displays.
     pub fn on_behalf_of(mut self, on_behalf_of: impl Into<String>) -> Self {
         self.inner.on_behalf_of = Some(on_behalf_of.into());
         self
@@ -473,6 +487,11 @@ impl CreateBillingPortalSession {
     pub fn return_url(mut self, return_url: impl Into<String>) -> Self {
         self.inner.return_url = Some(return_url.into());
         self
+    }
+}
+impl Default for CreateBillingPortalSession {
+    fn default() -> Self {
+        Self::new()
     }
 }
 impl CreateBillingPortalSession {

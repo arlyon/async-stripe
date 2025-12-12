@@ -297,7 +297,7 @@ impl Default for CreateTreasuryReceivedDebitInitiatingPaymentMethodDetailsUsBank
 }
 /// Specifies the network rails to be used.
 /// If not set, will default to the PaymentMethod's preferred network.
-/// See the [docs](https://stripe.com/docs/treasury/money-movement/timelines) to learn more about money movement timelines for each network type.
+/// See the [docs](https://docs.stripe.com/treasury/money-movement/timelines) to learn more about money movement timelines for each network type.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum CreateTreasuryReceivedDebitNetwork {

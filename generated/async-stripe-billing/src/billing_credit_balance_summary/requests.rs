@@ -4,17 +4,17 @@ use stripe_client_core::{
 
 #[derive(Clone, Debug, serde::Serialize)]
 struct RetrieveForMyAccountBillingCreditBalanceSummaryBuilder {
-    customer: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    customer: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    customer_account: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
     filter: RetrieveForMyAccountBillingCreditBalanceSummaryFilter,
 }
 impl RetrieveForMyAccountBillingCreditBalanceSummaryBuilder {
-    fn new(
-        customer: impl Into<String>,
-        filter: impl Into<RetrieveForMyAccountBillingCreditBalanceSummaryFilter>,
-    ) -> Self {
-        Self { customer: customer.into(), expand: None, filter: filter.into() }
+    fn new(filter: impl Into<RetrieveForMyAccountBillingCreditBalanceSummaryFilter>) -> Self {
+        Self { customer: None, customer_account: None, expand: None, filter: filter.into() }
     }
 }
 /// The filter criteria for the credit balance summary.
@@ -223,16 +223,18 @@ pub struct RetrieveForMyAccountBillingCreditBalanceSummary {
 }
 impl RetrieveForMyAccountBillingCreditBalanceSummary {
     /// Construct a new `RetrieveForMyAccountBillingCreditBalanceSummary`.
-    pub fn new(
-        customer: impl Into<String>,
-        filter: impl Into<RetrieveForMyAccountBillingCreditBalanceSummaryFilter>,
-    ) -> Self {
-        Self {
-            inner: RetrieveForMyAccountBillingCreditBalanceSummaryBuilder::new(
-                customer.into(),
-                filter.into(),
-            ),
-        }
+    pub fn new(filter: impl Into<RetrieveForMyAccountBillingCreditBalanceSummaryFilter>) -> Self {
+        Self { inner: RetrieveForMyAccountBillingCreditBalanceSummaryBuilder::new(filter.into()) }
+    }
+    /// The customer whose credit balance summary you're retrieving.
+    pub fn customer(mut self, customer: impl Into<String>) -> Self {
+        self.inner.customer = Some(customer.into());
+        self
+    }
+    /// The account representing the customer whose credit balance summary you're retrieving.
+    pub fn customer_account(mut self, customer_account: impl Into<String>) -> Self {
+        self.inner.customer_account = Some(customer_account.into());
+        self
     }
     /// Specifies which fields in the response should be expanded.
     pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {

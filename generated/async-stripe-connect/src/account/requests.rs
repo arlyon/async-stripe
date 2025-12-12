@@ -480,7 +480,7 @@ struct CreateAccountBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     default_currency: Option<stripe_types::Currency>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    documents: Option<CreateAccountDocuments>,
+    documents: Option<DocumentsSpecs>,
     #[serde(skip_serializing_if = "Option::is_none")]
     email: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -684,7 +684,7 @@ pub struct CreateAccountBusinessProfileSupportAddress {
     /// ZIP or postal code.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub postal_code: Option<String>,
-    /// State, county, province, or region.
+    /// State, county, province, or region ([ISO 3166-2](https://en.wikipedia.org/wiki/ISO_3166-2)).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
 }
@@ -834,7 +834,7 @@ pub struct CreateAccountCompanyAddress {
     /// ZIP or postal code.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub postal_code: Option<String>,
-    /// State, county, province, or region.
+    /// State, county, province, or region ([ISO 3166-2](https://en.wikipedia.org/wiki/ISO_3166-2)).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
 }
@@ -1485,216 +1485,6 @@ impl<'de> serde::Deserialize<'de> for CreateAccountControllerStripeDashboardType
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-/// Documents that may be submitted to satisfy various informational requests.
-#[derive(Clone, Debug, serde::Serialize)]
-pub struct CreateAccountDocuments {
-    /// One or more documents that support the [Bank account ownership verification](https://support.stripe.com/questions/bank-account-ownership-verification) requirement.
-    /// Must be a document associated with the account’s primary active bank account that displays the last 4 digits of the account number, either a statement or a check.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub bank_account_ownership_verification:
-        Option<CreateAccountDocumentsBankAccountOwnershipVerification>,
-    /// One or more documents that demonstrate proof of a company's license to operate.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub company_license: Option<CreateAccountDocumentsCompanyLicense>,
-    /// One or more documents showing the company's Memorandum of Association.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub company_memorandum_of_association:
-        Option<CreateAccountDocumentsCompanyMemorandumOfAssociation>,
-    /// (Certain countries only) One or more documents showing the ministerial decree legalizing the company's establishment.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub company_ministerial_decree: Option<CreateAccountDocumentsCompanyMinisterialDecree>,
-    /// One or more documents that demonstrate proof of a company's registration with the appropriate local authorities.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub company_registration_verification:
-        Option<CreateAccountDocumentsCompanyRegistrationVerification>,
-    /// One or more documents that demonstrate proof of a company's tax ID.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub company_tax_id_verification: Option<CreateAccountDocumentsCompanyTaxIdVerification>,
-    /// One or more documents that demonstrate proof of address.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub proof_of_address: Option<CreateAccountDocumentsProofOfAddress>,
-    /// One or more documents showing the company’s proof of registration with the national business registry.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub proof_of_registration: Option<CreateAccountDocumentsProofOfRegistration>,
-    /// One or more documents that demonstrate proof of ultimate beneficial ownership.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub proof_of_ultimate_beneficial_ownership:
-        Option<CreateAccountDocumentsProofOfUltimateBeneficialOwnership>,
-}
-impl CreateAccountDocuments {
-    pub fn new() -> Self {
-        Self {
-            bank_account_ownership_verification: None,
-            company_license: None,
-            company_memorandum_of_association: None,
-            company_ministerial_decree: None,
-            company_registration_verification: None,
-            company_tax_id_verification: None,
-            proof_of_address: None,
-            proof_of_registration: None,
-            proof_of_ultimate_beneficial_ownership: None,
-        }
-    }
-}
-impl Default for CreateAccountDocuments {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-/// One or more documents that support the [Bank account ownership verification](https://support.stripe.com/questions/bank-account-ownership-verification) requirement.
-/// Must be a document associated with the account’s primary active bank account that displays the last 4 digits of the account number, either a statement or a check.
-#[derive(Clone, Debug, serde::Serialize)]
-pub struct CreateAccountDocumentsBankAccountOwnershipVerification {
-    /// One or more document ids returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `account_requirement`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub files: Option<Vec<String>>,
-}
-impl CreateAccountDocumentsBankAccountOwnershipVerification {
-    pub fn new() -> Self {
-        Self { files: None }
-    }
-}
-impl Default for CreateAccountDocumentsBankAccountOwnershipVerification {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-/// One or more documents that demonstrate proof of a company's license to operate.
-#[derive(Clone, Debug, serde::Serialize)]
-pub struct CreateAccountDocumentsCompanyLicense {
-    /// One or more document ids returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `account_requirement`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub files: Option<Vec<String>>,
-}
-impl CreateAccountDocumentsCompanyLicense {
-    pub fn new() -> Self {
-        Self { files: None }
-    }
-}
-impl Default for CreateAccountDocumentsCompanyLicense {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-/// One or more documents showing the company's Memorandum of Association.
-#[derive(Clone, Debug, serde::Serialize)]
-pub struct CreateAccountDocumentsCompanyMemorandumOfAssociation {
-    /// One or more document ids returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `account_requirement`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub files: Option<Vec<String>>,
-}
-impl CreateAccountDocumentsCompanyMemorandumOfAssociation {
-    pub fn new() -> Self {
-        Self { files: None }
-    }
-}
-impl Default for CreateAccountDocumentsCompanyMemorandumOfAssociation {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-/// (Certain countries only) One or more documents showing the ministerial decree legalizing the company's establishment.
-#[derive(Clone, Debug, serde::Serialize)]
-pub struct CreateAccountDocumentsCompanyMinisterialDecree {
-    /// One or more document ids returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `account_requirement`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub files: Option<Vec<String>>,
-}
-impl CreateAccountDocumentsCompanyMinisterialDecree {
-    pub fn new() -> Self {
-        Self { files: None }
-    }
-}
-impl Default for CreateAccountDocumentsCompanyMinisterialDecree {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-/// One or more documents that demonstrate proof of a company's registration with the appropriate local authorities.
-#[derive(Clone, Debug, serde::Serialize)]
-pub struct CreateAccountDocumentsCompanyRegistrationVerification {
-    /// One or more document ids returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `account_requirement`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub files: Option<Vec<String>>,
-}
-impl CreateAccountDocumentsCompanyRegistrationVerification {
-    pub fn new() -> Self {
-        Self { files: None }
-    }
-}
-impl Default for CreateAccountDocumentsCompanyRegistrationVerification {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-/// One or more documents that demonstrate proof of a company's tax ID.
-#[derive(Clone, Debug, serde::Serialize)]
-pub struct CreateAccountDocumentsCompanyTaxIdVerification {
-    /// One or more document ids returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `account_requirement`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub files: Option<Vec<String>>,
-}
-impl CreateAccountDocumentsCompanyTaxIdVerification {
-    pub fn new() -> Self {
-        Self { files: None }
-    }
-}
-impl Default for CreateAccountDocumentsCompanyTaxIdVerification {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-/// One or more documents that demonstrate proof of address.
-#[derive(Clone, Debug, serde::Serialize)]
-pub struct CreateAccountDocumentsProofOfAddress {
-    /// One or more document ids returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `account_requirement`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub files: Option<Vec<String>>,
-}
-impl CreateAccountDocumentsProofOfAddress {
-    pub fn new() -> Self {
-        Self { files: None }
-    }
-}
-impl Default for CreateAccountDocumentsProofOfAddress {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-/// One or more documents showing the company’s proof of registration with the national business registry.
-#[derive(Clone, Debug, serde::Serialize)]
-pub struct CreateAccountDocumentsProofOfRegistration {
-    /// One or more document ids returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `account_requirement`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub files: Option<Vec<String>>,
-}
-impl CreateAccountDocumentsProofOfRegistration {
-    pub fn new() -> Self {
-        Self { files: None }
-    }
-}
-impl Default for CreateAccountDocumentsProofOfRegistration {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-/// One or more documents that demonstrate proof of ultimate beneficial ownership.
-#[derive(Clone, Debug, serde::Serialize)]
-pub struct CreateAccountDocumentsProofOfUltimateBeneficialOwnership {
-    /// One or more document ids returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `account_requirement`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub files: Option<Vec<String>>,
-}
-impl CreateAccountDocumentsProofOfUltimateBeneficialOwnership {
-    pub fn new() -> Self {
-        Self { files: None }
-    }
-}
-impl Default for CreateAccountDocumentsProofOfUltimateBeneficialOwnership {
-    fn default() -> Self {
-        Self::new()
-    }
-}
 /// Information about the person represented by the account.
 /// This field is null unless `business_type` is set to `individual`.
 /// Once you create an [Account Link](/api/account_links) or [Account Session](/api/account_sessions), this property can only be updated for accounts where [controller.requirement_collection](/api/accounts/object#account_object-controller-requirement_collection) is `application`, which includes Custom accounts.
@@ -1752,7 +1542,7 @@ pub struct CreateAccountIndividual {
     /// The individual's maiden name.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub maiden_name: Option<String>,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
@@ -1829,7 +1619,7 @@ pub struct CreateAccountIndividualAddress {
     /// ZIP or postal code.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub postal_code: Option<String>,
-    /// State, county, province, or region.
+    /// State, county, province, or region ([ISO 3166-2](https://en.wikipedia.org/wiki/ISO_3166-2)).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
 }
@@ -2012,7 +1802,7 @@ pub struct CreateAccountIndividualRegisteredAddress {
     /// ZIP or postal code.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub postal_code: Option<String>,
-    /// State, county, province, or region.
+    /// State, county, province, or region ([ISO 3166-2](https://en.wikipedia.org/wiki/ISO_3166-2)).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
 }
@@ -2557,7 +2347,7 @@ impl CreateAccount {
     pub fn new() -> Self {
         Self { inner: CreateAccountBuilder::new() }
     }
-    /// An [account token](https://stripe.com/docs/api#create_account_token), used to securely provide details to the account.
+    /// An [account token](https://api.stripe.com#create_account_token), used to securely provide details to the account.
     pub fn account_token(mut self, account_token: impl Into<String>) -> Self {
         self.inner.account_token = Some(account_token.into());
         self
@@ -2618,7 +2408,7 @@ impl CreateAccount {
         self
     }
     /// Documents that may be submitted to satisfy various informational requests.
-    pub fn documents(mut self, documents: impl Into<CreateAccountDocuments>) -> Self {
+    pub fn documents(mut self, documents: impl Into<DocumentsSpecs>) -> Self {
         self.inner.documents = Some(documents.into());
         self
     }
@@ -2657,7 +2447,7 @@ impl CreateAccount {
         self.inner.individual = Some(individual.into());
         self
     }
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
@@ -2731,7 +2521,7 @@ struct UpdateAccountBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     default_currency: Option<stripe_types::Currency>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    documents: Option<UpdateAccountDocuments>,
+    documents: Option<DocumentsSpecs>,
     #[serde(skip_serializing_if = "Option::is_none")]
     email: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2929,7 +2719,7 @@ pub struct UpdateAccountBusinessProfileSupportAddress {
     /// ZIP or postal code.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub postal_code: Option<String>,
-    /// State, county, province, or region.
+    /// State, county, province, or region ([ISO 3166-2](https://en.wikipedia.org/wiki/ISO_3166-2)).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
 }
@@ -3078,7 +2868,7 @@ pub struct UpdateAccountCompanyAddress {
     /// ZIP or postal code.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub postal_code: Option<String>,
-    /// State, county, province, or region.
+    /// State, county, province, or region ([ISO 3166-2](https://en.wikipedia.org/wiki/ISO_3166-2)).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
 }
@@ -3378,216 +3168,6 @@ impl<'de> serde::Deserialize<'de> for UpdateAccountCompanyStructure {
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-/// Documents that may be submitted to satisfy various informational requests.
-#[derive(Clone, Debug, serde::Serialize)]
-pub struct UpdateAccountDocuments {
-    /// One or more documents that support the [Bank account ownership verification](https://support.stripe.com/questions/bank-account-ownership-verification) requirement.
-    /// Must be a document associated with the account’s primary active bank account that displays the last 4 digits of the account number, either a statement or a check.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub bank_account_ownership_verification:
-        Option<UpdateAccountDocumentsBankAccountOwnershipVerification>,
-    /// One or more documents that demonstrate proof of a company's license to operate.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub company_license: Option<UpdateAccountDocumentsCompanyLicense>,
-    /// One or more documents showing the company's Memorandum of Association.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub company_memorandum_of_association:
-        Option<UpdateAccountDocumentsCompanyMemorandumOfAssociation>,
-    /// (Certain countries only) One or more documents showing the ministerial decree legalizing the company's establishment.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub company_ministerial_decree: Option<UpdateAccountDocumentsCompanyMinisterialDecree>,
-    /// One or more documents that demonstrate proof of a company's registration with the appropriate local authorities.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub company_registration_verification:
-        Option<UpdateAccountDocumentsCompanyRegistrationVerification>,
-    /// One or more documents that demonstrate proof of a company's tax ID.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub company_tax_id_verification: Option<UpdateAccountDocumentsCompanyTaxIdVerification>,
-    /// One or more documents that demonstrate proof of address.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub proof_of_address: Option<UpdateAccountDocumentsProofOfAddress>,
-    /// One or more documents showing the company’s proof of registration with the national business registry.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub proof_of_registration: Option<UpdateAccountDocumentsProofOfRegistration>,
-    /// One or more documents that demonstrate proof of ultimate beneficial ownership.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub proof_of_ultimate_beneficial_ownership:
-        Option<UpdateAccountDocumentsProofOfUltimateBeneficialOwnership>,
-}
-impl UpdateAccountDocuments {
-    pub fn new() -> Self {
-        Self {
-            bank_account_ownership_verification: None,
-            company_license: None,
-            company_memorandum_of_association: None,
-            company_ministerial_decree: None,
-            company_registration_verification: None,
-            company_tax_id_verification: None,
-            proof_of_address: None,
-            proof_of_registration: None,
-            proof_of_ultimate_beneficial_ownership: None,
-        }
-    }
-}
-impl Default for UpdateAccountDocuments {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-/// One or more documents that support the [Bank account ownership verification](https://support.stripe.com/questions/bank-account-ownership-verification) requirement.
-/// Must be a document associated with the account’s primary active bank account that displays the last 4 digits of the account number, either a statement or a check.
-#[derive(Clone, Debug, serde::Serialize)]
-pub struct UpdateAccountDocumentsBankAccountOwnershipVerification {
-    /// One or more document ids returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `account_requirement`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub files: Option<Vec<String>>,
-}
-impl UpdateAccountDocumentsBankAccountOwnershipVerification {
-    pub fn new() -> Self {
-        Self { files: None }
-    }
-}
-impl Default for UpdateAccountDocumentsBankAccountOwnershipVerification {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-/// One or more documents that demonstrate proof of a company's license to operate.
-#[derive(Clone, Debug, serde::Serialize)]
-pub struct UpdateAccountDocumentsCompanyLicense {
-    /// One or more document ids returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `account_requirement`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub files: Option<Vec<String>>,
-}
-impl UpdateAccountDocumentsCompanyLicense {
-    pub fn new() -> Self {
-        Self { files: None }
-    }
-}
-impl Default for UpdateAccountDocumentsCompanyLicense {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-/// One or more documents showing the company's Memorandum of Association.
-#[derive(Clone, Debug, serde::Serialize)]
-pub struct UpdateAccountDocumentsCompanyMemorandumOfAssociation {
-    /// One or more document ids returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `account_requirement`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub files: Option<Vec<String>>,
-}
-impl UpdateAccountDocumentsCompanyMemorandumOfAssociation {
-    pub fn new() -> Self {
-        Self { files: None }
-    }
-}
-impl Default for UpdateAccountDocumentsCompanyMemorandumOfAssociation {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-/// (Certain countries only) One or more documents showing the ministerial decree legalizing the company's establishment.
-#[derive(Clone, Debug, serde::Serialize)]
-pub struct UpdateAccountDocumentsCompanyMinisterialDecree {
-    /// One or more document ids returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `account_requirement`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub files: Option<Vec<String>>,
-}
-impl UpdateAccountDocumentsCompanyMinisterialDecree {
-    pub fn new() -> Self {
-        Self { files: None }
-    }
-}
-impl Default for UpdateAccountDocumentsCompanyMinisterialDecree {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-/// One or more documents that demonstrate proof of a company's registration with the appropriate local authorities.
-#[derive(Clone, Debug, serde::Serialize)]
-pub struct UpdateAccountDocumentsCompanyRegistrationVerification {
-    /// One or more document ids returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `account_requirement`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub files: Option<Vec<String>>,
-}
-impl UpdateAccountDocumentsCompanyRegistrationVerification {
-    pub fn new() -> Self {
-        Self { files: None }
-    }
-}
-impl Default for UpdateAccountDocumentsCompanyRegistrationVerification {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-/// One or more documents that demonstrate proof of a company's tax ID.
-#[derive(Clone, Debug, serde::Serialize)]
-pub struct UpdateAccountDocumentsCompanyTaxIdVerification {
-    /// One or more document ids returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `account_requirement`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub files: Option<Vec<String>>,
-}
-impl UpdateAccountDocumentsCompanyTaxIdVerification {
-    pub fn new() -> Self {
-        Self { files: None }
-    }
-}
-impl Default for UpdateAccountDocumentsCompanyTaxIdVerification {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-/// One or more documents that demonstrate proof of address.
-#[derive(Clone, Debug, serde::Serialize)]
-pub struct UpdateAccountDocumentsProofOfAddress {
-    /// One or more document ids returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `account_requirement`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub files: Option<Vec<String>>,
-}
-impl UpdateAccountDocumentsProofOfAddress {
-    pub fn new() -> Self {
-        Self { files: None }
-    }
-}
-impl Default for UpdateAccountDocumentsProofOfAddress {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-/// One or more documents showing the company’s proof of registration with the national business registry.
-#[derive(Clone, Debug, serde::Serialize)]
-pub struct UpdateAccountDocumentsProofOfRegistration {
-    /// One or more document ids returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `account_requirement`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub files: Option<Vec<String>>,
-}
-impl UpdateAccountDocumentsProofOfRegistration {
-    pub fn new() -> Self {
-        Self { files: None }
-    }
-}
-impl Default for UpdateAccountDocumentsProofOfRegistration {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-/// One or more documents that demonstrate proof of ultimate beneficial ownership.
-#[derive(Clone, Debug, serde::Serialize)]
-pub struct UpdateAccountDocumentsProofOfUltimateBeneficialOwnership {
-    /// One or more document ids returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `account_requirement`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub files: Option<Vec<String>>,
-}
-impl UpdateAccountDocumentsProofOfUltimateBeneficialOwnership {
-    pub fn new() -> Self {
-        Self { files: None }
-    }
-}
-impl Default for UpdateAccountDocumentsProofOfUltimateBeneficialOwnership {
-    fn default() -> Self {
-        Self::new()
-    }
-}
 /// Information about the person represented by the account.
 /// This field is null unless `business_type` is set to `individual`.
 /// Once you create an [Account Link](/api/account_links) or [Account Session](/api/account_sessions), this property can only be updated for accounts where [controller.requirement_collection](/api/accounts/object#account_object-controller-requirement_collection) is `application`, which includes Custom accounts.
@@ -3645,7 +3225,7 @@ pub struct UpdateAccountIndividual {
     /// The individual's maiden name.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub maiden_name: Option<String>,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
@@ -3722,7 +3302,7 @@ pub struct UpdateAccountIndividualAddress {
     /// ZIP or postal code.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub postal_code: Option<String>,
-    /// State, county, province, or region.
+    /// State, county, province, or region ([ISO 3166-2](https://en.wikipedia.org/wiki/ISO_3166-2)).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
 }
@@ -3905,7 +3485,7 @@ pub struct UpdateAccountIndividualRegisteredAddress {
     /// ZIP or postal code.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub postal_code: Option<String>,
-    /// State, county, province, or region.
+    /// State, county, province, or region ([ISO 3166-2](https://en.wikipedia.org/wiki/ISO_3166-2)).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
 }
@@ -4399,7 +3979,7 @@ impl UpdateAccount {
     pub fn new(account: impl Into<stripe_shared::AccountId>) -> Self {
         Self { account: account.into(), inner: UpdateAccountBuilder::new() }
     }
-    /// An [account token](https://stripe.com/docs/api#create_account_token), used to securely provide details to the account.
+    /// An [account token](https://api.stripe.com#create_account_token), used to securely provide details to the account.
     pub fn account_token(mut self, account_token: impl Into<String>) -> Self {
         self.inner.account_token = Some(account_token.into());
         self
@@ -4447,7 +4027,7 @@ impl UpdateAccount {
         self
     }
     /// Documents that may be submitted to satisfy various informational requests.
-    pub fn documents(mut self, documents: impl Into<UpdateAccountDocuments>) -> Self {
+    pub fn documents(mut self, documents: impl Into<DocumentsSpecs>) -> Self {
         self.inner.documents = Some(documents.into());
         self
     }
@@ -4486,7 +4066,7 @@ impl UpdateAccount {
         self.inner.individual = Some(individual.into());
         self
     }
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
@@ -4734,11 +4314,11 @@ impl Default for CompanyRepresentativeDeclaration {
 }
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct VerificationDocumentSpecs {
-    /// The back of a document returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `additional_verification`.
+    /// The back of a document returned by a [file upload](https://api.stripe.com#create_file) with a `purpose` value of `additional_verification`.
     /// The uploaded file needs to be a color image (smaller than 8,000px by 8,000px), in JPG, PNG, or PDF format, and less than 10 MB in size.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub back: Option<String>,
-    /// The front of a document returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `additional_verification`.
+    /// The front of a document returned by a [file upload](https://api.stripe.com#create_file) with a `purpose` value of `additional_verification`.
     /// The uploaded file needs to be a color image (smaller than 8,000px by 8,000px), in JPG, PNG, or PDF format, and less than 10 MB in size.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub front: Option<String>,
@@ -4754,9 +4334,41 @@ impl Default for VerificationDocumentSpecs {
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]
+pub struct DocumentsParam {
+    /// One or more document ids returned by a [file upload](https://api.stripe.com#create_file) with a `purpose` value of `account_requirement`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub files: Option<Vec<String>>,
+}
+impl DocumentsParam {
+    pub fn new() -> Self {
+        Self { files: None }
+    }
+}
+impl Default for DocumentsParam {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct SignerNameParam {
+    /// The token of the person signing the document, if applicable.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub person: Option<String>,
+}
+impl SignerNameParam {
+    pub fn new() -> Self {
+        Self { person: None }
+    }
+}
+impl Default for SignerNameParam {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct AccountGroupsSpecs {
     /// The group the account is in to determine their payments pricing, and null if the account is on customized pricing.
-    /// [See the Platform pricing tool documentation](https://stripe.com/docs/connect/platform-pricing-tools) for details.
+    /// [See the Platform pricing tool documentation](https://docs.stripe.com/connect/platform-pricing-tools) for details.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payments_pricing: Option<String>,
 }
@@ -4815,11 +4427,11 @@ impl Default for IndividualRelationshipSpecs {
 }
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct PersonVerificationDocumentSpecs {
-    /// The back of an ID returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `identity_document`.
+    /// The back of an ID returned by a [file upload](https://api.stripe.com#create_file) with a `purpose` value of `identity_document`.
     /// The uploaded file needs to be a color image (smaller than 8,000px by 8,000px), in JPG, PNG, or PDF format, and less than 10 MB in size.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub back: Option<String>,
-    /// The front of an ID returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `identity_document`.
+    /// The front of an ID returned by a [file upload](https://api.stripe.com#create_file) with a `purpose` value of `identity_document`.
     /// The uploaded file needs to be a color image (smaller than 8,000px by 8,000px), in JPG, PNG, or PDF format, and less than 10 MB in size.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub front: Option<String>,
@@ -5112,6 +4724,9 @@ pub struct CapabilitiesParam {
     /// The paynow_payments capability.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub paynow_payments: Option<CapabilityParam>,
+    /// The payto_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payto_payments: Option<CapabilityParam>,
     /// The pix_payments capability.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub pix_payments: Option<CapabilityParam>,
@@ -5210,6 +4825,7 @@ impl CapabilitiesParam {
             pay_by_bank_payments: None,
             payco_payments: None,
             paynow_payments: None,
+            payto_payments: None,
             pix_payments: None,
             promptpay_payments: None,
             revolut_pay_payments: None,
@@ -5247,6 +4863,25 @@ impl VerificationSpecs {
     }
 }
 impl Default for VerificationSpecs {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct SignerParam {
+    /// One or more document ids returned by a [file upload](https://api.stripe.com#create_file) with a `purpose` value of `account_requirement`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub files: Option<Vec<String>>,
+    /// Information regarding the person signing the document if applicable.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub signer: Option<SignerNameParam>,
+}
+impl SignerParam {
+    pub fn new() -> Self {
+        Self { files: None, signer: None }
+    }
+}
+impl Default for SignerParam {
     fn default() -> Self {
         Self::new()
     }
@@ -5334,6 +4969,57 @@ impl TreasurySettingsSpecs {
     }
 }
 impl Default for TreasurySettingsSpecs {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct DocumentsSpecs {
+    /// One or more documents that support the [Bank account ownership verification](https://support.stripe.com/questions/bank-account-ownership-verification) requirement.
+    /// Must be a document associated with the account’s primary active bank account that displays the last 4 digits of the account number, either a statement or a check.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bank_account_ownership_verification: Option<DocumentsParam>,
+    /// One or more documents that demonstrate proof of a company's license to operate.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub company_license: Option<DocumentsParam>,
+    /// One or more documents showing the company's Memorandum of Association.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub company_memorandum_of_association: Option<DocumentsParam>,
+    /// (Certain countries only) One or more documents showing the ministerial decree legalizing the company's establishment.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub company_ministerial_decree: Option<DocumentsParam>,
+    /// One or more documents that demonstrate proof of a company's registration with the appropriate local authorities.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub company_registration_verification: Option<DocumentsParam>,
+    /// One or more documents that demonstrate proof of a company's tax ID.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub company_tax_id_verification: Option<DocumentsParam>,
+    /// One or more documents that demonstrate proof of address.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub proof_of_address: Option<DocumentsParam>,
+    /// One or more documents showing the company’s proof of registration with the national business registry.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub proof_of_registration: Option<SignerParam>,
+    /// One or more documents that demonstrate proof of ultimate beneficial ownership.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub proof_of_ultimate_beneficial_ownership: Option<SignerParam>,
+}
+impl DocumentsSpecs {
+    pub fn new() -> Self {
+        Self {
+            bank_account_ownership_verification: None,
+            company_license: None,
+            company_memorandum_of_association: None,
+            company_ministerial_decree: None,
+            company_registration_verification: None,
+            company_tax_id_verification: None,
+            proof_of_address: None,
+            proof_of_registration: None,
+            proof_of_ultimate_beneficial_ownership: None,
+        }
+    }
+}
+impl Default for DocumentsSpecs {
     fn default() -> Self {
         Self::new()
     }

@@ -29,9 +29,9 @@ You can apply a strategy globally to the client (for all requests) or override i
   file="examples/endpoints/src/strategy.rs"
   href={{base: "https://github.com/arlyon/async-stripe/blob/master/"}}
   dedent
-  startLine={9}
-  endLine={21}
-  highlightLines={[4]}
+  startLine={10}
+  endLine={20}
+  highlightLines={[3]}
 />
 
 ### Per-Request Strategy
@@ -40,9 +40,9 @@ You can apply a strategy globally to the client (for all requests) or override i
   file="examples/endpoints/src/strategy.rs"
   href={{base: "https://github.com/arlyon/async-stripe/blob/master/"}}
   dedent
-  startLine={19}
-  endLine={29}
-  highlightLines={[8,9]}
+  startLine={24}
+  endLine={31}
+  highlightLines={[3,4]}
 />
 
 ## Custom Idempotency Keys
@@ -53,19 +53,15 @@ The `IdempotencyKey` type validates that your key:
 - Is not empty
 - Does not exceed 255 characters (Stripe's limit)
 
-```rust
-use stripe::{Client, CreatePaymentIntent, Currency, RequestStrategy, IdempotencyKey};
-
-let client = Client::new(secret_key);
-
-// Use your own unique identifier (e.g., from your database)
-let key = IdempotencyKey::new("order_12345_attempt_1").unwrap();
-
-CreatePaymentIntent::new(1000, Currency::USD)
-    .request_strategy(RequestStrategy::Idempotent(key))
-    .send(&client)
-    .await?;
-```
+<CodeFromFile
+  file="examples/errors/src/error_handling_best_practices.rs"
+  href={{base: "https://github.com/arlyon/async-stripe/blob/master/"}}
+  lang="rust"
+  startLine={63}
+  highlightLines={[4,5]}
+  endLine={78}
+  dedent
+/>
 
 This ensures that even if your application retries the request due to a network failure, Stripe will recognize it as the same operation and not create duplicate charges.
 

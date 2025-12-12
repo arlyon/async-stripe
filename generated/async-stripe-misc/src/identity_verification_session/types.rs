@@ -8,7 +8,7 @@
 /// the verification flow. The VerificationSession contains the user's verified data after
 /// verification checks are complete.
 ///
-/// Related guide: [The Verification Sessions API](https://stripe.com/docs/identity/verification-sessions).
+/// Related guide: [The Verification Sessions API](https://docs.stripe.com/identity/verification-sessions).
 ///
 /// For more details see <<https://stripe.com/docs/api/identity/verification_sessions/object>>.
 #[derive(Clone, Debug)]
@@ -17,11 +17,11 @@ pub struct IdentityVerificationSession {
     /// A string to reference this user.
     /// This can be a customer ID, a session ID, or similar, and can be used to reconcile this verification with your internal systems.
     pub client_reference_id: Option<String>,
-    /// The short-lived client secret used by Stripe.js to [show a verification modal](https://stripe.com/docs/js/identity/modal) inside your app.
+    /// The short-lived client secret used by Stripe.js to [show a verification modal](https://docs.stripe.com/js/identity/modal) inside your app.
     /// This client secret expires after 24 hours and can only be used once.
     /// Don’t store it, log it, embed it in a URL, or expose it to anyone other than the user.
     /// Make sure that you have TLS enabled on any page that includes the client secret.
-    /// Refer to our docs on [passing the client secret to the frontend](https://stripe.com/docs/identity/verification-sessions#client-secret) to learn more.
+    /// Refer to our docs on [passing the client secret to the frontend](https://docs.stripe.com/identity/verification-sessions#client-secret) to learn more.
     pub client_secret: Option<String>,
     /// Time at which the object was created. Measured in seconds since the Unix epoch.
     pub created: stripe_types::Timestamp,
@@ -30,12 +30,12 @@ pub struct IdentityVerificationSession {
     /// If present, this property tells you the last error encountered when processing the verification.
     pub last_error: Option<stripe_misc::GelatoSessionLastError>,
     /// ID of the most recent VerificationReport.
-    /// [Learn more about accessing detailed verification results.](https://stripe.com/docs/identity/verification-sessions#results).
+    /// [Learn more about accessing detailed verification results.](https://docs.stripe.com/identity/verification-sessions#results).
     pub last_verification_report:
         Option<stripe_types::Expandable<stripe_misc::IdentityVerificationReport>>,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: std::collections::HashMap<String, String>,
     /// A set of options for the session’s verification checks.
@@ -47,17 +47,19 @@ pub struct IdentityVerificationSession {
     pub redaction: Option<stripe_misc::VerificationSessionRedaction>,
     /// Customer ID
     pub related_customer: Option<String>,
+    /// The ID of the Account representing a customer.
+    pub related_customer_account: Option<String>,
     pub related_person: Option<stripe_misc::GelatoRelatedPerson>,
     /// Status of this VerificationSession.
-    /// [Learn more about the lifecycle of sessions](https://stripe.com/docs/identity/how-sessions-work).
+    /// [Learn more about the lifecycle of sessions](https://docs.stripe.com/identity/how-sessions-work).
     pub status: stripe_misc::IdentityVerificationSessionStatus,
-    /// The type of [verification check](https://stripe.com/docs/identity/verification-checks) to be performed.
+    /// The type of [verification check](https://docs.stripe.com/identity/verification-checks) to be performed.
     #[cfg_attr(feature = "deserialize", serde(rename = "type"))]
     pub type_: IdentityVerificationSessionType,
     /// The short-lived URL that you use to redirect a user to Stripe to submit their identity information.
     /// This URL expires after 48 hours and can only be used once.
     /// Don’t store it, log it, send it in emails or expose it to anyone other than the user.
-    /// Refer to our docs on [verifying identity documents](https://stripe.com/docs/identity/verify-identity-documents?platform=web&type=redirect) to learn how to redirect users to Stripe.
+    /// Refer to our docs on [verifying identity documents](https://docs.stripe.com/identity/verify-identity-documents?platform=web&type=redirect) to learn how to redirect users to Stripe.
     pub url: Option<String>,
     /// The configuration token of a verification flow from the dashboard.
     pub verification_flow: Option<String>,
@@ -79,6 +81,7 @@ pub struct IdentityVerificationSessionBuilder {
     provided_details: Option<Option<stripe_misc::GelatoProvidedDetails>>,
     redaction: Option<Option<stripe_misc::VerificationSessionRedaction>>,
     related_customer: Option<Option<String>>,
+    related_customer_account: Option<Option<String>>,
     related_person: Option<Option<stripe_misc::GelatoRelatedPerson>>,
     status: Option<stripe_misc::IdentityVerificationSessionStatus>,
     type_: Option<IdentityVerificationSessionType>,
@@ -141,6 +144,9 @@ const _: () = {
                 "provided_details" => Deserialize::begin(&mut self.provided_details),
                 "redaction" => Deserialize::begin(&mut self.redaction),
                 "related_customer" => Deserialize::begin(&mut self.related_customer),
+                "related_customer_account" => {
+                    Deserialize::begin(&mut self.related_customer_account)
+                }
                 "related_person" => Deserialize::begin(&mut self.related_person),
                 "status" => Deserialize::begin(&mut self.status),
                 "type" => Deserialize::begin(&mut self.type_),
@@ -165,6 +171,7 @@ const _: () = {
                 provided_details: Deserialize::default(),
                 redaction: Deserialize::default(),
                 related_customer: Deserialize::default(),
+                related_customer_account: Deserialize::default(),
                 related_person: Deserialize::default(),
                 status: Deserialize::default(),
                 type_: Deserialize::default(),
@@ -188,6 +195,7 @@ const _: () = {
                 Some(provided_details),
                 Some(redaction),
                 Some(related_customer),
+                Some(related_customer_account),
                 Some(related_person),
                 Some(status),
                 Some(type_),
@@ -207,6 +215,7 @@ const _: () = {
                 self.provided_details.take(),
                 self.redaction.take(),
                 self.related_customer.take(),
+                self.related_customer_account.take(),
                 self.related_person.take(),
                 self.status.take(),
                 self.type_.take(),
@@ -230,6 +239,7 @@ const _: () = {
                 provided_details,
                 redaction,
                 related_customer,
+                related_customer_account,
                 related_person,
                 status,
                 type_,
@@ -277,6 +287,9 @@ const _: () = {
                     "provided_details" => b.provided_details = FromValueOpt::from_value(v),
                     "redaction" => b.redaction = FromValueOpt::from_value(v),
                     "related_customer" => b.related_customer = FromValueOpt::from_value(v),
+                    "related_customer_account" => {
+                        b.related_customer_account = FromValueOpt::from_value(v)
+                    }
                     "related_person" => b.related_person = FromValueOpt::from_value(v),
                     "status" => b.status = FromValueOpt::from_value(v),
                     "type" => b.type_ = FromValueOpt::from_value(v),
@@ -294,7 +307,7 @@ const _: () = {
 impl serde::Serialize for IdentityVerificationSession {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("IdentityVerificationSession", 19)?;
+        let mut s = s.serialize_struct("IdentityVerificationSession", 20)?;
         s.serialize_field("client_reference_id", &self.client_reference_id)?;
         s.serialize_field("client_secret", &self.client_secret)?;
         s.serialize_field("created", &self.created)?;
@@ -307,6 +320,7 @@ impl serde::Serialize for IdentityVerificationSession {
         s.serialize_field("provided_details", &self.provided_details)?;
         s.serialize_field("redaction", &self.redaction)?;
         s.serialize_field("related_customer", &self.related_customer)?;
+        s.serialize_field("related_customer_account", &self.related_customer_account)?;
         s.serialize_field("related_person", &self.related_person)?;
         s.serialize_field("status", &self.status)?;
         s.serialize_field("type", &self.type_)?;
@@ -318,7 +332,7 @@ impl serde::Serialize for IdentityVerificationSession {
         s.end()
     }
 }
-/// The type of [verification check](https://stripe.com/docs/identity/verification-checks) to be performed.
+/// The type of [verification check](https://docs.stripe.com/identity/verification-checks) to be performed.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum IdentityVerificationSessionType {

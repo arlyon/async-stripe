@@ -340,13 +340,22 @@ struct BalanceTransactionsCustomerBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    invoice: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     limit: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
     starting_after: Option<String>,
 }
 impl BalanceTransactionsCustomerBuilder {
     fn new() -> Self {
-        Self { created: None, ending_before: None, expand: None, limit: None, starting_after: None }
+        Self {
+            created: None,
+            ending_before: None,
+            expand: None,
+            invoice: None,
+            limit: None,
+            starting_after: None,
+        }
     }
 }
 /// Returns a list of transactions that updated the customer’s [balances](https://stripe.com/docs/billing/customer/balance).
@@ -375,6 +384,11 @@ impl BalanceTransactionsCustomer {
     /// Specifies which fields in the response should be expanded.
     pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
         self.inner.expand = Some(expand.into());
+        self
+    }
+    /// Only return transactions that are related to the specified invoice.
+    pub fn invoice(mut self, invoice: impl Into<String>) -> Self {
+        self.inner.invoice = Some(invoice.into());
         self
     }
     /// A limit on the number of objects to be returned.
@@ -575,6 +589,7 @@ pub enum ListPaymentMethodsCustomerType {
     Payco,
     Paynow,
     Paypal,
+    Payto,
     Pix,
     Promptpay,
     RevolutPay,
@@ -632,6 +647,7 @@ impl ListPaymentMethodsCustomerType {
             Payco => "payco",
             Paynow => "paynow",
             Paypal => "paypal",
+            Payto => "payto",
             Pix => "pix",
             Promptpay => "promptpay",
             RevolutPay => "revolut_pay",
@@ -692,6 +708,7 @@ impl std::str::FromStr for ListPaymentMethodsCustomerType {
             "payco" => Ok(Payco),
             "paynow" => Ok(Paynow),
             "paypal" => Ok(Paypal),
+            "payto" => Ok(Payto),
             "pix" => Ok(Pix),
             "promptpay" => Ok(Promptpay),
             "revolut_pay" => Ok(RevolutPay),
@@ -1081,7 +1098,7 @@ impl Default for CreateCustomerCashBalance {
 pub struct CreateCustomerCashBalanceSettings {
     /// Controls how funds transferred by the customer are applied to payment intents and invoices.
     /// Valid options are `automatic`, `manual`, or `merchant_default`.
-    /// For more information about these reconciliation modes, see [Reconciliation](https://stripe.com/docs/payments/customer-balance/reconciliation).
+    /// For more information about these reconciliation modes, see [Reconciliation](https://docs.stripe.com/payments/customer-balance/reconciliation).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reconciliation_mode: Option<CreateCustomerCashBalanceSettingsReconciliationMode>,
 }
@@ -1097,7 +1114,7 @@ impl Default for CreateCustomerCashBalanceSettings {
 }
 /// Controls how funds transferred by the customer are applied to payment intents and invoices.
 /// Valid options are `automatic`, `manual`, or `merchant_default`.
-/// For more information about these reconciliation modes, see [Reconciliation](https://stripe.com/docs/payments/customer-balance/reconciliation).
+/// For more information about these reconciliation modes, see [Reconciliation](https://docs.stripe.com/payments/customer-balance/reconciliation).
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum CreateCustomerCashBalanceSettingsReconciliationMode {
@@ -1793,6 +1810,7 @@ impl CreateCustomer {
         Self { inner: CreateCustomerBuilder::new() }
     }
     /// The customer's address.
+    /// Learn about [country-specific requirements for calculating tax](https://docs.stripe.com/invoicing/taxes?dashboard-or-api=dashboard#set-up-customer).
     pub fn address(mut self, address: impl Into<OptionalFieldsCustomerAddress>) -> Self {
         self.inner.address = Some(address.into());
         self
@@ -1850,7 +1868,7 @@ impl CreateCustomer {
         self.inner.invoice_settings = Some(invoice_settings.into());
         self
     }
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
@@ -2045,7 +2063,7 @@ impl Default for UpdateCustomerCashBalance {
 pub struct UpdateCustomerCashBalanceSettings {
     /// Controls how funds transferred by the customer are applied to payment intents and invoices.
     /// Valid options are `automatic`, `manual`, or `merchant_default`.
-    /// For more information about these reconciliation modes, see [Reconciliation](https://stripe.com/docs/payments/customer-balance/reconciliation).
+    /// For more information about these reconciliation modes, see [Reconciliation](https://docs.stripe.com/payments/customer-balance/reconciliation).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reconciliation_mode: Option<UpdateCustomerCashBalanceSettingsReconciliationMode>,
 }
@@ -2061,7 +2079,7 @@ impl Default for UpdateCustomerCashBalanceSettings {
 }
 /// Controls how funds transferred by the customer are applied to payment intents and invoices.
 /// Valid options are `automatic`, `manual`, or `merchant_default`.
-/// For more information about these reconciliation modes, see [Reconciliation](https://stripe.com/docs/payments/customer-balance/reconciliation).
+/// For more information about these reconciliation modes, see [Reconciliation](https://docs.stripe.com/payments/customer-balance/reconciliation).
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum UpdateCustomerCashBalanceSettingsReconciliationMode {
@@ -2363,6 +2381,7 @@ impl UpdateCustomer {
         Self { customer: customer.into(), inner: UpdateCustomerBuilder::new() }
     }
     /// The customer's address.
+    /// Learn about [country-specific requirements for calculating tax](https://docs.stripe.com/invoicing/taxes?dashboard-or-api=dashboard#set-up-customer).
     pub fn address(mut self, address: impl Into<OptionalFieldsCustomerAddress>) -> Self {
         self.inner.address = Some(address.into());
         self
@@ -2383,11 +2402,11 @@ impl UpdateCustomer {
         self.inner.cash_balance = Some(cash_balance.into());
         self
     }
-    /// If you are using payment methods created via the PaymentMethods API, see the [invoice_settings.default_payment_method](https://stripe.com/docs/api/customers/update#update_customer-invoice_settings-default_payment_method) parameter.
+    /// If you are using payment methods created via the PaymentMethods API, see the [invoice_settings.default_payment_method](https://docs.stripe.com/api/customers/update#update_customer-invoice_settings-default_payment_method) parameter.
     ///
     /// Provide the ID of a payment source already attached to this customer to make it this customer's default payment source.
     ///
-    /// If you want to add a new payment source and make it the default, see the [source](https://stripe.com/docs/api/customers/update#update_customer-source) property.
+    /// If you want to add a new payment source and make it the default, see the [source](https://docs.stripe.com/api/customers/update#update_customer-source) property.
     pub fn default_source(mut self, default_source: impl Into<String>) -> Self {
         self.inner.default_source = Some(default_source.into());
         self
@@ -2429,7 +2448,7 @@ impl UpdateCustomer {
         self.inner.invoice_settings = Some(invoice_settings.into());
         self
     }
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
@@ -2881,7 +2900,7 @@ impl FundCashBalanceCustomer {
     }
     /// A description of the test funding.
     /// This simulates free-text references supplied by customers when making bank transfers to their cash balance.
-    /// You can use this to test how Stripe's [reconciliation algorithm](https://stripe.com/docs/payments/customer-balance/reconciliation) applies to different user inputs.
+    /// You can use this to test how Stripe's [reconciliation algorithm](https://docs.stripe.com/payments/customer-balance/reconciliation) applies to different user inputs.
     pub fn reference(mut self, reference: impl Into<String>) -> Self {
         self.inner.reference = Some(reference.into());
         self
@@ -2936,7 +2955,7 @@ pub struct OptionalFieldsCustomerAddress {
     /// ZIP or postal code.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub postal_code: Option<String>,
-    /// State, county, province, or region.
+    /// State, county, province, or region ([ISO 3166-2](https://en.wikipedia.org/wiki/ISO_3166-2)).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
 }

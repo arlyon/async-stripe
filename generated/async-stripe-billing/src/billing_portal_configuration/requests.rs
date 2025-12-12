@@ -649,6 +649,13 @@ impl<'de> serde::Deserialize<'de>
 /// Information about updating subscriptions in the portal.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateBillingPortalConfigurationFeaturesSubscriptionUpdate {
+    /// Determines the value to use for the billing cycle anchor on subscription updates.
+    /// Valid values are `now` or `unchanged`, and the default value is `unchanged`.
+    /// Setting the value to `now` resets the subscription's billing cycle anchor to the current time (in UTC).
+    /// For more information, see the billing cycle [documentation](https://docs.stripe.com/billing/subscriptions/billing-cycle).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub billing_cycle_anchor:
+        Option<CreateBillingPortalConfigurationFeaturesSubscriptionUpdateBillingCycleAnchor>,
     /// The types of subscription updates that are supported. When empty, subscriptions are not updateable.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub default_allowed_updates: Option<
@@ -676,6 +683,7 @@ pub struct CreateBillingPortalConfigurationFeaturesSubscriptionUpdate {
 impl CreateBillingPortalConfigurationFeaturesSubscriptionUpdate {
     pub fn new(enabled: impl Into<bool>) -> Self {
         Self {
+            billing_cycle_anchor: None,
             default_allowed_updates: None,
             enabled: enabled.into(),
             products: None,
@@ -683,6 +691,84 @@ impl CreateBillingPortalConfigurationFeaturesSubscriptionUpdate {
             schedule_at_period_end: None,
             trial_update_behavior: None,
         }
+    }
+}
+/// Determines the value to use for the billing cycle anchor on subscription updates.
+/// Valid values are `now` or `unchanged`, and the default value is `unchanged`.
+/// Setting the value to `now` resets the subscription's billing cycle anchor to the current time (in UTC).
+/// For more information, see the billing cycle [documentation](https://docs.stripe.com/billing/subscriptions/billing-cycle).
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreateBillingPortalConfigurationFeaturesSubscriptionUpdateBillingCycleAnchor {
+    Now,
+    Unchanged,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreateBillingPortalConfigurationFeaturesSubscriptionUpdateBillingCycleAnchor {
+    pub fn as_str(&self) -> &str {
+        use CreateBillingPortalConfigurationFeaturesSubscriptionUpdateBillingCycleAnchor::*;
+        match self {
+            Now => "now",
+            Unchanged => "unchanged",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr
+    for CreateBillingPortalConfigurationFeaturesSubscriptionUpdateBillingCycleAnchor
+{
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateBillingPortalConfigurationFeaturesSubscriptionUpdateBillingCycleAnchor::*;
+        match s {
+            "now" => Ok(Now),
+            "unchanged" => Ok(Unchanged),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateBillingPortalConfigurationFeaturesSubscriptionUpdateBillingCycleAnchor"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display
+    for CreateBillingPortalConfigurationFeaturesSubscriptionUpdateBillingCycleAnchor
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug
+    for CreateBillingPortalConfigurationFeaturesSubscriptionUpdateBillingCycleAnchor
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize
+    for CreateBillingPortalConfigurationFeaturesSubscriptionUpdateBillingCycleAnchor
+{
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateBillingPortalConfigurationFeaturesSubscriptionUpdateBillingCycleAnchor
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The types of subscription updates that are supported. When empty, subscriptions are not updateable.
@@ -1035,7 +1121,7 @@ impl<'de> serde::Deserialize<'de>
 /// Learn more about the portal login page in our [integration docs](https://stripe.com/docs/billing/subscriptions/integrating-customer-portal#share).
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateBillingPortalConfigurationLoginPage {
-    /// Set to `true` to generate a shareable URL [`login_page.url`](https://stripe.com/docs/api/customer_portal/configuration#portal_configuration_object-login_page-url) that will take your customers to a hosted login page for the customer portal.
+    /// Set to `true` to generate a shareable URL [`login_page.url`](https://docs.stripe.com/api/customer_portal/configuration#portal_configuration_object-login_page-url) that will take your customers to a hosted login page for the customer portal.
     pub enabled: bool,
 }
 impl CreateBillingPortalConfigurationLoginPage {
@@ -1062,7 +1148,7 @@ impl CreateBillingPortalConfiguration {
         self
     }
     /// The default URL to redirect customers to when they click on the portal's link to return to your website.
-    /// This can be [overriden](https://stripe.com/docs/api/customer_portal/sessions/create#create_portal_session-return_url) when creating the session.
+    /// This can be [overriden](https://docs.stripe.com/api/customer_portal/sessions/create#create_portal_session-return_url) when creating the session.
     pub fn default_return_url(mut self, default_return_url: impl Into<String>) -> Self {
         self.inner.default_return_url = Some(default_return_url.into());
         self
@@ -1081,7 +1167,7 @@ impl CreateBillingPortalConfiguration {
         self.inner.login_page = Some(login_page.into());
         self
     }
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
@@ -1605,6 +1691,13 @@ impl<'de> serde::Deserialize<'de>
 /// Information about updating subscriptions in the portal.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdateBillingPortalConfigurationFeaturesSubscriptionUpdate {
+    /// Determines the value to use for the billing cycle anchor on subscription updates.
+    /// Valid values are `now` or `unchanged`, and the default value is `unchanged`.
+    /// Setting the value to `now` resets the subscription's billing cycle anchor to the current time (in UTC).
+    /// For more information, see the billing cycle [documentation](https://docs.stripe.com/billing/subscriptions/billing-cycle).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub billing_cycle_anchor:
+        Option<UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateBillingCycleAnchor>,
     /// The types of subscription updates that are supported. When empty, subscriptions are not updateable.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub default_allowed_updates: Option<
@@ -1633,6 +1726,7 @@ pub struct UpdateBillingPortalConfigurationFeaturesSubscriptionUpdate {
 impl UpdateBillingPortalConfigurationFeaturesSubscriptionUpdate {
     pub fn new() -> Self {
         Self {
+            billing_cycle_anchor: None,
             default_allowed_updates: None,
             enabled: None,
             products: None,
@@ -1645,6 +1739,84 @@ impl UpdateBillingPortalConfigurationFeaturesSubscriptionUpdate {
 impl Default for UpdateBillingPortalConfigurationFeaturesSubscriptionUpdate {
     fn default() -> Self {
         Self::new()
+    }
+}
+/// Determines the value to use for the billing cycle anchor on subscription updates.
+/// Valid values are `now` or `unchanged`, and the default value is `unchanged`.
+/// Setting the value to `now` resets the subscription's billing cycle anchor to the current time (in UTC).
+/// For more information, see the billing cycle [documentation](https://docs.stripe.com/billing/subscriptions/billing-cycle).
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateBillingCycleAnchor {
+    Now,
+    Unchanged,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateBillingCycleAnchor {
+    pub fn as_str(&self) -> &str {
+        use UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateBillingCycleAnchor::*;
+        match self {
+            Now => "now",
+            Unchanged => "unchanged",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr
+    for UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateBillingCycleAnchor
+{
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateBillingCycleAnchor::*;
+        match s {
+            "now" => Ok(Now),
+            "unchanged" => Ok(Unchanged),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateBillingCycleAnchor"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display
+    for UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateBillingCycleAnchor
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug
+    for UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateBillingCycleAnchor
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize
+    for UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateBillingCycleAnchor
+{
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateBillingCycleAnchor
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// The types of subscription updates that are supported. When empty, subscriptions are not updateable.
@@ -1997,7 +2169,7 @@ impl<'de> serde::Deserialize<'de>
 /// Learn more about the portal login page in our [integration docs](https://stripe.com/docs/billing/subscriptions/integrating-customer-portal#share).
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdateBillingPortalConfigurationLoginPage {
-    /// Set to `true` to generate a shareable URL [`login_page.url`](https://stripe.com/docs/api/customer_portal/configuration#portal_configuration_object-login_page-url) that will take your customers to a hosted login page for the customer portal.
+    /// Set to `true` to generate a shareable URL [`login_page.url`](https://docs.stripe.com/api/customer_portal/configuration#portal_configuration_object-login_page-url) that will take your customers to a hosted login page for the customer portal.
     ///
     /// Set to `false` to deactivate the `login_page.url`.
     pub enabled: bool,
@@ -2035,7 +2207,7 @@ impl UpdateBillingPortalConfiguration {
         self
     }
     /// The default URL to redirect customers to when they click on the portal's link to return to your website.
-    /// This can be [overriden](https://stripe.com/docs/api/customer_portal/sessions/create#create_portal_session-return_url) when creating the session.
+    /// This can be [overriden](https://docs.stripe.com/api/customer_portal/sessions/create#create_portal_session-return_url) when creating the session.
     pub fn default_return_url(mut self, default_return_url: impl Into<String>) -> Self {
         self.inner.default_return_url = Some(default_return_url.into());
         self
@@ -2062,7 +2234,7 @@ impl UpdateBillingPortalConfiguration {
         self.inner.login_page = Some(login_page.into());
         self
     }
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.

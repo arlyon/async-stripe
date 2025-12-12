@@ -1,13 +1,13 @@
 /// Invoices are statements of amounts owed by a customer, and are either
 /// generated one-off, or generated periodically from a subscription.
 ///
-/// They contain [invoice items](https://stripe.com/docs/api#invoiceitems), and proration adjustments
+/// They contain [invoice items](https://api.stripe.com#invoiceitems), and proration adjustments
 /// that may be caused by subscription upgrades/downgrades (if necessary).
 ///
 /// If your invoice is configured to be billed through automatic charges,
 /// Stripe automatically finalizes your invoice and attempts payment. Note
 /// that finalizing the invoice,
-/// [when automatic](https://stripe.com/docs/invoicing/integration/automatic-advancement-collection), does.
+/// [when automatic](https://docs.stripe.com/invoicing/integration/automatic-advancement-collection), does.
 /// not happen immediately as the invoice is created. Stripe waits
 /// until one hour after the last webhook was successfully sent (or the last
 /// webhook timed out after failing). If you (and the platforms you may have
@@ -27,9 +27,9 @@
 /// customer's credit balance which is applied to the next invoice.
 ///
 /// More details on the customer's credit balance are
-/// [here](https://stripe.com/docs/billing/customer/balance).
+/// [here](https://docs.stripe.com/billing/customer/balance).
 ///
-/// Related guide: [Send invoices to customers](https://stripe.com/docs/billing/invoices/sending)
+/// Related guide: [Send invoices to customers](https://docs.stripe.com/billing/invoices/sending)
 ///
 /// For more details see <<https://stripe.com/docs/api/invoices/object>>.
 #[derive(Clone, Debug)]
@@ -66,7 +66,7 @@ pub struct Invoice {
     /// Whether an attempt has been made to pay the invoice.
     /// An invoice is not attempted until 1 hour after the `invoice.created` webhook, for example, so you might not want to display that invoice as unpaid to your users.
     pub attempted: bool,
-    /// Controls whether Stripe performs [automatic collection](https://stripe.com/docs/invoicing/integration/automatic-advancement-collection) of the invoice.
+    /// Controls whether Stripe performs [automatic collection](https://docs.stripe.com/invoicing/integration/automatic-advancement-collection) of the invoice.
     /// If `false`, the invoice's state doesn't automatically advance without an explicit action.
     pub auto_advance: Option<bool>,
     pub automatic_tax: stripe_shared::AutomaticTax,
@@ -99,8 +99,10 @@ pub struct Invoice {
     pub currency: stripe_types::Currency,
     /// Custom fields displayed on the invoice.
     pub custom_fields: Option<Vec<stripe_shared::InvoiceSettingCustomField>>,
-    /// The ID of the customer who will be billed.
+    /// The ID of the customer to bill.
     pub customer: Option<stripe_types::Expandable<stripe_shared::Customer>>,
+    /// The ID of the account representing the customer to bill.
+    pub customer_account: Option<String>,
     /// The customer's address.
     /// Until the invoice is finalized, this field will equal `customer.address`.
     /// Once the invoice is finalized, this field will no longer be updated.
@@ -161,7 +163,7 @@ pub struct Invoice {
     /// Footer displayed on the invoice.
     pub footer: Option<String>,
     /// Details of the invoice that was cloned.
-    /// See the [revision documentation](https://stripe.com/docs/invoicing/invoice-revisions) for more details.
+    /// See the [revision documentation](https://docs.stripe.com/invoicing/invoice-revisions) for more details.
     pub from_invoice: Option<stripe_shared::InvoicesResourceFromInvoice>,
     /// The URL for the hosted invoice page, which allows customers to view and pay an invoice.
     /// If the invoice has not been finalized yet, this will be null.
@@ -183,7 +185,7 @@ pub struct Invoice {
     pub lines: stripe_types::List<stripe_shared::InvoiceLineItem>,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: Option<std::collections::HashMap<String, String>>,
     /// The time at which payment will next be attempted.
@@ -194,7 +196,7 @@ pub struct Invoice {
     pub number: Option<String>,
     /// The account (if any) for which the funds of the invoice payment are intended.
     /// If set, the invoice will be presented with the branding and support information of the specified account.
-    /// See the [Invoices with Connect](https://stripe.com/docs/billing/invoices/connect) documentation for details.
+    /// See the [Invoices with Connect](https://docs.stripe.com/billing/invoices/connect) documentation for details.
     pub on_behalf_of: Option<stripe_types::Expandable<stripe_shared::Account>>,
     /// The parent that generated this invoice
     pub parent: Option<stripe_shared::BillingBillResourceInvoicingParentsInvoiceParent>,
@@ -229,7 +231,7 @@ pub struct Invoice {
     /// Extra information about an invoice for the customer's credit card statement.
     pub statement_descriptor: Option<String>,
     /// The status of the invoice, one of `draft`, `open`, `paid`, `uncollectible`, or `void`.
-    /// [Learn more](https://stripe.com/docs/billing/invoices/workflow#workflow-overview).
+    /// [Learn more](https://docs.stripe.com/billing/invoices/workflow#workflow-overview).
     pub status: Option<stripe_shared::InvoiceStatus>,
     pub status_transitions: stripe_shared::InvoicesResourceStatusTransitions,
     pub subscription: Option<stripe_types::Expandable<stripe_shared::Subscription>>,
@@ -253,7 +255,7 @@ pub struct Invoice {
     pub total_pretax_credit_amounts: Option<Vec<stripe_shared::InvoicesResourcePretaxCreditAmount>>,
     /// The aggregate tax information of all line items.
     pub total_taxes: Option<Vec<stripe_shared::BillingBillResourceInvoicingTaxesTax>>,
-    /// Invoices are automatically paid or sent 1 hour after webhooks are delivered, or until all webhook delivery attempts have [been exhausted](https://stripe.com/docs/billing/webhooks#understand).
+    /// Invoices are automatically paid or sent 1 hour after webhooks are delivered, or until all webhook delivery attempts have [been exhausted](https://docs.stripe.com/billing/webhooks#understand).
     /// This field tracks the time when webhooks for this invoice were successfully delivered.
     /// If the invoice had no webhooks to deliver, this will be set while the invoice is being created.
     pub webhooks_delivered_at: Option<stripe_types::Timestamp>,
@@ -281,6 +283,7 @@ pub struct InvoiceBuilder {
     currency: Option<stripe_types::Currency>,
     custom_fields: Option<Option<Vec<stripe_shared::InvoiceSettingCustomField>>>,
     customer: Option<Option<stripe_types::Expandable<stripe_shared::Customer>>>,
+    customer_account: Option<Option<String>>,
     customer_address: Option<Option<stripe_shared::Address>>,
     customer_email: Option<Option<String>>,
     customer_name: Option<Option<String>>,
@@ -399,6 +402,7 @@ const _: () = {
                 "currency" => Deserialize::begin(&mut self.currency),
                 "custom_fields" => Deserialize::begin(&mut self.custom_fields),
                 "customer" => Deserialize::begin(&mut self.customer),
+                "customer_account" => Deserialize::begin(&mut self.customer_account),
                 "customer_address" => Deserialize::begin(&mut self.customer_address),
                 "customer_email" => Deserialize::begin(&mut self.customer_email),
                 "customer_name" => Deserialize::begin(&mut self.customer_name),
@@ -487,6 +491,7 @@ const _: () = {
                 currency: Deserialize::default(),
                 custom_fields: Deserialize::default(),
                 customer: Deserialize::default(),
+                customer_account: Deserialize::default(),
                 customer_address: Deserialize::default(),
                 customer_email: Deserialize::default(),
                 customer_name: Deserialize::default(),
@@ -568,6 +573,7 @@ const _: () = {
                 Some(currency),
                 Some(custom_fields),
                 Some(customer),
+                Some(customer_account),
                 Some(customer_address),
                 Some(customer_email),
                 Some(customer_name),
@@ -645,6 +651,7 @@ const _: () = {
                 self.currency.take(),
                 self.custom_fields.take(),
                 self.customer.take(),
+                self.customer_account.take(),
                 self.customer_address.take(),
                 self.customer_email.take(),
                 self.customer_name.take(),
@@ -726,6 +733,7 @@ const _: () = {
                 currency,
                 custom_fields,
                 customer,
+                customer_account,
                 customer_address,
                 customer_email,
                 customer_name,
@@ -831,6 +839,7 @@ const _: () = {
                     "currency" => b.currency = FromValueOpt::from_value(v),
                     "custom_fields" => b.custom_fields = FromValueOpt::from_value(v),
                     "customer" => b.customer = FromValueOpt::from_value(v),
+                    "customer_account" => b.customer_account = FromValueOpt::from_value(v),
                     "customer_address" => b.customer_address = FromValueOpt::from_value(v),
                     "customer_email" => b.customer_email = FromValueOpt::from_value(v),
                     "customer_name" => b.customer_name = FromValueOpt::from_value(v),
@@ -913,7 +922,7 @@ const _: () = {
 impl serde::Serialize for Invoice {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("Invoice", 77)?;
+        let mut s = s.serialize_struct("Invoice", 78)?;
         s.serialize_field("account_country", &self.account_country)?;
         s.serialize_field("account_name", &self.account_name)?;
         s.serialize_field("account_tax_ids", &self.account_tax_ids)?;
@@ -935,6 +944,7 @@ impl serde::Serialize for Invoice {
         s.serialize_field("currency", &self.currency)?;
         s.serialize_field("custom_fields", &self.custom_fields)?;
         s.serialize_field("customer", &self.customer)?;
+        s.serialize_field("customer_account", &self.customer_account)?;
         s.serialize_field("customer_address", &self.customer_address)?;
         s.serialize_field("customer_email", &self.customer_email)?;
         s.serialize_field("customer_name", &self.customer_name)?;

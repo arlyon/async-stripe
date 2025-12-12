@@ -2,6 +2,8 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentMethodDetailsBacsDebit {
+    /// Estimated date to debit the customer's bank account. A date string in YYYY-MM-DD format.
+    pub expected_debit_date: Option<String>,
     /// Uniquely identifies this particular bank account.
     /// You can use this attribute to check whether two bank accounts are the same.
     pub fingerprint: Option<String>,
@@ -14,6 +16,7 @@ pub struct PaymentMethodDetailsBacsDebit {
 }
 #[doc(hidden)]
 pub struct PaymentMethodDetailsBacsDebitBuilder {
+    expected_debit_date: Option<Option<String>>,
     fingerprint: Option<Option<String>>,
     last4: Option<Option<String>>,
     mandate: Option<Option<String>>,
@@ -60,6 +63,7 @@ const _: () = {
         type Out = PaymentMethodDetailsBacsDebit;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
+                "expected_debit_date" => Deserialize::begin(&mut self.expected_debit_date),
                 "fingerprint" => Deserialize::begin(&mut self.fingerprint),
                 "last4" => Deserialize::begin(&mut self.last4),
                 "mandate" => Deserialize::begin(&mut self.mandate),
@@ -70,6 +74,7 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
+                expected_debit_date: Deserialize::default(),
                 fingerprint: Deserialize::default(),
                 last4: Deserialize::default(),
                 mandate: Deserialize::default(),
@@ -78,15 +83,23 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(fingerprint), Some(last4), Some(mandate), Some(sort_code)) = (
+            let (
+                Some(expected_debit_date),
+                Some(fingerprint),
+                Some(last4),
+                Some(mandate),
+                Some(sort_code),
+            ) = (
+                self.expected_debit_date.take(),
                 self.fingerprint.take(),
                 self.last4.take(),
                 self.mandate.take(),
                 self.sort_code.take(),
-            ) else {
+            )
+            else {
                 return None;
             };
-            Some(Self::Out { fingerprint, last4, mandate, sort_code })
+            Some(Self::Out { expected_debit_date, fingerprint, last4, mandate, sort_code })
         }
     }
 
@@ -113,6 +126,7 @@ const _: () = {
             let mut b = PaymentMethodDetailsBacsDebitBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
+                    "expected_debit_date" => b.expected_debit_date = FromValueOpt::from_value(v),
                     "fingerprint" => b.fingerprint = FromValueOpt::from_value(v),
                     "last4" => b.last4 = FromValueOpt::from_value(v),
                     "mandate" => b.mandate = FromValueOpt::from_value(v),

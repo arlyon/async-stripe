@@ -166,7 +166,7 @@ impl CreateReportingReportRunBuilder {
     }
 }
 /// Parameters specifying how the report should be run.
-/// Different Report Types have different required and optional parameters, listed in the [API Access to Reports](https://stripe.com/docs/reporting/statements/api) documentation.
+/// Different Report Types have different required and optional parameters, listed in the [API Access to Reports](https://docs.stripe.com/reporting/statements/api) documentation.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateReportingReportRunParameters {
     /// The set of report columns to include in the report output.
@@ -2263,7 +2263,7 @@ impl CreateReportingReportRun {
         self
     }
     /// Parameters specifying how the report should be run.
-    /// Different Report Types have different required and optional parameters, listed in the [API Access to Reports](https://stripe.com/docs/reporting/statements/api) documentation.
+    /// Different Report Types have different required and optional parameters, listed in the [API Access to Reports](https://docs.stripe.com/reporting/statements/api) documentation.
     pub fn parameters(mut self, parameters: impl Into<CreateReportingReportRunParameters>) -> Self {
         self.inner.parameters = Some(parameters.into());
         self

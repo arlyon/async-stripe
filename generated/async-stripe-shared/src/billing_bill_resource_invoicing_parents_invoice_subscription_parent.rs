@@ -2,7 +2,7 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct BillingBillResourceInvoicingParentsInvoiceSubscriptionParent {
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) defined as subscription metadata when an invoice is created.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) defined as subscription metadata when an invoice is created.
     /// Becomes an immutable snapshot of the subscription metadata at the time of invoice finalization.
     ///  *Note: This attribute is populated only for invoices created on or after June 29, 2023.*
     pub metadata: Option<std::collections::HashMap<String, String>>,

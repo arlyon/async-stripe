@@ -14,7 +14,7 @@ pub struct TaxProductResourceTaxRateDetails {
     /// This value can be `null` when no tax applies to the location.
     /// This field is only present for TaxRates created by Stripe Tax.
     pub rate_type: Option<TaxProductResourceTaxRateDetailsRateType>,
-    /// State, county, province, or region.
+    /// State, county, province, or region ([ISO 3166-2](https://en.wikipedia.org/wiki/ISO_3166-2)).
     pub state: Option<String>,
     /// The tax type, such as `vat` or `sales_tax`.
     pub tax_type: Option<TaxProductResourceTaxRateDetailsTaxType>,

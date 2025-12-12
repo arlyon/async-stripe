@@ -1,6 +1,6 @@
 /// This is an object representing a capability for a Stripe account.
 ///
-/// Related guide: [Account capabilities](https://stripe.com/docs/connect/account-capabilities)
+/// Related guide: [Account capabilities](https://docs.stripe.com/connect/account-capabilities)
 ///
 /// For more details see <<https://stripe.com/docs/api/capabilities/object>>.
 #[derive(Clone, Debug)]

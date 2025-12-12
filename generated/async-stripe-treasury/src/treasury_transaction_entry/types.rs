@@ -1,4 +1,4 @@
-/// TransactionEntries represent individual units of money movements within a single [Transaction](https://stripe.com/docs/api#transactions).
+/// TransactionEntries represent individual units of money movements within a single [Transaction](https://api.stripe.com#transactions).
 #[derive(Clone, Debug)]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TreasuryTransactionEntry {

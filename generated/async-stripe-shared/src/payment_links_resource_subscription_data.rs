@@ -6,7 +6,7 @@ pub struct PaymentLinksResourceSubscriptionData {
     /// Use this field to optionally store an explanation of the subscription for rendering in Stripe surfaces and certain local payment methods UIs.
     pub description: Option<String>,
     pub invoice_settings: stripe_shared::PaymentLinksResourceSubscriptionDataInvoiceSettings,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that will set metadata on [Subscriptions](https://stripe.com/docs/api/subscriptions) generated from this payment link.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that will set metadata on [Subscriptions](https://docs.stripe.com/api/subscriptions) generated from this payment link.
     pub metadata: std::collections::HashMap<String, String>,
     /// Integer representing the number of trial period days before the customer is charged for the first time.
     pub trial_period_days: Option<u32>,

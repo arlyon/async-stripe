@@ -1,5 +1,5 @@
 /// This object represents a customer of your business.
-/// Use it to [create recurring charges](https://stripe.com/docs/invoicing/customer), [save payment](https://stripe.com/docs/payments/save-during-payment) and contact information,.
+/// Use it to [create recurring charges](https://docs.stripe.com/invoicing/customer), [save payment](https://docs.stripe.com/payments/save-during-payment) and contact information,.
 /// and track payments that belong to the same customer.
 ///
 /// For more details see <<https://stripe.com/docs/api/customers/object>>.
@@ -14,7 +14,7 @@ pub struct Customer {
     /// The balance only considers amounts that Stripe hasn't successfully applied to any invoice.
     /// It doesn't reflect unpaid invoices.
     /// This balance is only taken into account after invoices finalize.
-    /// For multi-currency balances, see [invoice_credit_balance](https://stripe.com/docs/api/customers/object#customer_object-invoice_credit_balance).
+    /// For multi-currency balances, see [invoice_credit_balance](https://docs.stripe.com/api/customers/object#customer_object-invoice_credit_balance).
     pub balance: Option<i64>,
     /// The customer's business name.
     pub business_name: Option<String>,
@@ -26,15 +26,18 @@ pub struct Customer {
     pub created: stripe_types::Timestamp,
     /// Three-letter [ISO code for the currency](https://stripe.com/docs/currencies) the customer can be charged in for recurring billing purposes.
     pub currency: Option<stripe_types::Currency>,
+    /// The ID of an Account representing a customer.
+    /// You can use this ID with any v1 API that accepts a customer_account parameter.
+    pub customer_account: Option<String>,
     /// ID of the default payment source for the customer.
     ///
-    /// If you use payment methods created through the PaymentMethods API, see the [invoice_settings.default_payment_method](https://stripe.com/docs/api/customers/object#customer_object-invoice_settings-default_payment_method) field instead.
+    /// If you use payment methods created through the PaymentMethods API, see the [invoice_settings.default_payment_method](https://docs.stripe.com/api/customers/object#customer_object-invoice_settings-default_payment_method) field instead.
     pub default_source: Option<stripe_types::Expandable<stripe_shared::PaymentSource>>,
     /// Tracks the most recent state change on any invoice belonging to the customer.
     /// Paying an invoice or marking it uncollectible via the API will set this field to false.
     /// An automatic payment failure or passing the `invoice.due_date` will set this field to `true`.
     ///
-    /// If an invoice becomes uncollectible by [dunning](https://stripe.com/docs/billing/automatic-collection), `delinquent` doesn't reset to `false`.
+    /// If an invoice becomes uncollectible by [dunning](https://docs.stripe.com/billing/automatic-collection), `delinquent` doesn't reset to `false`.
     ///
     /// If you care whether the customer has paid their most recent subscription invoice, use `subscription.status` instead.
     /// Paying or marking uncollectible any customer invoice regardless of whether it is the latest invoice for a subscription will always set this field to `false`.
@@ -61,7 +64,7 @@ pub struct Customer {
     pub invoice_settings: Option<stripe_shared::InvoiceSettingCustomerSetting>,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: Option<std::collections::HashMap<String, String>>,
     /// The customer's full name or business name.
@@ -96,6 +99,7 @@ pub struct CustomerBuilder {
     cash_balance: Option<Option<stripe_shared::CashBalance>>,
     created: Option<stripe_types::Timestamp>,
     currency: Option<Option<stripe_types::Currency>>,
+    customer_account: Option<Option<String>>,
     default_source: Option<Option<stripe_types::Expandable<stripe_shared::PaymentSource>>>,
     delinquent: Option<Option<bool>>,
     description: Option<Option<String>>,
@@ -164,6 +168,7 @@ const _: () = {
                 "cash_balance" => Deserialize::begin(&mut self.cash_balance),
                 "created" => Deserialize::begin(&mut self.created),
                 "currency" => Deserialize::begin(&mut self.currency),
+                "customer_account" => Deserialize::begin(&mut self.customer_account),
                 "default_source" => Deserialize::begin(&mut self.default_source),
                 "delinquent" => Deserialize::begin(&mut self.delinquent),
                 "description" => Deserialize::begin(&mut self.description),
@@ -199,6 +204,7 @@ const _: () = {
                 cash_balance: Deserialize::default(),
                 created: Deserialize::default(),
                 currency: Deserialize::default(),
+                customer_account: Deserialize::default(),
                 default_source: Deserialize::default(),
                 delinquent: Deserialize::default(),
                 description: Deserialize::default(),
@@ -233,6 +239,7 @@ const _: () = {
                 Some(cash_balance),
                 Some(created),
                 Some(currency),
+                Some(customer_account),
                 Some(default_source),
                 Some(delinquent),
                 Some(description),
@@ -263,6 +270,7 @@ const _: () = {
                 self.cash_balance.take(),
                 self.created,
                 self.currency.take(),
+                self.customer_account.take(),
                 self.default_source.take(),
                 self.delinquent,
                 self.description.take(),
@@ -297,6 +305,7 @@ const _: () = {
                 cash_balance,
                 created,
                 currency,
+                customer_account,
                 default_source,
                 delinquent,
                 description,
@@ -353,6 +362,7 @@ const _: () = {
                     "cash_balance" => b.cash_balance = FromValueOpt::from_value(v),
                     "created" => b.created = FromValueOpt::from_value(v),
                     "currency" => b.currency = FromValueOpt::from_value(v),
+                    "customer_account" => b.customer_account = FromValueOpt::from_value(v),
                     "default_source" => b.default_source = FromValueOpt::from_value(v),
                     "delinquent" => b.delinquent = FromValueOpt::from_value(v),
                     "description" => b.description = FromValueOpt::from_value(v),
@@ -391,13 +401,14 @@ const _: () = {
 impl serde::Serialize for Customer {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("Customer", 30)?;
+        let mut s = s.serialize_struct("Customer", 31)?;
         s.serialize_field("address", &self.address)?;
         s.serialize_field("balance", &self.balance)?;
         s.serialize_field("business_name", &self.business_name)?;
         s.serialize_field("cash_balance", &self.cash_balance)?;
         s.serialize_field("created", &self.created)?;
         s.serialize_field("currency", &self.currency)?;
+        s.serialize_field("customer_account", &self.customer_account)?;
         s.serialize_field("default_source", &self.default_source)?;
         s.serialize_field("delinquent", &self.delinquent)?;
         s.serialize_field("description", &self.description)?;

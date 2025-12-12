@@ -1,6 +1,6 @@
 /// A subscription schedule allows you to create and manage the lifecycle of a subscription by predefining expected changes.
 ///
-/// Related guide: [Subscription schedules](https://stripe.com/docs/billing/subscriptions/subscription-schedules).
+/// Related guide: [Subscription schedules](https://docs.stripe.com/billing/subscriptions/subscription-schedules).
 ///
 /// For more details see <<https://stripe.com/docs/api/subscription_schedules/object>>.
 #[derive(Clone, Debug)]
@@ -19,6 +19,8 @@ pub struct SubscriptionSchedule {
     pub current_phase: Option<stripe_shared::SubscriptionScheduleCurrentPhase>,
     /// ID of the customer who owns the subscription schedule.
     pub customer: stripe_types::Expandable<stripe_shared::Customer>,
+    /// ID of the account who owns the subscription schedule.
+    pub customer_account: Option<String>,
     pub default_settings: stripe_shared::SubscriptionSchedulesResourceDefaultSettings,
     /// Behavior of the subscription schedule and underlying subscription when it ends.
     /// Possible values are `release` or `cancel` with the default being `release`.
@@ -29,7 +31,7 @@ pub struct SubscriptionSchedule {
     pub id: stripe_shared::SubscriptionScheduleId,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: Option<std::collections::HashMap<String, String>>,
     /// Configuration for the subscription schedule's phases.
@@ -40,7 +42,7 @@ pub struct SubscriptionSchedule {
     pub released_subscription: Option<String>,
     /// The present status of the subscription schedule.
     /// Possible values are `not_started`, `active`, `completed`, `released`, and `canceled`.
-    /// You can read more about the different states in our [behavior guide](https://stripe.com/docs/billing/subscriptions/subscription-schedules).
+    /// You can read more about the different states in our [behavior guide](https://docs.stripe.com/billing/subscriptions/subscription-schedules).
     pub status: SubscriptionScheduleStatus,
     /// ID of the subscription managed by the subscription schedule.
     pub subscription: Option<stripe_types::Expandable<stripe_shared::Subscription>>,
@@ -56,6 +58,7 @@ pub struct SubscriptionScheduleBuilder {
     created: Option<stripe_types::Timestamp>,
     current_phase: Option<Option<stripe_shared::SubscriptionScheduleCurrentPhase>>,
     customer: Option<stripe_types::Expandable<stripe_shared::Customer>>,
+    customer_account: Option<Option<String>>,
     default_settings: Option<stripe_shared::SubscriptionSchedulesResourceDefaultSettings>,
     end_behavior: Option<stripe_shared::SubscriptionScheduleEndBehavior>,
     id: Option<stripe_shared::SubscriptionScheduleId>,
@@ -116,6 +119,7 @@ const _: () = {
                 "created" => Deserialize::begin(&mut self.created),
                 "current_phase" => Deserialize::begin(&mut self.current_phase),
                 "customer" => Deserialize::begin(&mut self.customer),
+                "customer_account" => Deserialize::begin(&mut self.customer_account),
                 "default_settings" => Deserialize::begin(&mut self.default_settings),
                 "end_behavior" => Deserialize::begin(&mut self.end_behavior),
                 "id" => Deserialize::begin(&mut self.id),
@@ -140,6 +144,7 @@ const _: () = {
                 created: Deserialize::default(),
                 current_phase: Deserialize::default(),
                 customer: Deserialize::default(),
+                customer_account: Deserialize::default(),
                 default_settings: Deserialize::default(),
                 end_behavior: Deserialize::default(),
                 id: Deserialize::default(),
@@ -163,6 +168,7 @@ const _: () = {
                 Some(created),
                 Some(current_phase),
                 Some(customer),
+                Some(customer_account),
                 Some(default_settings),
                 Some(end_behavior),
                 Some(id),
@@ -182,6 +188,7 @@ const _: () = {
                 self.created,
                 self.current_phase,
                 self.customer.take(),
+                self.customer_account.take(),
                 self.default_settings.take(),
                 self.end_behavior.take(),
                 self.id.take(),
@@ -205,6 +212,7 @@ const _: () = {
                 created,
                 current_phase,
                 customer,
+                customer_account,
                 default_settings,
                 end_behavior,
                 id,
@@ -250,6 +258,7 @@ const _: () = {
                     "created" => b.created = FromValueOpt::from_value(v),
                     "current_phase" => b.current_phase = FromValueOpt::from_value(v),
                     "customer" => b.customer = FromValueOpt::from_value(v),
+                    "customer_account" => b.customer_account = FromValueOpt::from_value(v),
                     "default_settings" => b.default_settings = FromValueOpt::from_value(v),
                     "end_behavior" => b.end_behavior = FromValueOpt::from_value(v),
                     "id" => b.id = FromValueOpt::from_value(v),
@@ -274,7 +283,7 @@ const _: () = {
 impl serde::Serialize for SubscriptionSchedule {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("SubscriptionSchedule", 19)?;
+        let mut s = s.serialize_struct("SubscriptionSchedule", 20)?;
         s.serialize_field("application", &self.application)?;
         s.serialize_field("billing_mode", &self.billing_mode)?;
         s.serialize_field("canceled_at", &self.canceled_at)?;
@@ -282,6 +291,7 @@ impl serde::Serialize for SubscriptionSchedule {
         s.serialize_field("created", &self.created)?;
         s.serialize_field("current_phase", &self.current_phase)?;
         s.serialize_field("customer", &self.customer)?;
+        s.serialize_field("customer_account", &self.customer_account)?;
         s.serialize_field("default_settings", &self.default_settings)?;
         s.serialize_field("end_behavior", &self.end_behavior)?;
         s.serialize_field("id", &self.id)?;
@@ -300,7 +310,7 @@ impl serde::Serialize for SubscriptionSchedule {
 }
 /// The present status of the subscription schedule.
 /// Possible values are `not_started`, `active`, `completed`, `released`, and `canceled`.
-/// You can read more about the different states in our [behavior guide](https://stripe.com/docs/billing/subscriptions/subscription-schedules).
+/// You can read more about the different states in our [behavior guide](https://docs.stripe.com/billing/subscriptions/subscription-schedules).
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum SubscriptionScheduleStatus {

@@ -2,29 +2,30 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct AccountRequirements {
-    /// Fields that are due and can be satisfied by providing the corresponding alternative fields instead.
+    /// Fields that are due and can be resolved by providing the corresponding alternative fields instead.
+    /// Many alternatives can list the same `original_fields_due`, and any of these alternatives can serve as a pathway for attempting to resolve the fields again.
+    /// Re-providing `original_fields_due` also serves as a pathway for attempting to resolve the fields again.
     pub alternatives: Option<Vec<stripe_shared::AccountRequirementsAlternative>>,
     /// Date by which the fields in `currently_due` must be collected to keep the account enabled.
     /// These fields may disable the account sooner if the next threshold is reached before they are collected.
     pub current_deadline: Option<stripe_types::Timestamp>,
-    /// Fields that need to be collected to keep the account enabled.
-    /// If not collected by `current_deadline`, these fields appear in `past_due` as well, and the account is disabled.
+    /// Fields that need to be resolved to keep the account enabled.
+    /// If not resolved by `current_deadline`, these fields will appear in `past_due` as well, and the account is disabled.
     pub currently_due: Option<Vec<String>>,
     /// If the account is disabled, this enum describes why.
-    /// [Learn more about handling verification issues](https://stripe.com/docs/connect/handling-api-verification).
+    /// [Learn more about handling verification issues](https://docs.stripe.com/connect/handling-api-verification).
     pub disabled_reason: Option<AccountRequirementsDisabledReason>,
-    /// Fields that are `currently_due` and need to be collected again because validation or verification failed.
+    /// Details about validation and verification failures for `due` requirements that must be resolved.
     pub errors: Option<Vec<stripe_shared::AccountRequirementsError>>,
     /// Fields you must collect when all thresholds are reached.
     /// As they become required, they appear in `currently_due` as well, and `current_deadline` becomes set.
     pub eventually_due: Option<Vec<String>>,
-    /// Fields that weren't collected by `current_deadline`.
-    /// These fields need to be collected to enable the account.
+    /// Fields that haven't been resolved by `current_deadline`.
+    /// These fields need to be resolved to enable the account.
     pub past_due: Option<Vec<String>>,
-    /// Fields that might become required depending on the results of verification or review.
-    /// It's an empty array unless an asynchronous verification is pending.
-    /// If verification fails, these fields move to `eventually_due`, `currently_due`, or `past_due`.
-    /// Fields might appear in `eventually_due`, `currently_due`, or `past_due` and in `pending_verification` if verification fails but another verification is still pending.
+    /// Fields that are being reviewed, or might become required depending on the results of a review.
+    /// If the review fails, these fields can move to `eventually_due`, `currently_due`, `past_due` or `alternatives`.
+    /// Fields might appear in `eventually_due`, `currently_due`, `past_due` or `alternatives` and in `pending_verification` if one verification fails but another is still pending.
     pub pending_verification: Option<Vec<String>>,
 }
 #[doc(hidden)]
@@ -179,7 +180,7 @@ const _: () = {
     }
 };
 /// If the account is disabled, this enum describes why.
-/// [Learn more about handling verification issues](https://stripe.com/docs/connect/handling-api-verification).
+/// [Learn more about handling verification issues](https://docs.stripe.com/connect/handling-api-verification).
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum AccountRequirementsDisabledReason {

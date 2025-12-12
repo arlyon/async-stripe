@@ -1,5 +1,5 @@
-/// Use [OutboundPayments](https://docs.stripe.com/docs/treasury/moving-money/financial-accounts/out-of/outbound-payments) to send funds to another party's external bank account or [FinancialAccount](https://stripe.com/docs/api#financial_accounts).
-/// To send money to an account belonging to the same user, use an [OutboundTransfer](https://stripe.com/docs/api#outbound_transfers).
+/// Use [OutboundPayments](https://docs.stripe.com/docs/treasury/moving-money/financial-accounts/out-of/outbound-payments) to send funds to another party's external bank account or [FinancialAccount](https://api.stripe.com#financial_accounts).
+/// To send money to an account belonging to the same user, use an [OutboundTransfer](https://api.stripe.com#outbound_transfers).
 ///
 /// Simulate OutboundPayment state changes with the `/v1/test_helpers/treasury/outbound_payments` endpoints.
 /// These methods can only be called on test mode objects.
@@ -17,7 +17,7 @@ pub struct TreasuryOutboundPayment {
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub currency: stripe_types::Currency,
-    /// ID of the [customer](https://stripe.com/docs/api/customers) to whom an OutboundPayment is sent.
+    /// ID of the [customer](https://docs.stripe.com/api/customers) to whom an OutboundPayment is sent.
     pub customer: Option<String>,
     /// An arbitrary string attached to the object. Often useful for displaying to users.
     pub description: Option<String>,
@@ -35,13 +35,13 @@ pub struct TreasuryOutboundPayment {
     pub expected_arrival_date: stripe_types::Timestamp,
     /// The FinancialAccount that funds were pulled from.
     pub financial_account: String,
-    /// A [hosted transaction receipt](https://stripe.com/docs/treasury/moving-money/regulatory-receipts) URL that is provided when money movement is considered regulated under Stripe's money transmission licenses.
+    /// A [hosted transaction receipt](https://docs.stripe.com/treasury/moving-money/regulatory-receipts) URL that is provided when money movement is considered regulated under Stripe's money transmission licenses.
     pub hosted_regulatory_receipt_url: Option<String>,
     /// Unique identifier for the object.
     pub id: stripe_treasury::TreasuryOutboundPaymentId,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: std::collections::HashMap<String, String>,
     /// Details about a returned OutboundPayment. Only set when the status is `returned`.

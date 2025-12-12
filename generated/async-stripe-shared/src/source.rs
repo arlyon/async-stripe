@@ -3,11 +3,11 @@
 /// just like a `Card` object: once chargeable, they can be charged, or can be
 /// attached to customers.
 ///
-/// Stripe doesn't recommend using the deprecated [Sources API](https://stripe.com/docs/api/sources).
-/// We recommend that you adopt the [PaymentMethods API](https://stripe.com/docs/api/payment_methods).
+/// Stripe doesn't recommend using the deprecated [Sources API](https://docs.stripe.com/api/sources).
+/// We recommend that you adopt the [PaymentMethods API](https://docs.stripe.com/api/payment_methods).
 /// This newer API provides access to our latest features and payment method types.
 ///
-/// Related guides: [Sources API](https://stripe.com/docs/sources) and [Sources & Customers](https://stripe.com/docs/sources/customers).
+/// Related guides: [Sources API](https://docs.stripe.com/sources) and [Sources & Customers](https://docs.stripe.com/sources/customers).
 ///
 /// For more details see <<https://stripe.com/docs/api/sources/object>>.
 #[derive(Clone, Debug)]
@@ -52,7 +52,7 @@ pub struct Source {
     pub klarna: Option<stripe_shared::SourceTypeKlarna>,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: Option<std::collections::HashMap<String, String>>,
     pub multibanco: Option<stripe_shared::SourceTypeMultibanco>,
@@ -75,7 +75,7 @@ pub struct Source {
     /// The `type` of the source.
     /// The `type` is a payment method, one of `ach_credit_transfer`, `ach_debit`, `alipay`, `bancontact`, `card`, `card_present`, `eps`, `giropay`, `ideal`, `multibanco`, `klarna`, `p24`, `sepa_debit`, `sofort`, `three_d_secure`, or `wechat`.
     /// An additional hash is included on the source with a name matching this value.
-    /// It contains additional information specific to the [payment method](https://stripe.com/docs/sources) used.
+    /// It contains additional information specific to the [payment method](https://docs.stripe.com/sources) used.
     #[cfg_attr(feature = "deserialize", serde(rename = "type"))]
     pub type_: SourceType,
     /// Either `reusable` or `single_use`.
@@ -576,7 +576,7 @@ impl<'de> serde::Deserialize<'de> for SourceAllowRedisplay {
 /// The `type` of the source.
 /// The `type` is a payment method, one of `ach_credit_transfer`, `ach_debit`, `alipay`, `bancontact`, `card`, `card_present`, `eps`, `giropay`, `ideal`, `multibanco`, `klarna`, `p24`, `sepa_debit`, `sofort`, `three_d_secure`, or `wechat`.
 /// An additional hash is included on the source with a name matching this value.
-/// It contains additional information specific to the [payment method](https://stripe.com/docs/sources) used.
+/// It contains additional information specific to the [payment method](https://docs.stripe.com/sources) used.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum SourceType {

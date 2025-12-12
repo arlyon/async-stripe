@@ -6,7 +6,7 @@ pub struct PaymentLinksResourcePaymentIntentData {
     pub capture_method: Option<PaymentLinksResourcePaymentIntentDataCaptureMethod>,
     /// An arbitrary string attached to the object. Often useful for displaying to users.
     pub description: Option<String>,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that will set metadata on [Payment Intents](https://stripe.com/docs/api/payment_intents) generated from this payment link.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that will set metadata on [Payment Intents](https://docs.stripe.com/api/payment_intents) generated from this payment link.
     pub metadata: std::collections::HashMap<String, String>,
     /// Indicates that you intend to make future payments with the payment method collected during checkout.
     pub setup_future_usage: Option<PaymentLinksResourcePaymentIntentDataSetupFutureUsage>,
@@ -16,7 +16,7 @@ pub struct PaymentLinksResourcePaymentIntentData {
     /// Concatenated with the account's statement descriptor prefix to form the complete statement descriptor.
     pub statement_descriptor_suffix: Option<String>,
     /// A string that identifies the resulting payment as part of a group.
-    /// See the PaymentIntents [use case for connected accounts](https://stripe.com/docs/connect/separate-charges-and-transfers) for details.
+    /// See the PaymentIntents [use case for connected accounts](https://docs.stripe.com/connect/separate-charges-and-transfers) for details.
     pub transfer_group: Option<String>,
 }
 #[doc(hidden)]

@@ -194,7 +194,7 @@ impl CreateFromCalculationTaxTransaction {
         self.inner.expand = Some(expand.into());
         self
     }
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
@@ -276,18 +276,18 @@ impl CreateReversalTaxTransactionBuilder {
 /// The line item amounts to reverse.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateReversalTaxTransactionLineItems {
-    /// The amount to reverse, in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal) in negative.
+    /// The amount to reverse, in the [smallest currency unit](https://docs.stripe.com/currencies#zero-decimal) in negative.
     pub amount: i64,
-    /// The amount of tax to reverse, in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal) in negative.
+    /// The amount of tax to reverse, in the [smallest currency unit](https://docs.stripe.com/currencies#zero-decimal) in negative.
     pub amount_tax: i64,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub metadata: Option<std::collections::HashMap<String, String>>,
     /// The `id` of the line item to reverse in the original transaction.
     pub original_line_item: String,
     /// The quantity reversed.
-    /// Appears in [tax exports](https://stripe.com/docs/tax/reports), but does not affect the amount of tax reversed.
+    /// Appears in [tax exports](https://docs.stripe.com/tax/reports), but does not affect the amount of tax reversed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub quantity: Option<u64>,
     /// A custom identifier for this line item in the reversal transaction, such as 'L1-refund'.
@@ -379,9 +379,9 @@ impl<'de> serde::Deserialize<'de> for CreateReversalTaxTransactionMode {
 /// The shipping cost to reverse.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateReversalTaxTransactionShippingCost {
-    /// The amount to reverse, in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal) in negative.
+    /// The amount to reverse, in the [smallest currency unit](https://docs.stripe.com/currencies#zero-decimal) in negative.
     pub amount: i64,
-    /// The amount of tax to reverse, in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal) in negative.
+    /// The amount of tax to reverse, in the [smallest currency unit](https://docs.stripe.com/currencies#zero-decimal) in negative.
     pub amount_tax: i64,
 }
 impl CreateReversalTaxTransactionShippingCost {
@@ -414,7 +414,7 @@ impl CreateReversalTaxTransaction {
         self.inner.expand = Some(expand.into());
         self
     }
-    /// A flat amount to reverse across the entire transaction, in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal) in negative.
+    /// A flat amount to reverse across the entire transaction, in the [smallest currency unit](https://docs.stripe.com/currencies#zero-decimal) in negative.
     /// This value represents the total amount to refund from the transaction, including taxes.
     pub fn flat_amount(mut self, flat_amount: impl Into<i64>) -> Self {
         self.inner.flat_amount = Some(flat_amount.into());
@@ -428,7 +428,7 @@ impl CreateReversalTaxTransaction {
         self.inner.line_items = Some(line_items.into());
         self
     }
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.

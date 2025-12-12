@@ -1,22 +1,22 @@
-/// Any use of an [issued card](https://stripe.com/docs/issuing) that results in funds entering or leaving.
+/// Any use of an [issued card](https://docs.stripe.com/issuing) that results in funds entering or leaving.
 /// your Stripe account, such as a completed purchase or refund, is represented by an Issuing
 /// `Transaction` object.
 ///
-/// Related guide: [Issued card transactions](https://stripe.com/docs/issuing/purchases/transactions)
+/// Related guide: [Issued card transactions](https://docs.stripe.com/issuing/purchases/transactions)
 ///
 /// For more details see <<https://stripe.com/docs/api/issuing/transactions/object>>.
 #[derive(Clone, Debug)]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct IssuingTransaction {
     /// The transaction amount, which will be reflected in your balance.
-    /// This amount is in your currency and in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
+    /// This amount is in your currency and in the [smallest currency unit](https://docs.stripe.com/currencies#zero-decimal).
     pub amount: i64,
     /// Detailed breakdown of amount components.
-    /// These amounts are denominated in `currency` and in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
+    /// These amounts are denominated in `currency` and in the [smallest currency unit](https://docs.stripe.com/currencies#zero-decimal).
     pub amount_details: Option<stripe_shared::IssuingTransactionAmountDetails>,
     /// The `Authorization` object that led to this transaction.
     pub authorization: Option<stripe_types::Expandable<stripe_shared::IssuingAuthorization>>,
-    /// ID of the [balance transaction](https://stripe.com/docs/api/balance_transactions) associated with this transaction.
+    /// ID of the [balance transaction](https://docs.stripe.com/api/balance_transactions) associated with this transaction.
     pub balance_transaction: Option<stripe_types::Expandable<stripe_shared::BalanceTransaction>>,
     /// The card used to make this transaction.
     pub card: stripe_types::Expandable<stripe_shared::IssuingCard>,
@@ -33,23 +33,23 @@ pub struct IssuingTransaction {
     pub id: stripe_shared::IssuingTransactionId,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
-    /// The amount that the merchant will receive, denominated in `merchant_currency` and in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
+    /// The amount that the merchant will receive, denominated in `merchant_currency` and in the [smallest currency unit](https://docs.stripe.com/currencies#zero-decimal).
     /// It will be different from `amount` if the merchant is taking payment in a different currency.
     pub merchant_amount: i64,
     /// The currency with which the merchant is taking payment.
     pub merchant_currency: stripe_types::Currency,
     pub merchant_data: stripe_shared::IssuingAuthorizationMerchantData,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: std::collections::HashMap<String, String>,
     /// Details about the transaction, such as processing dates, set by the card network.
     pub network_data: Option<stripe_shared::IssuingTransactionNetworkData>,
     /// Additional purchase information that is optionally provided by the merchant.
     pub purchase_details: Option<stripe_shared::IssuingTransactionPurchaseDetails>,
-    /// [Token](https://stripe.com/docs/api/issuing/tokens/object) object used for this transaction.
+    /// [Token](https://docs.stripe.com/api/issuing/tokens/object) object used for this transaction.
     /// If a network token was not used for this transaction, this field will be null.
     pub token: Option<stripe_types::Expandable<stripe_shared::IssuingToken>>,
-    /// [Treasury](https://stripe.com/docs/api/treasury) details related to this transaction if it was created on a [FinancialAccount](/docs/api/treasury/financial_accounts.
+    /// [Treasury](https://docs.stripe.com/api/treasury) details related to this transaction if it was created on a [FinancialAccount](/docs/api/treasury/financial_accounts.
     pub treasury: Option<stripe_shared::IssuingTransactionTreasury>,
     /// The nature of the transaction.
     #[cfg_attr(feature = "deserialize", serde(rename = "type"))]

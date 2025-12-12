@@ -4,19 +4,19 @@
 /// see the history of payment attempts for a particular session.
 ///
 /// A PaymentIntent transitions through
-/// [multiple statuses](https://stripe.com/docs/payments/intents#intent-statuses)
+/// [multiple statuses](/payments/paymentintents/lifecycle)
 /// throughout its lifetime as it interfaces with Stripe.js to perform
 /// authentication flows and ultimately creates at most one successful charge.
 ///
-/// Related guide: [Payment Intents API](https://stripe.com/docs/payments/payment-intents)
+/// Related guide: [Payment Intents API](https://docs.stripe.com/payments/payment-intents)
 ///
 /// For more details see <<https://stripe.com/docs/api/payment_intents/object>>.
 #[derive(Clone, Debug)]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentIntent {
     /// Amount intended to be collected by this PaymentIntent.
-    /// A positive integer representing how much to charge in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal) (e.g., 100 cents to charge $1.00 or 100 to charge ¥100, a zero-decimal currency).
-    /// The minimum amount is $0.50 US or [equivalent in charge currency](https://stripe.com/docs/currencies#minimum-and-maximum-charge-amounts).
+    /// A positive integer representing how much to charge in the [smallest currency unit](https://docs.stripe.com/currencies#zero-decimal) (e.g., 100 cents to charge $1.00 or 100 to charge ¥100, a zero-decimal currency).
+    /// The minimum amount is $0.50 US or [equivalent in charge currency](https://docs.stripe.com/currencies#minimum-and-maximum-charge-amounts).
     /// The amount value supports up to eight digits (e.g., a value of 99999999 for a USD charge of $999,999.99).
     pub amount: i64,
     /// Amount that can be captured from this PaymentIntent.
@@ -28,7 +28,7 @@ pub struct PaymentIntent {
     pub application: Option<stripe_types::Expandable<stripe_shared::Application>>,
     /// The amount of the application fee (if any) that will be requested to be applied to the payment and transferred to the application owner's Stripe account.
     /// The amount of the application fee collected will be capped at the total amount captured.
-    /// For more information, see the PaymentIntents [use case for connected accounts](https://stripe.com/docs/payments/connected-accounts).
+    /// For more information, see the PaymentIntents [use case for connected accounts](https://docs.stripe.com/payments/connected-accounts).
     pub application_fee_amount: Option<i64>,
     /// Settings to configure compatible payment methods from the [Stripe Dashboard](https://dashboard.stripe.com/settings/payment_methods).
     pub automatic_payment_methods:
@@ -46,7 +46,7 @@ pub struct PaymentIntent {
     /// It should not be stored, logged, or exposed to anyone other than the customer.
     /// Make sure that you have TLS enabled on any page that includes the client secret.
     ///
-    /// Refer to our docs to [accept a payment](https://stripe.com/docs/payments/accept-a-payment?ui=elements) and learn about how `client_secret` should be handled.
+    /// Refer to our docs to [accept a payment](https://docs.stripe.com/payments/accept-a-payment?ui=elements) and learn about how `client_secret` should be handled.
     pub client_secret: Option<String>,
     /// Describes whether we can confirm this PaymentIntent automatically, or if it requires customer action to confirm the payment.
     pub confirmation_method: stripe_shared::PaymentIntentConfirmationMethod,
@@ -59,9 +59,16 @@ pub struct PaymentIntent {
     ///
     /// Payment methods attached to other Customers cannot be used with this PaymentIntent.
     ///
-    /// If [setup_future_usage](https://stripe.com/docs/api#payment_intent_object-setup_future_usage) is set and this PaymentIntent's payment method is not `card_present`, then the payment method attaches to the Customer after the PaymentIntent has been confirmed and any required actions from the user are complete.
+    /// If [setup_future_usage](https://api.stripe.com#payment_intent_object-setup_future_usage) is set and this PaymentIntent's payment method is not `card_present`, then the payment method attaches to the Customer after the PaymentIntent has been confirmed and any required actions from the user are complete.
     /// If the payment method is `card_present` and isn't a digital wallet, then a [generated_card](https://docs.stripe.com/api/charges/object#charge_object-payment_method_details-card_present-generated_card) payment method representing the card is created and attached to the Customer instead.
     pub customer: Option<stripe_types::Expandable<stripe_shared::Customer>>,
+    /// ID of the Account representing the customer that this PaymentIntent belongs to, if one exists.
+    ///
+    /// Payment methods attached to other Accounts cannot be used with this PaymentIntent.
+    ///
+    /// If [setup_future_usage](https://api.stripe.com#payment_intent_object-setup_future_usage) is set and this PaymentIntent's payment method is not `card_present`, then the payment method attaches to the Account after the PaymentIntent has been confirmed and any required actions from the user are complete.
+    /// If the payment method is `card_present` and isn't a digital wallet, then a [generated_card](https://docs.stripe.com/api/charges/object#charge_object-payment_method_details-card_present-generated_card) payment method representing the card is created and attached to the Account instead.
+    pub customer_account: Option<String>,
     /// An arbitrary string attached to the object. Often useful for displaying to users.
     pub description: Option<String>,
     /// The list of payment method types to exclude from use with this payment.
@@ -73,24 +80,25 @@ pub struct PaymentIntent {
     /// The payment error encountered in the previous PaymentIntent confirmation.
     /// It will be cleared if the PaymentIntent is later updated for any reason.
     pub last_payment_error: Option<Box<stripe_shared::ApiErrors>>,
-    /// ID of the latest [Charge object](https://stripe.com/docs/api/charges) created by this PaymentIntent.
+    /// ID of the latest [Charge object](https://docs.stripe.com/api/charges) created by this PaymentIntent.
     /// This property is `null` until PaymentIntent confirmation is attempted.
     pub latest_charge: Option<stripe_types::Expandable<stripe_shared::Charge>>,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
-    /// Learn more about [storing information in metadata](https://stripe.com/docs/payments/payment-intents/creating-payment-intents#storing-information-in-metadata).
+    /// Learn more about [storing information in metadata](https://docs.stripe.com/payments/payment-intents/creating-payment-intents#storing-information-in-metadata).
     pub metadata: std::collections::HashMap<String, String>,
     /// If present, this property tells you what actions you need to take in order for your customer to fulfill a payment using the provided source.
     pub next_action: Option<stripe_shared::PaymentIntentNextAction>,
-    /// The account (if any) for which the funds of the PaymentIntent are intended.
-    /// See the PaymentIntents [use case for connected accounts](https://stripe.com/docs/payments/connected-accounts) for details.
+    /// You can specify the settlement merchant as the
+    /// connected account using the `on_behalf_of` attribute on the charge.
+    /// See the PaymentIntents [use case for connected accounts](/payments/connected-accounts) for details.
     pub on_behalf_of: Option<stripe_types::Expandable<stripe_shared::Account>>,
     pub payment_details: Option<stripe_shared::PaymentFlowsPaymentDetails>,
     /// ID of the payment method used in this PaymentIntent.
     pub payment_method: Option<stripe_types::Expandable<stripe_shared::PaymentMethod>>,
-    /// Information about the [payment method configuration](https://stripe.com/docs/api/payment_method_configurations) used for this PaymentIntent.
+    /// Information about the [payment method configuration](https://docs.stripe.com/api/payment_method_configurations) used for this PaymentIntent.
     pub payment_method_configuration_details:
         Option<stripe_shared::PaymentMethodConfigBizPaymentMethodConfigurationDetails>,
     /// Payment-method-specific configuration for this PaymentIntent.
@@ -132,13 +140,13 @@ pub struct PaymentIntent {
     /// Concatenated to the account's [statement descriptor prefix](https://docs.stripe.com/get-started/account/statement-descriptors#static) to form the complete statement descriptor that appears on the customer's statement.
     pub statement_descriptor_suffix: Option<String>,
     /// Status of this PaymentIntent, one of `requires_payment_method`, `requires_confirmation`, `requires_action`, `processing`, `requires_capture`, `canceled`, or `succeeded`.
-    /// Read more about each PaymentIntent [status](https://stripe.com/docs/payments/intents#intent-statuses).
+    /// Read more about each PaymentIntent [status](https://docs.stripe.com/payments/intents#intent-statuses).
     pub status: PaymentIntentStatus,
     /// The data that automatically creates a Transfer after the payment finalizes.
-    /// Learn more about the [use case for connected accounts](https://stripe.com/docs/payments/connected-accounts).
+    /// Learn more about the [use case for connected accounts](https://docs.stripe.com/payments/connected-accounts).
     pub transfer_data: Option<stripe_shared::TransferData>,
     /// A string that identifies the resulting payment as part of a group.
-    /// Learn more about the [use case for connected accounts](https://stripe.com/docs/connect/separate-charges-and-transfers).
+    /// Learn more about the [use case for connected accounts](https://docs.stripe.com/connect/separate-charges-and-transfers).
     pub transfer_group: Option<String>,
 }
 #[doc(hidden)]
@@ -159,6 +167,7 @@ pub struct PaymentIntentBuilder {
     created: Option<stripe_types::Timestamp>,
     currency: Option<stripe_types::Currency>,
     customer: Option<Option<stripe_types::Expandable<stripe_shared::Customer>>>,
+    customer_account: Option<Option<String>>,
     description: Option<Option<String>>,
     excluded_payment_method_types:
         Option<Option<Vec<stripe_shared::PaymentIntentExcludedPaymentMethodTypes>>>,
@@ -247,6 +256,7 @@ const _: () = {
                 "created" => Deserialize::begin(&mut self.created),
                 "currency" => Deserialize::begin(&mut self.currency),
                 "customer" => Deserialize::begin(&mut self.customer),
+                "customer_account" => Deserialize::begin(&mut self.customer_account),
                 "description" => Deserialize::begin(&mut self.description),
                 "excluded_payment_method_types" => {
                     Deserialize::begin(&mut self.excluded_payment_method_types)
@@ -301,6 +311,7 @@ const _: () = {
                 created: Deserialize::default(),
                 currency: Deserialize::default(),
                 customer: Deserialize::default(),
+                customer_account: Deserialize::default(),
                 description: Deserialize::default(),
                 excluded_payment_method_types: Deserialize::default(),
                 hooks: Deserialize::default(),
@@ -348,6 +359,7 @@ const _: () = {
                 Some(created),
                 Some(currency),
                 Some(customer),
+                Some(customer_account),
                 Some(description),
                 Some(excluded_payment_method_types),
                 Some(hooks),
@@ -391,6 +403,7 @@ const _: () = {
                 self.created,
                 self.currency.take(),
                 self.customer.take(),
+                self.customer_account.take(),
                 self.description.take(),
                 self.excluded_payment_method_types.take(),
                 self.hooks.take(),
@@ -438,6 +451,7 @@ const _: () = {
                 created,
                 currency,
                 customer,
+                customer_account,
                 description,
                 excluded_payment_method_types,
                 hooks,
@@ -511,6 +525,7 @@ const _: () = {
                     "created" => b.created = FromValueOpt::from_value(v),
                     "currency" => b.currency = FromValueOpt::from_value(v),
                     "customer" => b.customer = FromValueOpt::from_value(v),
+                    "customer_account" => b.customer_account = FromValueOpt::from_value(v),
                     "description" => b.description = FromValueOpt::from_value(v),
                     "excluded_payment_method_types" => {
                         b.excluded_payment_method_types = FromValueOpt::from_value(v)
@@ -557,7 +572,7 @@ const _: () = {
 impl serde::Serialize for PaymentIntent {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("PaymentIntent", 43)?;
+        let mut s = s.serialize_struct("PaymentIntent", 44)?;
         s.serialize_field("amount", &self.amount)?;
         s.serialize_field("amount_capturable", &self.amount_capturable)?;
         s.serialize_field("amount_details", &self.amount_details)?;
@@ -573,6 +588,7 @@ impl serde::Serialize for PaymentIntent {
         s.serialize_field("created", &self.created)?;
         s.serialize_field("currency", &self.currency)?;
         s.serialize_field("customer", &self.customer)?;
+        s.serialize_field("customer_account", &self.customer_account)?;
         s.serialize_field("description", &self.description)?;
         s.serialize_field("excluded_payment_method_types", &self.excluded_payment_method_types)?;
         s.serialize_field("hooks", &self.hooks)?;
@@ -708,7 +724,7 @@ impl<'de> serde::Deserialize<'de> for PaymentIntentCancellationReason {
     }
 }
 /// Status of this PaymentIntent, one of `requires_payment_method`, `requires_confirmation`, `requires_action`, `processing`, `requires_capture`, `canceled`, or `succeeded`.
-/// Read more about each PaymentIntent [status](https://stripe.com/docs/payments/intents#intent-statuses).
+/// Read more about each PaymentIntent [status](https://docs.stripe.com/payments/intents#intent-statuses).
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum PaymentIntentStatus {
@@ -1007,6 +1023,7 @@ pub enum PaymentIntentExcludedPaymentMethodTypes {
     Payco,
     Paynow,
     Paypal,
+    Payto,
     Pix,
     Promptpay,
     RevolutPay,
@@ -1062,6 +1079,7 @@ impl PaymentIntentExcludedPaymentMethodTypes {
             Payco => "payco",
             Paynow => "paynow",
             Paypal => "paypal",
+            Payto => "payto",
             Pix => "pix",
             Promptpay => "promptpay",
             RevolutPay => "revolut_pay",
@@ -1120,6 +1138,7 @@ impl std::str::FromStr for PaymentIntentExcludedPaymentMethodTypes {
             "payco" => Ok(Payco),
             "paynow" => Ok(Paynow),
             "paypal" => Ok(Paypal),
+            "payto" => Ok(Payto),
             "pix" => Ok(Pix),
             "promptpay" => Ok(Promptpay),
             "revolut_pay" => Ok(RevolutPay),

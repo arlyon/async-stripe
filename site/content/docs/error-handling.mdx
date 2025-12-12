@@ -30,11 +30,11 @@ The most common error type is `StripeError::Stripe`, which contains the error de
 ### Basic Error Handling
 
 <CodeFromFile
-  file="examples/error-handling-basic.rs"
+  file="examples/errors/src/error_handling_basic.rs"
   href={{base: "https://github.com/arlyon/async-stripe/blob/master/"}}
   lang="rust"
-  startLine={17}
-  endLine={30}
+  startLine={18}
+  endLine={31}
   dedent
 />
 
@@ -43,10 +43,10 @@ The most common error type is `StripeError::Stripe`, which contains the error de
 Different status codes indicate different types of failures:
 
 <CodeFromFile
-  file="examples/error-handling-status-codes.rs"
+  file="examples/errors/src/error_handling_status_codes.rs"
   href={{base: "https://github.com/arlyon/async-stripe/blob/master/"}}
   lang="rust"
-  startLine={20}
+  startLine={21}
   endLine={67}
   dedent
 />
@@ -127,11 +127,11 @@ See the [Performance](/docs/performance) documentation for more details on the h
 For transient errors (network issues, server errors), use the built-in retry strategies:
 
 <CodeFromFile
-  file="examples/error-handling-retry.rs"
+  file="examples/errors/src/error_handling_retry.rs"
   href={{base: "https://github.com/arlyon/async-stripe/blob/master/"}}
   lang="rust"
-  startLine={16}
-  endLine={29}
+  startLine={17}
+  endLine={26}
   highlightLines={[2]}
   dedent
 />
@@ -145,11 +145,11 @@ See the [Request Strategies](/docs/request-strategy) documentation for more deta
 Don't just log all errors the same way. Handle payment failures differently from configuration errors:
 
 <CodeFromFile
-  file="examples/error-handling-best-practices.rs"
+  file="examples/errors/src/error_handling_best_practices.rs"
   href={{base: "https://github.com/arlyon/async-stripe/blob/master/"}}
   lang="rust"
-  startLine={36}
-  endLine={53}
+  startLine={35}
+  endLine={52}
   dedent
 />
 
@@ -158,10 +158,10 @@ Don't just log all errors the same way. Handle payment failures differently from
 For critical operations (especially payment creation), always use idempotency keys to prevent accidental duplicate charges:
 
 <CodeFromFile
-  file="examples/error-handling-best-practices.rs"
+  file="examples/errors/src/error_handling_best_practices.rs"
   href={{base: "https://github.com/arlyon/async-stripe/blob/master/"}}
   lang="rust"
-  startLine={64}
+  startLine={65}
   endLine={78}
   dedent
 />
@@ -171,7 +171,7 @@ For critical operations (especially payment creation), always use idempotency ke
 The `ApiErrors` struct contains useful debugging information:
 
 <CodeFromFile
-  file="examples/error-handling-best-practices.rs"
+  file="examples/errors/src/error_handling_best_practices.rs"
   href={{base: "https://github.com/arlyon/async-stripe/blob/master/"}}
   lang="rust"
   startLine={83}

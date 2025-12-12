@@ -1,7 +1,7 @@
 #[derive(Clone, Debug)]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentIntentAmountDetailsLineItem {
-        /// The discount applied on this line item represented in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
+        /// The discount applied on this line item represented in the [smallest currency unit](https://docs.stripe.com/currencies#zero-decimal).
     /// An integer greater than 0.
     ///
     /// This field is mutually exclusive with the `amount_details[discount_amount]` field.
@@ -23,7 +23,7 @@ pub product_name: String,
 pub quantity: u64,
     /// Contains information about the tax on the item.
 pub tax: Option<stripe_shared::PaymentFlowsAmountDetailsResourceLineItemsListResourceLineItemResourceTax>,
-        /// The unit cost of the line item represented in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
+        /// The unit cost of the line item represented in the [smallest currency unit](https://docs.stripe.com/currencies#zero-decimal).
     /// Required for L3 rates.
     /// An integer greater than or equal to 0.
 pub unit_cost: i64,

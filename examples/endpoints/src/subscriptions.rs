@@ -38,7 +38,7 @@ pub async fn run_subscriptions_example(client: &Client) -> Result<(), StripeErro
         }))
         .send(client)
         .await?;
-    AttachPaymentMethod::new(payment_method.id.clone(), &customer.id).send(client).await?;
+    AttachPaymentMethod::new(payment_method.id.clone()).customer(&customer.id).send(client).await?;
 
     println!(
         "created a payment method with id {} and attached it to {}",
@@ -69,7 +69,8 @@ pub async fn run_subscriptions_example(client: &Client) -> Result<(), StripeErro
         price.currency,
     );
 
-    let subscription = CreateSubscription::new(&customer.id)
+    let subscription = CreateSubscription::new()
+        .customer(customer.id)
         .items(vec![CreateSubscriptionItems {
             price: Some(price.id.to_string()),
             ..Default::default()

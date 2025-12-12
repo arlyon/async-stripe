@@ -7,6 +7,8 @@ struct ListBillingCreditGrantBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     customer: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    customer_account: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -19,6 +21,7 @@ impl ListBillingCreditGrantBuilder {
     fn new() -> Self {
         Self {
             customer: None,
+            customer_account: None,
             ending_before: None,
             expand: None,
             limit: None,
@@ -39,6 +42,11 @@ impl ListBillingCreditGrant {
     /// Only return credit grants for this customer.
     pub fn customer(mut self, customer: impl Into<String>) -> Self {
         self.inner.customer = Some(customer.into());
+        self
+    }
+    /// Only return credit grants for this account representing the customer.
+    pub fn customer_account(mut self, customer_account: impl Into<String>) -> Self {
+        self.inner.customer_account = Some(customer_account.into());
         self
     }
     /// A cursor for use in pagination.
@@ -164,7 +172,10 @@ struct CreateBillingCreditGrantBuilder {
     applicability_config: CreateBillingCreditGrantApplicabilityConfig,
     #[serde(skip_serializing_if = "Option::is_none")]
     category: Option<stripe_shared::BillingCreditGrantCategory>,
-    customer: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    customer: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    customer_account: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     effective_at: Option<stripe_types::Timestamp>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -182,13 +193,13 @@ impl CreateBillingCreditGrantBuilder {
     fn new(
         amount: impl Into<CreateBillingCreditGrantAmount>,
         applicability_config: impl Into<CreateBillingCreditGrantApplicabilityConfig>,
-        customer: impl Into<String>,
     ) -> Self {
         Self {
             amount: amount.into(),
             applicability_config: applicability_config.into(),
             category: None,
-            customer: customer.into(),
+            customer: None,
+            customer_account: None,
             effective_at: None,
             expand: None,
             expires_at: None,
@@ -411,14 +422,9 @@ impl CreateBillingCreditGrant {
     pub fn new(
         amount: impl Into<CreateBillingCreditGrantAmount>,
         applicability_config: impl Into<CreateBillingCreditGrantApplicabilityConfig>,
-        customer: impl Into<String>,
     ) -> Self {
         Self {
-            inner: CreateBillingCreditGrantBuilder::new(
-                amount.into(),
-                applicability_config.into(),
-                customer.into(),
-            ),
+            inner: CreateBillingCreditGrantBuilder::new(amount.into(), applicability_config.into()),
         }
     }
     /// The category of this credit grant. It defaults to `paid` if not specified.
@@ -427,6 +433,16 @@ impl CreateBillingCreditGrant {
         category: impl Into<stripe_shared::BillingCreditGrantCategory>,
     ) -> Self {
         self.inner.category = Some(category.into());
+        self
+    }
+    /// ID of the customer receiving the billing credits.
+    pub fn customer(mut self, customer: impl Into<String>) -> Self {
+        self.inner.customer = Some(customer.into());
+        self
+    }
+    /// ID of the account representing the customer receiving the billing credits.
+    pub fn customer_account(mut self, customer_account: impl Into<String>) -> Self {
+        self.inner.customer_account = Some(customer_account.into());
         self
     }
     /// The time when the billing credits become effective-when they're eligible for use.

@@ -7,6 +7,8 @@ struct ListQuoteBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     customer: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    customer_account: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -23,6 +25,7 @@ impl ListQuoteBuilder {
     fn new() -> Self {
         Self {
             customer: None,
+            customer_account: None,
             ending_before: None,
             expand: None,
             limit: None,
@@ -42,9 +45,14 @@ impl ListQuote {
     pub fn new() -> Self {
         Self { inner: ListQuoteBuilder::new() }
     }
-    /// The ID of the customer whose quotes will be retrieved.
+    /// The ID of the customer whose quotes you're retrieving.
     pub fn customer(mut self, customer: impl Into<String>) -> Self {
         self.inner.customer = Some(customer.into());
+        self
+    }
+    /// The ID of the account representing the customer whose quotes you're retrieving.
+    pub fn customer_account(mut self, customer_account: impl Into<String>) -> Self {
+        self.inner.customer_account = Some(customer_account.into());
         self
     }
     /// A cursor for use in pagination.
@@ -375,6 +383,8 @@ struct CreateQuoteBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     customer: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    customer_account: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     default_tax_rates: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     description: Option<String>,
@@ -413,6 +423,7 @@ impl CreateQuoteBuilder {
             automatic_tax: None,
             collection_method: None,
             customer: None,
+            customer_account: None,
             default_tax_rates: None,
             description: None,
             discounts: None,
@@ -658,7 +669,7 @@ pub struct CreateQuoteLineItems {
     /// The ID of the price object. One of `price` or `price_data` is required.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub price: Option<String>,
-    /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
+    /// Data used to generate a new [Price](https://docs.stripe.com/api/prices) object inline.
     /// One of `price` or `price_data` is required.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub price_data: Option<CreateQuoteLineItemsPriceData>,
@@ -680,7 +691,7 @@ impl Default for CreateQuoteLineItems {
         Self::new()
     }
 }
-/// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
+/// Data used to generate a new [Price](https://docs.stripe.com/api/prices) object inline.
 /// One of `price` or `price_data` is required.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateQuoteLineItemsPriceData {
@@ -692,7 +703,7 @@ pub struct CreateQuoteLineItemsPriceData {
     /// The recurring components of a price such as `interval` and `interval_count`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub recurring: Option<CreateQuoteLineItemsPriceDataRecurring>,
-    /// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
+    /// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
     /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
     /// One of `inclusive`, `exclusive`, or `unspecified`.
     /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
@@ -805,7 +816,7 @@ impl<'de> serde::Deserialize<'de> for CreateQuoteLineItemsPriceDataRecurringInte
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-/// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
+/// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
 /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
 /// One of `inclusive`, `exclusive`, or `unspecified`.
 /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
@@ -892,7 +903,7 @@ pub struct CreateQuoteSubscriptionData {
     /// The `effective_date` is ignored if it is in the past when the quote is accepted.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub effective_date: Option<CreateQuoteSubscriptionDataEffectiveDate>,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that will set metadata on the subscription or subscription schedule when the quote is accepted.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that will set metadata on the subscription or subscription schedule when the quote is accepted.
     /// If a recurring price is included in `line_items`, this field will be passed to the resulting subscription's `metadata` field.
     /// If `subscription_data.effective_date` is used, this field will be passed to the resulting subscription schedule's `phases.metadata` field.
     /// Unlike object-level metadata, this field is declarative.
@@ -1142,6 +1153,13 @@ impl CreateQuote {
         self.inner.customer = Some(customer.into());
         self
     }
+    /// The account for which this quote belongs to.
+    /// A customer or account is required before finalizing the quote.
+    /// Once specified, it cannot be changed.
+    pub fn customer_account(mut self, customer_account: impl Into<String>) -> Self {
+        self.inner.customer_account = Some(customer_account.into());
+        self
+    }
     /// The tax rates that will apply to any line item that does not have `tax_rates` set.
     pub fn default_tax_rates(mut self, default_tax_rates: impl Into<Vec<String>>) -> Self {
         self.inner.default_tax_rates = Some(default_tax_rates.into());
@@ -1203,7 +1221,7 @@ impl CreateQuote {
         self.inner.line_items = Some(line_items.into());
         self
     }
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
@@ -1283,6 +1301,8 @@ struct UpdateQuoteBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     customer: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    customer_account: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     default_tax_rates: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     description: Option<String>,
@@ -1317,6 +1337,7 @@ impl UpdateQuoteBuilder {
             automatic_tax: None,
             collection_method: None,
             customer: None,
+            customer_account: None,
             default_tax_rates: None,
             description: None,
             discounts: None,
@@ -1547,7 +1568,7 @@ pub struct UpdateQuoteLineItems {
     /// The ID of the price object. One of `price` or `price_data` is required.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub price: Option<String>,
-    /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
+    /// Data used to generate a new [Price](https://docs.stripe.com/api/prices) object inline.
     /// One of `price` or `price_data` is required.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub price_data: Option<UpdateQuoteLineItemsPriceData>,
@@ -1576,7 +1597,7 @@ impl Default for UpdateQuoteLineItems {
         Self::new()
     }
 }
-/// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
+/// Data used to generate a new [Price](https://docs.stripe.com/api/prices) object inline.
 /// One of `price` or `price_data` is required.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdateQuoteLineItemsPriceData {
@@ -1588,7 +1609,7 @@ pub struct UpdateQuoteLineItemsPriceData {
     /// The recurring components of a price such as `interval` and `interval_count`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub recurring: Option<UpdateQuoteLineItemsPriceDataRecurring>,
-    /// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
+    /// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
     /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
     /// One of `inclusive`, `exclusive`, or `unspecified`.
     /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
@@ -1701,7 +1722,7 @@ impl<'de> serde::Deserialize<'de> for UpdateQuoteLineItemsPriceDataRecurringInte
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-/// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
+/// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
 /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
 /// One of `inclusive`, `exclusive`, or `unspecified`.
 /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
@@ -1785,7 +1806,7 @@ pub struct UpdateQuoteSubscriptionData {
     /// The `effective_date` is ignored if it is in the past when the quote is accepted.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub effective_date: Option<UpdateQuoteSubscriptionDataEffectiveDate>,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that will set metadata on the subscription or subscription schedule when the quote is accepted.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that will set metadata on the subscription or subscription schedule when the quote is accepted.
     /// If a recurring price is included in `line_items`, this field will be passed to the resulting subscription's `metadata` field.
     /// If `subscription_data.effective_date` is used, this field will be passed to the resulting subscription schedule's `phases.metadata` field.
     /// Unlike object-level metadata, this field is declarative.
@@ -1862,6 +1883,13 @@ impl UpdateQuote {
         self.inner.customer = Some(customer.into());
         self
     }
+    /// The account for which this quote belongs to.
+    /// A customer or account is required before finalizing the quote.
+    /// Once specified, it cannot be changed.
+    pub fn customer_account(mut self, customer_account: impl Into<String>) -> Self {
+        self.inner.customer_account = Some(customer_account.into());
+        self
+    }
     /// The tax rates that will apply to any line item that does not have `tax_rates` set.
     pub fn default_tax_rates(mut self, default_tax_rates: impl Into<Vec<String>>) -> Self {
         self.inner.default_tax_rates = Some(default_tax_rates.into());
@@ -1912,7 +1940,7 @@ impl UpdateQuote {
         self.inner.line_items = Some(line_items.into());
         self
     }
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.

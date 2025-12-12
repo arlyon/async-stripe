@@ -524,7 +524,7 @@ impl CreateTreasuryInboundTransfer {
         self.inner.expand = Some(expand.into());
         self
     }
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
@@ -535,7 +535,9 @@ impl CreateTreasuryInboundTransfer {
         self.inner.metadata = Some(metadata.into());
         self
     }
-    /// The complete description that appears on your customers' statements. Maximum 10 characters.
+    /// The complete description that appears on your customers' statements.
+    /// Maximum 10 characters.
+    /// Can only include -#.$&*, spaces, and alphanumeric characters.
     pub fn statement_descriptor(mut self, statement_descriptor: impl Into<String>) -> Self {
         self.inner.statement_descriptor = Some(statement_descriptor.into());
         self

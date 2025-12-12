@@ -1011,7 +1011,7 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentLinkCustomFieldsType {
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-/// Configures whether [checkout sessions](https://stripe.com/docs/api/checkout/sessions) created by this payment link create a [Customer](https://stripe.com/docs/api/customers).
+/// Configures whether [checkout sessions](https://docs.stripe.com/api/checkout/sessions) created by this payment link create a [Customer](https://docs.stripe.com/api/customers).
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum CreatePaymentLinkCustomerCreation {
@@ -1109,7 +1109,7 @@ pub struct CreatePaymentLinkInvoiceCreationInvoiceData {
     /// The invoice is presented with the branding and support information of the specified account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub issuer: Option<CreatePaymentLinkInvoiceCreationInvoiceDataIssuer>,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
@@ -1328,11 +1328,11 @@ pub struct CreatePaymentLinkLineItems {
     /// When set, provides configuration for this item’s quantity to be adjusted by the customer during checkout.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub adjustable_quantity: Option<AdjustableQuantityParams>,
-    /// The ID of the [Price](https://stripe.com/docs/api/prices) or [Plan](https://stripe.com/docs/api/plans) object.
+    /// The ID of the [Price](https://docs.stripe.com/api/prices) or [Plan](https://docs.stripe.com/api/plans) object.
     /// One of `price` or `price_data` is required.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub price: Option<String>,
-    /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
+    /// Data used to generate a new [Price](https://docs.stripe.com/api/prices) object inline.
     /// One of `price` or `price_data` is required.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub price_data: Option<CreatePaymentLinkLineItemsPriceData>,
@@ -1344,7 +1344,7 @@ impl CreatePaymentLinkLineItems {
         Self { adjustable_quantity: None, price: None, price_data: None, quantity: quantity.into() }
     }
 }
-/// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
+/// Data used to generate a new [Price](https://docs.stripe.com/api/prices) object inline.
 /// One of `price` or `price_data` is required.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentLinkLineItemsPriceData {
@@ -1362,7 +1362,7 @@ pub struct CreatePaymentLinkLineItemsPriceData {
     /// The recurring components of a price such as `interval` and `interval_count`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub recurring: Option<CreatePaymentLinkLineItemsPriceDataRecurring>,
-    /// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
+    /// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
     /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
     /// One of `inclusive`, `exclusive`, or `unspecified`.
     /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
@@ -1401,7 +1401,7 @@ pub struct CreatePaymentLinkLineItemsPriceDataProductData {
     /// A list of up to 8 URLs of images for this product, meant to be displayable to the customer.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub images: Option<Vec<String>>,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
@@ -1409,7 +1409,7 @@ pub struct CreatePaymentLinkLineItemsPriceDataProductData {
     pub metadata: Option<std::collections::HashMap<String, String>>,
     /// The product's name, meant to be displayable to the customer.
     pub name: String,
-    /// A [tax code](https://stripe.com/docs/tax/tax-categories) ID.
+    /// A [tax code](https://docs.stripe.com/tax/tax-categories) ID.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_code: Option<String>,
     /// A label that represents units of this product.
@@ -1516,7 +1516,7 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentLinkLineItemsPriceDataRecurri
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-/// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
+/// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
 /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
 /// One of `inclusive`, `exclusive`, or `unspecified`.
 /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
@@ -1588,7 +1588,7 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentLinkLineItemsPriceDataTaxBeha
     }
 }
 /// A list of optional items the customer can add to their order at checkout.
-/// Use this parameter to pass one-time or recurring [Prices](https://stripe.com/docs/api/prices).
+/// Use this parameter to pass one-time or recurring [Prices](https://docs.stripe.com/api/prices).
 /// There is a maximum of 10 optional items allowed on a payment link, and the existing limits on the number of line items allowed on a payment link apply to the combined number of line items and optional items.
 /// There is a maximum of 20 combined line items and optional items.
 #[derive(Clone, Debug, serde::Serialize)]
@@ -1596,7 +1596,7 @@ pub struct CreatePaymentLinkOptionalItems {
     /// When set, provides configuration for the customer to adjust the quantity of the line item created when a customer chooses to add this optional item to their order.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub adjustable_quantity: Option<CreatePaymentLinkOptionalItemsAdjustableQuantity>,
-    /// The ID of the [Price](https://stripe.com/docs/api/prices) or [Plan](https://stripe.com/docs/api/plans) object.
+    /// The ID of the [Price](https://docs.stripe.com/api/prices) or [Plan](https://docs.stripe.com/api/plans) object.
     pub price: String,
     /// The initial quantity of the line item created when a customer chooses to add this optional item to their order.
     pub quantity: u64,
@@ -1634,12 +1634,12 @@ pub struct CreatePaymentLinkPaymentIntentData {
     /// An arbitrary string attached to the object. Often useful for displaying to users.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that will declaratively set metadata on [Payment Intents](https://stripe.com/docs/api/payment_intents) generated from this payment link.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that will declaratively set metadata on [Payment Intents](https://docs.stripe.com/api/payment_intents) generated from this payment link.
     /// Unlike object-level metadata, this field is declarative.
     /// Updates will clear prior values.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub metadata: Option<std::collections::HashMap<String, String>>,
-    /// Indicates that you intend to [make future payments](https://stripe.com/docs/payments/payment-intents#future-usage) with the payment method collected by this Checkout Session.
+    /// Indicates that you intend to [make future payments](https://docs.stripe.com/payments/payment-intents#future-usage) with the payment method collected by this Checkout Session.
     ///
     /// When setting this to `on_session`, Checkout will show a notice to the customer that their payment details will be saved.
     ///
@@ -1666,7 +1666,7 @@ pub struct CreatePaymentLinkPaymentIntentData {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub statement_descriptor_suffix: Option<String>,
     /// A string that identifies the resulting payment as part of a group.
-    /// See the PaymentIntents [use case for connected accounts](https://stripe.com/docs/connect/separate-charges-and-transfers) for details.
+    /// See the PaymentIntents [use case for connected accounts](https://docs.stripe.com/connect/separate-charges-and-transfers) for details.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub transfer_group: Option<String>,
 }
@@ -1756,7 +1756,7 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentLinkPaymentIntentDataCaptureM
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-/// Indicates that you intend to [make future payments](https://stripe.com/docs/payments/payment-intents#future-usage) with the payment method collected by this Checkout Session.
+/// Indicates that you intend to [make future payments](https://docs.stripe.com/payments/payment-intents#future-usage) with the payment method collected by this Checkout Session.
 ///
 /// When setting this to `on_session`, Checkout will show a notice to the customer that their payment details will be saved.
 ///
@@ -1837,7 +1837,7 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentLinkPaymentIntentDataSetupFut
 ///
 /// Can only be set in `subscription` mode. Defaults to `always`.
 ///
-/// If you'd like information on how to collect a payment method outside of Checkout, read the guide on [configuring subscriptions with a free trial](https://stripe.com/docs/payments/checkout/free-trials).
+/// If you'd like information on how to collect a payment method outside of Checkout, read the guide on [configuring subscriptions with a free trial](https://docs.stripe.com/payments/checkout/free-trials).
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum CreatePaymentLinkPaymentMethodCollection {
@@ -2690,7 +2690,7 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentLinkShippingAddressCollection
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-/// The shipping rate options to apply to [checkout sessions](https://stripe.com/docs/api/checkout/sessions) created by this payment link.
+/// The shipping rate options to apply to [checkout sessions](https://docs.stripe.com/api/checkout/sessions) created by this payment link.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentLinkShippingOptions {
     /// The ID of the Shipping Rate to use for this shipping option.
@@ -2718,7 +2718,7 @@ pub struct CreatePaymentLinkSubscriptionData {
     /// All invoices will be billed using the specified settings.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub invoice_settings: Option<CreatePaymentLinkSubscriptionDataInvoiceSettings>,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that will declaratively set metadata on [Subscriptions](https://stripe.com/docs/api/subscriptions) generated from this payment link.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that will declaratively set metadata on [Subscriptions](https://docs.stripe.com/api/subscriptions) generated from this payment link.
     /// Unlike object-level metadata, this field is declarative.
     /// Updates will clear prior values.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3131,7 +3131,7 @@ impl CreatePaymentLink {
         self.inner.custom_text = Some(custom_text.into());
         self
     }
-    /// Configures whether [checkout sessions](https://stripe.com/docs/api/checkout/sessions) created by this payment link create a [Customer](https://stripe.com/docs/api/customers).
+    /// Configures whether [checkout sessions](https://docs.stripe.com/api/checkout/sessions) created by this payment link create a [Customer](https://docs.stripe.com/api/customers).
     pub fn customer_creation(
         mut self,
         customer_creation: impl Into<CreatePaymentLinkCustomerCreation>,
@@ -3157,11 +3157,11 @@ impl CreatePaymentLink {
         self.inner.invoice_creation = Some(invoice_creation.into());
         self
     }
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
-    /// Metadata associated with this Payment Link will automatically be copied to [checkout sessions](https://stripe.com/docs/api/checkout/sessions) created by this payment link.
+    /// Metadata associated with this Payment Link will automatically be copied to [checkout sessions](https://docs.stripe.com/api/checkout/sessions) created by this payment link.
     pub fn metadata(
         mut self,
         metadata: impl Into<std::collections::HashMap<String, String>>,
@@ -3180,7 +3180,7 @@ impl CreatePaymentLink {
         self
     }
     /// A list of optional items the customer can add to their order at checkout.
-    /// Use this parameter to pass one-time or recurring [Prices](https://stripe.com/docs/api/prices).
+    /// Use this parameter to pass one-time or recurring [Prices](https://docs.stripe.com/api/prices).
     /// There is a maximum of 10 optional items allowed on a payment link, and the existing limits on the number of line items allowed on a payment link apply to the combined number of line items and optional items.
     /// There is a maximum of 20 combined line items and optional items.
     pub fn optional_items(
@@ -3203,7 +3203,7 @@ impl CreatePaymentLink {
     ///
     /// Can only be set in `subscription` mode. Defaults to `always`.
     ///
-    /// If you'd like information on how to collect a payment method outside of Checkout, read the guide on [configuring subscriptions with a free trial](https://stripe.com/docs/payments/checkout/free-trials).
+    /// If you'd like information on how to collect a payment method outside of Checkout, read the guide on [configuring subscriptions with a free trial](https://docs.stripe.com/payments/checkout/free-trials).
     pub fn payment_method_collection(
         mut self,
         payment_method_collection: impl Into<CreatePaymentLinkPaymentMethodCollection>,
@@ -3212,7 +3212,7 @@ impl CreatePaymentLink {
         self
     }
     /// The list of payment method types that customers can use.
-    /// If no value is passed, Stripe will dynamically show relevant payment methods from your [payment method settings](https://dashboard.stripe.com/settings/payment_methods) (20+ payment methods [supported](https://stripe.com/docs/payments/payment-methods/integration-options#payment-method-product-support)).
+    /// If no value is passed, Stripe will dynamically show relevant payment methods from your [payment method settings](https://dashboard.stripe.com/settings/payment_methods) (20+ payment methods [supported](https://docs.stripe.com/payments/payment-methods/integration-options#payment-method-product-support)).
     pub fn payment_method_types(
         mut self,
         payment_method_types: impl Into<Vec<stripe_shared::PaymentLinkPaymentMethodTypes>>,
@@ -3243,7 +3243,7 @@ impl CreatePaymentLink {
         self.inner.shipping_address_collection = Some(shipping_address_collection.into());
         self
     }
-    /// The shipping rate options to apply to [checkout sessions](https://stripe.com/docs/api/checkout/sessions) created by this payment link.
+    /// The shipping rate options to apply to [checkout sessions](https://docs.stripe.com/api/checkout/sessions) created by this payment link.
     pub fn shipping_options(
         mut self,
         shipping_options: impl Into<Vec<CreatePaymentLinkShippingOptions>>,
@@ -3252,7 +3252,7 @@ impl CreatePaymentLink {
         self
     }
     /// Describes the type of transaction being performed in order to customize relevant text on the page, such as the submit button.
-    /// Changing this value will also affect the hostname in the [url](https://stripe.com/docs/api/payment_links/payment_links/object#url) property (example: `donate.stripe.com`).
+    /// Changing this value will also affect the hostname in the [url](https://docs.stripe.com/api/payment_links/payment_links/object#url) property (example: `donate.stripe.com`).
     pub fn submit_type(
         mut self,
         submit_type: impl Into<stripe_shared::PaymentLinkSubmitType>,
@@ -3808,7 +3808,7 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentLinkCustomFieldsType {
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-/// Configures whether [checkout sessions](https://stripe.com/docs/api/checkout/sessions) created by this payment link create a [Customer](https://stripe.com/docs/api/customers).
+/// Configures whether [checkout sessions](https://docs.stripe.com/api/checkout/sessions) created by this payment link create a [Customer](https://docs.stripe.com/api/customers).
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum UpdatePaymentLinkCustomerCreation {
@@ -3906,7 +3906,7 @@ pub struct UpdatePaymentLinkInvoiceCreationInvoiceData {
     /// The invoice is presented with the branding and support information of the specified account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub issuer: Option<UpdatePaymentLinkInvoiceCreationInvoiceDataIssuer>,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
@@ -4142,7 +4142,7 @@ pub struct UpdatePaymentLinkPaymentIntentData {
     /// An arbitrary string attached to the object. Often useful for displaying to users.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that will declaratively set metadata on [Payment Intents](https://stripe.com/docs/api/payment_intents) generated from this payment link.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that will declaratively set metadata on [Payment Intents](https://docs.stripe.com/api/payment_intents) generated from this payment link.
     /// Unlike object-level metadata, this field is declarative.
     /// Updates will clear prior values.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4160,7 +4160,7 @@ pub struct UpdatePaymentLinkPaymentIntentData {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub statement_descriptor_suffix: Option<String>,
     /// A string that identifies the resulting payment as part of a group.
-    /// See the PaymentIntents [use case for connected accounts](https://stripe.com/docs/connect/separate-charges-and-transfers) for details.
+    /// See the PaymentIntents [use case for connected accounts](https://docs.stripe.com/connect/separate-charges-and-transfers) for details.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub transfer_group: Option<String>,
 }
@@ -4185,7 +4185,7 @@ impl Default for UpdatePaymentLinkPaymentIntentData {
 ///
 /// Can only be set in `subscription` mode. Defaults to `always`.
 ///
-/// If you'd like information on how to collect a payment method outside of Checkout, read the guide on [configuring subscriptions with a free trial](https://stripe.com/docs/payments/checkout/free-trials).
+/// If you'd like information on how to collect a payment method outside of Checkout, read the guide on [configuring subscriptions with a free trial](https://docs.stripe.com/payments/checkout/free-trials).
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum UpdatePaymentLinkPaymentMethodCollection {
@@ -5045,7 +5045,7 @@ pub struct UpdatePaymentLinkSubscriptionData {
     /// All invoices will be billed using the specified settings.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub invoice_settings: Option<UpdatePaymentLinkSubscriptionDataInvoiceSettings>,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that will declaratively set metadata on [Subscriptions](https://stripe.com/docs/api/subscriptions) generated from this payment link.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that will declaratively set metadata on [Subscriptions](https://docs.stripe.com/api/subscriptions) generated from this payment link.
     /// Unlike object-level metadata, this field is declarative.
     /// Updates will clear prior values.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5420,7 +5420,7 @@ impl UpdatePaymentLink {
         self.inner.custom_text = Some(custom_text.into());
         self
     }
-    /// Configures whether [checkout sessions](https://stripe.com/docs/api/checkout/sessions) created by this payment link create a [Customer](https://stripe.com/docs/api/customers).
+    /// Configures whether [checkout sessions](https://docs.stripe.com/api/checkout/sessions) created by this payment link create a [Customer](https://docs.stripe.com/api/customers).
     pub fn customer_creation(
         mut self,
         customer_creation: impl Into<UpdatePaymentLinkCustomerCreation>,
@@ -5453,11 +5453,11 @@ impl UpdatePaymentLink {
         self.inner.line_items = Some(line_items.into());
         self
     }
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
-    /// Metadata associated with this Payment Link will automatically be copied to [checkout sessions](https://stripe.com/docs/api/checkout/sessions) created by this payment link.
+    /// Metadata associated with this Payment Link will automatically be copied to [checkout sessions](https://docs.stripe.com/api/checkout/sessions) created by this payment link.
     pub fn metadata(
         mut self,
         metadata: impl Into<std::collections::HashMap<String, String>>,
@@ -5483,7 +5483,7 @@ impl UpdatePaymentLink {
     ///
     /// Can only be set in `subscription` mode. Defaults to `always`.
     ///
-    /// If you'd like information on how to collect a payment method outside of Checkout, read the guide on [configuring subscriptions with a free trial](https://stripe.com/docs/payments/checkout/free-trials).
+    /// If you'd like information on how to collect a payment method outside of Checkout, read the guide on [configuring subscriptions with a free trial](https://docs.stripe.com/payments/checkout/free-trials).
     pub fn payment_method_collection(
         mut self,
         payment_method_collection: impl Into<UpdatePaymentLinkPaymentMethodCollection>,
@@ -5524,7 +5524,7 @@ impl UpdatePaymentLink {
         self
     }
     /// Describes the type of transaction being performed in order to customize relevant text on the page, such as the submit button.
-    /// Changing this value will also affect the hostname in the [url](https://stripe.com/docs/api/payment_links/payment_links/object#url) property (example: `donate.stripe.com`).
+    /// Changing this value will also affect the hostname in the [url](https://docs.stripe.com/api/payment_links/payment_links/object#url) property (example: `donate.stripe.com`).
     pub fn submit_type(
         mut self,
         submit_type: impl Into<stripe_shared::PaymentLinkSubmitType>,
@@ -5597,7 +5597,7 @@ impl Default for AfterCompletionConfirmationPageParams {
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct AfterCompletionRedirectParams {
     /// The URL the customer will be redirected to after the purchase is complete.
-    /// You can embed `{CHECKOUT_SESSION_ID}` into the URL to have the `id` of the completed [checkout session](https://stripe.com/docs/api/checkout/sessions/object#checkout_session_object-id) included.
+    /// You can embed `{CHECKOUT_SESSION_ID}` into the URL to have the `id` of the completed [checkout session](https://docs.stripe.com/api/checkout/sessions/object#checkout_session_object-id) included.
     pub url: String,
 }
 impl AfterCompletionRedirectParams {

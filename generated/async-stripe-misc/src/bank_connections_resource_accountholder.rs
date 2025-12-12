@@ -2,12 +2,13 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct BankConnectionsResourceAccountholder {
-    /// The ID of the Stripe account this account belongs to.
-    /// Should only be present if `account_holder.type` is `account`.
+    /// The ID of the Stripe account that this account belongs to.
+    /// Only available when `account_holder.type` is `account`.
     pub account: Option<stripe_types::Expandable<stripe_shared::Account>>,
-    /// ID of the Stripe customer this account belongs to.
-    /// Present if and only if `account_holder.type` is `customer`.
+    /// The ID for an Account representing a customer that this account belongs to.
+    /// Only available when `account_holder.type` is `customer`.
     pub customer: Option<stripe_types::Expandable<stripe_shared::Customer>>,
+    pub customer_account: Option<String>,
     /// Type of account holder that this account belongs to.
     #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "type"))]
     pub type_: BankConnectionsResourceAccountholderType,
@@ -16,6 +17,7 @@ pub struct BankConnectionsResourceAccountholder {
 pub struct BankConnectionsResourceAccountholderBuilder {
     account: Option<Option<stripe_types::Expandable<stripe_shared::Account>>>,
     customer: Option<Option<stripe_types::Expandable<stripe_shared::Customer>>>,
+    customer_account: Option<Option<String>>,
     type_: Option<BankConnectionsResourceAccountholderType>,
 }
 
@@ -61,6 +63,7 @@ const _: () = {
             Ok(match k {
                 "account" => Deserialize::begin(&mut self.account),
                 "customer" => Deserialize::begin(&mut self.customer),
+                "customer_account" => Deserialize::begin(&mut self.customer_account),
                 "type" => Deserialize::begin(&mut self.type_),
                 _ => <dyn Visitor>::ignore(),
             })
@@ -70,17 +73,21 @@ const _: () = {
             Self {
                 account: Deserialize::default(),
                 customer: Deserialize::default(),
+                customer_account: Deserialize::default(),
                 type_: Deserialize::default(),
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(account), Some(customer), Some(type_)) =
-                (self.account.take(), self.customer.take(), self.type_.take())
-            else {
+            let (Some(account), Some(customer), Some(customer_account), Some(type_)) = (
+                self.account.take(),
+                self.customer.take(),
+                self.customer_account.take(),
+                self.type_.take(),
+            ) else {
                 return None;
             };
-            Some(Self::Out { account, customer, type_ })
+            Some(Self::Out { account, customer, customer_account, type_ })
         }
     }
 
@@ -109,6 +116,7 @@ const _: () = {
                 match k.as_str() {
                     "account" => b.account = FromValueOpt::from_value(v),
                     "customer" => b.customer = FromValueOpt::from_value(v),
+                    "customer_account" => b.customer_account = FromValueOpt::from_value(v),
                     "type" => b.type_ = FromValueOpt::from_value(v),
                     _ => {}
                 }

@@ -2,13 +2,13 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentFlowsAmountDetails {
-    /// The total discount applied on the transaction represented in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
+    /// The total discount applied on the transaction represented in the [smallest currency unit](https://docs.stripe.com/currencies#zero-decimal).
     /// An integer greater than 0.
     ///
     /// This field is mutually exclusive with the `amount_details[line_items][#][discount_amount]` field.
     pub discount_amount: Option<i64>,
     /// A list of line items, each containing information about a product in the PaymentIntent.
-    /// There is a maximum of 100 line items.
+    /// There is a maximum of 200 line items.
     pub line_items: Option<stripe_types::List<stripe_shared::PaymentIntentAmountDetailsLineItem>>,
     pub shipping: Option<stripe_shared::PaymentFlowsAmountDetailsResourceShipping>,
     pub tax: Option<stripe_shared::PaymentFlowsAmountDetailsResourceTax>,

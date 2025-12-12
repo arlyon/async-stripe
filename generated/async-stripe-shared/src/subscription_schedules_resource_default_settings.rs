@@ -10,7 +10,7 @@ pub struct SubscriptionSchedulesResourceDefaultSettings {
     /// Possible values are `phase_start` or `automatic`.
     /// If `phase_start` then billing cycle anchor of the subscription is set to the start of the phase when entering the phase.
     /// If `automatic` then the billing cycle anchor is automatically modified as needed when entering the phase.
-    /// For more information, see the billing cycle [documentation](https://stripe.com/docs/billing/subscriptions/billing-cycle).
+    /// For more information, see the billing cycle [documentation](https://docs.stripe.com/billing/subscriptions/billing-cycle).
     pub billing_cycle_anchor: SubscriptionSchedulesResourceDefaultSettingsBillingCycleAnchor,
     /// Define thresholds at which an invoice will be sent, and the subscription advanced to a new billing period.
     pub billing_thresholds: Option<stripe_shared::SubscriptionBillingThresholds>,
@@ -204,7 +204,7 @@ const _: () = {
 /// Possible values are `phase_start` or `automatic`.
 /// If `phase_start` then billing cycle anchor of the subscription is set to the start of the phase when entering the phase.
 /// If `automatic` then the billing cycle anchor is automatically modified as needed when entering the phase.
-/// For more information, see the billing cycle [documentation](https://stripe.com/docs/billing/subscriptions/billing-cycle).
+/// For more information, see the billing cycle [documentation](https://docs.stripe.com/billing/subscriptions/billing-cycle).
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum SubscriptionSchedulesResourceDefaultSettingsBillingCycleAnchor {

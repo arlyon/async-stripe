@@ -166,8 +166,8 @@ impl Default for UpdateInvoiceLineItemDiscounts {
 }
 /// The period associated with this invoice item.
 /// When set to different values, the period will be rendered on the invoice.
-/// If you have [Stripe Revenue Recognition](https://stripe.com/docs/revenue-recognition) enabled, the period will be used to recognize and defer revenue.
-/// See the [Revenue Recognition documentation](https://stripe.com/docs/revenue-recognition/methodology/subscriptions-and-invoicing) for details.
+/// If you have [Stripe Revenue Recognition](https://docs.stripe.com/revenue-recognition) enabled, the period will be used to recognize and defer revenue.
+/// See the [Revenue Recognition documentation](https://docs.stripe.com/revenue-recognition/methodology/subscriptions-and-invoicing) for details.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UpdateInvoiceLineItemPeriod {
     /// The end of the period, which must be greater than or equal to the start. This value is inclusive.
@@ -183,7 +183,7 @@ impl UpdateInvoiceLineItemPeriod {
         Self { end: end.into(), start: start.into() }
     }
 }
-/// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
+/// Data used to generate a new [Price](https://docs.stripe.com/api/prices) object inline.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdateInvoiceLineItemPriceData {
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
@@ -197,7 +197,7 @@ pub struct UpdateInvoiceLineItemPriceData {
     /// One of `product` or `product_data` is required.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub product_data: Option<UpdateInvoiceLineItemPriceDataProductData>,
-    /// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
+    /// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
     /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
     /// One of `inclusive`, `exclusive`, or `unspecified`.
     /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
@@ -235,7 +235,7 @@ pub struct UpdateInvoiceLineItemPriceDataProductData {
     /// A list of up to 8 URLs of images for this product, meant to be displayable to the customer.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub images: Option<Vec<String>>,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
@@ -243,7 +243,7 @@ pub struct UpdateInvoiceLineItemPriceDataProductData {
     pub metadata: Option<std::collections::HashMap<String, String>>,
     /// The product's name, meant to be displayable to the customer.
     pub name: String,
-    /// A [tax code](https://stripe.com/docs/tax/tax-categories) ID.
+    /// A [tax code](https://docs.stripe.com/tax/tax-categories) ID.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_code: Option<String>,
     /// A label that represents units of this product.
@@ -263,7 +263,7 @@ impl UpdateInvoiceLineItemPriceDataProductData {
         }
     }
 }
-/// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
+/// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
 /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
 /// One of `inclusive`, `exclusive`, or `unspecified`.
 /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
@@ -353,7 +353,7 @@ impl Default for UpdateInvoiceLineItemPricing {
 }
 /// A list of up to 10 tax amounts for this line item.
 /// This can be useful if you calculate taxes on your own or use a third-party to calculate them.
-/// You cannot set tax amounts if any line item has [tax_rates](https://stripe.com/docs/api/invoices/line_item#invoice_line_item_object-tax_rates) or if the invoice has [default_tax_rates](https://stripe.com/docs/api/invoices/object#invoice_object-default_tax_rates) or uses [automatic tax](https://stripe.com/docs/tax/invoicing).
+/// You cannot set tax amounts if any line item has [tax_rates](https://docs.stripe.com/api/invoices/line_item#invoice_line_item_object-tax_rates) or if the invoice has [default_tax_rates](https://docs.stripe.com/api/invoices/object#invoice_object-default_tax_rates) or uses [automatic tax](https://docs.stripe.com/tax/invoicing).
 /// Pass an empty string to remove previously defined tax amounts.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdateInvoiceLineItemTaxAmounts {
@@ -780,11 +780,11 @@ impl UpdateInvoiceLineItem {
         self.inner.expand = Some(expand.into());
         self
     }
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
-    /// For [type=subscription](https://stripe.com/docs/api/invoices/line_item#invoice_line_item_object-type) line items, the incoming metadata specified on the request is directly used to set this value, in contrast to [type=invoiceitem](api/invoices/line_item#invoice_line_item_object-type) line items, where any existing metadata on the invoice line is merged with the incoming data.
+    /// For [type=subscription](https://docs.stripe.com/api/invoices/line_item#invoice_line_item_object-type) line items, the incoming metadata specified on the request is directly used to set this value, in contrast to [type=invoiceitem](api/invoices/line_item#invoice_line_item_object-type) line items, where any existing metadata on the invoice line is merged with the incoming data.
     pub fn metadata(
         mut self,
         metadata: impl Into<std::collections::HashMap<String, String>>,
@@ -794,13 +794,13 @@ impl UpdateInvoiceLineItem {
     }
     /// The period associated with this invoice item.
     /// When set to different values, the period will be rendered on the invoice.
-    /// If you have [Stripe Revenue Recognition](https://stripe.com/docs/revenue-recognition) enabled, the period will be used to recognize and defer revenue.
-    /// See the [Revenue Recognition documentation](https://stripe.com/docs/revenue-recognition/methodology/subscriptions-and-invoicing) for details.
+    /// If you have [Stripe Revenue Recognition](https://docs.stripe.com/revenue-recognition) enabled, the period will be used to recognize and defer revenue.
+    /// See the [Revenue Recognition documentation](https://docs.stripe.com/revenue-recognition/methodology/subscriptions-and-invoicing) for details.
     pub fn period(mut self, period: impl Into<UpdateInvoiceLineItemPeriod>) -> Self {
         self.inner.period = Some(period.into());
         self
     }
-    /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
+    /// Data used to generate a new [Price](https://docs.stripe.com/api/prices) object inline.
     pub fn price_data(mut self, price_data: impl Into<UpdateInvoiceLineItemPriceData>) -> Self {
         self.inner.price_data = Some(price_data.into());
         self
@@ -817,7 +817,7 @@ impl UpdateInvoiceLineItem {
     }
     /// A list of up to 10 tax amounts for this line item.
     /// This can be useful if you calculate taxes on your own or use a third-party to calculate them.
-    /// You cannot set tax amounts if any line item has [tax_rates](https://stripe.com/docs/api/invoices/line_item#invoice_line_item_object-tax_rates) or if the invoice has [default_tax_rates](https://stripe.com/docs/api/invoices/object#invoice_object-default_tax_rates) or uses [automatic tax](https://stripe.com/docs/tax/invoicing).
+    /// You cannot set tax amounts if any line item has [tax_rates](https://docs.stripe.com/api/invoices/line_item#invoice_line_item_object-tax_rates) or if the invoice has [default_tax_rates](https://docs.stripe.com/api/invoices/object#invoice_object-default_tax_rates) or uses [automatic tax](https://docs.stripe.com/tax/invoicing).
     /// Pass an empty string to remove previously defined tax amounts.
     pub fn tax_amounts(
         mut self,

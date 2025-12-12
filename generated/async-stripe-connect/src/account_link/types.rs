@@ -1,7 +1,7 @@
 /// Account Links are the means by which a Connect platform grants a connected account permission to access.
 /// Stripe-hosted applications, such as Connect Onboarding.
 ///
-/// Related guide: [Connect Onboarding](https://stripe.com/docs/connect/custom/hosted-onboarding)
+/// Related guide: [Connect Onboarding](https://docs.stripe.com/connect/custom/hosted-onboarding)
 ///
 /// For more details see <<https://stripe.com/docs/api/account_links/object>>.
 #[derive(Clone, Debug)]

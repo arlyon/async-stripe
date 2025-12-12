@@ -2,7 +2,7 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct CustomerBalanceResourceCashBalanceTransactionResourceRefundedFromPaymentTransaction {
-    /// The [Refund](https://stripe.com/docs/api/refunds/object) that moved these funds into the customer's cash balance.
+    /// The [Refund](https://docs.stripe.com/api/refunds/object) that moved these funds into the customer's cash balance.
     pub refund: stripe_types::Expandable<stripe_shared::Refund>,
 }
 #[doc(hidden)]

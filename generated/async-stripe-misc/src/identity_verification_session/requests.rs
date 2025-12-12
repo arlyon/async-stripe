@@ -17,6 +17,8 @@ struct ListIdentityVerificationSessionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     related_customer: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    related_customer_account: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     starting_after: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     status: Option<stripe_misc::IdentityVerificationSessionStatus>,
@@ -30,6 +32,7 @@ impl ListIdentityVerificationSessionBuilder {
             expand: None,
             limit: None,
             related_customer: None,
+            related_customer_account: None,
             starting_after: None,
             status: None,
         }
@@ -74,8 +77,14 @@ impl ListIdentityVerificationSession {
         self.inner.limit = Some(limit.into());
         self
     }
+    /// Customer ID
     pub fn related_customer(mut self, related_customer: impl Into<String>) -> Self {
         self.inner.related_customer = Some(related_customer.into());
+        self
+    }
+    /// The ID of the Account representing a customer.
+    pub fn related_customer_account(mut self, related_customer_account: impl Into<String>) -> Self {
+        self.inner.related_customer_account = Some(related_customer_account.into());
         self
     }
     /// A cursor for use in pagination.
@@ -86,7 +95,7 @@ impl ListIdentityVerificationSession {
         self
     }
     /// Only return VerificationSessions with this status.
-    /// [Learn more about the lifecycle of sessions](https://stripe.com/docs/identity/how-sessions-work).
+    /// [Learn more about the lifecycle of sessions](https://docs.stripe.com/identity/how-sessions-work).
     pub fn status(
         mut self,
         status: impl Into<stripe_misc::IdentityVerificationSessionStatus>,
@@ -205,6 +214,8 @@ struct CreateIdentityVerificationSessionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     related_customer: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    related_customer_account: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     related_person: Option<CreateIdentityVerificationSessionRelatedPerson>,
     #[serde(skip_serializing_if = "Option::is_none")]
     return_url: Option<String>,
@@ -223,6 +234,7 @@ impl CreateIdentityVerificationSessionBuilder {
             options: None,
             provided_details: None,
             related_customer: None,
+            related_customer_account: None,
             related_person: None,
             return_url: None,
             type_: None,
@@ -233,7 +245,7 @@ impl CreateIdentityVerificationSessionBuilder {
 /// A set of options for the session’s verification checks.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateIdentityVerificationSessionOptions {
-    /// Options that apply to the [document check](https://stripe.com/docs/identity/verification-checks?type=document).
+    /// Options that apply to the [document check](https://docs.stripe.com/identity/verification-checks?type=document).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub document: Option<CreateIdentityVerificationSessionOptionsDocument>,
 }
@@ -247,21 +259,21 @@ impl Default for CreateIdentityVerificationSessionOptions {
         Self::new()
     }
 }
-/// Options that apply to the [document check](https://stripe.com/docs/identity/verification-checks?type=document).
+/// Options that apply to the [document check](https://docs.stripe.com/identity/verification-checks?type=document).
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateIdentityVerificationSessionOptionsDocument {
     /// Array of strings of allowed identity document types.
     /// If the provided identity document isn’t one of the allowed types, the verification check will fail with a document_type_not_allowed error code.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub allowed_types: Option<Vec<CreateIdentityVerificationSessionOptionsDocumentAllowedTypes>>,
-    /// Collect an ID number and perform an [ID number check](https://stripe.com/docs/identity/verification-checks?type=id-number) with the document’s extracted name and date of birth.
+    /// Collect an ID number and perform an [ID number check](https://docs.stripe.com/identity/verification-checks?type=id-number) with the document’s extracted name and date of birth.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub require_id_number: Option<bool>,
     /// Disable image uploads, identity document images have to be captured using the device’s camera.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub require_live_capture: Option<bool>,
-    /// Capture a face image and perform a [selfie check](https://stripe.com/docs/identity/verification-checks?type=selfie) comparing a photo ID and a picture of your user’s face.
-    /// [Learn more](https://stripe.com/docs/identity/selfie).
+    /// Capture a face image and perform a [selfie check](https://docs.stripe.com/identity/verification-checks?type=selfie) comparing a photo ID and a picture of your user’s face.
+    /// [Learn more](https://docs.stripe.com/identity/selfie).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub require_matching_selfie: Option<bool>,
 }
@@ -363,7 +375,7 @@ impl CreateIdentityVerificationSessionRelatedPerson {
         Self { account: account.into(), person: person.into() }
     }
 }
-/// The type of [verification check](https://stripe.com/docs/identity/verification-checks) to be performed.
+/// The type of [verification check](https://docs.stripe.com/identity/verification-checks) to be performed.
 /// You must provide a `type` if not passing `verification_flow`.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
@@ -456,7 +468,7 @@ impl CreateIdentityVerificationSession {
         self.inner.expand = Some(expand.into());
         self
     }
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
@@ -482,6 +494,11 @@ impl CreateIdentityVerificationSession {
         self.inner.related_customer = Some(related_customer.into());
         self
     }
+    /// The ID of the Account representing a customer.
+    pub fn related_customer_account(mut self, related_customer_account: impl Into<String>) -> Self {
+        self.inner.related_customer_account = Some(related_customer_account.into());
+        self
+    }
     /// Tokens referencing a Person resource and it's associated account.
     pub fn related_person(
         mut self,
@@ -495,7 +512,7 @@ impl CreateIdentityVerificationSession {
         self.inner.return_url = Some(return_url.into());
         self
     }
-    /// The type of [verification check](https://stripe.com/docs/identity/verification-checks) to be performed.
+    /// The type of [verification check](https://docs.stripe.com/identity/verification-checks) to be performed.
     /// You must provide a `type` if not passing `verification_flow`.
     pub fn type_(mut self, type_: impl Into<CreateIdentityVerificationSessionType>) -> Self {
         self.inner.type_ = Some(type_.into());
@@ -560,7 +577,7 @@ impl UpdateIdentityVerificationSessionBuilder {
 /// A set of options for the session’s verification checks.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdateIdentityVerificationSessionOptions {
-    /// Options that apply to the [document check](https://stripe.com/docs/identity/verification-checks?type=document).
+    /// Options that apply to the [document check](https://docs.stripe.com/identity/verification-checks?type=document).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub document: Option<UpdateIdentityVerificationSessionOptionsDocument>,
 }
@@ -574,21 +591,21 @@ impl Default for UpdateIdentityVerificationSessionOptions {
         Self::new()
     }
 }
-/// Options that apply to the [document check](https://stripe.com/docs/identity/verification-checks?type=document).
+/// Options that apply to the [document check](https://docs.stripe.com/identity/verification-checks?type=document).
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdateIdentityVerificationSessionOptionsDocument {
     /// Array of strings of allowed identity document types.
     /// If the provided identity document isn’t one of the allowed types, the verification check will fail with a document_type_not_allowed error code.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub allowed_types: Option<Vec<UpdateIdentityVerificationSessionOptionsDocumentAllowedTypes>>,
-    /// Collect an ID number and perform an [ID number check](https://stripe.com/docs/identity/verification-checks?type=id-number) with the document’s extracted name and date of birth.
+    /// Collect an ID number and perform an [ID number check](https://docs.stripe.com/identity/verification-checks?type=id-number) with the document’s extracted name and date of birth.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub require_id_number: Option<bool>,
     /// Disable image uploads, identity document images have to be captured using the device’s camera.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub require_live_capture: Option<bool>,
-    /// Capture a face image and perform a [selfie check](https://stripe.com/docs/identity/verification-checks?type=selfie) comparing a photo ID and a picture of your user’s face.
-    /// [Learn more](https://stripe.com/docs/identity/selfie).
+    /// Capture a face image and perform a [selfie check](https://docs.stripe.com/identity/verification-checks?type=selfie) comparing a photo ID and a picture of your user’s face.
+    /// [Learn more](https://docs.stripe.com/identity/selfie).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub require_matching_selfie: Option<bool>,
 }
@@ -676,7 +693,7 @@ impl<'de> serde::Deserialize<'de> for UpdateIdentityVerificationSessionOptionsDo
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-/// The type of [verification check](https://stripe.com/docs/identity/verification-checks) to be performed.
+/// The type of [verification check](https://docs.stripe.com/identity/verification-checks) to be performed.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum UpdateIdentityVerificationSessionType {
@@ -760,7 +777,7 @@ impl UpdateIdentityVerificationSession {
         self.inner.expand = Some(expand.into());
         self
     }
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
@@ -781,7 +798,7 @@ impl UpdateIdentityVerificationSession {
         self.inner.provided_details = Some(provided_details.into());
         self
     }
-    /// The type of [verification check](https://stripe.com/docs/identity/verification-checks) to be performed.
+    /// The type of [verification check](https://docs.stripe.com/identity/verification-checks) to be performed.
     pub fn type_(mut self, type_: impl Into<UpdateIdentityVerificationSessionType>) -> Self {
         self.inner.type_ = Some(type_.into());
         self

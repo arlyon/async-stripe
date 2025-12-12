@@ -33,16 +33,19 @@ impl ListFinancialConnectionsAccountBuilder {
 /// `account_holder[customer]` and `account_holder[account]` are mutually exclusive.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct ListFinancialConnectionsAccountAccountHolder {
-    /// The ID of the Stripe account whose accounts will be retrieved.
+    /// The ID of the Stripe account whose accounts you will retrieve.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub account: Option<String>,
-    /// The ID of the Stripe customer whose accounts will be retrieved.
+    /// The ID of the Stripe customer whose accounts you will retrieve.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub customer: Option<String>,
+    /// The ID of the Account representing a customer whose accounts you will retrieve.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub customer_account: Option<String>,
 }
 impl ListFinancialConnectionsAccountAccountHolder {
     pub fn new() -> Self {
-        Self { account: None, customer: None }
+        Self { account: None, customer: None, customer_account: None }
     }
 }
 impl Default for ListFinancialConnectionsAccountAccountHolder {

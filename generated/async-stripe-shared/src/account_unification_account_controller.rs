@@ -3,7 +3,7 @@
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct AccountUnificationAccountController {
     pub fees: Option<stripe_shared::AccountUnificationAccountControllerFees>,
-    /// `true` if the Connect application retrieving the resource controls the account and can therefore exercise [platform controls](https://stripe.com/docs/connect/platform-controls-for-standard-accounts).
+    /// `true` if the Connect application retrieving the resource controls the account and can therefore exercise [platform controls](https://docs.stripe.com/connect/platform-controls-for-standard-accounts).
     /// Otherwise, this field is null.
     pub is_controller: Option<bool>,
     pub losses: Option<stripe_shared::AccountUnificationAccountControllerLosses>,

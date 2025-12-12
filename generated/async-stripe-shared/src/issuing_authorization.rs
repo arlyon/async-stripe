@@ -1,9 +1,9 @@
-/// When an [issued card](https://stripe.com/docs/issuing) is used to make a purchase, an Issuing `Authorization`.
+/// When an [issued card](https://docs.stripe.com/issuing) is used to make a purchase, an Issuing `Authorization`.
 /// object is created.
-/// [Authorizations](https://stripe.com/docs/issuing/purchases/authorizations) must be approved for the.
+/// [Authorizations](https://docs.stripe.com/issuing/purchases/authorizations) must be approved for the.
 /// purchase to be completed successfully.
 ///
-/// Related guide: [Issued card authorizations](https://stripe.com/docs/issuing/purchases/authorizations).
+/// Related guide: [Issued card authorizations](https://docs.stripe.com/issuing/purchases/authorizations).
 ///
 /// For more details see <<https://stripe.com/docs/api/issuing/authorizations/object>>.
 #[derive(Clone, Debug)]
@@ -14,7 +14,7 @@ pub struct IssuingAuthorization {
     /// `amount` should be the same as `merchant_amount`, unless `currency` and `merchant_currency` are different.
     pub amount: i64,
     /// Detailed breakdown of amount components.
-    /// These amounts are denominated in `currency` and in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
+    /// These amounts are denominated in `currency` and in the [smallest currency unit](https://docs.stripe.com/currencies#zero-decimal).
     pub amount_details: Option<stripe_shared::IssuingAuthorizationAmountDetails>,
     /// Whether the authorization has been approved.
     pub approved: bool,
@@ -53,7 +53,7 @@ pub struct IssuingAuthorization {
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub merchant_currency: stripe_types::Currency,
     pub merchant_data: stripe_shared::IssuingAuthorizationMerchantData,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: std::collections::HashMap<String, String>,
     /// Details about the authorization, such as identifiers, set by the card network.
@@ -68,12 +68,12 @@ pub struct IssuingAuthorization {
     pub request_history: Vec<stripe_shared::IssuingAuthorizationRequest>,
     /// The current status of the authorization in its lifecycle.
     pub status: stripe_shared::IssuingAuthorizationStatus,
-    /// [Token](https://stripe.com/docs/api/issuing/tokens/object) object used for this authorization.
+    /// [Token](https://docs.stripe.com/api/issuing/tokens/object) object used for this authorization.
     /// If a network token was not used for this authorization, this field will be null.
     pub token: Option<stripe_types::Expandable<stripe_shared::IssuingToken>>,
-    /// List of [transactions](https://stripe.com/docs/api/issuing/transactions) associated with this authorization.
+    /// List of [transactions](https://docs.stripe.com/api/issuing/transactions) associated with this authorization.
     pub transactions: Vec<stripe_shared::IssuingTransaction>,
-    /// [Treasury](https://stripe.com/docs/api/treasury) details related to this authorization if it was created on a [FinancialAccount](https://stripe.com/docs/api/treasury/financial_accounts).
+    /// [Treasury](https://docs.stripe.com/api/treasury) details related to this authorization if it was created on a [FinancialAccount](https://docs.stripe.com/api/treasury/financial_accounts).
     pub treasury: Option<stripe_shared::IssuingAuthorizationTreasury>,
     pub verification_data: stripe_shared::IssuingAuthorizationVerificationData,
     /// Whether the authorization bypassed fraud risk checks because the cardholder has previously completed a fraud challenge on a similar high-risk authorization from the same merchant.

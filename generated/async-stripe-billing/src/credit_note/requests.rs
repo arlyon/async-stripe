@@ -9,6 +9,8 @@ struct ListCreditNoteBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     customer: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    customer_account: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -24,6 +26,7 @@ impl ListCreditNoteBuilder {
         Self {
             created: None,
             customer: None,
+            customer_account: None,
             ending_before: None,
             expand: None,
             invoice: None,
@@ -50,6 +53,11 @@ impl ListCreditNote {
     /// Only return credit notes for the customer specified by this customer ID.
     pub fn customer(mut self, customer: impl Into<String>) -> Self {
         self.inner.customer = Some(customer.into());
+        self
+    }
+    /// Only return credit notes for the account representing the customer specified by this account ID.
+    pub fn customer_account(mut self, customer_account: impl Into<String>) -> Self {
+        self.inner.customer_account = Some(customer_account.into());
         self
     }
     /// A cursor for use in pagination.
@@ -540,7 +548,7 @@ impl PreviewCreditNote {
         self.inner.memo = Some(memo.into());
         self
     }
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
@@ -1003,7 +1011,7 @@ impl PreviewLinesCreditNote {
         self.inner.memo = Some(memo.into());
         self
     }
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
@@ -1464,7 +1472,7 @@ impl CreateCreditNote {
         self.inner.memo = Some(memo.into());
         self
     }
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
@@ -1563,7 +1571,7 @@ impl UpdateCreditNote {
         self.inner.memo = Some(memo.into());
         self
     }
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.

@@ -29,13 +29,15 @@ pub struct PaymentRecord {
     pub latest_payment_attempt_record: Option<String>,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: std::collections::HashMap<String, String>,
     /// Information about the Payment Method debited for this payment.
     pub payment_method_details:
         Option<stripe_shared::PaymentsPrimitivesPaymentRecordsResourcePaymentMethodDetails>,
     pub processor_details: stripe_shared::PaymentsPrimitivesPaymentRecordsResourceProcessorDetails,
+    /// Indicates who reported the payment.
+    pub reported_by: PaymentRecordReportedBy,
     /// Shipping information for this payment.
     pub shipping_details:
         Option<stripe_shared::PaymentsPrimitivesPaymentRecordsResourceShippingDetails>,
@@ -63,6 +65,7 @@ pub struct PaymentRecordBuilder {
         Option<Option<stripe_shared::PaymentsPrimitivesPaymentRecordsResourcePaymentMethodDetails>>,
     processor_details:
         Option<stripe_shared::PaymentsPrimitivesPaymentRecordsResourceProcessorDetails>,
+    reported_by: Option<PaymentRecordReportedBy>,
     shipping_details:
         Option<Option<stripe_shared::PaymentsPrimitivesPaymentRecordsResourceShippingDetails>>,
 }
@@ -127,6 +130,7 @@ const _: () = {
                 "metadata" => Deserialize::begin(&mut self.metadata),
                 "payment_method_details" => Deserialize::begin(&mut self.payment_method_details),
                 "processor_details" => Deserialize::begin(&mut self.processor_details),
+                "reported_by" => Deserialize::begin(&mut self.reported_by),
                 "shipping_details" => Deserialize::begin(&mut self.shipping_details),
                 _ => <dyn Visitor>::ignore(),
             })
@@ -152,6 +156,7 @@ const _: () = {
                 metadata: Deserialize::default(),
                 payment_method_details: Deserialize::default(),
                 processor_details: Deserialize::default(),
+                reported_by: Deserialize::default(),
                 shipping_details: Deserialize::default(),
             }
         }
@@ -176,6 +181,7 @@ const _: () = {
                 Some(metadata),
                 Some(payment_method_details),
                 Some(processor_details),
+                Some(reported_by),
                 Some(shipping_details),
             ) = (
                 self.amount.take(),
@@ -196,6 +202,7 @@ const _: () = {
                 self.metadata.take(),
                 self.payment_method_details.take(),
                 self.processor_details.take(),
+                self.reported_by.take(),
                 self.shipping_details.take(),
             )
             else {
@@ -220,6 +227,7 @@ const _: () = {
                 metadata,
                 payment_method_details,
                 processor_details,
+                reported_by,
                 shipping_details,
             })
         }
@@ -270,6 +278,7 @@ const _: () = {
                         b.payment_method_details = FromValueOpt::from_value(v)
                     }
                     "processor_details" => b.processor_details = FromValueOpt::from_value(v),
+                    "reported_by" => b.reported_by = FromValueOpt::from_value(v),
                     "shipping_details" => b.shipping_details = FromValueOpt::from_value(v),
                     _ => {}
                 }
@@ -282,7 +291,7 @@ const _: () = {
 impl serde::Serialize for PaymentRecord {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("PaymentRecord", 20)?;
+        let mut s = s.serialize_struct("PaymentRecord", 21)?;
         s.serialize_field("amount", &self.amount)?;
         s.serialize_field("amount_authorized", &self.amount_authorized)?;
         s.serialize_field("amount_canceled", &self.amount_canceled)?;
@@ -301,10 +310,88 @@ impl serde::Serialize for PaymentRecord {
         s.serialize_field("metadata", &self.metadata)?;
         s.serialize_field("payment_method_details", &self.payment_method_details)?;
         s.serialize_field("processor_details", &self.processor_details)?;
+        s.serialize_field("reported_by", &self.reported_by)?;
         s.serialize_field("shipping_details", &self.shipping_details)?;
 
         s.serialize_field("object", "payment_record")?;
         s.end()
+    }
+}
+/// Indicates who reported the payment.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum PaymentRecordReportedBy {
+    Self_,
+    Stripe,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl PaymentRecordReportedBy {
+    pub fn as_str(&self) -> &str {
+        use PaymentRecordReportedBy::*;
+        match self {
+            Self_ => "self",
+            Stripe => "stripe",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for PaymentRecordReportedBy {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use PaymentRecordReportedBy::*;
+        match s {
+            "self" => Ok(Self_),
+            "stripe" => Ok(Stripe),
+            v => {
+                tracing::warn!("Unknown value '{}' for enum '{}'", v, "PaymentRecordReportedBy");
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for PaymentRecordReportedBy {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for PaymentRecordReportedBy {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "serialize")]
+impl serde::Serialize for PaymentRecordReportedBy {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl miniserde::Deserialize for PaymentRecordReportedBy {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor for crate::Place<PaymentRecordReportedBy> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(PaymentRecordReportedBy::from_str(s).expect("infallible"));
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(PaymentRecordReportedBy);
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for PaymentRecordReportedBy {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 impl stripe_types::Object for PaymentRecord {

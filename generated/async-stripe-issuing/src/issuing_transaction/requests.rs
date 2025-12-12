@@ -213,7 +213,7 @@ impl UpdateIssuingTransaction {
         self.inner.expand = Some(expand.into());
         self
     }
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
@@ -281,7 +281,7 @@ impl RefundIssuingTransaction {
         self
     }
     /// The total amount to attempt to refund.
-    /// This amount is in the provided currency, or defaults to the cards currency, and in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
+    /// This amount is in the provided currency, or defaults to the cards currency, and in the [smallest currency unit](https://docs.stripe.com/currencies#zero-decimal).
     pub fn refund_amount(mut self, refund_amount: impl Into<i64>) -> Self {
         self.inner.refund_amount = Some(refund_amount.into());
         self
@@ -346,7 +346,7 @@ impl CreateForceCaptureIssuingTransactionBuilder {
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateForceCaptureIssuingTransactionMerchantData {
     /// A categorization of the seller's type of business.
-    /// See our [merchant categories guide](https://stripe.com/docs/issuing/merchant-categories) for a list of possible values.
+    /// See our [merchant categories guide](https://docs.stripe.com/issuing/merchant-categories) for a list of possible values.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub category: Option<CreateForceCaptureIssuingTransactionMerchantDataCategory>,
     /// City where the seller is located
@@ -396,7 +396,7 @@ impl Default for CreateForceCaptureIssuingTransactionMerchantData {
     }
 }
 /// A categorization of the seller's type of business.
-/// See our [merchant categories guide](https://stripe.com/docs/issuing/merchant-categories) for a list of possible values.
+/// See our [merchant categories guide](https://docs.stripe.com/issuing/merchant-categories) for a list of possible values.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum CreateForceCaptureIssuingTransactionMerchantDataCategory {
@@ -1937,7 +1937,7 @@ impl CreateUnlinkedRefundIssuingTransactionBuilder {
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateUnlinkedRefundIssuingTransactionMerchantData {
     /// A categorization of the seller's type of business.
-    /// See our [merchant categories guide](https://stripe.com/docs/issuing/merchant-categories) for a list of possible values.
+    /// See our [merchant categories guide](https://docs.stripe.com/issuing/merchant-categories) for a list of possible values.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub category: Option<CreateUnlinkedRefundIssuingTransactionMerchantDataCategory>,
     /// City where the seller is located
@@ -1987,7 +1987,7 @@ impl Default for CreateUnlinkedRefundIssuingTransactionMerchantData {
     }
 }
 /// A categorization of the seller's type of business.
-/// See our [merchant categories guide](https://stripe.com/docs/issuing/merchant-categories) for a list of possible values.
+/// See our [merchant categories guide](https://docs.stripe.com/issuing/merchant-categories) for a list of possible values.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum CreateUnlinkedRefundIssuingTransactionMerchantDataCategory {

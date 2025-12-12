@@ -2,7 +2,7 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct LegalEntityCompanyVerificationDocument {
-    /// The back of a document returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `additional_verification`.
+    /// The back of a document returned by a [file upload](https://api.stripe.com#create_file) with a `purpose` value of `additional_verification`.
     /// Note that `additional_verification` files are [not downloadable](/file-upload#uploading-a-file).
     pub back: Option<stripe_types::Expandable<stripe_shared::File>>,
     /// A user-displayable string describing the verification state of this document.
@@ -10,7 +10,7 @@ pub struct LegalEntityCompanyVerificationDocument {
     /// One of `document_corrupt`, `document_expired`, `document_failed_copy`, `document_failed_greyscale`, `document_failed_other`, `document_failed_test_mode`, `document_fraudulent`, `document_incomplete`, `document_invalid`, `document_manipulated`, `document_not_readable`, `document_not_uploaded`, `document_type_not_supported`, or `document_too_large`.
     /// A machine-readable code specifying the verification state for this document.
     pub details_code: Option<String>,
-    /// The front of a document returned by a [file upload](https://stripe.com/docs/api#create_file) with a `purpose` value of `additional_verification`.
+    /// The front of a document returned by a [file upload](https://api.stripe.com#create_file) with a `purpose` value of `additional_verification`.
     /// Note that `additional_verification` files are [not downloadable](/file-upload#uploading-a-file).
     pub front: Option<stripe_types::Expandable<stripe_shared::File>>,
 }

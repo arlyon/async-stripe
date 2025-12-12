@@ -5,7 +5,11 @@ use stripe_client_core::{
 #[derive(Clone, Debug, serde::Serialize)]
 struct ListPaymentMethodBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
+    allow_redisplay: Option<stripe_shared::PaymentMethodAllowRedisplay>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     customer: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    customer_account: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -21,7 +25,9 @@ struct ListPaymentMethodBuilder {
 impl ListPaymentMethodBuilder {
     fn new() -> Self {
         Self {
+            allow_redisplay: None,
             customer: None,
+            customer_account: None,
             ending_before: None,
             expand: None,
             limit: None,
@@ -74,6 +80,7 @@ pub enum ListPaymentMethodType {
     Payco,
     Paynow,
     Paypal,
+    Payto,
     Pix,
     Promptpay,
     RevolutPay,
@@ -131,6 +138,7 @@ impl ListPaymentMethodType {
             Payco => "payco",
             Paynow => "paynow",
             Paypal => "paypal",
+            Payto => "payto",
             Pix => "pix",
             Promptpay => "promptpay",
             RevolutPay => "revolut_pay",
@@ -191,6 +199,7 @@ impl std::str::FromStr for ListPaymentMethodType {
             "payco" => Ok(Payco),
             "paynow" => Ok(Paynow),
             "paypal" => Ok(Paypal),
+            "payto" => Ok(Payto),
             "pix" => Ok(Pix),
             "promptpay" => Ok(Promptpay),
             "revolut_pay" => Ok(RevolutPay),
@@ -237,8 +246,7 @@ impl<'de> serde::Deserialize<'de> for ListPaymentMethodType {
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-/// Returns a list of PaymentMethods for Treasury flows.
-/// If you want to list the PaymentMethods attached to a Customer for payments, you should use the [List a Customer’s PaymentMethods](https://stripe.com/docs/api/payment_methods/customer_list) API instead.
+/// Returns a list of all PaymentMethods.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct ListPaymentMethod {
     inner: ListPaymentMethodBuilder,
@@ -248,9 +256,23 @@ impl ListPaymentMethod {
     pub fn new() -> Self {
         Self { inner: ListPaymentMethodBuilder::new() }
     }
+    /// This field indicates whether this payment method can be shown again to its customer in a checkout flow.
+    /// Stripe products such as Checkout and Elements use this field to determine whether a payment method can be shown as a saved payment method in a checkout flow.
+    pub fn allow_redisplay(
+        mut self,
+        allow_redisplay: impl Into<stripe_shared::PaymentMethodAllowRedisplay>,
+    ) -> Self {
+        self.inner.allow_redisplay = Some(allow_redisplay.into());
+        self
+    }
     /// The ID of the customer whose PaymentMethods will be retrieved.
     pub fn customer(mut self, customer: impl Into<String>) -> Self {
         self.inner.customer = Some(customer.into());
+        self
+    }
+    /// The ID of the Account whose PaymentMethods will be retrieved.
+    pub fn customer_account(mut self, customer_account: impl Into<String>) -> Self {
+        self.inner.customer_account = Some(customer_account.into());
         self
     }
     /// A cursor for use in pagination.
@@ -496,6 +518,8 @@ struct CreatePaymentMethodBuilder {
     #[serde(with = "stripe_types::with_serde_json_opt")]
     paypal: Option<miniserde::json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    payto: Option<CreatePaymentMethodPayto>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
     pix: Option<miniserde::json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -582,6 +606,7 @@ impl CreatePaymentMethodBuilder {
             payment_method: None,
             paynow: None,
             paypal: None,
+            payto: None,
             pix: None,
             promptpay: None,
             radar_options: None,
@@ -1217,6 +1242,7 @@ pub enum CreatePaymentMethodIdealBank {
     Handelsbanken,
     Ing,
     Knab,
+    Mollie,
     Moneyou,
     N26,
     Nn,
@@ -1242,6 +1268,7 @@ impl CreatePaymentMethodIdealBank {
             Handelsbanken => "handelsbanken",
             Ing => "ing",
             Knab => "knab",
+            Mollie => "mollie",
             Moneyou => "moneyou",
             N26 => "n26",
             Nn => "nn",
@@ -1270,6 +1297,7 @@ impl std::str::FromStr for CreatePaymentMethodIdealBank {
             "handelsbanken" => Ok(Handelsbanken),
             "ing" => Ok(Ing),
             "knab" => Ok(Knab),
+            "mollie" => Ok(Mollie),
             "moneyou" => Ok(Moneyou),
             "n26" => Ok(N26),
             "nn" => Ok(Nn),
@@ -1619,11 +1647,34 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentMethodP24Bank {
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
+/// If this is a `payto` PaymentMethod, this hash contains details about the PayTo payment method.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreatePaymentMethodPayto {
+    /// The account number for the bank account.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub account_number: Option<String>,
+    /// Bank-State-Branch number of the bank account.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bsb_number: Option<String>,
+    /// The PayID alias for the bank account.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub pay_id: Option<String>,
+}
+impl CreatePaymentMethodPayto {
+    pub fn new() -> Self {
+        Self { account_number: None, bsb_number: None, pay_id: None }
+    }
+}
+impl Default for CreatePaymentMethodPayto {
+    fn default() -> Self {
+        Self::new()
+    }
+}
 /// Options to configure Radar.
-/// See [Radar Session](https://stripe.com/docs/radar/radar-session) for more information.
+/// See [Radar Session](https://docs.stripe.com/radar/radar-session) for more information.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodRadarOptions {
-    /// A [Radar Session](https://stripe.com/docs/radar/radar-session) is a snapshot of the browser metadata and device details that help Radar make more accurate predictions on your payments.
+    /// A [Radar Session](https://docs.stripe.com/radar/radar-session) is a snapshot of the browser metadata and device details that help Radar make more accurate predictions on your payments.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub session: Option<String>,
 }
@@ -1780,6 +1831,7 @@ pub enum CreatePaymentMethodType {
     Payco,
     Paynow,
     Paypal,
+    Payto,
     Pix,
     Promptpay,
     RevolutPay,
@@ -1837,6 +1889,7 @@ impl CreatePaymentMethodType {
             Payco => "payco",
             Paynow => "paynow",
             Paypal => "paypal",
+            Payto => "payto",
             Pix => "pix",
             Promptpay => "promptpay",
             RevolutPay => "revolut_pay",
@@ -1897,6 +1950,7 @@ impl std::str::FromStr for CreatePaymentMethodType {
             "payco" => Ok(Payco),
             "paynow" => Ok(Paynow),
             "paypal" => Ok(Paypal),
+            "payto" => Ok(Payto),
             "pix" => Ok(Pix),
             "promptpay" => Ok(Promptpay),
             "revolut_pay" => Ok(RevolutPay),
@@ -2303,7 +2357,7 @@ impl CreatePaymentMethod {
         self.inner.mb_way = Some(mb_way.into());
         self
     }
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
@@ -2372,6 +2426,11 @@ impl CreatePaymentMethod {
         self.inner.paypal = Some(paypal.into());
         self
     }
+    /// If this is a `payto` PaymentMethod, this hash contains details about the PayTo payment method.
+    pub fn payto(mut self, payto: impl Into<CreatePaymentMethodPayto>) -> Self {
+        self.inner.payto = Some(payto.into());
+        self
+    }
     /// If this is a `pix` PaymentMethod, this hash contains details about the Pix payment method.
     pub fn pix(mut self, pix: impl Into<miniserde::json::Value>) -> Self {
         self.inner.pix = Some(pix.into());
@@ -2383,7 +2442,7 @@ impl CreatePaymentMethod {
         self
     }
     /// Options to configure Radar.
-    /// See [Radar Session](https://stripe.com/docs/radar/radar-session) for more information.
+    /// See [Radar Session](https://docs.stripe.com/radar/radar-session) for more information.
     pub fn radar_options(
         mut self,
         radar_options: impl Into<CreatePaymentMethodRadarOptions>,
@@ -2495,6 +2554,8 @@ struct UpdatePaymentMethodBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     metadata: Option<std::collections::HashMap<String, String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    payto: Option<UpdatePaymentMethodPayto>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     us_bank_account: Option<UpdatePaymentMethodUsBankAccount>,
 }
 impl UpdatePaymentMethodBuilder {
@@ -2505,6 +2566,7 @@ impl UpdatePaymentMethodBuilder {
             card: None,
             expand: None,
             metadata: None,
+            payto: None,
             us_bank_account: None,
         }
     }
@@ -2619,6 +2681,29 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentMethodCardNetworksPreferred {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
         Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// If this is a `payto` PaymentMethod, this hash contains details about the PayTo payment method.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpdatePaymentMethodPayto {
+    /// The account number for the bank account.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub account_number: Option<String>,
+    /// Bank-State-Branch number of the bank account.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bsb_number: Option<String>,
+    /// The PayID alias for the bank account.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub pay_id: Option<String>,
+}
+impl UpdatePaymentMethodPayto {
+    pub fn new() -> Self {
+        Self { account_number: None, bsb_number: None, pay_id: None }
+    }
+}
+impl Default for UpdatePaymentMethodPayto {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// If this is an `us_bank_account` PaymentMethod, this hash contains details about the US bank account payment method.
@@ -2810,7 +2895,7 @@ impl UpdatePaymentMethod {
         self.inner.expand = Some(expand.into());
         self
     }
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
@@ -2819,6 +2904,11 @@ impl UpdatePaymentMethod {
         metadata: impl Into<std::collections::HashMap<String, String>>,
     ) -> Self {
         self.inner.metadata = Some(metadata.into());
+        self
+    }
+    /// If this is a `payto` PaymentMethod, this hash contains details about the PayTo payment method.
+    pub fn payto(mut self, payto: impl Into<UpdatePaymentMethodPayto>) -> Self {
+        self.inner.payto = Some(payto.into());
         self
     }
     /// If this is an `us_bank_account` PaymentMethod, this hash contains details about the US bank account payment method.
@@ -2859,13 +2949,16 @@ impl StripeRequest for UpdatePaymentMethod {
 }
 #[derive(Clone, Debug, serde::Serialize)]
 struct AttachPaymentMethodBuilder {
-    customer: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    customer: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    customer_account: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
 }
 impl AttachPaymentMethodBuilder {
-    fn new(customer: impl Into<String>) -> Self {
-        Self { customer: customer.into(), expand: None }
+    fn new() -> Self {
+        Self { customer: None, customer_account: None, expand: None }
     }
 }
 /// Attaches a PaymentMethod object to a Customer.
@@ -2889,14 +2982,18 @@ pub struct AttachPaymentMethod {
 }
 impl AttachPaymentMethod {
     /// Construct a new `AttachPaymentMethod`.
-    pub fn new(
-        payment_method: impl Into<stripe_shared::PaymentMethodId>,
-        customer: impl Into<String>,
-    ) -> Self {
-        Self {
-            payment_method: payment_method.into(),
-            inner: AttachPaymentMethodBuilder::new(customer.into()),
-        }
+    pub fn new(payment_method: impl Into<stripe_shared::PaymentMethodId>) -> Self {
+        Self { payment_method: payment_method.into(), inner: AttachPaymentMethodBuilder::new() }
+    }
+    /// The ID of the customer to which to attach the PaymentMethod.
+    pub fn customer(mut self, customer: impl Into<String>) -> Self {
+        self.inner.customer = Some(customer.into());
+        self
+    }
+    /// The ID of the Account representing the customer to which to attach the PaymentMethod.
+    pub fn customer_account(mut self, customer_account: impl Into<String>) -> Self {
+        self.inner.customer_account = Some(customer_account.into());
+        self
     }
     /// Specifies which fields in the response should be expanded.
     pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {
@@ -3004,7 +3101,7 @@ pub struct BillingDetailsAddress {
     /// ZIP or postal code.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub postal_code: Option<String>,
-    /// State, county, province, or region.
+    /// State, county, province, or region ([ISO 3166-2](https://en.wikipedia.org/wiki/ISO_3166-2)).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
 }

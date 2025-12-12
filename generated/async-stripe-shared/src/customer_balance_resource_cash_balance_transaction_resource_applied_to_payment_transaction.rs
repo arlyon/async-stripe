@@ -2,7 +2,7 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct CustomerBalanceResourceCashBalanceTransactionResourceAppliedToPaymentTransaction {
-    /// The [Payment Intent](https://stripe.com/docs/api/payment_intents/object) that funds were applied to.
+    /// The [Payment Intent](https://docs.stripe.com/api/payment_intents/object) that funds were applied to.
     pub payment_intent: stripe_types::Expandable<stripe_shared::PaymentIntent>,
 }
 #[doc(hidden)]

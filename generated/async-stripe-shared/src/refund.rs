@@ -2,7 +2,7 @@
 /// refunded yet. Funds are refunded to the credit or debit card that's
 /// initially charged.
 ///
-/// Related guide: [Refunds](https://stripe.com/docs/refunds)
+/// Related guide: [Refunds](https://docs.stripe.com/refunds)
 ///
 /// For more details see <<https://stripe.com/docs/api/refunds/object>>.
 #[derive(Clone, Debug)]
@@ -33,7 +33,7 @@ pub struct Refund {
     pub id: stripe_shared::RefundId,
     /// For payment methods without native refund support (for example, Konbini, PromptPay), provide an email address for the customer to receive refund instructions.
     pub instructions_email: Option<String>,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: Option<std::collections::HashMap<String, String>>,
     pub next_action: Option<stripe_shared::RefundNextAction>,
@@ -52,7 +52,7 @@ pub struct Refund {
     pub source_transfer_reversal: Option<stripe_types::Expandable<stripe_shared::TransferReversal>>,
     /// Status of the refund.
     /// This can be `pending`, `requires_action`, `succeeded`, `failed`, or `canceled`.
-    /// Learn more about [failed refunds](https://stripe.com/docs/refunds#failed-refunds).
+    /// Learn more about [failed refunds](https://docs.stripe.com/refunds#failed-refunds).
     pub status: Option<String>,
     /// This refers to the transfer reversal object if the accompanying transfer reverses.
     /// This is only applicable if the charge was created using the destination parameter.

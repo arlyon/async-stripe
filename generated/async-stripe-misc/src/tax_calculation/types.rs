@@ -1,17 +1,17 @@
 /// A Tax Calculation allows you to calculate the tax to collect from your customer.
 ///
-/// Related guide: [Calculate tax in your custom payment flow](https://stripe.com/docs/tax/custom)
+/// Related guide: [Calculate tax in your custom payment flow](https://docs.stripe.com/tax/custom)
 ///
 /// For more details see <<https://stripe.com/docs/api/tax/calculations/object>>.
 #[derive(Clone, Debug)]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TaxCalculation {
-    /// Total amount after taxes in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
+    /// Total amount after taxes in the [smallest currency unit](https://docs.stripe.com/currencies#zero-decimal).
     pub amount_total: i64,
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub currency: stripe_types::Currency,
-    /// The ID of an existing [Customer](https://stripe.com/docs/api/customers/object) used for the resource.
+    /// The ID of an existing [Customer](https://docs.stripe.com/api/customers/object) used for the resource.
     pub customer: Option<String>,
     pub customer_details: stripe_misc::TaxProductResourceCustomerDetails,
     /// Timestamp of date at which the tax calculation will expire.

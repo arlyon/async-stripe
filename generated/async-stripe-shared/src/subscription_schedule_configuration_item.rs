@@ -9,7 +9,7 @@ pub struct SubscriptionScheduleConfigurationItem {
     /// Subscription item discounts are applied before subscription discounts.
     /// Use `expand[]=discounts` to expand each discount.
     pub discounts: Vec<stripe_shared::DiscountsResourceStackableDiscount>,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an item.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an item.
     /// Metadata on this item will update the underlying subscription item's `metadata` when the phase is entered.
     pub metadata: Option<std::collections::HashMap<String, String>>,
     /// ID of the plan to which the customer should be subscribed.

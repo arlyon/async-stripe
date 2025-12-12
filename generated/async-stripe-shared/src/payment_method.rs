@@ -1,8 +1,8 @@
 /// PaymentMethod objects represent your customer's payment instruments.
-/// You can use them with [PaymentIntents](https://stripe.com/docs/payments/payment-intents) to collect payments or save them to.
+/// You can use them with [PaymentIntents](https://docs.stripe.com/payments/payment-intents) to collect payments or save them to.
 /// Customer objects to store instrument details for future payments.
 ///
-/// Related guides: [Payment Methods](https://stripe.com/docs/payments/payment-methods) and [More Payment Scenarios](https://stripe.com/docs/payments/more-payment-scenarios).
+/// Related guides: [Payment Methods](https://docs.stripe.com/payments/payment-methods) and [More Payment Scenarios](https://docs.stripe.com/payments/more-payment-scenarios).
 ///
 /// For more details see <<https://stripe.com/docs/api/payment_methods/object>>.
 #[derive(Clone, Debug)]
@@ -35,6 +35,7 @@ pub struct PaymentMethod {
     /// The ID of the Customer to which this PaymentMethod is saved.
     /// This will not be set when the PaymentMethod has not been saved to a Customer.
     pub customer: Option<stripe_types::Expandable<stripe_shared::Customer>>,
+    pub customer_account: Option<String>,
     pub customer_balance: Option<stripe_shared::PaymentMethodCustomerBalance>,
     pub eps: Option<stripe_shared::PaymentMethodEps>,
     pub fpx: Option<stripe_shared::PaymentMethodFpx>,
@@ -52,7 +53,7 @@ pub struct PaymentMethod {
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
     pub mb_way: Option<stripe_shared::PaymentMethodMbWay>,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: Option<std::collections::HashMap<String, String>>,
     pub mobilepay: Option<stripe_shared::PaymentMethodMobilepay>,
@@ -65,6 +66,7 @@ pub struct PaymentMethod {
     pub payco: Option<stripe_shared::PaymentMethodPayco>,
     pub paynow: Option<stripe_shared::PaymentMethodPaynow>,
     pub paypal: Option<stripe_shared::PaymentMethodPaypal>,
+    pub payto: Option<stripe_shared::PaymentMethodPayto>,
     pub pix: Option<stripe_shared::PaymentMethodPix>,
     pub promptpay: Option<stripe_shared::PaymentMethodPromptpay>,
     pub radar_options: Option<stripe_shared::RadarRadarOptions>,
@@ -107,6 +109,7 @@ pub struct PaymentMethodBuilder {
     crypto: Option<Option<stripe_shared::PaymentMethodCrypto>>,
     custom: Option<Option<stripe_shared::PaymentMethodCustom>>,
     customer: Option<Option<stripe_types::Expandable<stripe_shared::Customer>>>,
+    customer_account: Option<Option<String>>,
     customer_balance: Option<Option<stripe_shared::PaymentMethodCustomerBalance>>,
     eps: Option<Option<stripe_shared::PaymentMethodEps>>,
     fpx: Option<Option<stripe_shared::PaymentMethodFpx>>,
@@ -133,6 +136,7 @@ pub struct PaymentMethodBuilder {
     payco: Option<Option<stripe_shared::PaymentMethodPayco>>,
     paynow: Option<Option<stripe_shared::PaymentMethodPaynow>>,
     paypal: Option<Option<stripe_shared::PaymentMethodPaypal>>,
+    payto: Option<Option<stripe_shared::PaymentMethodPayto>>,
     pix: Option<Option<stripe_shared::PaymentMethodPix>>,
     promptpay: Option<Option<stripe_shared::PaymentMethodPromptpay>>,
     radar_options: Option<Option<stripe_shared::RadarRadarOptions>>,
@@ -210,6 +214,7 @@ const _: () = {
                 "crypto" => Deserialize::begin(&mut self.crypto),
                 "custom" => Deserialize::begin(&mut self.custom),
                 "customer" => Deserialize::begin(&mut self.customer),
+                "customer_account" => Deserialize::begin(&mut self.customer_account),
                 "customer_balance" => Deserialize::begin(&mut self.customer_balance),
                 "eps" => Deserialize::begin(&mut self.eps),
                 "fpx" => Deserialize::begin(&mut self.fpx),
@@ -236,6 +241,7 @@ const _: () = {
                 "payco" => Deserialize::begin(&mut self.payco),
                 "paynow" => Deserialize::begin(&mut self.paynow),
                 "paypal" => Deserialize::begin(&mut self.paypal),
+                "payto" => Deserialize::begin(&mut self.payto),
                 "pix" => Deserialize::begin(&mut self.pix),
                 "promptpay" => Deserialize::begin(&mut self.promptpay),
                 "radar_options" => Deserialize::begin(&mut self.radar_options),
@@ -277,6 +283,7 @@ const _: () = {
                 crypto: Deserialize::default(),
                 custom: Deserialize::default(),
                 customer: Deserialize::default(),
+                customer_account: Deserialize::default(),
                 customer_balance: Deserialize::default(),
                 eps: Deserialize::default(),
                 fpx: Deserialize::default(),
@@ -303,6 +310,7 @@ const _: () = {
                 payco: Deserialize::default(),
                 paynow: Deserialize::default(),
                 paypal: Deserialize::default(),
+                payto: Deserialize::default(),
                 pix: Deserialize::default(),
                 promptpay: Deserialize::default(),
                 radar_options: Deserialize::default(),
@@ -343,6 +351,7 @@ const _: () = {
                 Some(crypto),
                 Some(custom),
                 Some(customer),
+                Some(customer_account),
                 Some(customer_balance),
                 Some(eps),
                 Some(fpx),
@@ -369,6 +378,7 @@ const _: () = {
                 Some(payco),
                 Some(paynow),
                 Some(paypal),
+                Some(payto),
                 Some(pix),
                 Some(promptpay),
                 Some(radar_options),
@@ -405,6 +415,7 @@ const _: () = {
                 self.crypto,
                 self.custom.take(),
                 self.customer.take(),
+                self.customer_account.take(),
                 self.customer_balance,
                 self.eps.take(),
                 self.fpx.take(),
@@ -431,6 +442,7 @@ const _: () = {
                 self.payco,
                 self.paynow,
                 self.paypal.take(),
+                self.payto.take(),
                 self.pix,
                 self.promptpay,
                 self.radar_options.take(),
@@ -471,6 +483,7 @@ const _: () = {
                 crypto,
                 custom,
                 customer,
+                customer_account,
                 customer_balance,
                 eps,
                 fpx,
@@ -497,6 +510,7 @@ const _: () = {
                 payco,
                 paynow,
                 paypal,
+                payto,
                 pix,
                 promptpay,
                 radar_options,
@@ -559,6 +573,7 @@ const _: () = {
                     "crypto" => b.crypto = FromValueOpt::from_value(v),
                     "custom" => b.custom = FromValueOpt::from_value(v),
                     "customer" => b.customer = FromValueOpt::from_value(v),
+                    "customer_account" => b.customer_account = FromValueOpt::from_value(v),
                     "customer_balance" => b.customer_balance = FromValueOpt::from_value(v),
                     "eps" => b.eps = FromValueOpt::from_value(v),
                     "fpx" => b.fpx = FromValueOpt::from_value(v),
@@ -585,6 +600,7 @@ const _: () = {
                     "payco" => b.payco = FromValueOpt::from_value(v),
                     "paynow" => b.paynow = FromValueOpt::from_value(v),
                     "paypal" => b.paypal = FromValueOpt::from_value(v),
+                    "payto" => b.payto = FromValueOpt::from_value(v),
                     "pix" => b.pix = FromValueOpt::from_value(v),
                     "promptpay" => b.promptpay = FromValueOpt::from_value(v),
                     "radar_options" => b.radar_options = FromValueOpt::from_value(v),
@@ -610,7 +626,7 @@ const _: () = {
 impl serde::Serialize for PaymentMethod {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("PaymentMethod", 62)?;
+        let mut s = s.serialize_struct("PaymentMethod", 64)?;
         s.serialize_field("acss_debit", &self.acss_debit)?;
         s.serialize_field("affirm", &self.affirm)?;
         s.serialize_field("afterpay_clearpay", &self.afterpay_clearpay)?;
@@ -632,6 +648,7 @@ impl serde::Serialize for PaymentMethod {
         s.serialize_field("crypto", &self.crypto)?;
         s.serialize_field("custom", &self.custom)?;
         s.serialize_field("customer", &self.customer)?;
+        s.serialize_field("customer_account", &self.customer_account)?;
         s.serialize_field("customer_balance", &self.customer_balance)?;
         s.serialize_field("eps", &self.eps)?;
         s.serialize_field("fpx", &self.fpx)?;
@@ -658,6 +675,7 @@ impl serde::Serialize for PaymentMethod {
         s.serialize_field("payco", &self.payco)?;
         s.serialize_field("paynow", &self.paynow)?;
         s.serialize_field("paypal", &self.paypal)?;
+        s.serialize_field("payto", &self.payto)?;
         s.serialize_field("pix", &self.pix)?;
         s.serialize_field("promptpay", &self.promptpay)?;
         s.serialize_field("radar_options", &self.radar_options)?;
@@ -723,6 +741,7 @@ pub enum PaymentMethodType {
     Payco,
     Paynow,
     Paypal,
+    Payto,
     Pix,
     Promptpay,
     RevolutPay,
@@ -782,6 +801,7 @@ impl PaymentMethodType {
             Payco => "payco",
             Paynow => "paynow",
             Paypal => "paypal",
+            Payto => "payto",
             Pix => "pix",
             Promptpay => "promptpay",
             RevolutPay => "revolut_pay",
@@ -844,6 +864,7 @@ impl std::str::FromStr for PaymentMethodType {
             "payco" => Ok(Payco),
             "paynow" => Ok(Paynow),
             "paypal" => Ok(Paypal),
+            "payto" => Ok(Payto),
             "pix" => Ok(Pix),
             "promptpay" => Ok(Promptpay),
             "revolut_pay" => Ok(RevolutPay),

@@ -2,10 +2,10 @@
 /// specific run parameters. Once the object is created, Stripe begins processing the report.
 /// When the report has finished running, it will give you a reference to a file
 /// where you can retrieve your results. For an overview, see
-/// [API Access to Reports](https://stripe.com/docs/reporting/statements/api).
+/// [API Access to Reports](https://docs.stripe.com/reporting/statements/api).
 ///
 /// Note that certain report types can only be run based on your live-mode data (not test-mode
-/// data), and will error when queried without a [live-mode API key](https://stripe.com/docs/keys#test-live-modes).
+/// data), and will error when queried without a [live-mode API key](https://docs.stripe.com/keys#test-live-modes).
 ///
 /// For more details see <<https://stripe.com/docs/api/reporting/report_run/object>>.
 #[derive(Clone, Debug)]
@@ -21,7 +21,7 @@ pub struct ReportingReportRun {
     /// `true` if the report is run on live mode data and `false` if it is run on test mode data.
     pub livemode: bool,
     pub parameters: stripe_misc::FinancialReportingFinanceReportRunRunParameters,
-    /// The ID of the [report type](https://stripe.com/docs/reports/report-types) to run, such as `"balance.summary.1"`.
+    /// The ID of the [report type](https://docs.stripe.com/reports/report-types) to run, such as `"balance.summary.1"`.
     pub report_type: String,
     /// The file object representing the result of the report run (populated when
     ///  `status=succeeded`).

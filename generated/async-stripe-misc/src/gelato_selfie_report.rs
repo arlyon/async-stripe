@@ -3,11 +3,11 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct GelatoSelfieReport {
-    /// ID of the [File](https://stripe.com/docs/api/files) holding the image of the identity document used in this check.
+    /// ID of the [File](https://docs.stripe.com/api/files) holding the image of the identity document used in this check.
     pub document: Option<String>,
     /// Details on the verification error. Present when status is `unverified`.
     pub error: Option<stripe_misc::GelatoSelfieReportError>,
-    /// ID of the [File](https://stripe.com/docs/api/files) holding the image of the selfie used in this check.
+    /// ID of the [File](https://docs.stripe.com/api/files) holding the image of the selfie used in this check.
     pub selfie: Option<String>,
     /// Status of this `selfie` check.
     pub status: GelatoSelfieReportStatus,

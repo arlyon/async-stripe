@@ -18,22 +18,24 @@ pub created: stripe_types::Timestamp,
 pub currency: stripe_types::Currency,
     /// The customer whose available cash balance changed as a result of this transaction.
 pub customer: stripe_types::Expandable<stripe_shared::Customer>,
+        /// The ID of an Account representing a customer whose available cash balance changed as a result of this transaction.
+pub customer_account: Option<String>,
         /// The total available cash balance for the specified currency after this transaction was applied.
-    /// Represented in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
+    /// Represented in the [smallest currency unit](https://docs.stripe.com/currencies#zero-decimal).
 pub ending_balance: i64,
 pub funded: Option<stripe_shared::CustomerBalanceResourceCashBalanceTransactionResourceFundedTransaction>,
     /// Unique identifier for the object.
 pub id: stripe_shared::CustomerCashBalanceTransactionId,
         /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
 pub livemode: bool,
-        /// The amount by which the cash balance changed, represented in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
+        /// The amount by which the cash balance changed, represented in the [smallest currency unit](https://docs.stripe.com/currencies#zero-decimal).
     /// A positive value represents funds being added to the cash balance, a negative value represents funds being removed from the cash balance.
 pub net_amount: i64,
 pub refunded_from_payment: Option<stripe_shared::CustomerBalanceResourceCashBalanceTransactionResourceRefundedFromPaymentTransaction>,
 pub transferred_to_balance: Option<stripe_shared::CustomerBalanceResourceCashBalanceTransactionResourceTransferredToBalance>,
         /// The type of the cash balance transaction.
     /// New types may be added in future.
-    /// See [Customer Balance](https://stripe.com/docs/payments/customer-balance#types) to learn more about these types.
+    /// See [Customer Balance](https://docs.stripe.com/payments/customer-balance#types) to learn more about these types.
 #[cfg_attr(feature = "deserialize", serde(rename = "type"))]
 pub type_: CustomerCashBalanceTransactionType,
 pub unapplied_from_payment: Option<stripe_shared::CustomerBalanceResourceCashBalanceTransactionResourceUnappliedFromPaymentTransaction>,
@@ -46,6 +48,7 @@ applied_to_payment: Option<Option<stripe_shared::CustomerBalanceResourceCashBala
 created: Option<stripe_types::Timestamp>,
 currency: Option<stripe_types::Currency>,
 customer: Option<stripe_types::Expandable<stripe_shared::Customer>>,
+customer_account: Option<Option<String>>,
 ending_balance: Option<i64>,
 funded: Option<Option<stripe_shared::CustomerBalanceResourceCashBalanceTransactionResourceFundedTransaction>>,
 id: Option<stripe_shared::CustomerCashBalanceTransactionId>,
@@ -103,6 +106,7 @@ const _: () = {
                 "created" => Deserialize::begin(&mut self.created),
                 "currency" => Deserialize::begin(&mut self.currency),
                 "customer" => Deserialize::begin(&mut self.customer),
+                "customer_account" => Deserialize::begin(&mut self.customer_account),
                 "ending_balance" => Deserialize::begin(&mut self.ending_balance),
                 "funded" => Deserialize::begin(&mut self.funded),
                 "id" => Deserialize::begin(&mut self.id),
@@ -123,6 +127,7 @@ const _: () = {
                 created: Deserialize::default(),
                 currency: Deserialize::default(),
                 customer: Deserialize::default(),
+                customer_account: Deserialize::default(),
                 ending_balance: Deserialize::default(),
                 funded: Deserialize::default(),
                 id: Deserialize::default(),
@@ -142,6 +147,7 @@ const _: () = {
                 Some(created),
                 Some(currency),
                 Some(customer),
+                Some(customer_account),
                 Some(ending_balance),
                 Some(funded),
                 Some(id),
@@ -157,6 +163,7 @@ const _: () = {
                 self.created,
                 self.currency.take(),
                 self.customer.take(),
+                self.customer_account.take(),
                 self.ending_balance,
                 self.funded.take(),
                 self.id.take(),
@@ -176,6 +183,7 @@ const _: () = {
                 created,
                 currency,
                 customer,
+                customer_account,
                 ending_balance,
                 funded,
                 id,
@@ -219,6 +227,7 @@ const _: () = {
                     "created" => b.created = FromValueOpt::from_value(v),
                     "currency" => b.currency = FromValueOpt::from_value(v),
                     "customer" => b.customer = FromValueOpt::from_value(v),
+                    "customer_account" => b.customer_account = FromValueOpt::from_value(v),
                     "ending_balance" => b.ending_balance = FromValueOpt::from_value(v),
                     "funded" => b.funded = FromValueOpt::from_value(v),
                     "id" => b.id = FromValueOpt::from_value(v),
@@ -245,12 +254,13 @@ const _: () = {
 impl serde::Serialize for CustomerCashBalanceTransaction {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("CustomerCashBalanceTransaction", 15)?;
+        let mut s = s.serialize_struct("CustomerCashBalanceTransaction", 16)?;
         s.serialize_field("adjusted_for_overdraft", &self.adjusted_for_overdraft)?;
         s.serialize_field("applied_to_payment", &self.applied_to_payment)?;
         s.serialize_field("created", &self.created)?;
         s.serialize_field("currency", &self.currency)?;
         s.serialize_field("customer", &self.customer)?;
+        s.serialize_field("customer_account", &self.customer_account)?;
         s.serialize_field("ending_balance", &self.ending_balance)?;
         s.serialize_field("funded", &self.funded)?;
         s.serialize_field("id", &self.id)?;
@@ -267,7 +277,7 @@ impl serde::Serialize for CustomerCashBalanceTransaction {
 }
 /// The type of the cash balance transaction.
 /// New types may be added in future.
-/// See [Customer Balance](https://stripe.com/docs/payments/customer-balance#types) to learn more about these types.
+/// See [Customer Balance](https://docs.stripe.com/payments/customer-balance#types) to learn more about these types.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum CustomerCashBalanceTransactionType {

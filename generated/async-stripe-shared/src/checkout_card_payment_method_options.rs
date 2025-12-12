@@ -15,10 +15,10 @@ pub struct CheckoutCardPaymentMethodOptions {
     pub request_multicapture: Option<CheckoutCardPaymentMethodOptionsRequestMulticapture>,
     /// Request ability to [overcapture](/payments/overcapture) for this CheckoutSession.
     pub request_overcapture: Option<CheckoutCardPaymentMethodOptionsRequestOvercapture>,
-    /// We strongly recommend that you rely on our SCA Engine to automatically prompt your customers for authentication based on risk level and [other requirements](https://stripe.com/docs/strong-customer-authentication).
+    /// We strongly recommend that you rely on our SCA Engine to automatically prompt your customers for authentication based on risk level and [other requirements](https://docs.stripe.com/strong-customer-authentication).
     /// However, if you wish to request 3D Secure based on logic from your own fraud engine, provide this option.
     /// If not provided, this value defaults to `automatic`.
-    /// Read our guide on [manually requesting 3D Secure](https://stripe.com/docs/payments/3d-secure/authentication-flow#manual-three-ds) for more information on how this configuration interacts with Radar and our SCA Engine.
+    /// Read our guide on [manually requesting 3D Secure](https://docs.stripe.com/payments/3d-secure/authentication-flow#manual-three-ds) for more information on how this configuration interacts with Radar and our SCA Engine.
     pub request_three_d_secure: CheckoutCardPaymentMethodOptionsRequestThreeDSecure,
     pub restrictions:
         Option<stripe_shared::PaymentPagesPrivateCardPaymentMethodOptionsResourceRestrictions>,
@@ -659,10 +659,10 @@ impl<'de> serde::Deserialize<'de> for CheckoutCardPaymentMethodOptionsRequestOve
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-/// We strongly recommend that you rely on our SCA Engine to automatically prompt your customers for authentication based on risk level and [other requirements](https://stripe.com/docs/strong-customer-authentication).
+/// We strongly recommend that you rely on our SCA Engine to automatically prompt your customers for authentication based on risk level and [other requirements](https://docs.stripe.com/strong-customer-authentication).
 /// However, if you wish to request 3D Secure based on logic from your own fraud engine, provide this option.
 /// If not provided, this value defaults to `automatic`.
-/// Read our guide on [manually requesting 3D Secure](https://stripe.com/docs/payments/3d-secure/authentication-flow#manual-three-ds) for more information on how this configuration interacts with Radar and our SCA Engine.
+/// Read our guide on [manually requesting 3D Secure](https://docs.stripe.com/payments/3d-secure/authentication-flow#manual-three-ds) for more information on how this configuration interacts with Radar and our SCA Engine.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum CheckoutCardPaymentMethodOptionsRequestThreeDSecure {

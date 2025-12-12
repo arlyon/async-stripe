@@ -886,7 +886,7 @@ impl CreateIssuingDispute {
     pub fn new() -> Self {
         Self { inner: CreateIssuingDisputeBuilder::new() }
     }
-    /// The dispute amount in the card's currency and in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
+    /// The dispute amount in the card's currency and in the [smallest currency unit](https://docs.stripe.com/currencies#zero-decimal).
     /// If not set, defaults to the full transaction amount.
     pub fn amount(mut self, amount: impl Into<i64>) -> Self {
         self.inner.amount = Some(amount.into());
@@ -902,7 +902,7 @@ impl CreateIssuingDispute {
         self.inner.expand = Some(expand.into());
         self
     }
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
@@ -1645,7 +1645,7 @@ impl UpdateIssuingDispute {
     pub fn new(dispute: impl Into<stripe_shared::IssuingDisputeId>) -> Self {
         Self { dispute: dispute.into(), inner: UpdateIssuingDisputeBuilder::new() }
     }
-    /// The dispute amount in the card's currency and in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
+    /// The dispute amount in the card's currency and in the [smallest currency unit](https://docs.stripe.com/currencies#zero-decimal).
     pub fn amount(mut self, amount: impl Into<i64>) -> Self {
         self.inner.amount = Some(amount.into());
         self
@@ -1660,7 +1660,7 @@ impl UpdateIssuingDispute {
         self.inner.expand = Some(expand.into());
         self
     }
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
@@ -1729,7 +1729,7 @@ impl SubmitIssuingDispute {
         self.inner.expand = Some(expand.into());
         self
     }
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.

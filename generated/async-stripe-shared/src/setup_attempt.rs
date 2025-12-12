@@ -7,7 +7,7 @@
 #[derive(Clone, Debug)]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct SetupAttempt {
-    /// The value of [application](https://stripe.com/docs/api/setup_intents/object#setup_intent_object-application) on the SetupIntent at the time of this confirmation.
+    /// The value of [application](https://docs.stripe.com/api/setup_intents/object#setup_intent_object-application) on the SetupIntent at the time of this confirmation.
     pub application: Option<stripe_types::Expandable<stripe_shared::Application>>,
     /// If present, the SetupIntent's payment method will be attached to the in-context Stripe Account.
     ///
@@ -16,8 +16,10 @@ pub struct SetupAttempt {
     pub attach_to_self: Option<bool>,
     /// Time at which the object was created. Measured in seconds since the Unix epoch.
     pub created: stripe_types::Timestamp,
-    /// The value of [customer](https://stripe.com/docs/api/setup_intents/object#setup_intent_object-customer) on the SetupIntent at the time of this confirmation.
+    /// The value of [customer](https://docs.stripe.com/api/setup_intents/object#setup_intent_object-customer) on the SetupIntent at the time of this confirmation.
     pub customer: Option<stripe_types::Expandable<stripe_shared::Customer>>,
+    /// The value of [customer_account](https://docs.stripe.com/api/setup_intents/object#setup_intent_object-customer_account) on the SetupIntent at the time of this confirmation.
+    pub customer_account: Option<String>,
     /// Indicates the directions of money movement for which this payment method is intended to be used.
     ///
     /// Include `inbound` if you intend to use the payment method as the origin to pull funds from.
@@ -28,7 +30,7 @@ pub struct SetupAttempt {
     pub id: stripe_shared::SetupAttemptId,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
-    /// The value of [on_behalf_of](https://stripe.com/docs/api/setup_intents/object#setup_intent_object-on_behalf_of) on the SetupIntent at the time of this confirmation.
+    /// The value of [on_behalf_of](https://docs.stripe.com/api/setup_intents/object#setup_intent_object-on_behalf_of) on the SetupIntent at the time of this confirmation.
     pub on_behalf_of: Option<stripe_types::Expandable<stripe_shared::Account>>,
     /// ID of the payment method used with this SetupAttempt.
     pub payment_method: stripe_types::Expandable<stripe_shared::PaymentMethod>,
@@ -39,7 +41,7 @@ pub struct SetupAttempt {
     pub setup_intent: stripe_types::Expandable<stripe_shared::SetupIntent>,
     /// Status of this SetupAttempt, one of `requires_confirmation`, `requires_action`, `processing`, `succeeded`, `failed`, or `abandoned`.
     pub status: String,
-    /// The value of [usage](https://stripe.com/docs/api/setup_intents/object#setup_intent_object-usage) on the SetupIntent at the time of this confirmation, one of `off_session` or `on_session`.
+    /// The value of [usage](https://docs.stripe.com/api/setup_intents/object#setup_intent_object-usage) on the SetupIntent at the time of this confirmation, one of `off_session` or `on_session`.
     pub usage: String,
 }
 #[doc(hidden)]
@@ -48,6 +50,7 @@ pub struct SetupAttemptBuilder {
     attach_to_self: Option<Option<bool>>,
     created: Option<stripe_types::Timestamp>,
     customer: Option<Option<stripe_types::Expandable<stripe_shared::Customer>>>,
+    customer_account: Option<Option<String>>,
     flow_directions: Option<Option<Vec<SetupAttemptFlowDirections>>>,
     id: Option<stripe_shared::SetupAttemptId>,
     livemode: Option<bool>,
@@ -104,6 +107,7 @@ const _: () = {
                 "attach_to_self" => Deserialize::begin(&mut self.attach_to_self),
                 "created" => Deserialize::begin(&mut self.created),
                 "customer" => Deserialize::begin(&mut self.customer),
+                "customer_account" => Deserialize::begin(&mut self.customer_account),
                 "flow_directions" => Deserialize::begin(&mut self.flow_directions),
                 "id" => Deserialize::begin(&mut self.id),
                 "livemode" => Deserialize::begin(&mut self.livemode),
@@ -124,6 +128,7 @@ const _: () = {
                 attach_to_self: Deserialize::default(),
                 created: Deserialize::default(),
                 customer: Deserialize::default(),
+                customer_account: Deserialize::default(),
                 flow_directions: Deserialize::default(),
                 id: Deserialize::default(),
                 livemode: Deserialize::default(),
@@ -143,6 +148,7 @@ const _: () = {
                 Some(attach_to_self),
                 Some(created),
                 Some(customer),
+                Some(customer_account),
                 Some(flow_directions),
                 Some(id),
                 Some(livemode),
@@ -158,6 +164,7 @@ const _: () = {
                 self.attach_to_self,
                 self.created,
                 self.customer.take(),
+                self.customer_account.take(),
                 self.flow_directions.take(),
                 self.id.take(),
                 self.livemode,
@@ -177,6 +184,7 @@ const _: () = {
                 attach_to_self,
                 created,
                 customer,
+                customer_account,
                 flow_directions,
                 id,
                 livemode,
@@ -218,6 +226,7 @@ const _: () = {
                     "attach_to_self" => b.attach_to_self = FromValueOpt::from_value(v),
                     "created" => b.created = FromValueOpt::from_value(v),
                     "customer" => b.customer = FromValueOpt::from_value(v),
+                    "customer_account" => b.customer_account = FromValueOpt::from_value(v),
                     "flow_directions" => b.flow_directions = FromValueOpt::from_value(v),
                     "id" => b.id = FromValueOpt::from_value(v),
                     "livemode" => b.livemode = FromValueOpt::from_value(v),
@@ -241,11 +250,12 @@ const _: () = {
 impl serde::Serialize for SetupAttempt {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("SetupAttempt", 15)?;
+        let mut s = s.serialize_struct("SetupAttempt", 16)?;
         s.serialize_field("application", &self.application)?;
         s.serialize_field("attach_to_self", &self.attach_to_self)?;
         s.serialize_field("created", &self.created)?;
         s.serialize_field("customer", &self.customer)?;
+        s.serialize_field("customer_account", &self.customer_account)?;
         s.serialize_field("flow_directions", &self.flow_directions)?;
         s.serialize_field("id", &self.id)?;
         s.serialize_field("livemode", &self.livemode)?;

@@ -6,7 +6,7 @@ pub struct PaymentIntentPaymentMethodOptionsCard {
     pub capture_method: Option<PaymentIntentPaymentMethodOptionsCardCaptureMethod>,
     /// Installment details for this payment.
     ///
-    /// For more information, see the [installments integration guide](https://stripe.com/docs/payments/installments).
+    /// For more information, see the [installments integration guide](https://docs.stripe.com/payments/installments).
     pub installments: Option<stripe_shared::PaymentMethodOptionsCardInstallments>,
     /// Configuration options for setting up an eMandate for cards issued in India.
     pub mandate_options: Option<stripe_shared::PaymentMethodOptionsCardMandateOptions>,
@@ -14,20 +14,20 @@ pub struct PaymentIntentPaymentMethodOptionsCard {
     /// Depends on the available networks of the card attached to the payment intent.
     /// Can be only set confirm-time.
     pub network: Option<PaymentIntentPaymentMethodOptionsCardNetwork>,
-    /// Request ability to [capture beyond the standard authorization validity window](https://stripe.com/docs/payments/extended-authorization) for this PaymentIntent.
+    /// Request ability to [capture beyond the standard authorization validity window](https://docs.stripe.com/payments/extended-authorization) for this PaymentIntent.
     pub request_extended_authorization:
         Option<PaymentIntentPaymentMethodOptionsCardRequestExtendedAuthorization>,
-    /// Request ability to [increment the authorization](https://stripe.com/docs/payments/incremental-authorization) for this PaymentIntent.
+    /// Request ability to [increment the authorization](https://docs.stripe.com/payments/incremental-authorization) for this PaymentIntent.
     pub request_incremental_authorization:
         Option<PaymentIntentPaymentMethodOptionsCardRequestIncrementalAuthorization>,
-    /// Request ability to make [multiple captures](https://stripe.com/docs/payments/multicapture) for this PaymentIntent.
+    /// Request ability to make [multiple captures](https://docs.stripe.com/payments/multicapture) for this PaymentIntent.
     pub request_multicapture: Option<PaymentIntentPaymentMethodOptionsCardRequestMulticapture>,
-    /// Request ability to [overcapture](https://stripe.com/docs/payments/overcapture) for this PaymentIntent.
+    /// Request ability to [overcapture](https://docs.stripe.com/payments/overcapture) for this PaymentIntent.
     pub request_overcapture: Option<PaymentIntentPaymentMethodOptionsCardRequestOvercapture>,
-    /// We strongly recommend that you rely on our SCA Engine to automatically prompt your customers for authentication based on risk level and [other requirements](https://stripe.com/docs/strong-customer-authentication).
+    /// We strongly recommend that you rely on our SCA Engine to automatically prompt your customers for authentication based on risk level and [other requirements](https://docs.stripe.com/strong-customer-authentication).
     /// However, if you wish to request 3D Secure based on logic from your own fraud engine, provide this option.
     /// If not provided, this value defaults to `automatic`.
-    /// Read our guide on [manually requesting 3D Secure](https://stripe.com/docs/payments/3d-secure/authentication-flow#manual-three-ds) for more information on how this configuration interacts with Radar and our SCA Engine.
+    /// Read our guide on [manually requesting 3D Secure](https://docs.stripe.com/payments/3d-secure/authentication-flow#manual-three-ds) for more information on how this configuration interacts with Radar and our SCA Engine.
     pub request_three_d_secure: Option<PaymentIntentPaymentMethodOptionsCardRequestThreeDSecure>,
     /// When enabled, using a card that is attached to a customer will require the CVC to be provided again (i.e.
     /// using the cvc_token parameter).
@@ -461,7 +461,7 @@ impl<'de> serde::Deserialize<'de> for PaymentIntentPaymentMethodOptionsCardNetwo
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-/// Request ability to [capture beyond the standard authorization validity window](https://stripe.com/docs/payments/extended-authorization) for this PaymentIntent.
+/// Request ability to [capture beyond the standard authorization validity window](https://docs.stripe.com/payments/extended-authorization) for this PaymentIntent.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum PaymentIntentPaymentMethodOptionsCardRequestExtendedAuthorization {
@@ -551,7 +551,7 @@ impl<'de> serde::Deserialize<'de>
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-/// Request ability to [increment the authorization](https://stripe.com/docs/payments/incremental-authorization) for this PaymentIntent.
+/// Request ability to [increment the authorization](https://docs.stripe.com/payments/incremental-authorization) for this PaymentIntent.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum PaymentIntentPaymentMethodOptionsCardRequestIncrementalAuthorization {
@@ -643,7 +643,7 @@ impl<'de> serde::Deserialize<'de>
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-/// Request ability to make [multiple captures](https://stripe.com/docs/payments/multicapture) for this PaymentIntent.
+/// Request ability to make [multiple captures](https://docs.stripe.com/payments/multicapture) for this PaymentIntent.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum PaymentIntentPaymentMethodOptionsCardRequestMulticapture {
@@ -731,7 +731,7 @@ impl<'de> serde::Deserialize<'de> for PaymentIntentPaymentMethodOptionsCardReque
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-/// Request ability to [overcapture](https://stripe.com/docs/payments/overcapture) for this PaymentIntent.
+/// Request ability to [overcapture](https://docs.stripe.com/payments/overcapture) for this PaymentIntent.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum PaymentIntentPaymentMethodOptionsCardRequestOvercapture {
@@ -817,10 +817,10 @@ impl<'de> serde::Deserialize<'de> for PaymentIntentPaymentMethodOptionsCardReque
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-/// We strongly recommend that you rely on our SCA Engine to automatically prompt your customers for authentication based on risk level and [other requirements](https://stripe.com/docs/strong-customer-authentication).
+/// We strongly recommend that you rely on our SCA Engine to automatically prompt your customers for authentication based on risk level and [other requirements](https://docs.stripe.com/strong-customer-authentication).
 /// However, if you wish to request 3D Secure based on logic from your own fraud engine, provide this option.
 /// If not provided, this value defaults to `automatic`.
-/// Read our guide on [manually requesting 3D Secure](https://stripe.com/docs/payments/3d-secure/authentication-flow#manual-three-ds) for more information on how this configuration interacts with Radar and our SCA Engine.
+/// Read our guide on [manually requesting 3D Secure](https://docs.stripe.com/payments/3d-secure/authentication-flow#manual-three-ds) for more information on how this configuration interacts with Radar and our SCA Engine.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum PaymentIntentPaymentMethodOptionsCardRequestThreeDSecure {

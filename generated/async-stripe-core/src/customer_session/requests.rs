@@ -5,16 +5,16 @@ use stripe_client_core::{
 #[derive(Clone, Debug, serde::Serialize)]
 struct CreateCustomerSessionBuilder {
     components: CreateCustomerSessionComponents,
-    customer: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    customer: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    customer_account: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
 }
 impl CreateCustomerSessionBuilder {
-    fn new(
-        components: impl Into<CreateCustomerSessionComponents>,
-        customer: impl Into<String>,
-    ) -> Self {
-        Self { components: components.into(), customer: customer.into(), expand: None }
+    fn new(components: impl Into<CreateCustomerSessionComponents>) -> Self {
+        Self { components: components.into(), customer: None, customer_account: None, expand: None }
     }
 }
 /// Configuration for each component. At least 1 component must be enabled.
@@ -1152,11 +1152,18 @@ pub struct CreateCustomerSession {
 }
 impl CreateCustomerSession {
     /// Construct a new `CreateCustomerSession`.
-    pub fn new(
-        components: impl Into<CreateCustomerSessionComponents>,
-        customer: impl Into<String>,
-    ) -> Self {
-        Self { inner: CreateCustomerSessionBuilder::new(components.into(), customer.into()) }
+    pub fn new(components: impl Into<CreateCustomerSessionComponents>) -> Self {
+        Self { inner: CreateCustomerSessionBuilder::new(components.into()) }
+    }
+    /// The ID of an existing customer for which to create the Customer Session.
+    pub fn customer(mut self, customer: impl Into<String>) -> Self {
+        self.inner.customer = Some(customer.into());
+        self
+    }
+    /// The ID of an existing Account for which to create the Customer Session.
+    pub fn customer_account(mut self, customer_account: impl Into<String>) -> Self {
+        self.inner.customer_account = Some(customer_account.into());
+        self
     }
     /// Specifies which fields in the response should be expanded.
     pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {

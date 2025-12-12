@@ -5,9 +5,9 @@ pub struct PaymentMethodDetailsWechatPay {
     /// Uniquely identifies this particular WeChat Pay account.
     /// You can use this attribute to check whether two WeChat accounts are the same.
     pub fingerprint: Option<String>,
-    /// ID of the [location](https://stripe.com/docs/api/terminal/locations) that this transaction's reader is assigned to.
+    /// ID of the [location](https://docs.stripe.com/api/terminal/locations) that this transaction's reader is assigned to.
     pub location: Option<String>,
-    /// ID of the [reader](https://stripe.com/docs/api/terminal/readers) this transaction was made on.
+    /// ID of the [reader](https://docs.stripe.com/api/terminal/readers) this transaction was made on.
     pub reader: Option<String>,
     /// Transaction ID of this particular WeChat Pay transaction.
     pub transaction_id: Option<String>,

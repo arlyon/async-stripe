@@ -1,7 +1,7 @@
-/// You can add one or multiple tax IDs to a [customer](https://stripe.com/docs/api/customers) or account.
+/// You can add one or multiple tax IDs to a [customer](https://docs.stripe.com/api/customers) or account.
 /// Customer and account tax IDs get displayed on related invoices and credit notes.
 ///
-/// Related guides: [Customer tax identification numbers](https://stripe.com/docs/billing/taxes/tax-ids), [Account tax IDs](https://stripe.com/docs/invoicing/connect#account-tax-ids).
+/// Related guides: [Customer tax identification numbers](https://docs.stripe.com/billing/taxes/tax-ids), [Account tax IDs](https://docs.stripe.com/invoicing/connect#account-tax-ids).
 ///
 /// For more details see <<https://stripe.com/docs/api/tax_ids/object>>.
 #[derive(Clone, Debug)]
@@ -13,6 +13,8 @@ pub struct TaxId {
     pub created: stripe_types::Timestamp,
     /// ID of the customer.
     pub customer: Option<stripe_types::Expandable<stripe_shared::Customer>>,
+    /// ID of the Account representing the customer.
+    pub customer_account: Option<String>,
     /// Unique identifier for the object.
     pub id: stripe_shared::TaxIdId,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
@@ -33,6 +35,7 @@ pub struct TaxIdBuilder {
     country: Option<Option<String>>,
     created: Option<stripe_types::Timestamp>,
     customer: Option<Option<stripe_types::Expandable<stripe_shared::Customer>>>,
+    customer_account: Option<Option<String>>,
     id: Option<stripe_shared::TaxIdId>,
     livemode: Option<bool>,
     owner: Option<Option<stripe_shared::TaxIDsOwner>>,
@@ -81,6 +84,7 @@ const _: () = {
                 "country" => Deserialize::begin(&mut self.country),
                 "created" => Deserialize::begin(&mut self.created),
                 "customer" => Deserialize::begin(&mut self.customer),
+                "customer_account" => Deserialize::begin(&mut self.customer_account),
                 "id" => Deserialize::begin(&mut self.id),
                 "livemode" => Deserialize::begin(&mut self.livemode),
                 "owner" => Deserialize::begin(&mut self.owner),
@@ -96,6 +100,7 @@ const _: () = {
                 country: Deserialize::default(),
                 created: Deserialize::default(),
                 customer: Deserialize::default(),
+                customer_account: Deserialize::default(),
                 id: Deserialize::default(),
                 livemode: Deserialize::default(),
                 owner: Deserialize::default(),
@@ -110,6 +115,7 @@ const _: () = {
                 Some(country),
                 Some(created),
                 Some(customer),
+                Some(customer_account),
                 Some(id),
                 Some(livemode),
                 Some(owner),
@@ -120,6 +126,7 @@ const _: () = {
                 self.country.take(),
                 self.created,
                 self.customer.take(),
+                self.customer_account.take(),
                 self.id.take(),
                 self.livemode,
                 self.owner.take(),
@@ -134,6 +141,7 @@ const _: () = {
                 country,
                 created,
                 customer,
+                customer_account,
                 id,
                 livemode,
                 owner,
@@ -170,6 +178,7 @@ const _: () = {
                     "country" => b.country = FromValueOpt::from_value(v),
                     "created" => b.created = FromValueOpt::from_value(v),
                     "customer" => b.customer = FromValueOpt::from_value(v),
+                    "customer_account" => b.customer_account = FromValueOpt::from_value(v),
                     "id" => b.id = FromValueOpt::from_value(v),
                     "livemode" => b.livemode = FromValueOpt::from_value(v),
                     "owner" => b.owner = FromValueOpt::from_value(v),
@@ -187,10 +196,11 @@ const _: () = {
 impl serde::Serialize for TaxId {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("TaxId", 10)?;
+        let mut s = s.serialize_struct("TaxId", 11)?;
         s.serialize_field("country", &self.country)?;
         s.serialize_field("created", &self.created)?;
         s.serialize_field("customer", &self.customer)?;
+        s.serialize_field("customer_account", &self.customer_account)?;
         s.serialize_field("id", &self.id)?;
         s.serialize_field("livemode", &self.livemode)?;
         s.serialize_field("owner", &self.owner)?;

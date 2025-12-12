@@ -1,6 +1,6 @@
 /// A Tax Transaction records the tax collected from or refunded to your customer.
 ///
-/// Related guide: [Calculate tax in your custom payment flow](https://stripe.com/docs/tax/custom#tax-transaction).
+/// Related guide: [Calculate tax in your custom payment flow](https://docs.stripe.com/tax/custom#tax-transaction).
 ///
 /// For more details see <<https://stripe.com/docs/api/tax/transactions/object>>.
 #[derive(Clone, Debug)]
@@ -11,7 +11,7 @@ pub struct TaxTransaction {
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub currency: stripe_types::Currency,
-    /// The ID of an existing [Customer](https://stripe.com/docs/api/customers/object) used for the resource.
+    /// The ID of an existing [Customer](https://docs.stripe.com/api/customers/object) used for the resource.
     pub customer: Option<String>,
     pub customer_details: stripe_misc::TaxProductResourceCustomerDetails,
     /// Unique identifier for the transaction.
@@ -20,7 +20,7 @@ pub struct TaxTransaction {
     pub line_items: Option<stripe_types::List<stripe_misc::TaxTransactionLineItem>>,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: Option<std::collections::HashMap<String, String>>,
     /// The Unix timestamp representing when the tax liability is assumed or reduced.

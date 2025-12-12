@@ -2,6 +2,7 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct BillingBillResourceInvoicingTaxesTaxRateDetails {
+    /// ID of the tax rate
     pub tax_rate: String,
 }
 #[doc(hidden)]

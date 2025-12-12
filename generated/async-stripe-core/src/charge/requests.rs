@@ -345,10 +345,10 @@ impl CreateChargeDestination {
     }
 }
 /// Options to configure Radar.
-/// See [Radar Session](https://stripe.com/docs/radar/radar-session) for more information.
+/// See [Radar Session](https://docs.stripe.com/radar/radar-session) for more information.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateChargeRadarOptions {
-    /// A [Radar Session](https://stripe.com/docs/radar/radar-session) is a snapshot of the browser metadata and device details that help Radar make more accurate predictions on your payments.
+    /// A [Radar Session](https://docs.stripe.com/radar/radar-session) is a snapshot of the browser metadata and device details that help Radar make more accurate predictions on your payments.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub session: Option<String>,
 }
@@ -363,7 +363,7 @@ impl Default for CreateChargeRadarOptions {
     }
 }
 /// An optional dictionary including the account to automatically transfer to as part of a destination charge.
-/// [See the Connect documentation](https://stripe.com/docs/connect/destination-charges) for details.
+/// [See the Connect documentation](https://docs.stripe.com/connect/destination-charges) for details.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateChargeTransferData {
     /// The amount transferred to the destination account, if specified.
@@ -391,8 +391,8 @@ impl CreateCharge {
         Self { inner: CreateChargeBuilder::new() }
     }
     /// Amount intended to be collected by this payment.
-    /// A positive integer representing how much to charge in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal) (e.g., 100 cents to charge $1.00 or 100 to charge ¥100, a zero-decimal currency).
-    /// The minimum amount is $0.50 US or [equivalent in charge currency](https://stripe.com/docs/currencies#minimum-and-maximum-charge-amounts).
+    /// A positive integer representing how much to charge in the [smallest currency unit](https://docs.stripe.com/currencies#zero-decimal) (e.g., 100 cents to charge $1.00 or 100 to charge ¥100, a zero-decimal currency).
+    /// The minimum amount is $0.50 US or [equivalent in charge currency](https://docs.stripe.com/currencies#minimum-and-maximum-charge-amounts).
     /// The amount value supports up to eight digits (e.g., a value of 99999999 for a USD charge of $999,999.99).
     pub fn amount(mut self, amount: impl Into<i64>) -> Self {
         self.inner.amount = Some(amount.into());
@@ -404,16 +404,16 @@ impl CreateCharge {
     }
     /// A fee in cents (or local equivalent) that will be applied to the charge and transferred to the application owner's Stripe account.
     /// The request must be made with an OAuth key or the `Stripe-Account` header in order to take an application fee.
-    /// For more information, see the application fees [documentation](https://stripe.com/docs/connect/direct-charges#collect-fees).
+    /// For more information, see the application fees [documentation](https://docs.stripe.com/connect/direct-charges#collect-fees).
     pub fn application_fee_amount(mut self, application_fee_amount: impl Into<i64>) -> Self {
         self.inner.application_fee_amount = Some(application_fee_amount.into());
         self
     }
     /// Whether to immediately capture the charge.
     /// Defaults to `true`.
-    /// When `false`, the charge issues an authorization (or pre-authorization), and will need to be [captured](https://stripe.com/docs/api#capture_charge) later.
+    /// When `false`, the charge issues an authorization (or pre-authorization), and will need to be [captured](https://api.stripe.com#capture_charge) later.
     /// Uncaptured charges expire after a set number of days (7 by default).
-    /// For more information, see the [authorizing charges and settling later](https://stripe.com/docs/charges/placing-a-hold) documentation.
+    /// For more information, see the [authorizing charges and settling later](https://docs.stripe.com/charges/placing-a-hold) documentation.
     pub fn capture(mut self, capture: impl Into<bool>) -> Self {
         self.inner.capture = Some(capture.into());
         self
@@ -445,7 +445,7 @@ impl CreateCharge {
         self.inner.expand = Some(expand.into());
         self
     }
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
@@ -457,21 +457,21 @@ impl CreateCharge {
         self
     }
     /// The Stripe account ID for which these funds are intended.
-    /// Automatically set if you use the `destination` parameter.
-    /// For details, see [Creating Separate Charges and Transfers](https://stripe.com/docs/connect/separate-charges-and-transfers#settlement-merchant).
+    /// You can specify the business of record as the connected account using the `on_behalf_of` attribute on the charge.
+    /// For details, see [Creating Separate Charges and Transfers](https://docs.stripe.com/connect/separate-charges-and-transfers#settlement-merchant).
     pub fn on_behalf_of(mut self, on_behalf_of: impl Into<String>) -> Self {
         self.inner.on_behalf_of = Some(on_behalf_of.into());
         self
     }
     /// Options to configure Radar.
-    /// See [Radar Session](https://stripe.com/docs/radar/radar-session) for more information.
+    /// See [Radar Session](https://docs.stripe.com/radar/radar-session) for more information.
     pub fn radar_options(mut self, radar_options: impl Into<CreateChargeRadarOptions>) -> Self {
         self.inner.radar_options = Some(radar_options.into());
         self
     }
-    /// The email address to which this charge's [receipt](https://stripe.com/docs/dashboard/receipts) will be sent.
+    /// The email address to which this charge's [receipt](https://docs.stripe.com/dashboard/receipts) will be sent.
     /// The receipt will not be sent until the charge is paid, and no receipts will be sent for test mode charges.
-    /// If this charge is for a [Customer](https://stripe.com/docs/api/customers/object), the email address specified here will override the customer's email address.
+    /// If this charge is for a [Customer](https://docs.stripe.com/api/customers/object), the email address specified here will override the customer's email address.
     /// If `receipt_email` is specified for a charge in live mode, a receipt will be sent regardless of your [email settings](https://dashboard.stripe.com/account/emails).
     pub fn receipt_email(mut self, receipt_email: impl Into<String>) -> Self {
         self.inner.receipt_email = Some(receipt_email.into());
@@ -483,8 +483,8 @@ impl CreateCharge {
         self
     }
     /// A payment source to be charged.
-    /// This can be the ID of a [card](https://stripe.com/docs/api#cards) (i.e., credit or debit card), a [bank account](https://stripe.com/docs/api#bank_accounts), a [source](https://stripe.com/docs/api#sources), a [token](https://stripe.com/docs/api#tokens), or a [connected account](https://stripe.com/docs/connect/account-debits#charging-a-connected-account).
-    /// For certain sources---namely, [cards](https://stripe.com/docs/api#cards), [bank accounts](https://stripe.com/docs/api#bank_accounts), and attached [sources](https://stripe.com/docs/api#sources)---you must also pass the ID of the associated customer.
+    /// This can be the ID of a [card](https://docs.stripe.com/api#cards) (i.e., credit or debit card), a [bank account](https://docs.stripe.com/api#bank_accounts), a [source](https://docs.stripe.com/api#sources), a [token](https://docs.stripe.com/api#tokens), or a [connected account](https://docs.stripe.com/connect/account-debits#charging-a-connected-account).
+    /// For certain sources---namely, [cards](https://docs.stripe.com/api#cards), [bank accounts](https://docs.stripe.com/api#bank_accounts), and attached [sources](https://docs.stripe.com/api#sources)---you must also pass the ID of the associated customer.
     pub fn source(mut self, source: impl Into<String>) -> Self {
         self.inner.source = Some(source.into());
         self
@@ -509,13 +509,13 @@ impl CreateCharge {
         self
     }
     /// An optional dictionary including the account to automatically transfer to as part of a destination charge.
-    /// [See the Connect documentation](https://stripe.com/docs/connect/destination-charges) for details.
+    /// [See the Connect documentation](https://docs.stripe.com/connect/destination-charges) for details.
     pub fn transfer_data(mut self, transfer_data: impl Into<CreateChargeTransferData>) -> Self {
         self.inner.transfer_data = Some(transfer_data.into());
         self
     }
     /// A string that identifies this transaction as part of a group.
-    /// For details, see [Grouping transactions](https://stripe.com/docs/connect/separate-charges-and-transfers#transfer-options).
+    /// For details, see [Grouping transactions](https://docs.stripe.com/connect/separate-charges-and-transfers#transfer-options).
     pub fn transfer_group(mut self, transfer_group: impl Into<String>) -> Self {
         self.inner.transfer_group = Some(transfer_group.into());
         self
@@ -701,7 +701,7 @@ impl UpdateCharge {
         self.inner.fraud_details = Some(fraud_details.into());
         self
     }
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
@@ -725,7 +725,7 @@ impl UpdateCharge {
     }
     /// A string that identifies this transaction as part of a group.
     /// `transfer_group` may only be provided if it has not been set.
-    /// See the [Connect documentation](https://stripe.com/docs/connect/separate-charges-and-transfers#transfer-options) for details.
+    /// See the [Connect documentation](https://docs.stripe.com/connect/separate-charges-and-transfers#transfer-options) for details.
     pub fn transfer_group(mut self, transfer_group: impl Into<String>) -> Self {
         self.inner.transfer_group = Some(transfer_group.into());
         self
@@ -794,7 +794,7 @@ impl CaptureChargeBuilder {
     }
 }
 /// An optional dictionary including the account to automatically transfer to as part of a destination charge.
-/// [See the Connect documentation](https://stripe.com/docs/connect/destination-charges) for details.
+/// [See the Connect documentation](https://docs.stripe.com/connect/destination-charges) for details.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CaptureChargeTransferData {
     /// The amount transferred to the destination account, if specified.
@@ -875,14 +875,14 @@ impl CaptureCharge {
         self
     }
     /// An optional dictionary including the account to automatically transfer to as part of a destination charge.
-    /// [See the Connect documentation](https://stripe.com/docs/connect/destination-charges) for details.
+    /// [See the Connect documentation](https://docs.stripe.com/connect/destination-charges) for details.
     pub fn transfer_data(mut self, transfer_data: impl Into<CaptureChargeTransferData>) -> Self {
         self.inner.transfer_data = Some(transfer_data.into());
         self
     }
     /// A string that identifies this transaction as part of a group.
     /// `transfer_group` may only be provided if it has not been set.
-    /// See the [Connect documentation](https://stripe.com/docs/connect/separate-charges-and-transfers#transfer-options) for details.
+    /// See the [Connect documentation](https://docs.stripe.com/connect/separate-charges-and-transfers#transfer-options) for details.
     pub fn transfer_group(mut self, transfer_group: impl Into<String>) -> Self {
         self.inner.transfer_group = Some(transfer_group.into());
         self
@@ -933,7 +933,7 @@ pub struct OptionalFieldsAddress {
     /// ZIP or postal code.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub postal_code: Option<String>,
-    /// State, county, province, or region.
+    /// State, county, province, or region ([ISO 3166-2](https://en.wikipedia.org/wiki/ISO_3166-2)).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
 }

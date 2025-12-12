@@ -21,6 +21,9 @@ pub struct CheckoutSessionItem {
     pub discounts: Option<Vec<stripe_shared::LineItemsDiscountAmount>>,
     /// Unique identifier for the object.
     pub id: stripe_shared::CheckoutSessionItemId,
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
+    /// This can be useful for storing additional information about the object in a structured format.
+    pub metadata: Option<std::collections::HashMap<String, String>>,
     /// The price used to generate the line item.
     pub price: Option<stripe_shared::Price>,
     /// The quantity of products being purchased.
@@ -38,6 +41,7 @@ pub struct CheckoutSessionItemBuilder {
     description: Option<Option<String>>,
     discounts: Option<Option<Vec<stripe_shared::LineItemsDiscountAmount>>>,
     id: Option<stripe_shared::CheckoutSessionItemId>,
+    metadata: Option<Option<std::collections::HashMap<String, String>>>,
     price: Option<Option<stripe_shared::Price>>,
     quantity: Option<Option<u64>>,
     taxes: Option<Option<Vec<stripe_shared::LineItemsTaxAmount>>>,
@@ -91,6 +95,7 @@ const _: () = {
                 "description" => Deserialize::begin(&mut self.description),
                 "discounts" => Deserialize::begin(&mut self.discounts),
                 "id" => Deserialize::begin(&mut self.id),
+                "metadata" => Deserialize::begin(&mut self.metadata),
                 "price" => Deserialize::begin(&mut self.price),
                 "quantity" => Deserialize::begin(&mut self.quantity),
                 "taxes" => Deserialize::begin(&mut self.taxes),
@@ -108,6 +113,7 @@ const _: () = {
                 description: Deserialize::default(),
                 discounts: Deserialize::default(),
                 id: Deserialize::default(),
+                metadata: Deserialize::default(),
                 price: Deserialize::default(),
                 quantity: Deserialize::default(),
                 taxes: Deserialize::default(),
@@ -124,6 +130,7 @@ const _: () = {
                 Some(description),
                 Some(discounts),
                 Some(id),
+                Some(metadata),
                 Some(price),
                 Some(quantity),
                 Some(taxes),
@@ -136,6 +143,7 @@ const _: () = {
                 self.description.take(),
                 self.discounts.take(),
                 self.id.take(),
+                self.metadata.take(),
                 self.price.take(),
                 self.quantity,
                 self.taxes.take(),
@@ -152,6 +160,7 @@ const _: () = {
                 description,
                 discounts,
                 id,
+                metadata,
                 price,
                 quantity,
                 taxes,
@@ -190,6 +199,7 @@ const _: () = {
                     "description" => b.description = FromValueOpt::from_value(v),
                     "discounts" => b.discounts = FromValueOpt::from_value(v),
                     "id" => b.id = FromValueOpt::from_value(v),
+                    "metadata" => b.metadata = FromValueOpt::from_value(v),
                     "price" => b.price = FromValueOpt::from_value(v),
                     "quantity" => b.quantity = FromValueOpt::from_value(v),
                     "taxes" => b.taxes = FromValueOpt::from_value(v),
@@ -204,7 +214,7 @@ const _: () = {
 impl serde::Serialize for CheckoutSessionItem {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("CheckoutSessionItem", 12)?;
+        let mut s = s.serialize_struct("CheckoutSessionItem", 13)?;
         s.serialize_field("amount_discount", &self.amount_discount)?;
         s.serialize_field("amount_subtotal", &self.amount_subtotal)?;
         s.serialize_field("amount_tax", &self.amount_tax)?;
@@ -213,6 +223,7 @@ impl serde::Serialize for CheckoutSessionItem {
         s.serialize_field("description", &self.description)?;
         s.serialize_field("discounts", &self.discounts)?;
         s.serialize_field("id", &self.id)?;
+        s.serialize_field("metadata", &self.metadata)?;
         s.serialize_field("price", &self.price)?;
         s.serialize_field("quantity", &self.quantity)?;
         s.serialize_field("taxes", &self.taxes)?;

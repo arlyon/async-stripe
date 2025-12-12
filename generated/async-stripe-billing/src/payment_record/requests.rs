@@ -286,7 +286,7 @@ impl ReportPaymentAttemptPaymentRecord {
         self.inner.guaranteed = Some(guaranteed.into());
         self
     }
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
@@ -618,7 +618,7 @@ impl ReportPaymentAttemptInformationalPaymentRecord {
         self.inner.expand = Some(expand.into());
         self
     }
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
@@ -885,7 +885,7 @@ impl ReportRefundPaymentRecord {
             ),
         }
     }
-    /// A positive integer in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal) representing how much of this payment to refund.
+    /// A positive integer in the [smallest currency unit](https://docs.stripe.com/currencies#zero-decimal) representing how much of this payment to refund.
     /// Can refund only up to the remaining, unrefunded amount of the payment.
     pub fn amount(mut self, amount: impl Into<Amount>) -> Self {
         self.inner.amount = Some(amount.into());
@@ -901,7 +901,7 @@ impl ReportRefundPaymentRecord {
         self.inner.initiated_at = Some(initiated_at.into());
         self
     }
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
@@ -1294,7 +1294,7 @@ impl ReportPaymentPaymentRecord {
         self.inner.guaranteed = Some(guaranteed.into());
         self
     }
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
@@ -1387,7 +1387,7 @@ pub struct Address {
     /// ZIP or postal code.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub postal_code: Option<String>,
-    /// State, county, province, or region.
+    /// State, county, province, or region ([ISO 3166-2](https://en.wikipedia.org/wiki/ISO_3166-2)).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
 }
@@ -1451,7 +1451,7 @@ pub struct Amount {
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub currency: stripe_types::Currency,
-    /// A positive integer representing the amount in the currency's [minor unit](https://stripe.com/docs/currencies#zero-decimal).
+    /// A positive integer representing the amount in the currency's [minor unit](https://docs.stripe.com/currencies#zero-decimal).
     /// For example, `100` can represent 1 USD or 100 JPY.
     pub value: i64,
 }

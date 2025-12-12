@@ -52,7 +52,7 @@ pub async fn run_payment_intent_example(client: &Client) -> Result<(), StripeErr
         .send(client)
         .await?;
 
-    AttachPaymentMethod::new(payment_method.id.clone(), &customer.id).send(client).await?;
+    AttachPaymentMethod::new(payment_method.id.clone()).customer(&customer.id).send(client).await?;
 
     println!(
         "created a payment method with id {} and attached it to {}",

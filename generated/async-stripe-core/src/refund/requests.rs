@@ -279,7 +279,7 @@ impl<'de> serde::Deserialize<'de> for CreateRefundOrigin {
 }
 /// String indicating the reason for the refund.
 /// If set, possible values are `duplicate`, `fraudulent`, and `requested_by_customer`.
-/// If you believe the charge to be fraudulent, specifying `fraudulent` as the reason will add the associated card and email to your [block lists](https://stripe.com/docs/radar/lists), and will also help us improve our fraud detection algorithms.
+/// If you believe the charge to be fraudulent, specifying `fraudulent` as the reason will add the associated card and email to your [block lists](https://docs.stripe.com/radar/lists), and will also help us improve our fraud detection algorithms.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum CreateRefundReason {
@@ -393,7 +393,7 @@ impl CreateRefund {
         self.inner.instructions_email = Some(instructions_email.into());
         self
     }
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
@@ -416,7 +416,7 @@ impl CreateRefund {
     }
     /// String indicating the reason for the refund.
     /// If set, possible values are `duplicate`, `fraudulent`, and `requested_by_customer`.
-    /// If you believe the charge to be fraudulent, specifying `fraudulent` as the reason will add the associated card and email to your [block lists](https://stripe.com/docs/radar/lists), and will also help us improve our fraud detection algorithms.
+    /// If you believe the charge to be fraudulent, specifying `fraudulent` as the reason will add the associated card and email to your [block lists](https://docs.stripe.com/radar/lists), and will also help us improve our fraud detection algorithms.
     pub fn reason(mut self, reason: impl Into<CreateRefundReason>) -> Self {
         self.inner.reason = Some(reason.into());
         self
@@ -499,7 +499,7 @@ impl UpdateRefund {
         self.inner.expand = Some(expand.into());
         self
     }
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.

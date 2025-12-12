@@ -8,10 +8,12 @@
 pub struct CashBalance {
     /// A hash of all cash balances available to this customer.
     /// You cannot delete a customer with any cash balances, even if the balance is 0.
-    /// Amounts are represented in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
+    /// Amounts are represented in the [smallest currency unit](https://docs.stripe.com/currencies#zero-decimal).
     pub available: Option<std::collections::HashMap<String, i64>>,
     /// The ID of the customer whose cash balance this object represents.
     pub customer: String,
+    /// The ID of an Account representing a customer whose cash balance this object represents.
+    pub customer_account: Option<String>,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
     pub settings: stripe_shared::CustomerBalanceCustomerBalanceSettings,
@@ -20,6 +22,7 @@ pub struct CashBalance {
 pub struct CashBalanceBuilder {
     available: Option<Option<std::collections::HashMap<String, i64>>>,
     customer: Option<String>,
+    customer_account: Option<Option<String>>,
     livemode: Option<bool>,
     settings: Option<stripe_shared::CustomerBalanceCustomerBalanceSettings>,
 }
@@ -66,6 +69,7 @@ const _: () = {
             Ok(match k {
                 "available" => Deserialize::begin(&mut self.available),
                 "customer" => Deserialize::begin(&mut self.customer),
+                "customer_account" => Deserialize::begin(&mut self.customer_account),
                 "livemode" => Deserialize::begin(&mut self.livemode),
                 "settings" => Deserialize::begin(&mut self.settings),
                 _ => <dyn Visitor>::ignore(),
@@ -76,18 +80,30 @@ const _: () = {
             Self {
                 available: Deserialize::default(),
                 customer: Deserialize::default(),
+                customer_account: Deserialize::default(),
                 livemode: Deserialize::default(),
                 settings: Deserialize::default(),
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(available), Some(customer), Some(livemode), Some(settings)) =
-                (self.available.take(), self.customer.take(), self.livemode, self.settings.take())
+            let (
+                Some(available),
+                Some(customer),
+                Some(customer_account),
+                Some(livemode),
+                Some(settings),
+            ) = (
+                self.available.take(),
+                self.customer.take(),
+                self.customer_account.take(),
+                self.livemode,
+                self.settings.take(),
+            )
             else {
                 return None;
             };
-            Some(Self::Out { available, customer, livemode, settings })
+            Some(Self::Out { available, customer, customer_account, livemode, settings })
         }
     }
 
@@ -116,6 +132,7 @@ const _: () = {
                 match k.as_str() {
                     "available" => b.available = FromValueOpt::from_value(v),
                     "customer" => b.customer = FromValueOpt::from_value(v),
+                    "customer_account" => b.customer_account = FromValueOpt::from_value(v),
                     "livemode" => b.livemode = FromValueOpt::from_value(v),
                     "settings" => b.settings = FromValueOpt::from_value(v),
                     _ => {}
@@ -129,9 +146,10 @@ const _: () = {
 impl serde::Serialize for CashBalance {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("CashBalance", 5)?;
+        let mut s = s.serialize_struct("CashBalance", 6)?;
         s.serialize_field("available", &self.available)?;
         s.serialize_field("customer", &self.customer)?;
+        s.serialize_field("customer_account", &self.customer_account)?;
         s.serialize_field("livemode", &self.livemode)?;
         s.serialize_field("settings", &self.settings)?;
 

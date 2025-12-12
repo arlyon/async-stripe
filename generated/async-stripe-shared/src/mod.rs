@@ -477,6 +477,10 @@ pub mod checkout_paypal_payment_method_options;
 #[doc(inline)]
 pub use checkout_paypal_payment_method_options::*;
 #[doc(hidden)]
+pub mod checkout_payto_payment_method_options;
+#[doc(inline)]
+pub use checkout_payto_payment_method_options::*;
+#[doc(hidden)]
 pub mod checkout_pix_payment_method_options;
 #[doc(inline)]
 pub use checkout_pix_payment_method_options::*;
@@ -893,6 +897,10 @@ pub mod invoice_mandate_options_card;
 #[doc(inline)]
 pub use invoice_mandate_options_card::*;
 #[doc(hidden)]
+pub mod invoice_mandate_options_payto;
+#[doc(inline)]
+pub use invoice_mandate_options_payto::*;
+#[doc(hidden)]
 pub mod invoice_payment;
 #[doc(inline)]
 pub use invoice_payment::*;
@@ -928,6 +936,10 @@ pub use invoice_payment_method_options_customer_balance_bank_transfer_eu_bank_tr
 pub mod invoice_payment_method_options_konbini;
 #[doc(inline)]
 pub use invoice_payment_method_options_konbini::*;
+#[doc(hidden)]
+pub mod invoice_payment_method_options_payto;
+#[doc(inline)]
+pub use invoice_payment_method_options_payto::*;
 #[doc(hidden)]
 pub mod invoice_payment_method_options_sepa_debit;
 #[doc(inline)]
@@ -1473,6 +1485,10 @@ pub mod mandate_nz_bank_account;
 #[doc(inline)]
 pub use mandate_nz_bank_account::*;
 #[doc(hidden)]
+pub mod mandate_options_payto;
+#[doc(inline)]
+pub use mandate_options_payto::*;
+#[doc(hidden)]
 pub mod mandate_payment_method_details;
 #[doc(inline)]
 pub use mandate_payment_method_details::*;
@@ -1480,6 +1496,10 @@ pub use mandate_payment_method_details::*;
 pub mod mandate_paypal;
 #[doc(inline)]
 pub use mandate_paypal::*;
+#[doc(hidden)]
+pub mod mandate_payto;
+#[doc(inline)]
+pub use mandate_payto::*;
 #[doc(hidden)]
 pub mod mandate_revolut_pay;
 #[doc(inline)]
@@ -1793,6 +1813,10 @@ pub mod payment_intent_payment_method_options_mandate_options_bacs_debit;
 #[doc(inline)]
 pub use payment_intent_payment_method_options_mandate_options_bacs_debit::*;
 #[doc(hidden)]
+pub mod payment_intent_payment_method_options_mandate_options_payto;
+#[doc(inline)]
+pub use payment_intent_payment_method_options_mandate_options_payto::*;
+#[doc(hidden)]
 pub mod payment_intent_payment_method_options_mandate_options_sepa_debit;
 #[doc(inline)]
 pub use payment_intent_payment_method_options_mandate_options_sepa_debit::*;
@@ -1804,6 +1828,10 @@ pub use payment_intent_payment_method_options_mobilepay::*;
 pub mod payment_intent_payment_method_options_nz_bank_account;
 #[doc(inline)]
 pub use payment_intent_payment_method_options_nz_bank_account::*;
+#[doc(hidden)]
+pub mod payment_intent_payment_method_options_payto;
+#[doc(inline)]
+pub use payment_intent_payment_method_options_payto::*;
 #[doc(hidden)]
 pub mod payment_intent_payment_method_options_sepa_debit;
 #[doc(inline)]
@@ -2297,6 +2325,10 @@ pub mod payment_method_details_payco;
 #[doc(inline)]
 pub use payment_method_details_payco::*;
 #[doc(hidden)]
+pub mod payment_method_details_payment_record_us_bank_account;
+#[doc(inline)]
+pub use payment_method_details_payment_record_us_bank_account::*;
+#[doc(hidden)]
 pub mod payment_method_details_paynow;
 #[doc(inline)]
 pub use payment_method_details_paynow::*;
@@ -2304,6 +2336,10 @@ pub use payment_method_details_paynow::*;
 pub mod payment_method_details_paypal;
 #[doc(inline)]
 pub use payment_method_details_paypal::*;
+#[doc(hidden)]
+pub mod payment_method_details_payto;
+#[doc(inline)]
+pub use payment_method_details_payto::*;
 #[doc(hidden)]
 pub mod payment_method_details_pix;
 #[doc(inline)]
@@ -2617,6 +2653,10 @@ pub mod payment_method_paypal;
 #[doc(inline)]
 pub use payment_method_paypal::*;
 #[doc(hidden)]
+pub mod payment_method_payto;
+#[doc(inline)]
+pub use payment_method_payto::*;
+#[doc(hidden)]
 pub mod payment_method_pix;
 #[doc(inline)]
 pub use payment_method_pix::*;
@@ -2869,6 +2909,14 @@ pub mod payments_primitives_payment_records_resource_payment_method_card_details
 #[doc(inline)]
 pub use payments_primitives_payment_records_resource_payment_method_card_details_resource_checks::*;
 #[doc(hidden)]
+pub mod payments_primitives_payment_records_resource_payment_method_card_details_resource_installment_plan;
+#[doc(inline)]
+pub use payments_primitives_payment_records_resource_payment_method_card_details_resource_installment_plan::*;
+#[doc(hidden)]
+pub mod payments_primitives_payment_records_resource_payment_method_card_details_resource_installments;
+#[doc(inline)]
+pub use payments_primitives_payment_records_resource_payment_method_card_details_resource_installments::*;
+#[doc(hidden)]
 pub mod payments_primitives_payment_records_resource_payment_method_card_details_resource_network_token;
 #[doc(inline)]
 pub use payments_primitives_payment_records_resource_payment_method_card_details_resource_network_token::*;
@@ -2896,10 +2944,6 @@ pub use payments_primitives_payment_records_resource_payment_method_custom_detai
 pub mod payments_primitives_payment_records_resource_payment_method_details;
 #[doc(inline)]
 pub use payments_primitives_payment_records_resource_payment_method_details::*;
-#[doc(hidden)]
-pub mod payments_primitives_payment_records_resource_payment_method_us_bank_account_details;
-#[doc(inline)]
-pub use payments_primitives_payment_records_resource_payment_method_us_bank_account_details::*;
 #[doc(hidden)]
 pub mod payments_primitives_payment_records_resource_processor_details;
 #[doc(inline)]
@@ -3205,6 +3249,10 @@ pub mod setup_attempt_payment_method_details_paypal;
 #[doc(inline)]
 pub use setup_attempt_payment_method_details_paypal::*;
 #[doc(hidden)]
+pub mod setup_attempt_payment_method_details_payto;
+#[doc(inline)]
+pub use setup_attempt_payment_method_details_payto::*;
+#[doc(hidden)]
 pub mod setup_attempt_payment_method_details_revolut_pay;
 #[doc(inline)]
 pub use setup_attempt_payment_method_details_revolut_pay::*;
@@ -3281,6 +3329,10 @@ pub mod setup_intent_payment_method_options_mandate_options_bacs_debit;
 #[doc(inline)]
 pub use setup_intent_payment_method_options_mandate_options_bacs_debit::*;
 #[doc(hidden)]
+pub mod setup_intent_payment_method_options_mandate_options_payto;
+#[doc(inline)]
+pub use setup_intent_payment_method_options_mandate_options_payto::*;
+#[doc(hidden)]
 pub mod setup_intent_payment_method_options_mandate_options_sepa_debit;
 #[doc(inline)]
 pub use setup_intent_payment_method_options_mandate_options_sepa_debit::*;
@@ -3288,6 +3340,10 @@ pub use setup_intent_payment_method_options_mandate_options_sepa_debit::*;
 pub mod setup_intent_payment_method_options_paypal;
 #[doc(inline)]
 pub use setup_intent_payment_method_options_paypal::*;
+#[doc(hidden)]
+pub mod setup_intent_payment_method_options_payto;
+#[doc(inline)]
+pub use setup_intent_payment_method_options_payto::*;
 #[doc(hidden)]
 pub mod setup_intent_payment_method_options_sepa_debit;
 #[doc(inline)]

@@ -4,7 +4,8 @@
 //! This example demonstrates how to handle different HTTP status codes returned by the Stripe API.
 //! Different status codes indicate different types of failures and should be handled differently.
 
-use stripe::{Client, PaymentIntent, StripeError};
+use stripe::{Client, StripeError};
+use stripe_core::payment_intent::RetrievePaymentIntent;
 use tracing::{error, info, warn};
 
 #[tokio::main]
@@ -17,7 +18,7 @@ async fn main() {
     // Replace with an actual payment intent ID for testing
     let payment_intent_id = "pi_example";
 
-    match PaymentIntent::retrieve(&client, &payment_intent_id, &[]).await {
+    match RetrievePaymentIntent::new(payment_intent_id).send(&client).await {
         Ok(payment) => {
             info!("Payment status: {:?}", payment.status);
         }

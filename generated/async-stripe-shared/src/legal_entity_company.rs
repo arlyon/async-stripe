@@ -8,12 +8,12 @@ pub struct LegalEntityCompany {
     /// The Kanji variation of the company's primary address (Japan only).
     pub address_kanji: Option<stripe_shared::LegalEntityJapanAddress>,
     /// Whether the company's directors have been provided.
-    /// This Boolean will be `true` if you've manually indicated that all directors are provided via [the `directors_provided` parameter](https://stripe.com/docs/api/accounts/update#update_account-company-directors_provided).
+    /// This Boolean will be `true` if you've manually indicated that all directors are provided via [the `directors_provided` parameter](https://docs.stripe.com/api/accounts/update#update_account-company-directors_provided).
     pub directors_provided: Option<bool>,
     /// This hash is used to attest that the director information provided to Stripe is both current and correct.
     pub directorship_declaration: Option<stripe_shared::LegalEntityDirectorshipDeclaration>,
     /// Whether the company's executives have been provided.
-    /// This Boolean will be `true` if you've manually indicated that all executives are provided via [the `executives_provided` parameter](https://stripe.com/docs/api/accounts/update#update_account-company-executives_provided), or if Stripe determined that sufficient executives were provided.
+    /// This Boolean will be `true` if you've manually indicated that all executives are provided via [the `executives_provided` parameter](https://docs.stripe.com/api/accounts/update#update_account-company-executives_provided), or if Stripe determined that sufficient executives were provided.
     pub executives_provided: Option<bool>,
     /// The export license ID number of the company, also referred as Import Export Code (India only).
     pub export_license_id: Option<String>,
@@ -29,7 +29,7 @@ pub struct LegalEntityCompany {
     /// Also available for accounts where [controller.requirement_collection](/api/accounts/object#account_object-controller-requirement_collection) is `stripe`.
     pub name_kanji: Option<String>,
     /// Whether the company's owners have been provided.
-    /// This Boolean will be `true` if you've manually indicated that all owners are provided via [the `owners_provided` parameter](https://stripe.com/docs/api/accounts/update#update_account-company-owners_provided), or if Stripe determined that sufficient owners were provided.
+    /// This Boolean will be `true` if you've manually indicated that all owners are provided via [the `owners_provided` parameter](https://docs.stripe.com/api/accounts/update#update_account-company-owners_provided), or if Stripe determined that sufficient owners were provided.
     /// Stripe determines ownership requirements using both the number of owners provided and their total percent ownership (calculated by adding the `percent_ownership` of each owner together).
     pub owners_provided: Option<bool>,
     /// This hash is used to attest that the beneficial owner information provided to Stripe is both current and correct.
@@ -44,7 +44,7 @@ pub struct LegalEntityCompany {
     pub representative_declaration: Option<stripe_shared::LegalEntityRepresentativeDeclaration>,
     /// The category identifying the legal structure of the company or legal entity.
     /// Also available for accounts where [controller.requirement_collection](/api/accounts/object#account_object-controller-requirement_collection) is `stripe`.
-    /// See [Business structure](https://stripe.com/docs/connect/identity-verification#business-structure) for more details.
+    /// See [Business structure](https://docs.stripe.com/connect/identity-verification#business-structure) for more details.
     pub structure: Option<LegalEntityCompanyStructure>,
     /// Whether the company's business ID number was provided.
     pub tax_id_provided: Option<bool>,
@@ -407,7 +407,7 @@ impl<'de> serde::Deserialize<'de> for LegalEntityCompanyOwnershipExemptionReason
 }
 /// The category identifying the legal structure of the company or legal entity.
 /// Also available for accounts where [controller.requirement_collection](/api/accounts/object#account_object-controller-requirement_collection) is `stripe`.
-/// See [Business structure](https://stripe.com/docs/connect/identity-verification#business-structure) for more details.
+/// See [Business structure](https://docs.stripe.com/connect/identity-verification#business-structure) for more details.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum LegalEntityCompanyStructure {

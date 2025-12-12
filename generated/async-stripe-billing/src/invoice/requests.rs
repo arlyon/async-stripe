@@ -50,6 +50,8 @@ struct ListInvoiceBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     customer: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    customer_account: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     due_date: Option<stripe_types::RangeQueryTs>,
     #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<String>,
@@ -70,6 +72,7 @@ impl ListInvoiceBuilder {
             collection_method: None,
             created: None,
             customer: None,
+            customer_account: None,
             due_date: None,
             ending_before: None,
             expand: None,
@@ -109,6 +112,11 @@ impl ListInvoice {
         self.inner.customer = Some(customer.into());
         self
     }
+    /// Only return invoices for the account representing the customer specified by this account ID.
+    pub fn customer_account(mut self, customer_account: impl Into<String>) -> Self {
+        self.inner.customer_account = Some(customer_account.into());
+        self
+    }
     pub fn due_date(mut self, due_date: impl Into<stripe_types::RangeQueryTs>) -> Self {
         self.inner.due_date = Some(due_date.into());
         self
@@ -139,7 +147,7 @@ impl ListInvoice {
         self
     }
     /// The status of the invoice, one of `draft`, `open`, `paid`, `uncollectible`, or `void`.
-    /// [Learn more](https://stripe.com/docs/billing/invoices/workflow#workflow-overview).
+    /// [Learn more](https://docs.stripe.com/billing/invoices/workflow#workflow-overview).
     pub fn status(mut self, status: impl Into<stripe_shared::InvoiceStatus>) -> Self {
         self.inner.status = Some(status.into());
         self
@@ -340,6 +348,8 @@ struct CreateInvoiceBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     customer: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    customer_account: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     days_until_due: Option<u32>,
     #[serde(skip_serializing_if = "Option::is_none")]
     default_payment_method: Option<String>,
@@ -398,6 +408,7 @@ impl CreateInvoiceBuilder {
             currency: None,
             custom_fields: None,
             customer: None,
+            customer_account: None,
             days_until_due: None,
             default_payment_method: None,
             default_source: None,
@@ -428,7 +439,7 @@ impl CreateInvoiceBuilder {
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateInvoiceAutomaticTax {
     /// Whether Stripe automatically computes tax on this invoice.
-    /// Note that incompatible invoice items (invoice items with manually specified [tax rates](https://stripe.com/docs/api/tax_rates), negative amounts, or `tax_behavior=unspecified`) cannot be added to automatic tax invoices.
+    /// Note that incompatible invoice items (invoice items with manually specified [tax rates](https://docs.stripe.com/api/tax_rates), negative amounts, or `tax_behavior=unspecified`) cannot be added to automatic tax invoices.
     pub enabled: bool,
     /// The account that's liable for tax.
     /// If set, the business address and tax registrations required to perform the tax calculation are loaded from this account.
@@ -525,7 +536,7 @@ impl<'de> serde::Deserialize<'de> for CreateInvoiceAutomaticTaxLiabilityType {
 }
 /// Revise an existing invoice.
 /// The new invoice will be created in `status=draft`.
-/// See the [revision documentation](https://stripe.com/docs/invoicing/invoice-revisions) for more details.
+/// See the [revision documentation](https://docs.stripe.com/invoicing/invoice-revisions) for more details.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateInvoiceFromInvoice {
     /// The relation between the new invoice and the original invoice.
@@ -727,6 +738,9 @@ pub struct CreateInvoicePaymentSettingsPaymentMethodOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
     pub konbini: Option<miniserde::json::Value>,
+    /// If paying by `payto`, this sub-hash contains details about the PayTo payment method options to pass to the invoice’s PaymentIntent.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payto: Option<CreateInvoicePaymentSettingsPaymentMethodOptionsPayto>,
     /// If paying by `sepa_debit`, this sub-hash contains details about the SEPA Direct Debit payment method options to pass to the invoice’s PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
@@ -743,6 +757,7 @@ impl CreateInvoicePaymentSettingsPaymentMethodOptions {
             card: None,
             customer_balance: None,
             konbini: None,
+            payto: None,
             sepa_debit: None,
             us_bank_account: None,
         }
@@ -1051,12 +1066,12 @@ impl<'de> serde::Deserialize<'de>
 pub struct CreateInvoicePaymentSettingsPaymentMethodOptionsCard {
     /// Installment configuration for payments attempted on this invoice.
     ///
-    /// For more information, see the [installments integration guide](https://stripe.com/docs/payments/installments).
+    /// For more information, see the [installments integration guide](https://docs.stripe.com/payments/installments).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub installments: Option<CreateInvoicePaymentSettingsPaymentMethodOptionsCardInstallments>,
-    /// We strongly recommend that you rely on our SCA Engine to automatically prompt your customers for authentication based on risk level and [other requirements](https://stripe.com/docs/strong-customer-authentication).
+    /// We strongly recommend that you rely on our SCA Engine to automatically prompt your customers for authentication based on risk level and [other requirements](https://docs.stripe.com/strong-customer-authentication).
     /// However, if you wish to request 3D Secure based on logic from your own fraud engine, provide this option.
-    /// Read our guide on [manually requesting 3D Secure](https://stripe.com/docs/payments/3d-secure/authentication-flow#manual-three-ds) for more information on how this configuration interacts with Radar and our SCA Engine.
+    /// Read our guide on [manually requesting 3D Secure](https://docs.stripe.com/payments/3d-secure/authentication-flow#manual-three-ds) for more information on how this configuration interacts with Radar and our SCA Engine.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub request_three_d_secure:
         Option<CreateInvoicePaymentSettingsPaymentMethodOptionsCardRequestThreeDSecure>,
@@ -1073,7 +1088,7 @@ impl Default for CreateInvoicePaymentSettingsPaymentMethodOptionsCard {
 }
 /// Installment configuration for payments attempted on this invoice.
 ///
-/// For more information, see the [installments integration guide](https://stripe.com/docs/payments/installments).
+/// For more information, see the [installments integration guide](https://docs.stripe.com/payments/installments).
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateInvoicePaymentSettingsPaymentMethodOptionsCardInstallments {
     /// Setting to true enables installments for this invoice.
@@ -1266,9 +1281,9 @@ impl<'de> serde::Deserialize<'de>
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-/// We strongly recommend that you rely on our SCA Engine to automatically prompt your customers for authentication based on risk level and [other requirements](https://stripe.com/docs/strong-customer-authentication).
+/// We strongly recommend that you rely on our SCA Engine to automatically prompt your customers for authentication based on risk level and [other requirements](https://docs.stripe.com/strong-customer-authentication).
 /// However, if you wish to request 3D Secure based on logic from your own fraud engine, provide this option.
-/// Read our guide on [manually requesting 3D Secure](https://stripe.com/docs/payments/3d-secure/authentication-flow#manual-three-ds) for more information on how this configuration interacts with Radar and our SCA Engine.
+/// Read our guide on [manually requesting 3D Secure](https://docs.stripe.com/payments/3d-secure/authentication-flow#manual-three-ds) for more information on how this configuration interacts with Radar and our SCA Engine.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum CreateInvoicePaymentSettingsPaymentMethodOptionsCardRequestThreeDSecure {
@@ -1331,6 +1346,147 @@ impl serde::Serialize for CreateInvoicePaymentSettingsPaymentMethodOptionsCardRe
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de>
     for CreateInvoicePaymentSettingsPaymentMethodOptionsCardRequestThreeDSecure
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// If paying by `payto`, this sub-hash contains details about the PayTo payment method options to pass to the invoice’s PaymentIntent.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateInvoicePaymentSettingsPaymentMethodOptionsPayto {
+    /// Additional fields for Mandate creation.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mandate_options:
+        Option<CreateInvoicePaymentSettingsPaymentMethodOptionsPaytoMandateOptions>,
+}
+impl CreateInvoicePaymentSettingsPaymentMethodOptionsPayto {
+    pub fn new() -> Self {
+        Self { mandate_options: None }
+    }
+}
+impl Default for CreateInvoicePaymentSettingsPaymentMethodOptionsPayto {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Additional fields for Mandate creation.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateInvoicePaymentSettingsPaymentMethodOptionsPaytoMandateOptions {
+    /// The maximum amount that can be collected in a single invoice.
+    /// If you don't specify a maximum, then there is no limit.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount: Option<i64>,
+    /// The purpose for which payments are made. Has a default value based on your merchant category code.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub purpose: Option<CreateInvoicePaymentSettingsPaymentMethodOptionsPaytoMandateOptionsPurpose>,
+}
+impl CreateInvoicePaymentSettingsPaymentMethodOptionsPaytoMandateOptions {
+    pub fn new() -> Self {
+        Self { amount: None, purpose: None }
+    }
+}
+impl Default for CreateInvoicePaymentSettingsPaymentMethodOptionsPaytoMandateOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The purpose for which payments are made. Has a default value based on your merchant category code.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreateInvoicePaymentSettingsPaymentMethodOptionsPaytoMandateOptionsPurpose {
+    DependantSupport,
+    Government,
+    Loan,
+    Mortgage,
+    Other,
+    Pension,
+    Personal,
+    Retail,
+    Salary,
+    Tax,
+    Utility,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreateInvoicePaymentSettingsPaymentMethodOptionsPaytoMandateOptionsPurpose {
+    pub fn as_str(&self) -> &str {
+        use CreateInvoicePaymentSettingsPaymentMethodOptionsPaytoMandateOptionsPurpose::*;
+        match self {
+            DependantSupport => "dependant_support",
+            Government => "government",
+            Loan => "loan",
+            Mortgage => "mortgage",
+            Other => "other",
+            Pension => "pension",
+            Personal => "personal",
+            Retail => "retail",
+            Salary => "salary",
+            Tax => "tax",
+            Utility => "utility",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr
+    for CreateInvoicePaymentSettingsPaymentMethodOptionsPaytoMandateOptionsPurpose
+{
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateInvoicePaymentSettingsPaymentMethodOptionsPaytoMandateOptionsPurpose::*;
+        match s {
+            "dependant_support" => Ok(DependantSupport),
+            "government" => Ok(Government),
+            "loan" => Ok(Loan),
+            "mortgage" => Ok(Mortgage),
+            "other" => Ok(Other),
+            "pension" => Ok(Pension),
+            "personal" => Ok(Personal),
+            "retail" => Ok(Retail),
+            "salary" => Ok(Salary),
+            "tax" => Ok(Tax),
+            "utility" => Ok(Utility),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateInvoicePaymentSettingsPaymentMethodOptionsPaytoMandateOptionsPurpose"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display
+    for CreateInvoicePaymentSettingsPaymentMethodOptionsPaytoMandateOptionsPurpose
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug
+    for CreateInvoicePaymentSettingsPaymentMethodOptionsPaytoMandateOptionsPurpose
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize
+    for CreateInvoicePaymentSettingsPaymentMethodOptionsPaytoMandateOptionsPurpose
+{
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateInvoicePaymentSettingsPaymentMethodOptionsPaytoMandateOptionsPurpose
 {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
@@ -1744,6 +1900,7 @@ pub enum CreateInvoicePaymentSettingsPaymentMethodTypes {
     Payco,
     Paynow,
     Paypal,
+    Payto,
     Promptpay,
     RevolutPay,
     SepaCreditTransfer,
@@ -1791,6 +1948,7 @@ impl CreateInvoicePaymentSettingsPaymentMethodTypes {
             Payco => "payco",
             Paynow => "paynow",
             Paypal => "paypal",
+            Payto => "payto",
             Promptpay => "promptpay",
             RevolutPay => "revolut_pay",
             SepaCreditTransfer => "sepa_credit_transfer",
@@ -1841,6 +1999,7 @@ impl std::str::FromStr for CreateInvoicePaymentSettingsPaymentMethodTypes {
             "payco" => Ok(Payco),
             "paynow" => Ok(Paynow),
             "paypal" => Ok(Paypal),
+            "payto" => Ok(Payto),
             "promptpay" => Ok(Promptpay),
             "revolut_pay" => Ok(RevolutPay),
             "sepa_credit_transfer" => Ok(SepaCreditTransfer),
@@ -2172,7 +2331,7 @@ pub struct CreateInvoiceShippingCostShippingRateData {
     /// Describes a fixed amount to charge for shipping. Must be present if type is `fixed_amount`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub fixed_amount: Option<CreateInvoiceShippingCostShippingRateDataFixedAmount>,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
@@ -2182,7 +2341,7 @@ pub struct CreateInvoiceShippingCostShippingRateData {
     /// One of `inclusive`, `exclusive`, or `unspecified`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_behavior: Option<CreateInvoiceShippingCostShippingRateDataTaxBehavior>,
-    /// A [tax code](https://stripe.com/docs/tax/tax-categories) ID.
+    /// A [tax code](https://docs.stripe.com/tax/tax-categories) ID.
     /// The Shipping tax code is `txcd_92010001`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_code: Option<String>,
@@ -2677,12 +2836,12 @@ impl CreateInvoice {
     }
     /// A fee in cents (or local equivalent) that will be applied to the invoice and transferred to the application owner's Stripe account.
     /// The request must be made with an OAuth key or the Stripe-Account header in order to take an application fee.
-    /// For more information, see the application fees [documentation](https://stripe.com/docs/billing/invoices/connect#collecting-fees).
+    /// For more information, see the application fees [documentation](https://docs.stripe.com/billing/invoices/connect#collecting-fees).
     pub fn application_fee_amount(mut self, application_fee_amount: impl Into<i64>) -> Self {
         self.inner.application_fee_amount = Some(application_fee_amount.into());
         self
     }
-    /// Controls whether Stripe performs [automatic collection](https://stripe.com/docs/invoicing/integration/automatic-advancement-collection) of the invoice.
+    /// Controls whether Stripe performs [automatic collection](https://docs.stripe.com/invoicing/integration/automatic-advancement-collection) of the invoice.
     /// If `false`, the invoice's state doesn't automatically advance without an explicit action.
     /// Defaults to false.
     pub fn auto_advance(mut self, auto_advance: impl Into<bool>) -> Self {
@@ -2724,9 +2883,14 @@ impl CreateInvoice {
         self.inner.custom_fields = Some(custom_fields.into());
         self
     }
-    /// The ID of the customer who will be billed.
+    /// The ID of the customer to bill.
     pub fn customer(mut self, customer: impl Into<String>) -> Self {
         self.inner.customer = Some(customer.into());
+        self
+    }
+    /// The ID of the account to bill.
+    pub fn customer_account(mut self, customer_account: impl Into<String>) -> Self {
+        self.inner.customer_account = Some(customer_account.into());
         self
     }
     /// The number of days from when the invoice is created until it is due.
@@ -2793,7 +2957,7 @@ impl CreateInvoice {
     }
     /// Revise an existing invoice.
     /// The new invoice will be created in `status=draft`.
-    /// See the [revision documentation](https://stripe.com/docs/invoicing/invoice-revisions) for more details.
+    /// See the [revision documentation](https://docs.stripe.com/invoicing/invoice-revisions) for more details.
     pub fn from_invoice(mut self, from_invoice: impl Into<CreateInvoiceFromInvoice>) -> Self {
         self.inner.from_invoice = Some(from_invoice.into());
         self
@@ -2804,7 +2968,7 @@ impl CreateInvoice {
         self.inner.issuer = Some(issuer.into());
         self
     }
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
@@ -2826,7 +2990,7 @@ impl CreateInvoice {
     }
     /// The account (if any) for which the funds of the invoice payment are intended.
     /// If set, the invoice will be presented with the branding and support information of the specified account.
-    /// See the [Invoices with Connect](https://stripe.com/docs/billing/invoices/connect) documentation for details.
+    /// See the [Invoices with Connect](https://docs.stripe.com/billing/invoices/connect) documentation for details.
     pub fn on_behalf_of(mut self, on_behalf_of: impl Into<String>) -> Self {
         self.inner.on_behalf_of = Some(on_behalf_of.into());
         self
@@ -3011,7 +3175,7 @@ impl UpdateInvoiceBuilder {
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdateInvoiceAutomaticTax {
     /// Whether Stripe automatically computes tax on this invoice.
-    /// Note that incompatible invoice items (invoice items with manually specified [tax rates](https://stripe.com/docs/api/tax_rates), negative amounts, or `tax_behavior=unspecified`) cannot be added to automatic tax invoices.
+    /// Note that incompatible invoice items (invoice items with manually specified [tax rates](https://docs.stripe.com/api/tax_rates), negative amounts, or `tax_behavior=unspecified`) cannot be added to automatic tax invoices.
     pub enabled: bool,
     /// The account that's liable for tax.
     /// If set, the business address and tax registrations required to perform the tax calculation are loaded from this account.
@@ -3228,6 +3392,9 @@ pub struct UpdateInvoicePaymentSettingsPaymentMethodOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
     pub konbini: Option<miniserde::json::Value>,
+    /// If paying by `payto`, this sub-hash contains details about the PayTo payment method options to pass to the invoice’s PaymentIntent.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payto: Option<UpdateInvoicePaymentSettingsPaymentMethodOptionsPayto>,
     /// If paying by `sepa_debit`, this sub-hash contains details about the SEPA Direct Debit payment method options to pass to the invoice’s PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
@@ -3244,6 +3411,7 @@ impl UpdateInvoicePaymentSettingsPaymentMethodOptions {
             card: None,
             customer_balance: None,
             konbini: None,
+            payto: None,
             sepa_debit: None,
             us_bank_account: None,
         }
@@ -3552,12 +3720,12 @@ impl<'de> serde::Deserialize<'de>
 pub struct UpdateInvoicePaymentSettingsPaymentMethodOptionsCard {
     /// Installment configuration for payments attempted on this invoice.
     ///
-    /// For more information, see the [installments integration guide](https://stripe.com/docs/payments/installments).
+    /// For more information, see the [installments integration guide](https://docs.stripe.com/payments/installments).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub installments: Option<UpdateInvoicePaymentSettingsPaymentMethodOptionsCardInstallments>,
-    /// We strongly recommend that you rely on our SCA Engine to automatically prompt your customers for authentication based on risk level and [other requirements](https://stripe.com/docs/strong-customer-authentication).
+    /// We strongly recommend that you rely on our SCA Engine to automatically prompt your customers for authentication based on risk level and [other requirements](https://docs.stripe.com/strong-customer-authentication).
     /// However, if you wish to request 3D Secure based on logic from your own fraud engine, provide this option.
-    /// Read our guide on [manually requesting 3D Secure](https://stripe.com/docs/payments/3d-secure/authentication-flow#manual-three-ds) for more information on how this configuration interacts with Radar and our SCA Engine.
+    /// Read our guide on [manually requesting 3D Secure](https://docs.stripe.com/payments/3d-secure/authentication-flow#manual-three-ds) for more information on how this configuration interacts with Radar and our SCA Engine.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub request_three_d_secure:
         Option<UpdateInvoicePaymentSettingsPaymentMethodOptionsCardRequestThreeDSecure>,
@@ -3574,7 +3742,7 @@ impl Default for UpdateInvoicePaymentSettingsPaymentMethodOptionsCard {
 }
 /// Installment configuration for payments attempted on this invoice.
 ///
-/// For more information, see the [installments integration guide](https://stripe.com/docs/payments/installments).
+/// For more information, see the [installments integration guide](https://docs.stripe.com/payments/installments).
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdateInvoicePaymentSettingsPaymentMethodOptionsCardInstallments {
     /// Setting to true enables installments for this invoice.
@@ -3767,9 +3935,9 @@ impl<'de> serde::Deserialize<'de>
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-/// We strongly recommend that you rely on our SCA Engine to automatically prompt your customers for authentication based on risk level and [other requirements](https://stripe.com/docs/strong-customer-authentication).
+/// We strongly recommend that you rely on our SCA Engine to automatically prompt your customers for authentication based on risk level and [other requirements](https://docs.stripe.com/strong-customer-authentication).
 /// However, if you wish to request 3D Secure based on logic from your own fraud engine, provide this option.
-/// Read our guide on [manually requesting 3D Secure](https://stripe.com/docs/payments/3d-secure/authentication-flow#manual-three-ds) for more information on how this configuration interacts with Radar and our SCA Engine.
+/// Read our guide on [manually requesting 3D Secure](https://docs.stripe.com/payments/3d-secure/authentication-flow#manual-three-ds) for more information on how this configuration interacts with Radar and our SCA Engine.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum UpdateInvoicePaymentSettingsPaymentMethodOptionsCardRequestThreeDSecure {
@@ -3832,6 +4000,147 @@ impl serde::Serialize for UpdateInvoicePaymentSettingsPaymentMethodOptionsCardRe
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de>
     for UpdateInvoicePaymentSettingsPaymentMethodOptionsCardRequestThreeDSecure
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// If paying by `payto`, this sub-hash contains details about the PayTo payment method options to pass to the invoice’s PaymentIntent.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpdateInvoicePaymentSettingsPaymentMethodOptionsPayto {
+    /// Additional fields for Mandate creation.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mandate_options:
+        Option<UpdateInvoicePaymentSettingsPaymentMethodOptionsPaytoMandateOptions>,
+}
+impl UpdateInvoicePaymentSettingsPaymentMethodOptionsPayto {
+    pub fn new() -> Self {
+        Self { mandate_options: None }
+    }
+}
+impl Default for UpdateInvoicePaymentSettingsPaymentMethodOptionsPayto {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Additional fields for Mandate creation.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpdateInvoicePaymentSettingsPaymentMethodOptionsPaytoMandateOptions {
+    /// The maximum amount that can be collected in a single invoice.
+    /// If you don't specify a maximum, then there is no limit.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount: Option<i64>,
+    /// The purpose for which payments are made. Has a default value based on your merchant category code.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub purpose: Option<UpdateInvoicePaymentSettingsPaymentMethodOptionsPaytoMandateOptionsPurpose>,
+}
+impl UpdateInvoicePaymentSettingsPaymentMethodOptionsPaytoMandateOptions {
+    pub fn new() -> Self {
+        Self { amount: None, purpose: None }
+    }
+}
+impl Default for UpdateInvoicePaymentSettingsPaymentMethodOptionsPaytoMandateOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The purpose for which payments are made. Has a default value based on your merchant category code.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum UpdateInvoicePaymentSettingsPaymentMethodOptionsPaytoMandateOptionsPurpose {
+    DependantSupport,
+    Government,
+    Loan,
+    Mortgage,
+    Other,
+    Pension,
+    Personal,
+    Retail,
+    Salary,
+    Tax,
+    Utility,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl UpdateInvoicePaymentSettingsPaymentMethodOptionsPaytoMandateOptionsPurpose {
+    pub fn as_str(&self) -> &str {
+        use UpdateInvoicePaymentSettingsPaymentMethodOptionsPaytoMandateOptionsPurpose::*;
+        match self {
+            DependantSupport => "dependant_support",
+            Government => "government",
+            Loan => "loan",
+            Mortgage => "mortgage",
+            Other => "other",
+            Pension => "pension",
+            Personal => "personal",
+            Retail => "retail",
+            Salary => "salary",
+            Tax => "tax",
+            Utility => "utility",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr
+    for UpdateInvoicePaymentSettingsPaymentMethodOptionsPaytoMandateOptionsPurpose
+{
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdateInvoicePaymentSettingsPaymentMethodOptionsPaytoMandateOptionsPurpose::*;
+        match s {
+            "dependant_support" => Ok(DependantSupport),
+            "government" => Ok(Government),
+            "loan" => Ok(Loan),
+            "mortgage" => Ok(Mortgage),
+            "other" => Ok(Other),
+            "pension" => Ok(Pension),
+            "personal" => Ok(Personal),
+            "retail" => Ok(Retail),
+            "salary" => Ok(Salary),
+            "tax" => Ok(Tax),
+            "utility" => Ok(Utility),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdateInvoicePaymentSettingsPaymentMethodOptionsPaytoMandateOptionsPurpose"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display
+    for UpdateInvoicePaymentSettingsPaymentMethodOptionsPaytoMandateOptionsPurpose
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug
+    for UpdateInvoicePaymentSettingsPaymentMethodOptionsPaytoMandateOptionsPurpose
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize
+    for UpdateInvoicePaymentSettingsPaymentMethodOptionsPaytoMandateOptionsPurpose
+{
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdateInvoicePaymentSettingsPaymentMethodOptionsPaytoMandateOptionsPurpose
 {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
@@ -4245,6 +4554,7 @@ pub enum UpdateInvoicePaymentSettingsPaymentMethodTypes {
     Payco,
     Paynow,
     Paypal,
+    Payto,
     Promptpay,
     RevolutPay,
     SepaCreditTransfer,
@@ -4292,6 +4602,7 @@ impl UpdateInvoicePaymentSettingsPaymentMethodTypes {
             Payco => "payco",
             Paynow => "paynow",
             Paypal => "paypal",
+            Payto => "payto",
             Promptpay => "promptpay",
             RevolutPay => "revolut_pay",
             SepaCreditTransfer => "sepa_credit_transfer",
@@ -4342,6 +4653,7 @@ impl std::str::FromStr for UpdateInvoicePaymentSettingsPaymentMethodTypes {
             "payco" => Ok(Payco),
             "paynow" => Ok(Paynow),
             "paypal" => Ok(Paypal),
+            "payto" => Ok(Payto),
             "promptpay" => Ok(Promptpay),
             "revolut_pay" => Ok(RevolutPay),
             "sepa_credit_transfer" => Ok(SepaCreditTransfer),
@@ -4607,7 +4919,7 @@ pub struct UpdateInvoiceShippingCostShippingRateData {
     /// Describes a fixed amount to charge for shipping. Must be present if type is `fixed_amount`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub fixed_amount: Option<UpdateInvoiceShippingCostShippingRateDataFixedAmount>,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
@@ -4617,7 +4929,7 @@ pub struct UpdateInvoiceShippingCostShippingRateData {
     /// One of `inclusive`, `exclusive`, or `unspecified`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_behavior: Option<UpdateInvoiceShippingCostShippingRateDataTaxBehavior>,
-    /// A [tax code](https://stripe.com/docs/tax/tax-categories) ID.
+    /// A [tax code](https://docs.stripe.com/tax/tax-categories) ID.
     /// The Shipping tax code is `txcd_92010001`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_code: Option<String>,
@@ -5118,12 +5430,12 @@ impl UpdateInvoice {
     }
     /// A fee in cents (or local equivalent) that will be applied to the invoice and transferred to the application owner's Stripe account.
     /// The request must be made with an OAuth key or the Stripe-Account header in order to take an application fee.
-    /// For more information, see the application fees [documentation](https://stripe.com/docs/billing/invoices/connect#collecting-fees).
+    /// For more information, see the application fees [documentation](https://docs.stripe.com/billing/invoices/connect#collecting-fees).
     pub fn application_fee_amount(mut self, application_fee_amount: impl Into<i64>) -> Self {
         self.inner.application_fee_amount = Some(application_fee_amount.into());
         self
     }
-    /// Controls whether Stripe performs [automatic collection](https://stripe.com/docs/invoicing/integration/automatic-advancement-collection) of the invoice.
+    /// Controls whether Stripe performs [automatic collection](https://docs.stripe.com/invoicing/integration/automatic-advancement-collection) of the invoice.
     pub fn auto_advance(mut self, auto_advance: impl Into<bool>) -> Self {
         self.inner.auto_advance = Some(auto_advance.into());
         self
@@ -5229,7 +5541,7 @@ impl UpdateInvoice {
         self.inner.issuer = Some(issuer.into());
         self
     }
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
@@ -5251,7 +5563,7 @@ impl UpdateInvoice {
     }
     /// The account (if any) for which the funds of the invoice payment are intended.
     /// If set, the invoice will be presented with the branding and support information of the specified account.
-    /// See the [Invoices with Connect](https://stripe.com/docs/billing/invoices/connect) documentation for details.
+    /// See the [Invoices with Connect](https://docs.stripe.com/billing/invoices/connect) documentation for details.
     pub fn on_behalf_of(mut self, on_behalf_of: impl Into<String>) -> Self {
         self.inner.on_behalf_of = Some(on_behalf_of.into());
         self
@@ -5361,7 +5673,7 @@ pub struct AddLinesInvoiceLines {
     /// If not provided, a new item will be created.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub invoice_item: Option<String>,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
@@ -5369,11 +5681,11 @@ pub struct AddLinesInvoiceLines {
     pub metadata: Option<std::collections::HashMap<String, String>>,
     /// The period associated with this invoice item.
     /// When set to different values, the period will be rendered on the invoice.
-    /// If you have [Stripe Revenue Recognition](https://stripe.com/docs/revenue-recognition) enabled, the period will be used to recognize and defer revenue.
-    /// See the [Revenue Recognition documentation](https://stripe.com/docs/revenue-recognition/methodology/subscriptions-and-invoicing) for details.
+    /// If you have [Stripe Revenue Recognition](https://docs.stripe.com/revenue-recognition) enabled, the period will be used to recognize and defer revenue.
+    /// See the [Revenue Recognition documentation](https://docs.stripe.com/revenue-recognition/methodology/subscriptions-and-invoicing) for details.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub period: Option<Period>,
-    /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
+    /// Data used to generate a new [Price](https://docs.stripe.com/api/prices) object inline.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub price_data: Option<AddLinesInvoiceLinesPriceData>,
     /// The pricing information for the invoice item.
@@ -5384,7 +5696,7 @@ pub struct AddLinesInvoiceLines {
     pub quantity: Option<u64>,
     /// A list of up to 10 tax amounts for this line item.
     /// This can be useful if you calculate taxes on your own or use a third-party to calculate them.
-    /// You cannot set tax amounts if any line item has [tax_rates](https://stripe.com/docs/api/invoices/line_item#invoice_line_item_object-tax_rates) or if the invoice has [default_tax_rates](https://stripe.com/docs/api/invoices/object#invoice_object-default_tax_rates) or uses [automatic tax](https://stripe.com/docs/tax/invoicing).
+    /// You cannot set tax amounts if any line item has [tax_rates](https://docs.stripe.com/api/invoices/line_item#invoice_line_item_object-tax_rates) or if the invoice has [default_tax_rates](https://docs.stripe.com/api/invoices/object#invoice_object-default_tax_rates) or uses [automatic tax](https://docs.stripe.com/tax/invoicing).
     /// Pass an empty string to remove previously defined tax amounts.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_amounts: Option<Vec<AddLinesInvoiceLinesTaxAmounts>>,
@@ -5417,7 +5729,7 @@ impl Default for AddLinesInvoiceLines {
         Self::new()
     }
 }
-/// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
+/// Data used to generate a new [Price](https://docs.stripe.com/api/prices) object inline.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct AddLinesInvoiceLinesPriceData {
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
@@ -5431,7 +5743,7 @@ pub struct AddLinesInvoiceLinesPriceData {
     /// One of `product` or `product_data` is required.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub product_data: Option<ProductData>,
-    /// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
+    /// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
     /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
     /// One of `inclusive`, `exclusive`, or `unspecified`.
     /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
@@ -5458,7 +5770,7 @@ impl AddLinesInvoiceLinesPriceData {
         }
     }
 }
-/// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
+/// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
 /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
 /// One of `inclusive`, `exclusive`, or `unspecified`.
 /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
@@ -5531,7 +5843,7 @@ impl<'de> serde::Deserialize<'de> for AddLinesInvoiceLinesPriceDataTaxBehavior {
 }
 /// A list of up to 10 tax amounts for this line item.
 /// This can be useful if you calculate taxes on your own or use a third-party to calculate them.
-/// You cannot set tax amounts if any line item has [tax_rates](https://stripe.com/docs/api/invoices/line_item#invoice_line_item_object-tax_rates) or if the invoice has [default_tax_rates](https://stripe.com/docs/api/invoices/object#invoice_object-default_tax_rates) or uses [automatic tax](https://stripe.com/docs/tax/invoicing).
+/// You cannot set tax amounts if any line item has [tax_rates](https://docs.stripe.com/api/invoices/line_item#invoice_line_item_object-tax_rates) or if the invoice has [default_tax_rates](https://docs.stripe.com/api/invoices/object#invoice_object-default_tax_rates) or uses [automatic tax](https://docs.stripe.com/tax/invoicing).
 /// Pass an empty string to remove previously defined tax amounts.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct AddLinesInvoiceLinesTaxAmounts {
@@ -5922,7 +6234,7 @@ impl AddLinesInvoice {
         self.inner.expand = Some(expand.into());
         self
     }
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
@@ -6062,7 +6374,7 @@ impl FinalizeInvoiceInvoice {
     pub fn new(invoice: impl Into<stripe_shared::InvoiceId>) -> Self {
         Self { invoice: invoice.into(), inner: FinalizeInvoiceInvoiceBuilder::new() }
     }
-    /// Controls whether Stripe performs [automatic collection](https://stripe.com/docs/invoicing/integration/automatic-advancement-collection) of the invoice.
+    /// Controls whether Stripe performs [automatic collection](https://docs.stripe.com/invoicing/integration/automatic-advancement-collection) of the invoice.
     /// If `false`, the invoice's state doesn't automatically advance without an explicit action.
     pub fn auto_advance(mut self, auto_advance: impl Into<bool>) -> Self {
         self.inner.auto_advance = Some(auto_advance.into());
@@ -6390,7 +6702,7 @@ impl RemoveLinesInvoice {
         self.inner.expand = Some(expand.into());
         self
     }
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
@@ -6523,20 +6835,20 @@ pub struct UpdateLinesInvoiceLines {
     pub discounts: Option<Vec<DiscountsDataParam>>,
     /// ID of an existing line item on the invoice.
     pub id: String,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
-    /// For [type=subscription](https://stripe.com/docs/api/invoices/line_item#invoice_line_item_object-type) line items, the incoming metadata specified on the request is directly used to set this value, in contrast to [type=invoiceitem](api/invoices/line_item#invoice_line_item_object-type) line items, where any existing metadata on the invoice line is merged with the incoming data.
+    /// For [type=subscription](https://docs.stripe.com/api/invoices/line_item#invoice_line_item_object-type) line items, the incoming metadata specified on the request is directly used to set this value, in contrast to [type=invoiceitem](api/invoices/line_item#invoice_line_item_object-type) line items, where any existing metadata on the invoice line is merged with the incoming data.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub metadata: Option<std::collections::HashMap<String, String>>,
     /// The period associated with this invoice item.
     /// When set to different values, the period will be rendered on the invoice.
-    /// If you have [Stripe Revenue Recognition](https://stripe.com/docs/revenue-recognition) enabled, the period will be used to recognize and defer revenue.
-    /// See the [Revenue Recognition documentation](https://stripe.com/docs/revenue-recognition/methodology/subscriptions-and-invoicing) for details.
+    /// If you have [Stripe Revenue Recognition](https://docs.stripe.com/revenue-recognition) enabled, the period will be used to recognize and defer revenue.
+    /// See the [Revenue Recognition documentation](https://docs.stripe.com/revenue-recognition/methodology/subscriptions-and-invoicing) for details.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub period: Option<Period>,
-    /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
+    /// Data used to generate a new [Price](https://docs.stripe.com/api/prices) object inline.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub price_data: Option<UpdateLinesInvoiceLinesPriceData>,
     /// The pricing information for the invoice item.
@@ -6547,7 +6859,7 @@ pub struct UpdateLinesInvoiceLines {
     pub quantity: Option<u64>,
     /// A list of up to 10 tax amounts for this line item.
     /// This can be useful if you calculate taxes on your own or use a third-party to calculate them.
-    /// You cannot set tax amounts if any line item has [tax_rates](https://stripe.com/docs/api/invoices/line_item#invoice_line_item_object-tax_rates) or if the invoice has [default_tax_rates](https://stripe.com/docs/api/invoices/object#invoice_object-default_tax_rates) or uses [automatic tax](https://stripe.com/docs/tax/invoicing).
+    /// You cannot set tax amounts if any line item has [tax_rates](https://docs.stripe.com/api/invoices/line_item#invoice_line_item_object-tax_rates) or if the invoice has [default_tax_rates](https://docs.stripe.com/api/invoices/object#invoice_object-default_tax_rates) or uses [automatic tax](https://docs.stripe.com/tax/invoicing).
     /// Pass an empty string to remove previously defined tax amounts.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_amounts: Option<Vec<UpdateLinesInvoiceLinesTaxAmounts>>,
@@ -6575,7 +6887,7 @@ impl UpdateLinesInvoiceLines {
         }
     }
 }
-/// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
+/// Data used to generate a new [Price](https://docs.stripe.com/api/prices) object inline.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdateLinesInvoiceLinesPriceData {
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
@@ -6589,7 +6901,7 @@ pub struct UpdateLinesInvoiceLinesPriceData {
     /// One of `product` or `product_data` is required.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub product_data: Option<ProductData>,
-    /// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
+    /// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
     /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
     /// One of `inclusive`, `exclusive`, or `unspecified`.
     /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
@@ -6616,7 +6928,7 @@ impl UpdateLinesInvoiceLinesPriceData {
         }
     }
 }
-/// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
+/// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
 /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
 /// One of `inclusive`, `exclusive`, or `unspecified`.
 /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
@@ -6689,7 +7001,7 @@ impl<'de> serde::Deserialize<'de> for UpdateLinesInvoiceLinesPriceDataTaxBehavio
 }
 /// A list of up to 10 tax amounts for this line item.
 /// This can be useful if you calculate taxes on your own or use a third-party to calculate them.
-/// You cannot set tax amounts if any line item has [tax_rates](https://stripe.com/docs/api/invoices/line_item#invoice_line_item_object-tax_rates) or if the invoice has [default_tax_rates](https://stripe.com/docs/api/invoices/object#invoice_object-default_tax_rates) or uses [automatic tax](https://stripe.com/docs/tax/invoicing).
+/// You cannot set tax amounts if any line item has [tax_rates](https://docs.stripe.com/api/invoices/line_item#invoice_line_item_object-tax_rates) or if the invoice has [default_tax_rates](https://docs.stripe.com/api/invoices/object#invoice_object-default_tax_rates) or uses [automatic tax](https://docs.stripe.com/tax/invoicing).
 /// Pass an empty string to remove previously defined tax amounts.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdateLinesInvoiceLinesTaxAmounts {
@@ -7082,11 +7394,11 @@ impl UpdateLinesInvoice {
         self.inner.expand = Some(expand.into());
         self
     }
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
-    /// For [type=subscription](https://stripe.com/docs/api/invoices/line_item#invoice_line_item_object-type) line items, the incoming metadata specified on the request is directly used to set this value, in contrast to [type=invoiceitem](api/invoices/line_item#invoice_line_item_object-type) line items, where any existing metadata on the invoice line is merged with the incoming data.
+    /// For [type=subscription](https://docs.stripe.com/api/invoices/line_item#invoice_line_item_object-type) line items, the incoming metadata specified on the request is directly used to set this value, in contrast to [type=invoiceitem](api/invoices/line_item#invoice_line_item_object-type) line items, where any existing metadata on the invoice line is merged with the incoming data.
     pub fn invoice_metadata(
         mut self,
         invoice_metadata: impl Into<std::collections::HashMap<String, String>>,
@@ -7191,6 +7503,8 @@ struct CreatePreviewInvoiceBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     customer: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    customer_account: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     customer_details: Option<CreatePreviewInvoiceCustomerDetails>,
     #[serde(skip_serializing_if = "Option::is_none")]
     discounts: Option<Vec<DiscountsDataParam>>,
@@ -7219,6 +7533,7 @@ impl CreatePreviewInvoiceBuilder {
             automatic_tax: None,
             currency: None,
             customer: None,
+            customer_account: None,
             customer_details: None,
             discounts: None,
             expand: None,
@@ -7237,7 +7552,7 @@ impl CreatePreviewInvoiceBuilder {
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePreviewInvoiceAutomaticTax {
     /// Whether Stripe automatically computes tax on this invoice.
-    /// Note that incompatible invoice items (invoice items with manually specified [tax rates](https://stripe.com/docs/api/tax_rates), negative amounts, or `tax_behavior=unspecified`) cannot be added to automatic tax invoices.
+    /// Note that incompatible invoice items (invoice items with manually specified [tax rates](https://docs.stripe.com/api/tax_rates), negative amounts, or `tax_behavior=unspecified`) cannot be added to automatic tax invoices.
     pub enabled: bool,
     /// The account that's liable for tax.
     /// If set, the business address and tax registrations required to perform the tax calculation are loaded from this account.
@@ -7337,6 +7652,7 @@ impl<'de> serde::Deserialize<'de> for CreatePreviewInvoiceAutomaticTaxLiabilityT
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePreviewInvoiceCustomerDetails {
     /// The customer's address.
+    /// Learn about [country-specific requirements for calculating tax](/invoicing/taxes?dashboard-or-api=dashboard#set-up-customer).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub address: Option<OptionalFieldsAddress>,
     /// The customer's shipping information. Appears on invoices emailed to this customer.
@@ -7400,7 +7716,7 @@ pub struct CreatePreviewInvoiceCustomerDetailsShippingAddress {
     /// ZIP or postal code.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub postal_code: Option<String>,
-    /// State, county, province, or region.
+    /// State, county, province, or region ([ISO 3166-2](https://en.wikipedia.org/wiki/ISO_3166-2)).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
 }
@@ -7933,7 +8249,7 @@ pub struct CreatePreviewInvoiceInvoiceItems {
     /// If not specified, a new invoice item will be added to the preview of the upcoming invoice.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub invoiceitem: Option<String>,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
@@ -7941,27 +8257,27 @@ pub struct CreatePreviewInvoiceInvoiceItems {
     pub metadata: Option<std::collections::HashMap<String, String>>,
     /// The period associated with this invoice item.
     /// When set to different values, the period will be rendered on the invoice.
-    /// If you have [Stripe Revenue Recognition](https://stripe.com/docs/revenue-recognition) enabled, the period will be used to recognize and defer revenue.
-    /// See the [Revenue Recognition documentation](https://stripe.com/docs/revenue-recognition/methodology/subscriptions-and-invoicing) for details.
+    /// If you have [Stripe Revenue Recognition](https://docs.stripe.com/revenue-recognition) enabled, the period will be used to recognize and defer revenue.
+    /// See the [Revenue Recognition documentation](https://docs.stripe.com/revenue-recognition/methodology/subscriptions-and-invoicing) for details.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub period: Option<Period>,
     /// The ID of the price object. One of `price` or `price_data` is required.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub price: Option<String>,
-    /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
+    /// Data used to generate a new [Price](https://docs.stripe.com/api/prices) object inline.
     /// One of `price` or `price_data` is required.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub price_data: Option<CreatePreviewInvoiceInvoiceItemsPriceData>,
     /// Non-negative integer. The quantity of units for the invoice item.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub quantity: Option<u64>,
-    /// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
+    /// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
     /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
     /// One of `inclusive`, `exclusive`, or `unspecified`.
     /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_behavior: Option<CreatePreviewInvoiceInvoiceItemsTaxBehavior>,
-    /// A [tax code](https://stripe.com/docs/tax/tax-categories) ID.
+    /// A [tax code](https://docs.stripe.com/tax/tax-categories) ID.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_code: Option<String>,
     /// The tax rates that apply to the item. When set, any `default_tax_rates` do not apply to this item.
@@ -8004,7 +8320,7 @@ impl Default for CreatePreviewInvoiceInvoiceItems {
         Self::new()
     }
 }
-/// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
+/// Data used to generate a new [Price](https://docs.stripe.com/api/prices) object inline.
 /// One of `price` or `price_data` is required.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePreviewInvoiceInvoiceItemsPriceData {
@@ -8013,7 +8329,7 @@ pub struct CreatePreviewInvoiceInvoiceItemsPriceData {
     pub currency: stripe_types::Currency,
     /// The ID of the [Product](https://docs.stripe.com/api/products) that this [Price](https://docs.stripe.com/api/prices) will belong to.
     pub product: String,
-    /// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
+    /// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
     /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
     /// One of `inclusive`, `exclusive`, or `unspecified`.
     /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
@@ -8038,7 +8354,7 @@ impl CreatePreviewInvoiceInvoiceItemsPriceData {
         }
     }
 }
-/// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
+/// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
 /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
 /// One of `inclusive`, `exclusive`, or `unspecified`.
 /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
@@ -8109,7 +8425,7 @@ impl<'de> serde::Deserialize<'de> for CreatePreviewInvoiceInvoiceItemsPriceDataT
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-/// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
+/// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
 /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
 /// One of `inclusive`, `exclusive`, or `unspecified`.
 /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
@@ -8618,7 +8934,7 @@ pub struct CreatePreviewInvoiceScheduleDetailsPhases {
     pub automatic_tax: Option<CreatePreviewInvoiceScheduleDetailsPhasesAutomaticTax>,
     /// Can be set to `phase_start` to set the anchor to the start of the phase or `automatic` to automatically change it if needed.
     /// Cannot be set to `phase_start` if this phase specifies a trial.
-    /// For more information, see the billing cycle [documentation](https://stripe.com/docs/billing/subscriptions/billing-cycle).
+    /// For more information, see the billing cycle [documentation](https://docs.stripe.com/billing/subscriptions/billing-cycle).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_cycle_anchor: Option<CreatePreviewInvoiceScheduleDetailsPhasesBillingCycleAnchor>,
     /// Define thresholds at which an invoice will be sent, and the subscription advanced to a new billing period.
@@ -8640,8 +8956,8 @@ pub struct CreatePreviewInvoiceScheduleDetailsPhases {
     /// If not set, invoices will use the default payment method in the customer's invoice settings.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub default_payment_method: Option<String>,
-    /// A list of [Tax Rate](https://stripe.com/docs/api/tax_rates) ids.
-    /// These Tax Rates will set the Subscription's [`default_tax_rates`](https://stripe.com/docs/api/subscriptions/create#create_subscription-default_tax_rates), which means they will be the Invoice's [`default_tax_rates`](https://stripe.com/docs/api/invoices/create#create_invoice-default_tax_rates) for any Invoices issued by the Subscription during this Phase.
+    /// A list of [Tax Rate](https://docs.stripe.com/api/tax_rates) ids.
+    /// These Tax Rates will set the Subscription's [`default_tax_rates`](https://docs.stripe.com/api/subscriptions/create#create_subscription-default_tax_rates), which means they will be the Invoice's [`default_tax_rates`](https://docs.stripe.com/api/invoices/create#create_invoice-default_tax_rates) for any Invoices issued by the Subscription during this Phase.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub default_tax_rates: Option<Vec<String>>,
     /// Subscription description, meant to be displayable to the customer.
@@ -8656,8 +8972,7 @@ pub struct CreatePreviewInvoiceScheduleDetailsPhases {
     /// The number of intervals the phase should last. If set, `end_date` must not be set.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub duration: Option<CreatePreviewInvoiceScheduleDetailsPhasesDuration>,
-    /// The date at which this phase of the subscription schedule ends.
-    /// If set, `iterations` must not be set.
+    /// The date at which this phase of the subscription schedule ends. If set, `duration` must not be set.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub end_date: Option<CreatePreviewInvoiceScheduleDetailsPhasesEndDate>,
     /// All invoices will be billed using the specified settings.
@@ -8665,7 +8980,7 @@ pub struct CreatePreviewInvoiceScheduleDetailsPhases {
     pub invoice_settings: Option<CreatePreviewInvoiceScheduleDetailsPhasesInvoiceSettings>,
     /// List of configuration items, each with an attached price, to apply during this phase of the subscription schedule.
     pub items: Vec<CreatePreviewInvoiceScheduleDetailsPhasesItems>,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to a phase.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to a phase.
     /// Metadata on a schedule's phase will update the underlying subscription's `metadata` when the phase is entered, adding new keys and replacing existing keys in the subscription's `metadata`.
     /// Individual keys in the subscription's `metadata` can be unset by posting an empty value to them in the phase's `metadata`.
     /// To unset all keys in the subscription's `metadata`, update the subscription directly or unset every key individually from the phase's `metadata`.
@@ -8674,8 +8989,8 @@ pub struct CreatePreviewInvoiceScheduleDetailsPhases {
     /// The account on behalf of which to charge, for each of the associated subscription's invoices.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub on_behalf_of: Option<String>,
-    /// Controls whether the subscription schedule should create [prorations](https://stripe.com/docs/billing/subscriptions/prorations) when transitioning to this phase if there is a difference in billing configuration.
-    /// It's different from the request-level [proration_behavior](https://stripe.com/docs/api/subscription_schedules/update#update_subscription_schedule-proration_behavior) parameter which controls what happens if the update request affects the billing configuration (item price, quantity, etc.) of the current phase.
+    /// Controls whether the subscription schedule should create [prorations](https://docs.stripe.com/billing/subscriptions/prorations) when transitioning to this phase if there is a difference in billing configuration.
+    /// It's different from the request-level [proration_behavior](https://docs.stripe.com/api/subscription_schedules/update#update_subscription_schedule-proration_behavior) parameter which controls what happens if the update request affects the billing configuration (item price, quantity, etc.) of the current phase.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub proration_behavior: Option<CreatePreviewInvoiceScheduleDetailsPhasesProrationBehavior>,
     /// The date at which this phase of the subscription schedule starts or `now`.
@@ -8728,7 +9043,7 @@ pub struct CreatePreviewInvoiceScheduleDetailsPhasesAddInvoiceItems {
     /// The coupons to redeem into discounts for the item.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub discounts: Option<Vec<DiscountsDataParam>>,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
@@ -8741,7 +9056,7 @@ pub struct CreatePreviewInvoiceScheduleDetailsPhasesAddInvoiceItems {
     /// The ID of the price object. One of `price` or `price_data` is required.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub price: Option<String>,
-    /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
+    /// Data used to generate a new [Price](https://docs.stripe.com/api/prices) object inline.
     /// One of `price` or `price_data` is required.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub price_data: Option<CreatePreviewInvoiceScheduleDetailsPhasesAddInvoiceItemsPriceData>,
@@ -8963,7 +9278,7 @@ impl<'de> serde::Deserialize<'de>
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-/// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
+/// Data used to generate a new [Price](https://docs.stripe.com/api/prices) object inline.
 /// One of `price` or `price_data` is required.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePreviewInvoiceScheduleDetailsPhasesAddInvoiceItemsPriceData {
@@ -8972,7 +9287,7 @@ pub struct CreatePreviewInvoiceScheduleDetailsPhasesAddInvoiceItemsPriceData {
     pub currency: stripe_types::Currency,
     /// The ID of the [Product](https://docs.stripe.com/api/products) that this [Price](https://docs.stripe.com/api/prices) will belong to.
     pub product: String,
-    /// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
+    /// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
     /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
     /// One of `inclusive`, `exclusive`, or `unspecified`.
     /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
@@ -8998,7 +9313,7 @@ impl CreatePreviewInvoiceScheduleDetailsPhasesAddInvoiceItemsPriceData {
         }
     }
 }
-/// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
+/// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
 /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
 /// One of `inclusive`, `exclusive`, or `unspecified`.
 /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
@@ -9183,7 +9498,7 @@ impl<'de> serde::Deserialize<'de>
 }
 /// Can be set to `phase_start` to set the anchor to the start of the phase or `automatic` to automatically change it if needed.
 /// Cannot be set to `phase_start` if this phase specifies a trial.
-/// For more information, see the billing cycle [documentation](https://stripe.com/docs/billing/subscriptions/billing-cycle).
+/// For more information, see the billing cycle [documentation](https://docs.stripe.com/billing/subscriptions/billing-cycle).
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum CreatePreviewInvoiceScheduleDetailsPhasesBillingCycleAnchor {
@@ -9357,8 +9672,7 @@ impl<'de> serde::Deserialize<'de> for CreatePreviewInvoiceScheduleDetailsPhasesD
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-/// The date at which this phase of the subscription schedule ends.
-/// If set, `iterations` must not be set.
+/// The date at which this phase of the subscription schedule ends. If set, `duration` must not be set.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 #[serde(rename_all = "snake_case")]
 pub enum CreatePreviewInvoiceScheduleDetailsPhasesEndDate {
@@ -9487,7 +9801,7 @@ pub struct CreatePreviewInvoiceScheduleDetailsPhasesItems {
     /// The coupons to redeem into discounts for the subscription item.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub discounts: Option<Vec<DiscountsDataParam>>,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to a configuration item.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to a configuration item.
     /// Metadata on a configuration item will update the underlying subscription item's `metadata` when the phase is entered, adding new keys and replacing existing keys.
     /// Individual keys in the subscription item's `metadata` can be unset by posting an empty value to them in the configuration item's `metadata`.
     /// To unset all keys in the subscription item's `metadata`, update the subscription item directly or unset every key individually from the configuration item's `metadata`.
@@ -9499,15 +9813,15 @@ pub struct CreatePreviewInvoiceScheduleDetailsPhasesItems {
     /// The ID of the price object.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub price: Option<String>,
-    /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
+    /// Data used to generate a new [Price](https://docs.stripe.com/api/prices) object inline.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub price_data: Option<CreatePreviewInvoiceScheduleDetailsPhasesItemsPriceData>,
     /// Quantity for the given price.
     /// Can be set only if the price's `usage_type` is `licensed` and not `metered`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub quantity: Option<u64>,
-    /// A list of [Tax Rate](https://stripe.com/docs/api/tax_rates) ids.
-    /// These Tax Rates will override the [`default_tax_rates`](https://stripe.com/docs/api/subscriptions/create#create_subscription-default_tax_rates) on the Subscription.
+    /// A list of [Tax Rate](https://docs.stripe.com/api/tax_rates) ids.
+    /// These Tax Rates will override the [`default_tax_rates`](https://docs.stripe.com/api/subscriptions/create#create_subscription-default_tax_rates) on the Subscription.
     /// When updating, pass an empty string to remove previously-defined tax rates.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_rates: Option<Vec<String>>,
@@ -9531,7 +9845,7 @@ impl Default for CreatePreviewInvoiceScheduleDetailsPhasesItems {
         Self::new()
     }
 }
-/// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
+/// Data used to generate a new [Price](https://docs.stripe.com/api/prices) object inline.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePreviewInvoiceScheduleDetailsPhasesItemsPriceData {
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
@@ -9541,7 +9855,7 @@ pub struct CreatePreviewInvoiceScheduleDetailsPhasesItemsPriceData {
     pub product: String,
     /// The recurring components of a price such as `interval` and `interval_count`.
     pub recurring: CreatePreviewInvoiceScheduleDetailsPhasesItemsPriceDataRecurring,
-    /// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
+    /// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
     /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
     /// One of `inclusive`, `exclusive`, or `unspecified`.
     /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
@@ -9666,7 +9980,7 @@ impl<'de> serde::Deserialize<'de>
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-/// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
+/// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
 /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
 /// One of `inclusive`, `exclusive`, or `unspecified`.
 /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
@@ -9739,8 +10053,8 @@ impl<'de> serde::Deserialize<'de>
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-/// Controls whether the subscription schedule should create [prorations](https://stripe.com/docs/billing/subscriptions/prorations) when transitioning to this phase if there is a difference in billing configuration.
-/// It's different from the request-level [proration_behavior](https://stripe.com/docs/api/subscription_schedules/update#update_subscription_schedule-proration_behavior) parameter which controls what happens if the update request affects the billing configuration (item price, quantity, etc.) of the current phase.
+/// Controls whether the subscription schedule should create [prorations](https://docs.stripe.com/billing/subscriptions/prorations) when transitioning to this phase if there is a difference in billing configuration.
+/// It's different from the request-level [proration_behavior](https://docs.stripe.com/api/subscription_schedules/update#update_subscription_schedule-proration_behavior) parameter which controls what happens if the update request affects the billing configuration (item price, quantity, etc.) of the current phase.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum CreatePreviewInvoiceScheduleDetailsPhasesProrationBehavior {
@@ -9914,7 +10228,7 @@ impl<'de> serde::Deserialize<'de> for CreatePreviewInvoiceScheduleDetailsProrati
 /// Cannot be used with `schedule` or `schedule_details` fields.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePreviewInvoiceSubscriptionDetails {
-    /// For new subscriptions, a future timestamp to anchor the subscription's [billing cycle](https://stripe.com/docs/subscriptions/billing-cycle).
+    /// For new subscriptions, a future timestamp to anchor the subscription's [billing cycle](https://docs.stripe.com/subscriptions/billing-cycle).
     /// This is used to determine the date of the first full invoice, and, for plans with `month` or `year` intervals, the day of the month for subsequent invoices.
     /// For existing subscriptions, the value can only be set to `now` or `unchanged`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -9941,7 +10255,7 @@ pub struct CreatePreviewInvoiceSubscriptionDetails {
     /// A list of up to 20 subscription items, each with an attached price.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<CreatePreviewInvoiceSubscriptionDetailsItems>>,
-    /// Determines how to handle [prorations](https://stripe.com/docs/billing/subscriptions/prorations) when the billing cycle changes (e.g., when switching plans, resetting `billing_cycle_anchor=now`, or starting a trial), or if an item's `quantity` changes.
+    /// Determines how to handle [prorations](https://docs.stripe.com/billing/subscriptions/prorations) when the billing cycle changes (e.g., when switching plans, resetting `billing_cycle_anchor=now`, or starting a trial), or if an item's `quantity` changes.
     /// The default value is `create_prorations`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub proration_behavior: Option<CreatePreviewInvoiceSubscriptionDetailsProrationBehavior>,
@@ -9985,7 +10299,7 @@ impl Default for CreatePreviewInvoiceSubscriptionDetails {
         Self::new()
     }
 }
-/// For new subscriptions, a future timestamp to anchor the subscription's [billing cycle](https://stripe.com/docs/subscriptions/billing-cycle).
+/// For new subscriptions, a future timestamp to anchor the subscription's [billing cycle](https://docs.stripe.com/subscriptions/billing-cycle).
 /// This is used to determine the date of the first full invoice, and, for plans with `month` or `year` intervals, the day of the month for subsequent invoices.
 /// For existing subscriptions, the value can only be set to `now` or `unchanged`.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
@@ -10203,7 +10517,7 @@ pub struct CreatePreviewInvoiceSubscriptionDetailsItems {
     /// Subscription item to update.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
@@ -10217,15 +10531,15 @@ pub struct CreatePreviewInvoiceSubscriptionDetailsItems {
     /// When changing a subscription item's price, `quantity` is set to 1 unless a `quantity` parameter is provided.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub price: Option<String>,
-    /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
+    /// Data used to generate a new [Price](https://docs.stripe.com/api/prices) object inline.
     /// One of `price` or `price_data` is required.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub price_data: Option<CreatePreviewInvoiceSubscriptionDetailsItemsPriceData>,
     /// Quantity for this item.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub quantity: Option<u64>,
-    /// A list of [Tax Rate](https://stripe.com/docs/api/tax_rates) ids.
-    /// These Tax Rates will override the [`default_tax_rates`](https://stripe.com/docs/api/subscriptions/create#create_subscription-default_tax_rates) on the Subscription.
+    /// A list of [Tax Rate](https://docs.stripe.com/api/tax_rates) ids.
+    /// These Tax Rates will override the [`default_tax_rates`](https://docs.stripe.com/api/subscriptions/create#create_subscription-default_tax_rates) on the Subscription.
     /// When updating, pass an empty string to remove previously-defined tax rates.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_rates: Option<Vec<String>>,
@@ -10252,7 +10566,7 @@ impl Default for CreatePreviewInvoiceSubscriptionDetailsItems {
         Self::new()
     }
 }
-/// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
+/// Data used to generate a new [Price](https://docs.stripe.com/api/prices) object inline.
 /// One of `price` or `price_data` is required.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePreviewInvoiceSubscriptionDetailsItemsPriceData {
@@ -10263,7 +10577,7 @@ pub struct CreatePreviewInvoiceSubscriptionDetailsItemsPriceData {
     pub product: String,
     /// The recurring components of a price such as `interval` and `interval_count`.
     pub recurring: CreatePreviewInvoiceSubscriptionDetailsItemsPriceDataRecurring,
-    /// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
+    /// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
     /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
     /// One of `inclusive`, `exclusive`, or `unspecified`.
     /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
@@ -10384,7 +10698,7 @@ impl<'de> serde::Deserialize<'de>
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-/// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
+/// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
 /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
 /// One of `inclusive`, `exclusive`, or `unspecified`.
 /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
@@ -10457,7 +10771,7 @@ impl<'de> serde::Deserialize<'de>
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-/// Determines how to handle [prorations](https://stripe.com/docs/billing/subscriptions/prorations) when the billing cycle changes (e.g., when switching plans, resetting `billing_cycle_anchor=now`, or starting a trial), or if an item's `quantity` changes.
+/// Determines how to handle [prorations](https://docs.stripe.com/billing/subscriptions/prorations) when the billing cycle changes (e.g., when switching plans, resetting `billing_cycle_anchor=now`, or starting a trial), or if an item's `quantity` changes.
 /// The default value is `create_prorations`.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
@@ -10635,10 +10949,16 @@ impl CreatePreviewInvoice {
         self.inner.currency = Some(currency.into());
         self
     }
-    /// The identifier of the customer whose upcoming invoice you'd like to retrieve.
+    /// The identifier of the customer whose upcoming invoice you're retrieving.
     /// If `automatic_tax` is enabled then one of `customer`, `customer_details`, `subscription`, or `schedule` must be set.
     pub fn customer(mut self, customer: impl Into<String>) -> Self {
         self.inner.customer = Some(customer.into());
+        self
+    }
+    /// The identifier of the account representing the customer whose upcoming invoice you're retrieving.
+    /// If `automatic_tax` is enabled then one of `customer`, `customer_account`, `customer_details`, `subscription`, or `schedule` must be set.
+    pub fn customer_account(mut self, customer_account: impl Into<String>) -> Self {
+        self.inner.customer_account = Some(customer_account.into());
         self
     }
     /// Details about the customer you want to invoice or overrides for an existing customer.
@@ -10679,7 +10999,7 @@ impl CreatePreviewInvoice {
     }
     /// The account (if any) for which the funds of the invoice payment are intended.
     /// If set, the invoice will be presented with the branding and support information of the specified account.
-    /// See the [Invoices with Connect](https://stripe.com/docs/billing/invoices/connect) documentation for details.
+    /// See the [Invoices with Connect](https://docs.stripe.com/billing/invoices/connect) documentation for details.
     pub fn on_behalf_of(mut self, on_behalf_of: impl Into<String>) -> Self {
         self.inner.on_behalf_of = Some(on_behalf_of.into());
         self
@@ -10818,7 +11138,7 @@ pub struct OptionalFieldsAddress {
     /// ZIP or postal code.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub postal_code: Option<String>,
-    /// State, county, province, or region.
+    /// State, county, province, or region ([ISO 3166-2](https://en.wikipedia.org/wiki/ISO_3166-2)).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
 }
@@ -10870,7 +11190,7 @@ pub struct ProductData {
     /// A list of up to 8 URLs of images for this product, meant to be displayable to the customer.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub images: Option<Vec<String>>,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
@@ -10878,7 +11198,7 @@ pub struct ProductData {
     pub metadata: Option<std::collections::HashMap<String, String>>,
     /// The product's name, meant to be displayable to the customer.
     pub name: String,
-    /// A [tax code](https://stripe.com/docs/tax/tax-categories) ID.
+    /// A [tax code](https://docs.stripe.com/tax/tax-categories) ID.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_code: Option<String>,
     /// A label that represents units of this product.
@@ -10916,7 +11236,7 @@ impl Default for PricingParam {
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct ItemBillingThresholdsParam {
-    /// Number of units that meets the billing threshold to advance the subscription to a new billing period (e.g., it takes 10 $5 units to meet a $50 [monetary threshold](https://stripe.com/docs/api/subscriptions/update#update_subscription-billing_thresholds-amount_gte)).
+    /// Number of units that meets the billing threshold to advance the subscription to a new billing period (e.g., it takes 10 $5 units to meet a $50 [monetary threshold](https://docs.stripe.com/api/subscriptions/update#update_subscription-billing_thresholds-amount_gte)).
     pub usage_gte: i64,
 }
 impl ItemBillingThresholdsParam {

@@ -87,21 +87,25 @@ impl CreateFinancialConnectionsSessionBuilder {
 /// The account holder to link accounts for.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateFinancialConnectionsSessionAccountHolder {
-    /// The ID of the Stripe account whose accounts will be retrieved.
-    /// Should only be present if `type` is `account`.
+    /// The ID of the Stripe account whose accounts you will retrieve.
+    /// Only available when `type` is `account`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub account: Option<String>,
-    /// The ID of the Stripe customer whose accounts will be retrieved.
-    /// Should only be present if `type` is `customer`.
+    /// The ID of the Stripe customer whose accounts you will retrieve.
+    /// Only available when `type` is `customer`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub customer: Option<String>,
+    /// The ID of Account representing a customer whose accounts you will retrieve.
+    /// Only available when `type` is `customer`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub customer_account: Option<String>,
     /// Type of account holder to collect accounts for.
     #[serde(rename = "type")]
     pub type_: CreateFinancialConnectionsSessionAccountHolderType,
 }
 impl CreateFinancialConnectionsSessionAccountHolder {
     pub fn new(type_: impl Into<CreateFinancialConnectionsSessionAccountHolderType>) -> Self {
-        Self { account: None, customer: None, type_: type_.into() }
+        Self { account: None, customer: None, customer_account: None, type_: type_.into() }
     }
 }
 /// Type of account holder to collect accounts for.

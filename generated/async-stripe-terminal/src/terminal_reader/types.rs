@@ -1,6 +1,6 @@
 /// A Reader represents a physical device for accepting payment details.
 ///
-/// Related guide: [Connecting to a reader](https://stripe.com/docs/terminal/payments/connect-reader)
+/// Related guide: [Connecting to a reader](https://docs.stripe.com/terminal/payments/connect-reader)
 ///
 /// For more details see <<https://stripe.com/docs/api/terminal/readers/object>>.
 #[derive(Clone, Debug)]
@@ -19,12 +19,14 @@ pub struct TerminalReader {
     /// Custom label given to the reader for easier identification.
     pub label: String,
     /// The last time this reader reported to Stripe backend.
+    /// Timestamp is measured in milliseconds since the Unix epoch.
+    /// Unlike most other Stripe timestamp fields which use seconds, this field uses milliseconds.
     pub last_seen_at: Option<stripe_types::Timestamp>,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
     /// The location identifier of the reader.
     pub location: Option<stripe_types::Expandable<stripe_terminal::TerminalLocation>>,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: std::collections::HashMap<String, String>,
     /// Serial number of the reader.

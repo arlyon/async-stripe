@@ -17,7 +17,7 @@ pub struct OutboundTransfersPaymentMethodDetailsUsBankAccount {
     /// ID of the mandate used to make this payment.
     pub mandate: Option<stripe_types::Expandable<stripe_shared::Mandate>>,
     /// The network rails used.
-    /// See the [docs](https://stripe.com/docs/treasury/money-movement/timelines) to learn more about money movement timelines for each network type.
+    /// See the [docs](https://docs.stripe.com/treasury/money-movement/timelines) to learn more about money movement timelines for each network type.
     pub network: OutboundTransfersPaymentMethodDetailsUsBankAccountNetwork,
     /// Routing number of the bank account.
     pub routing_number: Option<String>,
@@ -357,7 +357,7 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// The network rails used.
-/// See the [docs](https://stripe.com/docs/treasury/money-movement/timelines) to learn more about money movement timelines for each network type.
+/// See the [docs](https://docs.stripe.com/treasury/money-movement/timelines) to learn more about money movement timelines for each network type.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum OutboundTransfersPaymentMethodDetailsUsBankAccountNetwork {

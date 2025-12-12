@@ -7,7 +7,7 @@ pub struct PortalLoginPage {
     /// If `false`, the previously generated `url`, if any, will be deactivated.
     pub enabled: bool,
     /// A shareable URL to the hosted portal login page.
-    /// Your customers will be able to log in with their [email](https://stripe.com/docs/api/customers/object#customer_object-email) and receive a link to their customer portal.
+    /// Your customers will be able to log in with their [email](https://docs.stripe.com/api/customers/object#customer_object-email) and receive a link to their customer portal.
     pub url: Option<String>,
 }
 #[doc(hidden)]

@@ -6,10 +6,9 @@
 //! - Using idempotency keys for critical operations
 //! - Logging error details for debugging
 
-use stripe::{
-    Client, CreatePaymentIntent, Currency, IdempotencyKey, PaymentIntent, RequestStrategy,
-    StripeError,
-};
+use stripe::{Client, IdempotencyKey, RequestStrategy, StripeError, StripeRequest};
+use stripe_core::payment_intent::{CreatePaymentIntent, RetrievePaymentIntent};
+use stripe_types::Currency;
 use tracing::{error, info};
 
 #[tokio::main]
@@ -31,7 +30,7 @@ async fn main() {
 
 // Best Practice 1: Handle Specific Errors
 async fn handle_specific_errors(client: &Client) {
-    let result = PaymentIntent::retrieve(client, "pi_example", &[]).await;
+    let result = RetrievePaymentIntent::new("pi_example").send(client).await;
 
     match result {
         Err(StripeError::Stripe(api_error, 402)) => {
@@ -64,6 +63,7 @@ async fn use_idempotency_key(client: &Client) {
     let key = IdempotencyKey::new("order_12345").unwrap();
 
     let payment = CreatePaymentIntent::new(1000, Currency::USD)
+        .customize()
         .request_strategy(RequestStrategy::Idempotent(key))
         .send(client)
         .await;
@@ -80,12 +80,12 @@ async fn use_idempotency_key(client: &Client) {
 
 // Best Practice 3: Log Error Details
 async fn log_error_details(client: &Client) {
-    let result = PaymentIntent::retrieve(client, "pi_example", &[]).await;
+    let result = RetrievePaymentIntent::new("pi_example").send(client).await;
 
     if let Err(StripeError::Stripe(api_error, status)) = result {
         error!(
             status = status,
-            error_type = ?api_error.error_type,
+            error_type = ?api_error.type_,
             code = ?api_error.code,
             message = ?api_error.message,
             param = ?api_error.param,

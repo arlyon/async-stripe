@@ -2,9 +2,9 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentMethodDetailsPaynow {
-    /// ID of the [location](https://stripe.com/docs/api/terminal/locations) that this transaction's reader is assigned to.
+    /// ID of the [location](https://docs.stripe.com/api/terminal/locations) that this transaction's reader is assigned to.
     pub location: Option<String>,
-    /// ID of the [reader](https://stripe.com/docs/api/terminal/readers) this transaction was made on.
+    /// ID of the [reader](https://docs.stripe.com/api/terminal/readers) this transaction was made on.
     pub reader: Option<String>,
     /// Reference number associated with this PayNow payment
     pub reference: Option<String>,

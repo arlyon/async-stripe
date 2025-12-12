@@ -30,10 +30,14 @@ pub struct Quote {
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub currency: Option<stripe_types::Currency>,
-    /// The customer which this quote belongs to.
-    /// A customer is required before finalizing the quote.
-    /// Once specified, it cannot be changed.
+    /// The customer who received this quote.
+    /// A customer is required to finalize the quote.
+    /// Once specified, you can't change it.
     pub customer: Option<stripe_types::Expandable<stripe_shared::Customer>>,
+    /// The account representing the customer who received this quote.
+    /// A customer or account is required to finalize the quote.
+    /// Once specified, you can't change it.
+    pub customer_account: Option<String>,
     /// The tax rates applied to this quote.
     pub default_tax_rates: Option<Vec<stripe_types::Expandable<stripe_shared::TaxRate>>>,
     /// A description that will be displayed on the quote PDF.
@@ -46,7 +50,7 @@ pub struct Quote {
     /// A footer that will be displayed on the quote PDF.
     pub footer: Option<String>,
     /// Details of the quote that was cloned.
-    /// See the [cloning documentation](https://stripe.com/docs/quotes/clone) for more details.
+    /// See the [cloning documentation](https://docs.stripe.com/quotes/clone) for more details.
     pub from_quote: Option<stripe_billing::QuotesResourceFromQuote>,
     /// A header that will be displayed on the quote PDF.
     pub header: Option<String>,
@@ -59,11 +63,11 @@ pub struct Quote {
     pub line_items: Option<stripe_types::List<stripe_shared::CheckoutSessionItem>>,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: std::collections::HashMap<String, String>,
     /// A unique number that identifies this particular quote.
-    /// This number is assigned once the quote is [finalized](https://stripe.com/docs/quotes/overview#finalize).
+    /// This number is assigned once the quote is [finalized](https://docs.stripe.com/quotes/overview#finalize).
     pub number: Option<String>,
     /// The account on behalf of which to charge.
     /// See the [Connect documentation](https://support.stripe.com/questions/sending-invoices-on-behalf-of-connected-accounts) for details.
@@ -96,6 +100,7 @@ pub struct QuoteBuilder {
     created: Option<stripe_types::Timestamp>,
     currency: Option<Option<stripe_types::Currency>>,
     customer: Option<Option<stripe_types::Expandable<stripe_shared::Customer>>>,
+    customer_account: Option<Option<String>>,
     default_tax_rates: Option<Option<Vec<stripe_types::Expandable<stripe_shared::TaxRate>>>>,
     description: Option<Option<String>>,
     discounts: Option<Vec<stripe_types::Expandable<stripe_shared::Discount>>>,
@@ -170,6 +175,7 @@ const _: () = {
                 "created" => Deserialize::begin(&mut self.created),
                 "currency" => Deserialize::begin(&mut self.currency),
                 "customer" => Deserialize::begin(&mut self.customer),
+                "customer_account" => Deserialize::begin(&mut self.customer_account),
                 "default_tax_rates" => Deserialize::begin(&mut self.default_tax_rates),
                 "description" => Deserialize::begin(&mut self.description),
                 "discounts" => Deserialize::begin(&mut self.discounts),
@@ -210,6 +216,7 @@ const _: () = {
                 created: Deserialize::default(),
                 currency: Deserialize::default(),
                 customer: Deserialize::default(),
+                customer_account: Deserialize::default(),
                 default_tax_rates: Deserialize::default(),
                 description: Deserialize::default(),
                 discounts: Deserialize::default(),
@@ -249,6 +256,7 @@ const _: () = {
                 Some(created),
                 Some(currency),
                 Some(customer),
+                Some(customer_account),
                 Some(default_tax_rates),
                 Some(description),
                 Some(discounts),
@@ -284,6 +292,7 @@ const _: () = {
                 self.created,
                 self.currency.take(),
                 self.customer.take(),
+                self.customer_account.take(),
                 self.default_tax_rates.take(),
                 self.description.take(),
                 self.discounts.take(),
@@ -323,6 +332,7 @@ const _: () = {
                 created,
                 currency,
                 customer,
+                customer_account,
                 default_tax_rates,
                 description,
                 discounts,
@@ -388,6 +398,7 @@ const _: () = {
                     "created" => b.created = FromValueOpt::from_value(v),
                     "currency" => b.currency = FromValueOpt::from_value(v),
                     "customer" => b.customer = FromValueOpt::from_value(v),
+                    "customer_account" => b.customer_account = FromValueOpt::from_value(v),
                     "default_tax_rates" => b.default_tax_rates = FromValueOpt::from_value(v),
                     "description" => b.description = FromValueOpt::from_value(v),
                     "discounts" => b.discounts = FromValueOpt::from_value(v),
@@ -424,7 +435,7 @@ const _: () = {
 impl serde::Serialize for Quote {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("Quote", 35)?;
+        let mut s = s.serialize_struct("Quote", 36)?;
         s.serialize_field("amount_subtotal", &self.amount_subtotal)?;
         s.serialize_field("amount_total", &self.amount_total)?;
         s.serialize_field("application", &self.application)?;
@@ -436,6 +447,7 @@ impl serde::Serialize for Quote {
         s.serialize_field("created", &self.created)?;
         s.serialize_field("currency", &self.currency)?;
         s.serialize_field("customer", &self.customer)?;
+        s.serialize_field("customer_account", &self.customer_account)?;
         s.serialize_field("default_tax_rates", &self.default_tax_rates)?;
         s.serialize_field("description", &self.description)?;
         s.serialize_field("discounts", &self.discounts)?;

@@ -35,13 +35,13 @@ pub struct BankAccount {
     /// Uniquely identifies this particular bank account.
     /// You can use this attribute to check whether two bank accounts are the same.
     pub fingerprint: Option<String>,
-    /// Information about the [upcoming new requirements for the bank account](https://stripe.com/docs/connect/custom-accounts/future-requirements), including what information needs to be collected, and by when.
+    /// Information about the [upcoming new requirements for the bank account](https://docs.stripe.com/connect/custom-accounts/future-requirements), including what information needs to be collected, and by when.
     pub future_requirements: Option<stripe_shared::ExternalAccountRequirements>,
     /// Unique identifier for the object.
     pub id: stripe_shared::BankAccountId,
     /// The last four digits of the bank account number.
     pub last4: String,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: Option<std::collections::HashMap<String, String>>,
     /// Information about the requirements for the bank account, including what information needs to be collected.

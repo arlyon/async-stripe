@@ -2,6 +2,11 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PortalSubscriptionUpdate {
+    /// Determines the value to use for the billing cycle anchor on subscription updates.
+    /// Valid values are `now` or `unchanged`, and the default value is `unchanged`.
+    /// Setting the value to `now` resets the subscription's billing cycle anchor to the current time (in UTC).
+    /// For more information, see the billing cycle [documentation](https://docs.stripe.com/billing/subscriptions/billing-cycle).
+    pub billing_cycle_anchor: Option<PortalSubscriptionUpdateBillingCycleAnchor>,
     /// The types of subscription updates that are supported for items listed in the `products` attribute.
     /// When empty, subscriptions are not updateable.
     pub default_allowed_updates: Vec<PortalSubscriptionUpdateDefaultAllowedUpdates>,
@@ -21,6 +26,7 @@ pub struct PortalSubscriptionUpdate {
 }
 #[doc(hidden)]
 pub struct PortalSubscriptionUpdateBuilder {
+    billing_cycle_anchor: Option<Option<PortalSubscriptionUpdateBillingCycleAnchor>>,
     default_allowed_updates: Option<Vec<PortalSubscriptionUpdateDefaultAllowedUpdates>>,
     enabled: Option<bool>,
     products: Option<Option<Vec<stripe_billing::PortalSubscriptionUpdateProduct>>>,
@@ -69,6 +75,7 @@ const _: () = {
         type Out = PortalSubscriptionUpdate;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
+                "billing_cycle_anchor" => Deserialize::begin(&mut self.billing_cycle_anchor),
                 "default_allowed_updates" => Deserialize::begin(&mut self.default_allowed_updates),
                 "enabled" => Deserialize::begin(&mut self.enabled),
                 "products" => Deserialize::begin(&mut self.products),
@@ -81,6 +88,7 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
+                billing_cycle_anchor: Deserialize::default(),
                 default_allowed_updates: Deserialize::default(),
                 enabled: Deserialize::default(),
                 products: Deserialize::default(),
@@ -92,6 +100,7 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
+                Some(billing_cycle_anchor),
                 Some(default_allowed_updates),
                 Some(enabled),
                 Some(products),
@@ -99,6 +108,7 @@ const _: () = {
                 Some(schedule_at_period_end),
                 Some(trial_update_behavior),
             ) = (
+                self.billing_cycle_anchor.take(),
                 self.default_allowed_updates.take(),
                 self.enabled,
                 self.products.take(),
@@ -110,6 +120,7 @@ const _: () = {
                 return None;
             };
             Some(Self::Out {
+                billing_cycle_anchor,
                 default_allowed_updates,
                 enabled,
                 products,
@@ -143,6 +154,7 @@ const _: () = {
             let mut b = PortalSubscriptionUpdateBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
+                    "billing_cycle_anchor" => b.billing_cycle_anchor = FromValueOpt::from_value(v),
                     "default_allowed_updates" => {
                         b.default_allowed_updates = FromValueOpt::from_value(v)
                     }
@@ -162,6 +174,91 @@ const _: () = {
         }
     }
 };
+/// Determines the value to use for the billing cycle anchor on subscription updates.
+/// Valid values are `now` or `unchanged`, and the default value is `unchanged`.
+/// Setting the value to `now` resets the subscription's billing cycle anchor to the current time (in UTC).
+/// For more information, see the billing cycle [documentation](https://docs.stripe.com/billing/subscriptions/billing-cycle).
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum PortalSubscriptionUpdateBillingCycleAnchor {
+    Now,
+    Unchanged,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl PortalSubscriptionUpdateBillingCycleAnchor {
+    pub fn as_str(&self) -> &str {
+        use PortalSubscriptionUpdateBillingCycleAnchor::*;
+        match self {
+            Now => "now",
+            Unchanged => "unchanged",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for PortalSubscriptionUpdateBillingCycleAnchor {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use PortalSubscriptionUpdateBillingCycleAnchor::*;
+        match s {
+            "now" => Ok(Now),
+            "unchanged" => Ok(Unchanged),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PortalSubscriptionUpdateBillingCycleAnchor"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for PortalSubscriptionUpdateBillingCycleAnchor {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for PortalSubscriptionUpdateBillingCycleAnchor {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "serialize")]
+impl serde::Serialize for PortalSubscriptionUpdateBillingCycleAnchor {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl miniserde::Deserialize for PortalSubscriptionUpdateBillingCycleAnchor {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor for crate::Place<PortalSubscriptionUpdateBillingCycleAnchor> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out =
+            Some(PortalSubscriptionUpdateBillingCycleAnchor::from_str(s).expect("infallible"));
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(PortalSubscriptionUpdateBillingCycleAnchor);
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for PortalSubscriptionUpdateBillingCycleAnchor {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
 /// The types of subscription updates that are supported for items listed in the `products` attribute.
 /// When empty, subscriptions are not updateable.
 #[derive(Clone, Eq, PartialEq)]

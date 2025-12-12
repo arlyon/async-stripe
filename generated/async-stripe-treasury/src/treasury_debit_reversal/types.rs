@@ -1,4 +1,4 @@
-/// You can reverse some [ReceivedDebits](https://stripe.com/docs/api#received_debits) depending on their network and source flow.
+/// You can reverse some [ReceivedDebits](https://api.stripe.com#received_debits) depending on their network and source flow.
 /// Reversing a ReceivedDebit leads to the creation of a new object known as a DebitReversal.
 #[derive(Clone, Debug)]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
@@ -12,7 +12,7 @@ pub struct TreasuryDebitReversal {
     pub currency: stripe_types::Currency,
     /// The FinancialAccount to reverse funds from.
     pub financial_account: Option<String>,
-    /// A [hosted transaction receipt](https://stripe.com/docs/treasury/moving-money/regulatory-receipts) URL that is provided when money movement is considered regulated under Stripe's money transmission licenses.
+    /// A [hosted transaction receipt](https://docs.stripe.com/treasury/moving-money/regulatory-receipts) URL that is provided when money movement is considered regulated under Stripe's money transmission licenses.
     pub hosted_regulatory_receipt_url: Option<String>,
     /// Unique identifier for the object.
     pub id: stripe_treasury::TreasuryDebitReversalId,
@@ -21,7 +21,7 @@ pub struct TreasuryDebitReversal {
         Option<stripe_treasury::TreasuryReceivedDebitsResourceDebitReversalLinkedFlows>,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: std::collections::HashMap<String, String>,
     /// The rails used to reverse the funds.

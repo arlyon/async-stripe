@@ -1,5 +1,5 @@
 /// The `Charge` object represents a single attempt to move money into your Stripe account.
-/// PaymentIntent confirmation is the most common way to create Charges, but [Account Debits](https://stripe.com/docs/connect/account-debits) may also create Charges.
+/// PaymentIntent confirmation is the most common way to create Charges, but [Account Debits](https://docs.stripe.com/connect/account-debits) may also create Charges.
 /// Some legacy payment flows create Charges directly, which is not recommended for new integrations.
 ///
 /// For more details see <<https://stripe.com/docs/api/charges/object>>.
@@ -7,8 +7,8 @@
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct Charge {
     /// Amount intended to be collected by this payment.
-    /// A positive integer representing how much to charge in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal) (e.g., 100 cents to charge $1.00 or 100 to charge ¥100, a zero-decimal currency).
-    /// The minimum amount is $0.50 US or [equivalent in charge currency](https://stripe.com/docs/currencies#minimum-and-maximum-charge-amounts).
+    /// A positive integer representing how much to charge in the [smallest currency unit](https://docs.stripe.com/currencies#zero-decimal) (e.g., 100 cents to charge $1.00 or 100 to charge ¥100, a zero-decimal currency).
+    /// The minimum amount is $0.50 US or [equivalent in charge currency](https://docs.stripe.com/currencies#minimum-and-maximum-charge-amounts).
     /// The amount value supports up to eight digits (e.g., a value of 99999999 for a USD charge of $999,999.99).
     pub amount: i64,
     /// Amount in cents (or local equivalent) captured (can be less than the amount attribute on the charge if a partial capture was made).
@@ -18,10 +18,10 @@ pub struct Charge {
     /// ID of the Connect application that created the charge.
     pub application: Option<stripe_types::Expandable<stripe_shared::Application>>,
     /// The application fee (if any) for the charge.
-    /// [See the Connect documentation](https://stripe.com/docs/connect/direct-charges#collect-fees) for details.
+    /// [See the Connect documentation](https://docs.stripe.com/connect/direct-charges#collect-fees) for details.
     pub application_fee: Option<stripe_types::Expandable<stripe_shared::ApplicationFee>>,
     /// The amount of the application fee (if any) requested for the charge.
-    /// [See the Connect documentation](https://stripe.com/docs/connect/direct-charges#collect-fees) for details.
+    /// [See the Connect documentation](https://docs.stripe.com/connect/direct-charges#collect-fees) for details.
     pub application_fee_amount: Option<i64>,
     /// Authorization code on the charge.
     pub authorization_code: Option<String>,
@@ -48,7 +48,7 @@ pub struct Charge {
     /// ID of the balance transaction that describes the reversal of the balance on your account due to payment failure.
     pub failure_balance_transaction:
         Option<stripe_types::Expandable<stripe_shared::BalanceTransaction>>,
-    /// Error code explaining reason for charge failure if available (see [the errors section](https://stripe.com/docs/error-codes) for a list of codes).
+    /// Error code explaining reason for charge failure if available (see [the errors section](https://docs.stripe.com/error-codes) for a list of codes).
     pub failure_code: Option<String>,
     /// Message to user further explaining reason for charge failure if available.
     pub failure_message: Option<String>,
@@ -59,14 +59,14 @@ pub struct Charge {
     pub level3: Option<stripe_shared::Level3>,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: std::collections::HashMap<String, String>,
     /// The account (if any) the charge was made on behalf of without triggering an automatic transfer.
-    /// See the [Connect documentation](https://stripe.com/docs/connect/separate-charges-and-transfers) for details.
+    /// See the [Connect documentation](https://docs.stripe.com/connect/separate-charges-and-transfers) for details.
     pub on_behalf_of: Option<stripe_types::Expandable<stripe_shared::Account>>,
     /// Details about whether the payment was accepted, and why.
-    /// See [understanding declines](https://stripe.com/docs/declines) for details.
+    /// See [understanding declines](https://docs.stripe.com/declines) for details.
     pub outcome: Option<stripe_shared::ChargeOutcome>,
     /// `true` if the charge succeeded, or was successfully authorized for later capture.
     pub paid: bool,
@@ -119,10 +119,10 @@ pub struct Charge {
     /// ID of the transfer to the `destination` account (only applicable if the charge was created using the `destination` parameter).
     pub transfer: Option<stripe_types::Expandable<stripe_shared::Transfer>>,
     /// An optional dictionary including the account to automatically transfer to as part of a destination charge.
-    /// [See the Connect documentation](https://stripe.com/docs/connect/destination-charges) for details.
+    /// [See the Connect documentation](https://docs.stripe.com/connect/destination-charges) for details.
     pub transfer_data: Option<stripe_shared::ChargeTransferData>,
     /// A string that identifies this transaction as part of a group.
-    /// See the [Connect documentation](https://stripe.com/docs/connect/separate-charges-and-transfers#transfer-options) for details.
+    /// See the [Connect documentation](https://docs.stripe.com/connect/separate-charges-and-transfers#transfer-options) for details.
     pub transfer_group: Option<String>,
 }
 #[doc(hidden)]

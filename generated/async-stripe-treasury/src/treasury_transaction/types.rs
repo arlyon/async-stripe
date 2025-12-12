@@ -1,4 +1,4 @@
-/// Transactions represent changes to a [FinancialAccount's](https://stripe.com/docs/api#financial_accounts) balance.
+/// Transactions represent changes to a [FinancialAccount's](https://api.stripe.com#financial_accounts) balance.
 #[derive(Clone, Debug)]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TreasuryTransaction {

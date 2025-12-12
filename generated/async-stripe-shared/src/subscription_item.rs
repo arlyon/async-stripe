@@ -19,12 +19,12 @@ pub struct SubscriptionItem {
     pub discounts: Vec<stripe_types::Expandable<stripe_shared::Discount>>,
     /// Unique identifier for the object.
     pub id: stripe_shared::SubscriptionItemId,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: std::collections::HashMap<String, String>,
     pub plan: stripe_shared::Plan,
     pub price: stripe_shared::Price,
-    /// The [quantity](https://stripe.com/docs/subscriptions/quantities) of the plan to which the customer should be subscribed.
+    /// The [quantity](https://docs.stripe.com/subscriptions/quantities) of the plan to which the customer should be subscribed.
     pub quantity: Option<u64>,
     /// The `subscription` this `subscription_item` belongs to.
     pub subscription: String,

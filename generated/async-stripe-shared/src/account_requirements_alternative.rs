@@ -2,9 +2,9 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct AccountRequirementsAlternative {
-    /// Fields that can be provided to satisfy all fields in `original_fields_due`.
+    /// Fields that can be provided to resolve all fields in `original_fields_due`.
     pub alternative_fields_due: Vec<String>,
-    /// Fields that are due and can be satisfied by providing all fields in `alternative_fields_due`.
+    /// Fields that are due and can be resolved by providing all fields in `alternative_fields_due`.
     pub original_fields_due: Vec<String>,
 }
 #[doc(hidden)]

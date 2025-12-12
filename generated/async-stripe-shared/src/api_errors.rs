@@ -2,15 +2,15 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct ApiErrors {
-    /// For card errors resulting from a card issuer decline, a short string indicating [how to proceed with an error](https://stripe.com/docs/declines#retrying-issuer-declines) if they provide one.
+    /// For card errors resulting from a card issuer decline, a short string indicating [how to proceed with an error](https://docs.stripe.com/declines#retrying-issuer-declines) if they provide one.
     pub advice_code: Option<String>,
     /// For card errors, the ID of the failed charge.
     pub charge: Option<String>,
-    /// For some errors that could be handled programmatically, a short string indicating the [error code](https://stripe.com/docs/error-codes) reported.
+    /// For some errors that could be handled programmatically, a short string indicating the [error code](https://docs.stripe.com/error-codes) reported.
     pub code: Option<ApiErrorsCode>,
-    /// For card errors resulting from a card issuer decline, a short string indicating the [card issuer's reason for the decline](https://stripe.com/docs/declines#issuer-declines) if they provide one.
+    /// For card errors resulting from a card issuer decline, a short string indicating the [card issuer's reason for the decline](https://docs.stripe.com/declines#issuer-declines) if they provide one.
     pub decline_code: Option<String>,
-    /// A URL to more information about the [error code](https://stripe.com/docs/error-codes) reported.
+    /// A URL to more information about the [error code](https://docs.stripe.com/error-codes) reported.
     pub doc_url: Option<String>,
     /// A human-readable message providing more details about the error.
     /// For card errors, these messages can be shown to your users.
@@ -240,7 +240,7 @@ const _: () = {
         }
     }
 };
-/// For some errors that could be handled programmatically, a short string indicating the [error code](https://stripe.com/docs/error-codes) reported.
+/// For some errors that could be handled programmatically, a short string indicating the [error code](https://docs.stripe.com/error-codes) reported.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum ApiErrorsCode {
@@ -250,6 +250,7 @@ pub enum ApiErrorsCode {
     AccountInformationMismatch,
     AccountInvalid,
     AccountNumberInvalid,
+    AccountTokenRequiredForV2Account,
     AcssDebitSessionIncomplete,
     AlipayUpgradeRequired,
     AmountTooLarge,
@@ -440,6 +441,7 @@ impl ApiErrorsCode {
             AccountInformationMismatch => "account_information_mismatch",
             AccountInvalid => "account_invalid",
             AccountNumberInvalid => "account_number_invalid",
+            AccountTokenRequiredForV2Account => "account_token_required_for_v2_account",
             AcssDebitSessionIncomplete => "acss_debit_session_incomplete",
             AlipayUpgradeRequired => "alipay_upgrade_required",
             AmountTooLarge => "amount_too_large",
@@ -661,6 +663,7 @@ impl std::str::FromStr for ApiErrorsCode {
             "account_information_mismatch" => Ok(AccountInformationMismatch),
             "account_invalid" => Ok(AccountInvalid),
             "account_number_invalid" => Ok(AccountNumberInvalid),
+            "account_token_required_for_v2_account" => Ok(AccountTokenRequiredForV2Account),
             "acss_debit_session_incomplete" => Ok(AcssDebitSessionIncomplete),
             "alipay_upgrade_required" => Ok(AlipayUpgradeRequired),
             "amount_too_large" => Ok(AmountTooLarge),

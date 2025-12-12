@@ -1,7 +1,7 @@
 /// A Promotion Code represents a customer-redeemable code for an underlying promotion.
 /// You can create multiple codes for a single promotion.
 ///
-/// If you enable promotion codes in your [customer portal configuration](https://stripe.com/docs/customer-management/configure-portal), then customers can redeem a code themselves when updating a subscription in the portal.
+/// If you enable promotion codes in your [customer portal configuration](https://docs.stripe.com/customer-management/configure-portal), then customers can redeem a code themselves when updating a subscription in the portal.
 /// Customers can also view the currently active promotion codes and coupons on each of their subscriptions in the portal.
 ///
 /// For more details see <<https://stripe.com/docs/api/promotion_codes/object>>.
@@ -17,8 +17,10 @@ pub struct PromotionCode {
     pub code: String,
     /// Time at which the object was created. Measured in seconds since the Unix epoch.
     pub created: stripe_types::Timestamp,
-    /// The customer that this promotion code can be used by.
+    /// The customer who can use this promotion code.
     pub customer: Option<stripe_types::Expandable<stripe_shared::Customer>>,
+    /// The account representing the customer who can use this promotion code.
+    pub customer_account: Option<String>,
     /// Date at which the promotion code can no longer be redeemed.
     pub expires_at: Option<stripe_types::Timestamp>,
     /// Unique identifier for the object.
@@ -27,7 +29,7 @@ pub struct PromotionCode {
     pub livemode: bool,
     /// Maximum number of times this promotion code can be redeemed.
     pub max_redemptions: Option<i64>,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: Option<std::collections::HashMap<String, String>>,
     pub promotion: stripe_shared::PromotionCodesResourcePromotion,
@@ -41,6 +43,7 @@ pub struct PromotionCodeBuilder {
     code: Option<String>,
     created: Option<stripe_types::Timestamp>,
     customer: Option<Option<stripe_types::Expandable<stripe_shared::Customer>>>,
+    customer_account: Option<Option<String>>,
     expires_at: Option<Option<stripe_types::Timestamp>>,
     id: Option<stripe_shared::PromotionCodeId>,
     livemode: Option<bool>,
@@ -95,6 +98,7 @@ const _: () = {
                 "code" => Deserialize::begin(&mut self.code),
                 "created" => Deserialize::begin(&mut self.created),
                 "customer" => Deserialize::begin(&mut self.customer),
+                "customer_account" => Deserialize::begin(&mut self.customer_account),
                 "expires_at" => Deserialize::begin(&mut self.expires_at),
                 "id" => Deserialize::begin(&mut self.id),
                 "livemode" => Deserialize::begin(&mut self.livemode),
@@ -113,6 +117,7 @@ const _: () = {
                 code: Deserialize::default(),
                 created: Deserialize::default(),
                 customer: Deserialize::default(),
+                customer_account: Deserialize::default(),
                 expires_at: Deserialize::default(),
                 id: Deserialize::default(),
                 livemode: Deserialize::default(),
@@ -130,6 +135,7 @@ const _: () = {
                 Some(code),
                 Some(created),
                 Some(customer),
+                Some(customer_account),
                 Some(expires_at),
                 Some(id),
                 Some(livemode),
@@ -143,6 +149,7 @@ const _: () = {
                 self.code.take(),
                 self.created,
                 self.customer.take(),
+                self.customer_account.take(),
                 self.expires_at,
                 self.id.take(),
                 self.livemode,
@@ -160,6 +167,7 @@ const _: () = {
                 code,
                 created,
                 customer,
+                customer_account,
                 expires_at,
                 id,
                 livemode,
@@ -199,6 +207,7 @@ const _: () = {
                     "code" => b.code = FromValueOpt::from_value(v),
                     "created" => b.created = FromValueOpt::from_value(v),
                     "customer" => b.customer = FromValueOpt::from_value(v),
+                    "customer_account" => b.customer_account = FromValueOpt::from_value(v),
                     "expires_at" => b.expires_at = FromValueOpt::from_value(v),
                     "id" => b.id = FromValueOpt::from_value(v),
                     "livemode" => b.livemode = FromValueOpt::from_value(v),
@@ -218,11 +227,12 @@ const _: () = {
 impl serde::Serialize for PromotionCode {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("PromotionCode", 13)?;
+        let mut s = s.serialize_struct("PromotionCode", 14)?;
         s.serialize_field("active", &self.active)?;
         s.serialize_field("code", &self.code)?;
         s.serialize_field("created", &self.created)?;
         s.serialize_field("customer", &self.customer)?;
+        s.serialize_field("customer_account", &self.customer_account)?;
         s.serialize_field("expires_at", &self.expires_at)?;
         s.serialize_field("id", &self.id)?;
         s.serialize_field("livemode", &self.livemode)?;

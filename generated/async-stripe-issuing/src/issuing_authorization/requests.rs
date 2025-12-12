@@ -218,7 +218,7 @@ impl UpdateIssuingAuthorization {
         self.inner.expand = Some(expand.into());
         self
     }
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
@@ -290,7 +290,7 @@ impl ApproveIssuingAuthorization {
         }
     }
     /// If the authorization's `pending_request.is_amount_controllable` property is `true`, you may provide this value to control how much to hold for the authorization.
-    /// Must be positive (use [`decline`](https://stripe.com/docs/api/issuing/authorizations/decline) to decline an authorization request).
+    /// Must be positive (use [`decline`](https://docs.stripe.com/api/issuing/authorizations/decline) to decline an authorization request).
     pub fn amount(mut self, amount: impl Into<i64>) -> Self {
         self.inner.amount = Some(amount.into());
         self
@@ -300,7 +300,7 @@ impl ApproveIssuingAuthorization {
         self.inner.expand = Some(expand.into());
         self
     }
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
@@ -376,7 +376,7 @@ impl DeclineIssuingAuthorization {
         self.inner.expand = Some(expand.into());
         self
     }
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
@@ -478,7 +478,7 @@ impl CreateIssuingAuthorizationBuilder {
     }
 }
 /// Detailed breakdown of amount components.
-/// These amounts are denominated in `currency` and in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
+/// These amounts are denominated in `currency` and in the [smallest currency unit](https://docs.stripe.com/currencies#zero-decimal).
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateIssuingAuthorizationAmountDetails {
     /// The ATM withdrawal fee.
@@ -942,7 +942,7 @@ impl<'de> serde::Deserialize<'de> for CreateIssuingAuthorizationFuelUnit {
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateIssuingAuthorizationMerchantData {
     /// A categorization of the seller's type of business.
-    /// See our [merchant categories guide](https://stripe.com/docs/issuing/merchant-categories) for a list of possible values.
+    /// See our [merchant categories guide](https://docs.stripe.com/issuing/merchant-categories) for a list of possible values.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub category: Option<CreateIssuingAuthorizationMerchantDataCategory>,
     /// City where the seller is located
@@ -992,7 +992,7 @@ impl Default for CreateIssuingAuthorizationMerchantData {
     }
 }
 /// A categorization of the seller's type of business.
-/// See our [merchant categories guide](https://stripe.com/docs/issuing/merchant-categories) for a list of possible values.
+/// See our [merchant categories guide](https://docs.stripe.com/issuing/merchant-categories) for a list of possible values.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum CreateIssuingAuthorizationMerchantDataCategory {
@@ -3011,13 +3011,13 @@ impl CreateIssuingAuthorization {
         Self { inner: CreateIssuingAuthorizationBuilder::new(card.into()) }
     }
     /// The total amount to attempt to authorize.
-    /// This amount is in the provided currency, or defaults to the card's currency, and in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
+    /// This amount is in the provided currency, or defaults to the card's currency, and in the [smallest currency unit](https://docs.stripe.com/currencies#zero-decimal).
     pub fn amount(mut self, amount: impl Into<i64>) -> Self {
         self.inner.amount = Some(amount.into());
         self
     }
     /// Detailed breakdown of amount components.
-    /// These amounts are denominated in `currency` and in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
+    /// These amounts are denominated in `currency` and in the [smallest currency unit](https://docs.stripe.com/currencies#zero-decimal).
     pub fn amount_details(
         mut self,
         amount_details: impl Into<CreateIssuingAuthorizationAmountDetails>,
@@ -3067,13 +3067,13 @@ impl CreateIssuingAuthorization {
         self.inner.fuel = Some(fuel.into());
         self
     }
-    /// If set `true`, you may provide [amount](https://stripe.com/docs/api/issuing/authorizations/approve#approve_issuing_authorization-amount) to control how much to hold for the authorization.
+    /// If set `true`, you may provide [amount](https://docs.stripe.com/api/issuing/authorizations/approve#approve_issuing_authorization-amount) to control how much to hold for the authorization.
     pub fn is_amount_controllable(mut self, is_amount_controllable: impl Into<bool>) -> Self {
         self.inner.is_amount_controllable = Some(is_amount_controllable.into());
         self
     }
     /// The total amount to attempt to authorize.
-    /// This amount is in the provided merchant currency, and in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
+    /// This amount is in the provided merchant currency, and in the [smallest currency unit](https://docs.stripe.com/currencies#zero-decimal).
     pub fn merchant_amount(mut self, merchant_amount: impl Into<i64>) -> Self {
         self.inner.merchant_amount = Some(merchant_amount.into());
         self
@@ -3714,7 +3714,7 @@ impl CaptureIssuingAuthorization {
     }
     /// The amount to capture from the authorization.
     /// If not provided, the full amount of the authorization will be captured.
-    /// This amount is in the authorization currency and in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
+    /// This amount is in the authorization currency and in the [smallest currency unit](https://docs.stripe.com/currencies#zero-decimal).
     pub fn capture_amount(mut self, capture_amount: impl Into<i64>) -> Self {
         self.inner.capture_amount = Some(capture_amount.into());
         self
@@ -4371,7 +4371,7 @@ impl IncrementIssuingAuthorization {
         self.inner.expand = Some(expand.into());
         self
     }
-    /// If set `true`, you may provide [amount](https://stripe.com/docs/api/issuing/authorizations/approve#approve_issuing_authorization-amount) to control how much to hold for the authorization.
+    /// If set `true`, you may provide [amount](https://docs.stripe.com/api/issuing/authorizations/approve#approve_issuing_authorization-amount) to control how much to hold for the authorization.
     pub fn is_amount_controllable(mut self, is_amount_controllable: impl Into<bool>) -> Self {
         self.inner.is_amount_controllable = Some(is_amount_controllable.into());
         self
@@ -4440,7 +4440,7 @@ impl ReverseIssuingAuthorization {
     }
     /// The amount to reverse from the authorization.
     /// If not provided, the full amount of the authorization will be reversed.
-    /// This amount is in the authorization currency and in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
+    /// This amount is in the authorization currency and in the [smallest currency unit](https://docs.stripe.com/currencies#zero-decimal).
     pub fn reverse_amount(mut self, reverse_amount: impl Into<i64>) -> Self {
         self.inner.reverse_amount = Some(reverse_amount.into());
         self
