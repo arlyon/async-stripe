@@ -63,7 +63,7 @@ Testing subscription logic that spans months or years is difficult in real-time.
 Create a test clock frozen at a specific time (Unix timestamp):
 
 <CodeFromFile
-  file="examples/test-clocks.rs"
+  file="examples/endpoints/src/test-clocks.rs"
   href={{base: "https://github.com/arlyon/async-stripe/blob/master/"}}
   lang="rust"
   startLine={17}
@@ -76,7 +76,7 @@ Create a test clock frozen at a specific time (Unix timestamp):
 Once you have a test clock, you can advance it to trigger time-based events like subscription renewals:
 
 <CodeFromFile
-  file="examples/test-clocks.rs"
+  file="examples/endpoints/src/test-clocks.rs"
   href={{base: "https://github.com/arlyon/async-stripe/blob/master/"}}
   lang="rust"
   startLine={53}
@@ -87,7 +87,7 @@ Once you have a test clock, you can advance it to trigger time-based events like
 Advancing a test clock is an asynchronous operation on Stripe's side. You can poll the status to wait for completion:
 
 <CodeFromFile
-  file="examples/test-clocks.rs"
+  file="examples/endpoints/src/test-clocks.rs"
   href={{base: "https://github.com/arlyon/async-stripe/blob/master/"}}
   lang="rust"
   startLine={64}
@@ -113,7 +113,7 @@ Test clocks only work in test mode. All objects created with a test clock will b
 **Delete test clocks after testing** to clean up test data:
 
 <CodeFromFile
-  file="examples/test-clocks.rs"
+  file="examples/endpoints/src/test-clocks.rs"
   href={{base: "https://github.com/arlyon/async-stripe/blob/master/"}}
   lang="rust"
   startLine={73}

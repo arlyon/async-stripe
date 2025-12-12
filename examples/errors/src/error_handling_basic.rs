@@ -4,7 +4,8 @@
 //! This example demonstrates basic error handling patterns when working with the Stripe API.
 //! It shows how to match on different error types and handle them appropriately.
 
-use stripe::{Client, CreateCustomer, Customer, StripeError};
+use stripe::{Client, StripeError};
+use stripe_core::customer::CreateCustomer;
 use tracing::{error, info};
 
 #[tokio::main]
@@ -14,7 +15,7 @@ async fn main() {
     let secret_key = std::env::var("STRIPE_SECRET_KEY").expect("Missing STRIPE_SECRET_KEY in env");
     let client = Client::new(secret_key);
 
-    match Customer::create(&client, CreateCustomer::new()).send().await {
+    match CreateCustomer::new().send(&client).await {
         Ok(customer) => info!("Created customer: {}", customer.id),
         Err(err) => match err {
             StripeError::Stripe(api_error, status_code) => {

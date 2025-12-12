@@ -1,0 +1,20 @@
+[package]
+name = "errors"
+version = "0.1.0"
+edition = "2024"
+publish = false
+
+
+[dependencies]
+futures-util = "0.3.28"
+tokio = { version = "1.24.1", features = ["rt-multi-thread", "macros"] }
+async-stripe = { path = "../../async-stripe", features = ["uuid"] }
+async-stripe-types = { path = "../../async-stripe-types" }
+async-stripe-billing = { path = "../../generated/async-stripe-billing", features = ["subscription"] }
+async-stripe-core = { path = "../../generated/async-stripe-core", features = ["customer", "payment_intent"] }
+async-stripe-product = { path = "../../generated/async-stripe-product", features = ["product", "price"] }
+async-stripe-payment = { path = "../../generated/async-stripe-payment", features = ["payment_method", "payment_link"] }
+async-stripe-checkout = { path = "../../generated/async-stripe-checkout", features = ["checkout_session"] }
+async-stripe-connect = { path = "../../generated/async-stripe-connect", features = ["account", "account_link"] }
+tracing-subscriber = "0.3.22"
+tracing = "0.1.43"
