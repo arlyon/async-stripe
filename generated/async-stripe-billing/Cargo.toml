@@ -21,10 +21,10 @@ serde_json = { workspace = true, optional = true }
 smol_str.workspace = true
 miniserde.workspace = true
 tracing = { version = "0.1", default-features = false }
-async-stripe-types = {path = "../../async-stripe-types", version = "1.0.0-alpha.9" }
-async-stripe-client-core = {path = "../../async-stripe-client-core", version = "1.0.0-alpha.9" }
+async-stripe-types = {path = "../../async-stripe-types", version = "1.0.0-alpha.10" }
+async-stripe-client-core = {path = "../../async-stripe-client-core", version = "1.0.0-alpha.10" }
 
-async-stripe-shared = {path = "../../generated/async-stripe-shared", version = "1.0.0-alpha.9" }
+async-stripe-shared = {path = "../../generated/async-stripe-shared", version = "1.0.0-alpha.10" }
 
 
 [features]

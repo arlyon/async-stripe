@@ -5,6 +5,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [1.0.0-alpha.10](https://github.com/arlyon/async-stripe/compare/async-stripe-misc-v1.0.0-alpha.9...async-stripe-misc-v1.0.0-alpha.10) - 2025-12-12
+
+### Other
+
+- Generate latest changes from OpenApi spec
+
 ## [1.0.0-alpha.8](https://github.com/arlyon/async-stripe/compare/async-stripe-misc-v1.0.0-alpha.7...async-stripe-misc-v1.0.0-alpha.8) - 2025-11-26
 
 ### Other
