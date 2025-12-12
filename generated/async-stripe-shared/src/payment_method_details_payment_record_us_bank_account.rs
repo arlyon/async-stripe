@@ -1,17 +1,16 @@
 #[derive(Clone, Debug)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
-pub struct PaymentsPrimitivesPaymentRecordsResourcePaymentMethodUsBankAccountDetails {
+pub struct PaymentMethodDetailsPaymentRecordUsBankAccount {
     /// The type of entity that holds the account. This can be either 'individual' or 'company'.
-    pub account_holder_type: Option<
-        PaymentsPrimitivesPaymentRecordsResourcePaymentMethodUsBankAccountDetailsAccountHolderType,
-    >,
+    pub account_holder_type:
+        Option<PaymentMethodDetailsPaymentRecordUsBankAccountAccountHolderType>,
     /// The type of the bank account. This can be either 'checking' or 'savings'.
-    pub account_type: Option<
-        PaymentsPrimitivesPaymentRecordsResourcePaymentMethodUsBankAccountDetailsAccountType,
-    >,
+    pub account_type: Option<PaymentMethodDetailsPaymentRecordUsBankAccountAccountType>,
     /// Name of the bank associated with the bank account.
     pub bank_name: Option<String>,
+    /// Estimated date to debit the customer's bank account. A date string in YYYY-MM-DD format.
+    pub expected_debit_date: Option<String>,
     /// Uniquely identifies this particular bank account.
     /// You can use this attribute to check whether two bank accounts are the same.
     pub fingerprint: Option<String>,
@@ -25,16 +24,17 @@ pub struct PaymentsPrimitivesPaymentRecordsResourcePaymentMethodUsBankAccountDet
     pub routing_number: Option<String>,
 }
 #[doc(hidden)]
-pub struct PaymentsPrimitivesPaymentRecordsResourcePaymentMethodUsBankAccountDetailsBuilder {
-    account_holder_type: Option<Option<PaymentsPrimitivesPaymentRecordsResourcePaymentMethodUsBankAccountDetailsAccountHolderType>>,
-account_type: Option<Option<PaymentsPrimitivesPaymentRecordsResourcePaymentMethodUsBankAccountDetailsAccountType>>,
-bank_name: Option<Option<String>>,
-fingerprint: Option<Option<String>>,
-last4: Option<Option<String>>,
-mandate: Option<Option<stripe_types::Expandable<stripe_shared::Mandate>>>,
-payment_reference: Option<Option<String>>,
-routing_number: Option<Option<String>>,
-
+pub struct PaymentMethodDetailsPaymentRecordUsBankAccountBuilder {
+    account_holder_type:
+        Option<Option<PaymentMethodDetailsPaymentRecordUsBankAccountAccountHolderType>>,
+    account_type: Option<Option<PaymentMethodDetailsPaymentRecordUsBankAccountAccountType>>,
+    bank_name: Option<Option<String>>,
+    expected_debit_date: Option<Option<String>>,
+    fingerprint: Option<Option<String>>,
+    last4: Option<Option<String>>,
+    mandate: Option<Option<stripe_types::Expandable<stripe_shared::Mandate>>>,
+    payment_reference: Option<Option<String>>,
+    routing_number: Option<Option<String>>,
 }
 
 #[allow(
@@ -53,37 +53,34 @@ const _: () = {
 
     make_place!(Place);
 
-    impl Deserialize for PaymentsPrimitivesPaymentRecordsResourcePaymentMethodUsBankAccountDetails {
+    impl Deserialize for PaymentMethodDetailsPaymentRecordUsBankAccount {
         fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
             Place::new(out)
         }
     }
 
     struct Builder<'a> {
-        out: &'a mut Option<
-            PaymentsPrimitivesPaymentRecordsResourcePaymentMethodUsBankAccountDetails,
-        >,
-        builder: PaymentsPrimitivesPaymentRecordsResourcePaymentMethodUsBankAccountDetailsBuilder,
+        out: &'a mut Option<PaymentMethodDetailsPaymentRecordUsBankAccount>,
+        builder: PaymentMethodDetailsPaymentRecordUsBankAccountBuilder,
     }
 
-    impl Visitor for Place<PaymentsPrimitivesPaymentRecordsResourcePaymentMethodUsBankAccountDetails> {
+    impl Visitor for Place<PaymentMethodDetailsPaymentRecordUsBankAccount> {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
-            out: &mut self.out,
-            builder: PaymentsPrimitivesPaymentRecordsResourcePaymentMethodUsBankAccountDetailsBuilder::deser_default(),
-        }))
+                out: &mut self.out,
+                builder: PaymentMethodDetailsPaymentRecordUsBankAccountBuilder::deser_default(),
+            }))
         }
     }
 
-    impl MapBuilder
-        for PaymentsPrimitivesPaymentRecordsResourcePaymentMethodUsBankAccountDetailsBuilder
-    {
-        type Out = PaymentsPrimitivesPaymentRecordsResourcePaymentMethodUsBankAccountDetails;
+    impl MapBuilder for PaymentMethodDetailsPaymentRecordUsBankAccountBuilder {
+        type Out = PaymentMethodDetailsPaymentRecordUsBankAccount;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "account_holder_type" => Deserialize::begin(&mut self.account_holder_type),
                 "account_type" => Deserialize::begin(&mut self.account_type),
                 "bank_name" => Deserialize::begin(&mut self.bank_name),
+                "expected_debit_date" => Deserialize::begin(&mut self.expected_debit_date),
                 "fingerprint" => Deserialize::begin(&mut self.fingerprint),
                 "last4" => Deserialize::begin(&mut self.last4),
                 "mandate" => Deserialize::begin(&mut self.mandate),
@@ -98,6 +95,7 @@ const _: () = {
                 account_holder_type: Deserialize::default(),
                 account_type: Deserialize::default(),
                 bank_name: Deserialize::default(),
+                expected_debit_date: Deserialize::default(),
                 fingerprint: Deserialize::default(),
                 last4: Deserialize::default(),
                 mandate: Deserialize::default(),
@@ -111,6 +109,7 @@ const _: () = {
                 Some(account_holder_type),
                 Some(account_type),
                 Some(bank_name),
+                Some(expected_debit_date),
                 Some(fingerprint),
                 Some(last4),
                 Some(mandate),
@@ -120,6 +119,7 @@ const _: () = {
                 self.account_holder_type.take(),
                 self.account_type.take(),
                 self.bank_name.take(),
+                self.expected_debit_date.take(),
                 self.fingerprint.take(),
                 self.last4.take(),
                 self.mandate.take(),
@@ -133,6 +133,7 @@ const _: () = {
                 account_holder_type,
                 account_type,
                 bank_name,
+                expected_debit_date,
                 fingerprint,
                 last4,
                 mandate,
@@ -153,22 +154,22 @@ const _: () = {
         }
     }
 
-    impl ObjectDeser for PaymentsPrimitivesPaymentRecordsResourcePaymentMethodUsBankAccountDetails {
-        type Builder =
-            PaymentsPrimitivesPaymentRecordsResourcePaymentMethodUsBankAccountDetailsBuilder;
+    impl ObjectDeser for PaymentMethodDetailsPaymentRecordUsBankAccount {
+        type Builder = PaymentMethodDetailsPaymentRecordUsBankAccountBuilder;
     }
 
-    impl FromValueOpt for PaymentsPrimitivesPaymentRecordsResourcePaymentMethodUsBankAccountDetails {
+    impl FromValueOpt for PaymentMethodDetailsPaymentRecordUsBankAccount {
         fn from_value(v: Value) -> Option<Self> {
             let Value::Object(obj) = v else {
                 return None;
             };
-            let mut b = PaymentsPrimitivesPaymentRecordsResourcePaymentMethodUsBankAccountDetailsBuilder::deser_default();
+            let mut b = PaymentMethodDetailsPaymentRecordUsBankAccountBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
                     "account_holder_type" => b.account_holder_type = FromValueOpt::from_value(v),
                     "account_type" => b.account_type = FromValueOpt::from_value(v),
                     "bank_name" => b.bank_name = FromValueOpt::from_value(v),
+                    "expected_debit_date" => b.expected_debit_date = FromValueOpt::from_value(v),
                     "fingerprint" => b.fingerprint = FromValueOpt::from_value(v),
                     "last4" => b.last4 = FromValueOpt::from_value(v),
                     "mandate" => b.mandate = FromValueOpt::from_value(v),
@@ -184,16 +185,15 @@ const _: () = {
 /// The type of entity that holds the account. This can be either 'individual' or 'company'.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
-pub enum PaymentsPrimitivesPaymentRecordsResourcePaymentMethodUsBankAccountDetailsAccountHolderType
-{
+pub enum PaymentMethodDetailsPaymentRecordUsBankAccountAccountHolderType {
     Company,
     Individual,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
     Unknown(String),
 }
-impl PaymentsPrimitivesPaymentRecordsResourcePaymentMethodUsBankAccountDetailsAccountHolderType {
+impl PaymentMethodDetailsPaymentRecordUsBankAccountAccountHolderType {
     pub fn as_str(&self) -> &str {
-        use PaymentsPrimitivesPaymentRecordsResourcePaymentMethodUsBankAccountDetailsAccountHolderType::*;
+        use PaymentMethodDetailsPaymentRecordUsBankAccountAccountHolderType::*;
         match self {
             Company => "company",
             Individual => "individual",
@@ -202,12 +202,10 @@ impl PaymentsPrimitivesPaymentRecordsResourcePaymentMethodUsBankAccountDetailsAc
     }
 }
 
-impl std::str::FromStr
-    for PaymentsPrimitivesPaymentRecordsResourcePaymentMethodUsBankAccountDetailsAccountHolderType
-{
+impl std::str::FromStr for PaymentMethodDetailsPaymentRecordUsBankAccountAccountHolderType {
     type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use PaymentsPrimitivesPaymentRecordsResourcePaymentMethodUsBankAccountDetailsAccountHolderType::*;
+        use PaymentMethodDetailsPaymentRecordUsBankAccountAccountHolderType::*;
         match s {
             "company" => Ok(Company),
             "individual" => Ok(Individual),
@@ -215,32 +213,26 @@ impl std::str::FromStr
                 tracing::warn!(
                     "Unknown value '{}' for enum '{}'",
                     v,
-                    "PaymentsPrimitivesPaymentRecordsResourcePaymentMethodUsBankAccountDetailsAccountHolderType"
+                    "PaymentMethodDetailsPaymentRecordUsBankAccountAccountHolderType"
                 );
                 Ok(Unknown(v.to_owned()))
             }
         }
     }
 }
-impl std::fmt::Display
-    for PaymentsPrimitivesPaymentRecordsResourcePaymentMethodUsBankAccountDetailsAccountHolderType
-{
+impl std::fmt::Display for PaymentMethodDetailsPaymentRecordUsBankAccountAccountHolderType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
 
-impl std::fmt::Debug
-    for PaymentsPrimitivesPaymentRecordsResourcePaymentMethodUsBankAccountDetailsAccountHolderType
-{
+impl std::fmt::Debug for PaymentMethodDetailsPaymentRecordUsBankAccountAccountHolderType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
 #[cfg(feature = "serialize")]
-impl serde::Serialize
-    for PaymentsPrimitivesPaymentRecordsResourcePaymentMethodUsBankAccountDetailsAccountHolderType
-{
+impl serde::Serialize for PaymentMethodDetailsPaymentRecordUsBankAccountAccountHolderType {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,
@@ -248,32 +240,31 @@ impl serde::Serialize
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize
-    for PaymentsPrimitivesPaymentRecordsResourcePaymentMethodUsBankAccountDetailsAccountHolderType
-{
+impl miniserde::Deserialize for PaymentMethodDetailsPaymentRecordUsBankAccountAccountHolderType {
     fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
 impl miniserde::de::Visitor
-    for crate::Place<
-        PaymentsPrimitivesPaymentRecordsResourcePaymentMethodUsBankAccountDetailsAccountHolderType,
-    >
+    for crate::Place<PaymentMethodDetailsPaymentRecordUsBankAccountAccountHolderType>
 {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(PaymentsPrimitivesPaymentRecordsResourcePaymentMethodUsBankAccountDetailsAccountHolderType::from_str(s).expect("infallible"));
+        self.out = Some(
+            PaymentMethodDetailsPaymentRecordUsBankAccountAccountHolderType::from_str(s)
+                .expect("infallible"),
+        );
         Ok(())
     }
 }
 
 stripe_types::impl_from_val_with_from_str!(
-    PaymentsPrimitivesPaymentRecordsResourcePaymentMethodUsBankAccountDetailsAccountHolderType
+    PaymentMethodDetailsPaymentRecordUsBankAccountAccountHolderType
 );
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de>
-    for PaymentsPrimitivesPaymentRecordsResourcePaymentMethodUsBankAccountDetailsAccountHolderType
+    for PaymentMethodDetailsPaymentRecordUsBankAccountAccountHolderType
 {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
@@ -284,15 +275,15 @@ impl<'de> serde::Deserialize<'de>
 /// The type of the bank account. This can be either 'checking' or 'savings'.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
-pub enum PaymentsPrimitivesPaymentRecordsResourcePaymentMethodUsBankAccountDetailsAccountType {
+pub enum PaymentMethodDetailsPaymentRecordUsBankAccountAccountType {
     Checking,
     Savings,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
     Unknown(String),
 }
-impl PaymentsPrimitivesPaymentRecordsResourcePaymentMethodUsBankAccountDetailsAccountType {
+impl PaymentMethodDetailsPaymentRecordUsBankAccountAccountType {
     pub fn as_str(&self) -> &str {
-        use PaymentsPrimitivesPaymentRecordsResourcePaymentMethodUsBankAccountDetailsAccountType::*;
+        use PaymentMethodDetailsPaymentRecordUsBankAccountAccountType::*;
         match self {
             Checking => "checking",
             Savings => "savings",
@@ -301,12 +292,10 @@ impl PaymentsPrimitivesPaymentRecordsResourcePaymentMethodUsBankAccountDetailsAc
     }
 }
 
-impl std::str::FromStr
-    for PaymentsPrimitivesPaymentRecordsResourcePaymentMethodUsBankAccountDetailsAccountType
-{
+impl std::str::FromStr for PaymentMethodDetailsPaymentRecordUsBankAccountAccountType {
     type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use PaymentsPrimitivesPaymentRecordsResourcePaymentMethodUsBankAccountDetailsAccountType::*;
+        use PaymentMethodDetailsPaymentRecordUsBankAccountAccountType::*;
         match s {
             "checking" => Ok(Checking),
             "savings" => Ok(Savings),
@@ -314,32 +303,26 @@ impl std::str::FromStr
                 tracing::warn!(
                     "Unknown value '{}' for enum '{}'",
                     v,
-                    "PaymentsPrimitivesPaymentRecordsResourcePaymentMethodUsBankAccountDetailsAccountType"
+                    "PaymentMethodDetailsPaymentRecordUsBankAccountAccountType"
                 );
                 Ok(Unknown(v.to_owned()))
             }
         }
     }
 }
-impl std::fmt::Display
-    for PaymentsPrimitivesPaymentRecordsResourcePaymentMethodUsBankAccountDetailsAccountType
-{
+impl std::fmt::Display for PaymentMethodDetailsPaymentRecordUsBankAccountAccountType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
 
-impl std::fmt::Debug
-    for PaymentsPrimitivesPaymentRecordsResourcePaymentMethodUsBankAccountDetailsAccountType
-{
+impl std::fmt::Debug for PaymentMethodDetailsPaymentRecordUsBankAccountAccountType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
 #[cfg(feature = "serialize")]
-impl serde::Serialize
-    for PaymentsPrimitivesPaymentRecordsResourcePaymentMethodUsBankAccountDetailsAccountType
-{
+impl serde::Serialize for PaymentMethodDetailsPaymentRecordUsBankAccountAccountType {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,
@@ -347,33 +330,30 @@ impl serde::Serialize
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize
-    for PaymentsPrimitivesPaymentRecordsResourcePaymentMethodUsBankAccountDetailsAccountType
-{
+impl miniserde::Deserialize for PaymentMethodDetailsPaymentRecordUsBankAccountAccountType {
     fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
 impl miniserde::de::Visitor
-    for crate::Place<
-        PaymentsPrimitivesPaymentRecordsResourcePaymentMethodUsBankAccountDetailsAccountType,
-    >
+    for crate::Place<PaymentMethodDetailsPaymentRecordUsBankAccountAccountType>
 {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(PaymentsPrimitivesPaymentRecordsResourcePaymentMethodUsBankAccountDetailsAccountType::from_str(s).expect("infallible"));
+        self.out = Some(
+            PaymentMethodDetailsPaymentRecordUsBankAccountAccountType::from_str(s)
+                .expect("infallible"),
+        );
         Ok(())
     }
 }
 
 stripe_types::impl_from_val_with_from_str!(
-    PaymentsPrimitivesPaymentRecordsResourcePaymentMethodUsBankAccountDetailsAccountType
+    PaymentMethodDetailsPaymentRecordUsBankAccountAccountType
 );
 #[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de>
-    for PaymentsPrimitivesPaymentRecordsResourcePaymentMethodUsBankAccountDetailsAccountType
-{
+impl<'de> serde::Deserialize<'de> for PaymentMethodDetailsPaymentRecordUsBankAccountAccountType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;

@@ -2,7 +2,7 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TaxProductResourceLineItemTaxBreakdown {
-    /// The amount of tax, in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
+    /// The amount of tax, in the [smallest currency unit](https://docs.stripe.com/currencies#zero-decimal).
     pub amount: i64,
     pub jurisdiction: stripe_misc::TaxProductResourceJurisdiction,
     /// Indicates whether the jurisdiction was determined by the origin (merchant's address) or destination (customer's address).
@@ -13,7 +13,7 @@ pub struct TaxProductResourceLineItemTaxBreakdown {
     /// The reasoning behind this tax, for example, if the product is tax exempt.
     /// The possible values for this field may be extended as new tax rules are supported.
     pub taxability_reason: TaxProductResourceLineItemTaxBreakdownTaxabilityReason,
-    /// The amount on which tax is calculated, in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
+    /// The amount on which tax is calculated, in the [smallest currency unit](https://docs.stripe.com/currencies#zero-decimal).
     pub taxable_amount: i64,
 }
 #[doc(hidden)]

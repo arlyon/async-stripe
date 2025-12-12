@@ -115,7 +115,7 @@ impl ListProduct {
         self
     }
     /// Only return products with the given IDs.
-    /// Cannot be used with [starting_after](https://stripe.com/docs/api#list_products-starting_after) or [ending_before](https://stripe.com/docs/api#list_products-ending_before).
+    /// Cannot be used with [starting_after](https://api.stripe.com#list_products-starting_after) or [ending_before](https://api.stripe.com#list_products-ending_before).
     pub fn ids(mut self, ids: impl Into<Vec<String>>) -> Self {
         self.inner.ids = Some(ids.into());
         self
@@ -376,7 +376,7 @@ impl CreateProductBuilder {
         }
     }
 }
-/// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object.
+/// Data used to generate a new [Price](https://docs.stripe.com/api/prices) object.
 /// This Price will be set as the default price for this product.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateProductDefaultPriceData {
@@ -395,7 +395,7 @@ pub struct CreateProductDefaultPriceData {
     /// When set, provides configuration for the amount to be adjusted by the customer during Checkout Sessions and Payment Links.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub custom_unit_amount: Option<CustomUnitAmount>,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
@@ -404,7 +404,7 @@ pub struct CreateProductDefaultPriceData {
     /// The recurring components of a price such as `interval` and `interval_count`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub recurring: Option<CreateProductDefaultPriceDataRecurring>,
-    /// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
+    /// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
     /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
     /// One of `inclusive`, `exclusive`, or `unspecified`.
     /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
@@ -440,7 +440,7 @@ pub struct CreateProductDefaultPriceDataCurrencyOptions {
     /// When set, provides configuration for the amount to be adjusted by the customer during Checkout Sessions and Payment Links.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub custom_unit_amount: Option<CustomUnitAmount>,
-    /// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
+    /// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
     /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
     /// One of `inclusive`, `exclusive`, or `unspecified`.
     /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
@@ -475,7 +475,7 @@ impl Default for CreateProductDefaultPriceDataCurrencyOptions {
         Self::new()
     }
 }
-/// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
+/// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
 /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
 /// One of `inclusive`, `exclusive`, or `unspecified`.
 /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
@@ -678,7 +678,7 @@ impl<'de> serde::Deserialize<'de> for CreateProductDefaultPriceDataRecurringInte
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-/// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
+/// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
 /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
 /// One of `inclusive`, `exclusive`, or `unspecified`.
 /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
@@ -764,7 +764,7 @@ impl CreateProduct {
         self.inner.active = Some(active.into());
         self
     }
-    /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object.
+    /// Data used to generate a new [Price](https://docs.stripe.com/api/prices) object.
     /// This Price will be set as the default price for this product.
     pub fn default_price_data(
         mut self,
@@ -796,12 +796,12 @@ impl CreateProduct {
         self
     }
     /// A list of up to 15 marketing features for this product.
-    /// These are displayed in [pricing tables](https://stripe.com/docs/payments/checkout/pricing-table).
+    /// These are displayed in [pricing tables](https://docs.stripe.com/payments/checkout/pricing-table).
     pub fn marketing_features(mut self, marketing_features: impl Into<Vec<Features>>) -> Self {
         self.inner.marketing_features = Some(marketing_features.into());
         self
     }
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
@@ -836,7 +836,7 @@ impl CreateProduct {
         self.inner.statement_descriptor = Some(statement_descriptor.into());
         self
     }
-    /// A [tax code](https://stripe.com/docs/tax/tax-categories) ID.
+    /// A [tax code](https://docs.stripe.com/tax/tax-categories) ID.
     pub fn tax_code(mut self, tax_code: impl Into<String>) -> Self {
         self.inner.tax_code = Some(tax_code.into());
         self
@@ -954,7 +954,7 @@ impl UpdateProduct {
         self.inner.active = Some(active.into());
         self
     }
-    /// The ID of the [Price](https://stripe.com/docs/api/prices) object that is the default price for this product.
+    /// The ID of the [Price](https://docs.stripe.com/api/prices) object that is the default price for this product.
     pub fn default_price(mut self, default_price: impl Into<String>) -> Self {
         self.inner.default_price = Some(default_price.into());
         self
@@ -976,12 +976,12 @@ impl UpdateProduct {
         self
     }
     /// A list of up to 15 marketing features for this product.
-    /// These are displayed in [pricing tables](https://stripe.com/docs/payments/checkout/pricing-table).
+    /// These are displayed in [pricing tables](https://docs.stripe.com/payments/checkout/pricing-table).
     pub fn marketing_features(mut self, marketing_features: impl Into<Vec<Features>>) -> Self {
         self.inner.marketing_features = Some(marketing_features.into());
         self
     }
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
@@ -1023,7 +1023,7 @@ impl UpdateProduct {
         self.inner.statement_descriptor = Some(statement_descriptor.into());
         self
     }
-    /// A [tax code](https://stripe.com/docs/tax/tax-categories) ID.
+    /// A [tax code](https://docs.stripe.com/tax/tax-categories) ID.
     pub fn tax_code(mut self, tax_code: impl Into<String>) -> Self {
         self.inner.tax_code = Some(tax_code.into());
         self

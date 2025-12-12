@@ -4,11 +4,11 @@
 /// appropriate sub-resource: `document`, `id_number`, `selfie`.
 ///
 /// Each VerificationReport contains a copy of any data collected by the user as well as
-/// reference IDs which can be used to access collected images through the [FileUpload](https://stripe.com/docs/api/files).
+/// reference IDs which can be used to access collected images through the [FileUpload](https://docs.stripe.com/api/files).
 /// API. To configure and create VerificationReports, use the
-/// [VerificationSession](https://stripe.com/docs/api/identity/verification_sessions) API.
+/// [VerificationSession](https://docs.stripe.com/api/identity/verification_sessions) API.
 ///
-/// Related guide: [Accessing verification results](https://stripe.com/docs/identity/verification-sessions#results).
+/// Related guide: [Accessing verification results](https://docs.stripe.com/identity/verification-sessions#results).
 ///
 /// For more details see <<https://stripe.com/docs/api/identity/verification_reports/object>>.
 #[derive(Clone, Debug)]

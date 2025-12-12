@@ -13,7 +13,7 @@ pub struct PaymentsPrimitivesPaymentRecordsResourceAddress {
     pub line2: Option<String>,
     /// ZIP or postal code.
     pub postal_code: Option<String>,
-    /// State, county, province, or region.
+    /// State, county, province, or region ([ISO 3166-2](https://en.wikipedia.org/wiki/ISO_3166-2)).
     pub state: Option<String>,
 }
 #[doc(hidden)]

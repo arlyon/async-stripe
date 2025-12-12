@@ -4,9 +4,9 @@
 pub struct TreasuryReceivedCreditsResourceLinkedFlows {
     /// The CreditReversal created as a result of this ReceivedCredit being reversed.
     pub credit_reversal: Option<String>,
-    /// Set if the ReceivedCredit was created due to an [Issuing Authorization](https://stripe.com/docs/api#issuing_authorizations) object.
+    /// Set if the ReceivedCredit was created due to an [Issuing Authorization](https://api.stripe.com#issuing_authorizations) object.
     pub issuing_authorization: Option<String>,
-    /// Set if the ReceivedCredit is also viewable as an [Issuing transaction](https://stripe.com/docs/api#issuing_transactions) object.
+    /// Set if the ReceivedCredit is also viewable as an [Issuing transaction](https://api.stripe.com#issuing_transactions) object.
     pub issuing_transaction: Option<String>,
     /// ID of the source flow.
     /// Set if `network` is `stripe` and the source flow is visible to the user.

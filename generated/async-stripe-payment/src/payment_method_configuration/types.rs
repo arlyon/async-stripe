@@ -2,7 +2,7 @@
 /// You can have multiple configurations with different sets of payment methods for different scenarios.
 ///
 /// There are two types of PaymentMethodConfigurations.
-/// Which is used depends on the [charge type](https://stripe.com/docs/connect/charges):.
+/// Which is used depends on the [charge type](https://docs.stripe.com/connect/charges):.
 ///
 /// **Direct** configurations apply to payments created on your account, including Connect destination charges, Connect separate charges and transfers, and payments not involving Connect.
 ///
@@ -13,9 +13,9 @@
 /// Parent configurations are [managed in the dashboard](https://dashboard.stripe.com/settings/payment_methods/connected_accounts) and are not available in this API.
 ///
 /// Related guides:
-/// - [Payment Method Configurations API](https://stripe.com/docs/connect/payment-method-configurations).
-/// - [Multiple configurations on dynamic payment methods](https://stripe.com/docs/payments/multiple-payment-method-configs).
-/// - [Multiple configurations for your Connect accounts](https://stripe.com/docs/connect/multiple-payment-method-configurations).
+/// - [Payment Method Configurations API](https://docs.stripe.com/connect/payment-method-configurations).
+/// - [Multiple configurations on dynamic payment methods](https://docs.stripe.com/payments/multiple-payment-method-configs).
+/// - [Multiple configurations for your Connect accounts](https://docs.stripe.com/connect/multiple-payment-method-configurations).
 ///
 /// For more details see <<https://stripe.com/docs/api/payment_method_configurations/object>>.
 #[derive(Clone, Debug)]
@@ -79,6 +79,7 @@ pub struct PaymentMethodConfiguration {
     pub payco: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
     pub paynow: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
     pub paypal: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
+    pub payto: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
     pub pix: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
     pub promptpay: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
     pub revolut_pay: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
@@ -147,6 +148,7 @@ pub struct PaymentMethodConfigurationBuilder {
     payco: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
     paynow: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
     paypal: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
+    payto: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
     pix: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
     promptpay: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
     revolut_pay: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
@@ -250,6 +252,7 @@ const _: () = {
                 "payco" => Deserialize::begin(&mut self.payco),
                 "paynow" => Deserialize::begin(&mut self.paynow),
                 "paypal" => Deserialize::begin(&mut self.paypal),
+                "payto" => Deserialize::begin(&mut self.payto),
                 "pix" => Deserialize::begin(&mut self.pix),
                 "promptpay" => Deserialize::begin(&mut self.promptpay),
                 "revolut_pay" => Deserialize::begin(&mut self.revolut_pay),
@@ -316,6 +319,7 @@ const _: () = {
                 payco: Deserialize::default(),
                 paynow: Deserialize::default(),
                 paypal: Deserialize::default(),
+                payto: Deserialize::default(),
                 pix: Deserialize::default(),
                 promptpay: Deserialize::default(),
                 revolut_pay: Deserialize::default(),
@@ -381,6 +385,7 @@ const _: () = {
                 Some(payco),
                 Some(paynow),
                 Some(paypal),
+                Some(payto),
                 Some(pix),
                 Some(promptpay),
                 Some(revolut_pay),
@@ -442,6 +447,7 @@ const _: () = {
                 self.payco.take(),
                 self.paynow.take(),
                 self.paypal.take(),
+                self.payto.take(),
                 self.pix.take(),
                 self.promptpay.take(),
                 self.revolut_pay.take(),
@@ -507,6 +513,7 @@ const _: () = {
                 payco,
                 paynow,
                 paypal,
+                payto,
                 pix,
                 promptpay,
                 revolut_pay,
@@ -594,6 +601,7 @@ const _: () = {
                     "payco" => b.payco = FromValueOpt::from_value(v),
                     "paynow" => b.paynow = FromValueOpt::from_value(v),
                     "paypal" => b.paypal = FromValueOpt::from_value(v),
+                    "payto" => b.payto = FromValueOpt::from_value(v),
                     "pix" => b.pix = FromValueOpt::from_value(v),
                     "promptpay" => b.promptpay = FromValueOpt::from_value(v),
                     "revolut_pay" => b.revolut_pay = FromValueOpt::from_value(v),
@@ -617,7 +625,7 @@ const _: () = {
 impl serde::Serialize for PaymentMethodConfiguration {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("PaymentMethodConfiguration", 61)?;
+        let mut s = s.serialize_struct("PaymentMethodConfiguration", 62)?;
         s.serialize_field("acss_debit", &self.acss_debit)?;
         s.serialize_field("active", &self.active)?;
         s.serialize_field("affirm", &self.affirm)?;
@@ -666,6 +674,7 @@ impl serde::Serialize for PaymentMethodConfiguration {
         s.serialize_field("payco", &self.payco)?;
         s.serialize_field("paynow", &self.paynow)?;
         s.serialize_field("paypal", &self.paypal)?;
+        s.serialize_field("payto", &self.payto)?;
         s.serialize_field("pix", &self.pix)?;
         s.serialize_field("promptpay", &self.promptpay)?;
         s.serialize_field("revolut_pay", &self.revolut_pay)?;

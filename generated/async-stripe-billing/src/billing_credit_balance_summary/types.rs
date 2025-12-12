@@ -8,6 +8,8 @@ pub struct BillingCreditBalanceSummary {
     pub balances: Vec<stripe_billing::CreditBalance>,
     /// The customer the balance is for.
     pub customer: stripe_types::Expandable<stripe_shared::Customer>,
+    /// The account the balance is for.
+    pub customer_account: Option<String>,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
 }
@@ -15,6 +17,7 @@ pub struct BillingCreditBalanceSummary {
 pub struct BillingCreditBalanceSummaryBuilder {
     balances: Option<Vec<stripe_billing::CreditBalance>>,
     customer: Option<stripe_types::Expandable<stripe_shared::Customer>>,
+    customer_account: Option<Option<String>>,
     livemode: Option<bool>,
 }
 
@@ -60,6 +63,7 @@ const _: () = {
             Ok(match k {
                 "balances" => Deserialize::begin(&mut self.balances),
                 "customer" => Deserialize::begin(&mut self.customer),
+                "customer_account" => Deserialize::begin(&mut self.customer_account),
                 "livemode" => Deserialize::begin(&mut self.livemode),
                 _ => <dyn Visitor>::ignore(),
             })
@@ -69,17 +73,21 @@ const _: () = {
             Self {
                 balances: Deserialize::default(),
                 customer: Deserialize::default(),
+                customer_account: Deserialize::default(),
                 livemode: Deserialize::default(),
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(balances), Some(customer), Some(livemode)) =
-                (self.balances.take(), self.customer.take(), self.livemode)
-            else {
+            let (Some(balances), Some(customer), Some(customer_account), Some(livemode)) = (
+                self.balances.take(),
+                self.customer.take(),
+                self.customer_account.take(),
+                self.livemode,
+            ) else {
                 return None;
             };
-            Some(Self::Out { balances, customer, livemode })
+            Some(Self::Out { balances, customer, customer_account, livemode })
         }
     }
 
@@ -108,6 +116,7 @@ const _: () = {
                 match k.as_str() {
                     "balances" => b.balances = FromValueOpt::from_value(v),
                     "customer" => b.customer = FromValueOpt::from_value(v),
+                    "customer_account" => b.customer_account = FromValueOpt::from_value(v),
                     "livemode" => b.livemode = FromValueOpt::from_value(v),
                     _ => {}
                 }
@@ -120,9 +129,10 @@ const _: () = {
 impl serde::Serialize for BillingCreditBalanceSummary {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("BillingCreditBalanceSummary", 4)?;
+        let mut s = s.serialize_struct("BillingCreditBalanceSummary", 5)?;
         s.serialize_field("balances", &self.balances)?;
         s.serialize_field("customer", &self.customer)?;
+        s.serialize_field("customer_account", &self.customer_account)?;
         s.serialize_field("livemode", &self.livemode)?;
 
         s.serialize_field("object", "billing.credit_balance_summary")?;

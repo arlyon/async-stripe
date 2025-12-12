@@ -10,7 +10,7 @@
 /// A `user` scoped secret is accessible by the app backend and one specific Dashboard user.
 /// Use the `user` scope for per-user secrets like per-user OAuth tokens, where different users might have different permissions.
 ///
-/// Related guide: [Store data between page reloads](https://stripe.com/docs/stripe-apps/store-auth-data-custom-objects).
+/// Related guide: [Store data between page reloads](https://docs.stripe.com/stripe-apps/store-auth-data-custom-objects).
 #[derive(Clone, Debug)]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct AppsSecret {

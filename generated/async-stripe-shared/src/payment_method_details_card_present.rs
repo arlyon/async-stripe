@@ -42,8 +42,8 @@ pub struct PaymentMethodDetailsCardPresent {
     /// Issuer identification number of the card.
     /// (For internal use only and not typically available in standard API requests.).
     pub iin: Option<String>,
-    /// Whether this [PaymentIntent](https://stripe.com/docs/api/payment_intents) is eligible for incremental authorizations.
-    /// Request support using [request_incremental_authorization_support](https://stripe.com/docs/api/payment_intents/create#create_payment_intent-payment_method_options-card_present-request_incremental_authorization_support).
+    /// Whether this [PaymentIntent](https://docs.stripe.com/api/payment_intents) is eligible for incremental authorizations.
+    /// Request support using [request_incremental_authorization_support](https://docs.stripe.com/api/payment_intents/create#create_payment_intent-payment_method_options-card_present-request_incremental_authorization_support).
     pub incremental_authorization_supported: bool,
     /// The name of the card's issuing bank.
     /// (For internal use only and not typically available in standard API requests.).

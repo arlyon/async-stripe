@@ -2,7 +2,7 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TaxProductResourceTaxAssociationTransactionAttemptsResourceCommitted {
-    /// The [Tax Transaction](https://stripe.com/docs/api/tax/transaction/object)
+    /// The [Tax Transaction](https://docs.stripe.com/api/tax/transaction/object)
     pub transaction: String,
 }
 #[doc(hidden)]

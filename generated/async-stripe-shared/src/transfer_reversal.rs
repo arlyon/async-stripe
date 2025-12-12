@@ -1,4 +1,4 @@
-/// [Stripe Connect](https://stripe.com/docs/connect) platforms can reverse transfers made to a
+/// [Stripe Connect](https://docs.stripe.com/connect) platforms can reverse transfers made to a
 /// connected account, either entirely or partially, and can also specify whether
 /// to refund any related application fees. Transfer reversals add to the
 /// platform's balance and subtract from the destination account's balance.
@@ -6,11 +6,11 @@
 /// Reversing a transfer that was made for a [destination
 /// charge](/docs/connect/destination-charges) is allowed only up to the amount of
 /// the charge. It is possible to reverse a
-/// [transfer_group](https://stripe.com/docs/connect/separate-charges-and-transfers#transfer-options)
+/// [transfer_group](https://docs.stripe.com/connect/separate-charges-and-transfers#transfer-options)
 /// transfer only if the destination account has enough balance to cover the
 /// reversal.
 ///
-/// Related guide: [Reverse transfers](https://stripe.com/docs/connect/separate-charges-and-transfers#reverse-transfers).
+/// Related guide: [Reverse transfers](https://docs.stripe.com/connect/separate-charges-and-transfers#reverse-transfers).
 ///
 /// For more details see <<https://stripe.com/docs/api/transfer_reversals/object>>.
 #[derive(Clone, Debug)]
@@ -29,7 +29,7 @@ pub struct TransferReversal {
     pub destination_payment_refund: Option<stripe_types::Expandable<stripe_shared::Refund>>,
     /// Unique identifier for the object.
     pub id: stripe_shared::TransferReversalId,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: Option<std::collections::HashMap<String, String>>,
     /// ID of the refund responsible for the transfer reversal.

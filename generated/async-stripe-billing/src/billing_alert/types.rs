@@ -13,7 +13,7 @@ pub struct BillingAlert {
     pub status: Option<BillingAlertStatus>,
     /// Title of the alert.
     pub title: String,
-    /// Encapsulates configuration of the alert to monitor usage on a specific [Billing Meter](https://stripe.com/docs/api/billing/meter).
+    /// Encapsulates configuration of the alert to monitor usage on a specific [Billing Meter](https://docs.stripe.com/api/billing/meter).
     pub usage_threshold: Option<stripe_billing::ThresholdsResourceUsageThresholdConfig>,
 }
 #[doc(hidden)]

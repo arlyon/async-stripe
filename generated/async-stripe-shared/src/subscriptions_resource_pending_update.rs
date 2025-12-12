@@ -16,7 +16,7 @@ pub struct SubscriptionsResourcePendingUpdate {
     /// Indicates if a plan's `trial_period_days` should be applied to the subscription.
     /// Setting `trial_end` per subscription is preferred, and this defaults to `false`.
     /// Setting this flag to `true` together with `trial_end` is not allowed.
-    /// See [Using trial periods on subscriptions](https://stripe.com/docs/billing/subscriptions/trials) to learn more.
+    /// See [Using trial periods on subscriptions](https://docs.stripe.com/billing/subscriptions/trials) to learn more.
     pub trial_from_plan: Option<bool>,
 }
 #[doc(hidden)]

@@ -6,6 +6,8 @@ pub struct DeletedDiscount {
     pub checkout_session: Option<String>,
     /// The ID of the customer associated with this discount.
     pub customer: Option<stripe_types::Expandable<stripe_shared::Customer>>,
+    /// The ID of the account representing the customer associated with this discount.
+    pub customer_account: Option<String>,
     #[allow(dead_code)]
     deleted: stripe_types::AlwaysTrue,
     /// The ID of the discount object.
@@ -30,6 +32,7 @@ pub struct DeletedDiscount {
 pub struct DeletedDiscountBuilder {
     checkout_session: Option<Option<String>>,
     customer: Option<Option<stripe_types::Expandable<stripe_shared::Customer>>>,
+    customer_account: Option<Option<String>>,
     deleted: Option<stripe_types::AlwaysTrue>,
     id: Option<stripe_shared::DiscountId>,
     invoice: Option<Option<String>>,
@@ -83,6 +86,7 @@ const _: () = {
             Ok(match k {
                 "checkout_session" => Deserialize::begin(&mut self.checkout_session),
                 "customer" => Deserialize::begin(&mut self.customer),
+                "customer_account" => Deserialize::begin(&mut self.customer_account),
                 "deleted" => Deserialize::begin(&mut self.deleted),
                 "id" => Deserialize::begin(&mut self.id),
                 "invoice" => Deserialize::begin(&mut self.invoice),
@@ -100,6 +104,7 @@ const _: () = {
             Self {
                 checkout_session: Deserialize::default(),
                 customer: Deserialize::default(),
+                customer_account: Deserialize::default(),
                 deleted: Deserialize::default(),
                 id: Deserialize::default(),
                 invoice: Deserialize::default(),
@@ -116,6 +121,7 @@ const _: () = {
             let (
                 Some(checkout_session),
                 Some(customer),
+                Some(customer_account),
                 Some(deleted),
                 Some(id),
                 Some(invoice),
@@ -128,6 +134,7 @@ const _: () = {
             ) = (
                 self.checkout_session.take(),
                 self.customer.take(),
+                self.customer_account.take(),
                 self.deleted,
                 self.id.take(),
                 self.invoice.take(),
@@ -144,6 +151,7 @@ const _: () = {
             Some(Self::Out {
                 checkout_session,
                 customer,
+                customer_account,
                 deleted,
                 id,
                 invoice,
@@ -182,6 +190,7 @@ const _: () = {
                 match k.as_str() {
                     "checkout_session" => b.checkout_session = FromValueOpt::from_value(v),
                     "customer" => b.customer = FromValueOpt::from_value(v),
+                    "customer_account" => b.customer_account = FromValueOpt::from_value(v),
                     "deleted" => b.deleted = FromValueOpt::from_value(v),
                     "id" => b.id = FromValueOpt::from_value(v),
                     "invoice" => b.invoice = FromValueOpt::from_value(v),
@@ -202,9 +211,10 @@ const _: () = {
 impl serde::Serialize for DeletedDiscount {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("DeletedDiscount", 12)?;
+        let mut s = s.serialize_struct("DeletedDiscount", 13)?;
         s.serialize_field("checkout_session", &self.checkout_session)?;
         s.serialize_field("customer", &self.customer)?;
+        s.serialize_field("customer_account", &self.customer_account)?;
         s.serialize_field("deleted", &self.deleted)?;
         s.serialize_field("id", &self.id)?;
         s.serialize_field("invoice", &self.invoice)?;

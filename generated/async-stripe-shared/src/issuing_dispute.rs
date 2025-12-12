@@ -1,12 +1,12 @@
-/// As a [card issuer](https://stripe.com/docs/issuing), you can dispute transactions that the cardholder does not recognize, suspects to be fraudulent, or has other issues with.
+/// As a [card issuer](https://docs.stripe.com/issuing), you can dispute transactions that the cardholder does not recognize, suspects to be fraudulent, or has other issues with.
 ///
-/// Related guide: [Issuing disputes](https://stripe.com/docs/issuing/purchases/disputes)
+/// Related guide: [Issuing disputes](https://docs.stripe.com/issuing/purchases/disputes)
 ///
 /// For more details see <<https://stripe.com/docs/api/issuing/disputes/object>>.
 #[derive(Clone, Debug)]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct IssuingDispute {
-    /// Disputed amount in the card's currency and in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
+    /// Disputed amount in the card's currency and in the [smallest currency unit](https://docs.stripe.com/currencies#zero-decimal).
     /// Usually the amount of the `transaction`, but can differ (usually because of currency fluctuation).
     pub amount: i64,
     /// List of balance transactions associated with the dispute.
@@ -24,14 +24,14 @@ pub struct IssuingDispute {
     /// If the dispute is not lost, this field will be absent.
     /// New enum values may be added in the future, so be sure to handle unknown values.
     pub loss_reason: Option<IssuingDisputeLossReason>,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: std::collections::HashMap<String, String>,
     /// Current status of the dispute.
     pub status: stripe_shared::IssuingDisputeStatus,
     /// The transaction being disputed.
     pub transaction: stripe_types::Expandable<stripe_shared::IssuingTransaction>,
-    /// [Treasury](https://stripe.com/docs/api/treasury) details related to this dispute if it was created on a [FinancialAccount](/docs/api/treasury/financial_accounts.
+    /// [Treasury](https://docs.stripe.com/api/treasury) details related to this dispute if it was created on a [FinancialAccount](/docs/api/treasury/financial_accounts.
     pub treasury: Option<stripe_shared::IssuingDisputeTreasury>,
 }
 #[doc(hidden)]

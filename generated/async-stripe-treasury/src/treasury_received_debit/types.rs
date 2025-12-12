@@ -1,4 +1,4 @@
-/// ReceivedDebits represent funds pulled from a [FinancialAccount](https://stripe.com/docs/api#financial_accounts).
+/// ReceivedDebits represent funds pulled from a [FinancialAccount](https://api.stripe.com#financial_accounts).
 /// These are not initiated from the FinancialAccount.
 #[derive(Clone, Debug)]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
@@ -17,7 +17,7 @@ pub description: String,
 pub failure_code: Option<TreasuryReceivedDebitFailureCode>,
     /// The FinancialAccount that funds were pulled from.
 pub financial_account: Option<String>,
-        /// A [hosted transaction receipt](https://stripe.com/docs/treasury/moving-money/regulatory-receipts) URL that is provided when money movement is considered regulated under Stripe's money transmission licenses.
+        /// A [hosted transaction receipt](https://docs.stripe.com/treasury/moving-money/regulatory-receipts) URL that is provided when money movement is considered regulated under Stripe's money transmission licenses.
 pub hosted_regulatory_receipt_url: Option<String>,
     /// Unique identifier for the object.
 pub id: stripe_treasury::TreasuryReceivedDebitId,

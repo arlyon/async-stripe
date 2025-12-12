@@ -11,7 +11,7 @@ pub struct GelatoDocumentReport {
     pub error: Option<stripe_misc::GelatoDocumentReportError>,
     /// Expiration date of the document.
     pub expiration_date: Option<stripe_misc::GelatoDataDocumentReportExpirationDate>,
-    /// Array of [File](https://stripe.com/docs/api/files) ids containing images for this document.
+    /// Array of [File](https://docs.stripe.com/api/files) ids containing images for this document.
     pub files: Option<Vec<String>>,
     /// First name as it appears in the document.
     pub first_name: Option<String>,

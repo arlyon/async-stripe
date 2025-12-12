@@ -1,6 +1,6 @@
 /// A Connection Token is used by the Stripe Terminal SDK to connect to a reader.
 ///
-/// Related guide: [Fleet management](https://stripe.com/docs/terminal/fleet/locations)
+/// Related guide: [Fleet management](https://docs.stripe.com/terminal/fleet/locations)
 ///
 /// For more details see <<https://stripe.com/docs/api/terminal/connection_tokens/object>>.
 #[derive(Clone, Debug)]

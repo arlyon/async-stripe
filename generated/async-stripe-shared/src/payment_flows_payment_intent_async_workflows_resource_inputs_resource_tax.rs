@@ -2,7 +2,7 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentFlowsPaymentIntentAsyncWorkflowsResourceInputsResourceTax {
-    /// The [TaxCalculation](https://stripe.com/docs/api/tax/calculations) id
+    /// The [TaxCalculation](https://docs.stripe.com/api/tax/calculations) id
     pub calculation: String,
 }
 #[doc(hidden)]

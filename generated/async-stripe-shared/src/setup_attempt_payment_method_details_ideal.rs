@@ -3,7 +3,7 @@
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct SetupAttemptPaymentMethodDetailsIdeal {
     /// The customer's bank.
-    /// Can be one of `abn_amro`, `asn_bank`, `bunq`, `buut`, `finom`, `handelsbanken`, `ing`, `knab`, `moneyou`, `n26`, `nn`, `rabobank`, `regiobank`, `revolut`, `sns_bank`, `triodos_bank`, `van_lanschot`, or `yoursafe`.
+    /// Can be one of `abn_amro`, `asn_bank`, `bunq`, `buut`, `finom`, `handelsbanken`, `ing`, `knab`, `mollie`, `moneyou`, `n26`, `nn`, `rabobank`, `regiobank`, `revolut`, `sns_bank`, `triodos_bank`, `van_lanschot`, or `yoursafe`.
     pub bank: Option<SetupAttemptPaymentMethodDetailsIdealBank>,
     /// The Bank Identifier Code of the customer's bank.
     pub bic: Option<SetupAttemptPaymentMethodDetailsIdealBic>,
@@ -159,7 +159,7 @@ const _: () = {
     }
 };
 /// The customer's bank.
-/// Can be one of `abn_amro`, `asn_bank`, `bunq`, `buut`, `finom`, `handelsbanken`, `ing`, `knab`, `moneyou`, `n26`, `nn`, `rabobank`, `regiobank`, `revolut`, `sns_bank`, `triodos_bank`, `van_lanschot`, or `yoursafe`.
+/// Can be one of `abn_amro`, `asn_bank`, `bunq`, `buut`, `finom`, `handelsbanken`, `ing`, `knab`, `mollie`, `moneyou`, `n26`, `nn`, `rabobank`, `regiobank`, `revolut`, `sns_bank`, `triodos_bank`, `van_lanschot`, or `yoursafe`.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum SetupAttemptPaymentMethodDetailsIdealBank {
@@ -171,6 +171,7 @@ pub enum SetupAttemptPaymentMethodDetailsIdealBank {
     Handelsbanken,
     Ing,
     Knab,
+    Mollie,
     Moneyou,
     N26,
     Nn,
@@ -196,6 +197,7 @@ impl SetupAttemptPaymentMethodDetailsIdealBank {
             Handelsbanken => "handelsbanken",
             Ing => "ing",
             Knab => "knab",
+            Mollie => "mollie",
             Moneyou => "moneyou",
             N26 => "n26",
             Nn => "nn",
@@ -224,6 +226,7 @@ impl std::str::FromStr for SetupAttemptPaymentMethodDetailsIdealBank {
             "handelsbanken" => Ok(Handelsbanken),
             "ing" => Ok(Ing),
             "knab" => Ok(Knab),
+            "mollie" => Ok(Mollie),
             "moneyou" => Ok(Moneyou),
             "n26" => Ok(N26),
             "nn" => Ok(Nn),
@@ -303,6 +306,7 @@ pub enum SetupAttemptPaymentMethodDetailsIdealBic {
     Handnl2a,
     Ingbnl2a,
     Knabnl2h,
+    Mllenl2a,
     Moyonl21,
     Nnbanl2g,
     Ntsbdeb1,
@@ -329,6 +333,7 @@ impl SetupAttemptPaymentMethodDetailsIdealBic {
             Handnl2a => "HANDNL2A",
             Ingbnl2a => "INGBNL2A",
             Knabnl2h => "KNABNL2H",
+            Mllenl2a => "MLLENL2A",
             Moyonl21 => "MOYONL21",
             Nnbanl2g => "NNBANL2G",
             Ntsbdeb1 => "NTSBDEB1",
@@ -358,6 +363,7 @@ impl std::str::FromStr for SetupAttemptPaymentMethodDetailsIdealBic {
             "HANDNL2A" => Ok(Handnl2a),
             "INGBNL2A" => Ok(Ingbnl2a),
             "KNABNL2H" => Ok(Knabnl2h),
+            "MLLENL2A" => Ok(Mllenl2a),
             "MOYONL21" => Ok(Moyonl21),
             "NNBANL2G" => Ok(Nnbanl2g),
             "NTSBDEB1" => Ok(Ntsbdeb1),

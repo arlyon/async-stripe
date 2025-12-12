@@ -4,6 +4,8 @@
 pub struct PaymentMethodDetailsAuBecsDebit {
     /// Bank-State-Branch number of the bank account.
     pub bsb_number: Option<String>,
+    /// Estimated date to debit the customer's bank account. A date string in YYYY-MM-DD format.
+    pub expected_debit_date: Option<String>,
     /// Uniquely identifies this particular bank account.
     /// You can use this attribute to check whether two bank accounts are the same.
     pub fingerprint: Option<String>,
@@ -15,6 +17,7 @@ pub struct PaymentMethodDetailsAuBecsDebit {
 #[doc(hidden)]
 pub struct PaymentMethodDetailsAuBecsDebitBuilder {
     bsb_number: Option<Option<String>>,
+    expected_debit_date: Option<Option<String>>,
     fingerprint: Option<Option<String>>,
     last4: Option<Option<String>>,
     mandate: Option<Option<String>>,
@@ -61,6 +64,7 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "bsb_number" => Deserialize::begin(&mut self.bsb_number),
+                "expected_debit_date" => Deserialize::begin(&mut self.expected_debit_date),
                 "fingerprint" => Deserialize::begin(&mut self.fingerprint),
                 "last4" => Deserialize::begin(&mut self.last4),
                 "mandate" => Deserialize::begin(&mut self.mandate),
@@ -71,6 +75,7 @@ const _: () = {
         fn deser_default() -> Self {
             Self {
                 bsb_number: Deserialize::default(),
+                expected_debit_date: Deserialize::default(),
                 fingerprint: Deserialize::default(),
                 last4: Deserialize::default(),
                 mandate: Deserialize::default(),
@@ -78,15 +83,23 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(bsb_number), Some(fingerprint), Some(last4), Some(mandate)) = (
+            let (
+                Some(bsb_number),
+                Some(expected_debit_date),
+                Some(fingerprint),
+                Some(last4),
+                Some(mandate),
+            ) = (
                 self.bsb_number.take(),
+                self.expected_debit_date.take(),
                 self.fingerprint.take(),
                 self.last4.take(),
                 self.mandate.take(),
-            ) else {
+            )
+            else {
                 return None;
             };
-            Some(Self::Out { bsb_number, fingerprint, last4, mandate })
+            Some(Self::Out { bsb_number, expected_debit_date, fingerprint, last4, mandate })
         }
     }
 
@@ -114,6 +127,7 @@ const _: () = {
             for (k, v) in obj {
                 match k.as_str() {
                     "bsb_number" => b.bsb_number = FromValueOpt::from_value(v),
+                    "expected_debit_date" => b.expected_debit_date = FromValueOpt::from_value(v),
                     "fingerprint" => b.fingerprint = FromValueOpt::from_value(v),
                     "last4" => b.last4 = FromValueOpt::from_value(v),
                     "mandate" => b.mandate = FromValueOpt::from_value(v),

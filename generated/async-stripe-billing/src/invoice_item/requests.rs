@@ -47,6 +47,8 @@ struct ListInvoiceItemBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     customer: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    customer_account: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -64,6 +66,7 @@ impl ListInvoiceItemBuilder {
         Self {
             created: None,
             customer: None,
+            customer_account: None,
             ending_before: None,
             expand: None,
             invoice: None,
@@ -90,9 +93,15 @@ impl ListInvoiceItem {
         self
     }
     /// The identifier of the customer whose invoice items to return.
-    /// If none is provided, all invoice items will be returned.
+    /// If none is provided, returns all invoice items.
     pub fn customer(mut self, customer: impl Into<String>) -> Self {
         self.inner.customer = Some(customer.into());
+        self
+    }
+    /// The identifier of the account representing the customer whose invoice items to return.
+    /// If none is provided, returns all invoice items.
+    pub fn customer_account(mut self, customer_account: impl Into<String>) -> Self {
+        self.inner.customer_account = Some(customer_account.into());
         self
     }
     /// A cursor for use in pagination.
@@ -231,7 +240,10 @@ struct CreateInvoiceItemBuilder {
     amount: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
     currency: Option<stripe_types::Currency>,
-    customer: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    customer: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    customer_account: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     description: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -264,11 +276,12 @@ struct CreateInvoiceItemBuilder {
     unit_amount_decimal: Option<String>,
 }
 impl CreateInvoiceItemBuilder {
-    fn new(customer: impl Into<String>) -> Self {
+    fn new() -> Self {
         Self {
             amount: None,
             currency: None,
-            customer: customer.into(),
+            customer: None,
+            customer_account: None,
             description: None,
             discountable: None,
             discounts: None,
@@ -287,7 +300,7 @@ impl CreateInvoiceItemBuilder {
         }
     }
 }
-/// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
+/// Data used to generate a new [Price](https://docs.stripe.com/api/prices) object inline.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateInvoiceItemPriceData {
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
@@ -295,7 +308,7 @@ pub struct CreateInvoiceItemPriceData {
     pub currency: stripe_types::Currency,
     /// The ID of the [Product](https://docs.stripe.com/api/products) that this [Price](https://docs.stripe.com/api/prices) will belong to.
     pub product: String,
-    /// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
+    /// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
     /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
     /// One of `inclusive`, `exclusive`, or `unspecified`.
     /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
@@ -320,7 +333,7 @@ impl CreateInvoiceItemPriceData {
         }
     }
 }
-/// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
+/// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
 /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
 /// One of `inclusive`, `exclusive`, or `unspecified`.
 /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
@@ -391,7 +404,7 @@ impl<'de> serde::Deserialize<'de> for CreateInvoiceItemPriceDataTaxBehavior {
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-/// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
+/// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
 /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
 /// One of `inclusive`, `exclusive`, or `unspecified`.
 /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
@@ -470,8 +483,8 @@ pub struct CreateInvoiceItem {
 }
 impl CreateInvoiceItem {
     /// Construct a new `CreateInvoiceItem`.
-    pub fn new(customer: impl Into<String>) -> Self {
-        Self { inner: CreateInvoiceItemBuilder::new(customer.into()) }
+    pub fn new() -> Self {
+        Self { inner: CreateInvoiceItemBuilder::new() }
     }
     /// The integer amount in cents (or local equivalent) of the charge to be applied to the upcoming invoice.
     /// Passing in a negative `amount` will reduce the `amount_due` on the invoice.
@@ -483,6 +496,16 @@ impl CreateInvoiceItem {
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub fn currency(mut self, currency: impl Into<stripe_types::Currency>) -> Self {
         self.inner.currency = Some(currency.into());
+        self
+    }
+    /// The ID of the customer to bill for this invoice item.
+    pub fn customer(mut self, customer: impl Into<String>) -> Self {
+        self.inner.customer = Some(customer.into());
+        self
+    }
+    /// The ID of the account representing the customer to bill for this invoice item.
+    pub fn customer_account(mut self, customer_account: impl Into<String>) -> Self {
+        self.inner.customer_account = Some(customer_account.into());
         self
     }
     /// An arbitrary string which you can attach to the invoice item.
@@ -516,7 +539,7 @@ impl CreateInvoiceItem {
         self.inner.invoice = Some(invoice.into());
         self
     }
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
@@ -529,13 +552,13 @@ impl CreateInvoiceItem {
     }
     /// The period associated with this invoice item.
     /// When set to different values, the period will be rendered on the invoice.
-    /// If you have [Stripe Revenue Recognition](https://stripe.com/docs/revenue-recognition) enabled, the period will be used to recognize and defer revenue.
-    /// See the [Revenue Recognition documentation](https://stripe.com/docs/revenue-recognition/methodology/subscriptions-and-invoicing) for details.
+    /// If you have [Stripe Revenue Recognition](https://docs.stripe.com/revenue-recognition) enabled, the period will be used to recognize and defer revenue.
+    /// See the [Revenue Recognition documentation](https://docs.stripe.com/revenue-recognition/methodology/subscriptions-and-invoicing) for details.
     pub fn period(mut self, period: impl Into<Period>) -> Self {
         self.inner.period = Some(period.into());
         self
     }
-    /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
+    /// Data used to generate a new [Price](https://docs.stripe.com/api/prices) object inline.
     pub fn price_data(mut self, price_data: impl Into<CreateInvoiceItemPriceData>) -> Self {
         self.inner.price_data = Some(price_data.into());
         self
@@ -558,7 +581,7 @@ impl CreateInvoiceItem {
         self.inner.subscription = Some(subscription.into());
         self
     }
-    /// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
+    /// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
     /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
     /// One of `inclusive`, `exclusive`, or `unspecified`.
     /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
@@ -566,7 +589,7 @@ impl CreateInvoiceItem {
         self.inner.tax_behavior = Some(tax_behavior.into());
         self
     }
-    /// A [tax code](https://stripe.com/docs/tax/tax-categories) ID.
+    /// A [tax code](https://docs.stripe.com/tax/tax-categories) ID.
     pub fn tax_code(mut self, tax_code: impl Into<String>) -> Self {
         self.inner.tax_code = Some(tax_code.into());
         self
@@ -584,6 +607,11 @@ impl CreateInvoiceItem {
     pub fn unit_amount_decimal(mut self, unit_amount_decimal: impl Into<String>) -> Self {
         self.inner.unit_amount_decimal = Some(unit_amount_decimal.into());
         self
+    }
+}
+impl Default for CreateInvoiceItem {
+    fn default() -> Self {
+        Self::new()
     }
 }
 impl CreateInvoiceItem {
@@ -662,7 +690,7 @@ impl UpdateInvoiceItemBuilder {
         }
     }
 }
-/// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
+/// Data used to generate a new [Price](https://docs.stripe.com/api/prices) object inline.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdateInvoiceItemPriceData {
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
@@ -670,7 +698,7 @@ pub struct UpdateInvoiceItemPriceData {
     pub currency: stripe_types::Currency,
     /// The ID of the [Product](https://docs.stripe.com/api/products) that this [Price](https://docs.stripe.com/api/prices) will belong to.
     pub product: String,
-    /// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
+    /// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
     /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
     /// One of `inclusive`, `exclusive`, or `unspecified`.
     /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
@@ -695,7 +723,7 @@ impl UpdateInvoiceItemPriceData {
         }
     }
 }
-/// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
+/// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
 /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
 /// One of `inclusive`, `exclusive`, or `unspecified`.
 /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
@@ -766,7 +794,7 @@ impl<'de> serde::Deserialize<'de> for UpdateInvoiceItemPriceDataTaxBehavior {
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-/// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
+/// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
 /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
 /// One of `inclusive`, `exclusive`, or `unspecified`.
 /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
@@ -880,7 +908,7 @@ impl UpdateInvoiceItem {
         self.inner.expand = Some(expand.into());
         self
     }
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
@@ -893,13 +921,13 @@ impl UpdateInvoiceItem {
     }
     /// The period associated with this invoice item.
     /// When set to different values, the period will be rendered on the invoice.
-    /// If you have [Stripe Revenue Recognition](https://stripe.com/docs/revenue-recognition) enabled, the period will be used to recognize and defer revenue.
-    /// See the [Revenue Recognition documentation](https://stripe.com/docs/revenue-recognition/methodology/subscriptions-and-invoicing) for details.
+    /// If you have [Stripe Revenue Recognition](https://docs.stripe.com/revenue-recognition) enabled, the period will be used to recognize and defer revenue.
+    /// See the [Revenue Recognition documentation](https://docs.stripe.com/revenue-recognition/methodology/subscriptions-and-invoicing) for details.
     pub fn period(mut self, period: impl Into<Period>) -> Self {
         self.inner.period = Some(period.into());
         self
     }
-    /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
+    /// Data used to generate a new [Price](https://docs.stripe.com/api/prices) object inline.
     pub fn price_data(mut self, price_data: impl Into<UpdateInvoiceItemPriceData>) -> Self {
         self.inner.price_data = Some(price_data.into());
         self
@@ -914,7 +942,7 @@ impl UpdateInvoiceItem {
         self.inner.quantity = Some(quantity.into());
         self
     }
-    /// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
+    /// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
     /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
     /// One of `inclusive`, `exclusive`, or `unspecified`.
     /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
@@ -922,7 +950,7 @@ impl UpdateInvoiceItem {
         self.inner.tax_behavior = Some(tax_behavior.into());
         self
     }
-    /// A [tax code](https://stripe.com/docs/tax/tax-categories) ID.
+    /// A [tax code](https://docs.stripe.com/tax/tax-categories) ID.
     pub fn tax_code(mut self, tax_code: impl Into<String>) -> Self {
         self.inner.tax_code = Some(tax_code.into());
         self

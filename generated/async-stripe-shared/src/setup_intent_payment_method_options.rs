@@ -10,6 +10,7 @@ pub struct SetupIntentPaymentMethodOptions {
     pub klarna: Option<stripe_shared::SetupIntentPaymentMethodOptionsKlarna>,
     pub link: Option<stripe_shared::SetupIntentPaymentMethodOptionsLink>,
     pub paypal: Option<stripe_shared::SetupIntentPaymentMethodOptionsPaypal>,
+    pub payto: Option<stripe_shared::SetupIntentPaymentMethodOptionsPayto>,
     pub sepa_debit: Option<stripe_shared::SetupIntentPaymentMethodOptionsSepaDebit>,
     pub us_bank_account: Option<stripe_shared::SetupIntentPaymentMethodOptionsUsBankAccount>,
 }
@@ -23,6 +24,7 @@ pub struct SetupIntentPaymentMethodOptionsBuilder {
     klarna: Option<Option<stripe_shared::SetupIntentPaymentMethodOptionsKlarna>>,
     link: Option<Option<stripe_shared::SetupIntentPaymentMethodOptionsLink>>,
     paypal: Option<Option<stripe_shared::SetupIntentPaymentMethodOptionsPaypal>>,
+    payto: Option<Option<stripe_shared::SetupIntentPaymentMethodOptionsPayto>>,
     sepa_debit: Option<Option<stripe_shared::SetupIntentPaymentMethodOptionsSepaDebit>>,
     us_bank_account: Option<Option<stripe_shared::SetupIntentPaymentMethodOptionsUsBankAccount>>,
 }
@@ -75,6 +77,7 @@ const _: () = {
                 "klarna" => Deserialize::begin(&mut self.klarna),
                 "link" => Deserialize::begin(&mut self.link),
                 "paypal" => Deserialize::begin(&mut self.paypal),
+                "payto" => Deserialize::begin(&mut self.payto),
                 "sepa_debit" => Deserialize::begin(&mut self.sepa_debit),
                 "us_bank_account" => Deserialize::begin(&mut self.us_bank_account),
                 _ => <dyn Visitor>::ignore(),
@@ -91,6 +94,7 @@ const _: () = {
                 klarna: Deserialize::default(),
                 link: Deserialize::default(),
                 paypal: Deserialize::default(),
+                payto: Deserialize::default(),
                 sepa_debit: Deserialize::default(),
                 us_bank_account: Deserialize::default(),
             }
@@ -106,6 +110,7 @@ const _: () = {
                 Some(klarna),
                 Some(link),
                 Some(paypal),
+                Some(payto),
                 Some(sepa_debit),
                 Some(us_bank_account),
             ) = (
@@ -117,6 +122,7 @@ const _: () = {
                 self.klarna.take(),
                 self.link.take(),
                 self.paypal.take(),
+                self.payto.take(),
                 self.sepa_debit.take(),
                 self.us_bank_account.take(),
             )
@@ -132,6 +138,7 @@ const _: () = {
                 klarna,
                 link,
                 paypal,
+                payto,
                 sepa_debit,
                 us_bank_account,
             })
@@ -169,6 +176,7 @@ const _: () = {
                     "klarna" => b.klarna = FromValueOpt::from_value(v),
                     "link" => b.link = FromValueOpt::from_value(v),
                     "paypal" => b.paypal = FromValueOpt::from_value(v),
+                    "payto" => b.payto = FromValueOpt::from_value(v),
                     "sepa_debit" => b.sepa_debit = FromValueOpt::from_value(v),
                     "us_bank_account" => b.us_bank_account = FromValueOpt::from_value(v),
                     _ => {}

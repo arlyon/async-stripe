@@ -1,15 +1,15 @@
-/// Invoice Items represent the component lines of an [invoice](https://stripe.com/docs/api/invoices).
-/// When you create an invoice item with an `invoice` field, it is attached to the specified invoice and included as [an invoice line item](https://stripe.com/docs/api/invoices/line_item) within [invoice.lines](https://stripe.com/docs/api/invoices/object#invoice_object-lines).
+/// Invoice Items represent the component lines of an [invoice](https://docs.stripe.com/api/invoices).
+/// When you create an invoice item with an `invoice` field, it is attached to the specified invoice and included as [an invoice line item](https://docs.stripe.com/api/invoices/line_item) within [invoice.lines](https://docs.stripe.com/api/invoices/object#invoice_object-lines).
 ///
 /// Invoice Items can be created before you are ready to actually send the invoice.
 /// This can be particularly useful when combined.
-/// with a [subscription](https://stripe.com/docs/api/subscriptions).
+/// with a [subscription](https://docs.stripe.com/api/subscriptions).
 /// Sometimes you want to add a charge or credit to a customer, but actually charge.
 /// or credit the customer's card only at the end of a regular billing cycle.
 /// This is useful for combining several charges.
 /// (to minimize per-transaction fees), or for having Stripe tabulate your usage-based billing totals.
 ///
-/// Related guides: [Integrate with the Invoicing API](https://stripe.com/docs/invoicing/integration), [Subscription Invoices](https://stripe.com/docs/billing/invoices/subscription#adding-upcoming-invoice-items).
+/// Related guides: [Integrate with the Invoicing API](https://docs.stripe.com/invoicing/integration), [Subscription Invoices](https://docs.stripe.com/billing/invoices/subscription#adding-upcoming-invoice-items).
 ///
 /// For more details see <<https://stripe.com/docs/api/invoiceitems/object>>.
 #[derive(Clone, Debug)]
@@ -21,8 +21,10 @@ pub struct InvoiceItem {
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub currency: stripe_types::Currency,
-    /// The ID of the customer who will be billed when this invoice item is billed.
+    /// The ID of the customer to bill for this invoice item.
     pub customer: stripe_types::Expandable<stripe_shared::Customer>,
+    /// The ID of the account to bill for this invoice item.
+    pub customer_account: Option<String>,
     /// Time at which the object was created. Measured in seconds since the Unix epoch.
     pub date: stripe_types::Timestamp,
     /// An arbitrary string attached to the object. Often useful for displaying to users.
@@ -39,7 +41,7 @@ pub struct InvoiceItem {
     pub invoice: Option<stripe_types::Expandable<stripe_shared::Invoice>>,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: Option<std::collections::HashMap<String, String>>,
     /// The amount after discounts, but before credits and taxes.
@@ -67,6 +69,7 @@ pub struct InvoiceItemBuilder {
     amount: Option<i64>,
     currency: Option<stripe_types::Currency>,
     customer: Option<stripe_types::Expandable<stripe_shared::Customer>>,
+    customer_account: Option<Option<String>>,
     date: Option<stripe_types::Timestamp>,
     description: Option<Option<String>>,
     discountable: Option<bool>,
@@ -129,6 +132,7 @@ const _: () = {
                 "amount" => Deserialize::begin(&mut self.amount),
                 "currency" => Deserialize::begin(&mut self.currency),
                 "customer" => Deserialize::begin(&mut self.customer),
+                "customer_account" => Deserialize::begin(&mut self.customer_account),
                 "date" => Deserialize::begin(&mut self.date),
                 "description" => Deserialize::begin(&mut self.description),
                 "discountable" => Deserialize::begin(&mut self.discountable),
@@ -155,6 +159,7 @@ const _: () = {
                 amount: Deserialize::default(),
                 currency: Deserialize::default(),
                 customer: Deserialize::default(),
+                customer_account: Deserialize::default(),
                 date: Deserialize::default(),
                 description: Deserialize::default(),
                 discountable: Deserialize::default(),
@@ -180,6 +185,7 @@ const _: () = {
                 Some(amount),
                 Some(currency),
                 Some(customer),
+                Some(customer_account),
                 Some(date),
                 Some(description),
                 Some(discountable),
@@ -201,6 +207,7 @@ const _: () = {
                 self.amount,
                 self.currency.take(),
                 self.customer.take(),
+                self.customer_account.take(),
                 self.date,
                 self.description.take(),
                 self.discountable,
@@ -226,6 +233,7 @@ const _: () = {
                 amount,
                 currency,
                 customer,
+                customer_account,
                 date,
                 description,
                 discountable,
@@ -273,6 +281,7 @@ const _: () = {
                     "amount" => b.amount = FromValueOpt::from_value(v),
                     "currency" => b.currency = FromValueOpt::from_value(v),
                     "customer" => b.customer = FromValueOpt::from_value(v),
+                    "customer_account" => b.customer_account = FromValueOpt::from_value(v),
                     "date" => b.date = FromValueOpt::from_value(v),
                     "description" => b.description = FromValueOpt::from_value(v),
                     "discountable" => b.discountable = FromValueOpt::from_value(v),
@@ -301,10 +310,11 @@ const _: () = {
 impl serde::Serialize for InvoiceItem {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("InvoiceItem", 21)?;
+        let mut s = s.serialize_struct("InvoiceItem", 22)?;
         s.serialize_field("amount", &self.amount)?;
         s.serialize_field("currency", &self.currency)?;
         s.serialize_field("customer", &self.customer)?;
+        s.serialize_field("customer_account", &self.customer_account)?;
         s.serialize_field("date", &self.date)?;
         s.serialize_field("description", &self.description)?;
         s.serialize_field("discountable", &self.discountable)?;

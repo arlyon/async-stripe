@@ -526,10 +526,10 @@ impl<'de> serde::Deserialize<'de> for CreateIssuingCardShippingType {
     }
 }
 /// Rules that control spending for this card.
-/// Refer to our [documentation](https://stripe.com/docs/issuing/controls/spending-controls) for more details.
+/// Refer to our [documentation](https://docs.stripe.com/issuing/controls/spending-controls) for more details.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateIssuingCardSpendingControls {
-    /// Array of strings containing [categories](https://stripe.com/docs/api#issuing_authorization_object-merchant_data-category) of authorizations to allow.
+    /// Array of strings containing [categories](https://docs.stripe.com/api#issuing_authorization_object-merchant_data-category) of authorizations to allow.
     /// All other categories will be blocked.
     /// Cannot be set with `blocked_categories`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -542,7 +542,7 @@ pub struct CreateIssuingCardSpendingControls {
     /// Provide an empty value to unset this control.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub allowed_merchant_countries: Option<Vec<String>>,
-    /// Array of strings containing [categories](https://stripe.com/docs/api#issuing_authorization_object-merchant_data-category) of authorizations to decline.
+    /// Array of strings containing [categories](https://docs.stripe.com/api#issuing_authorization_object-merchant_data-category) of authorizations to decline.
     /// All other categories will be allowed.
     /// Cannot be set with `allowed_categories`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -574,7 +574,7 @@ impl Default for CreateIssuingCardSpendingControls {
         Self::new()
     }
 }
-/// Array of strings containing [categories](https://stripe.com/docs/api#issuing_authorization_object-merchant_data-category) of authorizations to allow.
+/// Array of strings containing [categories](https://docs.stripe.com/api#issuing_authorization_object-merchant_data-category) of authorizations to allow.
 /// All other categories will be blocked.
 /// Cannot be set with `blocked_categories`.
 #[derive(Clone, Eq, PartialEq)]
@@ -1612,7 +1612,7 @@ impl<'de> serde::Deserialize<'de> for CreateIssuingCardSpendingControlsAllowedCa
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-/// Array of strings containing [categories](https://stripe.com/docs/api#issuing_authorization_object-merchant_data-category) of authorizations to decline.
+/// Array of strings containing [categories](https://docs.stripe.com/api#issuing_authorization_object-merchant_data-category) of authorizations to decline.
 /// All other categories will be allowed.
 /// Cannot be set with `allowed_categories`.
 #[derive(Clone, Eq, PartialEq)]
@@ -2655,7 +2655,7 @@ impl<'de> serde::Deserialize<'de> for CreateIssuingCardSpendingControlsBlockedCa
 pub struct CreateIssuingCardSpendingControlsSpendingLimits {
     /// Maximum amount allowed to spend per interval.
     pub amount: i64,
-    /// Array of strings containing [categories](https://stripe.com/docs/api#issuing_authorization_object-merchant_data-category) this limit applies to.
+    /// Array of strings containing [categories](https://docs.stripe.com/api#issuing_authorization_object-merchant_data-category) this limit applies to.
     /// Omitting this field will apply the limit to all categories.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub categories: Option<Vec<CreateIssuingCardSpendingControlsSpendingLimitsCategories>>,
@@ -2670,7 +2670,7 @@ impl CreateIssuingCardSpendingControlsSpendingLimits {
         Self { amount: amount.into(), categories: None, interval: interval.into() }
     }
 }
-/// Array of strings containing [categories](https://stripe.com/docs/api#issuing_authorization_object-merchant_data-category) this limit applies to.
+/// Array of strings containing [categories](https://docs.stripe.com/api#issuing_authorization_object-merchant_data-category) this limit applies to.
 /// Omitting this field will apply the limit to all categories.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
@@ -3860,7 +3860,7 @@ impl CreateIssuingCard {
     ) -> Self {
         Self { inner: CreateIssuingCardBuilder::new(currency.into(), type_.into()) }
     }
-    /// The [Cardholder](https://stripe.com/docs/api#issuing_cardholder_object) object with which the card will be associated.
+    /// The [Cardholder](https://docs.stripe.com/api#issuing_cardholder_object) object with which the card will be associated.
     pub fn cardholder(mut self, cardholder: impl Into<String>) -> Self {
         self.inner.cardholder = Some(cardholder.into());
         self
@@ -3886,7 +3886,7 @@ impl CreateIssuingCard {
         self.inner.financial_account = Some(financial_account.into());
         self
     }
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
@@ -3931,7 +3931,7 @@ impl CreateIssuingCard {
         self
     }
     /// Rules that control spending for this card.
-    /// Refer to our [documentation](https://stripe.com/docs/issuing/controls/spending-controls) for more details.
+    /// Refer to our [documentation](https://docs.stripe.com/issuing/controls/spending-controls) for more details.
     pub fn spending_controls(
         mut self,
         spending_controls: impl Into<CreateIssuingCardSpendingControls>,
@@ -4324,10 +4324,10 @@ impl<'de> serde::Deserialize<'de> for UpdateIssuingCardShippingType {
     }
 }
 /// Rules that control spending for this card.
-/// Refer to our [documentation](https://stripe.com/docs/issuing/controls/spending-controls) for more details.
+/// Refer to our [documentation](https://docs.stripe.com/issuing/controls/spending-controls) for more details.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdateIssuingCardSpendingControls {
-    /// Array of strings containing [categories](https://stripe.com/docs/api#issuing_authorization_object-merchant_data-category) of authorizations to allow.
+    /// Array of strings containing [categories](https://docs.stripe.com/api#issuing_authorization_object-merchant_data-category) of authorizations to allow.
     /// All other categories will be blocked.
     /// Cannot be set with `blocked_categories`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4340,7 +4340,7 @@ pub struct UpdateIssuingCardSpendingControls {
     /// Provide an empty value to unset this control.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub allowed_merchant_countries: Option<Vec<String>>,
-    /// Array of strings containing [categories](https://stripe.com/docs/api#issuing_authorization_object-merchant_data-category) of authorizations to decline.
+    /// Array of strings containing [categories](https://docs.stripe.com/api#issuing_authorization_object-merchant_data-category) of authorizations to decline.
     /// All other categories will be allowed.
     /// Cannot be set with `allowed_categories`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4372,7 +4372,7 @@ impl Default for UpdateIssuingCardSpendingControls {
         Self::new()
     }
 }
-/// Array of strings containing [categories](https://stripe.com/docs/api#issuing_authorization_object-merchant_data-category) of authorizations to allow.
+/// Array of strings containing [categories](https://docs.stripe.com/api#issuing_authorization_object-merchant_data-category) of authorizations to allow.
 /// All other categories will be blocked.
 /// Cannot be set with `blocked_categories`.
 #[derive(Clone, Eq, PartialEq)]
@@ -5410,7 +5410,7 @@ impl<'de> serde::Deserialize<'de> for UpdateIssuingCardSpendingControlsAllowedCa
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-/// Array of strings containing [categories](https://stripe.com/docs/api#issuing_authorization_object-merchant_data-category) of authorizations to decline.
+/// Array of strings containing [categories](https://docs.stripe.com/api#issuing_authorization_object-merchant_data-category) of authorizations to decline.
 /// All other categories will be allowed.
 /// Cannot be set with `allowed_categories`.
 #[derive(Clone, Eq, PartialEq)]
@@ -6453,7 +6453,7 @@ impl<'de> serde::Deserialize<'de> for UpdateIssuingCardSpendingControlsBlockedCa
 pub struct UpdateIssuingCardSpendingControlsSpendingLimits {
     /// Maximum amount allowed to spend per interval.
     pub amount: i64,
-    /// Array of strings containing [categories](https://stripe.com/docs/api#issuing_authorization_object-merchant_data-category) this limit applies to.
+    /// Array of strings containing [categories](https://docs.stripe.com/api#issuing_authorization_object-merchant_data-category) this limit applies to.
     /// Omitting this field will apply the limit to all categories.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub categories: Option<Vec<UpdateIssuingCardSpendingControlsSpendingLimitsCategories>>,
@@ -6468,7 +6468,7 @@ impl UpdateIssuingCardSpendingControlsSpendingLimits {
         Self { amount: amount.into(), categories: None, interval: interval.into() }
     }
 }
-/// Array of strings containing [categories](https://stripe.com/docs/api#issuing_authorization_object-merchant_data-category) this limit applies to.
+/// Array of strings containing [categories](https://docs.stripe.com/api#issuing_authorization_object-merchant_data-category) this limit applies to.
 /// Omitting this field will apply the limit to all categories.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
@@ -7607,7 +7607,7 @@ impl UpdateIssuingCard {
         self.inner.expand = Some(expand.into());
         self
     }
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
@@ -7633,7 +7633,7 @@ impl UpdateIssuingCard {
         self
     }
     /// Rules that control spending for this card.
-    /// Refer to our [documentation](https://stripe.com/docs/issuing/controls/spending-controls) for more details.
+    /// Refer to our [documentation](https://docs.stripe.com/issuing/controls/spending-controls) for more details.
     pub fn spending_controls(
         mut self,
         spending_controls: impl Into<UpdateIssuingCardSpendingControls>,
@@ -7992,7 +7992,7 @@ pub struct RequiredAddress {
     pub line2: Option<String>,
     /// ZIP or postal code.
     pub postal_code: String,
-    /// State, county, province, or region.
+    /// State, county, province, or region ([ISO 3166-2](https://en.wikipedia.org/wiki/ISO_3166-2)).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
 }

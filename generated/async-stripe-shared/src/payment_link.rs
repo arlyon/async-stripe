@@ -1,10 +1,10 @@
 /// A payment link is a shareable URL that will take your customers to a hosted payment page.
 /// A payment link can be shared and used multiple times.
 ///
-/// When a customer opens a payment link it will open a new [checkout session](https://stripe.com/docs/api/checkout/sessions) to render the payment page.
-/// You can use [checkout session events](https://stripe.com/docs/api/events/types#event_types-checkout.session.completed) to track payments through payment links.
+/// When a customer opens a payment link it will open a new [checkout session](https://docs.stripe.com/api/checkout/sessions) to render the payment page.
+/// You can use [checkout session events](https://docs.stripe.com/api/events/types#event_types-checkout.session.completed) to track payments through payment links.
 ///
-/// Related guide: [Payment Links API](https://stripe.com/docs/payment-links)
+/// Related guide: [Payment Links API](https://docs.stripe.com/payment-links)
 ///
 /// For more details see <<https://stripe.com/docs/api/payment_links/payment_links/object>>.
 #[derive(Clone, Debug)]
@@ -46,7 +46,7 @@ pub struct PaymentLink {
     pub line_items: Option<stripe_types::List<stripe_shared::CheckoutSessionItem>>,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: std::collections::HashMap<String, String>,
     pub name_collection: Option<stripe_shared::PaymentLinksResourceNameCollection>,
@@ -762,6 +762,7 @@ pub enum PaymentLinkPaymentMethodTypes {
     PayByBank,
     Paynow,
     Paypal,
+    Payto,
     Pix,
     Promptpay,
     Satispay,
@@ -807,6 +808,7 @@ impl PaymentLinkPaymentMethodTypes {
             PayByBank => "pay_by_bank",
             Paynow => "paynow",
             Paypal => "paypal",
+            Payto => "payto",
             Pix => "pix",
             Promptpay => "promptpay",
             Satispay => "satispay",
@@ -855,6 +857,7 @@ impl std::str::FromStr for PaymentLinkPaymentMethodTypes {
             "pay_by_bank" => Ok(PayByBank),
             "paynow" => Ok(Paynow),
             "paypal" => Ok(Paypal),
+            "payto" => Ok(Payto),
             "pix" => Ok(Pix),
             "promptpay" => Ok(Promptpay),
             "satispay" => Ok(Satispay),

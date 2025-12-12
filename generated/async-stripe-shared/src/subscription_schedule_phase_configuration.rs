@@ -12,7 +12,7 @@ pub struct SubscriptionSchedulePhaseConfiguration {
     /// Possible values are `phase_start` or `automatic`.
     /// If `phase_start` then billing cycle anchor of the subscription is set to the start of the phase when entering the phase.
     /// If `automatic` then the billing cycle anchor is automatically modified as needed when entering the phase.
-    /// For more information, see the billing cycle [documentation](https://stripe.com/docs/billing/subscriptions/billing-cycle).
+    /// For more information, see the billing cycle [documentation](https://docs.stripe.com/billing/subscriptions/billing-cycle).
     pub billing_cycle_anchor: Option<SubscriptionSchedulePhaseConfigurationBillingCycleAnchor>,
     /// Define thresholds at which an invoice will be sent, and the subscription advanced to a new billing period.
     pub billing_thresholds: Option<stripe_shared::SubscriptionBillingThresholds>,
@@ -41,7 +41,7 @@ pub struct SubscriptionSchedulePhaseConfiguration {
     pub invoice_settings: Option<stripe_shared::InvoiceSettingSubscriptionSchedulePhaseSetting>,
     /// Subscription items to configure the subscription to during this phase of the subscription schedule.
     pub items: Vec<stripe_shared::SubscriptionScheduleConfigurationItem>,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to a phase.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to a phase.
     /// Metadata on a schedule's phase will update the underlying subscription's `metadata` when the phase is entered.
     /// Updating the underlying subscription's `metadata` directly will not affect the current phase's `metadata`.
     pub metadata: Option<std::collections::HashMap<String, String>>,
@@ -300,7 +300,7 @@ const _: () = {
 /// Possible values are `phase_start` or `automatic`.
 /// If `phase_start` then billing cycle anchor of the subscription is set to the start of the phase when entering the phase.
 /// If `automatic` then the billing cycle anchor is automatically modified as needed when entering the phase.
-/// For more information, see the billing cycle [documentation](https://stripe.com/docs/billing/subscriptions/billing-cycle).
+/// For more information, see the billing cycle [documentation](https://docs.stripe.com/billing/subscriptions/billing-cycle).
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum SubscriptionSchedulePhaseConfigurationBillingCycleAnchor {

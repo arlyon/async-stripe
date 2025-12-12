@@ -1,6 +1,6 @@
-/// An Issuing `Cardholder` object represents an individual or business entity who is [issued](https://stripe.com/docs/issuing) cards.
+/// An Issuing `Cardholder` object represents an individual or business entity who is [issued](https://docs.stripe.com/issuing) cards.
 ///
-/// Related guide: [How to create a cardholder](https://stripe.com/docs/issuing/cards/virtual/issue-cards#create-cardholder).
+/// Related guide: [How to create a cardholder](https://docs.stripe.com/issuing/cards/virtual/issue-cards#create-cardholder).
 ///
 /// For more details see <<https://stripe.com/docs/api/issuing/cardholders/object>>.
 #[derive(Clone, Debug)]
@@ -19,27 +19,27 @@ pub struct IssuingCardholder {
     pub individual: Option<stripe_shared::IssuingCardholderIndividual>,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: std::collections::HashMap<String, String>,
     /// The cardholder's name. This will be printed on cards issued to them.
     pub name: String,
     /// The cardholder's phone number.
     /// This is required for all cardholders who will be creating EU cards.
-    /// See the [3D Secure documentation](https://stripe.com/docs/issuing/3d-secure#when-is-3d-secure-applied) for more details.
+    /// See the [3D Secure documentation](https://docs.stripe.com/issuing/3d-secure#when-is-3d-secure-applied) for more details.
     pub phone_number: Option<String>,
     /// The cardholder’s preferred locales (languages), ordered by preference.
     /// Locales can be `de`, `en`, `es`, `fr`, or `it`.
-    /// This changes the language of the [3D Secure flow](https://stripe.com/docs/issuing/3d-secure) and one-time password messages sent to the cardholder.
+    /// This changes the language of the [3D Secure flow](https://docs.stripe.com/issuing/3d-secure) and one-time password messages sent to the cardholder.
     pub preferred_locales: Option<Vec<stripe_shared::IssuingCardholderPreferredLocales>>,
     pub requirements: stripe_shared::IssuingCardholderRequirements,
     /// Rules that control spending across this cardholder's cards.
-    /// Refer to our [documentation](https://stripe.com/docs/issuing/controls/spending-controls) for more details.
+    /// Refer to our [documentation](https://docs.stripe.com/issuing/controls/spending-controls) for more details.
     pub spending_controls: Option<stripe_shared::IssuingCardholderAuthorizationControls>,
     /// Specifies whether to permit authorizations on this cardholder's cards.
     pub status: stripe_shared::IssuingCardholderStatus,
     /// One of `individual` or `company`.
-    /// See [Choose a cardholder type](https://stripe.com/docs/issuing/other/choose-cardholder) for more details.
+    /// See [Choose a cardholder type](https://docs.stripe.com/issuing/other/choose-cardholder) for more details.
     #[cfg_attr(feature = "deserialize", serde(rename = "type"))]
     pub type_: stripe_shared::IssuingCardholderType,
 }

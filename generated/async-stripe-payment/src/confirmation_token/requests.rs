@@ -200,7 +200,7 @@ pub struct CreateConfirmationTokenPaymentMethodData {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
     pub mb_way: Option<miniserde::json::Value>,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
@@ -243,6 +243,9 @@ pub struct CreateConfirmationTokenPaymentMethodData {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
     pub paypal: Option<miniserde::json::Value>,
+    /// If this is a `payto` PaymentMethod, this hash contains details about the PayTo payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payto: Option<CreateConfirmationTokenPaymentMethodDataPayto>,
     /// If this is a `pix` PaymentMethod, this hash contains details about the Pix payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
@@ -252,7 +255,7 @@ pub struct CreateConfirmationTokenPaymentMethodData {
     #[serde(with = "stripe_types::with_serde_json_opt")]
     pub promptpay: Option<miniserde::json::Value>,
     /// Options to configure Radar.
-    /// See [Radar Session](https://stripe.com/docs/radar/radar-session) for more information.
+    /// See [Radar Session](https://docs.stripe.com/radar/radar-session) for more information.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub radar_options: Option<CreateConfirmationTokenPaymentMethodDataRadarOptions>,
     /// If this is a `revolut_pay` PaymentMethod, this hash contains details about the Revolut Pay payment method.
@@ -341,6 +344,7 @@ impl CreateConfirmationTokenPaymentMethodData {
             payco: None,
             paynow: None,
             paypal: None,
+            payto: None,
             pix: None,
             promptpay: None,
             radar_options: None,
@@ -532,7 +536,7 @@ pub struct CreateConfirmationTokenPaymentMethodDataBillingDetailsAddress {
     /// ZIP or postal code.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub postal_code: Option<String>,
-    /// State, county, province, or region.
+    /// State, county, province, or region ([ISO 3166-2](https://en.wikipedia.org/wiki/ISO_3166-2)).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
 }
@@ -954,6 +958,7 @@ pub enum CreateConfirmationTokenPaymentMethodDataIdealBank {
     Handelsbanken,
     Ing,
     Knab,
+    Mollie,
     Moneyou,
     N26,
     Nn,
@@ -979,6 +984,7 @@ impl CreateConfirmationTokenPaymentMethodDataIdealBank {
             Handelsbanken => "handelsbanken",
             Ing => "ing",
             Knab => "knab",
+            Mollie => "mollie",
             Moneyou => "moneyou",
             N26 => "n26",
             Nn => "nn",
@@ -1007,6 +1013,7 @@ impl std::str::FromStr for CreateConfirmationTokenPaymentMethodDataIdealBank {
             "handelsbanken" => Ok(Handelsbanken),
             "ing" => Ok(Ing),
             "knab" => Ok(Knab),
+            "mollie" => Ok(Mollie),
             "moneyou" => Ok(Moneyou),
             "n26" => Ok(N26),
             "nn" => Ok(Nn),
@@ -1360,11 +1367,34 @@ impl<'de> serde::Deserialize<'de> for CreateConfirmationTokenPaymentMethodDataP2
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
+/// If this is a `payto` PaymentMethod, this hash contains details about the PayTo payment method.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateConfirmationTokenPaymentMethodDataPayto {
+    /// The account number for the bank account.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub account_number: Option<String>,
+    /// Bank-State-Branch number of the bank account.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bsb_number: Option<String>,
+    /// The PayID alias for the bank account.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub pay_id: Option<String>,
+}
+impl CreateConfirmationTokenPaymentMethodDataPayto {
+    pub fn new() -> Self {
+        Self { account_number: None, bsb_number: None, pay_id: None }
+    }
+}
+impl Default for CreateConfirmationTokenPaymentMethodDataPayto {
+    fn default() -> Self {
+        Self::new()
+    }
+}
 /// Options to configure Radar.
-/// See [Radar Session](https://stripe.com/docs/radar/radar-session) for more information.
+/// See [Radar Session](https://docs.stripe.com/radar/radar-session) for more information.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateConfirmationTokenPaymentMethodDataRadarOptions {
-    /// A [Radar Session](https://stripe.com/docs/radar/radar-session) is a snapshot of the browser metadata and device details that help Radar make more accurate predictions on your payments.
+    /// A [Radar Session](https://docs.stripe.com/radar/radar-session) is a snapshot of the browser metadata and device details that help Radar make more accurate predictions on your payments.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub session: Option<String>,
 }
@@ -1519,6 +1549,7 @@ pub enum CreateConfirmationTokenPaymentMethodDataType {
     Payco,
     Paynow,
     Paypal,
+    Payto,
     Pix,
     Promptpay,
     RevolutPay,
@@ -1574,6 +1605,7 @@ impl CreateConfirmationTokenPaymentMethodDataType {
             Payco => "payco",
             Paynow => "paynow",
             Paypal => "paypal",
+            Payto => "payto",
             Pix => "pix",
             Promptpay => "promptpay",
             RevolutPay => "revolut_pay",
@@ -1632,6 +1664,7 @@ impl std::str::FromStr for CreateConfirmationTokenPaymentMethodDataType {
             "payco" => Ok(Payco),
             "paynow" => Ok(Paynow),
             "paypal" => Ok(Paypal),
+            "payto" => Ok(Payto),
             "pix" => Ok(Pix),
             "promptpay" => Ok(Promptpay),
             "revolut_pay" => Ok(RevolutPay),
@@ -2097,7 +2130,7 @@ pub struct CreateConfirmationTokenShippingAddress {
     /// ZIP or postal code.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub postal_code: Option<String>,
-    /// State, county, province, or region.
+    /// State, county, province, or region ([ISO 3166-2](https://en.wikipedia.org/wiki/ISO_3166-2)).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
 }
@@ -2154,7 +2187,7 @@ impl CreateConfirmationToken {
     }
     /// Indicates that you intend to make future payments with this ConfirmationToken's payment method.
     ///
-    /// The presence of this property will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
+    /// The presence of this property will [attach the payment method](https://docs.stripe.com/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
     pub fn setup_future_usage(
         mut self,
         setup_future_usage: impl Into<stripe_payment::ConfirmationTokenSetupFutureUsage>,

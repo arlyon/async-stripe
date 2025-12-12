@@ -3,9 +3,9 @@
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct IssuingCardSpendingLimit {
     /// Maximum amount allowed to spend per interval.
-    /// This amount is in the card's currency and in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
+    /// This amount is in the card's currency and in the [smallest currency unit](https://docs.stripe.com/currencies#zero-decimal).
     pub amount: i64,
-    /// Array of strings containing [categories](https://stripe.com/docs/api#issuing_authorization_object-merchant_data-category) this limit applies to.
+    /// Array of strings containing [categories](https://docs.stripe.com/api#issuing_authorization_object-merchant_data-category) this limit applies to.
     /// Omitting this field will apply the limit to all categories.
     pub categories: Option<Vec<IssuingCardSpendingLimitCategories>>,
     /// Interval (or event) to which the amount applies.
@@ -116,7 +116,7 @@ const _: () = {
         }
     }
 };
-/// Array of strings containing [categories](https://stripe.com/docs/api#issuing_authorization_object-merchant_data-category) this limit applies to.
+/// Array of strings containing [categories](https://docs.stripe.com/api#issuing_authorization_object-merchant_data-category) this limit applies to.
 /// Omitting this field will apply the limit to all categories.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]

@@ -13,7 +13,7 @@ pub struct LegalEntityPersonVerification {
     pub document: Option<stripe_shared::LegalEntityPersonVerificationDocument>,
     /// The state of verification for the person.
     /// Possible values are `unverified`, `pending`, or `verified`.
-    /// Please refer [guide](https://stripe.com/docs/connect/handling-api-verification) to handle verification updates.
+    /// Please refer [guide](https://docs.stripe.com/connect/handling-api-verification) to handle verification updates.
     pub status: String,
 }
 #[doc(hidden)]

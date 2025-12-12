@@ -15,6 +15,8 @@ struct ListPromotionCodeBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     customer: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    customer_account: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -31,6 +33,7 @@ impl ListPromotionCodeBuilder {
             coupon: None,
             created: None,
             customer: None,
+            customer_account: None,
             ending_before: None,
             expand: None,
             limit: None,
@@ -72,6 +75,11 @@ impl ListPromotionCode {
     /// Only return promotion codes that are restricted to this customer.
     pub fn customer(mut self, customer: impl Into<String>) -> Self {
         self.inner.customer = Some(customer.into());
+        self
+    }
+    /// Only return promotion codes that are restricted to this account representing the customer.
+    pub fn customer_account(mut self, customer_account: impl Into<String>) -> Self {
+        self.inner.customer_account = Some(customer_account.into());
         self
     }
     /// A cursor for use in pagination.
@@ -200,6 +208,8 @@ struct CreatePromotionCodeBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     customer: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    customer_account: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     expires_at: Option<stripe_types::Timestamp>,
@@ -217,6 +227,7 @@ impl CreatePromotionCodeBuilder {
             active: None,
             code: None,
             customer: None,
+            customer_account: None,
             expand: None,
             expires_at: None,
             max_redemptions: None,
@@ -360,10 +371,15 @@ impl CreatePromotionCode {
         self.inner.code = Some(code.into());
         self
     }
-    /// The customer that this promotion code can be used by.
-    /// If not set, the promotion code can be used by all customers.
+    /// The customer who can use this promotion code. If not set, all customers can use the promotion code.
     pub fn customer(mut self, customer: impl Into<String>) -> Self {
         self.inner.customer = Some(customer.into());
+        self
+    }
+    /// The account representing the customer who can use this promotion code.
+    /// If not set, all customers can use the promotion code.
+    pub fn customer_account(mut self, customer_account: impl Into<String>) -> Self {
+        self.inner.customer_account = Some(customer_account.into());
         self
     }
     /// Specifies which fields in the response should be expanded.
@@ -383,7 +399,7 @@ impl CreatePromotionCode {
         self.inner.max_redemptions = Some(max_redemptions.into());
         self
     }
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
@@ -485,7 +501,7 @@ impl UpdatePromotionCode {
         self.inner.expand = Some(expand.into());
         self
     }
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.

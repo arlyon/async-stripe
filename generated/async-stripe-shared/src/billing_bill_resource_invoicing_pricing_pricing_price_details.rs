@@ -3,13 +3,13 @@
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct BillingBillResourceInvoicingPricingPricingPriceDetails {
     /// The ID of the price this item is associated with.
-    pub price: String,
+    pub price: stripe_types::Expandable<stripe_shared::Price>,
     /// The ID of the product this item is associated with.
     pub product: String,
 }
 #[doc(hidden)]
 pub struct BillingBillResourceInvoicingPricingPricingPriceDetailsBuilder {
-    price: Option<String>,
+    price: Option<stripe_types::Expandable<stripe_shared::Price>>,
     product: Option<String>,
 }
 

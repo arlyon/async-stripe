@@ -531,6 +531,7 @@
         "object": "customer",
         "shipping": {}
       },
+      "customer_account": null,
       "livemode": true,
       "object": "billing.credit_balance_summary"
     },
@@ -597,6 +598,7 @@
         "object": "customer",
         "shipping": {}
       },
+      "customer_account": null,
       "effective_at": null,
       "expires_at": null,
       "id": "obj_123",
@@ -700,6 +702,7 @@
           "proration_behavior": "none"
         },
         "subscription_update": {
+          "billing_cycle_anchor": null,
           "default_allowed_updates": [],
           "enabled": false,
           "proration_behavior": "none",
@@ -729,6 +732,7 @@
       "configuration": "bpc_1Pgc7HB7WZ01zgkWxH2EPWRX",
       "created": 1234567890,
       "customer": "cus_QXg1o8vcGmoR32",
+      "customer_account": null,
       "flow": {
         "after_completion": {
           "hosted_confirmation": {
@@ -830,6 +834,7 @@
         "eur": 10000
       },
       "customer": "cus_QXg1o8vcGmoR32",
+      "customer_account": null,
       "livemode": false,
       "object": "cash_balance",
       "settings": {
@@ -1088,6 +1093,7 @@
         }
       },
       "customer": null,
+      "customer_account": null,
       "customer_creation": null,
       "customer_details": {
         "address": {
@@ -1368,6 +1374,7 @@
           "tax_id": null
         },
         "customer": null,
+        "customer_account": null,
         "type": "us_bank_account",
         "us_bank_account": {
           "account_holder_type": "company",
@@ -1647,6 +1654,7 @@
       "created": 1234567890,
       "currency": "usd",
       "customer": "cus_QXg1o8vcGmoR32",
+      "customer_account": null,
       "customer_balance_transaction": null,
       "discount_amount": 0,
       "discount_amounts": [],
@@ -1824,6 +1832,7 @@
       "discount": {
         "checkout_session": null,
         "customer": null,
+        "customer_account": null,
         "end": null,
         "id": "obj_123",
         "invoice": null,
@@ -1868,6 +1877,7 @@
       "credit_note": null,
       "currency": "usd",
       "customer": "cus_QXg1o8vcGmoR32",
+      "customer_account": null,
       "description": null,
       "ending_balance": -500,
       "id": "cbtxn_1Pgc75B7WZ01zgkWgM0DfYYl",
@@ -1881,6 +1891,7 @@
       "created": 1234567890,
       "currency": "eur",
       "customer": "cus_QXg1o8vcGmoR32",
+      "customer_account": null,
       "ending_balance": 10000,
       "funded": {
         "bank_transfer": {
@@ -1941,6 +1952,7 @@
       },
       "created": 1234567890,
       "customer": "cus_QXg1o8vcGmoR32",
+      "customer_account": null,
       "expires_at": 1234567890,
       "livemode": false,
       "object": "customer_session"
@@ -1984,6 +1996,7 @@
     "deleted_discount": {
       "checkout_session": null,
       "customer": null,
+      "customer_account": null,
       "deleted": true,
       "id": "",
       "invoice": null,
@@ -2091,6 +2104,7 @@
     "discount": {
       "checkout_session": null,
       "customer": "cus_QXg1o8vcGmoR32",
+      "customer_account": null,
       "end": 1234567890,
       "id": "di_1Pgc6rB7WZ01zgkW7Al8Fal9",
       "invoice": null,
@@ -2624,6 +2638,7 @@
         "status": "processing"
       },
       "related_customer": null,
+      "related_customer_account": null,
       "status": "verified",
       "type": "document",
       "url": null
@@ -2657,6 +2672,7 @@
       "currency": "usd",
       "custom_fields": null,
       "customer": "cus_QXg1o8vcGmoR32",
+      "customer_account": null,
       "customer_address": {
         "city": null,
         "country": null,
@@ -2864,6 +2880,7 @@
       "amount": 1000,
       "currency": "usd",
       "customer": "cus_QXg1o8vcGmoR32",
+      "customer_account": null,
       "date": 1234567890,
       "description": "My First Invoice Item (created for API docs)",
       "discountable": true,
@@ -3452,6 +3469,7 @@
       "currency": "usd",
       "description": "T-shirt",
       "id": "li_1Pgc73B7WZ01zgkWx8kcmZPK",
+      "metadata": null,
       "object": "item",
       "price": {
         "active": true,
@@ -3673,6 +3691,7 @@
       "created": 1234567890,
       "currency": "usd",
       "customer": null,
+      "customer_account": null,
       "description": null,
       "excluded_payment_method_types": null,
       "id": "pi_1PgafyB7WZ01zgkWSjxsAJo3",
@@ -3908,6 +3927,7 @@
       },
       "created": 1234567890,
       "customer": null,
+      "customer_account": null,
       "id": "pm_1Pgc75B7WZ01zgkWlHVgdEGJ",
       "livemode": false,
       "metadata": {
@@ -4226,6 +4246,7 @@
       "processor_details": {
         "type": "custom"
       },
+      "reported_by": "stripe",
       "shipping_details": {
         "address": {
           "city": null,
@@ -4581,6 +4602,7 @@
       "code": "FALL20",
       "created": 1234567890,
       "customer": null,
+      "customer_account": null,
       "expires_at": 1234567890,
       "id": "promo_1Pgc79B7WZ01zgkWNy4mn5NX",
       "livemode": false,
@@ -4638,6 +4660,7 @@
       "created": 1234567890,
       "currency": "usd",
       "customer": "cus_QXg1o8vcGmoR32",
+      "customer_account": null,
       "default_tax_rates": [],
       "description": null,
       "discounts": [],
@@ -4851,6 +4874,7 @@
       "application": null,
       "created": 1234567890,
       "customer": null,
+      "customer_account": null,
       "flow_directions": null,
       "id": "setatt_123456789012345678901234",
       "livemode": false,
@@ -5144,6 +5168,7 @@
       "created": 1234567890,
       "currency": "usd",
       "customer": "cus_QXg1o8vcGmoR32",
+      "customer_account": null,
       "days_until_due": null,
       "default_payment_method": null,
       "default_source": null,
@@ -5386,6 +5411,7 @@
         "start_date": 1573629589
       },
       "customer": "cus_QXg1o8vcGmoR32",
+      "customer_account": null,
       "default_settings": {
         "application_fee_percent": null,
         "automatic_tax": {
@@ -5737,11 +5763,13 @@
       "country": "DE",
       "created": 1234567890,
       "customer": "cus_QXg1o8vcGmoR32",
+      "customer_account": null,
       "id": "txi_1Pgc6sB7WZ01zgkWXkvC78jZ",
       "livemode": false,
       "object": "tax_id",
       "owner": {
         "customer": "cus_QXg1o8vcGmoR32",
+        "customer_account": null,
         "type": "customer"
       },
       "type": "eu_vat",
@@ -6483,5 +6511,5 @@
       "url": "https://example.com/my/webhook/endpoint"
     }
   },
-  "version": "v2132"
+  "version": "v2138"
 }

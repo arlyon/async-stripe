@@ -4,7 +4,7 @@
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TerminalReaderReaderResourceLineItem {
     /// The amount of the line item.
-    /// A positive integer in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).
+    /// A positive integer in the [smallest currency unit](https://docs.stripe.com/currencies#zero-decimal).
     pub amount: i64,
     /// Description of the line item.
     pub description: String,

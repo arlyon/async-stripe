@@ -7,7 +7,7 @@ pub struct TerminalReaderReaderResourceRefundPaymentAction {
     pub amount: Option<i64>,
     /// Charge that is being refunded.
     pub charge: Option<stripe_types::Expandable<stripe_shared::Charge>>,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: Option<std::collections::HashMap<String, String>>,
     /// Payment intent that is being refunded.

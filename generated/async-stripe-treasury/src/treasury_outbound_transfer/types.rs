@@ -1,5 +1,5 @@
-/// Use [OutboundTransfers](https://docs.stripe.com/docs/treasury/moving-money/financial-accounts/out-of/outbound-transfers) to transfer funds from a [FinancialAccount](https://stripe.com/docs/api#financial_accounts) to a PaymentMethod belonging to the same entity.
-/// To send funds to a different party, use [OutboundPayments](https://stripe.com/docs/api#outbound_payments) instead.
+/// Use [OutboundTransfers](https://docs.stripe.com/docs/treasury/moving-money/financial-accounts/out-of/outbound-transfers) to transfer funds from a [FinancialAccount](https://api.stripe.com#financial_accounts) to a PaymentMethod belonging to the same entity.
+/// To send funds to a different party, use [OutboundPayments](https://api.stripe.com#outbound_payments) instead.
 /// You can send funds over ACH rails or through a domestic wire transfer to a user's own external bank account.
 ///
 /// Simulate OutboundTransfer state changes with the `/v1/test_helpers/treasury/outbound_transfers` endpoints.
@@ -27,13 +27,13 @@ pub struct TreasuryOutboundTransfer {
     pub expected_arrival_date: stripe_types::Timestamp,
     /// The FinancialAccount that funds were pulled from.
     pub financial_account: String,
-    /// A [hosted transaction receipt](https://stripe.com/docs/treasury/moving-money/regulatory-receipts) URL that is provided when money movement is considered regulated under Stripe's money transmission licenses.
+    /// A [hosted transaction receipt](https://docs.stripe.com/treasury/moving-money/regulatory-receipts) URL that is provided when money movement is considered regulated under Stripe's money transmission licenses.
     pub hosted_regulatory_receipt_url: Option<String>,
     /// Unique identifier for the object.
     pub id: stripe_treasury::TreasuryOutboundTransferId,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: std::collections::HashMap<String, String>,
     /// Details about a returned OutboundTransfer. Only set when the status is `returned`.

@@ -43,6 +43,7 @@ pub struct PaymentMethodDetails {
     pub payco: Option<stripe_shared::PaymentMethodDetailsPayco>,
     pub paynow: Option<stripe_shared::PaymentMethodDetailsPaynow>,
     pub paypal: Option<stripe_shared::PaymentMethodDetailsPaypal>,
+    pub payto: Option<stripe_shared::PaymentMethodDetailsPayto>,
     pub pix: Option<stripe_shared::PaymentMethodDetailsPix>,
     pub promptpay: Option<stripe_shared::PaymentMethodDetailsPromptpay>,
     pub revolut_pay: Option<stripe_shared::PaymentMethodDetailsRevolutPay>,
@@ -55,7 +56,7 @@ pub struct PaymentMethodDetails {
     pub swish: Option<stripe_shared::PaymentMethodDetailsSwish>,
     pub twint: Option<stripe_shared::PaymentMethodDetailsTwint>,
     /// The type of transaction-specific details of the payment method used in the payment.
-    /// See [PaymentMethod.type](https://stripe.com/docs/api/payment_methods/object#payment_method_object-type) for the full list of possible types.
+    /// See [PaymentMethod.type](https://docs.stripe.com/api/payment_methods/object#payment_method_object-type) for the full list of possible types.
     /// An additional hash is included on `payment_method_details` with a name matching this value.
     /// It contains information specific to the payment method.
     #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "type"))]
@@ -108,6 +109,7 @@ pub struct PaymentMethodDetailsBuilder {
     payco: Option<Option<stripe_shared::PaymentMethodDetailsPayco>>,
     paynow: Option<Option<stripe_shared::PaymentMethodDetailsPaynow>>,
     paypal: Option<Option<stripe_shared::PaymentMethodDetailsPaypal>>,
+    payto: Option<Option<stripe_shared::PaymentMethodDetailsPayto>>,
     pix: Option<Option<stripe_shared::PaymentMethodDetailsPix>>,
     promptpay: Option<Option<stripe_shared::PaymentMethodDetailsPromptpay>>,
     revolut_pay: Option<Option<stripe_shared::PaymentMethodDetailsRevolutPay>>,
@@ -207,6 +209,7 @@ const _: () = {
                 "payco" => Deserialize::begin(&mut self.payco),
                 "paynow" => Deserialize::begin(&mut self.paynow),
                 "paypal" => Deserialize::begin(&mut self.paypal),
+                "payto" => Deserialize::begin(&mut self.payto),
                 "pix" => Deserialize::begin(&mut self.pix),
                 "promptpay" => Deserialize::begin(&mut self.promptpay),
                 "revolut_pay" => Deserialize::begin(&mut self.revolut_pay),
@@ -270,6 +273,7 @@ const _: () = {
                 payco: Deserialize::default(),
                 paynow: Deserialize::default(),
                 paypal: Deserialize::default(),
+                payto: Deserialize::default(),
                 pix: Deserialize::default(),
                 promptpay: Deserialize::default(),
                 revolut_pay: Deserialize::default(),
@@ -332,6 +336,7 @@ const _: () = {
                 Some(payco),
                 Some(paynow),
                 Some(paypal),
+                Some(payto),
                 Some(pix),
                 Some(promptpay),
                 Some(revolut_pay),
@@ -390,6 +395,7 @@ const _: () = {
                 self.payco.take(),
                 self.paynow.take(),
                 self.paypal.take(),
+                self.payto.take(),
                 self.pix.take(),
                 self.promptpay.take(),
                 self.revolut_pay.take(),
@@ -452,6 +458,7 @@ const _: () = {
                 payco,
                 paynow,
                 paypal,
+                payto,
                 pix,
                 promptpay,
                 revolut_pay,
@@ -536,6 +543,7 @@ const _: () = {
                     "payco" => b.payco = FromValueOpt::from_value(v),
                     "paynow" => b.paynow = FromValueOpt::from_value(v),
                     "paypal" => b.paypal = FromValueOpt::from_value(v),
+                    "payto" => b.payto = FromValueOpt::from_value(v),
                     "pix" => b.pix = FromValueOpt::from_value(v),
                     "promptpay" => b.promptpay = FromValueOpt::from_value(v),
                     "revolut_pay" => b.revolut_pay = FromValueOpt::from_value(v),

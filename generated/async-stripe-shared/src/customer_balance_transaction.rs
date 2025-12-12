@@ -1,9 +1,9 @@
-/// Each customer has a [Balance](https://stripe.com/docs/api/customers/object#customer_object-balance) value,.
+/// Each customer has a [Balance](https://docs.stripe.com/api/customers/object#customer_object-balance) value,.
 /// which denotes a debit or credit that's automatically applied to their next invoice upon finalization.
-/// You may modify the value directly by using the [update customer API](https://stripe.com/docs/api/customers/update),.
+/// You may modify the value directly by using the [update customer API](https://docs.stripe.com/api/customers/update),.
 /// or by creating a Customer Balance Transaction, which increments or decrements the customer's `balance` by the specified `amount`.
 ///
-/// Related guide: [Customer balance](https://stripe.com/docs/billing/customer/balance)
+/// Related guide: [Customer balance](https://docs.stripe.com/billing/customer/balance)
 ///
 /// For more details see <<https://stripe.com/docs/api/customer_balance_transactions/object>>.
 #[derive(Clone, Debug)]
@@ -23,6 +23,8 @@ pub struct CustomerBalanceTransaction {
     pub currency: stripe_types::Currency,
     /// The ID of the customer the transaction belongs to.
     pub customer: stripe_types::Expandable<stripe_shared::Customer>,
+    /// The ID of an Account representing a customer that the transaction belongs to.
+    pub customer_account: Option<String>,
     /// An arbitrary string attached to the object. Often useful for displaying to users.
     pub description: Option<String>,
     /// The customer's `balance` after the transaction was applied.
@@ -35,11 +37,11 @@ pub struct CustomerBalanceTransaction {
     pub invoice: Option<stripe_types::Expandable<stripe_shared::Invoice>>,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: Option<std::collections::HashMap<String, String>>,
     /// Transaction type: `adjustment`, `applied_to_invoice`, `credit_note`, `initial`, `invoice_overpaid`, `invoice_too_large`, `invoice_too_small`, `unspent_receiver_credit`, `unapplied_from_invoice`, `checkout_session_subscription_payment`, or `checkout_session_subscription_payment_canceled`.
-    /// See the [Customer Balance page](https://stripe.com/docs/billing/customer/balance#types) to learn more about transaction types.
+    /// See the [Customer Balance page](https://docs.stripe.com/billing/customer/balance#types) to learn more about transaction types.
     #[cfg_attr(feature = "deserialize", serde(rename = "type"))]
     pub type_: CustomerBalanceTransactionType,
 }
@@ -51,6 +53,7 @@ pub struct CustomerBalanceTransactionBuilder {
     credit_note: Option<Option<stripe_types::Expandable<stripe_shared::CreditNote>>>,
     currency: Option<stripe_types::Currency>,
     customer: Option<stripe_types::Expandable<stripe_shared::Customer>>,
+    customer_account: Option<Option<String>>,
     description: Option<Option<String>>,
     ending_balance: Option<i64>,
     id: Option<stripe_shared::CustomerBalanceTransactionId>,
@@ -106,6 +109,7 @@ const _: () = {
                 "credit_note" => Deserialize::begin(&mut self.credit_note),
                 "currency" => Deserialize::begin(&mut self.currency),
                 "customer" => Deserialize::begin(&mut self.customer),
+                "customer_account" => Deserialize::begin(&mut self.customer_account),
                 "description" => Deserialize::begin(&mut self.description),
                 "ending_balance" => Deserialize::begin(&mut self.ending_balance),
                 "id" => Deserialize::begin(&mut self.id),
@@ -125,6 +129,7 @@ const _: () = {
                 credit_note: Deserialize::default(),
                 currency: Deserialize::default(),
                 customer: Deserialize::default(),
+                customer_account: Deserialize::default(),
                 description: Deserialize::default(),
                 ending_balance: Deserialize::default(),
                 id: Deserialize::default(),
@@ -143,6 +148,7 @@ const _: () = {
                 Some(credit_note),
                 Some(currency),
                 Some(customer),
+                Some(customer_account),
                 Some(description),
                 Some(ending_balance),
                 Some(id),
@@ -157,6 +163,7 @@ const _: () = {
                 self.credit_note.take(),
                 self.currency.take(),
                 self.customer.take(),
+                self.customer_account.take(),
                 self.description.take(),
                 self.ending_balance,
                 self.id.take(),
@@ -175,6 +182,7 @@ const _: () = {
                 credit_note,
                 currency,
                 customer,
+                customer_account,
                 description,
                 ending_balance,
                 id,
@@ -215,6 +223,7 @@ const _: () = {
                     "credit_note" => b.credit_note = FromValueOpt::from_value(v),
                     "currency" => b.currency = FromValueOpt::from_value(v),
                     "customer" => b.customer = FromValueOpt::from_value(v),
+                    "customer_account" => b.customer_account = FromValueOpt::from_value(v),
                     "description" => b.description = FromValueOpt::from_value(v),
                     "ending_balance" => b.ending_balance = FromValueOpt::from_value(v),
                     "id" => b.id = FromValueOpt::from_value(v),
@@ -233,13 +242,14 @@ const _: () = {
 impl serde::Serialize for CustomerBalanceTransaction {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("CustomerBalanceTransaction", 14)?;
+        let mut s = s.serialize_struct("CustomerBalanceTransaction", 15)?;
         s.serialize_field("amount", &self.amount)?;
         s.serialize_field("checkout_session", &self.checkout_session)?;
         s.serialize_field("created", &self.created)?;
         s.serialize_field("credit_note", &self.credit_note)?;
         s.serialize_field("currency", &self.currency)?;
         s.serialize_field("customer", &self.customer)?;
+        s.serialize_field("customer_account", &self.customer_account)?;
         s.serialize_field("description", &self.description)?;
         s.serialize_field("ending_balance", &self.ending_balance)?;
         s.serialize_field("id", &self.id)?;
@@ -253,7 +263,7 @@ impl serde::Serialize for CustomerBalanceTransaction {
     }
 }
 /// Transaction type: `adjustment`, `applied_to_invoice`, `credit_note`, `initial`, `invoice_overpaid`, `invoice_too_large`, `invoice_too_small`, `unspent_receiver_credit`, `unapplied_from_invoice`, `checkout_session_subscription_payment`, or `checkout_session_subscription_payment_canceled`.
-/// See the [Customer Balance page](https://stripe.com/docs/billing/customer/balance#types) to learn more about transaction types.
+/// See the [Customer Balance page](https://docs.stripe.com/billing/customer/balance#types) to learn more about transaction types.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum CustomerBalanceTransactionType {

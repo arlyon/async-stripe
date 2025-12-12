@@ -1,4 +1,4 @@
-/// Use [InboundTransfers](https://docs.stripe.com/docs/treasury/moving-money/financial-accounts/into/inbound-transfers) to add funds to your [FinancialAccount](https://stripe.com/docs/api#financial_accounts) via a PaymentMethod that is owned by you.
+/// Use [InboundTransfers](https://docs.stripe.com/docs/treasury/moving-money/financial-accounts/into/inbound-transfers) to add funds to your [FinancialAccount](https://api.stripe.com#financial_accounts) via a PaymentMethod that is owned by you.
 /// The funds will be transferred via an ACH debit.
 ///
 /// Related guide: [Moving money with Treasury using InboundTransfer objects](https://docs.stripe.com/docs/treasury/moving-money/financial-accounts/into/inbound-transfers).
@@ -20,7 +20,7 @@ pub struct TreasuryInboundTransfer {
     pub failure_details: Option<stripe_treasury::TreasuryInboundTransfersResourceFailureDetails>,
     /// The FinancialAccount that received the funds.
     pub financial_account: String,
-    /// A [hosted transaction receipt](https://stripe.com/docs/treasury/moving-money/regulatory-receipts) URL that is provided when money movement is considered regulated under Stripe's money transmission licenses.
+    /// A [hosted transaction receipt](https://docs.stripe.com/treasury/moving-money/regulatory-receipts) URL that is provided when money movement is considered regulated under Stripe's money transmission licenses.
     pub hosted_regulatory_receipt_url: Option<String>,
     /// Unique identifier for the object.
     pub id: stripe_treasury::TreasuryInboundTransferId,
@@ -28,7 +28,7 @@ pub struct TreasuryInboundTransfer {
         stripe_treasury::TreasuryInboundTransfersResourceInboundTransferResourceLinkedFlows,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: std::collections::HashMap<String, String>,
     /// The origin payment method to be debited for an InboundTransfer.

@@ -6,7 +6,7 @@ pub struct PaymentsPrimitivesPaymentRecordsResourceAmount {
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub currency: stripe_types::Currency,
-    /// A positive integer representing the amount in the currency's [minor unit](https://stripe.com/docs/currencies#zero-decimal).
+    /// A positive integer representing the amount in the currency's [minor unit](https://docs.stripe.com/currencies#zero-decimal).
     /// For example, `100` can represent 1 USD or 100 JPY.
     pub value: i64,
 }

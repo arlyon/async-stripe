@@ -5,7 +5,7 @@
 /// schedules](/docs/connect/manage-payout-schedule), depending on your country and
 /// industry.
 ///
-/// Related guide: [Receiving payouts](https://stripe.com/docs/payouts)
+/// Related guide: [Receiving payouts](https://docs.stripe.com/payouts)
 ///
 /// For more details see <<https://stripe.com/docs/api/payouts/object>>.
 #[derive(Clone, Debug)]
@@ -14,15 +14,15 @@ pub struct Payout {
     /// The amount (in cents (or local equivalent)) that transfers to your bank account or debit card.
     pub amount: i64,
     /// The application fee (if any) for the payout.
-    /// [See the Connect documentation](https://stripe.com/docs/connect/instant-payouts#monetization-and-fees) for details.
+    /// [See the Connect documentation](https://docs.stripe.com/connect/instant-payouts#monetization-and-fees) for details.
     pub application_fee: Option<stripe_types::Expandable<stripe_shared::ApplicationFee>>,
     /// The amount of the application fee (if any) requested for the payout.
-    /// [See the Connect documentation](https://stripe.com/docs/connect/instant-payouts#monetization-and-fees) for details.
+    /// [See the Connect documentation](https://docs.stripe.com/connect/instant-payouts#monetization-and-fees) for details.
     pub application_fee_amount: Option<i64>,
     /// Date that you can expect the payout to arrive in the bank.
     /// This factors in delays to account for weekends or bank holidays.
     pub arrival_date: stripe_types::Timestamp,
-    /// Returns `true` if the payout is created by an [automated payout schedule](https://stripe.com/docs/payouts#payout-schedule) and `false` if it's [requested manually](https://stripe.com/docs/payouts#manual-payouts).
+    /// Returns `true` if the payout is created by an [automated payout schedule](https://docs.stripe.com/payouts#payout-schedule) and `false` if it's [requested manually](https://stripe.com/docs/payouts#manual-payouts).
     pub automatic: bool,
     /// ID of the balance transaction that describes the impact of this payout on your account balance.
     pub balance_transaction: Option<stripe_types::Expandable<stripe_shared::BalanceTransaction>>,
@@ -39,7 +39,7 @@ pub struct Payout {
     pub failure_balance_transaction:
         Option<stripe_types::Expandable<stripe_shared::BalanceTransaction>>,
     /// Error code that provides a reason for a payout failure, if available.
-    /// View our [list of failure codes](https://stripe.com/docs/api#payout_failures).
+    /// View our [list of failure codes](https://docs.stripe.com/api#payout_failures).
     pub failure_code: Option<String>,
     /// Message that provides the reason for a payout failure, if available.
     pub failure_message: Option<String>,
@@ -47,7 +47,7 @@ pub struct Payout {
     pub id: stripe_shared::PayoutId,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: Option<std::collections::HashMap<String, String>>,
     /// The method used to send this payout, which can be `standard` or `instant`.
@@ -58,7 +58,7 @@ pub struct Payout {
     pub original_payout: Option<stripe_types::Expandable<stripe_shared::Payout>>,
     /// ID of the v2 FinancialAccount the funds are sent to.
     pub payout_method: Option<String>,
-    /// If `completed`, you can use the [Balance Transactions API](https://stripe.com/docs/api/balance_transactions/list#balance_transaction_list-payout) to list all balance transactions that are paid out in this payout.
+    /// If `completed`, you can use the [Balance Transactions API](https://docs.stripe.com/api/balance_transactions/list#balance_transaction_list-payout) to list all balance transactions that are paid out in this payout.
     pub reconciliation_status: PayoutReconciliationStatus,
     /// If the payout reverses, this is the ID of the payout that reverses this payout.
     pub reversed_by: Option<stripe_types::Expandable<stripe_shared::Payout>>,
@@ -398,7 +398,7 @@ impl serde::Serialize for Payout {
         s.end()
     }
 }
-/// If `completed`, you can use the [Balance Transactions API](https://stripe.com/docs/api/balance_transactions/list#balance_transaction_list-payout) to list all balance transactions that are paid out in this payout.
+/// If `completed`, you can use the [Balance Transactions API](https://docs.stripe.com/api/balance_transactions/list#balance_transaction_list-payout) to list all balance transactions that are paid out in this payout.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum PayoutReconciliationStatus {

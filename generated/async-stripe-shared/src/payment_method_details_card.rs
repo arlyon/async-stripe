@@ -38,7 +38,7 @@ pub iin: Option<String>,
 pub incremental_authorization: Option<stripe_shared::PaymentFlowsPrivatePaymentMethodsCardDetailsApiResourceEnterpriseFeaturesIncrementalAuthorizationIncrementalAuthorization>,
     /// Installment details for this payment.
     ///
-        /// For more information, see the [installments integration guide](https://stripe.com/docs/payments/installments).
+        /// For more information, see the [installments integration guide](https://docs.stripe.com/payments/installments).
 pub installments: Option<stripe_shared::PaymentMethodDetailsCardInstallments>,
         /// The name of the card's issuing bank.
     /// (For internal use only and not typically available in standard API requests.).

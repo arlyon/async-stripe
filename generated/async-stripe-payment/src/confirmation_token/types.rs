@@ -3,8 +3,8 @@
 /// is successful, values present on the ConfirmationToken are written onto the Intent.
 ///
 /// To learn more about how to use ConfirmationToken, visit the related guides:
-/// - [Finalize payments on the server](https://stripe.com/docs/payments/finalize-payments-on-the-server).
-/// - [Build two-step confirmation](https://stripe.com/docs/payments/build-a-two-step-confirmation).
+/// - [Finalize payments on the server](https://docs.stripe.com/payments/finalize-payments-on-the-server).
+/// - [Build two-step confirmation](https://docs.stripe.com/payments/build-a-two-step-confirmation).
 #[derive(Clone, Debug)]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct ConfirmationToken {
@@ -30,7 +30,7 @@ pub struct ConfirmationToken {
     pub return_url: Option<String>,
     /// Indicates that you intend to make future payments with this ConfirmationToken's payment method.
     ///
-    /// The presence of this property will [attach the payment method](https://stripe.com/docs/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
+    /// The presence of this property will [attach the payment method](https://docs.stripe.com/payments/save-during-payment) to the PaymentIntent's Customer, if present, after the PaymentIntent is confirmed and any required actions from the user are complete.
     pub setup_future_usage: Option<stripe_payment::ConfirmationTokenSetupFutureUsage>,
     /// ID of the SetupIntent that this ConfirmationToken was used to confirm, or null if this ConfirmationToken has not yet been used.
     pub setup_intent: Option<String>,

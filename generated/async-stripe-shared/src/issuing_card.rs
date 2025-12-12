@@ -1,4 +1,4 @@
-/// You can [create physical or virtual cards](https://stripe.com/docs/issuing) that are issued to cardholders.
+/// You can [create physical or virtual cards](https://docs.stripe.com/issuing) that are issued to cardholders.
 ///
 /// For more details see <<https://stripe.com/docs/api/issuing/cards/object>>.
 #[derive(Clone, Debug)]
@@ -15,8 +15,8 @@ pub struct IssuingCard {
     /// Supported currencies are `usd` in the US, `eur` in the EU, and `gbp` in the UK.
     pub currency: stripe_types::Currency,
     /// The card's CVC.
-    /// For security reasons, this is only available for virtual cards, and will be omitted unless you explicitly request it with [the `expand` parameter](https://stripe.com/docs/api/expanding_objects).
-    /// Additionally, it's only available via the ["Retrieve a card" endpoint](https://stripe.com/docs/api/issuing/cards/retrieve), not via "List all cards" or any other endpoint.
+    /// For security reasons, this is only available for virtual cards, and will be omitted unless you explicitly request it with [the `expand` parameter](https://docs.stripe.com/api/expanding_objects).
+    /// Additionally, it's only available via the ["Retrieve a card" endpoint](https://docs.stripe.com/api/issuing/cards/retrieve), not via "List all cards" or any other endpoint.
     pub cvc: Option<String>,
     /// The expiration month of the card.
     pub exp_month: i64,
@@ -33,12 +33,12 @@ pub struct IssuingCard {
     pub latest_fraud_warning: Option<stripe_shared::IssuingCardFraudWarning>,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: std::collections::HashMap<String, String>,
     /// The full unredacted card number.
-    /// For security reasons, this is only available for virtual cards, and will be omitted unless you explicitly request it with [the `expand` parameter](https://stripe.com/docs/api/expanding_objects).
-    /// Additionally, it's only available via the ["Retrieve a card" endpoint](https://stripe.com/docs/api/issuing/cards/retrieve), not via "List all cards" or any other endpoint.
+    /// For security reasons, this is only available for virtual cards, and will be omitted unless you explicitly request it with [the `expand` parameter](https://docs.stripe.com/api/expanding_objects).
+    /// Additionally, it's only available via the ["Retrieve a card" endpoint](https://docs.stripe.com/api/issuing/cards/retrieve), not via "List all cards" or any other endpoint.
     pub number: Option<String>,
     /// The personalization design object belonging to this card.
     pub personalization_design:

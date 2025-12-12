@@ -6,7 +6,10 @@ use stripe_client_core::{
 struct ListBillingCreditBalanceTransactionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     credit_grant: Option<String>,
-    customer: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    customer: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    customer_account: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -17,10 +20,11 @@ struct ListBillingCreditBalanceTransactionBuilder {
     starting_after: Option<String>,
 }
 impl ListBillingCreditBalanceTransactionBuilder {
-    fn new(customer: impl Into<String>) -> Self {
+    fn new() -> Self {
         Self {
             credit_grant: None,
-            customer: customer.into(),
+            customer: None,
+            customer_account: None,
             ending_before: None,
             expand: None,
             limit: None,
@@ -35,12 +39,22 @@ pub struct ListBillingCreditBalanceTransaction {
 }
 impl ListBillingCreditBalanceTransaction {
     /// Construct a new `ListBillingCreditBalanceTransaction`.
-    pub fn new(customer: impl Into<String>) -> Self {
-        Self { inner: ListBillingCreditBalanceTransactionBuilder::new(customer.into()) }
+    pub fn new() -> Self {
+        Self { inner: ListBillingCreditBalanceTransactionBuilder::new() }
     }
     /// The credit grant for which to fetch credit balance transactions.
     pub fn credit_grant(mut self, credit_grant: impl Into<String>) -> Self {
         self.inner.credit_grant = Some(credit_grant.into());
+        self
+    }
+    /// The customer whose credit balance transactions you're retrieving.
+    pub fn customer(mut self, customer: impl Into<String>) -> Self {
+        self.inner.customer = Some(customer.into());
+        self
+    }
+    /// The account representing the customer whose credit balance transactions you're retrieving.
+    pub fn customer_account(mut self, customer_account: impl Into<String>) -> Self {
+        self.inner.customer_account = Some(customer_account.into());
         self
     }
     /// A cursor for use in pagination.
@@ -67,6 +81,11 @@ impl ListBillingCreditBalanceTransaction {
     pub fn starting_after(mut self, starting_after: impl Into<String>) -> Self {
         self.inner.starting_after = Some(starting_after.into());
         self
+    }
+}
+impl Default for ListBillingCreditBalanceTransaction {
+    fn default() -> Self {
+        Self::new()
     }
 }
 impl ListBillingCreditBalanceTransaction {

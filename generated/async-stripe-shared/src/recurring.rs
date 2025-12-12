@@ -9,7 +9,7 @@ pub struct Recurring {
     pub interval_count: u64,
     /// The meter tracking the usage of a metered price
     pub meter: Option<String>,
-    /// Default number of trial days when subscribing a customer to this price using [`trial_from_plan=true`](https://stripe.com/docs/api#create_subscription-trial_from_plan).
+    /// Default number of trial days when subscribing a customer to this price using [`trial_from_plan=true`](https://docs.stripe.com/api#create_subscription-trial_from_plan).
     pub trial_period_days: Option<u32>,
     /// Configures how the quantity per period should be determined.
     /// Can be either `metered` or `licensed`.

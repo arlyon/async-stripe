@@ -1,7 +1,7 @@
 /// Reviews can be used to supplement automated fraud detection with human expertise.
 ///
 /// Learn more about [Radar](/radar) and reviewing payments
-/// [here](https://stripe.com/docs/radar/reviews).
+/// [here](https://docs.stripe.com/radar/reviews).
 ///
 /// For more details see <<https://stripe.com/docs/api/radar/reviews/object>>.
 #[derive(Clone, Debug)]

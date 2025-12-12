@@ -2,7 +2,7 @@
 #[derive(Clone, Debug)]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct EntitlementsActiveEntitlement {
-    /// The [Feature](https://stripe.com/docs/api/entitlements/feature) that the customer is entitled to.
+    /// The [Feature](https://docs.stripe.com/api/entitlements/feature) that the customer is entitled to.
     pub feature: stripe_types::Expandable<stripe_shared::EntitlementsFeature>,
     /// Unique identifier for the object.
     pub id: stripe_misc::EntitlementsActiveEntitlementId,

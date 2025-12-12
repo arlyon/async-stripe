@@ -2,29 +2,30 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct AccountFutureRequirements {
-    /// Fields that are due and can be satisfied by providing the corresponding alternative fields instead.
+    /// Fields that are due and can be resolved by providing the corresponding alternative fields instead.
+    /// Many alternatives can list the same `original_fields_due`, and any of these alternatives can serve as a pathway for attempting to resolve the fields again.
+    /// Re-providing `original_fields_due` also serves as a pathway for attempting to resolve the fields again.
     pub alternatives: Option<Vec<stripe_shared::AccountRequirementsAlternative>>,
     /// Date on which `future_requirements` becomes the main `requirements` hash and `future_requirements` becomes empty.
     /// After the transition, `currently_due` requirements may immediately become `past_due`, but the account may also be given a grace period depending on its enablement state prior to transitioning.
     pub current_deadline: Option<stripe_types::Timestamp>,
-    /// Fields that need to be collected to keep the account enabled.
-    /// If not collected by `future_requirements[current_deadline]`, these fields will transition to the main `requirements` hash.
+    /// Fields that need to be resolved to keep the account enabled.
+    /// If not resolved by `future_requirements[current_deadline]`, these fields will transition to the main `requirements` hash.
     pub currently_due: Option<Vec<String>>,
     /// This is typed as an enum for consistency with `requirements.disabled_reason`.
     pub disabled_reason: Option<AccountFutureRequirementsDisabledReason>,
-    /// Fields that are `currently_due` and need to be collected again because validation or verification failed.
+    /// Details about validation and verification failures for `due` requirements that must be resolved.
     pub errors: Option<Vec<stripe_shared::AccountRequirementsError>>,
     /// Fields you must collect when all thresholds are reached.
     /// As they become required, they appear in `currently_due` as well.
     pub eventually_due: Option<Vec<String>>,
-    /// Fields that weren't collected by `requirements.current_deadline`.
-    /// These fields need to be collected to enable the capability on the account.
-    /// New fields will never appear here; `future_requirements.past_due` will always be a subset of `requirements.past_due`.
+    /// Fields that haven't been resolved by `requirements.current_deadline`.
+    /// These fields need to be resolved to enable the capability on the account.
+    /// `future_requirements.past_due` is a subset of `requirements.past_due`.
     pub past_due: Option<Vec<String>>,
-    /// Fields that might become required depending on the results of verification or review.
-    /// It's an empty array unless an asynchronous verification is pending.
-    /// If verification fails, these fields move to `eventually_due` or `currently_due`.
-    /// Fields might appear in `eventually_due` or `currently_due` and in `pending_verification` if verification fails but another verification is still pending.
+    /// Fields that are being reviewed, or might become required depending on the results of a review.
+    /// If the review fails, these fields can move to `eventually_due`, `currently_due`, `past_due` or `alternatives`.
+    /// Fields might appear in `eventually_due`, `currently_due`, `past_due` or `alternatives` and in `pending_verification` if one verification fails but another is still pending.
     pub pending_verification: Option<Vec<String>>,
 }
 #[doc(hidden)]

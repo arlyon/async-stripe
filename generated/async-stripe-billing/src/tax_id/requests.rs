@@ -250,19 +250,23 @@ impl ListTaxIdBuilder {
 /// The account or customer the tax ID belongs to. Defaults to `owner[type]=self`.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct ListTaxIdOwner {
-    /// Account the tax ID belongs to. Required when `type=account`
+    /// Connected Account the tax ID belongs to. Required when `type=account`
     #[serde(skip_serializing_if = "Option::is_none")]
     pub account: Option<String>,
     /// Customer the tax ID belongs to. Required when `type=customer`
     #[serde(skip_serializing_if = "Option::is_none")]
     pub customer: Option<String>,
+    /// ID of the Account representing the customer that the tax ID belongs to.
+    /// Can be used in place of `customer` when `type=customer`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub customer_account: Option<String>,
     /// Type of owner referenced.
     #[serde(rename = "type")]
     pub type_: ListTaxIdOwnerType,
 }
 impl ListTaxIdOwner {
     pub fn new(type_: impl Into<ListTaxIdOwnerType>) -> Self {
-        Self { account: None, customer: None, type_: type_.into() }
+        Self { account: None, customer: None, customer_account: None, type_: type_.into() }
     }
 }
 /// Type of owner referenced.
@@ -929,19 +933,23 @@ impl CreateTaxIdBuilder {
 /// The account or customer the tax ID belongs to. Defaults to `owner[type]=self`.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateTaxIdOwner {
-    /// Account the tax ID belongs to. Required when `type=account`
+    /// Connected Account the tax ID belongs to. Required when `type=account`
     #[serde(skip_serializing_if = "Option::is_none")]
     pub account: Option<String>,
     /// Customer the tax ID belongs to. Required when `type=customer`
     #[serde(skip_serializing_if = "Option::is_none")]
     pub customer: Option<String>,
+    /// ID of the Account representing the customer that the tax ID belongs to.
+    /// Can be used in place of `customer` when `type=customer`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub customer_account: Option<String>,
     /// Type of owner referenced.
     #[serde(rename = "type")]
     pub type_: CreateTaxIdOwnerType,
 }
 impl CreateTaxIdOwner {
     pub fn new(type_: impl Into<CreateTaxIdOwnerType>) -> Self {
-        Self { account: None, customer: None, type_: type_.into() }
+        Self { account: None, customer: None, customer_account: None, type_: type_.into() }
     }
 }
 /// Type of owner referenced.

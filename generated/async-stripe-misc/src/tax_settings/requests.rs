@@ -80,7 +80,7 @@ pub struct UpdateTaxSettingsDefaults {
     /// Once specified, it cannot be changed back to null.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_behavior: Option<UpdateTaxSettingsDefaultsTaxBehavior>,
-    /// A [tax code](https://stripe.com/docs/tax/tax-categories) ID.
+    /// A [tax code](https://docs.stripe.com/tax/tax-categories) ID.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_code: Option<String>,
 }

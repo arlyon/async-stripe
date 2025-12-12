@@ -2,7 +2,7 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct IssuingCardholderAuthorizationControls {
-    /// Array of strings containing [categories](https://stripe.com/docs/api#issuing_authorization_object-merchant_data-category) of authorizations to allow.
+    /// Array of strings containing [categories](https://docs.stripe.com/api#issuing_authorization_object-merchant_data-category) of authorizations to allow.
     /// All other categories will be blocked.
     /// Cannot be set with `blocked_categories`.
     pub allowed_categories: Option<Vec<IssuingCardholderAuthorizationControlsAllowedCategories>>,
@@ -13,7 +13,7 @@ pub struct IssuingCardholderAuthorizationControls {
     /// Cannot be set with `blocked_merchant_countries`.
     /// Provide an empty value to unset this control.
     pub allowed_merchant_countries: Option<Vec<String>>,
-    /// Array of strings containing [categories](https://stripe.com/docs/api#issuing_authorization_object-merchant_data-category) of authorizations to decline.
+    /// Array of strings containing [categories](https://docs.stripe.com/api#issuing_authorization_object-merchant_data-category) of authorizations to decline.
     /// All other categories will be allowed.
     /// Cannot be set with `allowed_categories`.
     pub blocked_categories: Option<Vec<IssuingCardholderAuthorizationControlsBlockedCategories>>,
@@ -179,7 +179,7 @@ const _: () = {
         }
     }
 };
-/// Array of strings containing [categories](https://stripe.com/docs/api#issuing_authorization_object-merchant_data-category) of authorizations to allow.
+/// Array of strings containing [categories](https://docs.stripe.com/api#issuing_authorization_object-merchant_data-category) of authorizations to allow.
 /// All other categories will be blocked.
 /// Cannot be set with `blocked_categories`.
 #[derive(Clone, Eq, PartialEq)]
@@ -1238,7 +1238,7 @@ impl<'de> serde::Deserialize<'de> for IssuingCardholderAuthorizationControlsAllo
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-/// Array of strings containing [categories](https://stripe.com/docs/api#issuing_authorization_object-merchant_data-category) of authorizations to decline.
+/// Array of strings containing [categories](https://docs.stripe.com/api#issuing_authorization_object-merchant_data-category) of authorizations to decline.
 /// All other categories will be allowed.
 /// Cannot be set with `allowed_categories`.
 #[derive(Clone, Eq, PartialEq)]

@@ -1,6 +1,6 @@
 /// Shipping rates describe the price of shipping presented to your customers and
 /// applied to a purchase.
-/// For more information, see [Charge for shipping](https://stripe.com/docs/payments/during-payment/charge-shipping).
+/// For more information, see [Charge for shipping](https://docs.stripe.com/payments/during-payment/charge-shipping).
 ///
 /// For more details see <<https://stripe.com/docs/api/shipping_rates/object>>.
 #[derive(Clone, Debug)]
@@ -21,13 +21,13 @@ pub struct ShippingRate {
     pub id: stripe_shared::ShippingRateId,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: std::collections::HashMap<String, String>,
     /// Specifies whether the rate is considered inclusive of taxes or exclusive of taxes.
     /// One of `inclusive`, `exclusive`, or `unspecified`.
     pub tax_behavior: Option<stripe_shared::ShippingRateTaxBehavior>,
-    /// A [tax code](https://stripe.com/docs/tax/tax-categories) ID.
+    /// A [tax code](https://docs.stripe.com/tax/tax-categories) ID.
     /// The Shipping tax code is `txcd_92010001`.
     pub tax_code: Option<stripe_types::Expandable<stripe_shared::TaxCode>>,
     /// The type of calculation to use on the shipping rate.

@@ -13,6 +13,8 @@ struct ListSubscriptionScheduleBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     customer: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    customer_account: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -32,6 +34,7 @@ impl ListSubscriptionScheduleBuilder {
             completed_at: None,
             created: None,
             customer: None,
+            customer_account: None,
             ending_before: None,
             expand: None,
             limit: None,
@@ -69,6 +72,11 @@ impl ListSubscriptionSchedule {
     /// Only return subscription schedules for the given customer.
     pub fn customer(mut self, customer: impl Into<String>) -> Self {
         self.inner.customer = Some(customer.into());
+        self
+    }
+    /// Only return subscription schedules for the given account.
+    pub fn customer_account(mut self, customer_account: impl Into<String>) -> Self {
+        self.inner.customer_account = Some(customer_account.into());
         self
     }
     /// A cursor for use in pagination.
@@ -206,6 +214,8 @@ struct CreateSubscriptionScheduleBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     customer: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    customer_account: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     default_settings: Option<CreateSubscriptionScheduleDefaultSettings>,
     #[serde(skip_serializing_if = "Option::is_none")]
     end_behavior: Option<stripe_shared::SubscriptionScheduleEndBehavior>,
@@ -225,6 +235,7 @@ impl CreateSubscriptionScheduleBuilder {
         Self {
             billing_mode: None,
             customer: None,
+            customer_account: None,
             default_settings: None,
             end_behavior: None,
             expand: None,
@@ -416,7 +427,7 @@ pub struct CreateSubscriptionScheduleDefaultSettings {
     pub automatic_tax: Option<CreateSubscriptionScheduleDefaultSettingsAutomaticTax>,
     /// Can be set to `phase_start` to set the anchor to the start of the phase or `automatic` to automatically change it if needed.
     /// Cannot be set to `phase_start` if this phase specifies a trial.
-    /// For more information, see the billing cycle [documentation](https://stripe.com/docs/billing/subscriptions/billing-cycle).
+    /// For more information, see the billing cycle [documentation](https://docs.stripe.com/billing/subscriptions/billing-cycle).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_cycle_anchor: Option<CreateSubscriptionScheduleDefaultSettingsBillingCycleAnchor>,
     /// Define thresholds at which an invoice will be sent, and the subscription advanced to a new billing period.
@@ -573,7 +584,7 @@ impl<'de> serde::Deserialize<'de>
 }
 /// Can be set to `phase_start` to set the anchor to the start of the phase or `automatic` to automatically change it if needed.
 /// Cannot be set to `phase_start` if this phase specifies a trial.
-/// For more information, see the billing cycle [documentation](https://stripe.com/docs/billing/subscriptions/billing-cycle).
+/// For more information, see the billing cycle [documentation](https://docs.stripe.com/billing/subscriptions/billing-cycle).
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum CreateSubscriptionScheduleDefaultSettingsBillingCycleAnchor {
@@ -837,7 +848,7 @@ pub struct CreateSubscriptionSchedulePhases {
     pub automatic_tax: Option<CreateSubscriptionSchedulePhasesAutomaticTax>,
     /// Can be set to `phase_start` to set the anchor to the start of the phase or `automatic` to automatically change it if needed.
     /// Cannot be set to `phase_start` if this phase specifies a trial.
-    /// For more information, see the billing cycle [documentation](https://stripe.com/docs/billing/subscriptions/billing-cycle).
+    /// For more information, see the billing cycle [documentation](https://docs.stripe.com/billing/subscriptions/billing-cycle).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_cycle_anchor: Option<CreateSubscriptionSchedulePhasesBillingCycleAnchor>,
     /// Define thresholds at which an invoice will be sent, and the subscription advanced to a new billing period.
@@ -859,8 +870,8 @@ pub struct CreateSubscriptionSchedulePhases {
     /// If not set, invoices will use the default payment method in the customer's invoice settings.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub default_payment_method: Option<String>,
-    /// A list of [Tax Rate](https://stripe.com/docs/api/tax_rates) ids.
-    /// These Tax Rates will set the Subscription's [`default_tax_rates`](https://stripe.com/docs/api/subscriptions/create#create_subscription-default_tax_rates), which means they will be the Invoice's [`default_tax_rates`](https://stripe.com/docs/api/invoices/create#create_invoice-default_tax_rates) for any Invoices issued by the Subscription during this Phase.
+    /// A list of [Tax Rate](https://docs.stripe.com/api/tax_rates) ids.
+    /// These Tax Rates will set the Subscription's [`default_tax_rates`](https://docs.stripe.com/api/subscriptions/create#create_subscription-default_tax_rates), which means they will be the Invoice's [`default_tax_rates`](https://docs.stripe.com/api/invoices/create#create_invoice-default_tax_rates) for any Invoices issued by the Subscription during this Phase.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub default_tax_rates: Option<Vec<String>>,
     /// Subscription description, meant to be displayable to the customer.
@@ -875,8 +886,7 @@ pub struct CreateSubscriptionSchedulePhases {
     /// The number of intervals the phase should last. If set, `end_date` must not be set.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub duration: Option<CreateSubscriptionSchedulePhasesDuration>,
-    /// The date at which this phase of the subscription schedule ends.
-    /// If set, `iterations` must not be set.
+    /// The date at which this phase of the subscription schedule ends. If set, `duration` must not be set.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub end_date: Option<stripe_types::Timestamp>,
     /// All invoices will be billed using the specified settings.
@@ -884,7 +894,7 @@ pub struct CreateSubscriptionSchedulePhases {
     pub invoice_settings: Option<CreateSubscriptionSchedulePhasesInvoiceSettings>,
     /// List of configuration items, each with an attached price, to apply during this phase of the subscription schedule.
     pub items: Vec<CreateSubscriptionSchedulePhasesItems>,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to a phase.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to a phase.
     /// Metadata on a schedule's phase will update the underlying subscription's `metadata` when the phase is entered, adding new keys and replacing existing keys in the subscription's `metadata`.
     /// Individual keys in the subscription's `metadata` can be unset by posting an empty value to them in the phase's `metadata`.
     /// To unset all keys in the subscription's `metadata`, update the subscription directly or unset every key individually from the phase's `metadata`.
@@ -893,8 +903,8 @@ pub struct CreateSubscriptionSchedulePhases {
     /// The account on behalf of which to charge, for each of the associated subscription's invoices.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub on_behalf_of: Option<String>,
-    /// Controls whether the subscription schedule should create [prorations](https://stripe.com/docs/billing/subscriptions/prorations) when transitioning to this phase if there is a difference in billing configuration.
-    /// It's different from the request-level [proration_behavior](https://stripe.com/docs/api/subscription_schedules/update#update_subscription_schedule-proration_behavior) parameter which controls what happens if the update request affects the billing configuration (item price, quantity, etc.) of the current phase.
+    /// Controls whether the subscription schedule should create [prorations](https://docs.stripe.com/billing/subscriptions/prorations) when transitioning to this phase if there is a difference in billing configuration.
+    /// It's different from the request-level [proration_behavior](https://docs.stripe.com/api/subscription_schedules/update#update_subscription_schedule-proration_behavior) parameter which controls what happens if the update request affects the billing configuration (item price, quantity, etc.) of the current phase.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub proration_behavior: Option<CreateSubscriptionSchedulePhasesProrationBehavior>,
     /// The data with which to automatically create a Transfer for each of the associated subscription's invoices.
@@ -942,7 +952,7 @@ pub struct CreateSubscriptionSchedulePhasesAddInvoiceItems {
     /// The coupons to redeem into discounts for the item.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub discounts: Option<Vec<DiscountsDataParam>>,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
@@ -955,7 +965,7 @@ pub struct CreateSubscriptionSchedulePhasesAddInvoiceItems {
     /// The ID of the price object. One of `price` or `price_data` is required.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub price: Option<String>,
-    /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
+    /// Data used to generate a new [Price](https://docs.stripe.com/api/prices) object inline.
     /// One of `price` or `price_data` is required.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub price_data: Option<CreateSubscriptionSchedulePhasesAddInvoiceItemsPriceData>,
@@ -1175,7 +1185,7 @@ impl<'de> serde::Deserialize<'de>
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-/// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
+/// Data used to generate a new [Price](https://docs.stripe.com/api/prices) object inline.
 /// One of `price` or `price_data` is required.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateSubscriptionSchedulePhasesAddInvoiceItemsPriceData {
@@ -1184,7 +1194,7 @@ pub struct CreateSubscriptionSchedulePhasesAddInvoiceItemsPriceData {
     pub currency: stripe_types::Currency,
     /// The ID of the [Product](https://docs.stripe.com/api/products) that this [Price](https://docs.stripe.com/api/prices) will belong to.
     pub product: String,
-    /// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
+    /// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
     /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
     /// One of `inclusive`, `exclusive`, or `unspecified`.
     /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
@@ -1209,7 +1219,7 @@ impl CreateSubscriptionSchedulePhasesAddInvoiceItemsPriceData {
         }
     }
 }
-/// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
+/// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
 /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
 /// One of `inclusive`, `exclusive`, or `unspecified`.
 /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
@@ -1384,7 +1394,7 @@ impl<'de> serde::Deserialize<'de> for CreateSubscriptionSchedulePhasesAutomaticT
 }
 /// Can be set to `phase_start` to set the anchor to the start of the phase or `automatic` to automatically change it if needed.
 /// Cannot be set to `phase_start` if this phase specifies a trial.
-/// For more information, see the billing cycle [documentation](https://stripe.com/docs/billing/subscriptions/billing-cycle).
+/// For more information, see the billing cycle [documentation](https://docs.stripe.com/billing/subscriptions/billing-cycle).
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum CreateSubscriptionSchedulePhasesBillingCycleAnchor {
@@ -1721,7 +1731,7 @@ pub struct CreateSubscriptionSchedulePhasesItems {
     /// The coupons to redeem into discounts for the subscription item.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub discounts: Option<Vec<DiscountsDataParam>>,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to a configuration item.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to a configuration item.
     /// Metadata on a configuration item will update the underlying subscription item's `metadata` when the phase is entered, adding new keys and replacing existing keys.
     /// Individual keys in the subscription item's `metadata` can be unset by posting an empty value to them in the configuration item's `metadata`.
     /// To unset all keys in the subscription item's `metadata`, update the subscription item directly or unset every key individually from the configuration item's `metadata`.
@@ -1733,15 +1743,15 @@ pub struct CreateSubscriptionSchedulePhasesItems {
     /// The ID of the price object.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub price: Option<String>,
-    /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
+    /// Data used to generate a new [Price](https://docs.stripe.com/api/prices) object inline.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub price_data: Option<CreateSubscriptionSchedulePhasesItemsPriceData>,
     /// Quantity for the given price.
     /// Can be set only if the price's `usage_type` is `licensed` and not `metered`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub quantity: Option<u64>,
-    /// A list of [Tax Rate](https://stripe.com/docs/api/tax_rates) ids.
-    /// These Tax Rates will override the [`default_tax_rates`](https://stripe.com/docs/api/subscriptions/create#create_subscription-default_tax_rates) on the Subscription.
+    /// A list of [Tax Rate](https://docs.stripe.com/api/tax_rates) ids.
+    /// These Tax Rates will override the [`default_tax_rates`](https://docs.stripe.com/api/subscriptions/create#create_subscription-default_tax_rates) on the Subscription.
     /// When updating, pass an empty string to remove previously-defined tax rates.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_rates: Option<Vec<String>>,
@@ -1765,7 +1775,7 @@ impl Default for CreateSubscriptionSchedulePhasesItems {
         Self::new()
     }
 }
-/// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
+/// Data used to generate a new [Price](https://docs.stripe.com/api/prices) object inline.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateSubscriptionSchedulePhasesItemsPriceData {
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
@@ -1775,7 +1785,7 @@ pub struct CreateSubscriptionSchedulePhasesItemsPriceData {
     pub product: String,
     /// The recurring components of a price such as `interval` and `interval_count`.
     pub recurring: CreateSubscriptionSchedulePhasesItemsPriceDataRecurring,
-    /// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
+    /// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
     /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
     /// One of `inclusive`, `exclusive`, or `unspecified`.
     /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
@@ -1896,7 +1906,7 @@ impl<'de> serde::Deserialize<'de>
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-/// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
+/// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
 /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
 /// One of `inclusive`, `exclusive`, or `unspecified`.
 /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
@@ -1967,8 +1977,8 @@ impl<'de> serde::Deserialize<'de> for CreateSubscriptionSchedulePhasesItemsPrice
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-/// Controls whether the subscription schedule should create [prorations](https://stripe.com/docs/billing/subscriptions/prorations) when transitioning to this phase if there is a difference in billing configuration.
-/// It's different from the request-level [proration_behavior](https://stripe.com/docs/api/subscription_schedules/update#update_subscription_schedule-proration_behavior) parameter which controls what happens if the update request affects the billing configuration (item price, quantity, etc.) of the current phase.
+/// Controls whether the subscription schedule should create [prorations](https://docs.stripe.com/billing/subscriptions/prorations) when transitioning to this phase if there is a difference in billing configuration.
+/// It's different from the request-level [proration_behavior](https://docs.stripe.com/api/subscription_schedules/update#update_subscription_schedule-proration_behavior) parameter which controls what happens if the update request affects the billing configuration (item price, quantity, etc.) of the current phase.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum CreateSubscriptionSchedulePhasesProrationBehavior {
@@ -2070,6 +2080,11 @@ impl CreateSubscriptionSchedule {
         self.inner.customer = Some(customer.into());
         self
     }
+    /// The identifier of the account to create the subscription schedule for.
+    pub fn customer_account(mut self, customer_account: impl Into<String>) -> Self {
+        self.inner.customer_account = Some(customer_account.into());
+        self
+    }
     /// Object representing the subscription schedule's default settings.
     pub fn default_settings(
         mut self,
@@ -2102,7 +2117,7 @@ impl CreateSubscriptionSchedule {
         self.inner.from_subscription = Some(from_subscription.into());
         self
     }
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
@@ -2202,7 +2217,7 @@ pub struct UpdateSubscriptionScheduleDefaultSettings {
     pub automatic_tax: Option<UpdateSubscriptionScheduleDefaultSettingsAutomaticTax>,
     /// Can be set to `phase_start` to set the anchor to the start of the phase or `automatic` to automatically change it if needed.
     /// Cannot be set to `phase_start` if this phase specifies a trial.
-    /// For more information, see the billing cycle [documentation](https://stripe.com/docs/billing/subscriptions/billing-cycle).
+    /// For more information, see the billing cycle [documentation](https://docs.stripe.com/billing/subscriptions/billing-cycle).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_cycle_anchor: Option<UpdateSubscriptionScheduleDefaultSettingsBillingCycleAnchor>,
     /// Define thresholds at which an invoice will be sent, and the subscription advanced to a new billing period.
@@ -2359,7 +2374,7 @@ impl<'de> serde::Deserialize<'de>
 }
 /// Can be set to `phase_start` to set the anchor to the start of the phase or `automatic` to automatically change it if needed.
 /// Cannot be set to `phase_start` if this phase specifies a trial.
-/// For more information, see the billing cycle [documentation](https://stripe.com/docs/billing/subscriptions/billing-cycle).
+/// For more information, see the billing cycle [documentation](https://docs.stripe.com/billing/subscriptions/billing-cycle).
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum UpdateSubscriptionScheduleDefaultSettingsBillingCycleAnchor {
@@ -2624,7 +2639,7 @@ pub struct UpdateSubscriptionSchedulePhases {
     pub automatic_tax: Option<UpdateSubscriptionSchedulePhasesAutomaticTax>,
     /// Can be set to `phase_start` to set the anchor to the start of the phase or `automatic` to automatically change it if needed.
     /// Cannot be set to `phase_start` if this phase specifies a trial.
-    /// For more information, see the billing cycle [documentation](https://stripe.com/docs/billing/subscriptions/billing-cycle).
+    /// For more information, see the billing cycle [documentation](https://docs.stripe.com/billing/subscriptions/billing-cycle).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_cycle_anchor: Option<UpdateSubscriptionSchedulePhasesBillingCycleAnchor>,
     /// Define thresholds at which an invoice will be sent, and the subscription advanced to a new billing period.
@@ -2646,8 +2661,8 @@ pub struct UpdateSubscriptionSchedulePhases {
     /// If not set, invoices will use the default payment method in the customer's invoice settings.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub default_payment_method: Option<String>,
-    /// A list of [Tax Rate](https://stripe.com/docs/api/tax_rates) ids.
-    /// These Tax Rates will set the Subscription's [`default_tax_rates`](https://stripe.com/docs/api/subscriptions/create#create_subscription-default_tax_rates), which means they will be the Invoice's [`default_tax_rates`](https://stripe.com/docs/api/invoices/create#create_invoice-default_tax_rates) for any Invoices issued by the Subscription during this Phase.
+    /// A list of [Tax Rate](https://docs.stripe.com/api/tax_rates) ids.
+    /// These Tax Rates will set the Subscription's [`default_tax_rates`](https://docs.stripe.com/api/subscriptions/create#create_subscription-default_tax_rates), which means they will be the Invoice's [`default_tax_rates`](https://docs.stripe.com/api/invoices/create#create_invoice-default_tax_rates) for any Invoices issued by the Subscription during this Phase.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub default_tax_rates: Option<Vec<String>>,
     /// Subscription description, meant to be displayable to the customer.
@@ -2662,8 +2677,7 @@ pub struct UpdateSubscriptionSchedulePhases {
     /// The number of intervals the phase should last. If set, `end_date` must not be set.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub duration: Option<UpdateSubscriptionSchedulePhasesDuration>,
-    /// The date at which this phase of the subscription schedule ends.
-    /// If set, `iterations` must not be set.
+    /// The date at which this phase of the subscription schedule ends. If set, `duration` must not be set.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub end_date: Option<UpdateSubscriptionSchedulePhasesEndDate>,
     /// All invoices will be billed using the specified settings.
@@ -2671,7 +2685,7 @@ pub struct UpdateSubscriptionSchedulePhases {
     pub invoice_settings: Option<UpdateSubscriptionSchedulePhasesInvoiceSettings>,
     /// List of configuration items, each with an attached price, to apply during this phase of the subscription schedule.
     pub items: Vec<UpdateSubscriptionSchedulePhasesItems>,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to a phase.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to a phase.
     /// Metadata on a schedule's phase will update the underlying subscription's `metadata` when the phase is entered, adding new keys and replacing existing keys in the subscription's `metadata`.
     /// Individual keys in the subscription's `metadata` can be unset by posting an empty value to them in the phase's `metadata`.
     /// To unset all keys in the subscription's `metadata`, update the subscription directly or unset every key individually from the phase's `metadata`.
@@ -2680,8 +2694,8 @@ pub struct UpdateSubscriptionSchedulePhases {
     /// The account on behalf of which to charge, for each of the associated subscription's invoices.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub on_behalf_of: Option<String>,
-    /// Controls whether the subscription schedule should create [prorations](https://stripe.com/docs/billing/subscriptions/prorations) when transitioning to this phase if there is a difference in billing configuration.
-    /// It's different from the request-level [proration_behavior](https://stripe.com/docs/api/subscription_schedules/update#update_subscription_schedule-proration_behavior) parameter which controls what happens if the update request affects the billing configuration (item price, quantity, etc.) of the current phase.
+    /// Controls whether the subscription schedule should create [prorations](https://docs.stripe.com/billing/subscriptions/prorations) when transitioning to this phase if there is a difference in billing configuration.
+    /// It's different from the request-level [proration_behavior](https://docs.stripe.com/api/subscription_schedules/update#update_subscription_schedule-proration_behavior) parameter which controls what happens if the update request affects the billing configuration (item price, quantity, etc.) of the current phase.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub proration_behavior: Option<UpdateSubscriptionSchedulePhasesProrationBehavior>,
     /// The date at which this phase of the subscription schedule starts or `now`.
@@ -2734,7 +2748,7 @@ pub struct UpdateSubscriptionSchedulePhasesAddInvoiceItems {
     /// The coupons to redeem into discounts for the item.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub discounts: Option<Vec<DiscountsDataParam>>,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
@@ -2747,7 +2761,7 @@ pub struct UpdateSubscriptionSchedulePhasesAddInvoiceItems {
     /// The ID of the price object. One of `price` or `price_data` is required.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub price: Option<String>,
-    /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
+    /// Data used to generate a new [Price](https://docs.stripe.com/api/prices) object inline.
     /// One of `price` or `price_data` is required.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub price_data: Option<UpdateSubscriptionSchedulePhasesAddInvoiceItemsPriceData>,
@@ -2967,7 +2981,7 @@ impl<'de> serde::Deserialize<'de>
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-/// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
+/// Data used to generate a new [Price](https://docs.stripe.com/api/prices) object inline.
 /// One of `price` or `price_data` is required.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdateSubscriptionSchedulePhasesAddInvoiceItemsPriceData {
@@ -2976,7 +2990,7 @@ pub struct UpdateSubscriptionSchedulePhasesAddInvoiceItemsPriceData {
     pub currency: stripe_types::Currency,
     /// The ID of the [Product](https://docs.stripe.com/api/products) that this [Price](https://docs.stripe.com/api/prices) will belong to.
     pub product: String,
-    /// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
+    /// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
     /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
     /// One of `inclusive`, `exclusive`, or `unspecified`.
     /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
@@ -3001,7 +3015,7 @@ impl UpdateSubscriptionSchedulePhasesAddInvoiceItemsPriceData {
         }
     }
 }
-/// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
+/// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
 /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
 /// One of `inclusive`, `exclusive`, or `unspecified`.
 /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
@@ -3176,7 +3190,7 @@ impl<'de> serde::Deserialize<'de> for UpdateSubscriptionSchedulePhasesAutomaticT
 }
 /// Can be set to `phase_start` to set the anchor to the start of the phase or `automatic` to automatically change it if needed.
 /// Cannot be set to `phase_start` if this phase specifies a trial.
-/// For more information, see the billing cycle [documentation](https://stripe.com/docs/billing/subscriptions/billing-cycle).
+/// For more information, see the billing cycle [documentation](https://docs.stripe.com/billing/subscriptions/billing-cycle).
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum UpdateSubscriptionSchedulePhasesBillingCycleAnchor {
@@ -3394,8 +3408,7 @@ impl<'de> serde::Deserialize<'de> for UpdateSubscriptionSchedulePhasesDurationIn
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-/// The date at which this phase of the subscription schedule ends.
-/// If set, `iterations` must not be set.
+/// The date at which this phase of the subscription schedule ends. If set, `duration` must not be set.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 #[serde(rename_all = "snake_case")]
 pub enum UpdateSubscriptionSchedulePhasesEndDate {
@@ -3522,7 +3535,7 @@ pub struct UpdateSubscriptionSchedulePhasesItems {
     /// The coupons to redeem into discounts for the subscription item.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub discounts: Option<Vec<DiscountsDataParam>>,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to a configuration item.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to a configuration item.
     /// Metadata on a configuration item will update the underlying subscription item's `metadata` when the phase is entered, adding new keys and replacing existing keys.
     /// Individual keys in the subscription item's `metadata` can be unset by posting an empty value to them in the configuration item's `metadata`.
     /// To unset all keys in the subscription item's `metadata`, update the subscription item directly or unset every key individually from the configuration item's `metadata`.
@@ -3534,15 +3547,15 @@ pub struct UpdateSubscriptionSchedulePhasesItems {
     /// The ID of the price object.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub price: Option<String>,
-    /// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
+    /// Data used to generate a new [Price](https://docs.stripe.com/api/prices) object inline.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub price_data: Option<UpdateSubscriptionSchedulePhasesItemsPriceData>,
     /// Quantity for the given price.
     /// Can be set only if the price's `usage_type` is `licensed` and not `metered`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub quantity: Option<u64>,
-    /// A list of [Tax Rate](https://stripe.com/docs/api/tax_rates) ids.
-    /// These Tax Rates will override the [`default_tax_rates`](https://stripe.com/docs/api/subscriptions/create#create_subscription-default_tax_rates) on the Subscription.
+    /// A list of [Tax Rate](https://docs.stripe.com/api/tax_rates) ids.
+    /// These Tax Rates will override the [`default_tax_rates`](https://docs.stripe.com/api/subscriptions/create#create_subscription-default_tax_rates) on the Subscription.
     /// When updating, pass an empty string to remove previously-defined tax rates.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_rates: Option<Vec<String>>,
@@ -3566,7 +3579,7 @@ impl Default for UpdateSubscriptionSchedulePhasesItems {
         Self::new()
     }
 }
-/// Data used to generate a new [Price](https://stripe.com/docs/api/prices) object inline.
+/// Data used to generate a new [Price](https://docs.stripe.com/api/prices) object inline.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdateSubscriptionSchedulePhasesItemsPriceData {
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
@@ -3576,7 +3589,7 @@ pub struct UpdateSubscriptionSchedulePhasesItemsPriceData {
     pub product: String,
     /// The recurring components of a price such as `interval` and `interval_count`.
     pub recurring: UpdateSubscriptionSchedulePhasesItemsPriceDataRecurring,
-    /// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
+    /// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
     /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
     /// One of `inclusive`, `exclusive`, or `unspecified`.
     /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
@@ -3697,7 +3710,7 @@ impl<'de> serde::Deserialize<'de>
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-/// Only required if a [default tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
+/// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
 /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
 /// One of `inclusive`, `exclusive`, or `unspecified`.
 /// Once specified as either `inclusive` or `exclusive`, it cannot be changed.
@@ -3768,8 +3781,8 @@ impl<'de> serde::Deserialize<'de> for UpdateSubscriptionSchedulePhasesItemsPrice
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-/// Controls whether the subscription schedule should create [prorations](https://stripe.com/docs/billing/subscriptions/prorations) when transitioning to this phase if there is a difference in billing configuration.
-/// It's different from the request-level [proration_behavior](https://stripe.com/docs/api/subscription_schedules/update#update_subscription_schedule-proration_behavior) parameter which controls what happens if the update request affects the billing configuration (item price, quantity, etc.) of the current phase.
+/// Controls whether the subscription schedule should create [prorations](https://docs.stripe.com/billing/subscriptions/prorations) when transitioning to this phase if there is a difference in billing configuration.
+/// It's different from the request-level [proration_behavior](https://docs.stripe.com/api/subscription_schedules/update#update_subscription_schedule-proration_behavior) parameter which controls what happens if the update request affects the billing configuration (item price, quantity, etc.) of the current phase.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum UpdateSubscriptionSchedulePhasesProrationBehavior {
@@ -3959,7 +3972,7 @@ impl UpdateSubscriptionSchedule {
         self.inner.expand = Some(expand.into());
         self
     }
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
@@ -4215,7 +4228,7 @@ impl Default for DiscountsDataParam {
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct ItemBillingThresholdsParam {
-    /// Number of units that meets the billing threshold to advance the subscription to a new billing period (e.g., it takes 10 $5 units to meet a $50 [monetary threshold](https://stripe.com/docs/api/subscriptions/update#update_subscription-billing_thresholds-amount_gte)).
+    /// Number of units that meets the billing threshold to advance the subscription to a new billing period (e.g., it takes 10 $5 units to meet a $50 [monetary threshold](https://docs.stripe.com/api/subscriptions/update#update_subscription-billing_thresholds-amount_gte)).
     pub usage_gte: i64,
 }
 impl ItemBillingThresholdsParam {

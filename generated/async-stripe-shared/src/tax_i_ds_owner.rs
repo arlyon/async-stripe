@@ -8,6 +8,8 @@ pub struct TaxIDsOwner {
     pub application: Option<stripe_types::Expandable<stripe_shared::Application>>,
     /// The customer being referenced when `type` is `customer`.
     pub customer: Option<stripe_types::Expandable<stripe_shared::Customer>>,
+    /// The Account representing the customer being referenced when `type` is `customer`.
+    pub customer_account: Option<String>,
     /// Type of owner referenced.
     #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "type"))]
     pub type_: TaxIDsOwnerType,
@@ -17,6 +19,7 @@ pub struct TaxIDsOwnerBuilder {
     account: Option<Option<stripe_types::Expandable<stripe_shared::Account>>>,
     application: Option<Option<stripe_types::Expandable<stripe_shared::Application>>>,
     customer: Option<Option<stripe_types::Expandable<stripe_shared::Customer>>>,
+    customer_account: Option<Option<String>>,
     type_: Option<TaxIDsOwnerType>,
 }
 
@@ -63,6 +66,7 @@ const _: () = {
                 "account" => Deserialize::begin(&mut self.account),
                 "application" => Deserialize::begin(&mut self.application),
                 "customer" => Deserialize::begin(&mut self.customer),
+                "customer_account" => Deserialize::begin(&mut self.customer_account),
                 "type" => Deserialize::begin(&mut self.type_),
                 _ => <dyn Visitor>::ignore(),
             })
@@ -73,20 +77,29 @@ const _: () = {
                 account: Deserialize::default(),
                 application: Deserialize::default(),
                 customer: Deserialize::default(),
+                customer_account: Deserialize::default(),
                 type_: Deserialize::default(),
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(account), Some(application), Some(customer), Some(type_)) = (
+            let (
+                Some(account),
+                Some(application),
+                Some(customer),
+                Some(customer_account),
+                Some(type_),
+            ) = (
                 self.account.take(),
                 self.application.take(),
                 self.customer.take(),
+                self.customer_account.take(),
                 self.type_.take(),
-            ) else {
+            )
+            else {
                 return None;
             };
-            Some(Self::Out { account, application, customer, type_ })
+            Some(Self::Out { account, application, customer, customer_account, type_ })
         }
     }
 
@@ -116,6 +129,7 @@ const _: () = {
                     "account" => b.account = FromValueOpt::from_value(v),
                     "application" => b.application = FromValueOpt::from_value(v),
                     "customer" => b.customer = FromValueOpt::from_value(v),
+                    "customer_account" => b.customer_account = FromValueOpt::from_value(v),
                     "type" => b.type_ = FromValueOpt::from_value(v),
                     _ => {}
                 }

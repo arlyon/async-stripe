@@ -35,7 +35,7 @@ pub struct Person {
     /// A list of alternate names or aliases that the person is known by.
     /// Also available for accounts where [controller.requirement_collection](/api/accounts/object#account_object-controller-requirement_collection) is `stripe`.
     pub full_name_aliases: Option<Vec<String>>,
-    /// Information about the [upcoming new requirements for this person](https://stripe.com/docs/connect/custom-accounts/future-requirements), including what information needs to be collected, and by when.
+    /// Information about the [upcoming new requirements for this person](https://docs.stripe.com/connect/custom-accounts/future-requirements), including what information needs to be collected, and by when.
     pub future_requirements: Option<stripe_shared::PersonFutureRequirements>,
     /// The person's gender.
     pub gender: Option<String>,
@@ -58,7 +58,7 @@ pub struct Person {
     pub last_name_kanji: Option<String>,
     /// The person's maiden name.
     pub maiden_name: Option<String>,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: Option<std::collections::HashMap<String, String>>,
     /// The country where the person is a national.

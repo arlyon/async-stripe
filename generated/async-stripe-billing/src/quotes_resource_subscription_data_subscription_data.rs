@@ -10,7 +10,7 @@ pub struct QuotesResourceSubscriptionDataSubscriptionData {
     /// This date is ignored if it is in the past when the quote is accepted.
     /// Measured in seconds since the Unix epoch.
     pub effective_date: Option<stripe_types::Timestamp>,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that will set metadata on the subscription or subscription schedule when the quote is accepted.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that will set metadata on the subscription or subscription schedule when the quote is accepted.
     /// If a recurring price is included in `line_items`, this field will be passed to the resulting subscription's `metadata` field.
     /// If `subscription_data.effective_date` is used, this field will be passed to the resulting subscription schedule's `phases.metadata` field.
     /// Unlike object-level metadata, this field is declarative.

@@ -50,6 +50,7 @@ pub use stripe_shared::checkout_payment_method_options_mandate_options_bacs_debi
 pub use stripe_shared::checkout_payment_method_options_mandate_options_sepa_debit::*;
 pub use stripe_shared::checkout_paynow_payment_method_options::*;
 pub use stripe_shared::checkout_paypal_payment_method_options::*;
+pub use stripe_shared::checkout_payto_payment_method_options::*;
 pub use stripe_shared::checkout_pix_payment_method_options::*;
 pub use stripe_shared::checkout_revolut_pay_payment_method_options::*;
 pub use stripe_shared::checkout_samsung_pay_payment_method_options::*;

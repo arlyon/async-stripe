@@ -3,12 +3,12 @@
 ///
 /// Before April 6, 2017, transfers also represented movement of funds from a
 /// Stripe account to a card or bank account. This behavior has since been split
-/// out into a [Payout](https://stripe.com/docs/api#payout_object) object, with corresponding payout endpoints.
+/// out into a [Payout](https://api.stripe.com#payout_object) object, with corresponding payout endpoints.
 /// For more.
 /// information, read about the
-/// [transfer/payout split](https://stripe.com/docs/transfer-payout-split).
+/// [transfer/payout split](https://docs.stripe.com/transfer-payout-split).
 ///
-/// Related guide: [Creating separate charges and transfers](https://stripe.com/docs/connect/separate-charges-and-transfers).
+/// Related guide: [Creating separate charges and transfers](https://docs.stripe.com/connect/separate-charges-and-transfers).
 ///
 /// For more details see <<https://stripe.com/docs/api/transfers/object>>.
 #[derive(Clone, Debug)]
@@ -35,7 +35,7 @@ pub struct Transfer {
     pub id: stripe_shared::TransferId,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: std::collections::HashMap<String, String>,
     /// A list of reversals that have been applied to the transfer.
@@ -49,7 +49,7 @@ pub struct Transfer {
     /// The source balance this transfer came from. One of `card`, `fpx`, or `bank_account`.
     pub source_type: Option<String>,
     /// A string that identifies this transaction as part of a group.
-    /// See the [Connect documentation](https://stripe.com/docs/connect/separate-charges-and-transfers#transfer-options) for details.
+    /// See the [Connect documentation](https://docs.stripe.com/connect/separate-charges-and-transfers#transfer-options) for details.
     pub transfer_group: Option<String>,
 }
 #[doc(hidden)]

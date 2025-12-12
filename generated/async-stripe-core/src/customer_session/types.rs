@@ -19,6 +19,8 @@ pub struct CustomerSession {
     pub created: stripe_types::Timestamp,
     /// The Customer the Customer Session was created for.
     pub customer: stripe_types::Expandable<stripe_shared::Customer>,
+    /// The Account that the Customer Session was created for.
+    pub customer_account: Option<String>,
     /// The timestamp at which this Customer Session will expire.
     pub expires_at: stripe_types::Timestamp,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
@@ -30,6 +32,7 @@ pub struct CustomerSessionBuilder {
     components: Option<Option<stripe_core::CustomerSessionResourceComponents>>,
     created: Option<stripe_types::Timestamp>,
     customer: Option<stripe_types::Expandable<stripe_shared::Customer>>,
+    customer_account: Option<Option<String>>,
     expires_at: Option<stripe_types::Timestamp>,
     livemode: Option<bool>,
 }
@@ -78,6 +81,7 @@ const _: () = {
                 "components" => Deserialize::begin(&mut self.components),
                 "created" => Deserialize::begin(&mut self.created),
                 "customer" => Deserialize::begin(&mut self.customer),
+                "customer_account" => Deserialize::begin(&mut self.customer_account),
                 "expires_at" => Deserialize::begin(&mut self.expires_at),
                 "livemode" => Deserialize::begin(&mut self.livemode),
                 _ => <dyn Visitor>::ignore(),
@@ -90,6 +94,7 @@ const _: () = {
                 components: Deserialize::default(),
                 created: Deserialize::default(),
                 customer: Deserialize::default(),
+                customer_account: Deserialize::default(),
                 expires_at: Deserialize::default(),
                 livemode: Deserialize::default(),
             }
@@ -101,6 +106,7 @@ const _: () = {
                 Some(components),
                 Some(created),
                 Some(customer),
+                Some(customer_account),
                 Some(expires_at),
                 Some(livemode),
             ) = (
@@ -108,13 +114,22 @@ const _: () = {
                 self.components.take(),
                 self.created,
                 self.customer.take(),
+                self.customer_account.take(),
                 self.expires_at,
                 self.livemode,
             )
             else {
                 return None;
             };
-            Some(Self::Out { client_secret, components, created, customer, expires_at, livemode })
+            Some(Self::Out {
+                client_secret,
+                components,
+                created,
+                customer,
+                customer_account,
+                expires_at,
+                livemode,
+            })
         }
     }
 
@@ -145,6 +160,7 @@ const _: () = {
                     "components" => b.components = FromValueOpt::from_value(v),
                     "created" => b.created = FromValueOpt::from_value(v),
                     "customer" => b.customer = FromValueOpt::from_value(v),
+                    "customer_account" => b.customer_account = FromValueOpt::from_value(v),
                     "expires_at" => b.expires_at = FromValueOpt::from_value(v),
                     "livemode" => b.livemode = FromValueOpt::from_value(v),
                     _ => {}
@@ -158,11 +174,12 @@ const _: () = {
 impl serde::Serialize for CustomerSession {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("CustomerSession", 7)?;
+        let mut s = s.serialize_struct("CustomerSession", 8)?;
         s.serialize_field("client_secret", &self.client_secret)?;
         s.serialize_field("components", &self.components)?;
         s.serialize_field("created", &self.created)?;
         s.serialize_field("customer", &self.customer)?;
+        s.serialize_field("customer_account", &self.customer_account)?;
         s.serialize_field("expires_at", &self.expires_at)?;
         s.serialize_field("livemode", &self.livemode)?;
 

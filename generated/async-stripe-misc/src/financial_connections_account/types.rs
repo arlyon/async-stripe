@@ -52,7 +52,7 @@ pub struct FinancialConnectionsAccount {
     pub subcategory: FinancialConnectionsAccountSubcategory,
     /// The list of data refresh subscriptions requested on this account.
     pub subscriptions: Option<Vec<FinancialConnectionsAccountSubscriptions>>,
-    /// The [PaymentMethod type](https://stripe.com/docs/api/payment_methods/object#payment_method_object-type)(s) that can be created from this account.
+    /// The [PaymentMethod type](https://docs.stripe.com/api/payment_methods/object#payment_method_object-type)(s) that can be created from this account.
     pub supported_payment_method_types: Vec<FinancialConnectionsAccountSupportedPaymentMethodTypes>,
     /// The state of the most recent attempt to refresh the account transactions.
     pub transaction_refresh: Option<stripe_misc::BankConnectionsResourceTransactionRefresh>,
@@ -762,7 +762,7 @@ impl<'de> serde::Deserialize<'de> for FinancialConnectionsAccountSubscriptions {
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-/// The [PaymentMethod type](https://stripe.com/docs/api/payment_methods/object#payment_method_object-type)(s) that can be created from this account.
+/// The [PaymentMethod type](https://docs.stripe.com/api/payment_methods/object#payment_method_object-type)(s) that can be created from this account.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum FinancialConnectionsAccountSupportedPaymentMethodTypes {

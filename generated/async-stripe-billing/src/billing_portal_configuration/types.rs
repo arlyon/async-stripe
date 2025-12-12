@@ -11,7 +11,7 @@ pub struct BillingPortalConfiguration {
     /// Time at which the object was created. Measured in seconds since the Unix epoch.
     pub created: stripe_types::Timestamp,
     /// The default URL to redirect customers to when they click on the portal's link to return to your website.
-    /// This can be [overriden](https://stripe.com/docs/api/customer_portal/sessions/create#create_portal_session-return_url) when creating the session.
+    /// This can be [overriden](https://docs.stripe.com/api/customer_portal/sessions/create#create_portal_session-return_url) when creating the session.
     pub default_return_url: Option<String>,
     pub features: stripe_billing::PortalFeatures,
     /// Unique identifier for the object.
@@ -22,7 +22,7 @@ pub struct BillingPortalConfiguration {
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
     pub login_page: stripe_billing::PortalLoginPage,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: Option<std::collections::HashMap<String, String>>,
     /// The name of the configuration.

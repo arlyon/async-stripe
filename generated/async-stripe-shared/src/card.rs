@@ -2,7 +2,7 @@
 /// later. You can also store multiple debit cards on a recipient in order to
 /// transfer to those cards later.
 ///
-/// Related guide: [Card payments with Sources](https://stripe.com/docs/sources/cards)
+/// Related guide: [Card payments with Sources](https://docs.stripe.com/sources/cards)
 ///
 /// For more details see <<https://stripe.com/docs/api/cards/object>>.
 #[derive(Clone, Debug)]
@@ -82,7 +82,7 @@ pub struct Card {
     pub issuer: Option<String>,
     /// The last four digits of the card.
     pub last4: String,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: Option<std::collections::HashMap<String, String>>,
     /// Cardholder name.

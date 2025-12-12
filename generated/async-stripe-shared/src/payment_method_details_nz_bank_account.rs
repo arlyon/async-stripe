@@ -11,6 +11,8 @@ pub struct PaymentMethodDetailsNzBankAccount {
     pub bank_name: String,
     /// The numeric code for the bank account's bank branch.
     pub branch_code: String,
+    /// Estimated date to debit the customer's bank account. A date string in YYYY-MM-DD format.
+    pub expected_debit_date: Option<String>,
     /// Last four digits of the bank account number.
     pub last4: String,
     /// The suffix of the bank account number.
@@ -22,6 +24,7 @@ pub struct PaymentMethodDetailsNzBankAccountBuilder {
     bank_code: Option<String>,
     bank_name: Option<String>,
     branch_code: Option<String>,
+    expected_debit_date: Option<Option<String>>,
     last4: Option<String>,
     suffix: Option<Option<String>>,
 }
@@ -70,6 +73,7 @@ const _: () = {
                 "bank_code" => Deserialize::begin(&mut self.bank_code),
                 "bank_name" => Deserialize::begin(&mut self.bank_name),
                 "branch_code" => Deserialize::begin(&mut self.branch_code),
+                "expected_debit_date" => Deserialize::begin(&mut self.expected_debit_date),
                 "last4" => Deserialize::begin(&mut self.last4),
                 "suffix" => Deserialize::begin(&mut self.suffix),
                 _ => <dyn Visitor>::ignore(),
@@ -82,6 +86,7 @@ const _: () = {
                 bank_code: Deserialize::default(),
                 bank_name: Deserialize::default(),
                 branch_code: Deserialize::default(),
+                expected_debit_date: Deserialize::default(),
                 last4: Deserialize::default(),
                 suffix: Deserialize::default(),
             }
@@ -93,6 +98,7 @@ const _: () = {
                 Some(bank_code),
                 Some(bank_name),
                 Some(branch_code),
+                Some(expected_debit_date),
                 Some(last4),
                 Some(suffix),
             ) = (
@@ -100,6 +106,7 @@ const _: () = {
                 self.bank_code.take(),
                 self.bank_name.take(),
                 self.branch_code.take(),
+                self.expected_debit_date.take(),
                 self.last4.take(),
                 self.suffix.take(),
             )
@@ -111,6 +118,7 @@ const _: () = {
                 bank_code,
                 bank_name,
                 branch_code,
+                expected_debit_date,
                 last4,
                 suffix,
             })
@@ -144,6 +152,7 @@ const _: () = {
                     "bank_code" => b.bank_code = FromValueOpt::from_value(v),
                     "bank_name" => b.bank_name = FromValueOpt::from_value(v),
                     "branch_code" => b.branch_code = FromValueOpt::from_value(v),
+                    "expected_debit_date" => b.expected_debit_date = FromValueOpt::from_value(v),
                     "last4" => b.last4 = FromValueOpt::from_value(v),
                     "suffix" => b.suffix = FromValueOpt::from_value(v),
                     _ => {}

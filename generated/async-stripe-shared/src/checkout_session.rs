@@ -1,17 +1,17 @@
 /// A Checkout Session represents your customer's session as they pay for
-/// one-time purchases or subscriptions through [Checkout](https://stripe.com/docs/payments/checkout)
-/// or [Payment Links](https://stripe.com/docs/payments/payment-links). We recommend creating a
+/// one-time purchases or subscriptions through [Checkout](https://docs.stripe.com/payments/checkout)
+/// or [Payment Links](https://docs.stripe.com/payments/payment-links). We recommend creating a
 /// new Session each time your customer attempts to pay.
 ///
 /// Once payment is successful, the Checkout Session will contain a reference
-/// to the [Customer](https://stripe.com/docs/api/customers), and either the successful
-/// [PaymentIntent](https://stripe.com/docs/api/payment_intents) or an active
-/// [Subscription](https://stripe.com/docs/api/subscriptions).
+/// to the [Customer](https://docs.stripe.com/api/customers), and either the successful
+/// [PaymentIntent](https://docs.stripe.com/api/payment_intents) or an active
+/// [Subscription](https://docs.stripe.com/api/subscriptions).
 ///
 /// You can create a Checkout Session on your server and redirect to its URL
 /// to begin Checkout.
 ///
-/// Related guide: [Checkout quickstart](https://stripe.com/docs/checkout/quickstart)
+/// Related guide: [Checkout quickstart](https://docs.stripe.com/checkout/quickstart)
 ///
 /// For more details see <<https://stripe.com/docs/api/checkout/sessions/object>>.
 #[derive(Clone, Debug)]
@@ -40,7 +40,7 @@ pub struct CheckoutSession {
     /// The client secret of your Checkout Session.
     /// Applies to Checkout Sessions with `ui_mode: embedded` or `ui_mode: custom`.
     /// For `ui_mode: embedded`, the client secret is to be used when initializing Stripe.js embedded checkout.
-    /// For `ui_mode: custom`, use the client secret with [initCheckout](https://stripe.com/docs/js/custom_checkout/init) on your front end.
+    /// For `ui_mode: custom`, use the client secret with [initCheckout](https://docs.stripe.com/js/custom_checkout/init) on your front end.
     pub client_secret: Option<String>,
     /// Information about the customer collected within the Checkout Session.
     pub collected_information:
@@ -66,6 +66,8 @@ pub struct CheckoutSession {
     /// during the payment flow unless an existing customer was provided when
     /// the Session was created.
     pub customer: Option<stripe_types::Expandable<stripe_shared::Customer>>,
+    /// The ID of the account for this Session.
+    pub customer_account: Option<String>,
     /// Configure whether a Checkout Session creates a Customer when the Checkout Session completes.
     pub customer_creation: Option<CheckoutSessionCustomerCreation>,
     /// The customer details including the customer's tax exempt status and the customer's tax IDs.
@@ -97,7 +99,7 @@ pub struct CheckoutSession {
     /// The IETF language tag of the locale Checkout is displayed in.
     /// If blank or `auto`, the browser's locale is used.
     pub locale: Option<stripe_shared::CheckoutSessionLocale>,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: Option<std::collections::HashMap<String, String>>,
     /// The mode of the Checkout Session.
@@ -109,7 +111,7 @@ pub struct CheckoutSession {
     pub origin_context: Option<stripe_shared::CheckoutSessionOriginContext>,
     /// The ID of the PaymentIntent for Checkout Sessions in `payment` mode.
     /// You can't confirm or cancel the PaymentIntent for a Checkout Session.
-    /// To cancel, [expire the Checkout Session](https://stripe.com/docs/api/checkout/sessions/expire) instead.
+    /// To cancel, [expire the Checkout Session](https://docs.stripe.com/api/checkout/sessions/expire) instead.
     pub payment_intent: Option<stripe_types::Expandable<stripe_shared::PaymentIntent>>,
     /// The ID of the Payment Link that created this Session.
     pub payment_link: Option<stripe_types::Expandable<stripe_shared::PaymentLink>>,
@@ -136,7 +138,7 @@ pub struct CheckoutSession {
     /// The ID of the original expired Checkout Session that triggered the recovery flow.
     pub recovered_from: Option<String>,
     /// This parameter applies to `ui_mode: embedded`.
-    /// Learn more about the [redirect behavior](https://stripe.com/docs/payments/checkout/custom-success-page?payment-ui=embedded-form) of embedded sessions.
+    /// Learn more about the [redirect behavior](https://docs.stripe.com/payments/checkout/custom-success-page?payment-ui=embedded-form) of embedded sessions.
     /// Defaults to `always`.
     pub redirect_on_completion: Option<stripe_shared::CheckoutSessionRedirectOnCompletion>,
     /// Applies to Checkout Sessions with `ui_mode: embedded` or `ui_mode: custom`.
@@ -148,7 +150,7 @@ pub struct CheckoutSession {
         Option<stripe_shared::PaymentPagesCheckoutSessionSavedPaymentMethodOptions>,
     /// The ID of the SetupIntent for Checkout Sessions in `setup` mode.
     /// You can't confirm or cancel the SetupIntent for a Checkout Session.
-    /// To cancel, [expire the Checkout Session](https://stripe.com/docs/api/checkout/sessions/expire) instead.
+    /// To cancel, [expire the Checkout Session](https://docs.stripe.com/api/checkout/sessions/expire) instead.
     pub setup_intent: Option<stripe_types::Expandable<stripe_shared::SetupIntent>>,
     /// When set, provides configuration for Checkout to collect a shipping address from a customer.
     pub shipping_address_collection:
@@ -163,7 +165,7 @@ pub struct CheckoutSession {
     /// relevant text on the page, such as the submit button. `submit_type` can only be
     /// specified on Checkout Sessions in `payment` mode. If blank or `auto`, `pay` is used.
     pub submit_type: Option<stripe_shared::CheckoutSessionSubmitType>,
-    /// The ID of the [Subscription](https://stripe.com/docs/api/subscriptions) for Checkout Sessions in `subscription` mode.
+    /// The ID of the [Subscription](https://docs.stripe.com/api/subscriptions) for Checkout Sessions in `subscription` mode.
     pub subscription: Option<stripe_types::Expandable<stripe_shared::Subscription>>,
     /// The URL the customer will be directed to after the payment or
     /// subscription creation is successful.
@@ -176,7 +178,7 @@ pub struct CheckoutSession {
     /// The URL to the Checkout Session.
     /// Applies to Checkout Sessions with `ui_mode: hosted`.
     /// Redirect customers to this URL to take them to Checkout.
-    /// If you’re using [Custom Domains](https://stripe.com/docs/payments/checkout/custom-domains), the URL will use your subdomain.
+    /// If you’re using [Custom Domains](https://docs.stripe.com/payments/checkout/custom-domains), the URL will use your subdomain.
     /// Otherwise, it’ll use `checkout.stripe.com.`.
     /// This value is only present when the session is active.
     pub url: Option<String>,
@@ -208,6 +210,7 @@ pub struct CheckoutSessionBuilder {
     custom_fields: Option<Vec<stripe_shared::PaymentPagesCheckoutSessionCustomFields>>,
     custom_text: Option<stripe_shared::PaymentPagesCheckoutSessionCustomText>,
     customer: Option<Option<stripe_types::Expandable<stripe_shared::Customer>>>,
+    customer_account: Option<Option<String>>,
     customer_creation: Option<Option<CheckoutSessionCustomerCreation>>,
     customer_details: Option<Option<stripe_shared::PaymentPagesCheckoutSessionCustomerDetails>>,
     customer_email: Option<Option<String>>,
@@ -320,6 +323,7 @@ const _: () = {
                 "custom_fields" => Deserialize::begin(&mut self.custom_fields),
                 "custom_text" => Deserialize::begin(&mut self.custom_text),
                 "customer" => Deserialize::begin(&mut self.customer),
+                "customer_account" => Deserialize::begin(&mut self.customer_account),
                 "customer_creation" => Deserialize::begin(&mut self.customer_creation),
                 "customer_details" => Deserialize::begin(&mut self.customer_details),
                 "customer_email" => Deserialize::begin(&mut self.customer_email),
@@ -400,6 +404,7 @@ const _: () = {
                 custom_fields: Deserialize::default(),
                 custom_text: Deserialize::default(),
                 customer: Deserialize::default(),
+                customer_account: Deserialize::default(),
                 customer_creation: Deserialize::default(),
                 customer_details: Deserialize::default(),
                 customer_email: Deserialize::default(),
@@ -469,6 +474,7 @@ const _: () = {
                 Some(custom_fields),
                 Some(custom_text),
                 Some(customer),
+                Some(customer_account),
                 Some(customer_creation),
                 Some(customer_details),
                 Some(customer_email),
@@ -534,6 +540,7 @@ const _: () = {
                 self.custom_fields.take(),
                 self.custom_text.take(),
                 self.customer.take(),
+                self.customer_account.take(),
                 self.customer_creation.take(),
                 self.customer_details.take(),
                 self.customer_email.take(),
@@ -603,6 +610,7 @@ const _: () = {
                 custom_fields,
                 custom_text,
                 customer,
+                customer_account,
                 customer_creation,
                 customer_details,
                 customer_email,
@@ -700,6 +708,7 @@ const _: () = {
                     "custom_fields" => b.custom_fields = FromValueOpt::from_value(v),
                     "custom_text" => b.custom_text = FromValueOpt::from_value(v),
                     "customer" => b.customer = FromValueOpt::from_value(v),
+                    "customer_account" => b.customer_account = FromValueOpt::from_value(v),
                     "customer_creation" => b.customer_creation = FromValueOpt::from_value(v),
                     "customer_details" => b.customer_details = FromValueOpt::from_value(v),
                     "customer_email" => b.customer_email = FromValueOpt::from_value(v),
@@ -771,7 +780,7 @@ const _: () = {
 impl serde::Serialize for CheckoutSession {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("CheckoutSession", 65)?;
+        let mut s = s.serialize_struct("CheckoutSession", 66)?;
         s.serialize_field("adaptive_pricing", &self.adaptive_pricing)?;
         s.serialize_field("after_expiration", &self.after_expiration)?;
         s.serialize_field("allow_promotion_codes", &self.allow_promotion_codes)?;
@@ -792,6 +801,7 @@ impl serde::Serialize for CheckoutSession {
         s.serialize_field("custom_fields", &self.custom_fields)?;
         s.serialize_field("custom_text", &self.custom_text)?;
         s.serialize_field("customer", &self.customer)?;
+        s.serialize_field("customer_account", &self.customer_account)?;
         s.serialize_field("customer_creation", &self.customer_creation)?;
         s.serialize_field("customer_details", &self.customer_details)?;
         s.serialize_field("customer_email", &self.customer_email)?;

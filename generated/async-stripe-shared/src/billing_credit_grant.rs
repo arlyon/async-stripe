@@ -13,6 +13,8 @@ pub struct BillingCreditGrant {
     pub created: stripe_types::Timestamp,
     /// ID of the customer receiving the billing credits.
     pub customer: stripe_types::Expandable<stripe_shared::Customer>,
+    /// ID of the account representing the customer receiving the billing credits
+    pub customer_account: Option<String>,
     /// The time when the billing credits become effective-when they're eligible for use.
     pub effective_at: Option<stripe_types::Timestamp>,
     /// The time when the billing credits expire. If not present, the billing credits don't expire.
@@ -21,7 +23,7 @@ pub struct BillingCreditGrant {
     pub id: stripe_shared::BillingCreditGrantId,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: std::collections::HashMap<String, String>,
     /// A descriptive name shown in dashboard.
@@ -42,6 +44,7 @@ pub struct BillingCreditGrantBuilder {
     category: Option<stripe_shared::BillingCreditGrantCategory>,
     created: Option<stripe_types::Timestamp>,
     customer: Option<stripe_types::Expandable<stripe_shared::Customer>>,
+    customer_account: Option<Option<String>>,
     effective_at: Option<Option<stripe_types::Timestamp>>,
     expires_at: Option<Option<stripe_types::Timestamp>>,
     id: Option<stripe_shared::BillingCreditGrantId>,
@@ -99,6 +102,7 @@ const _: () = {
                 "category" => Deserialize::begin(&mut self.category),
                 "created" => Deserialize::begin(&mut self.created),
                 "customer" => Deserialize::begin(&mut self.customer),
+                "customer_account" => Deserialize::begin(&mut self.customer_account),
                 "effective_at" => Deserialize::begin(&mut self.effective_at),
                 "expires_at" => Deserialize::begin(&mut self.expires_at),
                 "id" => Deserialize::begin(&mut self.id),
@@ -120,6 +124,7 @@ const _: () = {
                 category: Deserialize::default(),
                 created: Deserialize::default(),
                 customer: Deserialize::default(),
+                customer_account: Deserialize::default(),
                 effective_at: Deserialize::default(),
                 expires_at: Deserialize::default(),
                 id: Deserialize::default(),
@@ -140,6 +145,7 @@ const _: () = {
                 Some(category),
                 Some(created),
                 Some(customer),
+                Some(customer_account),
                 Some(effective_at),
                 Some(expires_at),
                 Some(id),
@@ -156,6 +162,7 @@ const _: () = {
                 self.category.take(),
                 self.created,
                 self.customer.take(),
+                self.customer_account.take(),
                 self.effective_at,
                 self.expires_at,
                 self.id.take(),
@@ -176,6 +183,7 @@ const _: () = {
                 category,
                 created,
                 customer,
+                customer_account,
                 effective_at,
                 expires_at,
                 id,
@@ -218,6 +226,7 @@ const _: () = {
                     "category" => b.category = FromValueOpt::from_value(v),
                     "created" => b.created = FromValueOpt::from_value(v),
                     "customer" => b.customer = FromValueOpt::from_value(v),
+                    "customer_account" => b.customer_account = FromValueOpt::from_value(v),
                     "effective_at" => b.effective_at = FromValueOpt::from_value(v),
                     "expires_at" => b.expires_at = FromValueOpt::from_value(v),
                     "id" => b.id = FromValueOpt::from_value(v),
@@ -239,12 +248,13 @@ const _: () = {
 impl serde::Serialize for BillingCreditGrant {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("BillingCreditGrant", 16)?;
+        let mut s = s.serialize_struct("BillingCreditGrant", 17)?;
         s.serialize_field("amount", &self.amount)?;
         s.serialize_field("applicability_config", &self.applicability_config)?;
         s.serialize_field("category", &self.category)?;
         s.serialize_field("created", &self.created)?;
         s.serialize_field("customer", &self.customer)?;
+        s.serialize_field("customer_account", &self.customer_account)?;
         s.serialize_field("effective_at", &self.effective_at)?;
         s.serialize_field("expires_at", &self.expires_at)?;
         s.serialize_field("id", &self.id)?;

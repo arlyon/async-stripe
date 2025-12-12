@@ -795,7 +795,7 @@ impl Default for CreateTreasuryOutboundTransferDestinationPaymentMethodOptions {
 pub struct CreateTreasuryOutboundTransferDestinationPaymentMethodOptionsUsBankAccount {
     /// Specifies the network rails to be used.
     /// If not set, will default to the PaymentMethod's preferred network.
-    /// See the [docs](https://stripe.com/docs/treasury/money-movement/timelines) to learn more about money movement timelines for each network type.
+    /// See the [docs](https://docs.stripe.com/treasury/money-movement/timelines) to learn more about money movement timelines for each network type.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub network:
         Option<CreateTreasuryOutboundTransferDestinationPaymentMethodOptionsUsBankAccountNetwork>,
@@ -812,7 +812,7 @@ impl Default for CreateTreasuryOutboundTransferDestinationPaymentMethodOptionsUs
 }
 /// Specifies the network rails to be used.
 /// If not set, will default to the PaymentMethod's preferred network.
-/// See the [docs](https://stripe.com/docs/treasury/money-movement/timelines) to learn more about money movement timelines for each network type.
+/// See the [docs](https://docs.stripe.com/treasury/money-movement/timelines) to learn more about money movement timelines for each network type.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum CreateTreasuryOutboundTransferDestinationPaymentMethodOptionsUsBankAccountNetwork {
@@ -947,7 +947,7 @@ impl CreateTreasuryOutboundTransfer {
         self.inner.expand = Some(expand.into());
         self
     }
-    /// Set of [key-value pairs](https://stripe.com/docs/api/metadata) that you can attach to an object.
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
@@ -961,6 +961,7 @@ impl CreateTreasuryOutboundTransfer {
     /// Statement descriptor to be shown on the receiving end of an OutboundTransfer.
     /// Maximum 10 characters for `ach` transfers or 140 characters for `us_domestic_wire` transfers.
     /// The default value is "transfer".
+    /// Can only include -#.$&*, spaces, and alphanumeric characters.
     pub fn statement_descriptor(mut self, statement_descriptor: impl Into<String>) -> Self {
         self.inner.statement_descriptor = Some(statement_descriptor.into());
         self
