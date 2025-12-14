@@ -71,13 +71,17 @@ pub type Timestamp = i64;
 /// Specification of a date interval for use in filtering results by time.
 #[derive(Copy, Clone, Debug, Serialize, Default)]
 pub struct RangeBoundsTs {
+    #[serde(skip_serializing_if = "Option::is_none")]
     /// Minimum value to filter by (exclusive)
     pub gt: Option<Timestamp>,
     /// Minimum value to filter by (inclusive)
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub gte: Option<Timestamp>,
     /// Maximum value to filter by (exclusive)
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub lt: Option<Timestamp>,
     /// Maximum value to filter by (inclusive)
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub lte: Option<Timestamp>,
 }
 
