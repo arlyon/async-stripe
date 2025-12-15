@@ -5,6 +5,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [1.0.0-alpha.11](https://github.com/arlyon/async-stripe/compare/async-stripe-types-v1.0.0-alpha.10...async-stripe-types-v1.0.0-alpha.11) - 2025-12-15
+
+### Other
+
+- Bump to serde_qs v1
+
 ## [1.0.0-alpha.5](https://github.com/arlyon/async-stripe/compare/async-stripe-types-v1.0.0-alpha.4...async-stripe-types-v1.0.0-alpha.5) - 2025-10-30
 
 ### Other
