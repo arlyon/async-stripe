@@ -18,19 +18,19 @@ edition.workspace = true
 crate-type = ["cdylib"]
 
 [dependencies]
-async-stripe-billing = { features = ["full", "deserialize"], version = "1.0.0-alpha.10", path = "../generated/async-stripe-billing" }
-async-stripe-checkout = { features = ["full", "deserialize"], version = "1.0.0-alpha.10", path = "../generated/async-stripe-checkout" }
-async-stripe-connect = { features = ["full", "deserialize"], version = "1.0.0-alpha.10", path = "../generated/async-stripe-connect" }
-async-stripe-core = { features = ["full", "deserialize"], version = "1.0.0-alpha.10", path = "../generated/async-stripe-core" }
-async-stripe-fraud = { features = ["full", "deserialize"], version = "1.0.0-alpha.10", path = "../generated/async-stripe-fraud" }
-async-stripe-issuing = {features = ["full", "deserialize"], version = "1.0.0-alpha.10", path = "../generated/async-stripe-issuing" }
-async-stripe-misc = { features = ["full", "deserialize"], version = "1.0.0-alpha.10", path = "../generated/async-stripe-misc" }
-async-stripe-payment = { features = ["full", "deserialize"], version = "1.0.0-alpha.10", path = "../generated/async-stripe-payment" }
-async-stripe-product = { features = ["full", "deserialize"], version = "1.0.0-alpha.10", path = "../generated/async-stripe-product" }
-async-stripe-shared = { features = ["deserialize"], version = "1.0.0-alpha.10", path = "../generated/async-stripe-shared" }
-async-stripe-terminal = {features = ["full", "deserialize"], version = "1.0.0-alpha.10", path = "../generated/async-stripe-terminal" }
-async-stripe-treasury = {features = ["full", "deserialize"], version = "1.0.0-alpha.10", path = "../generated/async-stripe-treasury" }
-async-stripe-webhook = { version = "1.0.0-alpha.10", path = "../async-stripe-webhook", features = ["deserialize", "serialize", "full", "detailed-errors"] }
+async-stripe-billing = { features = ["full", "deserialize"], version = "1.0.0-alpha.11", path = "../generated/async-stripe-billing" }
+async-stripe-checkout = { features = ["full", "deserialize"], version = "1.0.0-alpha.11", path = "../generated/async-stripe-checkout" }
+async-stripe-connect = { features = ["full", "deserialize"], version = "1.0.0-alpha.11", path = "../generated/async-stripe-connect" }
+async-stripe-core = { features = ["full", "deserialize"], version = "1.0.0-alpha.11", path = "../generated/async-stripe-core" }
+async-stripe-fraud = { features = ["full", "deserialize"], version = "1.0.0-alpha.11", path = "../generated/async-stripe-fraud" }
+async-stripe-issuing = {features = ["full", "deserialize"], version = "1.0.0-alpha.11", path = "../generated/async-stripe-issuing" }
+async-stripe-misc = { features = ["full", "deserialize"], version = "1.0.0-alpha.11", path = "../generated/async-stripe-misc" }
+async-stripe-payment = { features = ["full", "deserialize"], version = "1.0.0-alpha.11", path = "../generated/async-stripe-payment" }
+async-stripe-product = { features = ["full", "deserialize"], version = "1.0.0-alpha.11", path = "../generated/async-stripe-product" }
+async-stripe-shared = { features = ["deserialize"], version = "1.0.0-alpha.11", path = "../generated/async-stripe-shared" }
+async-stripe-terminal = {features = ["full", "deserialize"], version = "1.0.0-alpha.11", path = "../generated/async-stripe-terminal" }
+async-stripe-treasury = {features = ["full", "deserialize"], version = "1.0.0-alpha.11", path = "../generated/async-stripe-treasury" }
+async-stripe-webhook = { version = "1.0.0-alpha.11", path = "../async-stripe-webhook", features = ["deserialize", "serialize", "full", "detailed-errors"] }
 serde.workspace = true
 serde_json.workspace = true
 serde_path_to_error = "0.1.20"
