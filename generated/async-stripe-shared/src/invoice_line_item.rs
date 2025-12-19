@@ -40,6 +40,8 @@ pub struct InvoiceLineItem {
     /// The quantity of the subscription, if the line item is a subscription or a proration.
     pub quantity: Option<u64>,
     pub subscription: Option<stripe_types::Expandable<stripe_shared::Subscription>>,
+    /// The subtotal of the line item, in cents (or local equivalent), before any discounts or taxes.
+    pub subtotal: i64,
     /// The tax information of the line item.
     pub taxes: Option<Vec<stripe_shared::BillingBillResourceInvoicingTaxesTax>>,
 }
@@ -63,6 +65,7 @@ pub struct InvoiceLineItemBuilder {
     pricing: Option<Option<stripe_shared::BillingBillResourceInvoicingPricingPricing>>,
     quantity: Option<Option<u64>>,
     subscription: Option<Option<stripe_types::Expandable<stripe_shared::Subscription>>>,
+    subtotal: Option<i64>,
     taxes: Option<Option<Vec<stripe_shared::BillingBillResourceInvoicingTaxesTax>>>,
 }
 
@@ -122,6 +125,7 @@ const _: () = {
                 "pricing" => Deserialize::begin(&mut self.pricing),
                 "quantity" => Deserialize::begin(&mut self.quantity),
                 "subscription" => Deserialize::begin(&mut self.subscription),
+                "subtotal" => Deserialize::begin(&mut self.subtotal),
                 "taxes" => Deserialize::begin(&mut self.taxes),
                 _ => <dyn Visitor>::ignore(),
             })
@@ -145,6 +149,7 @@ const _: () = {
                 pricing: Deserialize::default(),
                 quantity: Deserialize::default(),
                 subscription: Deserialize::default(),
+                subtotal: Deserialize::default(),
                 taxes: Deserialize::default(),
             }
         }
@@ -167,6 +172,7 @@ const _: () = {
                 Some(pricing),
                 Some(quantity),
                 Some(subscription),
+                Some(subtotal),
                 Some(taxes),
             ) = (
                 self.amount,
@@ -185,6 +191,7 @@ const _: () = {
                 self.pricing.take(),
                 self.quantity,
                 self.subscription.take(),
+                self.subtotal,
                 self.taxes.take(),
             )
             else {
@@ -207,6 +214,7 @@ const _: () = {
                 pricing,
                 quantity,
                 subscription,
+                subtotal,
                 taxes,
             })
         }
@@ -253,6 +261,7 @@ const _: () = {
                     "pricing" => b.pricing = FromValueOpt::from_value(v),
                     "quantity" => b.quantity = FromValueOpt::from_value(v),
                     "subscription" => b.subscription = FromValueOpt::from_value(v),
+                    "subtotal" => b.subtotal = FromValueOpt::from_value(v),
                     "taxes" => b.taxes = FromValueOpt::from_value(v),
                     _ => {}
                 }
@@ -265,7 +274,7 @@ const _: () = {
 impl serde::Serialize for InvoiceLineItem {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("InvoiceLineItem", 18)?;
+        let mut s = s.serialize_struct("InvoiceLineItem", 19)?;
         s.serialize_field("amount", &self.amount)?;
         s.serialize_field("currency", &self.currency)?;
         s.serialize_field("description", &self.description)?;
@@ -282,6 +291,7 @@ impl serde::Serialize for InvoiceLineItem {
         s.serialize_field("pricing", &self.pricing)?;
         s.serialize_field("quantity", &self.quantity)?;
         s.serialize_field("subscription", &self.subscription)?;
+        s.serialize_field("subtotal", &self.subtotal)?;
         s.serialize_field("taxes", &self.taxes)?;
 
         s.serialize_field("object", "line_item")?;
