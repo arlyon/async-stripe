@@ -15,9 +15,9 @@ reqwest = { version = "0.12", features = ["blocking", "json"] }
 regex-lite = "0.1.8"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
-toml = "0.9.8"
+toml = "0.9.10"
 anyhow = "1.0.100"
-tracing = "0.1.43"
+tracing = "0.1.44"
 openapiv3 = "2"
 indexmap = "2.12.1"
 tracing-subscriber = "0.3.22"
