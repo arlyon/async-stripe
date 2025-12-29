@@ -17,4 +17,4 @@ async-stripe-payment = { path = "../../generated/async-stripe-payment", features
 async-stripe-checkout = { path = "../../generated/async-stripe-checkout", features = ["checkout_session"] }
 async-stripe-connect = { path = "../../generated/async-stripe-connect", features = ["account", "account_link"] }
 tracing-subscriber = "0.3.22"
-tracing = "0.1.43"
+tracing = "0.1.44"
