@@ -34,7 +34,7 @@ If you need to use `serde::Deserialize` on Stripe response types within your own
 
 ```toml
 [dependencies]
-stripe-core = { version = "1.0.0-alpha.8", features = ["customer", "deserialize"] }
+stripe-core = { version = "1.0.0-rc.0", features = ["customer", "deserialize"] }
 ```
 
 This adds `serde::Deserialize` implementations to all Stripe types in that crate, allowing you to use them with any `serde`-compatible serialization format (JSON, TOML, MessagePack, etc.).

@@ -1,5 +1,6 @@
 [tools]
 "cargo:cargo-insta" = "latest"
+"cargo:release-plz" = "latest"
 "cargo:wasm-pack" = "latest"
 rust = "1.88"
 
