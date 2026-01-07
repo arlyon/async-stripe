@@ -2765,6 +2765,7 @@
             },
             "quantity": 1,
             "subscription": null,
+            "subtotal": 1000.0,
             "taxes": null
           }
         ],
