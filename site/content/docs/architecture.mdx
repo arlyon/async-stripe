@@ -39,9 +39,9 @@ To use specific resources, you must add the crate and enable the specific featur
 ```toml
 [dependencies]
 # The main client
-async-stripe = { version = "1.0.0-alpha.8", features = ["runtime-tokio-hyper"] }
+async-stripe = { version = "1.0.0-rc.0", features = ["runtime-tokio-hyper"] }
 
 # Resource crates with specific objects enabled
-stripe-core = { version = "1.0.0-alpha.8", features = ["customer", "balance"] }
-stripe-billing = { version = "1.0.0-alpha.8", features = ["invoice", "subscription"] }
+stripe-core = { version = "1.0.0-rc.0", features = ["customer", "balance"] }
+stripe-billing = { version = "1.0.0-rc.0", features = ["invoice", "subscription"] }
 ```

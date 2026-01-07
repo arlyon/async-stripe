@@ -19,7 +19,7 @@ resolver = "2"
 exclude = ["openapi"]
 
 [workspace.package]
-version = "1.0.0-alpha.10"
+version = "1.0.0-rc.0"
 description = "API bindings for the Stripe HTTP API"
 rust-version = "1.88.0"
 authors = [
