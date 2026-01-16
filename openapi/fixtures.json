@@ -2765,7 +2765,6 @@
             },
             "quantity": 1,
             "subscription": null,
-            "subtotal": 1000.0,
             "taxes": null
           }
         ],
@@ -6512,5 +6511,5 @@
       "url": "https://example.com/my/webhook/endpoint"
     }
   },
-  "version": "v2150"
+  "version": "v2152"
 }
