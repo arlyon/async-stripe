@@ -15,7 +15,7 @@ pub struct ConnectEmbeddedPayoutsFeatures {
     /// The default value for this feature is `true`.
     pub external_account_collection: bool,
     /// Whether to allow creation of instant payouts.
-    /// Defaults to `true` when `controller.losses.payments` is set to `stripe` for the account, otherwise `false`.
+    /// The default value is `enabled` when Stripe is responsible for negative account balances, and `use_dashboard_rules` otherwise.
     pub instant_payouts: bool,
     /// Whether to allow creation of standard payouts.
     /// Defaults to `true` when `controller.losses.payments` is set to `stripe` for the account, otherwise `false`.

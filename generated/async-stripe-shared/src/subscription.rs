@@ -74,7 +74,7 @@ pub struct Subscription {
     pub invoice_settings: stripe_shared::SubscriptionsResourceSubscriptionInvoiceSettings,
     /// List of subscription items, each with an attached price.
     pub items: stripe_types::List<stripe_shared::SubscriptionItem>,
-    /// The most recent invoice this subscription has generated.
+    /// The most recent invoice this subscription has generated over its lifecycle (for example, when it cycles or is updated).
     pub latest_invoice: Option<stripe_types::Expandable<stripe_shared::Invoice>>,
     /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
     pub livemode: bool,

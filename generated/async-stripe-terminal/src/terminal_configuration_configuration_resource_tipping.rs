@@ -6,8 +6,6 @@ pub struct TerminalConfigurationConfigurationResourceTipping {
         Option<stripe_terminal::TerminalConfigurationConfigurationResourceCurrencySpecificConfig>,
     pub aud:
         Option<stripe_terminal::TerminalConfigurationConfigurationResourceCurrencySpecificConfig>,
-    pub bgn:
-        Option<stripe_terminal::TerminalConfigurationConfigurationResourceCurrencySpecificConfig>,
     pub cad:
         Option<stripe_terminal::TerminalConfigurationConfigurationResourceCurrencySpecificConfig>,
     pub chf:
@@ -53,9 +51,6 @@ pub struct TerminalConfigurationConfigurationResourceTippingBuilder {
         Option<stripe_terminal::TerminalConfigurationConfigurationResourceCurrencySpecificConfig>,
     >,
     aud: Option<
-        Option<stripe_terminal::TerminalConfigurationConfigurationResourceCurrencySpecificConfig>,
-    >,
-    bgn: Option<
         Option<stripe_terminal::TerminalConfigurationConfigurationResourceCurrencySpecificConfig>,
     >,
     cad: Option<
@@ -159,7 +154,6 @@ const _: () = {
             Ok(match k {
                 "aed" => Deserialize::begin(&mut self.aed),
                 "aud" => Deserialize::begin(&mut self.aud),
-                "bgn" => Deserialize::begin(&mut self.bgn),
                 "cad" => Deserialize::begin(&mut self.cad),
                 "chf" => Deserialize::begin(&mut self.chf),
                 "czk" => Deserialize::begin(&mut self.czk),
@@ -187,7 +181,6 @@ const _: () = {
             Self {
                 aed: Deserialize::default(),
                 aud: Deserialize::default(),
-                bgn: Deserialize::default(),
                 cad: Deserialize::default(),
                 chf: Deserialize::default(),
                 czk: Deserialize::default(),
@@ -214,7 +207,6 @@ const _: () = {
             let (
                 Some(aed),
                 Some(aud),
-                Some(bgn),
                 Some(cad),
                 Some(chf),
                 Some(czk),
@@ -237,7 +229,6 @@ const _: () = {
             ) = (
                 self.aed.take(),
                 self.aud.take(),
-                self.bgn.take(),
                 self.cad.take(),
                 self.chf.take(),
                 self.czk.take(),
@@ -264,7 +255,6 @@ const _: () = {
             Some(Self::Out {
                 aed,
                 aud,
-                bgn,
                 cad,
                 chf,
                 czk,
@@ -313,7 +303,6 @@ const _: () = {
                 match k.as_str() {
                     "aed" => b.aed = FromValueOpt::from_value(v),
                     "aud" => b.aud = FromValueOpt::from_value(v),
-                    "bgn" => b.bgn = FromValueOpt::from_value(v),
                     "cad" => b.cad = FromValueOpt::from_value(v),
                     "chf" => b.chf = FromValueOpt::from_value(v),
                     "czk" => b.czk = FromValueOpt::from_value(v),

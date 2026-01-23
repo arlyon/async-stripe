@@ -191,6 +191,7 @@ pub fn check_fixtures(resources: &serde_json::Value) {
     check_object::<stripe_product::PromotionCode>(resources, "promotion_code");
     check_object::<stripe_billing::Quote>(resources, "quote");
     check_object::<stripe_fraud::RadarEarlyFraudWarning>(resources, "radar.early_fraud_warning");
+    check_object::<stripe_fraud::RadarPaymentEvaluation>(resources, "radar.payment_evaluation");
     check_object::<stripe_fraud::RadarValueList>(resources, "radar.value_list");
     check_object::<stripe_fraud::RadarValueListItem>(resources, "radar.value_list_item");
     check_object::<stripe_core::Refund>(resources, "refund");

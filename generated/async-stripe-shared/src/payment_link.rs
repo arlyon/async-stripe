@@ -32,6 +32,7 @@ pub struct PaymentLink {
     pub currency: stripe_types::Currency,
     /// Collect additional information from your customer using custom fields.
     /// Up to 3 fields are supported.
+    /// You can't set this parameter if `ui_mode` is `custom`.
     pub custom_fields: Vec<stripe_shared::PaymentLinksResourceCustomFields>,
     pub custom_text: stripe_shared::PaymentLinksResourceCustomText,
     /// Configuration for Customer creation during checkout.

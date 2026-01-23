@@ -343,7 +343,7 @@ impl CreateCoupon {
         self.inner.percent_off = Some(percent_off.into());
         self
     }
-    /// Unix timestamp specifying the last time at which the coupon can be redeemed.
+    /// Unix timestamp specifying the last time at which the coupon can be redeemed (cannot be set to more than 5 years in the future).
     /// After the redeem_by date, the coupon can no longer be applied to new customers.
     pub fn redeem_by(mut self, redeem_by: impl Into<stripe_types::Timestamp>) -> Self {
         self.inner.redeem_by = Some(redeem_by.into());
