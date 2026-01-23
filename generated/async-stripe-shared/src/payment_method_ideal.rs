@@ -3,7 +3,7 @@
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentMethodIdeal {
     /// The customer's bank, if provided.
-    /// Can be one of `abn_amro`, `asn_bank`, `bunq`, `buut`, `finom`, `handelsbanken`, `ing`, `knab`, `mollie`, `moneyou`, `n26`, `nn`, `rabobank`, `regiobank`, `revolut`, `sns_bank`, `triodos_bank`, `van_lanschot`, or `yoursafe`.
+    /// Can be one of `abn_amro`, `adyen`, `asn_bank`, `bunq`, `buut`, `finom`, `handelsbanken`, `ing`, `knab`, `mollie`, `moneyou`, `n26`, `nn`, `rabobank`, `regiobank`, `revolut`, `sns_bank`, `triodos_bank`, `van_lanschot`, or `yoursafe`.
     pub bank: Option<PaymentMethodIdealBank>,
     /// The Bank Identifier Code of the customer's bank, if the bank was provided.
     pub bic: Option<PaymentMethodIdealBic>,
@@ -105,11 +105,12 @@ const _: () = {
     }
 };
 /// The customer's bank, if provided.
-/// Can be one of `abn_amro`, `asn_bank`, `bunq`, `buut`, `finom`, `handelsbanken`, `ing`, `knab`, `mollie`, `moneyou`, `n26`, `nn`, `rabobank`, `regiobank`, `revolut`, `sns_bank`, `triodos_bank`, `van_lanschot`, or `yoursafe`.
+/// Can be one of `abn_amro`, `adyen`, `asn_bank`, `bunq`, `buut`, `finom`, `handelsbanken`, `ing`, `knab`, `mollie`, `moneyou`, `n26`, `nn`, `rabobank`, `regiobank`, `revolut`, `sns_bank`, `triodos_bank`, `van_lanschot`, or `yoursafe`.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum PaymentMethodIdealBank {
     AbnAmro,
+    Adyen,
     AsnBank,
     Bunq,
     Buut,
@@ -136,6 +137,7 @@ impl PaymentMethodIdealBank {
         use PaymentMethodIdealBank::*;
         match self {
             AbnAmro => "abn_amro",
+            Adyen => "adyen",
             AsnBank => "asn_bank",
             Bunq => "bunq",
             Buut => "buut",
@@ -165,6 +167,7 @@ impl std::str::FromStr for PaymentMethodIdealBank {
         use PaymentMethodIdealBank::*;
         match s {
             "abn_amro" => Ok(AbnAmro),
+            "adyen" => Ok(Adyen),
             "asn_bank" => Ok(AsnBank),
             "bunq" => Ok(Bunq),
             "buut" => Ok(Buut),
@@ -238,6 +241,7 @@ impl<'de> serde::Deserialize<'de> for PaymentMethodIdealBank {
 #[non_exhaustive]
 pub enum PaymentMethodIdealBic {
     Abnanl2a,
+    Adybnl2a,
     Asnbnl21,
     Bitsnl2a,
     Bunqnl2a,
@@ -265,6 +269,7 @@ impl PaymentMethodIdealBic {
         use PaymentMethodIdealBic::*;
         match self {
             Abnanl2a => "ABNANL2A",
+            Adybnl2a => "ADYBNL2A",
             Asnbnl21 => "ASNBNL21",
             Bitsnl2a => "BITSNL2A",
             Bunqnl2a => "BUNQNL2A",
@@ -295,6 +300,7 @@ impl std::str::FromStr for PaymentMethodIdealBic {
         use PaymentMethodIdealBic::*;
         match s {
             "ABNANL2A" => Ok(Abnanl2a),
+            "ADYBNL2A" => Ok(Adybnl2a),
             "ASNBNL21" => Ok(Asnbnl21),
             "BITSNL2A" => Ok(Bitsnl2a),
             "BUNQNL2A" => Ok(Bunqnl2a),

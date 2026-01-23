@@ -7,6 +7,7 @@ pub struct PaymentFlowsAmountDetails {
     ///
     /// This field is mutually exclusive with the `amount_details[line_items][#][discount_amount]` field.
     pub discount_amount: Option<i64>,
+    pub error: Option<stripe_shared::PaymentFlowsAmountDetailsResourceError>,
     /// A list of line items, each containing information about a product in the PaymentIntent.
     /// There is a maximum of 200 line items.
     pub line_items: Option<stripe_types::List<stripe_shared::PaymentIntentAmountDetailsLineItem>>,
@@ -17,6 +18,7 @@ pub struct PaymentFlowsAmountDetails {
 #[doc(hidden)]
 pub struct PaymentFlowsAmountDetailsBuilder {
     discount_amount: Option<Option<i64>>,
+    error: Option<Option<stripe_shared::PaymentFlowsAmountDetailsResourceError>>,
     line_items:
         Option<Option<stripe_types::List<stripe_shared::PaymentIntentAmountDetailsLineItem>>>,
     shipping: Option<Option<stripe_shared::PaymentFlowsAmountDetailsResourceShipping>>,
@@ -65,6 +67,7 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "discount_amount" => Deserialize::begin(&mut self.discount_amount),
+                "error" => Deserialize::begin(&mut self.error),
                 "line_items" => Deserialize::begin(&mut self.line_items),
                 "shipping" => Deserialize::begin(&mut self.shipping),
                 "tax" => Deserialize::begin(&mut self.tax),
@@ -76,6 +79,7 @@ const _: () = {
         fn deser_default() -> Self {
             Self {
                 discount_amount: Deserialize::default(),
+                error: Deserialize::default(),
                 line_items: Deserialize::default(),
                 shipping: Deserialize::default(),
                 tax: Deserialize::default(),
@@ -84,16 +88,25 @@ const _: () = {
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(discount_amount), Some(line_items), Some(shipping), Some(tax), Some(tip)) = (
+            let (
+                Some(discount_amount),
+                Some(error),
+                Some(line_items),
+                Some(shipping),
+                Some(tax),
+                Some(tip),
+            ) = (
                 self.discount_amount,
+                self.error.take(),
                 self.line_items.take(),
                 self.shipping.take(),
                 self.tax,
                 self.tip,
-            ) else {
+            )
+            else {
                 return None;
             };
-            Some(Self::Out { discount_amount, line_items, shipping, tax, tip })
+            Some(Self::Out { discount_amount, error, line_items, shipping, tax, tip })
         }
     }
 
@@ -121,6 +134,7 @@ const _: () = {
             for (k, v) in obj {
                 match k.as_str() {
                     "discount_amount" => b.discount_amount = FromValueOpt::from_value(v),
+                    "error" => b.error = FromValueOpt::from_value(v),
                     "line_items" => b.line_items = FromValueOpt::from_value(v),
                     "shipping" => b.shipping = FromValueOpt::from_value(v),
                     "tax" => b.tax = FromValueOpt::from_value(v),

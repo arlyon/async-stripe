@@ -951,6 +951,7 @@ impl Default for CreateConfirmationTokenPaymentMethodDataIdeal {
 #[non_exhaustive]
 pub enum CreateConfirmationTokenPaymentMethodDataIdealBank {
     AbnAmro,
+    Adyen,
     AsnBank,
     Bunq,
     Buut,
@@ -977,6 +978,7 @@ impl CreateConfirmationTokenPaymentMethodDataIdealBank {
         use CreateConfirmationTokenPaymentMethodDataIdealBank::*;
         match self {
             AbnAmro => "abn_amro",
+            Adyen => "adyen",
             AsnBank => "asn_bank",
             Bunq => "bunq",
             Buut => "buut",
@@ -1006,6 +1008,7 @@ impl std::str::FromStr for CreateConfirmationTokenPaymentMethodDataIdealBank {
         use CreateConfirmationTokenPaymentMethodDataIdealBank::*;
         match s {
             "abn_amro" => Ok(AbnAmro),
+            "adyen" => Ok(Adyen),
             "asn_bank" => Ok(AsnBank),
             "bunq" => Ok(Bunq),
             "buut" => Ok(Buut),

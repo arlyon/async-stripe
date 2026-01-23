@@ -1549,6 +1549,10 @@ pub mod payment_flows_amount_details_client_resource_tip;
 #[doc(inline)]
 pub use payment_flows_amount_details_client_resource_tip::*;
 #[doc(hidden)]
+pub mod payment_flows_amount_details_resource_error;
+#[doc(inline)]
+pub use payment_flows_amount_details_resource_error::*;
+#[doc(hidden)]
 pub mod payment_flows_amount_details_resource_line_items_list_resource_line_item_resource_payment_method_options;
 #[doc(inline)]
 pub use payment_flows_amount_details_resource_line_items_list_resource_line_item_resource_payment_method_options::*;
@@ -2325,9 +2329,17 @@ pub mod payment_method_details_payco;
 #[doc(inline)]
 pub use payment_method_details_payco::*;
 #[doc(hidden)]
+pub mod payment_method_details_payment_record_mb_way;
+#[doc(inline)]
+pub use payment_method_details_payment_record_mb_way::*;
+#[doc(hidden)]
 pub mod payment_method_details_payment_record_us_bank_account;
 #[doc(inline)]
 pub use payment_method_details_payment_record_us_bank_account::*;
+#[doc(hidden)]
+pub mod payment_method_details_payment_record_zip;
+#[doc(inline)]
+pub use payment_method_details_payment_record_zip::*;
 #[doc(hidden)]
 pub mod payment_method_details_paynow;
 #[doc(inline)]

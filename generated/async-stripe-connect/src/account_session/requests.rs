@@ -266,8 +266,7 @@ pub struct CreateAccountSessionComponentsInstantPayoutsPromotionFeatures {
     /// The default value for this feature is `true`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub external_account_collection: Option<bool>,
-    /// Whether to allow creation of instant payouts.
-    /// Defaults to `true` when `controller.losses.payments` is set to `stripe` for the account, otherwise `false`.
+    /// Whether instant payouts are enabled for this component.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub instant_payouts: Option<bool>,
 }
@@ -605,8 +604,7 @@ pub struct PayoutsFeaturesParam {
     /// The default value for this feature is `true`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub external_account_collection: Option<bool>,
-    /// Whether to allow creation of instant payouts.
-    /// Defaults to `true` when `controller.losses.payments` is set to `stripe` for the account, otherwise `false`.
+    /// Whether instant payouts are enabled for this component.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub instant_payouts: Option<bool>,
     /// Whether to allow creation of standard payouts.

@@ -1235,6 +1235,7 @@ impl Default for CreatePaymentMethodIdeal {
 #[non_exhaustive]
 pub enum CreatePaymentMethodIdealBank {
     AbnAmro,
+    Adyen,
     AsnBank,
     Bunq,
     Buut,
@@ -1261,6 +1262,7 @@ impl CreatePaymentMethodIdealBank {
         use CreatePaymentMethodIdealBank::*;
         match self {
             AbnAmro => "abn_amro",
+            Adyen => "adyen",
             AsnBank => "asn_bank",
             Bunq => "bunq",
             Buut => "buut",
@@ -1290,6 +1292,7 @@ impl std::str::FromStr for CreatePaymentMethodIdealBank {
         use CreatePaymentMethodIdealBank::*;
         match s {
             "abn_amro" => Ok(AbnAmro),
+            "adyen" => Ok(Adyen),
             "asn_bank" => Ok(AsnBank),
             "bunq" => Ok(Bunq),
             "buut" => Ok(Buut),

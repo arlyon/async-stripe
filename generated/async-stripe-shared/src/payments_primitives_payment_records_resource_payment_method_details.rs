@@ -39,7 +39,7 @@ pub struct PaymentsPrimitivesPaymentRecordsResourcePaymentMethodDetails {
     pub konbini: Option<stripe_shared::PaymentMethodDetailsKonbini>,
     pub kr_card: Option<stripe_shared::PaymentMethodDetailsKrCard>,
     pub link: Option<stripe_shared::PaymentMethodDetailsLink>,
-    pub mb_way: Option<stripe_shared::PaymentMethodDetailsMbWay>,
+    pub mb_way: Option<stripe_shared::PaymentMethodDetailsPaymentRecordMbWay>,
     pub mobilepay: Option<stripe_shared::PaymentMethodDetailsMobilepay>,
     pub multibanco: Option<stripe_shared::PaymentMethodDetailsMultibanco>,
     pub naver_pay: Option<stripe_shared::PaymentMethodDetailsNaverPay>,
@@ -73,7 +73,7 @@ pub struct PaymentsPrimitivesPaymentRecordsResourcePaymentMethodDetails {
     pub us_bank_account: Option<stripe_shared::PaymentMethodDetailsPaymentRecordUsBankAccount>,
     pub wechat: Option<stripe_shared::PaymentMethodDetailsWechat>,
     pub wechat_pay: Option<stripe_shared::PaymentMethodDetailsWechatPay>,
-    pub zip: Option<stripe_shared::PaymentMethodDetailsZip>,
+    pub zip: Option<stripe_shared::PaymentMethodDetailsPaymentRecordZip>,
 }
 #[doc(hidden)]
 pub struct PaymentsPrimitivesPaymentRecordsResourcePaymentMethodDetailsBuilder {
@@ -114,7 +114,7 @@ pub struct PaymentsPrimitivesPaymentRecordsResourcePaymentMethodDetailsBuilder {
     konbini: Option<Option<stripe_shared::PaymentMethodDetailsKonbini>>,
     kr_card: Option<Option<stripe_shared::PaymentMethodDetailsKrCard>>,
     link: Option<Option<stripe_shared::PaymentMethodDetailsLink>>,
-    mb_way: Option<Option<stripe_shared::PaymentMethodDetailsMbWay>>,
+    mb_way: Option<Option<stripe_shared::PaymentMethodDetailsPaymentRecordMbWay>>,
     mobilepay: Option<Option<stripe_shared::PaymentMethodDetailsMobilepay>>,
     multibanco: Option<Option<stripe_shared::PaymentMethodDetailsMultibanco>>,
     naver_pay: Option<Option<stripe_shared::PaymentMethodDetailsNaverPay>>,
@@ -142,7 +142,7 @@ pub struct PaymentsPrimitivesPaymentRecordsResourcePaymentMethodDetailsBuilder {
     us_bank_account: Option<Option<stripe_shared::PaymentMethodDetailsPaymentRecordUsBankAccount>>,
     wechat: Option<Option<stripe_shared::PaymentMethodDetailsWechat>>,
     wechat_pay: Option<Option<stripe_shared::PaymentMethodDetailsWechatPay>>,
-    zip: Option<Option<stripe_shared::PaymentMethodDetailsZip>>,
+    zip: Option<Option<stripe_shared::PaymentMethodDetailsPaymentRecordZip>>,
 }
 
 #[allow(

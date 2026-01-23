@@ -397,6 +397,15 @@ pub struct CreatePaymentIntentAmountDetails {
     /// This field is mutually exclusive with the `amount_details[line_items][#][discount_amount]` field.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub discount_amount: Option<i64>,
+    /// Set to `false` to return arithmetic validation errors in the response without failing the request.
+    /// Use this when you want the operation to proceed regardless of arithmetic errors in the line item data.
+    ///
+    /// Omit or set to `true` to immediately return a 400 error when arithmetic validation fails.
+    /// Use this for strict validation that prevents processing with line item data that has arithmetic inconsistencies.
+    ///
+    /// For card payments, Stripe doesn't send line item data if there's an arithmetic validation error to card networks.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub enforce_arithmetic_validation: Option<bool>,
     /// A list of line items, each containing information about a product in the PaymentIntent.
     /// There is a maximum of 200 line items.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -410,7 +419,13 @@ pub struct CreatePaymentIntentAmountDetails {
 }
 impl CreatePaymentIntentAmountDetails {
     pub fn new() -> Self {
-        Self { discount_amount: None, line_items: None, shipping: None, tax: None }
+        Self {
+            discount_amount: None,
+            enforce_arithmetic_validation: None,
+            line_items: None,
+            shipping: None,
+            tax: None,
+        }
     }
 }
 impl Default for CreatePaymentIntentAmountDetails {
@@ -1703,6 +1718,7 @@ impl Default for CreatePaymentIntentPaymentMethodDataIdeal {
 #[non_exhaustive]
 pub enum CreatePaymentIntentPaymentMethodDataIdealBank {
     AbnAmro,
+    Adyen,
     AsnBank,
     Bunq,
     Buut,
@@ -1729,6 +1745,7 @@ impl CreatePaymentIntentPaymentMethodDataIdealBank {
         use CreatePaymentIntentPaymentMethodDataIdealBank::*;
         match self {
             AbnAmro => "abn_amro",
+            Adyen => "adyen",
             AsnBank => "asn_bank",
             Bunq => "bunq",
             Buut => "buut",
@@ -1758,6 +1775,7 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodDataIdealBank {
         use CreatePaymentIntentPaymentMethodDataIdealBank::*;
         match s {
             "abn_amro" => Ok(AbnAmro),
+            "adyen" => Ok(Adyen),
             "asn_bank" => Ok(AsnBank),
             "bunq" => Ok(Bunq),
             "buut" => Ok(Buut),
@@ -6245,6 +6263,8 @@ pub enum CreatePaymentIntentPaymentMethodOptionsCardThreeDSecureVersion {
     V1_0_2,
     V2_1_0,
     V2_2_0,
+    V2_3_0,
+    V2_3_1,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
     Unknown(String),
 }
@@ -6255,6 +6275,8 @@ impl CreatePaymentIntentPaymentMethodOptionsCardThreeDSecureVersion {
             V1_0_2 => "1.0.2",
             V2_1_0 => "2.1.0",
             V2_2_0 => "2.2.0",
+            V2_3_0 => "2.3.0",
+            V2_3_1 => "2.3.1",
             Unknown(v) => v,
         }
     }
@@ -6268,6 +6290,8 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsCardThreeDSecu
             "1.0.2" => Ok(V1_0_2),
             "2.1.0" => Ok(V2_1_0),
             "2.2.0" => Ok(V2_2_0),
+            "2.3.0" => Ok(V2_3_0),
+            "2.3.1" => Ok(V2_3_1),
             v => {
                 tracing::warn!(
                     "Unknown value '{}' for enum '{}'",
@@ -11803,10 +11827,6 @@ pub struct CreatePaymentIntentPaymentMethodOptionsUsBankAccount {
     /// Additional fields for network related functions
     #[serde(skip_serializing_if = "Option::is_none")]
     pub networks: Option<CreatePaymentIntentPaymentMethodOptionsUsBankAccountNetworks>,
-    /// Preferred transaction settlement speed
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub preferred_settlement_speed:
-        Option<CreatePaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed>,
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
     /// If you provide a Customer with the PaymentIntent, you can use this parameter to [attach the payment method](/payments/save-during-payment) to the Customer after the PaymentIntent is confirmed and the customer completes any required actions.
@@ -11836,7 +11856,6 @@ impl CreatePaymentIntentPaymentMethodOptionsUsBankAccount {
             financial_connections: None,
             mandate_options: None,
             networks: None,
-            preferred_settlement_speed: None,
             setup_future_usage: None,
             target_date: None,
             verification_method: None,
@@ -12289,81 +12308,6 @@ impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsUsBankAccountNe
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de>
     for CreatePaymentIntentPaymentMethodOptionsUsBankAccountNetworksRequested
-{
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// Preferred transaction settlement speed
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum CreatePaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed {
-    Fastest,
-    Standard,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl CreatePaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed {
-    pub fn as_str(&self) -> &str {
-        use CreatePaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed::*;
-        match self {
-            Fastest => "fastest",
-            Standard => "standard",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr
-    for CreatePaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed
-{
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreatePaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed::*;
-        match s {
-            "fastest" => Ok(Fastest),
-            "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "CreatePaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display
-    for CreatePaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug
-    for CreatePaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize
-    for CreatePaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed
-{
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de>
-    for CreatePaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed
 {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
@@ -13309,6 +13253,15 @@ pub struct UpdatePaymentIntentAmountDetails {
     /// This field is mutually exclusive with the `amount_details[line_items][#][discount_amount]` field.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub discount_amount: Option<i64>,
+    /// Set to `false` to return arithmetic validation errors in the response without failing the request.
+    /// Use this when you want the operation to proceed regardless of arithmetic errors in the line item data.
+    ///
+    /// Omit or set to `true` to immediately return a 400 error when arithmetic validation fails.
+    /// Use this for strict validation that prevents processing with line item data that has arithmetic inconsistencies.
+    ///
+    /// For card payments, Stripe doesn't send line item data if there's an arithmetic validation error to card networks.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub enforce_arithmetic_validation: Option<bool>,
     /// A list of line items, each containing information about a product in the PaymentIntent.
     /// There is a maximum of 200 line items.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -13322,7 +13275,13 @@ pub struct UpdatePaymentIntentAmountDetails {
 }
 impl UpdatePaymentIntentAmountDetails {
     pub fn new() -> Self {
-        Self { discount_amount: None, line_items: None, shipping: None, tax: None }
+        Self {
+            discount_amount: None,
+            enforce_arithmetic_validation: None,
+            line_items: None,
+            shipping: None,
+            tax: None,
+        }
     }
 }
 impl Default for UpdatePaymentIntentAmountDetails {
@@ -14416,6 +14375,7 @@ impl Default for UpdatePaymentIntentPaymentMethodDataIdeal {
 #[non_exhaustive]
 pub enum UpdatePaymentIntentPaymentMethodDataIdealBank {
     AbnAmro,
+    Adyen,
     AsnBank,
     Bunq,
     Buut,
@@ -14442,6 +14402,7 @@ impl UpdatePaymentIntentPaymentMethodDataIdealBank {
         use UpdatePaymentIntentPaymentMethodDataIdealBank::*;
         match self {
             AbnAmro => "abn_amro",
+            Adyen => "adyen",
             AsnBank => "asn_bank",
             Bunq => "bunq",
             Buut => "buut",
@@ -14471,6 +14432,7 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodDataIdealBank {
         use UpdatePaymentIntentPaymentMethodDataIdealBank::*;
         match s {
             "abn_amro" => Ok(AbnAmro),
+            "adyen" => Ok(Adyen),
             "asn_bank" => Ok(AsnBank),
             "bunq" => Ok(Bunq),
             "buut" => Ok(Buut),
@@ -18958,6 +18920,8 @@ pub enum UpdatePaymentIntentPaymentMethodOptionsCardThreeDSecureVersion {
     V1_0_2,
     V2_1_0,
     V2_2_0,
+    V2_3_0,
+    V2_3_1,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
     Unknown(String),
 }
@@ -18968,6 +18932,8 @@ impl UpdatePaymentIntentPaymentMethodOptionsCardThreeDSecureVersion {
             V1_0_2 => "1.0.2",
             V2_1_0 => "2.1.0",
             V2_2_0 => "2.2.0",
+            V2_3_0 => "2.3.0",
+            V2_3_1 => "2.3.1",
             Unknown(v) => v,
         }
     }
@@ -18981,6 +18947,8 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsCardThreeDSecu
             "1.0.2" => Ok(V1_0_2),
             "2.1.0" => Ok(V2_1_0),
             "2.2.0" => Ok(V2_2_0),
+            "2.3.0" => Ok(V2_3_0),
+            "2.3.1" => Ok(V2_3_1),
             v => {
                 tracing::warn!(
                     "Unknown value '{}' for enum '{}'",
@@ -24516,10 +24484,6 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsUsBankAccount {
     /// Additional fields for network related functions
     #[serde(skip_serializing_if = "Option::is_none")]
     pub networks: Option<UpdatePaymentIntentPaymentMethodOptionsUsBankAccountNetworks>,
-    /// Preferred transaction settlement speed
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub preferred_settlement_speed:
-        Option<UpdatePaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed>,
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
     /// If you provide a Customer with the PaymentIntent, you can use this parameter to [attach the payment method](/payments/save-during-payment) to the Customer after the PaymentIntent is confirmed and the customer completes any required actions.
@@ -24549,7 +24513,6 @@ impl UpdatePaymentIntentPaymentMethodOptionsUsBankAccount {
             financial_connections: None,
             mandate_options: None,
             networks: None,
-            preferred_settlement_speed: None,
             setup_future_usage: None,
             target_date: None,
             verification_method: None,
@@ -25002,81 +24965,6 @@ impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsUsBankAccountNe
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de>
     for UpdatePaymentIntentPaymentMethodOptionsUsBankAccountNetworksRequested
-{
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// Preferred transaction settlement speed
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum UpdatePaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed {
-    Fastest,
-    Standard,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl UpdatePaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed {
-    pub fn as_str(&self) -> &str {
-        use UpdatePaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed::*;
-        match self {
-            Fastest => "fastest",
-            Standard => "standard",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr
-    for UpdatePaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed
-{
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use UpdatePaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed::*;
-        match s {
-            "fastest" => Ok(Fastest),
-            "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "UpdatePaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display
-    for UpdatePaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug
-    for UpdatePaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize
-    for UpdatePaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed
-{
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de>
-    for UpdatePaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed
 {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
@@ -26108,6 +25996,15 @@ pub struct CapturePaymentIntentAmountDetails {
     /// This field is mutually exclusive with the `amount_details[line_items][#][discount_amount]` field.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub discount_amount: Option<i64>,
+    /// Set to `false` to return arithmetic validation errors in the response without failing the request.
+    /// Use this when you want the operation to proceed regardless of arithmetic errors in the line item data.
+    ///
+    /// Omit or set to `true` to immediately return a 400 error when arithmetic validation fails.
+    /// Use this for strict validation that prevents processing with line item data that has arithmetic inconsistencies.
+    ///
+    /// For card payments, Stripe doesn't send line item data if there's an arithmetic validation error to card networks.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub enforce_arithmetic_validation: Option<bool>,
     /// A list of line items, each containing information about a product in the PaymentIntent.
     /// There is a maximum of 200 line items.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -26121,7 +26018,13 @@ pub struct CapturePaymentIntentAmountDetails {
 }
 impl CapturePaymentIntentAmountDetails {
     pub fn new() -> Self {
-        Self { discount_amount: None, line_items: None, shipping: None, tax: None }
+        Self {
+            discount_amount: None,
+            enforce_arithmetic_validation: None,
+            line_items: None,
+            shipping: None,
+            tax: None,
+        }
     }
 }
 impl Default for CapturePaymentIntentAmountDetails {
@@ -26604,6 +26507,15 @@ pub struct ConfirmPaymentIntentAmountDetails {
     /// This field is mutually exclusive with the `amount_details[line_items][#][discount_amount]` field.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub discount_amount: Option<i64>,
+    /// Set to `false` to return arithmetic validation errors in the response without failing the request.
+    /// Use this when you want the operation to proceed regardless of arithmetic errors in the line item data.
+    ///
+    /// Omit or set to `true` to immediately return a 400 error when arithmetic validation fails.
+    /// Use this for strict validation that prevents processing with line item data that has arithmetic inconsistencies.
+    ///
+    /// For card payments, Stripe doesn't send line item data if there's an arithmetic validation error to card networks.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub enforce_arithmetic_validation: Option<bool>,
     /// A list of line items, each containing information about a product in the PaymentIntent.
     /// There is a maximum of 200 line items.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -26617,7 +26529,13 @@ pub struct ConfirmPaymentIntentAmountDetails {
 }
 impl ConfirmPaymentIntentAmountDetails {
     pub fn new() -> Self {
-        Self { discount_amount: None, line_items: None, shipping: None, tax: None }
+        Self {
+            discount_amount: None,
+            enforce_arithmetic_validation: None,
+            line_items: None,
+            shipping: None,
+            tax: None,
+        }
     }
 }
 impl Default for ConfirmPaymentIntentAmountDetails {
@@ -27941,6 +27859,7 @@ impl Default for ConfirmPaymentIntentPaymentMethodDataIdeal {
 #[non_exhaustive]
 pub enum ConfirmPaymentIntentPaymentMethodDataIdealBank {
     AbnAmro,
+    Adyen,
     AsnBank,
     Bunq,
     Buut,
@@ -27967,6 +27886,7 @@ impl ConfirmPaymentIntentPaymentMethodDataIdealBank {
         use ConfirmPaymentIntentPaymentMethodDataIdealBank::*;
         match self {
             AbnAmro => "abn_amro",
+            Adyen => "adyen",
             AsnBank => "asn_bank",
             Bunq => "bunq",
             Buut => "buut",
@@ -27996,6 +27916,7 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodDataIdealBank {
         use ConfirmPaymentIntentPaymentMethodDataIdealBank::*;
         match s {
             "abn_amro" => Ok(AbnAmro),
+            "adyen" => Ok(Adyen),
             "asn_bank" => Ok(AsnBank),
             "bunq" => Ok(Bunq),
             "buut" => Ok(Buut),
@@ -32480,6 +32401,8 @@ pub enum ConfirmPaymentIntentPaymentMethodOptionsCardThreeDSecureVersion {
     V1_0_2,
     V2_1_0,
     V2_2_0,
+    V2_3_0,
+    V2_3_1,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
     Unknown(String),
 }
@@ -32490,6 +32413,8 @@ impl ConfirmPaymentIntentPaymentMethodOptionsCardThreeDSecureVersion {
             V1_0_2 => "1.0.2",
             V2_1_0 => "2.1.0",
             V2_2_0 => "2.2.0",
+            V2_3_0 => "2.3.0",
+            V2_3_1 => "2.3.1",
             Unknown(v) => v,
         }
     }
@@ -32503,6 +32428,8 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsCardThreeDSec
             "1.0.2" => Ok(V1_0_2),
             "2.1.0" => Ok(V2_1_0),
             "2.2.0" => Ok(V2_2_0),
+            "2.3.0" => Ok(V2_3_0),
+            "2.3.1" => Ok(V2_3_1),
             v => {
                 tracing::warn!(
                     "Unknown value '{}' for enum '{}'",
@@ -38060,10 +37987,6 @@ pub struct ConfirmPaymentIntentPaymentMethodOptionsUsBankAccount {
     /// Additional fields for network related functions
     #[serde(skip_serializing_if = "Option::is_none")]
     pub networks: Option<ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountNetworks>,
-    /// Preferred transaction settlement speed
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub preferred_settlement_speed:
-        Option<ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed>,
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
     /// If you provide a Customer with the PaymentIntent, you can use this parameter to [attach the payment method](/payments/save-during-payment) to the Customer after the PaymentIntent is confirmed and the customer completes any required actions.
@@ -38093,7 +38016,6 @@ impl ConfirmPaymentIntentPaymentMethodOptionsUsBankAccount {
             financial_connections: None,
             mandate_options: None,
             networks: None,
-            preferred_settlement_speed: None,
             setup_future_usage: None,
             target_date: None,
             verification_method: None,
@@ -38546,81 +38468,6 @@ impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountN
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de>
     for ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountNetworksRequested
-{
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// Preferred transaction settlement speed
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed {
-    Fastest,
-    Standard,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed {
-    pub fn as_str(&self) -> &str {
-        use ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed::*;
-        match self {
-            Fastest => "fastest",
-            Standard => "standard",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr
-    for ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed
-{
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed::*;
-        match s {
-            "fastest" => Ok(Fastest),
-            "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display
-    for ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug
-    for ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-impl serde::Serialize
-    for ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed
-{
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de>
-    for ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed
 {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
@@ -39400,6 +39247,15 @@ pub struct IncrementAuthorizationPaymentIntentAmountDetails {
     /// This field is mutually exclusive with the `amount_details[line_items][#][discount_amount]` field.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub discount_amount: Option<i64>,
+    /// Set to `false` to return arithmetic validation errors in the response without failing the request.
+    /// Use this when you want the operation to proceed regardless of arithmetic errors in the line item data.
+    ///
+    /// Omit or set to `true` to immediately return a 400 error when arithmetic validation fails.
+    /// Use this for strict validation that prevents processing with line item data that has arithmetic inconsistencies.
+    ///
+    /// For card payments, Stripe doesn't send line item data if there's an arithmetic validation error to card networks.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub enforce_arithmetic_validation: Option<bool>,
     /// A list of line items, each containing information about a product in the PaymentIntent.
     /// There is a maximum of 200 line items.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -39413,7 +39269,13 @@ pub struct IncrementAuthorizationPaymentIntentAmountDetails {
 }
 impl IncrementAuthorizationPaymentIntentAmountDetails {
     pub fn new() -> Self {
-        Self { discount_amount: None, line_items: None, shipping: None, tax: None }
+        Self {
+            discount_amount: None,
+            enforce_arithmetic_validation: None,
+            line_items: None,
+            shipping: None,
+            tax: None,
+        }
     }
 }
 impl Default for IncrementAuthorizationPaymentIntentAmountDetails {
