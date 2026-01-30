@@ -1421,6 +1421,10 @@ pub mod invoice_line_item;
 #[doc(inline)]
 pub use invoice_line_item::*;
 #[doc(hidden)]
+pub mod line_items_adjustable_quantity;
+#[doc(inline)]
+pub use line_items_adjustable_quantity::*;
+#[doc(hidden)]
 pub mod line_items_discount_amount;
 #[doc(inline)]
 pub use line_items_discount_amount::*;
@@ -1548,6 +1552,10 @@ pub use payment_flows_amount_details::*;
 pub mod payment_flows_amount_details_client_resource_tip;
 #[doc(inline)]
 pub use payment_flows_amount_details_client_resource_tip::*;
+#[doc(hidden)]
+pub mod payment_flows_amount_details_resource_error;
+#[doc(inline)]
+pub use payment_flows_amount_details_resource_error::*;
 #[doc(hidden)]
 pub mod payment_flows_amount_details_resource_line_items_list_resource_line_item_resource_payment_method_options;
 #[doc(inline)]
@@ -2325,9 +2333,33 @@ pub mod payment_method_details_payco;
 #[doc(inline)]
 pub use payment_method_details_payco::*;
 #[doc(hidden)]
+pub mod payment_method_details_payment_record_konbini;
+#[doc(inline)]
+pub use payment_method_details_payment_record_konbini::*;
+#[doc(hidden)]
+pub mod payment_method_details_payment_record_mb_way;
+#[doc(inline)]
+pub use payment_method_details_payment_record_mb_way::*;
+#[doc(hidden)]
+pub mod payment_method_details_payment_record_paynow;
+#[doc(inline)]
+pub use payment_method_details_payment_record_paynow::*;
+#[doc(hidden)]
+pub mod payment_method_details_payment_record_promptpay;
+#[doc(inline)]
+pub use payment_method_details_payment_record_promptpay::*;
+#[doc(hidden)]
 pub mod payment_method_details_payment_record_us_bank_account;
 #[doc(inline)]
 pub use payment_method_details_payment_record_us_bank_account::*;
+#[doc(hidden)]
+pub mod payment_method_details_payment_record_wechat_pay;
+#[doc(inline)]
+pub use payment_method_details_payment_record_wechat_pay::*;
+#[doc(hidden)]
+pub mod payment_method_details_payment_record_zip;
+#[doc(inline)]
+pub use payment_method_details_payment_record_zip::*;
 #[doc(hidden)]
 pub mod payment_method_details_paynow;
 #[doc(inline)]
@@ -2944,6 +2976,10 @@ pub use payments_primitives_payment_records_resource_payment_method_custom_detai
 pub mod payments_primitives_payment_records_resource_payment_method_details;
 #[doc(inline)]
 pub use payments_primitives_payment_records_resource_payment_method_details::*;
+#[doc(hidden)]
+pub mod payments_primitives_payment_records_resource_payment_method_konbini_details_resource_store;
+#[doc(inline)]
+pub use payments_primitives_payment_records_resource_payment_method_konbini_details_resource_store::*;
 #[doc(hidden)]
 pub mod payments_primitives_payment_records_resource_processor_details;
 #[doc(inline)]

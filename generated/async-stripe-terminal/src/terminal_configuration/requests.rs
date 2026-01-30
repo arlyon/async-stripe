@@ -520,7 +520,7 @@ impl CreateTerminalConfiguration {
         self.inner.stripe_s700 = Some(stripe_s700.into());
         self
     }
-    /// Tipping configurations for readers. supporting on-reader tips
+    /// Tipping configurations for readers that support on-reader tips.
     pub fn tipping(mut self, tipping: impl Into<Tipping>) -> Self {
         self.inner.tipping = Some(tipping.into());
         self
@@ -1076,9 +1076,6 @@ pub struct Tipping {
     /// Tipping configuration for AUD
     #[serde(skip_serializing_if = "Option::is_none")]
     pub aud: Option<CurrencySpecificConfig>,
-    /// Tipping configuration for BGN
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub bgn: Option<CurrencySpecificConfig>,
     /// Tipping configuration for CAD
     #[serde(skip_serializing_if = "Option::is_none")]
     pub cad: Option<CurrencySpecificConfig>,
@@ -1142,7 +1139,6 @@ impl Tipping {
         Self {
             aed: None,
             aud: None,
-            bgn: None,
             cad: None,
             chf: None,
             czk: None,

@@ -2,6 +2,7 @@
 #[derive(Clone, Debug)]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct CheckoutSessionItem {
+    pub adjustable_quantity: Option<stripe_shared::LineItemsAdjustableQuantity>,
     /// Total discount amount applied. If no discounts were applied, defaults to 0.
     pub amount_discount: i64,
     /// Total before any discounts or taxes are applied.
@@ -33,6 +34,7 @@ pub struct CheckoutSessionItem {
 }
 #[doc(hidden)]
 pub struct CheckoutSessionItemBuilder {
+    adjustable_quantity: Option<Option<stripe_shared::LineItemsAdjustableQuantity>>,
     amount_discount: Option<i64>,
     amount_subtotal: Option<i64>,
     amount_tax: Option<i64>,
@@ -87,6 +89,7 @@ const _: () = {
         type Out = CheckoutSessionItem;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
+                "adjustable_quantity" => Deserialize::begin(&mut self.adjustable_quantity),
                 "amount_discount" => Deserialize::begin(&mut self.amount_discount),
                 "amount_subtotal" => Deserialize::begin(&mut self.amount_subtotal),
                 "amount_tax" => Deserialize::begin(&mut self.amount_tax),
@@ -105,6 +108,7 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
+                adjustable_quantity: Deserialize::default(),
                 amount_discount: Deserialize::default(),
                 amount_subtotal: Deserialize::default(),
                 amount_tax: Deserialize::default(),
@@ -122,6 +126,7 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
+                Some(adjustable_quantity),
                 Some(amount_discount),
                 Some(amount_subtotal),
                 Some(amount_tax),
@@ -135,6 +140,7 @@ const _: () = {
                 Some(quantity),
                 Some(taxes),
             ) = (
+                self.adjustable_quantity,
                 self.amount_discount,
                 self.amount_subtotal,
                 self.amount_tax,
@@ -152,6 +158,7 @@ const _: () = {
                 return None;
             };
             Some(Self::Out {
+                adjustable_quantity,
                 amount_discount,
                 amount_subtotal,
                 amount_tax,
@@ -191,6 +198,7 @@ const _: () = {
             let mut b = CheckoutSessionItemBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
+                    "adjustable_quantity" => b.adjustable_quantity = FromValueOpt::from_value(v),
                     "amount_discount" => b.amount_discount = FromValueOpt::from_value(v),
                     "amount_subtotal" => b.amount_subtotal = FromValueOpt::from_value(v),
                     "amount_tax" => b.amount_tax = FromValueOpt::from_value(v),
@@ -214,7 +222,8 @@ const _: () = {
 impl serde::Serialize for CheckoutSessionItem {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("CheckoutSessionItem", 13)?;
+        let mut s = s.serialize_struct("CheckoutSessionItem", 14)?;
+        s.serialize_field("adjustable_quantity", &self.adjustable_quantity)?;
         s.serialize_field("amount_discount", &self.amount_discount)?;
         s.serialize_field("amount_subtotal", &self.amount_subtotal)?;
         s.serialize_field("amount_tax", &self.amount_tax)?;

@@ -882,7 +882,7 @@ pub struct CreateSubscriptionSchedulePhases {
     /// If not specified, inherits the discount from the subscription's customer.
     /// Pass an empty string to avoid inheriting any discounts.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub discounts: Option<Vec<DiscountsDataParam>>,
+    pub discounts: Option<Vec<CreateSubscriptionSchedulePhasesDiscounts>>,
     /// The number of intervals the phase should last. If set, `end_date` must not be set.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub duration: Option<CreateSubscriptionSchedulePhasesDuration>,
@@ -951,7 +951,7 @@ impl CreateSubscriptionSchedulePhases {
 pub struct CreateSubscriptionSchedulePhasesAddInvoiceItems {
     /// The coupons to redeem into discounts for the item.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub discounts: Option<Vec<DiscountsDataParam>>,
+    pub discounts: Option<Vec<CreateSubscriptionSchedulePhasesAddInvoiceItemsDiscounts>>,
     /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
@@ -990,6 +990,29 @@ impl CreateSubscriptionSchedulePhasesAddInvoiceItems {
     }
 }
 impl Default for CreateSubscriptionSchedulePhasesAddInvoiceItems {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The coupons to redeem into discounts for the item.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateSubscriptionSchedulePhasesAddInvoiceItemsDiscounts {
+    /// ID of the coupon to create a new discount for.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub coupon: Option<String>,
+    /// ID of an existing discount on the object (or one of its ancestors) to reuse.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub discount: Option<String>,
+    /// ID of the promotion code to create a new discount for.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub promotion_code: Option<String>,
+}
+impl CreateSubscriptionSchedulePhasesAddInvoiceItemsDiscounts {
+    pub fn new() -> Self {
+        Self { coupon: None, discount: None, promotion_code: None }
+    }
+}
+impl Default for CreateSubscriptionSchedulePhasesAddInvoiceItemsDiscounts {
     fn default() -> Self {
         Self::new()
     }
@@ -1527,6 +1550,31 @@ impl<'de> serde::Deserialize<'de> for CreateSubscriptionSchedulePhasesCollection
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
+/// The coupons to redeem into discounts for the schedule phase.
+/// If not specified, inherits the discount from the subscription's customer.
+/// Pass an empty string to avoid inheriting any discounts.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateSubscriptionSchedulePhasesDiscounts {
+    /// ID of the coupon to create a new discount for.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub coupon: Option<String>,
+    /// ID of an existing discount on the object (or one of its ancestors) to reuse.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub discount: Option<String>,
+    /// ID of the promotion code to create a new discount for.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub promotion_code: Option<String>,
+}
+impl CreateSubscriptionSchedulePhasesDiscounts {
+    pub fn new() -> Self {
+        Self { coupon: None, discount: None, promotion_code: None }
+    }
+}
+impl Default for CreateSubscriptionSchedulePhasesDiscounts {
+    fn default() -> Self {
+        Self::new()
+    }
+}
 /// The number of intervals the phase should last. If set, `end_date` must not be set.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateSubscriptionSchedulePhasesDuration {
@@ -1730,7 +1778,7 @@ pub struct CreateSubscriptionSchedulePhasesItems {
     pub billing_thresholds: Option<ItemBillingThresholdsParam>,
     /// The coupons to redeem into discounts for the subscription item.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub discounts: Option<Vec<DiscountsDataParam>>,
+    pub discounts: Option<Vec<CreateSubscriptionSchedulePhasesItemsDiscounts>>,
     /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to a configuration item.
     /// Metadata on a configuration item will update the underlying subscription item's `metadata` when the phase is entered, adding new keys and replacing existing keys.
     /// Individual keys in the subscription item's `metadata` can be unset by posting an empty value to them in the configuration item's `metadata`.
@@ -1771,6 +1819,29 @@ impl CreateSubscriptionSchedulePhasesItems {
     }
 }
 impl Default for CreateSubscriptionSchedulePhasesItems {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The coupons to redeem into discounts for the subscription item.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateSubscriptionSchedulePhasesItemsDiscounts {
+    /// ID of the coupon to create a new discount for.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub coupon: Option<String>,
+    /// ID of an existing discount on the object (or one of its ancestors) to reuse.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub discount: Option<String>,
+    /// ID of the promotion code to create a new discount for.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub promotion_code: Option<String>,
+}
+impl CreateSubscriptionSchedulePhasesItemsDiscounts {
+    pub fn new() -> Self {
+        Self { coupon: None, discount: None, promotion_code: None }
+    }
+}
+impl Default for CreateSubscriptionSchedulePhasesItemsDiscounts {
     fn default() -> Self {
         Self::new()
     }
@@ -2673,7 +2744,7 @@ pub struct UpdateSubscriptionSchedulePhases {
     /// If not specified, inherits the discount from the subscription's customer.
     /// Pass an empty string to avoid inheriting any discounts.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub discounts: Option<Vec<DiscountsDataParam>>,
+    pub discounts: Option<Vec<UpdateSubscriptionSchedulePhasesDiscounts>>,
     /// The number of intervals the phase should last. If set, `end_date` must not be set.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub duration: Option<UpdateSubscriptionSchedulePhasesDuration>,
@@ -2747,7 +2818,7 @@ impl UpdateSubscriptionSchedulePhases {
 pub struct UpdateSubscriptionSchedulePhasesAddInvoiceItems {
     /// The coupons to redeem into discounts for the item.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub discounts: Option<Vec<DiscountsDataParam>>,
+    pub discounts: Option<Vec<UpdateSubscriptionSchedulePhasesAddInvoiceItemsDiscounts>>,
     /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
@@ -2786,6 +2857,29 @@ impl UpdateSubscriptionSchedulePhasesAddInvoiceItems {
     }
 }
 impl Default for UpdateSubscriptionSchedulePhasesAddInvoiceItems {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The coupons to redeem into discounts for the item.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpdateSubscriptionSchedulePhasesAddInvoiceItemsDiscounts {
+    /// ID of the coupon to create a new discount for.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub coupon: Option<String>,
+    /// ID of an existing discount on the object (or one of its ancestors) to reuse.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub discount: Option<String>,
+    /// ID of the promotion code to create a new discount for.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub promotion_code: Option<String>,
+}
+impl UpdateSubscriptionSchedulePhasesAddInvoiceItemsDiscounts {
+    pub fn new() -> Self {
+        Self { coupon: None, discount: None, promotion_code: None }
+    }
+}
+impl Default for UpdateSubscriptionSchedulePhasesAddInvoiceItemsDiscounts {
     fn default() -> Self {
         Self::new()
     }
@@ -3323,6 +3417,31 @@ impl<'de> serde::Deserialize<'de> for UpdateSubscriptionSchedulePhasesCollection
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
+/// The coupons to redeem into discounts for the schedule phase.
+/// If not specified, inherits the discount from the subscription's customer.
+/// Pass an empty string to avoid inheriting any discounts.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpdateSubscriptionSchedulePhasesDiscounts {
+    /// ID of the coupon to create a new discount for.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub coupon: Option<String>,
+    /// ID of an existing discount on the object (or one of its ancestors) to reuse.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub discount: Option<String>,
+    /// ID of the promotion code to create a new discount for.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub promotion_code: Option<String>,
+}
+impl UpdateSubscriptionSchedulePhasesDiscounts {
+    pub fn new() -> Self {
+        Self { coupon: None, discount: None, promotion_code: None }
+    }
+}
+impl Default for UpdateSubscriptionSchedulePhasesDiscounts {
+    fn default() -> Self {
+        Self::new()
+    }
+}
 /// The number of intervals the phase should last. If set, `end_date` must not be set.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdateSubscriptionSchedulePhasesDuration {
@@ -3534,7 +3653,7 @@ pub struct UpdateSubscriptionSchedulePhasesItems {
     pub billing_thresholds: Option<ItemBillingThresholdsParam>,
     /// The coupons to redeem into discounts for the subscription item.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub discounts: Option<Vec<DiscountsDataParam>>,
+    pub discounts: Option<Vec<UpdateSubscriptionSchedulePhasesItemsDiscounts>>,
     /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to a configuration item.
     /// Metadata on a configuration item will update the underlying subscription item's `metadata` when the phase is entered, adding new keys and replacing existing keys.
     /// Individual keys in the subscription item's `metadata` can be unset by posting an empty value to them in the configuration item's `metadata`.
@@ -3575,6 +3694,29 @@ impl UpdateSubscriptionSchedulePhasesItems {
     }
 }
 impl Default for UpdateSubscriptionSchedulePhasesItems {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The coupons to redeem into discounts for the subscription item.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpdateSubscriptionSchedulePhasesItemsDiscounts {
+    /// ID of the coupon to create a new discount for.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub coupon: Option<String>,
+    /// ID of an existing discount on the object (or one of its ancestors) to reuse.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub discount: Option<String>,
+    /// ID of the promotion code to create a new discount for.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub promotion_code: Option<String>,
+}
+impl UpdateSubscriptionSchedulePhasesItemsDiscounts {
+    pub fn new() -> Self {
+        Self { coupon: None, discount: None, promotion_code: None }
+    }
+}
+impl Default for UpdateSubscriptionSchedulePhasesItemsDiscounts {
     fn default() -> Self {
         Self::new()
     }
@@ -4202,28 +4344,6 @@ pub struct TransferDataSpecs {
 impl TransferDataSpecs {
     pub fn new(destination: impl Into<String>) -> Self {
         Self { amount_percent: None, destination: destination.into() }
-    }
-}
-#[derive(Clone, Debug, serde::Serialize)]
-pub struct DiscountsDataParam {
-    /// ID of the coupon to create a new discount for.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub coupon: Option<String>,
-    /// ID of an existing discount on the object (or one of its ancestors) to reuse.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub discount: Option<String>,
-    /// ID of the promotion code to create a new discount for.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub promotion_code: Option<String>,
-}
-impl DiscountsDataParam {
-    pub fn new() -> Self {
-        Self { coupon: None, discount: None, promotion_code: None }
-    }
-}
-impl Default for DiscountsDataParam {
-    fn default() -> Self {
-        Self::new()
     }
 }
 #[derive(Copy, Clone, Debug, serde::Serialize)]

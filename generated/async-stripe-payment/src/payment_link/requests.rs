@@ -777,6 +777,7 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentLinkConsentCollectionTermsOfS
 }
 /// Collect additional information from your customer using custom fields.
 /// Up to 3 fields are supported.
+/// You can't set this parameter if `ui_mode` is `custom`.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentLinkCustomFields {
     /// Configuration for `type=dropdown` fields.
@@ -2960,7 +2961,9 @@ impl<'de> serde::Deserialize<'de>
 pub struct CreatePaymentLinkTaxIdCollection {
     /// Enable tax ID collection during checkout. Defaults to `false`.
     pub enabled: bool,
-    /// Describes whether a tax ID is required during checkout. Defaults to `never`.
+    /// Describes whether a tax ID is required during checkout.
+    /// Defaults to `never`.
+    /// You can't set this parameter if `ui_mode` is `custom`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub required: Option<CreatePaymentLinkTaxIdCollectionRequired>,
 }
@@ -2969,7 +2972,9 @@ impl CreatePaymentLinkTaxIdCollection {
         Self { enabled: enabled.into(), required: None }
     }
 }
-/// Describes whether a tax ID is required during checkout. Defaults to `never`.
+/// Describes whether a tax ID is required during checkout.
+/// Defaults to `never`.
+/// You can't set this parameter if `ui_mode` is `custom`.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum CreatePaymentLinkTaxIdCollectionRequired {
@@ -3119,6 +3124,7 @@ impl CreatePaymentLink {
     }
     /// Collect additional information from your customer using custom fields.
     /// Up to 3 fields are supported.
+    /// You can't set this parameter if `ui_mode` is `custom`.
     pub fn custom_fields(
         mut self,
         custom_fields: impl Into<Vec<CreatePaymentLinkCustomFields>>,
@@ -3127,6 +3133,7 @@ impl CreatePaymentLink {
         self
     }
     /// Display additional text for your customers using custom text.
+    /// You can't set this parameter if `ui_mode` is `custom`.
     pub fn custom_text(mut self, custom_text: impl Into<CustomTextParam>) -> Self {
         self.inner.custom_text = Some(custom_text.into());
         self
@@ -3574,6 +3581,7 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentLinkAutomaticTaxLiabilityType
 }
 /// Collect additional information from your customer using custom fields.
 /// Up to 3 fields are supported.
+/// You can't set this parameter if `ui_mode` is `custom`.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentLinkCustomFields {
     /// Configuration for `type=dropdown` fields.
@@ -5286,7 +5294,9 @@ impl<'de> serde::Deserialize<'de>
 pub struct UpdatePaymentLinkTaxIdCollection {
     /// Enable tax ID collection during checkout. Defaults to `false`.
     pub enabled: bool,
-    /// Describes whether a tax ID is required during checkout. Defaults to `never`.
+    /// Describes whether a tax ID is required during checkout.
+    /// Defaults to `never`.
+    /// You can't set this parameter if `ui_mode` is `custom`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub required: Option<UpdatePaymentLinkTaxIdCollectionRequired>,
 }
@@ -5295,7 +5305,9 @@ impl UpdatePaymentLinkTaxIdCollection {
         Self { enabled: enabled.into(), required: None }
     }
 }
-/// Describes whether a tax ID is required during checkout. Defaults to `never`.
+/// Describes whether a tax ID is required during checkout.
+/// Defaults to `never`.
+/// You can't set this parameter if `ui_mode` is `custom`.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum UpdatePaymentLinkTaxIdCollectionRequired {
@@ -5408,6 +5420,7 @@ impl UpdatePaymentLink {
     }
     /// Collect additional information from your customer using custom fields.
     /// Up to 3 fields are supported.
+    /// You can't set this parameter if `ui_mode` is `custom`.
     pub fn custom_fields(
         mut self,
         custom_fields: impl Into<Vec<UpdatePaymentLinkCustomFields>>,
@@ -5416,6 +5429,7 @@ impl UpdatePaymentLink {
         self
     }
     /// Display additional text for your customers using custom text.
+    /// You can't set this parameter if `ui_mode` is `custom`.
     pub fn custom_text(mut self, custom_text: impl Into<CustomTextParam>) -> Self {
         self.inner.custom_text = Some(custom_text.into());
         self

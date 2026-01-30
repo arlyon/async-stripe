@@ -360,7 +360,7 @@ struct CreateInvoiceBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     description: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    discounts: Option<Vec<DiscountsDataParam>>,
+    discounts: Option<Vec<CreateInvoiceDiscounts>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     due_date: Option<stripe_types::Timestamp>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -532,6 +532,31 @@ impl<'de> serde::Deserialize<'de> for CreateInvoiceAutomaticTaxLiabilityType {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
         Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// The coupons and promotion codes to redeem into discounts for the invoice.
+/// If not specified, inherits the discount from the invoice's customer.
+/// Pass an empty string to avoid inheriting any discounts.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreateInvoiceDiscounts {
+    /// ID of the coupon to create a new discount for.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub coupon: Option<String>,
+    /// ID of an existing discount on the object (or one of its ancestors) to reuse.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub discount: Option<String>,
+    /// ID of the promotion code to create a new discount for.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub promotion_code: Option<String>,
+}
+impl CreateInvoiceDiscounts {
+    pub fn new() -> Self {
+        Self { coupon: None, discount: None, promotion_code: None }
+    }
+}
+impl Default for CreateInvoiceDiscounts {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Revise an existing invoice.
@@ -2819,7 +2844,7 @@ impl<'de> serde::Deserialize<'de> for CreateInvoiceShippingCostShippingRateDataT
     }
 }
 /// This endpoint creates a draft invoice for a given customer.
-/// The invoice remains a draft until you [finalize](https://stripe.com/docs/api#finalize_invoice) the invoice, which allows you to [pay](https://stripe.com/docs/api#pay_invoice) or [send](https://stripe.com/docs/api#send_invoice) the invoice to your customers.
+/// The invoice remains a draft until you [finalize](https://stripe.com/docs/api#finalize_invoice) the invoice, which allows you to <a href="/api/invoices/pay">pay</a> or <a href="/api/invoices/send">send</a> the invoice to your customers.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateInvoice {
     inner: CreateInvoiceBuilder,
@@ -2928,7 +2953,7 @@ impl CreateInvoice {
     /// The coupons and promotion codes to redeem into discounts for the invoice.
     /// If not specified, inherits the discount from the invoice's customer.
     /// Pass an empty string to avoid inheriting any discounts.
-    pub fn discounts(mut self, discounts: impl Into<Vec<DiscountsDataParam>>) -> Self {
+    pub fn discounts(mut self, discounts: impl Into<Vec<CreateInvoiceDiscounts>>) -> Self {
         self.inner.discounts = Some(discounts.into());
         self
     }
@@ -3108,7 +3133,7 @@ struct UpdateInvoiceBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     description: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    discounts: Option<Vec<DiscountsDataParam>>,
+    discounts: Option<Vec<UpdateInvoiceDiscounts>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     due_date: Option<stripe_types::Timestamp>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3268,6 +3293,30 @@ impl<'de> serde::Deserialize<'de> for UpdateInvoiceAutomaticTaxLiabilityType {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
         Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// The discounts that will apply to the invoice.
+/// Pass an empty string to remove previously-defined discounts.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpdateInvoiceDiscounts {
+    /// ID of the coupon to create a new discount for.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub coupon: Option<String>,
+    /// ID of an existing discount on the object (or one of its ancestors) to reuse.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub discount: Option<String>,
+    /// ID of the promotion code to create a new discount for.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub promotion_code: Option<String>,
+}
+impl UpdateInvoiceDiscounts {
+    pub fn new() -> Self {
+        Self { coupon: None, discount: None, promotion_code: None }
+    }
+}
+impl Default for UpdateInvoiceDiscounts {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// The connected account that issues the invoice.
@@ -5507,7 +5556,7 @@ impl UpdateInvoice {
     }
     /// The discounts that will apply to the invoice.
     /// Pass an empty string to remove previously-defined discounts.
-    pub fn discounts(mut self, discounts: impl Into<Vec<DiscountsDataParam>>) -> Self {
+    pub fn discounts(mut self, discounts: impl Into<Vec<UpdateInvoiceDiscounts>>) -> Self {
         self.inner.discounts = Some(discounts.into());
         self
     }
@@ -5668,7 +5717,7 @@ pub struct AddLinesInvoiceLines {
     /// Item discounts are applied before invoice discounts.
     /// Pass an empty string to remove previously-defined discounts.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub discounts: Option<Vec<DiscountsDataParam>>,
+    pub discounts: Option<Vec<AddLinesInvoiceLinesDiscounts>>,
     /// ID of an unassigned invoice item to assign to this invoice.
     /// If not provided, a new item will be created.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5725,6 +5774,31 @@ impl AddLinesInvoiceLines {
     }
 }
 impl Default for AddLinesInvoiceLines {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The coupons, promotion codes & existing discounts which apply to the line item.
+/// Item discounts are applied before invoice discounts.
+/// Pass an empty string to remove previously-defined discounts.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct AddLinesInvoiceLinesDiscounts {
+    /// ID of the coupon to create a new discount for.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub coupon: Option<String>,
+    /// ID of an existing discount on the object (or one of its ancestors) to reuse.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub discount: Option<String>,
+    /// ID of the promotion code to create a new discount for.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub promotion_code: Option<String>,
+}
+impl AddLinesInvoiceLinesDiscounts {
+    pub fn new() -> Self {
+        Self { coupon: None, discount: None, promotion_code: None }
+    }
+}
+impl Default for AddLinesInvoiceLinesDiscounts {
     fn default() -> Self {
         Self::new()
     }
@@ -6832,7 +6906,7 @@ pub struct UpdateLinesInvoiceLines {
     /// Item discounts are applied before invoice discounts.
     /// Pass an empty string to remove previously-defined discounts.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub discounts: Option<Vec<DiscountsDataParam>>,
+    pub discounts: Option<Vec<UpdateLinesInvoiceLinesDiscounts>>,
     /// ID of an existing line item on the invoice.
     pub id: String,
     /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
@@ -6885,6 +6959,31 @@ impl UpdateLinesInvoiceLines {
             tax_amounts: None,
             tax_rates: None,
         }
+    }
+}
+/// The coupons, promotion codes & existing discounts which apply to the line item.
+/// Item discounts are applied before invoice discounts.
+/// Pass an empty string to remove previously-defined discounts.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct UpdateLinesInvoiceLinesDiscounts {
+    /// ID of the coupon to create a new discount for.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub coupon: Option<String>,
+    /// ID of an existing discount on the object (or one of its ancestors) to reuse.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub discount: Option<String>,
+    /// ID of the promotion code to create a new discount for.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub promotion_code: Option<String>,
+}
+impl UpdateLinesInvoiceLinesDiscounts {
+    pub fn new() -> Self {
+        Self { coupon: None, discount: None, promotion_code: None }
+    }
+}
+impl Default for UpdateLinesInvoiceLinesDiscounts {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Data used to generate a new [Price](https://docs.stripe.com/api/prices) object inline.
@@ -7507,7 +7606,7 @@ struct CreatePreviewInvoiceBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     customer_details: Option<CreatePreviewInvoiceCustomerDetails>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    discounts: Option<Vec<DiscountsDataParam>>,
+    discounts: Option<Vec<CreatePreviewInvoiceDiscounts>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -7820,7 +7919,7 @@ impl<'de> serde::Deserialize<'de> for CreatePreviewInvoiceCustomerDetailsTaxExem
 /// The customer's tax IDs.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePreviewInvoiceCustomerDetailsTaxIds {
-    /// Type of the tax ID, one of `ad_nrt`, `ae_trn`, `al_tin`, `am_tin`, `ao_tin`, `ar_cuit`, `au_abn`, `au_arn`, `aw_tin`, `az_tin`, `ba_tin`, `bb_tin`, `bd_bin`, `bf_ifu`, `bg_uic`, `bh_vat`, `bj_ifu`, `bo_tin`, `br_cnpj`, `br_cpf`, `bs_tin`, `by_tin`, `ca_bn`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `ca_qst`, `cd_nif`, `ch_uid`, `ch_vat`, `cl_tin`, `cm_niu`, `cn_tin`, `co_nit`, `cr_tin`, `cv_nif`, `de_stn`, `do_rcn`, `ec_ruc`, `eg_tin`, `es_cif`, `et_tin`, `eu_oss_vat`, `eu_vat`, `gb_vat`, `ge_vat`, `gn_nif`, `hk_br`, `hr_oib`, `hu_tin`, `id_npwp`, `il_vat`, `in_gst`, `is_vat`, `jp_cn`, `jp_rn`, `jp_trn`, `ke_pin`, `kg_tin`, `kh_tin`, `kr_brn`, `kz_bin`, `la_tin`, `li_uid`, `li_vat`, `ma_vat`, `md_vat`, `me_pib`, `mk_vat`, `mr_nif`, `mx_rfc`, `my_frp`, `my_itn`, `my_sst`, `ng_tin`, `no_vat`, `no_voec`, `np_pan`, `nz_gst`, `om_vat`, `pe_ruc`, `ph_tin`, `ro_tin`, `rs_pib`, `ru_inn`, `ru_kpp`, `sa_vat`, `sg_gst`, `sg_uen`, `si_tin`, `sn_ninea`, `sr_fin`, `sv_nit`, `th_vat`, `tj_tin`, `tr_tin`, `tw_vat`, `tz_vat`, `ua_vat`, `ug_tin`, `us_ein`, `uy_ruc`, `uz_tin`, `uz_vat`, `ve_rif`, `vn_tin`, `za_vat`, `zm_tin`, or `zw_tin`.
+    /// Type of the tax ID, one of `ad_nrt`, `ae_trn`, `al_tin`, `am_tin`, `ao_tin`, `ar_cuit`, `au_abn`, `au_arn`, `aw_tin`, `az_tin`, `ba_tin`, `bb_tin`, `bd_bin`, `bf_ifu`, `bg_uic`, `bh_vat`, `bj_ifu`, `bo_tin`, `br_cnpj`, `br_cpf`, `bs_tin`, `by_tin`, `ca_bn`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `ca_qst`, `cd_nif`, `ch_uid`, `ch_vat`, `cl_tin`, `cm_niu`, `cn_tin`, `co_nit`, `cr_tin`, `cv_nif`, `de_stn`, `do_rcn`, `ec_ruc`, `eg_tin`, `es_cif`, `et_tin`, `eu_oss_vat`, `eu_vat`, `gb_vat`, `ge_vat`, `gn_nif`, `hk_br`, `hr_oib`, `hu_tin`, `id_npwp`, `il_vat`, `in_gst`, `is_vat`, `jp_cn`, `jp_rn`, `jp_trn`, `ke_pin`, `kg_tin`, `kh_tin`, `kr_brn`, `kz_bin`, `la_tin`, `li_uid`, `li_vat`, `ma_vat`, `md_vat`, `me_pib`, `mk_vat`, `mr_nif`, `mx_rfc`, `my_frp`, `my_itn`, `my_sst`, `ng_tin`, `no_vat`, `no_voec`, `np_pan`, `nz_gst`, `om_vat`, `pe_ruc`, `ph_tin`, `pl_nip`, `ro_tin`, `rs_pib`, `ru_inn`, `ru_kpp`, `sa_vat`, `sg_gst`, `sg_uen`, `si_tin`, `sn_ninea`, `sr_fin`, `sv_nit`, `th_vat`, `tj_tin`, `tr_tin`, `tw_vat`, `tz_vat`, `ua_vat`, `ug_tin`, `us_ein`, `uy_ruc`, `uz_tin`, `uz_vat`, `ve_rif`, `vn_tin`, `za_vat`, `zm_tin`, or `zw_tin`.
     #[serde(rename = "type")]
     pub type_: CreatePreviewInvoiceCustomerDetailsTaxIdsType,
     /// Value of the tax ID.
@@ -7834,7 +7933,7 @@ impl CreatePreviewInvoiceCustomerDetailsTaxIds {
         Self { type_: type_.into(), value: value.into() }
     }
 }
-/// Type of the tax ID, one of `ad_nrt`, `ae_trn`, `al_tin`, `am_tin`, `ao_tin`, `ar_cuit`, `au_abn`, `au_arn`, `aw_tin`, `az_tin`, `ba_tin`, `bb_tin`, `bd_bin`, `bf_ifu`, `bg_uic`, `bh_vat`, `bj_ifu`, `bo_tin`, `br_cnpj`, `br_cpf`, `bs_tin`, `by_tin`, `ca_bn`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `ca_qst`, `cd_nif`, `ch_uid`, `ch_vat`, `cl_tin`, `cm_niu`, `cn_tin`, `co_nit`, `cr_tin`, `cv_nif`, `de_stn`, `do_rcn`, `ec_ruc`, `eg_tin`, `es_cif`, `et_tin`, `eu_oss_vat`, `eu_vat`, `gb_vat`, `ge_vat`, `gn_nif`, `hk_br`, `hr_oib`, `hu_tin`, `id_npwp`, `il_vat`, `in_gst`, `is_vat`, `jp_cn`, `jp_rn`, `jp_trn`, `ke_pin`, `kg_tin`, `kh_tin`, `kr_brn`, `kz_bin`, `la_tin`, `li_uid`, `li_vat`, `ma_vat`, `md_vat`, `me_pib`, `mk_vat`, `mr_nif`, `mx_rfc`, `my_frp`, `my_itn`, `my_sst`, `ng_tin`, `no_vat`, `no_voec`, `np_pan`, `nz_gst`, `om_vat`, `pe_ruc`, `ph_tin`, `ro_tin`, `rs_pib`, `ru_inn`, `ru_kpp`, `sa_vat`, `sg_gst`, `sg_uen`, `si_tin`, `sn_ninea`, `sr_fin`, `sv_nit`, `th_vat`, `tj_tin`, `tr_tin`, `tw_vat`, `tz_vat`, `ua_vat`, `ug_tin`, `us_ein`, `uy_ruc`, `uz_tin`, `uz_vat`, `ve_rif`, `vn_tin`, `za_vat`, `zm_tin`, or `zw_tin`.
+/// Type of the tax ID, one of `ad_nrt`, `ae_trn`, `al_tin`, `am_tin`, `ao_tin`, `ar_cuit`, `au_abn`, `au_arn`, `aw_tin`, `az_tin`, `ba_tin`, `bb_tin`, `bd_bin`, `bf_ifu`, `bg_uic`, `bh_vat`, `bj_ifu`, `bo_tin`, `br_cnpj`, `br_cpf`, `bs_tin`, `by_tin`, `ca_bn`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `ca_qst`, `cd_nif`, `ch_uid`, `ch_vat`, `cl_tin`, `cm_niu`, `cn_tin`, `co_nit`, `cr_tin`, `cv_nif`, `de_stn`, `do_rcn`, `ec_ruc`, `eg_tin`, `es_cif`, `et_tin`, `eu_oss_vat`, `eu_vat`, `gb_vat`, `ge_vat`, `gn_nif`, `hk_br`, `hr_oib`, `hu_tin`, `id_npwp`, `il_vat`, `in_gst`, `is_vat`, `jp_cn`, `jp_rn`, `jp_trn`, `ke_pin`, `kg_tin`, `kh_tin`, `kr_brn`, `kz_bin`, `la_tin`, `li_uid`, `li_vat`, `ma_vat`, `md_vat`, `me_pib`, `mk_vat`, `mr_nif`, `mx_rfc`, `my_frp`, `my_itn`, `my_sst`, `ng_tin`, `no_vat`, `no_voec`, `np_pan`, `nz_gst`, `om_vat`, `pe_ruc`, `ph_tin`, `pl_nip`, `ro_tin`, `rs_pib`, `ru_inn`, `ru_kpp`, `sa_vat`, `sg_gst`, `sg_uen`, `si_tin`, `sn_ninea`, `sr_fin`, `sv_nit`, `th_vat`, `tj_tin`, `tr_tin`, `tw_vat`, `tz_vat`, `ua_vat`, `ug_tin`, `us_ein`, `uy_ruc`, `uz_tin`, `uz_vat`, `ve_rif`, `vn_tin`, `za_vat`, `zm_tin`, or `zw_tin`.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum CreatePreviewInvoiceCustomerDetailsTaxIdsType {
@@ -7921,6 +8020,7 @@ pub enum CreatePreviewInvoiceCustomerDetailsTaxIdsType {
     OmVat,
     PeRuc,
     PhTin,
+    PlNip,
     RoTin,
     RsPib,
     RuInn,
@@ -8038,6 +8138,7 @@ impl CreatePreviewInvoiceCustomerDetailsTaxIdsType {
             OmVat => "om_vat",
             PeRuc => "pe_ruc",
             PhTin => "ph_tin",
+            PlNip => "pl_nip",
             RoTin => "ro_tin",
             RsPib => "rs_pib",
             RuInn => "ru_inn",
@@ -8158,6 +8259,7 @@ impl std::str::FromStr for CreatePreviewInvoiceCustomerDetailsTaxIdsType {
             "om_vat" => Ok(OmVat),
             "pe_ruc" => Ok(PeRuc),
             "ph_tin" => Ok(PhTin),
+            "pl_nip" => Ok(PlNip),
             "ro_tin" => Ok(RoTin),
             "rs_pib" => Ok(RsPib),
             "ru_inn" => Ok(RuInn),
@@ -8223,6 +8325,32 @@ impl<'de> serde::Deserialize<'de> for CreatePreviewInvoiceCustomerDetailsTaxIdsT
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
+/// The coupons to redeem into discounts for the invoice preview.
+/// If not specified, inherits the discount from the subscription or customer.
+/// This works for both coupons directly applied to an invoice and coupons applied to a subscription.
+/// Pass an empty string to avoid inheriting any discounts.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreatePreviewInvoiceDiscounts {
+    /// ID of the coupon to create a new discount for.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub coupon: Option<String>,
+    /// ID of an existing discount on the object (or one of its ancestors) to reuse.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub discount: Option<String>,
+    /// ID of the promotion code to create a new discount for.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub promotion_code: Option<String>,
+}
+impl CreatePreviewInvoiceDiscounts {
+    pub fn new() -> Self {
+        Self { coupon: None, discount: None, promotion_code: None }
+    }
+}
+impl Default for CreatePreviewInvoiceDiscounts {
+    fn default() -> Self {
+        Self::new()
+    }
+}
 /// List of invoice items to add or update in the upcoming invoice preview (up to 250).
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePreviewInvoiceInvoiceItems {
@@ -8244,7 +8372,7 @@ pub struct CreatePreviewInvoiceInvoiceItems {
     pub discountable: Option<bool>,
     /// The coupons to redeem into discounts for the invoice item in the preview.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub discounts: Option<Vec<DiscountsDataParam>>,
+    pub discounts: Option<Vec<CreatePreviewInvoiceInvoiceItemsDiscounts>>,
     /// The ID of the invoice item to update in preview.
     /// If not specified, a new invoice item will be added to the preview of the upcoming invoice.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -8316,6 +8444,29 @@ impl CreatePreviewInvoiceInvoiceItems {
     }
 }
 impl Default for CreatePreviewInvoiceInvoiceItems {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The coupons to redeem into discounts for the invoice item in the preview.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreatePreviewInvoiceInvoiceItemsDiscounts {
+    /// ID of the coupon to create a new discount for.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub coupon: Option<String>,
+    /// ID of an existing discount on the object (or one of its ancestors) to reuse.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub discount: Option<String>,
+    /// ID of the promotion code to create a new discount for.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub promotion_code: Option<String>,
+}
+impl CreatePreviewInvoiceInvoiceItemsDiscounts {
+    pub fn new() -> Self {
+        Self { coupon: None, discount: None, promotion_code: None }
+    }
+}
+impl Default for CreatePreviewInvoiceInvoiceItemsDiscounts {
     fn default() -> Self {
         Self::new()
     }
@@ -8968,7 +9119,7 @@ pub struct CreatePreviewInvoiceScheduleDetailsPhases {
     /// If not specified, inherits the discount from the subscription's customer.
     /// Pass an empty string to avoid inheriting any discounts.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub discounts: Option<Vec<DiscountsDataParam>>,
+    pub discounts: Option<Vec<CreatePreviewInvoiceScheduleDetailsPhasesDiscounts>>,
     /// The number of intervals the phase should last. If set, `end_date` must not be set.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub duration: Option<CreatePreviewInvoiceScheduleDetailsPhasesDuration>,
@@ -9042,7 +9193,7 @@ impl CreatePreviewInvoiceScheduleDetailsPhases {
 pub struct CreatePreviewInvoiceScheduleDetailsPhasesAddInvoiceItems {
     /// The coupons to redeem into discounts for the item.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub discounts: Option<Vec<DiscountsDataParam>>,
+    pub discounts: Option<Vec<CreatePreviewInvoiceScheduleDetailsPhasesAddInvoiceItemsDiscounts>>,
     /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
@@ -9081,6 +9232,29 @@ impl CreatePreviewInvoiceScheduleDetailsPhasesAddInvoiceItems {
     }
 }
 impl Default for CreatePreviewInvoiceScheduleDetailsPhasesAddInvoiceItems {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The coupons to redeem into discounts for the item.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreatePreviewInvoiceScheduleDetailsPhasesAddInvoiceItemsDiscounts {
+    /// ID of the coupon to create a new discount for.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub coupon: Option<String>,
+    /// ID of an existing discount on the object (or one of its ancestors) to reuse.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub discount: Option<String>,
+    /// ID of the promotion code to create a new discount for.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub promotion_code: Option<String>,
+}
+impl CreatePreviewInvoiceScheduleDetailsPhasesAddInvoiceItemsDiscounts {
+    pub fn new() -> Self {
+        Self { coupon: None, discount: None, promotion_code: None }
+    }
+}
+impl Default for CreatePreviewInvoiceScheduleDetailsPhasesAddInvoiceItemsDiscounts {
     fn default() -> Self {
         Self::new()
     }
@@ -9585,6 +9759,31 @@ impl Default for CreatePreviewInvoiceScheduleDetailsPhasesBillingThresholds {
         Self::new()
     }
 }
+/// The coupons to redeem into discounts for the schedule phase.
+/// If not specified, inherits the discount from the subscription's customer.
+/// Pass an empty string to avoid inheriting any discounts.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreatePreviewInvoiceScheduleDetailsPhasesDiscounts {
+    /// ID of the coupon to create a new discount for.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub coupon: Option<String>,
+    /// ID of an existing discount on the object (or one of its ancestors) to reuse.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub discount: Option<String>,
+    /// ID of the promotion code to create a new discount for.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub promotion_code: Option<String>,
+}
+impl CreatePreviewInvoiceScheduleDetailsPhasesDiscounts {
+    pub fn new() -> Self {
+        Self { coupon: None, discount: None, promotion_code: None }
+    }
+}
+impl Default for CreatePreviewInvoiceScheduleDetailsPhasesDiscounts {
+    fn default() -> Self {
+        Self::new()
+    }
+}
 /// The number of intervals the phase should last. If set, `end_date` must not be set.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePreviewInvoiceScheduleDetailsPhasesDuration {
@@ -9800,7 +9999,7 @@ pub struct CreatePreviewInvoiceScheduleDetailsPhasesItems {
     pub billing_thresholds: Option<ItemBillingThresholdsParam>,
     /// The coupons to redeem into discounts for the subscription item.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub discounts: Option<Vec<DiscountsDataParam>>,
+    pub discounts: Option<Vec<CreatePreviewInvoiceScheduleDetailsPhasesItemsDiscounts>>,
     /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to a configuration item.
     /// Metadata on a configuration item will update the underlying subscription item's `metadata` when the phase is entered, adding new keys and replacing existing keys.
     /// Individual keys in the subscription item's `metadata` can be unset by posting an empty value to them in the configuration item's `metadata`.
@@ -9841,6 +10040,29 @@ impl CreatePreviewInvoiceScheduleDetailsPhasesItems {
     }
 }
 impl Default for CreatePreviewInvoiceScheduleDetailsPhasesItems {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The coupons to redeem into discounts for the subscription item.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreatePreviewInvoiceScheduleDetailsPhasesItemsDiscounts {
+    /// ID of the coupon to create a new discount for.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub coupon: Option<String>,
+    /// ID of an existing discount on the object (or one of its ancestors) to reuse.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub discount: Option<String>,
+    /// ID of the promotion code to create a new discount for.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub promotion_code: Option<String>,
+}
+impl CreatePreviewInvoiceScheduleDetailsPhasesItemsDiscounts {
+    pub fn new() -> Self {
+        Self { coupon: None, discount: None, promotion_code: None }
+    }
+}
+impl Default for CreatePreviewInvoiceScheduleDetailsPhasesItemsDiscounts {
     fn default() -> Self {
         Self::new()
     }
@@ -10513,7 +10735,7 @@ pub struct CreatePreviewInvoiceSubscriptionDetailsItems {
     pub deleted: Option<bool>,
     /// The coupons to redeem into discounts for the subscription item.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub discounts: Option<Vec<DiscountsDataParam>>,
+    pub discounts: Option<Vec<CreatePreviewInvoiceSubscriptionDetailsItemsDiscounts>>,
     /// Subscription item to update.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
@@ -10562,6 +10784,29 @@ impl CreatePreviewInvoiceSubscriptionDetailsItems {
     }
 }
 impl Default for CreatePreviewInvoiceSubscriptionDetailsItems {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The coupons to redeem into discounts for the subscription item.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct CreatePreviewInvoiceSubscriptionDetailsItemsDiscounts {
+    /// ID of the coupon to create a new discount for.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub coupon: Option<String>,
+    /// ID of an existing discount on the object (or one of its ancestors) to reuse.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub discount: Option<String>,
+    /// ID of the promotion code to create a new discount for.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub promotion_code: Option<String>,
+}
+impl CreatePreviewInvoiceSubscriptionDetailsItemsDiscounts {
+    pub fn new() -> Self {
+        Self { coupon: None, discount: None, promotion_code: None }
+    }
+}
+impl Default for CreatePreviewInvoiceSubscriptionDetailsItemsDiscounts {
     fn default() -> Self {
         Self::new()
     }
@@ -10974,7 +11219,7 @@ impl CreatePreviewInvoice {
     /// If not specified, inherits the discount from the subscription or customer.
     /// This works for both coupons directly applied to an invoice and coupons applied to a subscription.
     /// Pass an empty string to avoid inheriting any discounts.
-    pub fn discounts(mut self, discounts: impl Into<Vec<DiscountsDataParam>>) -> Self {
+    pub fn discounts(mut self, discounts: impl Into<Vec<CreatePreviewInvoiceDiscounts>>) -> Self {
         self.inner.discounts = Some(discounts.into());
         self
     }
@@ -11086,28 +11331,6 @@ pub struct CustomFieldParams {
 impl CustomFieldParams {
     pub fn new(name: impl Into<String>, value: impl Into<String>) -> Self {
         Self { name: name.into(), value: value.into() }
-    }
-}
-#[derive(Clone, Debug, serde::Serialize)]
-pub struct DiscountsDataParam {
-    /// ID of the coupon to create a new discount for.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub coupon: Option<String>,
-    /// ID of an existing discount on the object (or one of its ancestors) to reuse.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub discount: Option<String>,
-    /// ID of the promotion code to create a new discount for.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub promotion_code: Option<String>,
-}
-impl DiscountsDataParam {
-    pub fn new() -> Self {
-        Self { coupon: None, discount: None, promotion_code: None }
-    }
-}
-impl Default for DiscountsDataParam {
-    fn default() -> Self {
-        Self::new()
     }
 }
 #[derive(Clone, Debug, serde::Serialize)]

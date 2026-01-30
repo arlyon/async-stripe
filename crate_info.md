@@ -63,6 +63,7 @@
 | [SetupIntent](https://stripe.com/docs/api/setup_intents/object)                                  | async-stripe-core     | setup_intent                            |
 | [Token](https://stripe.com/docs/api/tokens/object)                                               | async-stripe-core     | token                                   |
 | RadarEarlyFraudWarning                                                                           | async-stripe-fraud    | radar_early_fraud_warning               |
+| RadarPaymentEvaluation                                                                           | async-stripe-fraud    | radar_payment_evaluation                |
 | [RadarValueListItem](https://stripe.com/docs/api/radar/value_list_items/object)                  | async-stripe-fraud    | radar_value_list_item                   |
 | [RadarValueList](https://stripe.com/docs/api/radar/value_lists/object)                           | async-stripe-fraud    | radar_value_list                        |
 | [Review](https://stripe.com/docs/api/radar/reviews/object)                                       | async-stripe-fraud    | review                                  |
