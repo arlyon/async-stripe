@@ -21,7 +21,7 @@ serde_json = { workspace = true, optional = true }
 smol_str.workspace = true
 miniserde.workspace = true
 tracing = { version = "0.1", default-features = false }
-async-stripe-types = {path = "../../async-stripe-types", version = "1.0.0-rc.0" }
+async-stripe-types = {path = "../../async-stripe-types", version = "1.0.0-rc.1" }
 
 
 
