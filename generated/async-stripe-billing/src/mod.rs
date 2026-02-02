@@ -124,6 +124,7 @@ pub use stripe_shared::invoices_resource_shipping_cost::*;
 pub use stripe_shared::invoices_resource_status_transitions::*;
 pub mod invoice_line_item;
 pub use stripe_shared::invoice_line_item::*;
+pub use stripe_shared::line_items_adjustable_quantity::*;
 pub mod payment_record;
 pub use stripe_shared::payment_record::*;
 pub mod plan;

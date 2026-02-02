@@ -1249,6 +1249,7 @@ impl Default for CreateSetupIntentPaymentMethodDataIdeal {
 #[non_exhaustive]
 pub enum CreateSetupIntentPaymentMethodDataIdealBank {
     AbnAmro,
+    Adyen,
     AsnBank,
     Bunq,
     Buut,
@@ -1275,6 +1276,7 @@ impl CreateSetupIntentPaymentMethodDataIdealBank {
         use CreateSetupIntentPaymentMethodDataIdealBank::*;
         match self {
             AbnAmro => "abn_amro",
+            Adyen => "adyen",
             AsnBank => "asn_bank",
             Bunq => "bunq",
             Buut => "buut",
@@ -1304,6 +1306,7 @@ impl std::str::FromStr for CreateSetupIntentPaymentMethodDataIdealBank {
         use CreateSetupIntentPaymentMethodDataIdealBank::*;
         match s {
             "abn_amro" => Ok(AbnAmro),
+            "adyen" => Ok(Adyen),
             "asn_bank" => Ok(AsnBank),
             "bunq" => Ok(Bunq),
             "buut" => Ok(Buut),
@@ -3499,6 +3502,8 @@ pub enum CreateSetupIntentPaymentMethodOptionsCardThreeDSecureVersion {
     V1_0_2,
     V2_1_0,
     V2_2_0,
+    V2_3_0,
+    V2_3_1,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
     Unknown(String),
 }
@@ -3509,6 +3514,8 @@ impl CreateSetupIntentPaymentMethodOptionsCardThreeDSecureVersion {
             V1_0_2 => "1.0.2",
             V2_1_0 => "2.1.0",
             V2_2_0 => "2.2.0",
+            V2_3_0 => "2.3.0",
+            V2_3_1 => "2.3.1",
             Unknown(v) => v,
         }
     }
@@ -3522,6 +3529,8 @@ impl std::str::FromStr for CreateSetupIntentPaymentMethodOptionsCardThreeDSecure
             "1.0.2" => Ok(V1_0_2),
             "2.1.0" => Ok(V2_1_0),
             "2.2.0" => Ok(V2_2_0),
+            "2.3.0" => Ok(V2_3_0),
+            "2.3.1" => Ok(V2_3_1),
             v => {
                 tracing::warn!(
                     "Unknown value '{}' for enum '{}'",
@@ -6014,6 +6023,7 @@ impl Default for UpdateSetupIntentPaymentMethodDataIdeal {
 #[non_exhaustive]
 pub enum UpdateSetupIntentPaymentMethodDataIdealBank {
     AbnAmro,
+    Adyen,
     AsnBank,
     Bunq,
     Buut,
@@ -6040,6 +6050,7 @@ impl UpdateSetupIntentPaymentMethodDataIdealBank {
         use UpdateSetupIntentPaymentMethodDataIdealBank::*;
         match self {
             AbnAmro => "abn_amro",
+            Adyen => "adyen",
             AsnBank => "asn_bank",
             Bunq => "bunq",
             Buut => "buut",
@@ -6069,6 +6080,7 @@ impl std::str::FromStr for UpdateSetupIntentPaymentMethodDataIdealBank {
         use UpdateSetupIntentPaymentMethodDataIdealBank::*;
         match s {
             "abn_amro" => Ok(AbnAmro),
+            "adyen" => Ok(Adyen),
             "asn_bank" => Ok(AsnBank),
             "bunq" => Ok(Bunq),
             "buut" => Ok(Buut),
@@ -8264,6 +8276,8 @@ pub enum UpdateSetupIntentPaymentMethodOptionsCardThreeDSecureVersion {
     V1_0_2,
     V2_1_0,
     V2_2_0,
+    V2_3_0,
+    V2_3_1,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
     Unknown(String),
 }
@@ -8274,6 +8288,8 @@ impl UpdateSetupIntentPaymentMethodOptionsCardThreeDSecureVersion {
             V1_0_2 => "1.0.2",
             V2_1_0 => "2.1.0",
             V2_2_0 => "2.2.0",
+            V2_3_0 => "2.3.0",
+            V2_3_1 => "2.3.1",
             Unknown(v) => v,
         }
     }
@@ -8287,6 +8303,8 @@ impl std::str::FromStr for UpdateSetupIntentPaymentMethodOptionsCardThreeDSecure
             "1.0.2" => Ok(V1_0_2),
             "2.1.0" => Ok(V2_1_0),
             "2.2.0" => Ok(V2_2_0),
+            "2.3.0" => Ok(V2_3_0),
+            "2.3.1" => Ok(V2_3_1),
             v => {
                 tracing::warn!(
                     "Unknown value '{}' for enum '{}'",
@@ -10910,6 +10928,7 @@ impl Default for ConfirmSetupIntentPaymentMethodDataIdeal {
 #[non_exhaustive]
 pub enum ConfirmSetupIntentPaymentMethodDataIdealBank {
     AbnAmro,
+    Adyen,
     AsnBank,
     Bunq,
     Buut,
@@ -10936,6 +10955,7 @@ impl ConfirmSetupIntentPaymentMethodDataIdealBank {
         use ConfirmSetupIntentPaymentMethodDataIdealBank::*;
         match self {
             AbnAmro => "abn_amro",
+            Adyen => "adyen",
             AsnBank => "asn_bank",
             Bunq => "bunq",
             Buut => "buut",
@@ -10965,6 +10985,7 @@ impl std::str::FromStr for ConfirmSetupIntentPaymentMethodDataIdealBank {
         use ConfirmSetupIntentPaymentMethodDataIdealBank::*;
         match s {
             "abn_amro" => Ok(AbnAmro),
+            "adyen" => Ok(Adyen),
             "asn_bank" => Ok(AsnBank),
             "bunq" => Ok(Bunq),
             "buut" => Ok(Buut),
@@ -13162,6 +13183,8 @@ pub enum ConfirmSetupIntentPaymentMethodOptionsCardThreeDSecureVersion {
     V1_0_2,
     V2_1_0,
     V2_2_0,
+    V2_3_0,
+    V2_3_1,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
     Unknown(String),
 }
@@ -13172,6 +13195,8 @@ impl ConfirmSetupIntentPaymentMethodOptionsCardThreeDSecureVersion {
             V1_0_2 => "1.0.2",
             V2_1_0 => "2.1.0",
             V2_2_0 => "2.2.0",
+            V2_3_0 => "2.3.0",
+            V2_3_1 => "2.3.1",
             Unknown(v) => v,
         }
     }
@@ -13185,6 +13210,8 @@ impl std::str::FromStr for ConfirmSetupIntentPaymentMethodOptionsCardThreeDSecur
             "1.0.2" => Ok(V1_0_2),
             "2.1.0" => Ok(V2_1_0),
             "2.2.0" => Ok(V2_2_0),
+            "2.3.0" => Ok(V2_3_0),
+            "2.3.1" => Ok(V2_3_1),
             v => {
                 tracing::warn!(
                     "Unknown value '{}' for enum '{}'",

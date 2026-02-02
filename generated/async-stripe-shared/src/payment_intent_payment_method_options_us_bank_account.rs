@@ -4,9 +4,6 @@
 pub struct PaymentIntentPaymentMethodOptionsUsBankAccount {
     pub financial_connections: Option<stripe_shared::LinkedAccountOptionsCommon>,
     pub mandate_options: Option<stripe_shared::PaymentMethodOptionsUsBankAccountMandateOptions>,
-    /// Preferred transaction settlement speed
-    pub preferred_settlement_speed:
-        Option<PaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed>,
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
     /// If you provide a Customer with the PaymentIntent, you can use this parameter to [attach the payment method](/payments/save-during-payment) to the Customer after the PaymentIntent is confirmed and the customer completes any required actions.
@@ -28,8 +25,6 @@ pub struct PaymentIntentPaymentMethodOptionsUsBankAccount {
 pub struct PaymentIntentPaymentMethodOptionsUsBankAccountBuilder {
     financial_connections: Option<Option<stripe_shared::LinkedAccountOptionsCommon>>,
     mandate_options: Option<Option<stripe_shared::PaymentMethodOptionsUsBankAccountMandateOptions>>,
-    preferred_settlement_speed:
-        Option<Option<PaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed>>,
     setup_future_usage:
         Option<Option<PaymentIntentPaymentMethodOptionsUsBankAccountSetupFutureUsage>>,
     target_date: Option<Option<String>>,
@@ -79,9 +74,6 @@ const _: () = {
             Ok(match k {
                 "financial_connections" => Deserialize::begin(&mut self.financial_connections),
                 "mandate_options" => Deserialize::begin(&mut self.mandate_options),
-                "preferred_settlement_speed" => {
-                    Deserialize::begin(&mut self.preferred_settlement_speed)
-                }
                 "setup_future_usage" => Deserialize::begin(&mut self.setup_future_usage),
                 "target_date" => Deserialize::begin(&mut self.target_date),
                 "verification_method" => Deserialize::begin(&mut self.verification_method),
@@ -93,7 +85,6 @@ const _: () = {
             Self {
                 financial_connections: Deserialize::default(),
                 mandate_options: Deserialize::default(),
-                preferred_settlement_speed: Deserialize::default(),
                 setup_future_usage: Deserialize::default(),
                 target_date: Deserialize::default(),
                 verification_method: Deserialize::default(),
@@ -104,14 +95,12 @@ const _: () = {
             let (
                 Some(financial_connections),
                 Some(mandate_options),
-                Some(preferred_settlement_speed),
                 Some(setup_future_usage),
                 Some(target_date),
                 Some(verification_method),
             ) = (
                 self.financial_connections.take(),
                 self.mandate_options.take(),
-                self.preferred_settlement_speed.take(),
                 self.setup_future_usage.take(),
                 self.target_date.take(),
                 self.verification_method.take(),
@@ -122,7 +111,6 @@ const _: () = {
             Some(Self::Out {
                 financial_connections,
                 mandate_options,
-                preferred_settlement_speed,
                 setup_future_usage,
                 target_date,
                 verification_method,
@@ -157,9 +145,6 @@ const _: () = {
                         b.financial_connections = FromValueOpt::from_value(v)
                     }
                     "mandate_options" => b.mandate_options = FromValueOpt::from_value(v),
-                    "preferred_settlement_speed" => {
-                        b.preferred_settlement_speed = FromValueOpt::from_value(v)
-                    }
                     "setup_future_usage" => b.setup_future_usage = FromValueOpt::from_value(v),
                     "target_date" => b.target_date = FromValueOpt::from_value(v),
                     "verification_method" => b.verification_method = FromValueOpt::from_value(v),
@@ -170,98 +155,6 @@ const _: () = {
         }
     }
 };
-/// Preferred transaction settlement speed
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum PaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed {
-    Fastest,
-    Standard,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl PaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed {
-    pub fn as_str(&self) -> &str {
-        use PaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed::*;
-        match self {
-            Fastest => "fastest",
-            Standard => "standard",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr for PaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed {
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use PaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed::*;
-        match s {
-            "fastest" => Ok(Fastest),
-            "standard" => Ok(Standard),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display for PaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-impl std::fmt::Debug for PaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize for PaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize
-    for PaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed
-{
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor
-    for crate::Place<PaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed>
-{
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(
-            PaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed::from_str(s)
-                .expect("infallible"),
-        );
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(
-    PaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed
-);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de>
-    for PaymentIntentPaymentMethodOptionsUsBankAccountPreferredSettlementSpeed
-{
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
 ///
 /// If you provide a Customer with the PaymentIntent, you can use this parameter to [attach the payment method](/payments/save-during-payment) to the Customer after the PaymentIntent is confirmed and the customer completes any required actions.

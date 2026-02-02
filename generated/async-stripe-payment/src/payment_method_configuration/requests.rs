@@ -2598,7 +2598,7 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Meal vouchers in France, or “titres-restaurant”, is a local benefits program commonly offered by employers for their employees to purchase prepared food and beverages on working days.
-/// Check this [page](https://docs.stripe.com/payments/benefits/fr-meal-vouchers) for more details.
+/// Check this [page](https://docs.stripe.com/payments/meal-vouchers/fr-meal-vouchers) for more details.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationFrMealVoucherConecs {
     /// Whether or not the payment method should be displayed.
@@ -6485,7 +6485,7 @@ impl CreatePaymentMethodConfiguration {
         self
     }
     /// Meal vouchers in France, or “titres-restaurant”, is a local benefits program commonly offered by employers for their employees to purchase prepared food and beverages on working days.
-    /// Check this [page](https://docs.stripe.com/payments/benefits/fr-meal-vouchers) for more details.
+    /// Check this [page](https://docs.stripe.com/payments/meal-vouchers/fr-meal-vouchers) for more details.
     pub fn fr_meal_voucher_conecs(
         mut self,
         fr_meal_voucher_conecs: impl Into<CreatePaymentMethodConfigurationFrMealVoucherConecs>,
@@ -9228,7 +9228,7 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Meal vouchers in France, or “titres-restaurant”, is a local benefits program commonly offered by employers for their employees to purchase prepared food and beverages on working days.
-/// Check this [page](https://docs.stripe.com/payments/benefits/fr-meal-vouchers) for more details.
+/// Check this [page](https://docs.stripe.com/payments/meal-vouchers/fr-meal-vouchers) for more details.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationFrMealVoucherConecs {
     /// Whether or not the payment method should be displayed.
@@ -13124,7 +13124,7 @@ impl UpdatePaymentMethodConfiguration {
         self
     }
     /// Meal vouchers in France, or “titres-restaurant”, is a local benefits program commonly offered by employers for their employees to purchase prepared food and beverages on working days.
-    /// Check this [page](https://docs.stripe.com/payments/benefits/fr-meal-vouchers) for more details.
+    /// Check this [page](https://docs.stripe.com/payments/meal-vouchers/fr-meal-vouchers) for more details.
     pub fn fr_meal_voucher_conecs(
         mut self,
         fr_meal_voucher_conecs: impl Into<UpdatePaymentMethodConfigurationFrMealVoucherConecs>,

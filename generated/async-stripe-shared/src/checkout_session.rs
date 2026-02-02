@@ -58,6 +58,7 @@ pub struct CheckoutSession {
     pub currency_conversion: Option<stripe_shared::PaymentPagesCheckoutSessionCurrencyConversion>,
     /// Collect additional information from your customer using custom fields.
     /// Up to 3 fields are supported.
+    /// You can't set this parameter if `ui_mode` is `custom`.
     pub custom_fields: Vec<stripe_shared::PaymentPagesCheckoutSessionCustomFields>,
     pub custom_text: stripe_shared::PaymentPagesCheckoutSessionCustomText,
     /// The ID of the customer for this Session.

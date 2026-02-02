@@ -495,6 +495,7 @@ impl Default for CreateCheckoutSessionAdaptivePricing {
     }
 }
 /// Configure actions after a Checkout Session has expired.
+/// You can't set this parameter if `ui_mode` is `custom`.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateCheckoutSessionAfterExpiration {
     /// Configure a Checkout Session that can be used to recover an expired session.
@@ -1305,6 +1306,7 @@ impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionConsentCollectionTerm
 }
 /// Collect additional information from your customer using custom fields.
 /// Up to 3 fields are supported.
+/// You can't set this parameter if `ui_mode` is `custom`.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateCheckoutSessionCustomFields {
     /// Configuration for `type=dropdown` fields.
@@ -1568,6 +1570,7 @@ impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionCustomFieldsType {
     }
 }
 /// Display additional text for your customers using custom text.
+/// You can't set this parameter if `ui_mode` is `custom`.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateCheckoutSessionCustomText {
     /// Custom text that should be displayed after the payment confirmation button.
@@ -2396,6 +2399,7 @@ pub struct CreateCheckoutSessionLineItems {
     pub adjustable_quantity: Option<CreateCheckoutSessionLineItemsAdjustableQuantity>,
     /// The [tax rates](https://docs.stripe.com/api/tax_rates) that will be applied to this line item depending on the customer's billing/shipping address.
     /// We currently support the following countries: US, GB, AU, and all countries in the EU.
+    /// You can't set this parameter if `ui_mode` is `custom`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub dynamic_tax_rates: Option<Vec<String>>,
     /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
@@ -2670,6 +2674,8 @@ impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionLineItemsPriceDataTax
 /// Each name field can be either required or optional.
 ///
 /// If a [Customer](https://docs.stripe.com/api/customers) is created or provided, the names can be saved to the Customer object as well.
+///
+/// You can't set this parameter if `ui_mode` is `custom`.
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct CreateCheckoutSessionNameCollection {
     /// Controls settings applied for collecting the customer's business name on the session.
@@ -2727,6 +2733,8 @@ impl CreateCheckoutSessionNameCollectionIndividual {
 /// For `payment` mode, there is a maximum of 100 combined line items and optional items, however it is recommended to consolidate items if there are more than a few dozen.
 ///
 /// For `subscription` mode, there is a maximum of 20 line items and optional items with recurring Prices and 20 line items and optional items with one-time Prices.
+///
+/// You can't set this parameter if `ui_mode` is `custom`.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateCheckoutSessionOptionalItems {
     /// When set, provides configuration for the customer to adjust the quantity of the line item created when a customer chooses to add this optional item to their order.
@@ -3258,6 +3266,7 @@ impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionPaymentMethodDataAllo
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptions {
     /// contains details about the ACSS Debit payment method options.
+    /// You can't set this parameter if `ui_mode` is `custom`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub acss_debit: Option<CreateCheckoutSessionPaymentMethodOptionsAcssDebit>,
     /// contains details about the Affirm payment method options.
@@ -3451,6 +3460,7 @@ impl Default for CreateCheckoutSessionPaymentMethodOptions {
     }
 }
 /// contains details about the ACSS Debit payment method options.
+/// You can't set this parameter if `ui_mode` is `custom`.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsAcssDebit {
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
@@ -5196,7 +5206,9 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsCard {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub request_three_d_secure:
         Option<CreateCheckoutSessionPaymentMethodOptionsCardRequestThreeDSecure>,
-    /// Restrictions to apply to the card payment method. For example, you can block specific card brands.
+    /// Restrictions to apply to the card payment method.
+    /// For example, you can block specific card brands.
+    /// You can't set this parameter if `ui_mode` is `custom`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub restrictions: Option<CreateCheckoutSessionPaymentMethodOptionsCardRestrictions>,
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
@@ -5679,7 +5691,9 @@ impl<'de> serde::Deserialize<'de>
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-/// Restrictions to apply to the card payment method. For example, you can block specific card brands.
+/// Restrictions to apply to the card payment method.
+/// For example, you can block specific card brands.
+/// You can't set this parameter if `ui_mode` is `custom`.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsCardRestrictions {
     /// Specify the card brands to block in the Checkout Session.
@@ -12668,6 +12682,7 @@ pub struct CreateCheckoutSessionSubscriptionData {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub application_fee_percent: Option<f64>,
     /// A future timestamp to anchor the subscription's billing cycle for new subscriptions.
+    /// You can't set this parameter if `ui_mode` is `custom`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_cycle_anchor: Option<stripe_types::Timestamp>,
     /// Controls how prorations and invoices for subscriptions are calculated and orchestrated.
@@ -13210,7 +13225,9 @@ impl<'de> serde::Deserialize<'de>
 pub struct CreateCheckoutSessionTaxIdCollection {
     /// Enable tax ID collection during checkout. Defaults to `false`.
     pub enabled: bool,
-    /// Describes whether a tax ID is required during checkout. Defaults to `never`.
+    /// Describes whether a tax ID is required during checkout.
+    /// Defaults to `never`.
+    /// You can't set this parameter if `ui_mode` is `custom`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub required: Option<CreateCheckoutSessionTaxIdCollectionRequired>,
 }
@@ -13219,7 +13236,9 @@ impl CreateCheckoutSessionTaxIdCollection {
         Self { enabled: enabled.into(), required: None }
     }
 }
-/// Describes whether a tax ID is required during checkout. Defaults to `never`.
+/// Describes whether a tax ID is required during checkout.
+/// Defaults to `never`.
+/// You can't set this parameter if `ui_mode` is `custom`.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum CreateCheckoutSessionTaxIdCollectionRequired {
@@ -13406,6 +13425,7 @@ impl CreateCheckoutSession {
         self
     }
     /// Configure actions after a Checkout Session has expired.
+    /// You can't set this parameter if `ui_mode` is `custom`.
     pub fn after_expiration(
         mut self,
         after_expiration: impl Into<CreateCheckoutSessionAfterExpiration>,
@@ -13473,6 +13493,7 @@ impl CreateCheckoutSession {
     }
     /// Collect additional information from your customer using custom fields.
     /// Up to 3 fields are supported.
+    /// You can't set this parameter if `ui_mode` is `custom`.
     pub fn custom_fields(
         mut self,
         custom_fields: impl Into<Vec<CreateCheckoutSessionCustomFields>>,
@@ -13481,6 +13502,7 @@ impl CreateCheckoutSession {
         self
     }
     /// Display additional text for your customers using custom text.
+    /// You can't set this parameter if `ui_mode` is `custom`.
     pub fn custom_text(mut self, custom_text: impl Into<CreateCheckoutSessionCustomText>) -> Self {
         self.inner.custom_text = Some(custom_text.into());
         self
@@ -13621,6 +13643,8 @@ impl CreateCheckoutSession {
     /// Each name field can be either required or optional.
     ///
     /// If a [Customer](https://docs.stripe.com/api/customers) is created or provided, the names can be saved to the Customer object as well.
+    ///
+    /// You can't set this parameter if `ui_mode` is `custom`.
     pub fn name_collection(
         mut self,
         name_collection: impl Into<CreateCheckoutSessionNameCollection>,
@@ -13636,6 +13660,8 @@ impl CreateCheckoutSession {
     /// For `payment` mode, there is a maximum of 100 combined line items and optional items, however it is recommended to consolidate items if there are more than a few dozen.
     ///
     /// For `subscription` mode, there is a maximum of 20 line items and optional items with recurring Prices and 20 line items and optional items with one-time Prices.
+    ///
+    /// You can't set this parameter if `ui_mode` is `custom`.
     pub fn optional_items(
         mut self,
         optional_items: impl Into<Vec<CreateCheckoutSessionOptionalItems>>,
@@ -13643,7 +13669,9 @@ impl CreateCheckoutSession {
         self.inner.optional_items = Some(optional_items.into());
         self
     }
-    /// Where the user is coming from. This informs the optimizations that are applied to the session.
+    /// Where the user is coming from.
+    /// This informs the optimizations that are applied to the session.
+    /// You can't set this parameter if `ui_mode` is `custom`.
     pub fn origin_context(
         mut self,
         origin_context: impl Into<stripe_shared::CheckoutSessionOriginContext>,
@@ -13789,6 +13817,7 @@ impl CreateCheckoutSession {
     /// to customize relevant text on the page, such as the submit button.
     ///  `submit_type` can only be specified on Checkout Sessions in
     /// `payment` or `subscription` mode. If blank or `auto`, `pay` is used.
+    /// You can't set this parameter if `ui_mode` is `custom`.
     pub fn submit_type(
         mut self,
         submit_type: impl Into<stripe_shared::CheckoutSessionSubmitType>,
@@ -14787,7 +14816,7 @@ impl<'de> serde::Deserialize<'de> for UpdateCheckoutSessionShippingOptionsShippi
 }
 /// Updates a Checkout Session object.
 ///
-/// Related guide: <a href="/payments/checkout/dynamic-updates">Dynamically update Checkout</a>
+/// Related guide: <a href="/payments/advanced/dynamic-updates">Dynamically update a Checkout Session</a>.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct UpdateCheckoutSession {
     inner: UpdateCheckoutSessionBuilder,

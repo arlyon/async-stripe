@@ -12,6 +12,8 @@ pub struct TreasuryReceivedDebitsResourceLinkedFlows {
     pub issuing_transaction: Option<String>,
     /// Set if the ReceivedDebit was created due to a [Payout](https://api.stripe.com#payouts) object.
     pub payout: Option<String>,
+    /// Set if the ReceivedDebit was created due to a [Topup](https://api.stripe.com#topups) object.
+    pub topup: Option<String>,
 }
 #[doc(hidden)]
 pub struct TreasuryReceivedDebitsResourceLinkedFlowsBuilder {
@@ -20,6 +22,7 @@ pub struct TreasuryReceivedDebitsResourceLinkedFlowsBuilder {
     issuing_authorization: Option<Option<String>>,
     issuing_transaction: Option<Option<String>>,
     payout: Option<Option<String>>,
+    topup: Option<Option<String>>,
 }
 
 #[allow(
@@ -67,6 +70,7 @@ const _: () = {
                 "issuing_authorization" => Deserialize::begin(&mut self.issuing_authorization),
                 "issuing_transaction" => Deserialize::begin(&mut self.issuing_transaction),
                 "payout" => Deserialize::begin(&mut self.payout),
+                "topup" => Deserialize::begin(&mut self.topup),
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -78,6 +82,7 @@ const _: () = {
                 issuing_authorization: Deserialize::default(),
                 issuing_transaction: Deserialize::default(),
                 payout: Deserialize::default(),
+                topup: Deserialize::default(),
             }
         }
 
@@ -88,12 +93,14 @@ const _: () = {
                 Some(issuing_authorization),
                 Some(issuing_transaction),
                 Some(payout),
+                Some(topup),
             ) = (
                 self.debit_reversal.take(),
                 self.inbound_transfer.take(),
                 self.issuing_authorization.take(),
                 self.issuing_transaction.take(),
                 self.payout.take(),
+                self.topup.take(),
             )
             else {
                 return None;
@@ -104,6 +111,7 @@ const _: () = {
                 issuing_authorization,
                 issuing_transaction,
                 payout,
+                topup,
             })
         }
     }
@@ -138,6 +146,7 @@ const _: () = {
                     }
                     "issuing_transaction" => b.issuing_transaction = FromValueOpt::from_value(v),
                     "payout" => b.payout = FromValueOpt::from_value(v),
+                    "topup" => b.topup = FromValueOpt::from_value(v),
                     _ => {}
                 }
             }
