@@ -18,13 +18,13 @@ name = "stripe"
 
 [dependencies]
 hyper = { version = "1.5.2", default-features = false, features = ["http1", "http2", "client"], optional = true }
-hyper-util = {version = "0.1.10", features = ["client-legacy", "tokio", "http1", "http2"], optional = true}
+hyper-util = {version = "0.1.20", features = ["client-legacy", "tokio", "http1", "http2"], optional = true}
 http-body-util = { version = "0.1.2", optional = true }
 hyper-tls = { version = "0.6", optional = true }
 hyper-rustls = { version = "0.27", default-features = false, features = ["http1", "http2", "tls12", "logging"], optional = true }
 thiserror = "2.0.11"
 miniserde.workspace = true
-bytes = "1.6.0"
+bytes = "1.11.1"
 tokio = { version = "1.24.1", features = ["rt", "macros"] }
 tracing = "0.1.40"
 
@@ -56,4 +56,4 @@ uuid = ["async-stripe-client-core/uuid"]
 [dev-dependencies]
 serde.workspace = true
 serde_json.workspace = true
-httpmock = { version = "0.7.0", default-features = false }
+httpmock = { version = "0.8.3", default-features = false }

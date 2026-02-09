@@ -37,4 +37,4 @@ serde_path_to_error = "0.1.20"
 wasm-bindgen = "0.2.106"
 
 [dev-dependencies]
-insta = { version = "1.41", features = ["json"] }
+insta = { version = "1.46", features = ["json"] }
