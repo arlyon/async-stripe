@@ -53,7 +53,7 @@ crate for the APIs you want to use (e.g., `stripe-core` for customers).
 
     [dependencies]
     async-stripe = "=1.0.0-alpha.8"
-    stripe-core = { version = "=1.0.0-alpha.8", features = ["customer"] }
+    async-stripe-core = { version = "=1.0.0-alpha.8", features = ["customer"] }
     tokio = { version = "1", features = ["full"] }
 
 **2. Create a Customer:**
