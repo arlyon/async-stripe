@@ -43,7 +43,7 @@ pub trait StripeClient {
     fn execute(
         &self,
         req: CustomizedStripeRequest,
-    ) -> impl std::future::Future<Output = Result<Bytes, Self::Err>>;
+    ) -> impl std::future::Future<Output = Result<Bytes, Self::Err>> + Send;
 }
 
 /// An abstraction for defining HTTP clients capable of making blocking Stripe API requests compatible
