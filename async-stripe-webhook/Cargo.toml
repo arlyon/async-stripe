@@ -15,8 +15,8 @@ categories.workspace = true
 name = "stripe_webhook"
 
 [dependencies]
-async-stripe-types = { path = "../async-stripe-types", version = "1.0.0-rc.1" }
-async-stripe-shared = { path = "../generated/async-stripe-shared", version = "1.0.0-rc.1" }
+async-stripe-types = { path = "../async-stripe-types", version = "1.0.0-rc.2" }
+async-stripe-shared = { path = "../generated/async-stripe-shared", version = "1.0.0-rc.2" }
 hmac = "0.12"
 sha2 = "0.10"
 hex = "0.4"
@@ -27,14 +27,14 @@ miniserde.workspace = true
 serde.workspace = true
 serde_json = { workspace = true, optional = true }
 
-async-stripe-billing = { path = "../generated/async-stripe-billing", optional = true, version = "1.0.0-rc.1" }
-async-stripe-checkout = { path = "../generated/async-stripe-checkout", optional = true, version = "1.0.0-rc.1" }
-async-stripe-core = { path = "../generated/async-stripe-core", optional = true, version = "1.0.0-rc.1" }
-async-stripe-fraud = { path = "../generated/async-stripe-fraud", optional = true, version = "1.0.0-rc.1" }
-async-stripe-misc = { path = "../generated/async-stripe-misc", optional = true, version = "1.0.0-rc.1" }
-async-stripe-payment = { path = "../generated/async-stripe-payment", optional = true, version = "1.0.0-rc.1" }
-async-stripe-terminal = { path = "../generated/async-stripe-terminal", optional = true, version = "1.0.0-rc.1" }
-async-stripe-treasury = { path = "../generated/async-stripe-treasury", optional = true, version = "1.0.0-rc.1" }
+async-stripe-billing = { path = "../generated/async-stripe-billing", optional = true, version = "1.0.0-rc.2" }
+async-stripe-checkout = { path = "../generated/async-stripe-checkout", optional = true, version = "1.0.0-rc.2" }
+async-stripe-core = { path = "../generated/async-stripe-core", optional = true, version = "1.0.0-rc.2" }
+async-stripe-fraud = { path = "../generated/async-stripe-fraud", optional = true, version = "1.0.0-rc.2" }
+async-stripe-misc = { path = "../generated/async-stripe-misc", optional = true, version = "1.0.0-rc.2" }
+async-stripe-payment = { path = "../generated/async-stripe-payment", optional = true, version = "1.0.0-rc.2" }
+async-stripe-terminal = { path = "../generated/async-stripe-terminal", optional = true, version = "1.0.0-rc.2" }
+async-stripe-treasury = { path = "../generated/async-stripe-treasury", optional = true, version = "1.0.0-rc.2" }
 serde_path_to_error = { version = "0.1.20", optional = true }
 
 [dev-dependencies]
