@@ -37,7 +37,7 @@ impl stripe_client_core::StripeClient for StripeClient {
     fn execute(
         &self,
         req: CustomizedStripeRequest,
-    ) -> Pin<Box<dyn Future<Output = Result<Bytes, SimpleStripeClientError>> + '_>> {
+    ) -> Pin<Box<dyn Future<Output = Result<Bytes, SimpleStripeClientError>> + '_ + Send>> {
         match self {
             StripeClient::Hyper(c) => {
                 Box::pin(c.execute(req).map_err(|err| SimpleStripeClientError(err.to_string())))
