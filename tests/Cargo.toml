@@ -10,9 +10,9 @@ miniserde.workspace = true
 serde_qs.workspace = true
 serde_json.workspace = true
 chrono = "0.4.26"
-httpmock = { version = "0.7.0", default-features = false }
+httpmock = { version = "0.8.3", default-features = false }
 wiremock = "0.6.5"
-futures-util = { version = "0.3.21" }
+futures-util = { version = "0.3.32" }
 bytes = "1.6.0"
 tokio = { version = "1.24.1", features = ["rt", "macros"] }
 async-stripe-types = { path = "../async-stripe-types", features = ["serialize"] }
