@@ -109,6 +109,19 @@ impl RustObject {
         }
     }
 
+    /// Can this derive `Eq`?
+    pub fn is_eq(&self, components: &Components) -> bool {
+        match self {
+            Self::Struct(struct_) => struct_.fields.iter().all(|f| f.rust_type.is_eq(components)),
+            // FieldlessEnum already derives Eq (String implements Eq)
+            Self::FieldlessEnum(_) => true,
+            Self::Enum(variants) => variants.iter().all(|f| match &f.rust_type {
+                None => true,
+                Some(typ) => typ.is_eq(components),
+            }),
+        }
+    }
+
     pub fn visit<'a, T: Visit<'a>>(&'a self, visitor: &mut T, usage: ObjectUsage) {
         match self {
             Self::Struct(struct_) => {
