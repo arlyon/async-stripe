@@ -49,6 +49,19 @@ impl PathToType {
             }
         }
     }
+
+    pub fn is_eq(&self, components: &Components) -> bool {
+        match self {
+            Self::Component(comp) => components.get(comp).rust_obj().is_eq(components),
+
+            // Backed by `String` or `smol_str::SmolStr`, both implement `Eq`
+            Self::ObjectId(_) => true,
+            Self::Shared(ident) => components.get_extra_type(ident).obj.is_eq(components),
+            Self::Deduplicated { path, ident } => {
+                components.get_dedupped_type(ident, path).object.is_eq(components)
+            }
+        }
+    }
 }
 
 #[derive(Debug, Clone, Eq, PartialEq, Hash)]
@@ -167,6 +180,27 @@ impl RustType {
                 List(_) | Vec(_) | Expandable(_) | SearchList(_) => false,
                 Slice(_) => true,
                 Option(inner) | Box(inner) => inner.is_copy(components),
+                Map { is_ref, .. } => *is_ref,
+            },
+        }
+    }
+
+    /// Can this type derive `Eq`?
+    pub fn is_eq(&self, components: &Components) -> bool {
+        use Container::*;
+
+        match self {
+            Self::Object(obj, ..) => obj.is_eq(components),
+            Self::Simple(typ) => typ.is_eq(),
+            Self::Path { path, .. } => path.is_eq(components),
+            Self::Container(typ) => match typ {
+                // List and SearchList contain `url: String` which is Eq, but they
+                // don't derive Eq themselves
+                List(_) | SearchList(_) => false,
+                // Expandable doesn't derive Eq
+                Expandable(_) => false,
+                Vec(inner) | Slice(inner) | Option(inner) | Box(inner) => inner.is_eq(components),
+                // HashMap does not implement Eq (only PartialEq)
                 Map { is_ref, .. } => *is_ref,
             },
         }
@@ -366,6 +400,12 @@ impl SimpleType {
     /// Does this type implement `Copy`?
     pub const fn is_copy(self) -> bool {
         !matches!(self, Self::String | Self::Ext(ExtType::Value) | Self::Ext(ExtType::Currency))
+    }
+
+    /// Does this type implement `Eq`?
+    pub const fn is_eq(self) -> bool {
+        // `f64` and `Value` (which contains f64) do not implement `Eq`
+        !matches!(self, Self::Float | Self::Ext(ExtType::Value))
     }
 
     /// Is this type a reference?
