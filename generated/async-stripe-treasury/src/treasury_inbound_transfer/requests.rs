@@ -2,7 +2,7 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct ListTreasuryInboundTransferBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<String>,
@@ -105,7 +105,7 @@ impl StripeRequest for ListTreasuryInboundTransfer {
         RequestBuilder::new(StripeMethod::Get, "/treasury/inbound_transfers").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct RetrieveTreasuryInboundTransferBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -159,7 +159,7 @@ impl StripeRequest for RetrieveTreasuryInboundTransfer {
             .query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct FailTreasuryInboundTransferBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -172,7 +172,7 @@ impl FailTreasuryInboundTransferBuilder {
     }
 }
 /// Details about a failed InboundTransfer.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct FailTreasuryInboundTransferFailureDetails {
     /// Reason for the failure.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -342,7 +342,7 @@ impl StripeRequest for FailTreasuryInboundTransfer {
         .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct ReturnInboundTransferTreasuryInboundTransferBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -400,7 +400,7 @@ impl StripeRequest for ReturnInboundTransferTreasuryInboundTransfer {
         .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct SucceedTreasuryInboundTransferBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -568,7 +568,7 @@ impl StripeRequest for CreateTreasuryInboundTransfer {
         RequestBuilder::new(StripeMethod::Post, "/treasury/inbound_transfers").form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct CancelTreasuryInboundTransferBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,

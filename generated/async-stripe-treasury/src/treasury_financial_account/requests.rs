@@ -2,7 +2,7 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct ListTreasuryFinancialAccountBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     created: Option<stripe_types::RangeQueryTs>,
@@ -111,7 +111,7 @@ impl StripeRequest for ListTreasuryFinancialAccount {
         RequestBuilder::new(StripeMethod::Get, "/treasury/financial_accounts").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct RetrieveTreasuryFinancialAccountBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -171,7 +171,7 @@ impl StripeRequest for RetrieveTreasuryFinancialAccount {
         .query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct RetrieveFeaturesTreasuryFinancialAccountBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -259,7 +259,7 @@ impl CreateTreasuryFinancialAccountBuilder {
 }
 /// Encodes whether a FinancialAccount has access to a particular feature.
 /// Stripe or the platform can control features via the requested field.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateTreasuryFinancialAccountFeatures {
     /// Encodes the FinancialAccount's ability to be used with the Issuing product, including attaching cards to and drawing funds from the FinancialAccount.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -303,7 +303,7 @@ impl Default for CreateTreasuryFinancialAccountFeatures {
     }
 }
 /// Encodes the FinancialAccount's ability to be used with the Issuing product, including attaching cards to and drawing funds from the FinancialAccount.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateTreasuryFinancialAccountFeaturesCardIssuing {
     /// Whether the FinancialAccount should have the Feature.
     pub requested: bool,
@@ -315,7 +315,7 @@ impl CreateTreasuryFinancialAccountFeaturesCardIssuing {
 }
 /// Represents whether this FinancialAccount is eligible for deposit insurance.
 /// Various factors determine the insurance amount.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateTreasuryFinancialAccountFeaturesDepositInsurance {
     /// Whether the FinancialAccount should have the Feature.
     pub requested: bool,
@@ -326,7 +326,7 @@ impl CreateTreasuryFinancialAccountFeaturesDepositInsurance {
     }
 }
 /// Contains Features that add FinancialAddresses to the FinancialAccount.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateTreasuryFinancialAccountFeaturesFinancialAddresses {
     /// Adds an ABA FinancialAddress to the FinancialAccount.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -343,7 +343,7 @@ impl Default for CreateTreasuryFinancialAccountFeaturesFinancialAddresses {
     }
 }
 /// Adds an ABA FinancialAddress to the FinancialAccount.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateTreasuryFinancialAccountFeaturesFinancialAddressesAba {
     /// Whether the FinancialAccount should have the Feature.
     pub requested: bool,
@@ -354,7 +354,7 @@ impl CreateTreasuryFinancialAccountFeaturesFinancialAddressesAba {
     }
 }
 /// Contains settings related to adding funds to a FinancialAccount from another Account with the same owner.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateTreasuryFinancialAccountFeaturesInboundTransfers {
     /// Enables ACH Debits via the InboundTransfers API.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -371,7 +371,7 @@ impl Default for CreateTreasuryFinancialAccountFeaturesInboundTransfers {
     }
 }
 /// Enables ACH Debits via the InboundTransfers API.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateTreasuryFinancialAccountFeaturesInboundTransfersAch {
     /// Whether the FinancialAccount should have the Feature.
     pub requested: bool,
@@ -382,7 +382,7 @@ impl CreateTreasuryFinancialAccountFeaturesInboundTransfersAch {
     }
 }
 /// Represents the ability for the FinancialAccount to send money to, or receive money from other FinancialAccounts (for example, via OutboundPayment).
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateTreasuryFinancialAccountFeaturesIntraStripeFlows {
     /// Whether the FinancialAccount should have the Feature.
     pub requested: bool,
@@ -393,7 +393,7 @@ impl CreateTreasuryFinancialAccountFeaturesIntraStripeFlows {
     }
 }
 /// Includes Features related to initiating money movement out of the FinancialAccount to someone else's bucket of money.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateTreasuryFinancialAccountFeaturesOutboundPayments {
     /// Enables ACH transfers via the OutboundPayments API.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -414,7 +414,7 @@ impl Default for CreateTreasuryFinancialAccountFeaturesOutboundPayments {
     }
 }
 /// Enables ACH transfers via the OutboundPayments API.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateTreasuryFinancialAccountFeaturesOutboundPaymentsAch {
     /// Whether the FinancialAccount should have the Feature.
     pub requested: bool,
@@ -425,7 +425,7 @@ impl CreateTreasuryFinancialAccountFeaturesOutboundPaymentsAch {
     }
 }
 /// Enables US domestic wire transfers via the OutboundPayments API.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateTreasuryFinancialAccountFeaturesOutboundPaymentsUsDomesticWire {
     /// Whether the FinancialAccount should have the Feature.
     pub requested: bool,
@@ -436,7 +436,7 @@ impl CreateTreasuryFinancialAccountFeaturesOutboundPaymentsUsDomesticWire {
     }
 }
 /// Contains a Feature and settings related to moving money out of the FinancialAccount into another Account with the same owner.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateTreasuryFinancialAccountFeaturesOutboundTransfers {
     /// Enables ACH transfers via the OutboundTransfers API.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -457,7 +457,7 @@ impl Default for CreateTreasuryFinancialAccountFeaturesOutboundTransfers {
     }
 }
 /// Enables ACH transfers via the OutboundTransfers API.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateTreasuryFinancialAccountFeaturesOutboundTransfersAch {
     /// Whether the FinancialAccount should have the Feature.
     pub requested: bool,
@@ -468,7 +468,7 @@ impl CreateTreasuryFinancialAccountFeaturesOutboundTransfersAch {
     }
 }
 /// Enables US domestic wire transfers via the OutboundTransfers API.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateTreasuryFinancialAccountFeaturesOutboundTransfersUsDomesticWire {
     /// Whether the FinancialAccount should have the Feature.
     pub requested: bool,
@@ -479,7 +479,7 @@ impl CreateTreasuryFinancialAccountFeaturesOutboundTransfersUsDomesticWire {
     }
 }
 /// The set of functionalities that the platform can restrict on the FinancialAccount.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateTreasuryFinancialAccountPlatformRestrictions {
     /// Restricts all inbound money movement.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -733,7 +733,7 @@ impl UpdateTreasuryFinancialAccountBuilder {
 }
 /// Encodes whether a FinancialAccount has access to a particular feature, with a status enum and associated `status_details`.
 /// Stripe or the platform may control features via the requested field.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdateTreasuryFinancialAccountFeatures {
     /// Encodes the FinancialAccount's ability to be used with the Issuing product, including attaching cards to and drawing funds from the FinancialAccount.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -777,7 +777,7 @@ impl Default for UpdateTreasuryFinancialAccountFeatures {
     }
 }
 /// Encodes the FinancialAccount's ability to be used with the Issuing product, including attaching cards to and drawing funds from the FinancialAccount.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdateTreasuryFinancialAccountFeaturesCardIssuing {
     /// Whether the FinancialAccount should have the Feature.
     pub requested: bool,
@@ -789,7 +789,7 @@ impl UpdateTreasuryFinancialAccountFeaturesCardIssuing {
 }
 /// Represents whether this FinancialAccount is eligible for deposit insurance.
 /// Various factors determine the insurance amount.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdateTreasuryFinancialAccountFeaturesDepositInsurance {
     /// Whether the FinancialAccount should have the Feature.
     pub requested: bool,
@@ -800,7 +800,7 @@ impl UpdateTreasuryFinancialAccountFeaturesDepositInsurance {
     }
 }
 /// Contains Features that add FinancialAddresses to the FinancialAccount.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdateTreasuryFinancialAccountFeaturesFinancialAddresses {
     /// Adds an ABA FinancialAddress to the FinancialAccount.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -817,7 +817,7 @@ impl Default for UpdateTreasuryFinancialAccountFeaturesFinancialAddresses {
     }
 }
 /// Adds an ABA FinancialAddress to the FinancialAccount.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdateTreasuryFinancialAccountFeaturesFinancialAddressesAba {
     /// Whether the FinancialAccount should have the Feature.
     pub requested: bool,
@@ -828,7 +828,7 @@ impl UpdateTreasuryFinancialAccountFeaturesFinancialAddressesAba {
     }
 }
 /// Contains settings related to adding funds to a FinancialAccount from another Account with the same owner.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdateTreasuryFinancialAccountFeaturesInboundTransfers {
     /// Enables ACH Debits via the InboundTransfers API.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -845,7 +845,7 @@ impl Default for UpdateTreasuryFinancialAccountFeaturesInboundTransfers {
     }
 }
 /// Enables ACH Debits via the InboundTransfers API.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdateTreasuryFinancialAccountFeaturesInboundTransfersAch {
     /// Whether the FinancialAccount should have the Feature.
     pub requested: bool,
@@ -856,7 +856,7 @@ impl UpdateTreasuryFinancialAccountFeaturesInboundTransfersAch {
     }
 }
 /// Represents the ability for the FinancialAccount to send money to, or receive money from other FinancialAccounts (for example, via OutboundPayment).
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdateTreasuryFinancialAccountFeaturesIntraStripeFlows {
     /// Whether the FinancialAccount should have the Feature.
     pub requested: bool,
@@ -867,7 +867,7 @@ impl UpdateTreasuryFinancialAccountFeaturesIntraStripeFlows {
     }
 }
 /// Includes Features related to initiating money movement out of the FinancialAccount to someone else's bucket of money.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdateTreasuryFinancialAccountFeaturesOutboundPayments {
     /// Enables ACH transfers via the OutboundPayments API.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -888,7 +888,7 @@ impl Default for UpdateTreasuryFinancialAccountFeaturesOutboundPayments {
     }
 }
 /// Enables ACH transfers via the OutboundPayments API.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdateTreasuryFinancialAccountFeaturesOutboundPaymentsAch {
     /// Whether the FinancialAccount should have the Feature.
     pub requested: bool,
@@ -899,7 +899,7 @@ impl UpdateTreasuryFinancialAccountFeaturesOutboundPaymentsAch {
     }
 }
 /// Enables US domestic wire transfers via the OutboundPayments API.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdateTreasuryFinancialAccountFeaturesOutboundPaymentsUsDomesticWire {
     /// Whether the FinancialAccount should have the Feature.
     pub requested: bool,
@@ -910,7 +910,7 @@ impl UpdateTreasuryFinancialAccountFeaturesOutboundPaymentsUsDomesticWire {
     }
 }
 /// Contains a Feature and settings related to moving money out of the FinancialAccount into another Account with the same owner.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdateTreasuryFinancialAccountFeaturesOutboundTransfers {
     /// Enables ACH transfers via the OutboundTransfers API.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -931,7 +931,7 @@ impl Default for UpdateTreasuryFinancialAccountFeaturesOutboundTransfers {
     }
 }
 /// Enables ACH transfers via the OutboundTransfers API.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdateTreasuryFinancialAccountFeaturesOutboundTransfersAch {
     /// Whether the FinancialAccount should have the Feature.
     pub requested: bool,
@@ -942,7 +942,7 @@ impl UpdateTreasuryFinancialAccountFeaturesOutboundTransfersAch {
     }
 }
 /// Enables US domestic wire transfers via the OutboundTransfers API.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdateTreasuryFinancialAccountFeaturesOutboundTransfersUsDomesticWire {
     /// Whether the FinancialAccount should have the Feature.
     pub requested: bool,
@@ -953,7 +953,7 @@ impl UpdateTreasuryFinancialAccountFeaturesOutboundTransfersUsDomesticWire {
     }
 }
 /// A different bank account where funds can be deposited/debited in order to get the closing FA's balance to $0.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdateTreasuryFinancialAccountForwardingSettings {
     /// The financial_account id
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1036,7 +1036,7 @@ impl<'de> serde::Deserialize<'de> for UpdateTreasuryFinancialAccountForwardingSe
     }
 }
 /// The set of functionalities that the platform can restrict on the FinancialAccount.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdateTreasuryFinancialAccountPlatformRestrictions {
     /// Restricts all inbound money movement.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1277,7 +1277,7 @@ impl StripeRequest for UpdateTreasuryFinancialAccount {
         .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct CloseTreasuryFinancialAccountBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -1290,7 +1290,7 @@ impl CloseTreasuryFinancialAccountBuilder {
     }
 }
 /// A different bank account where funds can be deposited/debited in order to get the closing FA's balance to $0.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CloseTreasuryFinancialAccountForwardingSettings {
     /// The financial_account id
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1431,7 +1431,7 @@ impl StripeRequest for CloseTreasuryFinancialAccount {
         .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct UpdateFeaturesTreasuryFinancialAccountBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     card_issuing: Option<UpdateFeaturesTreasuryFinancialAccountCardIssuing>,
@@ -1465,7 +1465,7 @@ impl UpdateFeaturesTreasuryFinancialAccountBuilder {
     }
 }
 /// Encodes the FinancialAccount's ability to be used with the Issuing product, including attaching cards to and drawing funds from the FinancialAccount.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdateFeaturesTreasuryFinancialAccountCardIssuing {
     /// Whether the FinancialAccount should have the Feature.
     pub requested: bool,
@@ -1477,7 +1477,7 @@ impl UpdateFeaturesTreasuryFinancialAccountCardIssuing {
 }
 /// Represents whether this FinancialAccount is eligible for deposit insurance.
 /// Various factors determine the insurance amount.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdateFeaturesTreasuryFinancialAccountDepositInsurance {
     /// Whether the FinancialAccount should have the Feature.
     pub requested: bool,
@@ -1488,7 +1488,7 @@ impl UpdateFeaturesTreasuryFinancialAccountDepositInsurance {
     }
 }
 /// Contains Features that add FinancialAddresses to the FinancialAccount.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdateFeaturesTreasuryFinancialAccountFinancialAddresses {
     /// Adds an ABA FinancialAddress to the FinancialAccount.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1505,7 +1505,7 @@ impl Default for UpdateFeaturesTreasuryFinancialAccountFinancialAddresses {
     }
 }
 /// Adds an ABA FinancialAddress to the FinancialAccount.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdateFeaturesTreasuryFinancialAccountFinancialAddressesAba {
     /// Whether the FinancialAccount should have the Feature.
     pub requested: bool,
@@ -1516,7 +1516,7 @@ impl UpdateFeaturesTreasuryFinancialAccountFinancialAddressesAba {
     }
 }
 /// Contains settings related to adding funds to a FinancialAccount from another Account with the same owner.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdateFeaturesTreasuryFinancialAccountInboundTransfers {
     /// Enables ACH Debits via the InboundTransfers API.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1533,7 +1533,7 @@ impl Default for UpdateFeaturesTreasuryFinancialAccountInboundTransfers {
     }
 }
 /// Enables ACH Debits via the InboundTransfers API.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdateFeaturesTreasuryFinancialAccountInboundTransfersAch {
     /// Whether the FinancialAccount should have the Feature.
     pub requested: bool,
@@ -1544,7 +1544,7 @@ impl UpdateFeaturesTreasuryFinancialAccountInboundTransfersAch {
     }
 }
 /// Represents the ability for the FinancialAccount to send money to, or receive money from other FinancialAccounts (for example, via OutboundPayment).
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdateFeaturesTreasuryFinancialAccountIntraStripeFlows {
     /// Whether the FinancialAccount should have the Feature.
     pub requested: bool,
@@ -1555,7 +1555,7 @@ impl UpdateFeaturesTreasuryFinancialAccountIntraStripeFlows {
     }
 }
 /// Includes Features related to initiating money movement out of the FinancialAccount to someone else's bucket of money.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdateFeaturesTreasuryFinancialAccountOutboundPayments {
     /// Enables ACH transfers via the OutboundPayments API.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1576,7 +1576,7 @@ impl Default for UpdateFeaturesTreasuryFinancialAccountOutboundPayments {
     }
 }
 /// Enables ACH transfers via the OutboundPayments API.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdateFeaturesTreasuryFinancialAccountOutboundPaymentsAch {
     /// Whether the FinancialAccount should have the Feature.
     pub requested: bool,
@@ -1587,7 +1587,7 @@ impl UpdateFeaturesTreasuryFinancialAccountOutboundPaymentsAch {
     }
 }
 /// Enables US domestic wire transfers via the OutboundPayments API.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdateFeaturesTreasuryFinancialAccountOutboundPaymentsUsDomesticWire {
     /// Whether the FinancialAccount should have the Feature.
     pub requested: bool,
@@ -1598,7 +1598,7 @@ impl UpdateFeaturesTreasuryFinancialAccountOutboundPaymentsUsDomesticWire {
     }
 }
 /// Contains a Feature and settings related to moving money out of the FinancialAccount into another Account with the same owner.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdateFeaturesTreasuryFinancialAccountOutboundTransfers {
     /// Enables ACH transfers via the OutboundTransfers API.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1619,7 +1619,7 @@ impl Default for UpdateFeaturesTreasuryFinancialAccountOutboundTransfers {
     }
 }
 /// Enables ACH transfers via the OutboundTransfers API.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdateFeaturesTreasuryFinancialAccountOutboundTransfersAch {
     /// Whether the FinancialAccount should have the Feature.
     pub requested: bool,
@@ -1630,7 +1630,7 @@ impl UpdateFeaturesTreasuryFinancialAccountOutboundTransfersAch {
     }
 }
 /// Enables US domestic wire transfers via the OutboundTransfers API.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdateFeaturesTreasuryFinancialAccountOutboundTransfersUsDomesticWire {
     /// Whether the FinancialAccount should have the Feature.
     pub requested: bool,

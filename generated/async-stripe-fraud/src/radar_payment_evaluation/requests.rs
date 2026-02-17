@@ -28,7 +28,7 @@ impl CreateRadarPaymentEvaluationBuilder {
     }
 }
 /// Details about the Client Device Metadata to associate with the payment evaluation.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateRadarPaymentEvaluationClientDeviceMetadataDetails {
     /// ID for the Radar Session to associate with the payment evaluation.
     /// A [Radar Session](https://docs.stripe.com/radar/radar-session) is a snapshot of the browser metadata and device details that help Radar make more accurate predictions on your payments.
@@ -40,7 +40,7 @@ impl CreateRadarPaymentEvaluationClientDeviceMetadataDetails {
     }
 }
 /// Details about the customer associated with the payment evaluation.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateRadarPaymentEvaluationCustomerDetails {
     /// The ID of the customer associated with the payment evaluation.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -69,7 +69,7 @@ impl Default for CreateRadarPaymentEvaluationCustomerDetails {
     }
 }
 /// Details about the payment.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateRadarPaymentEvaluationPaymentDetails {
     /// The intended amount to collect with this payment.
     /// A positive integer representing how much to charge in the [smallest currency unit](https://docs.stripe.com/currencies#zero-decimal) (for example, 100 cents to charge 1.00 USD or 100 to charge 100 Yen, a zero-decimal currency).
@@ -113,7 +113,7 @@ impl CreateRadarPaymentEvaluationPaymentDetails {
     }
 }
 /// Details about the payment's customer presence and type.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateRadarPaymentEvaluationPaymentDetailsMoneyMovementDetails {
     /// Describes card money movement details for the payment evaluation.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -132,7 +132,7 @@ impl CreateRadarPaymentEvaluationPaymentDetailsMoneyMovementDetails {
     }
 }
 /// Describes card money movement details for the payment evaluation.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateRadarPaymentEvaluationPaymentDetailsMoneyMovementDetailsCard {
     /// Describes the presence of the customer during the payment.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -382,7 +382,7 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Details about the payment method to use for the payment.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateRadarPaymentEvaluationPaymentDetailsPaymentMethodDetails {
     /// Billing information associated with the payment evaluation.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -397,7 +397,7 @@ impl CreateRadarPaymentEvaluationPaymentDetailsPaymentMethodDetails {
     }
 }
 /// Billing information associated with the payment evaluation.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateRadarPaymentEvaluationPaymentDetailsPaymentMethodDetailsBillingDetails {
     /// Billing address.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -423,7 +423,7 @@ impl Default for CreateRadarPaymentEvaluationPaymentDetailsPaymentMethodDetailsB
     }
 }
 /// Shipping details for the payment evaluation.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateRadarPaymentEvaluationPaymentDetailsShippingDetails {
     /// Shipping address.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -516,7 +516,7 @@ impl StripeRequest for CreateRadarPaymentEvaluation {
     }
 }
 
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct Address {
     /// City, district, suburb, town, or village.
     #[serde(skip_serializing_if = "Option::is_none")]

@@ -11,7 +11,7 @@
 /// Related guide: [Accessing verification results](https://docs.stripe.com/identity/verification-sessions#results).
 ///
 /// For more details see <<https://stripe.com/docs/api/identity/verification_reports/object>>.
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Eq, PartialEq)]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct IdentityVerificationReport {
     /// A string to reference this user.

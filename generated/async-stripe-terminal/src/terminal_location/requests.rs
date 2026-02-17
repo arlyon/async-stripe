@@ -39,7 +39,7 @@ impl StripeRequest for DeleteTerminalLocation {
         RequestBuilder::new(StripeMethod::Delete, format!("/terminal/locations/{location}"))
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct ListTerminalLocationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<String>,
@@ -128,7 +128,7 @@ impl StripeRequest for ListTerminalLocation {
         RequestBuilder::new(StripeMethod::Get, "/terminal/locations").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct RetrieveTerminalLocationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -304,7 +304,7 @@ impl CreateTerminalLocationBuilder {
     }
 }
 /// The full address of the location.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateTerminalLocationAddress {
     /// City, district, suburb, town, or village.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -337,7 +337,7 @@ impl CreateTerminalLocationAddress {
     }
 }
 /// The Kana variation of the full address of the location (Japan only).
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateTerminalLocationAddressKana {
     /// City or ward.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -380,7 +380,7 @@ impl Default for CreateTerminalLocationAddressKana {
     }
 }
 /// The Kanji variation of the full address of the location (Japan only).
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateTerminalLocationAddressKanji {
     /// City or ward.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -568,7 +568,7 @@ impl UpdateTerminalLocationBuilder {
 /// The full address of the location.
 /// You can't change the location's `country`.
 /// If you need to modify the `country` field, create a new `Location` object and re-register any existing readers to that location.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdateTerminalLocationAddress {
     /// City, district, suburb, town, or village.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -600,7 +600,7 @@ impl Default for UpdateTerminalLocationAddress {
     }
 }
 /// The Kana variation of the full address of the location (Japan only).
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdateTerminalLocationAddressKana {
     /// City or ward.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -643,7 +643,7 @@ impl Default for UpdateTerminalLocationAddressKana {
     }
 }
 /// The Kanji variation of the full address of the location (Japan only).
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdateTerminalLocationAddressKanji {
     /// City or ward.
     #[serde(skip_serializing_if = "Option::is_none")]

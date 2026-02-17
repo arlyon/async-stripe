@@ -2,7 +2,7 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct ListIssuingPersonalizationDesignBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<String>,
@@ -33,7 +33,7 @@ impl ListIssuingPersonalizationDesignBuilder {
     }
 }
 /// Only return personalization designs with the given preferences.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct ListIssuingPersonalizationDesignPreferences {
     /// Only return the personalization design that's set as the default.
     /// A connected account uses the Connect platform's default design if no personalization design is set as the default.
@@ -151,7 +151,7 @@ impl StripeRequest for ListIssuingPersonalizationDesign {
             .query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct RetrieveIssuingPersonalizationDesignBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -469,7 +469,7 @@ impl StripeRequest for UpdateIssuingPersonalizationDesign {
         .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct ActivateIssuingPersonalizationDesignBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -531,7 +531,7 @@ impl StripeRequest for ActivateIssuingPersonalizationDesign {
         .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct DeactivateIssuingPersonalizationDesignBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -593,7 +593,7 @@ impl StripeRequest for DeactivateIssuingPersonalizationDesign {
         .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct RejectIssuingPersonalizationDesignBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -607,7 +607,7 @@ impl RejectIssuingPersonalizationDesignBuilder {
     }
 }
 /// The reason(s) the personalization design was rejected.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct RejectIssuingPersonalizationDesignRejectionReasons {
     /// The reason(s) the card logo was rejected.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -847,7 +847,7 @@ impl StripeRequest for RejectIssuingPersonalizationDesign {
     }
 }
 
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CarrierTextParam {
     /// The footer body text of the carrier letter.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -872,7 +872,7 @@ impl Default for CarrierTextParam {
         Self::new()
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct PreferencesParam {
     /// Whether we use this personalization design to create cards when one isn't specified.
     /// A connected account uses the Connect platform's default design if no personalization design is set as the default design.

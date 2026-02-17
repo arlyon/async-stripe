@@ -2,7 +2,7 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct CreateAccountLinkBuilder {
     account: String,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -93,7 +93,7 @@ impl<'de> serde::Deserialize<'de> for CreateAccountLinkCollect {
     }
 }
 /// Specifies the requirements that Stripe collects from connected accounts in the Connect Onboarding flow.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateAccountLinkCollectionOptions {
     /// Specifies whether the platform collects only currently_due requirements (`currently_due`) or both currently_due and eventually_due requirements (`eventually_due`).
     /// If you don't specify `collection_options`, the default value is `currently_due`.

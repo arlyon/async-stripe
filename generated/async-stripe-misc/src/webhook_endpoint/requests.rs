@@ -39,7 +39,7 @@ impl StripeRequest for DeleteWebhookEndpoint {
         RequestBuilder::new(StripeMethod::Delete, format!("/webhook_endpoints/{webhook_endpoint}"))
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct ListWebhookEndpointBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<String>,
@@ -127,7 +127,7 @@ impl StripeRequest for ListWebhookEndpoint {
         RequestBuilder::new(StripeMethod::Get, "/webhook_endpoints").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct RetrieveWebhookEndpointBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,

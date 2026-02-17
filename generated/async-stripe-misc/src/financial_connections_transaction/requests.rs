@@ -2,7 +2,7 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct ListFinancialConnectionsTransactionBuilder {
     account: String,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -33,7 +33,7 @@ impl ListFinancialConnectionsTransactionBuilder {
 }
 /// A filter on the list based on the object `transaction_refresh` field.
 /// The value can be a dictionary with the following options:.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct ListFinancialConnectionsTransactionTransactionRefresh {
     /// Return results where the transactions were created or updated by a refresh that took place after this refresh (non-inclusive).
     pub after: String,
@@ -131,7 +131,7 @@ impl StripeRequest for ListFinancialConnectionsTransaction {
             .query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct RetrieveFinancialConnectionsTransactionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,

@@ -2,7 +2,7 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct ListFinancialConnectionsAccountBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     account_holder: Option<ListFinancialConnectionsAccountAccountHolder>,
@@ -31,7 +31,7 @@ impl ListFinancialConnectionsAccountBuilder {
 }
 /// If present, only return accounts that belong to the specified account holder.
 /// `account_holder[customer]` and `account_holder[account]` are mutually exclusive.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct ListFinancialConnectionsAccountAccountHolder {
     /// The ID of the Stripe account whose accounts you will retrieve.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -141,7 +141,7 @@ impl StripeRequest for ListFinancialConnectionsAccount {
         RequestBuilder::new(StripeMethod::Get, "/financial_connections/accounts").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct RetrieveFinancialConnectionsAccountBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -195,7 +195,7 @@ impl StripeRequest for RetrieveFinancialConnectionsAccount {
             .query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct ListOwnersFinancialConnectionsAccountBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<String>,
@@ -304,7 +304,7 @@ impl StripeRequest for ListOwnersFinancialConnectionsAccount {
         .query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct DisconnectFinancialConnectionsAccountBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -363,7 +363,7 @@ impl StripeRequest for DisconnectFinancialConnectionsAccount {
         .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct RefreshFinancialConnectionsAccountBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -495,7 +495,7 @@ impl StripeRequest for RefreshFinancialConnectionsAccount {
         .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct SubscribeFinancialConnectionsAccountBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -622,7 +622,7 @@ impl StripeRequest for SubscribeFinancialConnectionsAccount {
         .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct UnsubscribeFinancialConnectionsAccountBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,

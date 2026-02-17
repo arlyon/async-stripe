@@ -3,7 +3,7 @@
 /// Related guide: [Managing list items](https://docs.stripe.com/radar/lists#managing-list-items)
 ///
 /// For more details see <<https://stripe.com/docs/api/radar/value_list_items/object>>.
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Eq, PartialEq)]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct RadarValueListItem {
     /// Time at which the object was created. Measured in seconds since the Unix epoch.

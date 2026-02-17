@@ -39,7 +39,7 @@ impl StripeRequest for DeleteApplePayDomain {
         RequestBuilder::new(StripeMethod::Delete, format!("/apple_pay/domains/{domain}"))
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct ListApplePayDomainBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     domain_name: Option<String>,
@@ -139,7 +139,7 @@ impl StripeRequest for ListApplePayDomain {
         RequestBuilder::new(StripeMethod::Get, "/apple_pay/domains").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct RetrieveApplePayDomainBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -193,7 +193,7 @@ impl StripeRequest for RetrieveApplePayDomain {
             .query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct CreateApplePayDomainBuilder {
     domain_name: String,
     #[serde(skip_serializing_if = "Option::is_none")]

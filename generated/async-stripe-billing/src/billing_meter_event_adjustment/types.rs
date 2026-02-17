@@ -1,6 +1,6 @@
 /// A billing meter event adjustment is a resource that allows you to cancel a meter event.
 /// For example, you might create a billing meter event adjustment to cancel a meter event that was created in error or attached to the wrong customer.
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Eq, PartialEq)]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct BillingMeterEventAdjustment {
     /// Specifies which event to cancel.

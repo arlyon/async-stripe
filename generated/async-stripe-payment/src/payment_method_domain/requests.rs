@@ -2,7 +2,7 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct ListPaymentMethodDomainBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     domain_name: Option<String>,
@@ -113,7 +113,7 @@ impl StripeRequest for ListPaymentMethodDomain {
         RequestBuilder::new(StripeMethod::Get, "/payment_method_domains").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct RetrievePaymentMethodDomainBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -173,7 +173,7 @@ impl StripeRequest for RetrievePaymentMethodDomain {
         .query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct CreatePaymentMethodDomainBuilder {
     domain_name: String,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -233,7 +233,7 @@ impl StripeRequest for CreatePaymentMethodDomain {
         RequestBuilder::new(StripeMethod::Post, "/payment_method_domains").form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct UpdatePaymentMethodDomainBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     enabled: Option<bool>,
@@ -301,7 +301,7 @@ impl StripeRequest for UpdatePaymentMethodDomain {
         .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct ValidatePaymentMethodDomainBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,

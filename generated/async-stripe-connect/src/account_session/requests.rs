@@ -111,7 +111,7 @@ impl Default for CreateAccountSessionComponents {
     }
 }
 /// Configuration for the [disputes list](/connect/supported-embedded-components/disputes-list/) embedded component.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateAccountSessionComponentsDisputesList {
     /// Whether the embedded component is enabled.
     pub enabled: bool,
@@ -125,7 +125,7 @@ impl CreateAccountSessionComponentsDisputesList {
     }
 }
 /// The list of features enabled in the embedded component.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateAccountSessionComponentsDisputesListFeatures {
     /// Whether to allow capturing and cancelling payment intents. This is `true` by default.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -158,7 +158,7 @@ impl Default for CreateAccountSessionComponentsDisputesListFeatures {
     }
 }
 /// Configuration for the [financial account](/connect/supported-embedded-components/financial-account/) embedded component.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateAccountSessionComponentsFinancialAccount {
     /// Whether the embedded component is enabled.
     pub enabled: bool,
@@ -172,7 +172,7 @@ impl CreateAccountSessionComponentsFinancialAccount {
     }
 }
 /// The list of features enabled in the embedded component.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateAccountSessionComponentsFinancialAccountFeatures {
     /// Whether Stripe user authentication is disabled.
     /// This value can only be `true` for accounts where `controller.requirement_collection` is `application` for the account.
@@ -208,7 +208,7 @@ impl Default for CreateAccountSessionComponentsFinancialAccountFeatures {
     }
 }
 /// Configuration for the [financial account transactions](/connect/supported-embedded-components/financial-account-transactions/) embedded component.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateAccountSessionComponentsFinancialAccountTransactions {
     /// Whether the embedded component is enabled.
     pub enabled: bool,
@@ -222,7 +222,7 @@ impl CreateAccountSessionComponentsFinancialAccountTransactions {
     }
 }
 /// The list of features enabled in the embedded component.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateAccountSessionComponentsFinancialAccountTransactionsFeatures {
     /// Whether to allow card spend dispute management features.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -239,7 +239,7 @@ impl Default for CreateAccountSessionComponentsFinancialAccountTransactionsFeatu
     }
 }
 /// Configuration for the [instant payouts promotion](/connect/supported-embedded-components/instant-payouts-promotion/) embedded component.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateAccountSessionComponentsInstantPayoutsPromotion {
     /// Whether the embedded component is enabled.
     pub enabled: bool,
@@ -253,7 +253,7 @@ impl CreateAccountSessionComponentsInstantPayoutsPromotion {
     }
 }
 /// The list of features enabled in the embedded component.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateAccountSessionComponentsInstantPayoutsPromotionFeatures {
     /// Whether Stripe user authentication is disabled.
     /// This value can only be `true` for accounts where `controller.requirement_collection` is `application` for the account.
@@ -285,7 +285,7 @@ impl Default for CreateAccountSessionComponentsInstantPayoutsPromotionFeatures {
     }
 }
 /// Configuration for the [issuing card](/connect/supported-embedded-components/issuing-card/) embedded component.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateAccountSessionComponentsIssuingCard {
     /// Whether the embedded component is enabled.
     pub enabled: bool,
@@ -299,7 +299,7 @@ impl CreateAccountSessionComponentsIssuingCard {
     }
 }
 /// The list of features enabled in the embedded component.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateAccountSessionComponentsIssuingCardFeatures {
     /// Whether to allow card management features.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -330,7 +330,7 @@ impl Default for CreateAccountSessionComponentsIssuingCardFeatures {
     }
 }
 /// Configuration for the [issuing cards list](/connect/supported-embedded-components/issuing-cards-list/) embedded component.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateAccountSessionComponentsIssuingCardsList {
     /// Whether the embedded component is enabled.
     pub enabled: bool,
@@ -344,7 +344,7 @@ impl CreateAccountSessionComponentsIssuingCardsList {
     }
 }
 /// The list of features enabled in the embedded component.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateAccountSessionComponentsIssuingCardsListFeatures {
     /// Whether to allow card management features.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -382,7 +382,7 @@ impl Default for CreateAccountSessionComponentsIssuingCardsListFeatures {
     }
 }
 /// Configuration for the [payment details](/connect/supported-embedded-components/payment-details/) embedded component.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateAccountSessionComponentsPaymentDetails {
     /// Whether the embedded component is enabled.
     pub enabled: bool,
@@ -396,7 +396,7 @@ impl CreateAccountSessionComponentsPaymentDetails {
     }
 }
 /// The list of features enabled in the embedded component.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateAccountSessionComponentsPaymentDetailsFeatures {
     /// Whether to allow capturing and cancelling payment intents. This is `true` by default.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -429,7 +429,7 @@ impl Default for CreateAccountSessionComponentsPaymentDetailsFeatures {
     }
 }
 /// Configuration for the [payment disputes](/connect/supported-embedded-components/payment-disputes/) embedded component.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateAccountSessionComponentsPaymentDisputes {
     /// Whether the embedded component is enabled.
     pub enabled: bool,
@@ -443,7 +443,7 @@ impl CreateAccountSessionComponentsPaymentDisputes {
     }
 }
 /// The list of features enabled in the embedded component.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateAccountSessionComponentsPaymentDisputesFeatures {
     /// Whether connected accounts can manage destination charges that are created on behalf of them.
     /// This is `false` by default.
@@ -472,7 +472,7 @@ impl Default for CreateAccountSessionComponentsPaymentDisputesFeatures {
     }
 }
 /// Configuration for the [payments](/connect/supported-embedded-components/payments/) embedded component.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateAccountSessionComponentsPayments {
     /// Whether the embedded component is enabled.
     pub enabled: bool,
@@ -486,7 +486,7 @@ impl CreateAccountSessionComponentsPayments {
     }
 }
 /// The list of features enabled in the embedded component.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateAccountSessionComponentsPaymentsFeatures {
     /// Whether to allow capturing and cancelling payment intents. This is `true` by default.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -563,7 +563,7 @@ impl StripeRequest for CreateAccountSession {
     }
 }
 
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct AccountFeaturesParam {
     /// Whether Stripe user authentication is disabled.
     /// This value can only be `true` for accounts where `controller.requirement_collection` is `application` for the account.
@@ -587,7 +587,7 @@ impl Default for AccountFeaturesParam {
         Self::new()
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct PayoutsFeaturesParam {
     /// Whether Stripe user authentication is disabled.
     /// This value can only be `true` for accounts where `controller.requirement_collection` is `application` for the account.
@@ -642,7 +642,7 @@ impl BaseConfigParam {
         Self { enabled: enabled.into(), features: None }
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct AccountConfigParam {
     /// Whether the embedded component is enabled.
     pub enabled: bool,
@@ -655,7 +655,7 @@ impl AccountConfigParam {
         Self { enabled: enabled.into(), features: None }
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct PayoutsConfigParam {
     /// Whether the embedded component is enabled.
     pub enabled: bool,

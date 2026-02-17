@@ -2,7 +2,7 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct RetrievePaymentRecordBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -156,7 +156,7 @@ impl<'de> serde::Deserialize<'de> for ReportPaymentAttemptPaymentRecordOutcome {
     }
 }
 /// Information about the Payment Method debited for this payment.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct ReportPaymentAttemptPaymentRecordPaymentMethodDetails {
     /// The billing details associated with the method of payment.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -759,7 +759,7 @@ impl<'de> serde::Deserialize<'de> for ReportRefundPaymentRecordOutcome {
     }
 }
 /// Processor information for this refund.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct ReportRefundPaymentRecordProcessorDetails {
     /// Information about the custom processor used to make this refund.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -776,7 +776,7 @@ impl ReportRefundPaymentRecordProcessorDetails {
     }
 }
 /// Information about the custom processor used to make this refund.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct ReportRefundPaymentRecordProcessorDetailsCustom {
     /// A reference to the external refund. This field must be unique across all refunds.
     pub refund_reference: String,
@@ -851,7 +851,7 @@ impl<'de> serde::Deserialize<'de> for ReportRefundPaymentRecordProcessorDetailsT
     }
 }
 /// Information about the payment attempt refund.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct ReportRefundPaymentRecordRefunded {
     /// When the reported refund completed. Measured in seconds since the Unix epoch.
     pub refunded_at: stripe_types::Timestamp,
@@ -1055,7 +1055,7 @@ impl<'de> serde::Deserialize<'de> for ReportPaymentPaymentRecordOutcome {
     }
 }
 /// Information about the Payment Method debited for this payment.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct ReportPaymentPaymentRecordPaymentMethodDetails {
     /// The billing details associated with the method of payment.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1148,7 +1148,7 @@ impl<'de> serde::Deserialize<'de> for ReportPaymentPaymentRecordPaymentMethodDet
     }
 }
 /// Processor information for this payment.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct ReportPaymentPaymentRecordProcessorDetails {
     /// Information about the custom processor used to make this payment.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1165,7 +1165,7 @@ impl ReportPaymentPaymentRecordProcessorDetails {
     }
 }
 /// Information about the custom processor used to make this payment.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct ReportPaymentPaymentRecordProcessorDetailsCustom {
     /// An opaque string for manual reconciliation of this payment, for example a check number or a payment processor ID.
     pub payment_reference: String,
@@ -1350,7 +1350,7 @@ impl StripeRequest for ReportPaymentPaymentRecord {
     }
 }
 
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct Failed {
     /// When the reported payment failed. Measured in seconds since the Unix epoch.
     pub failed_at: stripe_types::Timestamp,
@@ -1360,7 +1360,7 @@ impl Failed {
         Self { failed_at: failed_at.into() }
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct Guaranteed {
     /// When the reported payment was guaranteed. Measured in seconds since the Unix epoch.
     pub guaranteed_at: stripe_types::Timestamp,
@@ -1370,7 +1370,7 @@ impl Guaranteed {
         Self { guaranteed_at: guaranteed_at.into() }
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct Address {
     /// City, district, suburb, town, or village.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1401,7 +1401,7 @@ impl Default for Address {
         Self::new()
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct Custom {
     /// Display name for the custom (user-defined) payment method type used to make this payment.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1421,7 +1421,7 @@ impl Default for Custom {
         Self::new()
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CustomerDetails {
     /// The customer who made the payment.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1446,7 +1446,7 @@ impl Default for CustomerDetails {
         Self::new()
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct Amount {
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
@@ -1460,7 +1460,7 @@ impl Amount {
         Self { currency: currency.into(), value: value.into() }
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct BillingDetails {
     /// The billing address associated with the method of payment.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1485,7 +1485,7 @@ impl Default for BillingDetails {
         Self::new()
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct ShippingDetails {
     /// The physical shipping address.
     #[serde(skip_serializing_if = "Option::is_none")]

@@ -2,7 +2,7 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct ListBillingPortalConfigurationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     active: Option<bool>,
@@ -113,7 +113,7 @@ impl StripeRequest for ListBillingPortalConfiguration {
         RequestBuilder::new(StripeMethod::Get, "/billing_portal/configurations").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct RetrieveBillingPortalConfigurationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -203,7 +203,7 @@ impl CreateBillingPortalConfigurationBuilder {
     }
 }
 /// The business information shown to customers in the portal.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateBillingPortalConfigurationBusinessProfile {
     /// The messaging shown to customers in the portal.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -226,7 +226,7 @@ impl Default for CreateBillingPortalConfigurationBusinessProfile {
     }
 }
 /// Information about the features available in the portal.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateBillingPortalConfigurationFeatures {
     /// Information about updating the customer details in the portal.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -261,7 +261,7 @@ impl Default for CreateBillingPortalConfigurationFeatures {
     }
 }
 /// Information about updating the customer details in the portal.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateBillingPortalConfigurationFeaturesCustomerUpdate {
     /// The types of customer updates that are supported. When empty, customers are not updateable.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -355,7 +355,7 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Information about canceling subscriptions in the portal.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateBillingPortalConfigurationFeaturesSubscriptionCancel {
     /// Whether the cancellation reasons will be collected in the portal and which options are exposed to the customer.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -385,7 +385,7 @@ impl CreateBillingPortalConfigurationFeaturesSubscriptionCancel {
     }
 }
 /// Whether the cancellation reasons will be collected in the portal and which options are exposed to the customer.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReason {
     /// Whether the feature is enabled.
     pub enabled: bool,
@@ -647,7 +647,7 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Information about updating subscriptions in the portal.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateBillingPortalConfigurationFeaturesSubscriptionUpdate {
     /// Determines the value to use for the billing cycle anchor on subscription updates.
     /// Valid values are `now` or `unchanged`, and the default value is `unchanged`.
@@ -929,7 +929,7 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Setting to control when an update should be scheduled at the end of the period instead of applying immediately.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEnd {
     /// List of conditions.
     /// When any condition is true, the update will be scheduled at the end of the current period.
@@ -952,7 +952,7 @@ impl Default for CreateBillingPortalConfigurationFeaturesSubscriptionUpdateSched
 }
 /// List of conditions.
 /// When any condition is true, the update will be scheduled at the end of the current period.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditions {
     /// The type of condition.
     #[serde(rename = "type")]
@@ -1119,7 +1119,7 @@ impl<'de> serde::Deserialize<'de>
 }
 /// The hosted login page for this configuration.
 /// Learn more about the portal login page in our [integration docs](https://stripe.com/docs/billing/subscriptions/integrating-customer-portal#share).
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateBillingPortalConfigurationLoginPage {
     /// Set to `true` to generate a shareable URL [`login_page.url`](https://docs.stripe.com/api/customer_portal/configuration#portal_configuration_object-login_page-url) that will take your customers to a hosted login page for the customer portal.
     pub enabled: bool,
@@ -1243,7 +1243,7 @@ impl UpdateBillingPortalConfigurationBuilder {
     }
 }
 /// The business information shown to customers in the portal.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdateBillingPortalConfigurationBusinessProfile {
     /// The messaging shown to customers in the portal.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1266,7 +1266,7 @@ impl Default for UpdateBillingPortalConfigurationBusinessProfile {
     }
 }
 /// Information about the features available in the portal.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdateBillingPortalConfigurationFeatures {
     /// Information about updating the customer details in the portal.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1301,7 +1301,7 @@ impl Default for UpdateBillingPortalConfigurationFeatures {
     }
 }
 /// Information about updating the customer details in the portal.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdateBillingPortalConfigurationFeaturesCustomerUpdate {
     /// The types of customer updates that are supported. When empty, customers are not updateable.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1401,7 +1401,7 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Information about canceling subscriptions in the portal.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdateBillingPortalConfigurationFeaturesSubscriptionCancel {
     /// Whether the cancellation reasons will be collected in the portal and which options are exposed to the customer.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1432,7 +1432,7 @@ impl Default for UpdateBillingPortalConfigurationFeaturesSubscriptionCancel {
     }
 }
 /// Whether the cancellation reasons will be collected in the portal and which options are exposed to the customer.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReason {
     /// Whether the feature is enabled.
     pub enabled: bool,
@@ -1689,7 +1689,7 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Information about updating subscriptions in the portal.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdateBillingPortalConfigurationFeaturesSubscriptionUpdate {
     /// Determines the value to use for the billing cycle anchor on subscription updates.
     /// Valid values are `now` or `unchanged`, and the default value is `unchanged`.
@@ -1977,7 +1977,7 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Setting to control when an update should be scheduled at the end of the period instead of applying immediately.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEnd {
     /// List of conditions.
     /// When any condition is true, the update will be scheduled at the end of the current period.
@@ -2000,7 +2000,7 @@ impl Default for UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateSched
 }
 /// List of conditions.
 /// When any condition is true, the update will be scheduled at the end of the current period.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditions {
     /// The type of condition.
     #[serde(rename = "type")]
@@ -2167,7 +2167,7 @@ impl<'de> serde::Deserialize<'de>
 }
 /// The hosted login page for this configuration.
 /// Learn more about the portal login page in our [integration docs](https://stripe.com/docs/billing/subscriptions/integrating-customer-portal#share).
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdateBillingPortalConfigurationLoginPage {
     /// Set to `true` to generate a shareable URL [`login_page.url`](https://docs.stripe.com/api/customer_portal/configuration#portal_configuration_object-login_page-url) that will take your customers to a hosted login page for the customer portal.
     ///
@@ -2282,7 +2282,7 @@ impl StripeRequest for UpdateBillingPortalConfiguration {
     }
 }
 
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct InvoiceListParam {
     /// Whether the feature is enabled.
     pub enabled: bool,
@@ -2292,7 +2292,7 @@ impl InvoiceListParam {
         Self { enabled: enabled.into() }
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct PaymentMethodUpdateParam {
     /// Whether the feature is enabled.
     pub enabled: bool,
@@ -2307,7 +2307,7 @@ impl PaymentMethodUpdateParam {
         Self { enabled: enabled.into(), payment_method_configuration: None }
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct SubscriptionUpdateProductAdjustableQuantityParam {
     /// Set to true if the quantity can be adjusted to any non-negative integer.
     pub enabled: bool,
@@ -2323,7 +2323,7 @@ impl SubscriptionUpdateProductAdjustableQuantityParam {
         Self { enabled: enabled.into(), maximum: None, minimum: None }
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct SubscriptionUpdateProductParam {
     /// Control whether the quantity of the product can be adjusted.
     #[serde(skip_serializing_if = "Option::is_none")]

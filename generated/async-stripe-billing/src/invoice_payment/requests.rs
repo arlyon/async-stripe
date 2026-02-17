@@ -2,7 +2,7 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct ListInvoicePaymentBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     created: Option<stripe_types::RangeQueryTs>,
@@ -36,7 +36,7 @@ impl ListInvoicePaymentBuilder {
     }
 }
 /// The payment details of the invoice payments to return.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct ListInvoicePaymentPayment {
     /// Only return invoice payments associated by this payment intent ID.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -275,7 +275,7 @@ impl StripeRequest for ListInvoicePayment {
         RequestBuilder::new(StripeMethod::Get, "/invoice_payments").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct RetrieveInvoicePaymentBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,

@@ -2,7 +2,7 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct ListPayoutBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     arrival_date: Option<stripe_types::RangeQueryTs>,
@@ -128,7 +128,7 @@ impl StripeRequest for ListPayout {
         RequestBuilder::new(StripeMethod::Get, "/payouts").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct RetrievePayoutBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -516,7 +516,7 @@ impl StripeRequest for UpdatePayout {
         RequestBuilder::new(StripeMethod::Post, format!("/payouts/{payout}")).form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct CancelPayoutBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,

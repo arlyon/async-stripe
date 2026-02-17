@@ -2,7 +2,7 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct ListDisputeBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     charge: Option<String>,
@@ -119,7 +119,7 @@ impl StripeRequest for ListDispute {
         RequestBuilder::new(StripeMethod::Get, "/disputes").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct RetrieveDisputeBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -191,7 +191,7 @@ impl UpdateDisputeBuilder {
 /// Evidence to upload, to respond to a dispute.
 /// Updating any field in the hash will submit all fields in the hash for review.
 /// The combined character count of all fields is limited to 150,000.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdateDisputeEvidence {
     /// Any server or activity logs showing proof that the customer accessed or downloaded the purchased digital product.
     /// This information should include IP addresses, corresponding timestamps, and any detailed recorded activity.
@@ -333,7 +333,7 @@ impl Default for UpdateDisputeEvidence {
     }
 }
 /// Additional evidence for qualifying evidence programs.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdateDisputeEvidenceEnhancedEvidence {
     /// Evidence provided for Visa Compelling Evidence 3.0 evidence submission.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -354,7 +354,7 @@ impl Default for UpdateDisputeEvidenceEnhancedEvidence {
     }
 }
 /// Evidence provided for Visa Compelling Evidence 3.0 evidence submission.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdateDisputeEvidenceEnhancedEvidenceVisaCompellingEvidence3 {
     /// Disputed transaction details for Visa Compelling Evidence 3.0 evidence submission.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -379,7 +379,7 @@ impl Default for UpdateDisputeEvidenceEnhancedEvidenceVisaCompellingEvidence3 {
     }
 }
 /// Disputed transaction details for Visa Compelling Evidence 3.0 evidence submission.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdateDisputeEvidenceEnhancedEvidenceVisaCompellingEvidence3DisputedTransaction {
     /// User Account ID used to log into business platform. Must be recognizable by the user.
 #[serde(skip_serializing_if = "Option::is_none")]
@@ -488,7 +488,7 @@ impl<'de> serde::Deserialize<'de> for UpdateDisputeEvidenceEnhancedEvidenceVisaC
     }
 }
 /// List of exactly two prior undisputed transaction objects for Visa Compelling Evidence 3.0 evidence submission.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdateDisputeEvidenceEnhancedEvidenceVisaCompellingEvidence3PriorUndisputedTransactions {
     /// Stripe charge ID for the Visa Compelling Evidence 3.0 eligible prior charge.
     pub charge: String,
@@ -532,7 +532,7 @@ impl UpdateDisputeEvidenceEnhancedEvidenceVisaCompellingEvidence3PriorUndisputed
     }
 }
 /// Evidence provided for Visa compliance evidence submission.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdateDisputeEvidenceEnhancedEvidenceVisaCompliance {
     /// A field acknowledging the fee incurred when countering a Visa compliance dispute.
     /// If this field is set to true, evidence can be submitted for the compliance dispute.
@@ -624,7 +624,7 @@ impl StripeRequest for UpdateDispute {
         RequestBuilder::new(StripeMethod::Post, format!("/disputes/{dispute}")).form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct CloseDisputeBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -682,7 +682,7 @@ impl StripeRequest for CloseDispute {
     }
 }
 
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct ShippingAddress {
     /// City, district, suburb, town, or village.
     #[serde(skip_serializing_if = "Option::is_none")]

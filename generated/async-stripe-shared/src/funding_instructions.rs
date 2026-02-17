@@ -3,7 +3,7 @@
 /// Customers can fund this balance by initiating a bank transfer to any account in the
 /// `financial_addresses` field.
 /// Related guide: [Customer balance funding instructions](https://docs.stripe.com/payments/customer-balance/funding-instructions).
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Eq, PartialEq)]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct FundingInstructions {
     pub bank_transfer: stripe_shared::FundingInstructionsBankTransfer,

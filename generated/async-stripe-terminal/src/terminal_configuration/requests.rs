@@ -42,7 +42,7 @@ impl StripeRequest for DeleteTerminalConfiguration {
         )
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct ListTerminalConfigurationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<String>,
@@ -144,7 +144,7 @@ impl StripeRequest for ListTerminalConfiguration {
         RequestBuilder::new(StripeMethod::Get, "/terminal/configurations").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct RetrieveTerminalConfigurationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -283,7 +283,7 @@ const _: () = {
     }
 };
 
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct CreateTerminalConfigurationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     bbpos_wisepad3: Option<CreateTerminalConfigurationBbposWisepad3>,
@@ -323,7 +323,7 @@ impl CreateTerminalConfigurationBuilder {
     }
 }
 /// An object containing device type specific settings for BBPOS WisePad 3 readers.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateTerminalConfigurationBbposWisepad3 {
     /// A File ID representing an image you want to display on the reader.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -340,7 +340,7 @@ impl Default for CreateTerminalConfigurationBbposWisepad3 {
     }
 }
 /// An object containing device type specific settings for Stripe S700 readers.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateTerminalConfigurationStripeS700 {
     /// A File ID representing an image you want to display on the reader.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -357,7 +357,7 @@ impl Default for CreateTerminalConfigurationStripeS700 {
     }
 }
 /// An object containing device type specific settings for Verifone P400 readers.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateTerminalConfigurationVerifoneP400 {
     /// A File ID representing an image you want to display on the reader.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -374,7 +374,7 @@ impl Default for CreateTerminalConfigurationVerifoneP400 {
     }
 }
 /// Configurations for connecting to a WiFi network.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateTerminalConfigurationWifi {
     /// Credentials for a WPA-Enterprise WiFi network using the EAP-PEAP authentication method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -569,7 +569,7 @@ impl StripeRequest for CreateTerminalConfiguration {
         RequestBuilder::new(StripeMethod::Post, "/terminal/configurations").form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct UpdateTerminalConfigurationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     bbpos_wisepad3: Option<UpdateTerminalConfigurationBbposWisepad3>,
@@ -609,7 +609,7 @@ impl UpdateTerminalConfigurationBuilder {
     }
 }
 /// An object containing device type specific settings for BBPOS WisePad 3 readers.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdateTerminalConfigurationBbposWisepad3 {
     /// A File ID representing an image you want to display on the reader.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -626,7 +626,7 @@ impl Default for UpdateTerminalConfigurationBbposWisepad3 {
     }
 }
 /// An object containing device type specific settings for Stripe S700 readers.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdateTerminalConfigurationStripeS700 {
     /// A File ID representing an image you want to display on the reader.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -643,7 +643,7 @@ impl Default for UpdateTerminalConfigurationStripeS700 {
     }
 }
 /// An object containing device type specific settings for Verifone P400 readers.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdateTerminalConfigurationVerifoneP400 {
     /// A File ID representing an image you want to display on the reader.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -660,7 +660,7 @@ impl Default for UpdateTerminalConfigurationVerifoneP400 {
     }
 }
 /// Configurations for connecting to a WiFi network.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdateTerminalConfigurationWifi {
     /// Credentials for a WPA-Enterprise WiFi network using the EAP-PEAP authentication method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -938,7 +938,7 @@ const _: () = {
     }
 };
 
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct BbposWisePose {
     /// A File ID representing an image to display on the reader
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -954,7 +954,7 @@ impl Default for BbposWisePose {
         Self::new()
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct Offline {
     /// Determines whether to allow transactions to be collected while reader is offline.
     /// Defaults to false.
@@ -965,7 +965,7 @@ impl Offline {
         Self { enabled: enabled.into() }
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct RebootWindow {
     /// Integer between 0 to 23 that represents the end hour of the reboot time window.
     /// The value must be different than the start_hour.
@@ -978,7 +978,7 @@ impl RebootWindow {
         Self { end_hour: end_hour.into(), start_hour: start_hour.into() }
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CurrencySpecificConfig {
     /// Fixed amounts displayed when collecting a tip
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1000,7 +1000,7 @@ impl Default for CurrencySpecificConfig {
         Self::new()
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct EnterprisePeapConfig {
     /// A File ID representing a PEM file containing the server certificate
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1026,7 +1026,7 @@ impl EnterprisePeapConfig {
         }
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct EnterpriseTlsConfig {
     /// A File ID representing a PEM file containing the server certificate
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1056,7 +1056,7 @@ impl EnterpriseTlsConfig {
         }
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct PersonalPskConfig {
     /// Password for connecting to the WiFi network
     pub password: String,
@@ -1068,7 +1068,7 @@ impl PersonalPskConfig {
         Self { password: password.into(), ssid: ssid.into() }
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct Tipping {
     /// Tipping configuration for AED
     #[serde(skip_serializing_if = "Option::is_none")]

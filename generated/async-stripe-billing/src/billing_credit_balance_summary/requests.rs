@@ -2,7 +2,7 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct RetrieveForMyAccountBillingCreditBalanceSummaryBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     customer: Option<String>,
@@ -18,7 +18,7 @@ impl RetrieveForMyAccountBillingCreditBalanceSummaryBuilder {
     }
 }
 /// The filter criteria for the credit balance summary.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct RetrieveForMyAccountBillingCreditBalanceSummaryFilter {
     /// The billing credit applicability scope for which to fetch credit balance summary.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -39,7 +39,7 @@ impl RetrieveForMyAccountBillingCreditBalanceSummaryFilter {
     }
 }
 /// The billing credit applicability scope for which to fetch credit balance summary.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct RetrieveForMyAccountBillingCreditBalanceSummaryFilterApplicabilityScope {
     /// The price type that credit grants can apply to.
     /// We currently only support the `metered` price type.
@@ -141,7 +141,7 @@ impl<'de> serde::Deserialize<'de>
 /// A list of prices that the credit grant can apply to.
 /// We currently only support the `metered` prices.
 /// Cannot be used in combination with `price_type`.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct RetrieveForMyAccountBillingCreditBalanceSummaryFilterApplicabilityScopePrices {
     /// The price ID this credit grant should apply to.
     pub id: String,

@@ -2,7 +2,7 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct DetachSourceBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -138,7 +138,7 @@ const _: () = {
     }
 };
 
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct RetrieveSourceBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     client_secret: Option<String>,
@@ -199,7 +199,7 @@ impl StripeRequest for RetrieveSource {
         RequestBuilder::new(StripeMethod::Get, format!("/sources/{source}")).query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct SourceTransactionsSourceBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<String>,
@@ -419,7 +419,7 @@ impl<'de> serde::Deserialize<'de> for CreateSourceFlow {
     }
 }
 /// Information about a mandate possibility attached to a source object (generally for bank debits) as well as its acceptance status.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateSourceMandate {
     /// The parameters required to notify Stripe of a mandate acceptance or refusal by the customer.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -456,7 +456,7 @@ impl Default for CreateSourceMandate {
     }
 }
 /// The parameters required to notify Stripe of a mandate acceptance or refusal by the customer.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateSourceMandateAcceptance {
     /// The Unix timestamp (in seconds) when the mandate was accepted or refused by the customer.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -779,7 +779,7 @@ impl<'de> serde::Deserialize<'de> for CreateSourceMandateNotificationMethod {
 }
 /// Optional parameters for the receiver flow.
 /// Can be set only if the source is a receiver (`flow` is `receiver`).
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateSourceReceiver {
     /// The method Stripe should use to request information needed to process a refund or mispayment.
     /// Either `email` (an email is sent directly to the customer) or `manual` (a `source.refund_attributes_required` event is sent to your webhooks endpoint).
@@ -869,7 +869,7 @@ impl<'de> serde::Deserialize<'de> for CreateSourceReceiverRefundAttributesMethod
 }
 /// Parameters required for the redirect flow.
 /// Required if the source is authenticated by a redirect (`flow` is `redirect`).
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateSourceRedirect {
     /// The URL you provide to redirect the customer back to you after they authenticated their payment.
     /// It can use your application URI scheme in the context of a mobile application.
@@ -882,7 +882,7 @@ impl CreateSourceRedirect {
 }
 /// Information about the items and shipping associated with the source.
 /// Required for transactional credit (for example Klarna) sources before you can charge it.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateSourceSourceOrder {
     /// List of items constituting the order.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -903,7 +903,7 @@ impl Default for CreateSourceSourceOrder {
     }
 }
 /// List of items constituting the order.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateSourceSourceOrderItems {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount: Option<i64>,
@@ -1232,7 +1232,7 @@ impl UpdateSourceBuilder {
     }
 }
 /// Information about a mandate possibility attached to a source object (generally for bank debits) as well as its acceptance status.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdateSourceMandate {
     /// The parameters required to notify Stripe of a mandate acceptance or refusal by the customer.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1269,7 +1269,7 @@ impl Default for UpdateSourceMandate {
     }
 }
 /// The parameters required to notify Stripe of a mandate acceptance or refusal by the customer.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdateSourceMandateAcceptance {
     /// The Unix timestamp (in seconds) when the mandate was accepted or refused by the customer.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1592,7 +1592,7 @@ impl<'de> serde::Deserialize<'de> for UpdateSourceMandateNotificationMethod {
 }
 /// Information about the items and shipping associated with the source.
 /// Required for transactional credit (for example Klarna) sources before you can charge it.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdateSourceSourceOrder {
     /// List of items constituting the order.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1613,7 +1613,7 @@ impl Default for UpdateSourceSourceOrder {
     }
 }
 /// List of items constituting the order.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdateSourceSourceOrderItems {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount: Option<i64>,
@@ -1799,7 +1799,7 @@ impl StripeRequest for UpdateSource {
         RequestBuilder::new(StripeMethod::Post, format!("/sources/{source}")).form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct VerifySourceBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -1855,7 +1855,7 @@ impl StripeRequest for VerifySource {
     }
 }
 
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct MandateOfflineAcceptanceParams {
     /// An email to contact you with if a copy of the mandate is requested, required if `type` is `offline`.
     pub contact_email: String,
@@ -1865,7 +1865,7 @@ impl MandateOfflineAcceptanceParams {
         Self { contact_email: contact_email.into() }
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct MandateOnlineAcceptanceParams {
     /// The Unix timestamp (in seconds) when the mandate was accepted or refused by the customer.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1887,7 +1887,7 @@ impl Default for MandateOnlineAcceptanceParams {
         Self::new()
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct SourceAddress {
     /// City, district, suburb, town, or village.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1918,7 +1918,7 @@ impl Default for SourceAddress {
         Self::new()
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct Address {
     /// City, district, suburb, town, or village.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1950,7 +1950,7 @@ impl Address {
         }
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct Owner {
     /// Owner's address.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1975,7 +1975,7 @@ impl Default for Owner {
         Self::new()
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct OrderShipping {
     /// Shipping address.
     pub address: Address,
