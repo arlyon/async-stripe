@@ -2,7 +2,7 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct ListIdentityVerificationReportBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     client_reference_id: Option<String>,
@@ -197,7 +197,7 @@ impl StripeRequest for ListIdentityVerificationReport {
         RequestBuilder::new(StripeMethod::Get, "/identity/verification_reports").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct RetrieveIdentityVerificationReportBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,

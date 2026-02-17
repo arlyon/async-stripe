@@ -43,7 +43,7 @@ impl StripeRequest for DeletePerson {
         RequestBuilder::new(StripeMethod::Delete, format!("/accounts/{account}/persons/{person}"))
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct ListAccountPersonBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<String>,
@@ -68,7 +68,7 @@ impl ListAccountPersonBuilder {
     }
 }
 /// Filters on the list of people returned based on the person's relationship to the account's company.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct ListAccountPersonRelationship {
     /// A filter on the list of people returned based on whether these people are authorizers of the account's representative.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -187,7 +187,7 @@ impl StripeRequest for ListAccountPerson {
             .query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct RetrievePersonBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -340,7 +340,7 @@ impl CreateAccountPersonBuilder {
     }
 }
 /// The person's address.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateAccountPersonAddress {
     /// City, district, suburb, town, or village.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -372,7 +372,7 @@ impl Default for CreateAccountPersonAddress {
     }
 }
 /// The Kana variation of the person's address (Japan only).
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateAccountPersonAddressKana {
     /// City or ward.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -415,7 +415,7 @@ impl Default for CreateAccountPersonAddressKana {
     }
 }
 /// The Kanji variation of the person's address (Japan only).
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateAccountPersonAddressKanji {
     /// City or ward.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -458,7 +458,7 @@ impl Default for CreateAccountPersonAddressKanji {
     }
 }
 /// The person's registered address.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateAccountPersonRegisteredAddress {
     /// City, district, suburb, town, or village.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -490,7 +490,7 @@ impl Default for CreateAccountPersonRegisteredAddress {
     }
 }
 /// Demographic data related to the person.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateAccountPersonUsCfpbData {
     /// The persons ethnicity details
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -513,7 +513,7 @@ impl Default for CreateAccountPersonUsCfpbData {
     }
 }
 /// The persons ethnicity details
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateAccountPersonUsCfpbDataEthnicityDetails {
     /// The persons ethnicity
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -613,7 +613,7 @@ impl<'de> serde::Deserialize<'de> for CreateAccountPersonUsCfpbDataEthnicityDeta
     }
 }
 /// The persons race details
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateAccountPersonUsCfpbDataRaceDetails {
     /// The persons race.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1067,7 +1067,7 @@ impl UpdatePersonBuilder {
     }
 }
 /// The person's address.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdatePersonAddress {
     /// City, district, suburb, town, or village.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1099,7 +1099,7 @@ impl Default for UpdatePersonAddress {
     }
 }
 /// The Kana variation of the person's address (Japan only).
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdatePersonAddressKana {
     /// City or ward.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1142,7 +1142,7 @@ impl Default for UpdatePersonAddressKana {
     }
 }
 /// The Kanji variation of the person's address (Japan only).
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdatePersonAddressKanji {
     /// City or ward.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1185,7 +1185,7 @@ impl Default for UpdatePersonAddressKanji {
     }
 }
 /// The person's registered address.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdatePersonRegisteredAddress {
     /// City, district, suburb, town, or village.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1217,7 +1217,7 @@ impl Default for UpdatePersonRegisteredAddress {
     }
 }
 /// Demographic data related to the person.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdatePersonUsCfpbData {
     /// The persons ethnicity details
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1240,7 +1240,7 @@ impl Default for UpdatePersonUsCfpbData {
     }
 }
 /// The persons ethnicity details
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdatePersonUsCfpbDataEthnicityDetails {
     /// The persons ethnicity
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1340,7 +1340,7 @@ impl<'de> serde::Deserialize<'de> for UpdatePersonUsCfpbDataEthnicityDetailsEthn
     }
 }
 /// The persons race details
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdatePersonUsCfpbDataRaceDetails {
     /// The persons race.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1697,7 +1697,7 @@ impl StripeRequest for UpdatePerson {
     }
 }
 
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct SettingsTermsOfServiceSpecs {
     /// The Unix timestamp marking when the account representative accepted the service agreement.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1719,7 +1719,7 @@ impl Default for SettingsTermsOfServiceSpecs {
         Self::new()
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct DateOfBirthSpecs {
     /// The day of birth, between 1 and 31.
     pub day: i64,
@@ -1733,7 +1733,7 @@ impl DateOfBirthSpecs {
         Self { day: day.into(), month: month.into(), year: year.into() }
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct DocumentsParam {
     /// One or more document ids returned by a [file upload](https://api.stripe.com#create_file) with a `purpose` value of `account_requirement`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1799,7 +1799,7 @@ impl Default for RelationshipSpecs {
         Self::new()
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct PersonVerificationDocumentSpecs {
     /// The back of an ID returned by a [file upload](https://api.stripe.com#create_file) with a `purpose` value of `identity_document`.
     /// The uploaded file needs to be a color image (smaller than 8,000px by 8,000px), in JPG, PNG, or PDF format, and less than 10 MB in size.
@@ -1820,7 +1820,7 @@ impl Default for PersonVerificationDocumentSpecs {
         Self::new()
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct PersonAdditionalTosAcceptancesSpecs {
     /// Details on the legal guardian's acceptance of the main Stripe service agreement.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1836,7 +1836,7 @@ impl Default for PersonAdditionalTosAcceptancesSpecs {
         Self::new()
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct PersonDocumentsSpecs {
     /// One or more documents that demonstrate proof that this person is authorized to represent the company.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1858,7 +1858,7 @@ impl Default for PersonDocumentsSpecs {
         Self::new()
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct PersonVerificationSpecs {
     /// A document showing address, either a passport, local ID card, or utility bill from a well-known utility company.
     #[serde(skip_serializing_if = "Option::is_none")]

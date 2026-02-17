@@ -2,7 +2,7 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct ListBalanceTransactionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     created: Option<stripe_types::RangeQueryTs>,
@@ -143,7 +143,7 @@ impl StripeRequest for ListBalanceTransaction {
         RequestBuilder::new(StripeMethod::Get, "/balance_transactions").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct RetrieveBalanceTransactionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,

@@ -2,7 +2,7 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct ListIssuingDisputeBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     created: Option<stripe_types::RangeQueryTs>,
@@ -120,7 +120,7 @@ impl StripeRequest for ListIssuingDispute {
         RequestBuilder::new(StripeMethod::Get, "/issuing/disputes").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct RetrieveIssuingDisputeBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -202,7 +202,7 @@ impl CreateIssuingDisputeBuilder {
     }
 }
 /// Evidence provided for the dispute.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateIssuingDisputeEvidence {
     /// Evidence provided when `reason` is 'canceled'.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -253,7 +253,7 @@ impl Default for CreateIssuingDisputeEvidence {
     }
 }
 /// Evidence provided when `reason` is 'canceled'.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateIssuingDisputeEvidenceCanceled {
     /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -438,7 +438,7 @@ impl<'de> serde::Deserialize<'de> for CreateIssuingDisputeEvidenceCanceledReturn
     }
 }
 /// Evidence provided when `reason` is 'fraudulent'.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateIssuingDisputeEvidenceFraudulent {
     /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -458,7 +458,7 @@ impl Default for CreateIssuingDisputeEvidenceFraudulent {
     }
 }
 /// Evidence provided when `reason` is 'merchandise_not_as_described'.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateIssuingDisputeEvidenceMerchandiseNotAsDescribed {
     /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -564,7 +564,7 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Evidence provided when `reason` is 'no_valid_authorization'.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateIssuingDisputeEvidenceNoValidAuthorization {
     /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -584,7 +584,7 @@ impl Default for CreateIssuingDisputeEvidenceNoValidAuthorization {
     }
 }
 /// Evidence provided when `reason` is 'not_received'.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateIssuingDisputeEvidenceNotReceived {
     /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -684,7 +684,7 @@ impl<'de> serde::Deserialize<'de> for CreateIssuingDisputeEvidenceNotReceivedPro
     }
 }
 /// Evidence provided when `reason` is 'other'.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateIssuingDisputeEvidenceOther {
     /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -863,7 +863,7 @@ impl<'de> serde::Deserialize<'de> for CreateIssuingDisputeEvidenceReason {
     }
 }
 /// Params for disputes related to Treasury FinancialAccounts
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateIssuingDisputeTreasury {
     /// The ID of the ReceivedDebit to initiate an Issuings dispute for.
     pub received_debit: String,
@@ -972,7 +972,7 @@ impl UpdateIssuingDisputeBuilder {
     }
 }
 /// Evidence provided for the dispute.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdateIssuingDisputeEvidence {
     /// Evidence provided when `reason` is 'canceled'.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1023,7 +1023,7 @@ impl Default for UpdateIssuingDisputeEvidence {
     }
 }
 /// Evidence provided when `reason` is 'canceled'.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdateIssuingDisputeEvidenceCanceled {
     /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1208,7 +1208,7 @@ impl<'de> serde::Deserialize<'de> for UpdateIssuingDisputeEvidenceCanceledReturn
     }
 }
 /// Evidence provided when `reason` is 'fraudulent'.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdateIssuingDisputeEvidenceFraudulent {
     /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1228,7 +1228,7 @@ impl Default for UpdateIssuingDisputeEvidenceFraudulent {
     }
 }
 /// Evidence provided when `reason` is 'merchandise_not_as_described'.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdateIssuingDisputeEvidenceMerchandiseNotAsDescribed {
     /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1334,7 +1334,7 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Evidence provided when `reason` is 'no_valid_authorization'.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdateIssuingDisputeEvidenceNoValidAuthorization {
     /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1354,7 +1354,7 @@ impl Default for UpdateIssuingDisputeEvidenceNoValidAuthorization {
     }
 }
 /// Evidence provided when `reason` is 'not_received'.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdateIssuingDisputeEvidenceNotReceived {
     /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1454,7 +1454,7 @@ impl<'de> serde::Deserialize<'de> for UpdateIssuingDisputeEvidenceNotReceivedPro
     }
 }
 /// Evidence provided when `reason` is 'other'.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdateIssuingDisputeEvidenceOther {
     /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1769,7 +1769,7 @@ impl StripeRequest for SubmitIssuingDispute {
     }
 }
 
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct Duplicate {
     /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1808,7 +1808,7 @@ impl Default for Duplicate {
         Self::new()
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct ServiceNotAsDescribed {
     /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
     #[serde(skip_serializing_if = "Option::is_none")]

@@ -1,4 +1,4 @@
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Eq, PartialEq)]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct DeletedBankAccount {
     /// Three-letter [ISO code for the currency](https://stripe.com/docs/payouts) paid out to the bank account.

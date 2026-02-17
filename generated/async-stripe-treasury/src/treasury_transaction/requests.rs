@@ -2,7 +2,7 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct ListTreasuryTransactionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     created: Option<stripe_types::RangeQueryTs>,
@@ -105,7 +105,7 @@ impl<'de> serde::Deserialize<'de> for ListTreasuryTransactionOrderBy {
 }
 /// A filter for the `status_transitions.posted_at` timestamp.
 /// When using this filter, `status=posted` and `order_by=posted_at` must also be specified.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct ListTreasuryTransactionStatusTransitions {
     /// Returns Transactions with `posted_at` within the specified range.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -214,7 +214,7 @@ impl StripeRequest for ListTreasuryTransaction {
         RequestBuilder::new(StripeMethod::Get, "/treasury/transactions").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct RetrieveTreasuryTransactionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,

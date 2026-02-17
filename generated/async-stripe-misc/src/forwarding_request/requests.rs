@@ -2,7 +2,7 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct ListForwardingRequestBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     created: Option<ListForwardingRequestCreated>,
@@ -22,7 +22,7 @@ impl ListForwardingRequestBuilder {
 }
 /// Similar to other List endpoints, filters results based on created timestamp.
 /// You can pass gt, gte, lt, and lte timestamp values.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct ListForwardingRequestCreated {
     /// Return results where the `created` field is greater than this value.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -122,7 +122,7 @@ impl StripeRequest for ListForwardingRequest {
         RequestBuilder::new(StripeMethod::Get, "/forwarding/requests").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct RetrieveForwardingRequestBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -205,7 +205,7 @@ impl CreateForwardingRequestBuilder {
     }
 }
 /// The request body and headers to be sent to the destination endpoint.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateForwardingRequestRequest {
     /// The body payload to send to the destination endpoint.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -227,7 +227,7 @@ impl Default for CreateForwardingRequestRequest {
 }
 /// The headers to include in the forwarded request.
 /// Can be omitted if no additional headers (excluding Stripe-generated ones such as the Content-Type header) should be included.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateForwardingRequestRequestHeaders {
     /// The header name.
     pub name: String,

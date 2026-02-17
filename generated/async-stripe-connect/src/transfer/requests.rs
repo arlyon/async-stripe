@@ -2,7 +2,7 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct ListTransferBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     created: Option<stripe_types::RangeQueryTs>,
@@ -120,7 +120,7 @@ impl StripeRequest for ListTransfer {
         RequestBuilder::new(StripeMethod::Get, "/transfers").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct RetrieveTransferBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,

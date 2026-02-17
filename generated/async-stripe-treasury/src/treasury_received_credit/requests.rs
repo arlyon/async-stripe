@@ -2,7 +2,7 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct ListTreasuryReceivedCreditBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<String>,
@@ -32,7 +32,7 @@ impl ListTreasuryReceivedCreditBuilder {
     }
 }
 /// Only return ReceivedCredits described by the flow.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct ListTreasuryReceivedCreditLinkedFlows {
     /// The source flow type.
     pub source_flow_type: ListTreasuryReceivedCreditLinkedFlowsSourceFlowType,
@@ -203,7 +203,7 @@ impl StripeRequest for ListTreasuryReceivedCredit {
         RequestBuilder::new(StripeMethod::Get, "/treasury/received_credits").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct RetrieveTreasuryReceivedCreditBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -257,7 +257,7 @@ impl StripeRequest for RetrieveTreasuryReceivedCredit {
             .query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct CreateTreasuryReceivedCreditBuilder {
     amount: i64,
     currency: stripe_types::Currency,
@@ -290,7 +290,7 @@ impl CreateTreasuryReceivedCreditBuilder {
     }
 }
 /// Initiating payment method details for the object.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateTreasuryReceivedCreditInitiatingPaymentMethodDetails {
     /// The source type.
     #[serde(rename = "type")]
@@ -372,7 +372,7 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Optional fields for `us_bank_account`.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateTreasuryReceivedCreditInitiatingPaymentMethodDetailsUsBankAccount {
     /// The bank account holder's name.
     #[serde(skip_serializing_if = "Option::is_none")]

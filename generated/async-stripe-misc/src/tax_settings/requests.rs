@@ -2,7 +2,7 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct RetrieveForMyAccountTaxSettingsBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -58,7 +58,7 @@ impl StripeRequest for RetrieveForMyAccountTaxSettings {
         RequestBuilder::new(StripeMethod::Get, "/tax/settings").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct UpdateTaxSettingsBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     defaults: Option<UpdateTaxSettingsDefaults>,
@@ -73,7 +73,7 @@ impl UpdateTaxSettingsBuilder {
     }
 }
 /// Default configuration to be used on Stripe Tax calculations.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdateTaxSettingsDefaults {
     /// Specifies the default [tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#tax-behavior) to be used when the item's price has unspecified tax behavior.
     /// One of inclusive, exclusive, or inferred_by_currency.
@@ -165,7 +165,7 @@ impl<'de> serde::Deserialize<'de> for UpdateTaxSettingsDefaultsTaxBehavior {
     }
 }
 /// The place where your business is located.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdateTaxSettingsHeadOffice {
     /// The location of the business for tax purposes.
     pub address: UpdateTaxSettingsHeadOfficeAddress,
@@ -176,7 +176,7 @@ impl UpdateTaxSettingsHeadOffice {
     }
 }
 /// The location of the business for tax purposes.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdateTaxSettingsHeadOfficeAddress {
     /// City, district, suburb, town, or village.
     #[serde(skip_serializing_if = "Option::is_none")]

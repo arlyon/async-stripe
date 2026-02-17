@@ -3,7 +3,7 @@
 /// Related guide: [Using the Settings API](https://docs.stripe.com/tax/settings-api)
 ///
 /// For more details see <<https://stripe.com/docs/api/tax/settings/object>>.
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Eq, PartialEq)]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TaxSettings {
     pub defaults: stripe_misc::TaxProductResourceTaxSettingsDefaults,

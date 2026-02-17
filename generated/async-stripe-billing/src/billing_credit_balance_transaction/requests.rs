@@ -2,7 +2,7 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct ListBillingCreditBalanceTransactionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     credit_grant: Option<String>,
@@ -125,7 +125,7 @@ impl StripeRequest for ListBillingCreditBalanceTransaction {
             .query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct RetrieveBillingCreditBalanceTransactionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,

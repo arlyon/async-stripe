@@ -18,7 +18,7 @@
 /// - [Multiple configurations for your Connect accounts](https://docs.stripe.com/connect/multiple-payment-method-configurations).
 ///
 /// For more details see <<https://stripe.com/docs/api/payment_method_configurations/object>>.
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Eq, PartialEq)]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentMethodConfiguration {
     pub acss_debit: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,

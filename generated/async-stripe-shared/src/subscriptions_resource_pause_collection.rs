@@ -1,6 +1,6 @@
 /// The Pause Collection settings determine how we will pause collection for this subscription and for how long the subscription.
 /// should be paused.
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Eq, PartialEq)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct SubscriptionsResourcePauseCollection {

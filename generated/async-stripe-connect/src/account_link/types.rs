@@ -4,7 +4,7 @@
 /// Related guide: [Connect Onboarding](https://docs.stripe.com/connect/custom/hosted-onboarding)
 ///
 /// For more details see <<https://stripe.com/docs/api/account_links/object>>.
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Eq, PartialEq)]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct AccountLink {
     /// Time at which the object was created. Measured in seconds since the Unix epoch.

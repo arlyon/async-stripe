@@ -2,7 +2,7 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct ListInvoiceRenderingTemplateBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<String>,
@@ -101,7 +101,7 @@ impl StripeRequest for ListInvoiceRenderingTemplate {
         RequestBuilder::new(StripeMethod::Get, "/invoice_rendering_templates").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct RetrieveInvoiceRenderingTemplateBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -163,7 +163,7 @@ impl StripeRequest for RetrieveInvoiceRenderingTemplate {
             .query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct ArchiveInvoiceRenderingTemplateBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -222,7 +222,7 @@ impl StripeRequest for ArchiveInvoiceRenderingTemplate {
         .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct UnarchiveInvoiceRenderingTemplateBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
