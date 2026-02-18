@@ -2,7 +2,7 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct RetrieveTokenBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -187,7 +187,7 @@ impl<'de> serde::Deserialize<'de> for CreateTokenAccountBusinessType {
     }
 }
 /// Information about the company or business.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateTokenAccountCompany {
     /// The company's primary address.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -307,7 +307,7 @@ impl Default for CreateTokenAccountCompany {
     }
 }
 /// The company's primary address.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateTokenAccountCompanyAddress {
     /// City, district, suburb, town, or village.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -339,7 +339,7 @@ impl Default for CreateTokenAccountCompanyAddress {
     }
 }
 /// The Kana variation of the company's primary address (Japan only).
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateTokenAccountCompanyAddressKana {
     /// City or ward.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -382,7 +382,7 @@ impl Default for CreateTokenAccountCompanyAddressKana {
     }
 }
 /// The Kanji variation of the company's primary address (Japan only).
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateTokenAccountCompanyAddressKanji {
     /// City or ward.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -425,7 +425,7 @@ impl Default for CreateTokenAccountCompanyAddressKanji {
     }
 }
 /// This hash is used to attest that the directors information provided to Stripe is both current and correct.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateTokenAccountCompanyDirectorshipDeclaration {
     /// The Unix timestamp marking when the directorship declaration attestation was made.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -448,7 +448,7 @@ impl Default for CreateTokenAccountCompanyDirectorshipDeclaration {
     }
 }
 /// This hash is used to attest that the beneficial owner information provided to Stripe is both current and correct.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateTokenAccountCompanyOwnershipDeclaration {
     /// The Unix timestamp marking when the beneficial owner attestation was made.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -541,7 +541,7 @@ impl<'de> serde::Deserialize<'de> for CreateTokenAccountCompanyOwnershipExemptio
     }
 }
 /// When the business was incorporated or registered.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateTokenAccountCompanyRegistrationDate {
     /// The day of registration, between 1 and 31.
     pub day: i64,
@@ -556,7 +556,7 @@ impl CreateTokenAccountCompanyRegistrationDate {
     }
 }
 /// This hash is used to attest that the representative is authorized to act as the representative of their legal entity.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateTokenAccountCompanyRepresentativeDeclaration {
     /// The Unix timestamp marking when the representative declaration attestation was made.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -709,7 +709,7 @@ impl<'de> serde::Deserialize<'de> for CreateTokenAccountCompanyStructure {
     }
 }
 /// Information on the verification state of the company.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateTokenAccountCompanyVerification {
     /// A document verifying the business.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -726,7 +726,7 @@ impl Default for CreateTokenAccountCompanyVerification {
     }
 }
 /// A document verifying the business.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateTokenAccountCompanyVerificationDocument {
     /// The back of a document returned by a [file upload](https://api.stripe.com#create_file) with a `purpose` value of `additional_verification`.
     /// The uploaded file needs to be a color image (smaller than 8,000px by 8,000px), in JPG, PNG, or PDF format, and less than 10 MB in size.
@@ -862,7 +862,7 @@ impl Default for CreateTokenAccountIndividual {
     }
 }
 /// The individual's primary address.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateTokenAccountIndividualAddress {
     /// City, district, suburb, town, or village.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -894,7 +894,7 @@ impl Default for CreateTokenAccountIndividualAddress {
     }
 }
 /// The Kana variation of the individual's primary address (Japan only).
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateTokenAccountIndividualAddressKana {
     /// City or ward.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -937,7 +937,7 @@ impl Default for CreateTokenAccountIndividualAddressKana {
     }
 }
 /// The Kanji variation of the individual's primary address (Japan only).
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateTokenAccountIndividualAddressKanji {
     /// City or ward.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1045,7 +1045,7 @@ impl<'de> serde::Deserialize<'de> for CreateTokenAccountIndividualPoliticalExpos
     }
 }
 /// The individual's registered address.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateTokenAccountIndividualRegisteredAddress {
     /// City, district, suburb, town, or village.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1107,7 +1107,7 @@ impl Default for CreateTokenAccountIndividualRelationship {
     }
 }
 /// The bank account this token will represent.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateTokenBankAccount {
     /// The name of the person or business that owns the bank account.
     /// This field is required when attaching the bank account to a `Customer` object.
@@ -1302,7 +1302,7 @@ impl<'de> serde::Deserialize<'de> for CreateTokenBankAccountAccountType {
 /// The card this token will represent.
 /// If you also pass in a customer, the card must be the ID of a card belonging to the customer.
 /// Otherwise, if you do not pass in a customer, this is a dictionary containing a user's credit card details, with the options described below.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 #[serde(rename_all = "snake_case")]
 pub enum CreateTokenCard {
     #[serde(untagged)]
@@ -1313,7 +1313,7 @@ pub enum CreateTokenCard {
 /// The card this token will represent.
 /// If you also pass in a customer, the card must be the ID of a card belonging to the customer.
 /// Otherwise, if you do not pass in a customer, this is a dictionary containing a user's credit card details, with the options described below.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateTokenCreditCardSpecs {
     /// City / District / Suburb / Town / Village.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1377,7 +1377,7 @@ impl CreateTokenCreditCardSpecs {
     }
 }
 /// Contains information about card networks used to process the payment.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateTokenCreditCardSpecsNetworks {
     /// The customer's preferred card network for co-branded cards.
     /// Supports `cartes_bancaires`, `mastercard`, or `visa`.
@@ -1466,7 +1466,7 @@ impl<'de> serde::Deserialize<'de> for CreateTokenCreditCardSpecsNetworksPreferre
     }
 }
 /// The updated CVC value this token represents.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateTokenCvcUpdate {
     /// The CVC value, in string form.
     pub cvc: String,
@@ -1608,7 +1608,7 @@ impl Default for CreateTokenPerson {
     }
 }
 /// Details on the legal guardian's or authorizer's acceptance of the required Stripe agreements.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateTokenPersonAdditionalTosAcceptances {
     /// Details on the legal guardian's acceptance of the main Stripe service agreement.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1625,7 +1625,7 @@ impl Default for CreateTokenPersonAdditionalTosAcceptances {
     }
 }
 /// Details on the legal guardian's acceptance of the main Stripe service agreement.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateTokenPersonAdditionalTosAcceptancesAccount {
     /// The Unix timestamp marking when the account representative accepted the service agreement.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1648,7 +1648,7 @@ impl Default for CreateTokenPersonAdditionalTosAcceptancesAccount {
     }
 }
 /// The person's address.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateTokenPersonAddress {
     /// City, district, suburb, town, or village.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1680,7 +1680,7 @@ impl Default for CreateTokenPersonAddress {
     }
 }
 /// The Kana variation of the person's address (Japan only).
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateTokenPersonAddressKana {
     /// City or ward.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1723,7 +1723,7 @@ impl Default for CreateTokenPersonAddressKana {
     }
 }
 /// The Kanji variation of the person's address (Japan only).
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateTokenPersonAddressKanji {
     /// City or ward.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1766,7 +1766,7 @@ impl Default for CreateTokenPersonAddressKanji {
     }
 }
 /// Documents that may be submitted to satisfy various informational requests.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateTokenPersonDocuments {
     /// One or more documents that demonstrate proof that this person is authorized to represent the company.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1854,7 +1854,7 @@ impl<'de> serde::Deserialize<'de> for CreateTokenPersonPoliticalExposure {
     }
 }
 /// The person's registered address.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateTokenPersonRegisteredAddress {
     /// City, district, suburb, town, or village.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1937,7 +1937,7 @@ impl Default for CreateTokenPersonRelationship {
     }
 }
 /// Demographic data related to the person.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateTokenPersonUsCfpbData {
     /// The persons ethnicity details
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1960,7 +1960,7 @@ impl Default for CreateTokenPersonUsCfpbData {
     }
 }
 /// The persons ethnicity details
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateTokenPersonUsCfpbDataEthnicityDetails {
     /// The persons ethnicity
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2060,7 +2060,7 @@ impl<'de> serde::Deserialize<'de> for CreateTokenPersonUsCfpbDataEthnicityDetail
     }
 }
 /// The persons race details
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateTokenPersonUsCfpbDataRaceDetails {
     /// The persons race.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2211,7 +2211,7 @@ impl<'de> serde::Deserialize<'de> for CreateTokenPersonUsCfpbDataRaceDetailsRace
     }
 }
 /// The PII this token represents.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateTokenPii {
     /// The `id_number` for the PII, in string form.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2316,7 +2316,7 @@ impl StripeRequest for CreateToken {
     }
 }
 
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct DateOfBirthSpecs {
     /// The day of birth, between 1 and 31.
     pub day: i64,
@@ -2330,7 +2330,7 @@ impl DateOfBirthSpecs {
         Self { day: day.into(), month: month.into(), year: year.into() }
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct PersonVerificationDocumentSpecs {
     /// The back of an ID returned by a [file upload](https://api.stripe.com#create_file) with a `purpose` value of `identity_document`.
     /// The uploaded file needs to be a color image (smaller than 8,000px by 8,000px), in JPG, PNG, or PDF format, and less than 10 MB in size.
@@ -2351,7 +2351,7 @@ impl Default for PersonVerificationDocumentSpecs {
         Self::new()
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct DocumentsParam {
     /// One or more document ids returned by a [file upload](https://api.stripe.com#create_file) with a `purpose` value of `account_requirement`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2367,7 +2367,7 @@ impl Default for DocumentsParam {
         Self::new()
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct PersonVerificationSpecs {
     /// A document showing address, either a passport, local ID card, or utility bill from a well-known utility company.
     #[serde(skip_serializing_if = "Option::is_none")]

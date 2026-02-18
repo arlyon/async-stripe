@@ -1,5 +1,5 @@
 /// A Transaction represents a real transaction that affects a Financial Connections Account balance.
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Eq, PartialEq)]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct FinancialConnectionsTransaction {
     /// The ID of the Financial Connections Account this transaction belongs to.

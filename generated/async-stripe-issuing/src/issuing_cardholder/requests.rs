@@ -2,7 +2,7 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct ListIssuingCardholderBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     created: Option<stripe_types::RangeQueryTs>,
@@ -138,7 +138,7 @@ impl StripeRequest for ListIssuingCardholder {
         RequestBuilder::new(StripeMethod::Get, "/issuing/cardholders").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct RetrieveIssuingCardholderBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -238,7 +238,7 @@ impl CreateIssuingCardholderBuilder {
 }
 /// Rules that control spending across this cardholder's cards.
 /// Refer to our [documentation](https://docs.stripe.com/issuing/controls/spending-controls) for more details.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateIssuingCardholderSpendingControls {
     /// Array of strings containing [categories](https://docs.stripe.com/api#issuing_authorization_object-merchant_data-category) of authorizations to allow.
     /// All other categories will be blocked.
@@ -2366,7 +2366,7 @@ impl<'de> serde::Deserialize<'de> for CreateIssuingCardholderSpendingControlsBlo
     }
 }
 /// Limit spending with amount-based rules that apply across this cardholder's cards.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateIssuingCardholderSpendingControlsSpendingLimits {
     /// Maximum amount allowed to spend per interval.
     pub amount: i64,
@@ -3714,7 +3714,7 @@ impl UpdateIssuingCardholderBuilder {
 }
 /// Rules that control spending across this cardholder's cards.
 /// Refer to our [documentation](https://docs.stripe.com/issuing/controls/spending-controls) for more details.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdateIssuingCardholderSpendingControls {
     /// Array of strings containing [categories](https://docs.stripe.com/api#issuing_authorization_object-merchant_data-category) of authorizations to allow.
     /// All other categories will be blocked.
@@ -5842,7 +5842,7 @@ impl<'de> serde::Deserialize<'de> for UpdateIssuingCardholderSpendingControlsBlo
     }
 }
 /// Limit spending with amount-based rules that apply across this cardholder's cards.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdateIssuingCardholderSpendingControlsSpendingLimits {
     /// Maximum amount allowed to spend per interval.
     pub amount: i64,
@@ -7152,7 +7152,7 @@ impl StripeRequest for UpdateIssuingCardholder {
     }
 }
 
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct RequiredAddress {
     /// City, district, suburb, town, or village.
     pub city: String,
@@ -7186,7 +7186,7 @@ impl RequiredAddress {
         }
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CompanyParam {
     /// The entity's business ID number.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -7202,7 +7202,7 @@ impl Default for CompanyParam {
         Self::new()
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct TermsAcceptanceParam {
     /// The Unix timestamp marking when the cardholder accepted the Authorized User Terms.
     /// Required for Celtic Spend Card users.
@@ -7226,7 +7226,7 @@ impl Default for TermsAcceptanceParam {
         Self::new()
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct DateOfBirthSpecs {
     /// The day of birth, between 1 and 31.
     pub day: i64,
@@ -7240,7 +7240,7 @@ impl DateOfBirthSpecs {
         Self { day: day.into(), month: month.into(), year: year.into() }
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct PersonVerificationDocumentParam {
     /// The back of an ID returned by a [file upload](https://api.stripe.com#create_file) with a `purpose` value of `identity_document`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -7259,7 +7259,7 @@ impl Default for PersonVerificationDocumentParam {
         Self::new()
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct BillingSpecs {
     /// The cardholder’s billing address.
     pub address: RequiredAddress,
@@ -7269,7 +7269,7 @@ impl BillingSpecs {
         Self { address: address.into() }
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CardIssuingParam {
     /// Information about cardholder acceptance of Celtic [Authorized User Terms](https://stripe.com/docs/issuing/cards#accept-authorized-user-terms).
     /// Required for cards backed by a Celtic program.
@@ -7286,7 +7286,7 @@ impl Default for CardIssuingParam {
         Self::new()
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct PersonVerificationParam {
     /// An identifying document, either a passport or local ID card.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -7302,7 +7302,7 @@ impl Default for PersonVerificationParam {
         Self::new()
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct IndividualParam {
     /// Information related to the card_issuing program for this cardholder.
     #[serde(skip_serializing_if = "Option::is_none")]

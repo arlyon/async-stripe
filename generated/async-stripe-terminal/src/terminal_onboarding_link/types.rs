@@ -1,5 +1,5 @@
 /// Returns redirect links used for onboarding onto Tap to Pay on iPhone.
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Eq, PartialEq)]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TerminalOnboardingLink {
     pub link_options: stripe_terminal::TerminalOnboardingLinkLinkOptions,

@@ -7,7 +7,7 @@
 /// Related guide: [Connect embedded components](https://docs.stripe.com/connect/get-started-connect-embedded-components).
 ///
 /// For more details see <<https://stripe.com/docs/api/account_sessions/object>>.
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Eq, PartialEq)]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct AccountSession {
     /// The ID of the account the AccountSession was created for

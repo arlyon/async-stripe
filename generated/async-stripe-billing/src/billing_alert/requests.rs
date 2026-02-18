@@ -2,7 +2,7 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct ListBillingAlertBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     alert_type: Option<stripe_billing::BillingAlertAlertType>,
@@ -114,7 +114,7 @@ impl StripeRequest for ListBillingAlert {
         RequestBuilder::new(StripeMethod::Get, "/billing/alerts").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct RetrieveBillingAlertBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -167,7 +167,7 @@ impl StripeRequest for RetrieveBillingAlert {
         RequestBuilder::new(StripeMethod::Get, format!("/billing/alerts/{id}")).query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct CreateBillingAlertBuilder {
     alert_type: stripe_billing::BillingAlertAlertType,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -190,7 +190,7 @@ impl CreateBillingAlertBuilder {
     }
 }
 /// The configuration of the usage threshold.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateBillingAlertUsageThreshold {
     /// The filters allows limiting the scope of this usage alert.
     /// You can only specify up to one filter at this time.
@@ -214,7 +214,7 @@ impl CreateBillingAlertUsageThreshold {
 }
 /// The filters allows limiting the scope of this usage alert.
 /// You can only specify up to one filter at this time.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateBillingAlertUsageThresholdFilters {
     /// Limit the scope to this usage alert only to this customer.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -404,7 +404,7 @@ impl StripeRequest for CreateBillingAlert {
         RequestBuilder::new(StripeMethod::Post, "/billing/alerts").form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct ActivateBillingAlertBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -458,7 +458,7 @@ impl StripeRequest for ActivateBillingAlert {
             .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct ArchiveBillingAlertBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -512,7 +512,7 @@ impl StripeRequest for ArchiveBillingAlert {
             .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct DeactivateBillingAlertBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,

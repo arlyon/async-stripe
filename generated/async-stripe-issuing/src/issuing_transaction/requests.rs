@@ -2,7 +2,7 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct ListIssuingTransactionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     card: Option<String>,
@@ -130,7 +130,7 @@ impl StripeRequest for ListIssuingTransaction {
         RequestBuilder::new(StripeMethod::Get, "/issuing/transactions").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct RetrieveIssuingTransactionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -252,7 +252,7 @@ impl StripeRequest for UpdateIssuingTransaction {
             .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct RefundIssuingTransactionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -317,7 +317,7 @@ impl StripeRequest for RefundIssuingTransaction {
         .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct CreateForceCaptureIssuingTransactionBuilder {
     amount: i64,
     card: String,
@@ -343,7 +343,7 @@ impl CreateForceCaptureIssuingTransactionBuilder {
     }
 }
 /// Details about the seller (grocery store, e-commerce website, etc.) where the card authorization happened.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateForceCaptureIssuingTransactionMerchantData {
     /// A categorization of the seller's type of business.
     /// See our [merchant categories guide](https://docs.stripe.com/issuing/merchant-categories) for a list of possible values.
@@ -1430,7 +1430,7 @@ impl<'de> serde::Deserialize<'de> for CreateForceCaptureIssuingTransactionMercha
     }
 }
 /// Additional purchase information that is optionally provided by the merchant.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateForceCaptureIssuingTransactionPurchaseDetails {
     /// Fleet-specific information for transactions using Fleet cards.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1469,7 +1469,7 @@ impl Default for CreateForceCaptureIssuingTransactionPurchaseDetails {
     }
 }
 /// Fleet-specific information for transactions using Fleet cards.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateForceCaptureIssuingTransactionPurchaseDetailsFleet {
     /// Answers to prompts presented to the cardholder at the point of sale.
     /// Prompted fields vary depending on the configuration of your physical fleet cards.
@@ -1643,7 +1643,7 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Information about fuel that was purchased with this transaction.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateForceCaptureIssuingTransactionPurchaseDetailsFuel {
     /// [Conexxus Payment System Product Code](https://www.conexxus.org/conexxus-payment-system-product-codes) identifying the primary fuel product purchased.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1908,7 +1908,7 @@ impl StripeRequest for CreateForceCaptureIssuingTransaction {
         .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct CreateUnlinkedRefundIssuingTransactionBuilder {
     amount: i64,
     card: String,
@@ -1934,7 +1934,7 @@ impl CreateUnlinkedRefundIssuingTransactionBuilder {
     }
 }
 /// Details about the seller (grocery store, e-commerce website, etc.) where the card authorization happened.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateUnlinkedRefundIssuingTransactionMerchantData {
     /// A categorization of the seller's type of business.
     /// See our [merchant categories guide](https://docs.stripe.com/issuing/merchant-categories) for a list of possible values.
@@ -3021,7 +3021,7 @@ impl<'de> serde::Deserialize<'de> for CreateUnlinkedRefundIssuingTransactionMerc
     }
 }
 /// Additional purchase information that is optionally provided by the merchant.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateUnlinkedRefundIssuingTransactionPurchaseDetails {
     /// Fleet-specific information for transactions using Fleet cards.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3060,7 +3060,7 @@ impl Default for CreateUnlinkedRefundIssuingTransactionPurchaseDetails {
     }
 }
 /// Fleet-specific information for transactions using Fleet cards.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFleet {
     /// Answers to prompts presented to the cardholder at the point of sale.
     /// Prompted fields vary depending on the configuration of your physical fleet cards.
@@ -3235,7 +3235,7 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Information about fuel that was purchased with this transaction.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFuel {
     /// [Conexxus Payment System Product Code](https://www.conexxus.org/conexxus-payment-system-product-codes) identifying the primary fuel product purchased.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3507,7 +3507,7 @@ impl StripeRequest for CreateUnlinkedRefundIssuingTransaction {
     }
 }
 
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct FleetCardholderPromptDataSpecs {
     /// Driver ID.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3542,7 +3542,7 @@ impl Default for FleetCardholderPromptDataSpecs {
         Self::new()
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct FleetReportedBreakdownFuelSpecs {
     /// Gross fuel amount that should equal Fuel Volume multipled by Fuel Unit Cost, inclusive of taxes.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3558,7 +3558,7 @@ impl Default for FleetReportedBreakdownFuelSpecs {
         Self::new()
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct FleetReportedBreakdownNonFuelSpecs {
     /// Gross non-fuel amount that should equal the sum of the line items, inclusive of taxes.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3574,7 +3574,7 @@ impl Default for FleetReportedBreakdownNonFuelSpecs {
         Self::new()
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct FleetReportedBreakdownTaxSpecs {
     /// Amount of state or provincial Sales Tax included in the transaction amount.
     /// Null if not reported by merchant or not subject to tax.
@@ -3595,7 +3595,7 @@ impl Default for FleetReportedBreakdownTaxSpecs {
         Self::new()
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct FlightSegmentSpecs {
     /// The three-letter IATA airport code of the flight's destination.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3633,7 +3633,7 @@ impl Default for FlightSegmentSpecs {
         Self::new()
     }
 }
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct LodgingSpecs {
     /// The time of checking into the lodging.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3652,7 +3652,7 @@ impl Default for LodgingSpecs {
         Self::new()
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct ReceiptSpecs {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
@@ -3673,7 +3673,7 @@ impl Default for ReceiptSpecs {
         Self::new()
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct FleetReportedBreakdownSpecs {
     /// Breakdown of fuel portion of the purchase.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3695,7 +3695,7 @@ impl Default for FleetReportedBreakdownSpecs {
         Self::new()
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct FlightSpecs {
     /// The time that the flight departed.
     #[serde(skip_serializing_if = "Option::is_none")]

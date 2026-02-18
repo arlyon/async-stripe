@@ -2,7 +2,7 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct ListBillingMeterBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<String>,
@@ -97,7 +97,7 @@ impl StripeRequest for ListBillingMeter {
         RequestBuilder::new(StripeMethod::Get, "/billing/meters").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct RetrieveBillingMeterBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -150,7 +150,7 @@ impl StripeRequest for RetrieveBillingMeter {
         RequestBuilder::new(StripeMethod::Get, format!("/billing/meters/{id}")).query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct CreateBillingMeterBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     customer_mapping: Option<CreateBillingMeterCustomerMapping>,
@@ -182,7 +182,7 @@ impl CreateBillingMeterBuilder {
     }
 }
 /// Fields that specify how to map a meter event to a customer.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateBillingMeterCustomerMapping {
     /// The key in the meter event payload to use for mapping the event to a customer.
     pub event_payload_key: String,
@@ -261,7 +261,7 @@ impl<'de> serde::Deserialize<'de> for CreateBillingMeterCustomerMappingType {
     }
 }
 /// The default settings to aggregate a meter's events with.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateBillingMeterDefaultAggregation {
     /// Specifies how events are aggregated.
     /// Allowed values are `count` to count the number of events, `sum` to sum each event's value and `last` to take the last event's value in the window.
@@ -342,7 +342,7 @@ impl<'de> serde::Deserialize<'de> for CreateBillingMeterDefaultAggregationFormul
     }
 }
 /// Fields that specify how to calculate a meter event's value.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateBillingMeterValueSettings {
     /// The key in the usage event payload to use as the value for this meter.
     /// For example, if the event payload contains usage on a `bytes_used` field, then set the event_payload_key to "bytes_used".
@@ -428,7 +428,7 @@ impl StripeRequest for CreateBillingMeter {
         RequestBuilder::new(StripeMethod::Post, "/billing/meters").form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct UpdateBillingMeterBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     display_name: Option<String>,
@@ -488,7 +488,7 @@ impl StripeRequest for UpdateBillingMeter {
         RequestBuilder::new(StripeMethod::Post, format!("/billing/meters/{id}")).form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct DeactivateBillingMeterBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -543,7 +543,7 @@ impl StripeRequest for DeactivateBillingMeter {
             .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct ReactivateBillingMeterBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,

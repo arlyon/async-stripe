@@ -50,6 +50,11 @@ impl<'a> ObjectWriter<'a> {
         self
     }
 
+    pub fn derive_eq(&mut self, derive_eq: bool) -> &mut Self {
+        self.derives = self.derives.eq(derive_eq);
+        self
+    }
+
     pub fn get_printable(&self, typ: &RustType) -> PrintableType {
         self.components.construct_printable_type(typ)
     }

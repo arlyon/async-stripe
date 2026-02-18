@@ -1,5 +1,5 @@
 /// Restrictions that a Connect Platform has placed on this FinancialAccount.
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Eq, PartialEq)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TreasuryFinancialAccountsResourcePlatformRestrictions {

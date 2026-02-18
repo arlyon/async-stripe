@@ -2,7 +2,7 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct ListIssuingAuthorizationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     card: Option<String>,
@@ -129,7 +129,7 @@ impl StripeRequest for ListIssuingAuthorization {
         RequestBuilder::new(StripeMethod::Get, "/issuing/authorizations").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct RetrieveIssuingAuthorizationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -479,7 +479,7 @@ impl CreateIssuingAuthorizationBuilder {
 }
 /// Detailed breakdown of amount components.
 /// These amounts are denominated in `currency` and in the [smallest currency unit](https://docs.stripe.com/currencies#zero-decimal).
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateIssuingAuthorizationAmountDetails {
     /// The ATM withdrawal fee.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -499,7 +499,7 @@ impl Default for CreateIssuingAuthorizationAmountDetails {
     }
 }
 /// Fleet-specific information for authorizations using Fleet cards.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateIssuingAuthorizationFleet {
     /// Answers to prompts presented to the cardholder at the point of sale.
     /// Prompted fields vary depending on the configuration of your physical fleet cards.
@@ -742,7 +742,7 @@ impl<'de> serde::Deserialize<'de> for CreateIssuingAuthorizationFraudDisputabili
     }
 }
 /// Information about fuel that was purchased with this transaction.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateIssuingAuthorizationFuel {
     /// [Conexxus Payment System Product Code](https://www.conexxus.org/conexxus-payment-system-product-codes) identifying the primary fuel product purchased.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -939,7 +939,7 @@ impl<'de> serde::Deserialize<'de> for CreateIssuingAuthorizationFuelUnit {
     }
 }
 /// Details about the seller (grocery store, e-commerce website, etc.) where the card authorization happened.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateIssuingAuthorizationMerchantData {
     /// A categorization of the seller's type of business.
     /// See our [merchant categories guide](https://docs.stripe.com/issuing/merchant-categories) for a list of possible values.
@@ -2026,7 +2026,7 @@ impl<'de> serde::Deserialize<'de> for CreateIssuingAuthorizationMerchantDataCate
     }
 }
 /// Details about the authorization, such as identifiers, set by the card network.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateIssuingAuthorizationNetworkData {
     /// Identifier assigned to the acquirer by the card network.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2066,7 +2066,7 @@ impl Default for CreateIssuingAuthorizationRiskAssessment {
     }
 }
 /// Stripe's assessment of this authorization's likelihood of being card testing activity.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateIssuingAuthorizationRiskAssessmentCardTestingRisk {
     /// The % of declines due to a card number not existing in the past hour, taking place at the same merchant.
     /// Higher rates correspond to a greater probability of card testing activity, meaning bad actors may be attempting different card number combinations to guess a correct one.
@@ -2268,7 +2268,7 @@ impl<'de> serde::Deserialize<'de> for CreateIssuingAuthorizationRiskAssessmentFr
     }
 }
 /// The dispute risk of the merchant (the seller on a purchase) on an authorization based on all Stripe Issuing activity.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateIssuingAuthorizationRiskAssessmentMerchantDisputeRisk {
     /// The dispute rate observed across all Stripe Issuing authorizations for this merchant.
     /// For example, a value of 50 means 50% of authorizations from this merchant on Stripe Issuing have resulted in a dispute.
@@ -2367,7 +2367,7 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Verifications that Stripe performed on information that the cardholder provided to the merchant.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateIssuingAuthorizationVerificationData {
     /// Whether the cardholder provided an address first line and if it matched the cardholder’s `billing.address.line1`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2546,7 +2546,7 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// The exemption applied to this authorization.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateIssuingAuthorizationVerificationDataAuthenticationExemption {
     /// The entity that requested the exemption, either the acquiring merchant or the Issuing user.
     pub claimed_by: CreateIssuingAuthorizationVerificationDataAuthenticationExemptionClaimedBy,
@@ -2847,7 +2847,7 @@ impl<'de> serde::Deserialize<'de> for CreateIssuingAuthorizationVerificationData
     }
 }
 /// 3D Secure details.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateIssuingAuthorizationVerificationDataThreeDSecure {
     /// The outcome of the 3D Secure authentication request.
     pub result: CreateIssuingAuthorizationVerificationDataThreeDSecureResult,
@@ -3155,7 +3155,7 @@ impl StripeRequest for CreateIssuingAuthorization {
             .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct CaptureIssuingAuthorizationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     capture_amount: Option<i64>,
@@ -3177,7 +3177,7 @@ impl CaptureIssuingAuthorizationBuilder {
     }
 }
 /// Additional purchase information that is optionally provided by the merchant.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CaptureIssuingAuthorizationPurchaseDetails {
     /// Fleet-specific information for transactions using Fleet cards.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3216,7 +3216,7 @@ impl Default for CaptureIssuingAuthorizationPurchaseDetails {
     }
 }
 /// Fleet-specific information for transactions using Fleet cards.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CaptureIssuingAuthorizationPurchaseDetailsFleet {
     /// Answers to prompts presented to the cardholder at the point of sale.
     /// Prompted fields vary depending on the configuration of your physical fleet cards.
@@ -3386,7 +3386,7 @@ impl<'de> serde::Deserialize<'de> for CaptureIssuingAuthorizationPurchaseDetails
     }
 }
 /// Information about the flight that was purchased with this transaction.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CaptureIssuingAuthorizationPurchaseDetailsFlight {
     /// The time that the flight departed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3421,7 +3421,7 @@ impl Default for CaptureIssuingAuthorizationPurchaseDetailsFlight {
     }
 }
 /// The legs of the trip.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CaptureIssuingAuthorizationPurchaseDetailsFlightSegments {
     /// The three-letter IATA airport code of the flight's destination.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3460,7 +3460,7 @@ impl Default for CaptureIssuingAuthorizationPurchaseDetailsFlightSegments {
     }
 }
 /// Information about fuel that was purchased with this transaction.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CaptureIssuingAuthorizationPurchaseDetailsFuel {
     /// [Conexxus Payment System Product Code](https://www.conexxus.org/conexxus-payment-system-product-codes) identifying the primary fuel product purchased.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3657,7 +3657,7 @@ impl<'de> serde::Deserialize<'de> for CaptureIssuingAuthorizationPurchaseDetails
     }
 }
 /// Information about lodging that was purchased with this transaction.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CaptureIssuingAuthorizationPurchaseDetailsLodging {
     /// The time of checking into the lodging.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3677,7 +3677,7 @@ impl Default for CaptureIssuingAuthorizationPurchaseDetailsLodging {
     }
 }
 /// The line items in the purchase.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CaptureIssuingAuthorizationPurchaseDetailsReceipt {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
@@ -3770,7 +3770,7 @@ impl StripeRequest for CaptureIssuingAuthorization {
         .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct ExpireIssuingAuthorizationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -3830,7 +3830,7 @@ impl StripeRequest for ExpireIssuingAuthorization {
         .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct FinalizeAmountIssuingAuthorizationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -3846,7 +3846,7 @@ impl FinalizeAmountIssuingAuthorizationBuilder {
     }
 }
 /// Fleet-specific information for authorizations using Fleet cards.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct FinalizeAmountIssuingAuthorizationFleet {
     /// Answers to prompts presented to the cardholder at the point of sale.
     /// Prompted fields vary depending on the configuration of your physical fleet cards.
@@ -4016,7 +4016,7 @@ impl<'de> serde::Deserialize<'de> for FinalizeAmountIssuingAuthorizationFleetSer
     }
 }
 /// Information about fuel that was purchased with this transaction.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct FinalizeAmountIssuingAuthorizationFuel {
     /// [Conexxus Payment System Product Code](https://www.conexxus.org/conexxus-payment-system-product-codes) identifying the primary fuel product purchased.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4272,7 +4272,7 @@ impl StripeRequest for FinalizeAmountIssuingAuthorization {
         .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct RespondIssuingAuthorizationBuilder {
     confirmed: bool,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4335,7 +4335,7 @@ impl StripeRequest for RespondIssuingAuthorization {
         .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct IncrementIssuingAuthorizationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -4407,7 +4407,7 @@ impl StripeRequest for IncrementIssuingAuthorization {
         .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct ReverseIssuingAuthorizationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -4477,7 +4477,7 @@ impl StripeRequest for ReverseIssuingAuthorization {
     }
 }
 
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct FleetCardholderPromptDataSpecs {
     /// Driver ID.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4512,7 +4512,7 @@ impl Default for FleetCardholderPromptDataSpecs {
         Self::new()
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct FleetReportedBreakdownFuelSpecs {
     /// Gross fuel amount that should equal Fuel Volume multipled by Fuel Unit Cost, inclusive of taxes.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4528,7 +4528,7 @@ impl Default for FleetReportedBreakdownFuelSpecs {
         Self::new()
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct FleetReportedBreakdownNonFuelSpecs {
     /// Gross non-fuel amount that should equal the sum of the line items, inclusive of taxes.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4544,7 +4544,7 @@ impl Default for FleetReportedBreakdownNonFuelSpecs {
         Self::new()
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct FleetReportedBreakdownTaxSpecs {
     /// Amount of state or provincial Sales Tax included in the transaction amount.
     /// Null if not reported by merchant or not subject to tax.
@@ -4565,7 +4565,7 @@ impl Default for FleetReportedBreakdownTaxSpecs {
         Self::new()
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct FleetReportedBreakdownSpecs {
     /// Breakdown of fuel portion of the purchase.
     #[serde(skip_serializing_if = "Option::is_none")]

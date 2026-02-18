@@ -41,7 +41,7 @@ impl StripeRequest for DeleteProductFeature {
         RequestBuilder::new(StripeMethod::Delete, format!("/products/{product}/features/{id}"))
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct ListProductProductFeatureBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<String>,
@@ -132,7 +132,7 @@ impl StripeRequest for ListProductProductFeature {
             .query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct RetrieveProductFeatureBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -188,7 +188,7 @@ impl StripeRequest for RetrieveProductFeature {
             .query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct CreateProductProductFeatureBuilder {
     entitlement_feature: String,
     #[serde(skip_serializing_if = "Option::is_none")]

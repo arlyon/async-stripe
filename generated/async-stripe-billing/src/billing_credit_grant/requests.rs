@@ -2,7 +2,7 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct ListBillingCreditGrantBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     customer: Option<String>,
@@ -112,7 +112,7 @@ impl StripeRequest for ListBillingCreditGrant {
         RequestBuilder::new(StripeMethod::Get, "/billing/credit_grants").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct RetrieveBillingCreditGrantBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -210,7 +210,7 @@ impl CreateBillingCreditGrantBuilder {
     }
 }
 /// Amount of this credit grant.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateBillingCreditGrantAmount {
     /// The monetary amount.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -225,7 +225,7 @@ impl CreateBillingCreditGrantAmount {
     }
 }
 /// The monetary amount.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateBillingCreditGrantAmountMonetary {
     /// Three-letter [ISO code for the currency](https://stripe.com/docs/currencies) of the `value` parameter.
     pub currency: stripe_types::Currency,
@@ -301,7 +301,7 @@ impl<'de> serde::Deserialize<'de> for CreateBillingCreditGrantAmountType {
 }
 /// Configuration specifying what this credit grant applies to.
 /// We currently only support `metered` prices that have a [Billing Meter](https://docs.stripe.com/api/billing/meter) attached to them.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateBillingCreditGrantApplicabilityConfig {
     /// Specify the scope of this applicability config.
     pub scope: CreateBillingCreditGrantApplicabilityConfigScope,
@@ -312,7 +312,7 @@ impl CreateBillingCreditGrantApplicabilityConfig {
     }
 }
 /// Specify the scope of this applicability config.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateBillingCreditGrantApplicabilityConfigScope {
     /// The price type that credit grants can apply to.
     /// We currently only support the `metered` price type.
@@ -402,7 +402,7 @@ impl<'de> serde::Deserialize<'de> for CreateBillingCreditGrantApplicabilityConfi
 /// A list of prices that the credit grant can apply to.
 /// We currently only support the `metered` prices.
 /// Cannot be used in combination with `price_type`.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateBillingCreditGrantApplicabilityConfigScopePrices {
     /// The price ID this credit grant should apply to.
     pub id: String,
@@ -581,7 +581,7 @@ impl StripeRequest for UpdateBillingCreditGrant {
             .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct ExpireBillingCreditGrantBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -635,7 +635,7 @@ impl StripeRequest for ExpireBillingCreditGrant {
             .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct VoidGrantBillingCreditGrantBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,

@@ -2,7 +2,7 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct ListTreasuryOutboundPaymentBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     created: Option<stripe_types::RangeQueryTs>,
@@ -121,7 +121,7 @@ impl StripeRequest for ListTreasuryOutboundPayment {
         RequestBuilder::new(StripeMethod::Get, "/treasury/outbound_payments").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct RetrieveTreasuryOutboundPaymentBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -175,7 +175,7 @@ impl StripeRequest for RetrieveTreasuryOutboundPayment {
             .query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct UpdateTreasuryOutboundPaymentBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -187,7 +187,7 @@ impl UpdateTreasuryOutboundPaymentBuilder {
     }
 }
 /// Details about network-specific tracking information.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdateTreasuryOutboundPaymentTrackingDetails {
     /// ACH network tracking details.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -205,7 +205,7 @@ impl UpdateTreasuryOutboundPaymentTrackingDetails {
     }
 }
 /// ACH network tracking details.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdateTreasuryOutboundPaymentTrackingDetailsAch {
     /// ACH trace ID for funds sent over the `ach` network.
     pub trace_id: String,
@@ -281,7 +281,7 @@ impl<'de> serde::Deserialize<'de> for UpdateTreasuryOutboundPaymentTrackingDetai
     }
 }
 /// US domestic wire network tracking details.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdateTreasuryOutboundPaymentTrackingDetailsUsDomesticWire {
     /// CHIPS System Sequence Number (SSN) for funds sent over the `us_domestic_wire` network.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -357,7 +357,7 @@ impl StripeRequest for UpdateTreasuryOutboundPayment {
         .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct FailTreasuryOutboundPaymentBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -415,7 +415,7 @@ impl StripeRequest for FailTreasuryOutboundPayment {
         .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct PostTreasuryOutboundPaymentBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -473,7 +473,7 @@ impl StripeRequest for PostTreasuryOutboundPayment {
         .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct ReturnOutboundPaymentTreasuryOutboundPaymentBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -486,7 +486,7 @@ impl ReturnOutboundPaymentTreasuryOutboundPaymentBuilder {
     }
 }
 /// Optional hash to set the return code.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct ReturnOutboundPaymentTreasuryOutboundPaymentReturnedDetails {
     /// The return code to be set on the OutboundPayment object.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -738,7 +738,7 @@ impl CreateTreasuryOutboundPaymentDestinationPaymentMethodData {
     }
 }
 /// Billing information associated with the PaymentMethod that may be used or required by particular types of payment methods.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateTreasuryOutboundPaymentDestinationPaymentMethodDataBillingDetails {
     /// Billing address.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -765,7 +765,7 @@ impl Default for CreateTreasuryOutboundPaymentDestinationPaymentMethodDataBillin
     }
 }
 /// Billing address.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateTreasuryOutboundPaymentDestinationPaymentMethodDataBillingDetailsAddress {
     /// City, district, suburb, town, or village.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -866,7 +866,7 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Required hash if type is set to `us_bank_account`.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateTreasuryOutboundPaymentDestinationPaymentMethodDataUsBankAccount {
     /// Account holder type: individual or company.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1054,7 +1054,7 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Payment method-specific configuration for this OutboundPayment.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateTreasuryOutboundPaymentDestinationPaymentMethodOptions {
     /// Optional fields for `us_bank_account`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1072,7 +1072,7 @@ impl Default for CreateTreasuryOutboundPaymentDestinationPaymentMethodOptions {
     }
 }
 /// Optional fields for `us_bank_account`.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateTreasuryOutboundPaymentDestinationPaymentMethodOptionsUsBankAccount {
     /// Specifies the network rails to be used.
     /// If not set, will default to the PaymentMethod's preferred network.
@@ -1169,7 +1169,7 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// End user details.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateTreasuryOutboundPaymentEndUserDetails {
     /// IP address of the user initiating the OutboundPayment.
     /// Must be supplied if `present` is set to `true`.
@@ -1304,7 +1304,7 @@ impl StripeRequest for CreateTreasuryOutboundPayment {
         RequestBuilder::new(StripeMethod::Post, "/treasury/outbound_payments").form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct CancelTreasuryOutboundPaymentBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,

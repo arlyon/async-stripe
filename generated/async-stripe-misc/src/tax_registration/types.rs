@@ -4,7 +4,7 @@
 /// For more information on how to register to collect tax, see [our guide](https://docs.stripe.com/tax/registering).
 ///
 /// Related guide: [Using the Registrations API](https://docs.stripe.com/tax/registrations-api)
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Eq, PartialEq)]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TaxRegistration {
     /// Time at which the registration becomes active. Measured in seconds since the Unix epoch.
