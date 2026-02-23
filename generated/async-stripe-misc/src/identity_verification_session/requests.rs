@@ -2,7 +2,7 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct ListIdentityVerificationSessionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     client_reference_id: Option<String>,
@@ -142,7 +142,7 @@ impl StripeRequest for ListIdentityVerificationSession {
         RequestBuilder::new(StripeMethod::Get, "/identity/verification_sessions").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct RetrieveIdentityVerificationSessionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -243,7 +243,7 @@ impl CreateIdentityVerificationSessionBuilder {
     }
 }
 /// A set of options for the session’s verification checks.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateIdentityVerificationSessionOptions {
     /// Options that apply to the [document check](https://docs.stripe.com/identity/verification-checks?type=document).
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -260,7 +260,7 @@ impl Default for CreateIdentityVerificationSessionOptions {
     }
 }
 /// Options that apply to the [document check](https://docs.stripe.com/identity/verification-checks?type=document).
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateIdentityVerificationSessionOptionsDocument {
     /// Array of strings of allowed identity document types.
     /// If the provided identity document isn’t one of the allowed types, the verification check will fail with a document_type_not_allowed error code.
@@ -362,7 +362,7 @@ impl<'de> serde::Deserialize<'de> for CreateIdentityVerificationSessionOptionsDo
     }
 }
 /// Tokens referencing a Person resource and it's associated account.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateIdentityVerificationSessionRelatedPerson {
     /// A token representing a connected account.
     /// If provided, the person parameter is also required and must be associated with the account.
@@ -575,7 +575,7 @@ impl UpdateIdentityVerificationSessionBuilder {
     }
 }
 /// A set of options for the session’s verification checks.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdateIdentityVerificationSessionOptions {
     /// Options that apply to the [document check](https://docs.stripe.com/identity/verification-checks?type=document).
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -592,7 +592,7 @@ impl Default for UpdateIdentityVerificationSessionOptions {
     }
 }
 /// Options that apply to the [document check](https://docs.stripe.com/identity/verification-checks?type=document).
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdateIdentityVerificationSessionOptionsDocument {
     /// Array of strings of allowed identity document types.
     /// If the provided identity document isn’t one of the allowed types, the verification check will fail with a document_type_not_allowed error code.
@@ -834,7 +834,7 @@ impl StripeRequest for UpdateIdentityVerificationSession {
         .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct CancelIdentityVerificationSessionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -895,7 +895,7 @@ impl StripeRequest for CancelIdentityVerificationSession {
         .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct RedactIdentityVerificationSessionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -972,7 +972,7 @@ impl StripeRequest for RedactIdentityVerificationSession {
     }
 }
 
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct ProvidedDetailsParam {
     /// Email of user being verified
     #[serde(skip_serializing_if = "Option::is_none")]

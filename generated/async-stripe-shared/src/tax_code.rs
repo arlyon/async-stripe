@@ -1,7 +1,7 @@
 /// [Tax codes](https://stripe.com/docs/tax/tax-categories) classify goods and services for tax purposes.
 ///
 /// For more details see <<https://stripe.com/docs/api/tax_codes/object>>.
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Eq, PartialEq)]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TaxCode {
     /// A detailed description of which types of products the tax code represents.

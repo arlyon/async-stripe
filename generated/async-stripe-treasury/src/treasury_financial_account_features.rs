@@ -1,6 +1,6 @@
 /// Encodes whether a FinancialAccount has access to a particular Feature, with a `status` enum and associated `status_details`.
 /// Stripe or the platform can control Features via the requested field.
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Eq, PartialEq)]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TreasuryFinancialAccountFeatures {
     pub card_issuing: Option<stripe_treasury::TreasuryFinancialAccountsResourceToggleSettings>,

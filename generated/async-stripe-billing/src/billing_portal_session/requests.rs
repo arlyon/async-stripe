@@ -2,7 +2,7 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct CreateBillingPortalSessionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     configuration: Option<String>,
@@ -37,7 +37,7 @@ impl CreateBillingPortalSessionBuilder {
 }
 /// Information about a specific flow for the customer to go through.
 /// See the [docs](https://docs.stripe.com/customer-management/portal-deep-links) to learn more about using customer portal deep links and flows.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateBillingPortalSessionFlowData {
     /// Behavior after the flow is completed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -68,7 +68,7 @@ impl CreateBillingPortalSessionFlowData {
     }
 }
 /// Behavior after the flow is completed.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateBillingPortalSessionFlowDataAfterCompletion {
     /// Configuration when `after_completion.type=hosted_confirmation`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -87,7 +87,7 @@ impl CreateBillingPortalSessionFlowDataAfterCompletion {
     }
 }
 /// Configuration when `after_completion.type=hosted_confirmation`.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateBillingPortalSessionFlowDataAfterCompletionHostedConfirmation {
     /// A custom message to display to the customer after the flow is completed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -104,7 +104,7 @@ impl Default for CreateBillingPortalSessionFlowDataAfterCompletionHostedConfirma
     }
 }
 /// Configuration when `after_completion.type=redirect`.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateBillingPortalSessionFlowDataAfterCompletionRedirect {
     /// The URL the customer will be redirected to after the flow is completed.
     pub return_url: String,
@@ -183,7 +183,7 @@ impl<'de> serde::Deserialize<'de> for CreateBillingPortalSessionFlowDataAfterCom
     }
 }
 /// Configuration when `flow_data.type=subscription_cancel`.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateBillingPortalSessionFlowDataSubscriptionCancel {
     /// Specify a retention strategy to be used in the cancellation flow.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -197,7 +197,7 @@ impl CreateBillingPortalSessionFlowDataSubscriptionCancel {
     }
 }
 /// Specify a retention strategy to be used in the cancellation flow.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateBillingPortalSessionFlowDataSubscriptionCancelRetention {
     /// Configuration when `retention.type=coupon_offer`.
     pub coupon_offer: CreateBillingPortalSessionFlowDataSubscriptionCancelRetentionCouponOffer,
@@ -216,7 +216,7 @@ impl CreateBillingPortalSessionFlowDataSubscriptionCancelRetention {
     }
 }
 /// Configuration when `retention.type=coupon_offer`.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateBillingPortalSessionFlowDataSubscriptionCancelRetentionCouponOffer {
     /// The ID of the coupon to be offered.
     pub coupon: String,
@@ -291,7 +291,7 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Configuration when `flow_data.type=subscription_update`.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateBillingPortalSessionFlowDataSubscriptionUpdate {
     /// The ID of the subscription to be updated.
     pub subscription: String,
@@ -302,7 +302,7 @@ impl CreateBillingPortalSessionFlowDataSubscriptionUpdate {
     }
 }
 /// Configuration when `flow_data.type=subscription_update_confirm`.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateBillingPortalSessionFlowDataSubscriptionUpdateConfirm {
     /// The coupon or promotion code to apply to this subscription update.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -323,7 +323,7 @@ impl CreateBillingPortalSessionFlowDataSubscriptionUpdateConfirm {
     }
 }
 /// The coupon or promotion code to apply to this subscription update.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateBillingPortalSessionFlowDataSubscriptionUpdateConfirmDiscounts {
     /// The ID of the coupon to apply to this subscription update.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -344,7 +344,7 @@ impl Default for CreateBillingPortalSessionFlowDataSubscriptionUpdateConfirmDisc
 }
 /// The [subscription item](https://docs.stripe.com/api/subscription_items) to be updated through this flow.
 /// Currently, only up to one may be specified and subscriptions with multiple items are not updatable.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateBillingPortalSessionFlowDataSubscriptionUpdateConfirmItems {
     /// The ID of the [subscription item](https://docs.stripe.com/api/subscriptions/object#subscription_object-items-data-id) to be updated.
     pub id: String,

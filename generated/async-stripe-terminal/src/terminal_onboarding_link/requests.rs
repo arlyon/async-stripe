@@ -2,7 +2,7 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct CreateTerminalOnboardingLinkBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -25,7 +25,7 @@ impl CreateTerminalOnboardingLinkBuilder {
     }
 }
 /// Specific fields needed to generate the desired link type.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateTerminalOnboardingLinkLinkOptions {
     /// The options associated with the Apple Terms and Conditions link type.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -43,7 +43,7 @@ impl Default for CreateTerminalOnboardingLinkLinkOptions {
     }
 }
 /// The options associated with the Apple Terms and Conditions link type.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateTerminalOnboardingLinkLinkOptionsAppleTermsAndConditions {
     /// Whether the link should also support users relinking their Apple account.
     #[serde(skip_serializing_if = "Option::is_none")]

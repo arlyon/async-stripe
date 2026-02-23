@@ -11,7 +11,7 @@
 /// Use the `user` scope for per-user secrets like per-user OAuth tokens, where different users might have different permissions.
 ///
 /// Related guide: [Store data between page reloads](https://docs.stripe.com/stripe-apps/store-auth-data-custom-objects).
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Eq, PartialEq)]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct AppsSecret {
     /// Time at which the object was created. Measured in seconds since the Unix epoch.

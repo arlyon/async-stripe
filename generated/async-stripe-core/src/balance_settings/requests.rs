@@ -2,7 +2,7 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct RetrieveForMyAccountBalanceSettingsBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -124,7 +124,7 @@ impl Default for UpdateBalanceSettingsPaymentsPayouts {
 }
 /// Details on when funds from charges are available, and when they are paid out to an external account.
 /// For details, see our [Setting Bank and Debit Card Payouts](/connect/bank-transfers#payout-information) documentation.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdateBalanceSettingsPaymentsPayoutsSchedule {
     /// How frequently available funds are paid out.
     /// One of: `daily`, `manual`, `weekly`, or `monthly`.
@@ -301,7 +301,7 @@ impl<'de> serde::Deserialize<'de> for UpdateBalanceSettingsPaymentsPayoutsSchedu
     }
 }
 /// Settings related to the account's balance settlement timing.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdateBalanceSettingsPaymentsSettlementTiming {
     /// Change `delay_days` for this account, which determines the number of days charge funds are held before becoming available.
     /// The maximum value is 31.

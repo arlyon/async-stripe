@@ -2,7 +2,7 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct ListIssuingCardBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     cardholder: Option<String>,
@@ -160,7 +160,7 @@ impl StripeRequest for ListIssuingCard {
         RequestBuilder::new(StripeMethod::Get, "/issuing/cards").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct RetrieveIssuingCardBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -273,7 +273,7 @@ impl CreateIssuingCardBuilder {
     }
 }
 /// The address where the card will be shipped.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateIssuingCardShipping {
     /// The address that the card is shipped to.
     pub address: RequiredAddress,
@@ -314,7 +314,7 @@ impl CreateIssuingCardShipping {
     }
 }
 /// Address validation settings.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateIssuingCardShippingAddressValidation {
     /// The address validation capabilities to use.
     pub mode: CreateIssuingCardShippingAddressValidationMode,
@@ -527,7 +527,7 @@ impl<'de> serde::Deserialize<'de> for CreateIssuingCardShippingType {
 }
 /// Rules that control spending for this card.
 /// Refer to our [documentation](https://docs.stripe.com/issuing/controls/spending-controls) for more details.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateIssuingCardSpendingControls {
     /// Array of strings containing [categories](https://docs.stripe.com/api#issuing_authorization_object-merchant_data-category) of authorizations to allow.
     /// All other categories will be blocked.
@@ -2651,7 +2651,7 @@ impl<'de> serde::Deserialize<'de> for CreateIssuingCardSpendingControlsBlockedCa
     }
 }
 /// Limit spending with amount-based rules that apply across any cards this card replaced (i.e., its `replacement_for` card and _that_ card's `replacement_for` card, up the chain).
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateIssuingCardSpendingControlsSpendingLimits {
     /// Maximum amount allowed to spend per interval.
     pub amount: i64,
@@ -4071,7 +4071,7 @@ impl<'de> serde::Deserialize<'de> for UpdateIssuingCardCancellationReason {
     }
 }
 /// Updated shipping information for the card.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdateIssuingCardShipping {
     /// The address that the card is shipped to.
     pub address: RequiredAddress,
@@ -4112,7 +4112,7 @@ impl UpdateIssuingCardShipping {
     }
 }
 /// Address validation settings.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdateIssuingCardShippingAddressValidation {
     /// The address validation capabilities to use.
     pub mode: UpdateIssuingCardShippingAddressValidationMode,
@@ -4325,7 +4325,7 @@ impl<'de> serde::Deserialize<'de> for UpdateIssuingCardShippingType {
 }
 /// Rules that control spending for this card.
 /// Refer to our [documentation](https://docs.stripe.com/issuing/controls/spending-controls) for more details.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdateIssuingCardSpendingControls {
     /// Array of strings containing [categories](https://docs.stripe.com/api#issuing_authorization_object-merchant_data-category) of authorizations to allow.
     /// All other categories will be blocked.
@@ -6449,7 +6449,7 @@ impl<'de> serde::Deserialize<'de> for UpdateIssuingCardSpendingControlsBlockedCa
     }
 }
 /// Limit spending with amount-based rules that apply across any cards this card replaced (i.e., its `replacement_for` card and _that_ card's `replacement_for` card, up the chain).
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdateIssuingCardSpendingControlsSpendingLimits {
     /// Maximum amount allowed to spend per interval.
     pub amount: i64,
@@ -7676,7 +7676,7 @@ impl StripeRequest for UpdateIssuingCard {
         RequestBuilder::new(StripeMethod::Post, format!("/issuing/cards/{card}")).form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct DeliverCardIssuingCardBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -7733,7 +7733,7 @@ impl StripeRequest for DeliverCardIssuingCard {
         .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct FailCardIssuingCardBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -7790,7 +7790,7 @@ impl StripeRequest for FailCardIssuingCard {
         .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct ReturnCardIssuingCardBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -7847,7 +7847,7 @@ impl StripeRequest for ReturnCardIssuingCard {
         .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct ShipCardIssuingCardBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -7904,7 +7904,7 @@ impl StripeRequest for ShipCardIssuingCard {
         .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct SubmitCardIssuingCardBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -7963,7 +7963,7 @@ impl StripeRequest for SubmitCardIssuingCard {
     }
 }
 
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct EncryptedPinParam {
     /// The card's desired new PIN, encrypted under Stripe's public key.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -7979,7 +7979,7 @@ impl Default for EncryptedPinParam {
         Self::new()
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct RequiredAddress {
     /// City, district, suburb, town, or village.
     pub city: String,
@@ -8013,7 +8013,7 @@ impl RequiredAddress {
         }
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CustomsParam {
     /// The Economic Operators Registration and Identification (EORI) number to use for Customs.
     /// Required for bulk shipments to Europe.

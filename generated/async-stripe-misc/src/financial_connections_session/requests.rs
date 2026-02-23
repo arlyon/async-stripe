@@ -2,7 +2,7 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct RetrieveFinancialConnectionsSessionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -56,7 +56,7 @@ impl StripeRequest for RetrieveFinancialConnectionsSession {
             .query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct CreateFinancialConnectionsSessionBuilder {
     account_holder: CreateFinancialConnectionsSessionAccountHolder,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -85,7 +85,7 @@ impl CreateFinancialConnectionsSessionBuilder {
     }
 }
 /// The account holder to link accounts for.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateFinancialConnectionsSessionAccountHolder {
     /// The ID of the Stripe account whose accounts you will retrieve.
     /// Only available when `type` is `account`.
@@ -174,7 +174,7 @@ impl<'de> serde::Deserialize<'de> for CreateFinancialConnectionsSessionAccountHo
     }
 }
 /// Filters to restrict the kinds of accounts to collect.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateFinancialConnectionsSessionFilters {
     /// Restricts the Session to subcategories of accounts that can be linked.
     /// Valid subcategories are: `checking`, `savings`, `mortgage`, `line_of_credit`, `credit_card`.

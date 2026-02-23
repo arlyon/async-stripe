@@ -2,7 +2,7 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct ListTreasuryOutboundTransferBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<String>,
@@ -105,7 +105,7 @@ impl StripeRequest for ListTreasuryOutboundTransfer {
         RequestBuilder::new(StripeMethod::Get, "/treasury/outbound_transfers").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct RetrieveTreasuryOutboundTransferBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -165,7 +165,7 @@ impl StripeRequest for RetrieveTreasuryOutboundTransfer {
         .query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct UpdateTreasuryOutboundTransferBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -177,7 +177,7 @@ impl UpdateTreasuryOutboundTransferBuilder {
     }
 }
 /// Details about network-specific tracking information.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdateTreasuryOutboundTransferTrackingDetails {
     /// ACH network tracking details.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -195,7 +195,7 @@ impl UpdateTreasuryOutboundTransferTrackingDetails {
     }
 }
 /// ACH network tracking details.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdateTreasuryOutboundTransferTrackingDetailsAch {
     /// ACH trace ID for funds sent over the `ach` network.
     pub trace_id: String,
@@ -271,7 +271,7 @@ impl<'de> serde::Deserialize<'de> for UpdateTreasuryOutboundTransferTrackingDeta
     }
 }
 /// US domestic wire network tracking details.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdateTreasuryOutboundTransferTrackingDetailsUsDomesticWire {
     /// CHIPS System Sequence Number (SSN) for funds sent over the `us_domestic_wire` network.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -347,7 +347,7 @@ impl StripeRequest for UpdateTreasuryOutboundTransfer {
         .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct FailTreasuryOutboundTransferBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -408,7 +408,7 @@ impl StripeRequest for FailTreasuryOutboundTransfer {
         .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct PostTreasuryOutboundTransferBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -469,7 +469,7 @@ impl StripeRequest for PostTreasuryOutboundTransfer {
         .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct ReturnOutboundTransferTreasuryOutboundTransferBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -482,7 +482,7 @@ impl ReturnOutboundTransferTreasuryOutboundTransferBuilder {
     }
 }
 /// Details about a returned OutboundTransfer.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct ReturnOutboundTransferTreasuryOutboundTransferReturnedDetails {
     /// Reason for the return.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -692,7 +692,7 @@ impl CreateTreasuryOutboundTransferBuilder {
 }
 /// Hash used to generate the PaymentMethod to be used for this OutboundTransfer.
 /// Exclusive with `destination_payment_method`.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateTreasuryOutboundTransferDestinationPaymentMethodData {
     /// Required if type is set to `financial_account`. The FinancialAccount ID to send funds to.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -773,7 +773,7 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Hash describing payment method configuration details.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateTreasuryOutboundTransferDestinationPaymentMethodOptions {
     /// Optional fields for `us_bank_account`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -791,7 +791,7 @@ impl Default for CreateTreasuryOutboundTransferDestinationPaymentMethodOptions {
     }
 }
 /// Optional fields for `us_bank_account`.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateTreasuryOutboundTransferDestinationPaymentMethodOptionsUsBankAccount {
     /// Specifies the network rails to be used.
     /// If not set, will default to the PaymentMethod's preferred network.
@@ -992,7 +992,7 @@ impl StripeRequest for CreateTreasuryOutboundTransfer {
         RequestBuilder::new(StripeMethod::Post, "/treasury/outbound_transfers").form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct CancelTreasuryOutboundTransferBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,

@@ -39,7 +39,7 @@ impl StripeRequest for DeleteTestHelpersTestClock {
         RequestBuilder::new(StripeMethod::Delete, format!("/test_helpers/test_clocks/{test_clock}"))
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct ListTestHelpersTestClockBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<String>,
@@ -128,7 +128,7 @@ impl StripeRequest for ListTestHelpersTestClock {
         RequestBuilder::new(StripeMethod::Get, "/test_helpers/test_clocks").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct RetrieveTestHelpersTestClockBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -182,7 +182,7 @@ impl StripeRequest for RetrieveTestHelpersTestClock {
             .query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct CreateTestHelpersTestClockBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -241,7 +241,7 @@ impl StripeRequest for CreateTestHelpersTestClock {
         RequestBuilder::new(StripeMethod::Post, "/test_helpers/test_clocks").form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct AdvanceTestHelpersTestClockBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,

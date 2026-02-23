@@ -3,7 +3,7 @@
 /// Meters attach to prices and form the basis of the bill.
 ///
 /// Related guide: [Usage based billing](https://docs.stripe.com/billing/subscriptions/usage-based)
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Eq, PartialEq)]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct BillingMeter {
     /// Time at which the object was created. Measured in seconds since the Unix epoch.

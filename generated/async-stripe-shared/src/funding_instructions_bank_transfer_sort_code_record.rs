@@ -1,5 +1,5 @@
 /// Sort Code Records contain U.K. bank account details per the sort code format.
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Eq, PartialEq)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct FundingInstructionsBankTransferSortCodeRecord {

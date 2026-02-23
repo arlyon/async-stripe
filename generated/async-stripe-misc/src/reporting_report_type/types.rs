@@ -8,7 +8,7 @@
 /// data), and will error when queried without a [live-mode API key](https://docs.stripe.com/keys#test-live-modes).
 ///
 /// For more details see <<https://stripe.com/docs/api/reporting/report_type/object>>.
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Eq, PartialEq)]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct ReportingReportType {
     /// Most recent time for which this Report Type is available. Measured in seconds since the Unix epoch.

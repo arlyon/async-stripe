@@ -2,7 +2,7 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct ListChargeBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     created: Option<stripe_types::RangeQueryTs>,
@@ -128,7 +128,7 @@ impl StripeRequest for ListCharge {
         RequestBuilder::new(StripeMethod::Get, "/charges").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct RetrieveChargeBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -183,7 +183,7 @@ impl StripeRequest for RetrieveCharge {
         RequestBuilder::new(StripeMethod::Get, format!("/charges/{charge}")).query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct SearchChargeBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -329,7 +329,7 @@ impl CreateChargeBuilder {
         }
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateChargeDestination {
     /// ID of an existing, connected Stripe account.
     pub account: String,
@@ -346,7 +346,7 @@ impl CreateChargeDestination {
 }
 /// Options to configure Radar.
 /// See [Radar Session](https://docs.stripe.com/radar/radar-session) for more information.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateChargeRadarOptions {
     /// A [Radar Session](https://docs.stripe.com/radar/radar-session) is a snapshot of the browser metadata and device details that help Radar make more accurate predictions on your payments.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -364,7 +364,7 @@ impl Default for CreateChargeRadarOptions {
 }
 /// An optional dictionary including the account to automatically transfer to as part of a destination charge.
 /// [See the Connect documentation](https://docs.stripe.com/connect/destination-charges) for details.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateChargeTransferData {
     /// The amount transferred to the destination account, if specified.
     /// By default, the entire charge amount is transferred to the destination account.
@@ -588,7 +588,7 @@ impl UpdateChargeBuilder {
 /// If you believe a charge is fraudulent, include a `user_report` key with a value of `fraudulent`.
 /// If you believe a charge is safe, include a `user_report` key with a value of `safe`.
 /// Stripe will use the information you send to improve our fraud detection algorithms.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdateChargeFraudDetails {
     /// Either `safe` or `fraudulent`.
     pub user_report: UpdateChargeFraudDetailsUserReport,
@@ -757,7 +757,7 @@ impl StripeRequest for UpdateCharge {
         RequestBuilder::new(StripeMethod::Post, format!("/charges/{charge}")).form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct CaptureChargeBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     amount: Option<i64>,
@@ -795,7 +795,7 @@ impl CaptureChargeBuilder {
 }
 /// An optional dictionary including the account to automatically transfer to as part of a destination charge.
 /// [See the Connect documentation](https://docs.stripe.com/connect/destination-charges) for details.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CaptureChargeTransferData {
     /// The amount transferred to the destination account, if specified.
     /// By default, the entire charge amount is transferred to the destination account.
@@ -916,7 +916,7 @@ impl StripeRequest for CaptureCharge {
     }
 }
 
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct OptionalFieldsAddress {
     /// City, district, suburb, town, or village.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -947,7 +947,7 @@ impl Default for OptionalFieldsAddress {
         Self::new()
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct OptionalFieldsShipping {
     /// Shipping address.
     pub address: OptionalFieldsAddress,

@@ -2,7 +2,7 @@
 /// A Login Link differs from an [Account Link](https://docs.stripe.com/api/account_links) in that it takes the user directly to their [Express dashboard for the specified account](https://docs.stripe.com/connect/integrate-express-dashboard#create-login-link).
 ///
 /// For more details see <<https://stripe.com/docs/api/account/login_link>>.
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Eq, PartialEq)]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct LoginLink {
     /// Time at which the object was created. Measured in seconds since the Unix epoch.

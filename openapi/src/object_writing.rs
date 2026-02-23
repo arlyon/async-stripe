@@ -37,7 +37,7 @@ impl Components {
         let ident = &metadata.ident;
 
         let mut writer = ObjectWriter::new(self, ident, usage);
-        writer.lifetime(lifetime).derive_copy(obj.is_copy(self));
+        writer.lifetime(lifetime).derive_copy(obj.is_copy(self)).derive_eq(obj.is_eq(self));
 
         match obj {
             RustObject::Struct(struct_) => {

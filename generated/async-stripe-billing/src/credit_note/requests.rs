@@ -2,7 +2,7 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct ListCreditNoteBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     created: Option<stripe_types::RangeQueryTs>,
@@ -127,7 +127,7 @@ impl StripeRequest for ListCreditNote {
         RequestBuilder::new(StripeMethod::Get, "/credit_notes").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct RetrieveCreditNoteBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -293,7 +293,7 @@ impl<'de> serde::Deserialize<'de> for PreviewCreditNoteEmailType {
 }
 /// Line items that make up the credit note.
 /// One of `amount`, `lines`, or `shipping_cost` must be provided.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct PreviewCreditNoteLines {
     /// The line item amount to credit.
     /// Only valid when `type` is `invoice_line_item`.
@@ -406,7 +406,7 @@ impl<'de> serde::Deserialize<'de> for PreviewCreditNoteLinesType {
     }
 }
 /// Refunds to link to this credit note.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct PreviewCreditNoteRefunds {
     /// Amount of the refund that applies to this credit note, in cents (or local equivalent).
     /// Defaults to the entire refund amount.
@@ -738,7 +738,7 @@ impl<'de> serde::Deserialize<'de> for PreviewLinesCreditNoteEmailType {
 }
 /// Line items that make up the credit note.
 /// One of `amount`, `lines`, or `shipping_cost` must be provided.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct PreviewLinesCreditNoteLines {
     /// The line item amount to credit.
     /// Only valid when `type` is `invoice_line_item`.
@@ -855,7 +855,7 @@ impl<'de> serde::Deserialize<'de> for PreviewLinesCreditNoteLinesType {
     }
 }
 /// Refunds to link to this credit note.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct PreviewLinesCreditNoteRefunds {
     /// Amount of the refund that applies to this credit note, in cents (or local equivalent).
     /// Defaults to the entire refund amount.
@@ -1202,7 +1202,7 @@ impl<'de> serde::Deserialize<'de> for CreateCreditNoteEmailType {
 }
 /// Line items that make up the credit note.
 /// One of `amount`, `lines`, or `shipping_cost` must be provided.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateCreditNoteLines {
     /// The line item amount to credit.
     /// Only valid when `type` is `invoice_line_item`.
@@ -1315,7 +1315,7 @@ impl<'de> serde::Deserialize<'de> for CreateCreditNoteLinesType {
     }
 }
 /// Refunds to link to this credit note.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateCreditNoteRefunds {
     /// Amount of the refund that applies to this credit note, in cents (or local equivalent).
     /// Defaults to the entire refund amount.
@@ -1609,7 +1609,7 @@ impl StripeRequest for UpdateCreditNote {
         RequestBuilder::new(StripeMethod::Post, format!("/credit_notes/{id}")).form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct VoidCreditNoteCreditNoteBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -1665,7 +1665,7 @@ impl StripeRequest for VoidCreditNoteCreditNote {
     }
 }
 
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct TaxAmountWithTaxRateParam {
     /// The amount, in cents (or local equivalent), of the tax.
     pub amount: i64,
@@ -1688,7 +1688,7 @@ impl TaxAmountWithTaxRateParam {
         }
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct PaymentRecordRefundParams {
     /// The ID of the PaymentRecord with the refund to link to this credit note.
     pub payment_record: String,
@@ -1701,7 +1701,7 @@ impl PaymentRecordRefundParams {
         Self { payment_record: payment_record.into(), refund_group: refund_group.into() }
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreditNoteShippingCost {
     /// The ID of the shipping rate to use for this order.
     #[serde(skip_serializing_if = "Option::is_none")]

@@ -1,7 +1,7 @@
 /// The amount of the tax rate when the `rate_type`` is `flat_amount`.
 /// Tax rates with `rate_type` `percentage` can vary based on the transaction, resulting in this field being `null`.
 /// This field exposes the amount and currency of the flat tax rate.
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Eq, PartialEq)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TaxRateFlatAmount {

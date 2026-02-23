@@ -41,7 +41,7 @@ impl StripeRequest for DeleteCoupon {
         RequestBuilder::new(StripeMethod::Delete, format!("/coupons/{coupon}"))
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct ListCouponBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     created: Option<stripe_types::RangeQueryTs>,
@@ -137,7 +137,7 @@ impl StripeRequest for ListCoupon {
         RequestBuilder::new(StripeMethod::Get, "/coupons").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct RetrieveCouponBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -239,7 +239,7 @@ impl CreateCouponBuilder {
     }
 }
 /// A hash containing directions for what this Coupon will apply discounts to.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateCouponAppliesTo {
     /// An array of Product IDs that this Coupon will apply to.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -467,7 +467,7 @@ impl StripeRequest for UpdateCoupon {
     }
 }
 
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CurrencyOption {
     /// A positive integer representing the amount to subtract from an invoice total.
     pub amount_off: i64,

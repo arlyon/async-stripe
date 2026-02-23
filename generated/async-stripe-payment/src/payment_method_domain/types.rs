@@ -4,7 +4,7 @@
 /// Related guide: [Payment method domains](https://docs.stripe.com/payments/payment-methods/pmd-registration).
 ///
 /// For more details see <<https://stripe.com/docs/api/payment_method_domains/object>>.
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Eq, PartialEq)]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentMethodDomain {
     pub amazon_pay: stripe_payment::PaymentMethodDomainResourcePaymentMethodStatus,
