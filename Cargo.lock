@@ -726,6 +726,7 @@ dependencies = [
  "async-stripe-misc",
  "async-stripe-payment",
  "async-stripe-product",
+ "async-stripe-reserve",
  "async-stripe-terminal",
  "async-stripe-treasury",
  "async-stripe-types",
