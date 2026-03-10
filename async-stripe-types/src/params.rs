@@ -69,7 +69,7 @@ mod miniserde_deser {
 pub type Timestamp = i64;
 
 /// Specification of a date interval for use in filtering results by time.
-#[derive(Copy, Clone, Debug, Serialize, Default)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, Serialize, Default)]
 pub struct RangeBoundsTs {
     #[serde(skip_serializing_if = "Option::is_none")]
     /// Minimum value to filter by (exclusive)
@@ -87,7 +87,7 @@ pub struct RangeBoundsTs {
 
 /// A set of generic request parameters that can be used on
 /// list endpoints to filter their results by some timestamp.
-#[derive(Copy, Clone, Debug, Serialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, Serialize)]
 #[serde(untagged)]
 pub enum RangeQueryTs {
     /// Results matching a specific UNIX timestamp

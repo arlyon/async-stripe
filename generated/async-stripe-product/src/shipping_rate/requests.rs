@@ -2,7 +2,7 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct ListShippingRateBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     active: Option<bool>,
@@ -120,7 +120,7 @@ impl StripeRequest for ListShippingRate {
         RequestBuilder::new(StripeMethod::Get, "/shipping_rates").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct RetrieveShippingRateBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -212,7 +212,7 @@ impl CreateShippingRateBuilder {
 }
 /// The estimated range for how long shipping will take, meant to be displayable to the customer.
 /// This will appear on CheckoutSessions.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateShippingRateDeliveryEstimate {
     /// The upper bound of the estimated range. If empty, represents no upper bound i.e., infinite.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -232,7 +232,7 @@ impl Default for CreateShippingRateDeliveryEstimate {
     }
 }
 /// The upper bound of the estimated range. If empty, represents no upper bound i.e., infinite.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateShippingRateDeliveryEstimateMaximum {
     /// A unit of time.
     pub unit: CreateShippingRateDeliveryEstimateMaximumUnit,
@@ -322,7 +322,7 @@ impl<'de> serde::Deserialize<'de> for CreateShippingRateDeliveryEstimateMaximumU
     }
 }
 /// The lower bound of the estimated range. If empty, represents no lower bound.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateShippingRateDeliveryEstimateMinimum {
     /// A unit of time.
     pub unit: CreateShippingRateDeliveryEstimateMinimumUnit,
@@ -436,7 +436,7 @@ impl CreateShippingRateFixedAmount {
 }
 /// Shipping rates defined in each available currency option.
 /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateShippingRateFixedAmountCurrencyOptions {
     /// A non-negative integer in cents representing how much to charge.
     pub amount: i64,
@@ -579,7 +579,7 @@ impl Default for UpdateShippingRateFixedAmount {
 }
 /// Shipping rates defined in each available currency option.
 /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdateShippingRateFixedAmountCurrencyOptions {
     /// A non-negative integer in cents representing how much to charge.
     #[serde(skip_serializing_if = "Option::is_none")]

@@ -2,7 +2,7 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct ListInvoiceInvoiceLineItemBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<String>,
@@ -142,7 +142,7 @@ impl UpdateInvoiceLineItemBuilder {
 /// The coupons, promotion codes & existing discounts which apply to the line item.
 /// Item discounts are applied before invoice discounts.
 /// Pass an empty string to remove previously-defined discounts.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdateInvoiceLineItemDiscounts {
     /// ID of the coupon to create a new discount for.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -168,7 +168,7 @@ impl Default for UpdateInvoiceLineItemDiscounts {
 /// When set to different values, the period will be rendered on the invoice.
 /// If you have [Stripe Revenue Recognition](https://docs.stripe.com/revenue-recognition) enabled, the period will be used to recognize and defer revenue.
 /// See the [Revenue Recognition documentation](https://docs.stripe.com/revenue-recognition/methodology/subscriptions-and-invoicing) for details.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdateInvoiceLineItemPeriod {
     /// The end of the period, which must be greater than or equal to the start. This value is inclusive.
     pub end: stripe_types::Timestamp,
@@ -335,7 +335,7 @@ impl<'de> serde::Deserialize<'de> for UpdateInvoiceLineItemPriceDataTaxBehavior 
     }
 }
 /// The pricing information for the invoice item.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdateInvoiceLineItemPricing {
     /// The ID of the price object.
     #[serde(skip_serializing_if = "Option::is_none")]

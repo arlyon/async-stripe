@@ -3,7 +3,7 @@
 /// Related guide: [Fleet management](https://docs.stripe.com/terminal/fleet/locations)
 ///
 /// For more details see <<https://stripe.com/docs/api/terminal/connection_tokens/object>>.
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Eq, PartialEq)]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TerminalConnectionToken {
     /// The id of the location that this connection token is scoped to.

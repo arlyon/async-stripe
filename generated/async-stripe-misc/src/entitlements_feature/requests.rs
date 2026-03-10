@@ -2,7 +2,7 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct ListEntitlementsFeatureBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     archived: Option<bool>,
@@ -112,7 +112,7 @@ impl StripeRequest for ListEntitlementsFeature {
         RequestBuilder::new(StripeMethod::Get, "/entitlements/features").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct RetrieveEntitlementsFeatureBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,

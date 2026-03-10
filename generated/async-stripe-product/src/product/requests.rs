@@ -41,7 +41,7 @@ impl StripeRequest for DeleteProduct {
         RequestBuilder::new(StripeMethod::Delete, format!("/products/{id}"))
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct ListProductBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     active: Option<bool>,
@@ -185,7 +185,7 @@ impl StripeRequest for ListProduct {
         RequestBuilder::new(StripeMethod::Get, "/products").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct RetrieveProductBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -239,7 +239,7 @@ impl StripeRequest for RetrieveProduct {
         RequestBuilder::new(StripeMethod::Get, format!("/products/{id}")).query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct SearchProductBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -435,7 +435,7 @@ impl CreateProductDefaultPriceData {
 }
 /// Prices defined in each available currency option.
 /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateProductDefaultPriceDataCurrencyOptions {
     /// When set, provides configuration for the amount to be adjusted by the customer during Checkout Sessions and Payment Links.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -549,7 +549,7 @@ impl<'de> serde::Deserialize<'de> for CreateProductDefaultPriceDataCurrencyOptio
 /// Each element represents a pricing tier.
 /// This parameter requires `billing_scheme` to be set to `tiered`.
 /// See also the documentation for `billing_scheme`.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateProductDefaultPriceDataCurrencyOptionsTiers {
     /// The flat billing amount for an entire tier, regardless of the number of units in the tier.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -584,7 +584,7 @@ impl CreateProductDefaultPriceDataCurrencyOptionsTiers {
 /// Specifies the upper bound of this tier.
 /// The lower bound of a tier is the upper bound of the previous tier adding one.
 /// Use `inf` to define a fallback tier.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
 #[serde(rename_all = "snake_case")]
 pub enum CreateProductDefaultPriceDataCurrencyOptionsTiersUpTo {
     Inf,
@@ -592,7 +592,7 @@ pub enum CreateProductDefaultPriceDataCurrencyOptionsTiersUpTo {
     I64(i64),
 }
 /// The recurring components of a price such as `interval` and `interval_count`.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateProductDefaultPriceDataRecurring {
     /// Specifies billing frequency. Either `day`, `week`, `month` or `year`.
     pub interval: CreateProductDefaultPriceDataRecurringInterval,
@@ -1068,7 +1068,7 @@ impl StripeRequest for UpdateProduct {
     }
 }
 
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CustomUnitAmount {
     /// Pass in `true` to enable `custom_unit_amount`, otherwise omit `custom_unit_amount`.
     pub enabled: bool,
@@ -1088,7 +1088,7 @@ impl CustomUnitAmount {
         Self { enabled: enabled.into(), maximum: None, minimum: None, preset: None }
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct Features {
     /// The marketing feature name. Up to 80 characters long.
     pub name: String,

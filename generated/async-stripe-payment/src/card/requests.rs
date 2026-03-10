@@ -44,7 +44,7 @@ impl StripeRequest for DeleteAccountCard {
         )
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct DeleteCustomerCardBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -378,7 +378,7 @@ impl<'de> serde::Deserialize<'de> for UpdateAccountCardAccountType {
     }
 }
 /// Documents that may be submitted to satisfy various informational requests.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdateAccountCardDocuments {
     /// One or more documents that support the [Bank account ownership verification](https://support.stripe.com/questions/bank-account-ownership-verification) requirement.
     /// Must be a document associated with the bank account that displays the last 4 digits of the account number, either a statement or a check.
@@ -398,7 +398,7 @@ impl Default for UpdateAccountCardDocuments {
 }
 /// One or more documents that support the [Bank account ownership verification](https://support.stripe.com/questions/bank-account-ownership-verification) requirement.
 /// Must be a document associated with the bank account that displays the last 4 digits of the account number, either a statement or a check.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdateAccountCardDocumentsBankAccountOwnershipVerification {
     /// One or more document ids returned by a [file upload](https://api.stripe.com#create_file) with a `purpose` value of `account_requirement`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -672,7 +672,7 @@ impl<'de> serde::Deserialize<'de> for UpdateCustomerCardAccountHolderType {
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdateCustomerCardOwner {
     /// Owner's address.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -698,7 +698,7 @@ impl Default for UpdateCustomerCardOwner {
     }
 }
 /// Owner's address.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdateCustomerCardOwnerAddress {
     /// City, district, suburb, town, or village.
     #[serde(skip_serializing_if = "Option::is_none")]

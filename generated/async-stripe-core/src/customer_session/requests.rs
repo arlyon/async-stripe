@@ -2,7 +2,7 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct CreateCustomerSessionBuilder {
     components: CreateCustomerSessionComponents,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -18,7 +18,7 @@ impl CreateCustomerSessionBuilder {
     }
 }
 /// Configuration for each component. At least 1 component must be enabled.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateCustomerSessionComponents {
     /// Configuration for buy button.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -53,7 +53,7 @@ impl Default for CreateCustomerSessionComponents {
     }
 }
 /// Configuration for buy button.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateCustomerSessionComponentsBuyButton {
     /// Whether the buy button is enabled.
     pub enabled: bool,
@@ -64,7 +64,7 @@ impl CreateCustomerSessionComponentsBuyButton {
     }
 }
 /// Configuration for the customer sheet.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateCustomerSessionComponentsCustomerSheet {
     /// Whether the customer sheet is enabled.
     pub enabled: bool,
@@ -78,7 +78,7 @@ impl CreateCustomerSessionComponentsCustomerSheet {
     }
 }
 /// This hash defines whether the customer sheet supports certain features.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateCustomerSessionComponentsCustomerSheetFeatures {
     /// A list of [`allow_redisplay`](https://docs.stripe.com/api/payment_methods/object#payment_method_object-allow_redisplay) values that controls which saved payment methods the customer sheet displays by filtering to only show payment methods with an `allow_redisplay` value that is present in this list.
     ///
@@ -258,7 +258,7 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Configuration for the mobile payment element.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateCustomerSessionComponentsMobilePaymentElement {
     /// Whether the mobile payment element is enabled.
     pub enabled: bool,
@@ -272,7 +272,7 @@ impl CreateCustomerSessionComponentsMobilePaymentElement {
     }
 }
 /// This hash defines whether the mobile payment element supports certain features.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateCustomerSessionComponentsMobilePaymentElementFeatures {
         /// A list of [`allow_redisplay`](https://docs.stripe.com/api/payment_methods/object#payment_method_object-allow_redisplay) values that controls which saved payment methods the mobile payment element displays by filtering to only show payment methods with an `allow_redisplay` value that is present in this list.
     ///
@@ -678,7 +678,7 @@ impl<'de> serde::Deserialize<'de> for CreateCustomerSessionComponentsMobilePayme
     }
 }
 /// Configuration for the Payment Element.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateCustomerSessionComponentsPaymentElement {
     /// Whether the Payment Element is enabled.
     pub enabled: bool,
@@ -692,7 +692,7 @@ impl CreateCustomerSessionComponentsPaymentElement {
     }
 }
 /// This hash defines whether the Payment Element supports certain features.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateCustomerSessionComponentsPaymentElementFeatures {
     /// A list of [`allow_redisplay`](https://docs.stripe.com/api/payment_methods/object#payment_method_object-allow_redisplay) values that controls which saved payment methods the Payment Element displays by filtering to only show payment methods with an `allow_redisplay` value that is present in this list.
     ///
@@ -1135,7 +1135,7 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Configuration for the pricing table.
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateCustomerSessionComponentsPricingTable {
     /// Whether the pricing table is enabled.
     pub enabled: bool,

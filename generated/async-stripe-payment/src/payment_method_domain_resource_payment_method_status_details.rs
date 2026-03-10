@@ -1,5 +1,5 @@
 /// Contains additional details about the status of a payment method for a specific payment method domain.
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Eq, PartialEq)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentMethodDomainResourcePaymentMethodStatusDetails {

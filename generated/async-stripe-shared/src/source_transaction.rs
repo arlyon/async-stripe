@@ -2,7 +2,7 @@
 /// Customers can be instructed to send any amount, and it can be made up of
 /// multiple transactions. As such, sources can have multiple associated
 /// transactions.
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Eq, PartialEq)]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct SourceTransaction {
     pub ach_credit_transfer: Option<stripe_shared::SourceTransactionAchCreditTransferData>,

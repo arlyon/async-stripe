@@ -2,7 +2,7 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct ListTreasuryReceivedDebitBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<String>,
@@ -104,7 +104,7 @@ impl StripeRequest for ListTreasuryReceivedDebit {
         RequestBuilder::new(StripeMethod::Get, "/treasury/received_debits").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct RetrieveTreasuryReceivedDebitBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -158,7 +158,7 @@ impl StripeRequest for RetrieveTreasuryReceivedDebit {
             .query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct CreateTreasuryReceivedDebitBuilder {
     amount: i64,
     currency: stripe_types::Currency,
@@ -191,7 +191,7 @@ impl CreateTreasuryReceivedDebitBuilder {
     }
 }
 /// Initiating payment method details for the object.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateTreasuryReceivedDebitInitiatingPaymentMethodDetails {
     /// The source type.
     #[serde(rename = "type")]
@@ -273,7 +273,7 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Optional fields for `us_bank_account`.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateTreasuryReceivedDebitInitiatingPaymentMethodDetailsUsBankAccount {
     /// The bank account holder's name.
     #[serde(skip_serializing_if = "Option::is_none")]

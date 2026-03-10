@@ -39,7 +39,7 @@ impl StripeRequest for DeleteRadarValueListItem {
         RequestBuilder::new(StripeMethod::Delete, format!("/radar/value_list_items/{item}"))
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct ListRadarValueListItemBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     created: Option<stripe_types::RangeQueryTs>,
@@ -147,7 +147,7 @@ impl StripeRequest for ListRadarValueListItem {
         RequestBuilder::new(StripeMethod::Get, "/radar/value_list_items").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct RetrieveRadarValueListItemBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -201,7 +201,7 @@ impl StripeRequest for RetrieveRadarValueListItem {
             .query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct CreateRadarValueListItemBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,

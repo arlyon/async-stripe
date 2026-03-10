@@ -2,7 +2,7 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct ListAppsSecretBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<String>,
@@ -27,7 +27,7 @@ impl ListAppsSecretBuilder {
 }
 /// Specifies the scoping of the secret.
 /// Requests originating from UI extensions can only access account-scoped secrets or secrets scoped to their own user.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct ListAppsSecretScope {
     /// The secret scope type.
     #[serde(rename = "type")]
@@ -170,7 +170,7 @@ impl StripeRequest for ListAppsSecret {
         RequestBuilder::new(StripeMethod::Get, "/apps/secrets").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct FindAppsSecretBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -184,7 +184,7 @@ impl FindAppsSecretBuilder {
 }
 /// Specifies the scoping of the secret.
 /// Requests originating from UI extensions can only access account-scoped secrets or secrets scoped to their own user.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct FindAppsSecretScope {
     /// The secret scope type.
     #[serde(rename = "type")]
@@ -301,7 +301,7 @@ impl StripeRequest for FindAppsSecret {
         RequestBuilder::new(StripeMethod::Get, "/apps/secrets/find").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct CreateAppsSecretBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -328,7 +328,7 @@ impl CreateAppsSecretBuilder {
 }
 /// Specifies the scoping of the secret.
 /// Requests originating from UI extensions can only access account-scoped secrets or secrets scoped to their own user.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateAppsSecretScope {
     /// The secret scope type.
     #[serde(rename = "type")]
@@ -454,7 +454,7 @@ impl StripeRequest for CreateAppsSecret {
         RequestBuilder::new(StripeMethod::Post, "/apps/secrets").form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 struct DeleteWhereAppsSecretBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -468,7 +468,7 @@ impl DeleteWhereAppsSecretBuilder {
 }
 /// Specifies the scoping of the secret.
 /// Requests originating from UI extensions can only access account-scoped secrets or secrets scoped to their own user.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct DeleteWhereAppsSecretScope {
     /// The secret scope type.
     #[serde(rename = "type")]
