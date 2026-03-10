@@ -1,19 +1,14 @@
 /// Collection of scores and insights for this payment evaluation.
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Eq, PartialEq)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct InsightsResourcesPaymentEvaluationInsights {
-    /// Stripe Radar's evaluation of the likelihood of a card issuer decline on this payment.
-    pub card_issuer_decline:
-        Option<stripe_fraud::InsightsResourcesPaymentEvaluationCardIssuerDecline>,
     /// The timestamp when the evaluation was performed.
     pub evaluated_at: stripe_types::Timestamp,
     pub fraudulent_dispute: stripe_fraud::InsightsResourcesPaymentEvaluationScorer,
 }
 #[doc(hidden)]
 pub struct InsightsResourcesPaymentEvaluationInsightsBuilder {
-    card_issuer_decline:
-        Option<Option<stripe_fraud::InsightsResourcesPaymentEvaluationCardIssuerDecline>>,
     evaluated_at: Option<stripe_types::Timestamp>,
     fraudulent_dispute: Option<stripe_fraud::InsightsResourcesPaymentEvaluationScorer>,
 }
@@ -58,7 +53,6 @@ const _: () = {
         type Out = InsightsResourcesPaymentEvaluationInsights;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "card_issuer_decline" => Deserialize::begin(&mut self.card_issuer_decline),
                 "evaluated_at" => Deserialize::begin(&mut self.evaluated_at),
                 "fraudulent_dispute" => Deserialize::begin(&mut self.fraudulent_dispute),
                 _ => <dyn Visitor>::ignore(),
@@ -67,21 +61,18 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                card_issuer_decline: Deserialize::default(),
                 evaluated_at: Deserialize::default(),
                 fraudulent_dispute: Deserialize::default(),
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(card_issuer_decline), Some(evaluated_at), Some(fraudulent_dispute)) = (
-                self.card_issuer_decline.take(),
-                self.evaluated_at,
-                self.fraudulent_dispute.take(),
-            ) else {
+            let (Some(evaluated_at), Some(fraudulent_dispute)) =
+                (self.evaluated_at, self.fraudulent_dispute.take())
+            else {
                 return None;
             };
-            Some(Self::Out { card_issuer_decline, evaluated_at, fraudulent_dispute })
+            Some(Self::Out { evaluated_at, fraudulent_dispute })
         }
     }
 
@@ -108,7 +99,6 @@ const _: () = {
             let mut b = InsightsResourcesPaymentEvaluationInsightsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "card_issuer_decline" => b.card_issuer_decline = FromValueOpt::from_value(v),
                     "evaluated_at" => b.evaluated_at = FromValueOpt::from_value(v),
                     "fraudulent_dispute" => b.fraudulent_dispute = FromValueOpt::from_value(v),
                     _ => {}

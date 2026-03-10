@@ -28,10 +28,6 @@ pub mod insights_resources_payment_evaluation_billing_details;
 #[doc(inline)]
 pub use insights_resources_payment_evaluation_billing_details::*;
 #[doc(hidden)]
-pub mod insights_resources_payment_evaluation_card_issuer_decline;
-#[doc(inline)]
-pub use insights_resources_payment_evaluation_card_issuer_decline::*;
-#[doc(hidden)]
 pub mod insights_resources_payment_evaluation_client_device_metadata;
 #[doc(inline)]
 pub use insights_resources_payment_evaluation_client_device_metadata::*;

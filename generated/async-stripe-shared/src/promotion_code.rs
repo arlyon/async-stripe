@@ -13,7 +13,7 @@ pub struct PromotionCode {
     pub active: bool,
     /// The customer-facing code.
     /// Regardless of case, this code must be unique across all active promotion codes for each customer.
-    /// Valid characters are lower case letters (a-z), upper case letters (A-Z), and digits (0-9).
+    /// Valid characters are lower case letters (a-z), upper case letters (A-Z), digits (0-9), and dashes (-).
     pub code: String,
     /// Time at which the object was created. Measured in seconds since the Unix epoch.
     pub created: stripe_types::Timestamp,

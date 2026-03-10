@@ -725,9 +725,9 @@ pub mod discounts_resource_discount_amount;
 #[doc(inline)]
 pub use discounts_resource_discount_amount::*;
 #[doc(hidden)]
-pub mod discounts_resource_stackable_discount;
+pub mod discounts_resource_stackable_discount_with_discount_end;
 #[doc(inline)]
-pub use discounts_resource_stackable_discount::*;
+pub use discounts_resource_stackable_discount_with_discount_end::*;
 #[doc(hidden)]
 pub mod dispute;
 #[doc(inline)]
@@ -2333,6 +2333,34 @@ pub mod payment_method_details_payco;
 #[doc(inline)]
 pub use payment_method_details_payco::*;
 #[doc(hidden)]
+pub mod payment_method_details_payment_record_affirm;
+#[doc(inline)]
+pub use payment_method_details_payment_record_affirm::*;
+#[doc(hidden)]
+pub mod payment_method_details_payment_record_afterpay_clearpay;
+#[doc(inline)]
+pub use payment_method_details_payment_record_afterpay_clearpay::*;
+#[doc(hidden)]
+pub mod payment_method_details_payment_record_bancontact;
+#[doc(inline)]
+pub use payment_method_details_payment_record_bancontact::*;
+#[doc(hidden)]
+pub mod payment_method_details_payment_record_boleto;
+#[doc(inline)]
+pub use payment_method_details_payment_record_boleto::*;
+#[doc(hidden)]
+pub mod payment_method_details_payment_record_cashapp;
+#[doc(inline)]
+pub use payment_method_details_payment_record_cashapp::*;
+#[doc(hidden)]
+pub mod payment_method_details_payment_record_giropay;
+#[doc(inline)]
+pub use payment_method_details_payment_record_giropay::*;
+#[doc(hidden)]
+pub mod payment_method_details_payment_record_kakao_pay;
+#[doc(inline)]
+pub use payment_method_details_payment_record_kakao_pay::*;
+#[doc(hidden)]
 pub mod payment_method_details_payment_record_konbini;
 #[doc(inline)]
 pub use payment_method_details_payment_record_konbini::*;
@@ -2340,6 +2368,18 @@ pub use payment_method_details_payment_record_konbini::*;
 pub mod payment_method_details_payment_record_mb_way;
 #[doc(inline)]
 pub use payment_method_details_payment_record_mb_way::*;
+#[doc(hidden)]
+pub mod payment_method_details_payment_record_multibanco;
+#[doc(inline)]
+pub use payment_method_details_payment_record_multibanco::*;
+#[doc(hidden)]
+pub mod payment_method_details_payment_record_naver_pay;
+#[doc(inline)]
+pub use payment_method_details_payment_record_naver_pay::*;
+#[doc(hidden)]
+pub mod payment_method_details_payment_record_oxxo;
+#[doc(inline)]
+pub use payment_method_details_payment_record_oxxo::*;
 #[doc(hidden)]
 pub mod payment_method_details_payment_record_paynow;
 #[doc(inline)]
@@ -3541,6 +3581,14 @@ pub mod source_type_wechat;
 #[doc(inline)]
 pub use source_type_wechat::*;
 #[doc(hidden)]
+pub mod stackable_discount_with_discount_settings;
+#[doc(inline)]
+pub use stackable_discount_with_discount_settings::*;
+#[doc(hidden)]
+pub mod stackable_discount_with_discount_settings_and_discount_end;
+#[doc(inline)]
+pub use stackable_discount_with_discount_settings_and_discount_end::*;
+#[doc(hidden)]
 pub mod subscription;
 #[doc(inline)]
 pub use subscription::*;
@@ -3644,6 +3692,14 @@ pub use subscriptions_resource_pending_update::*;
 pub mod subscriptions_resource_subscription_invoice_settings;
 #[doc(inline)]
 pub use subscriptions_resource_subscription_invoice_settings::*;
+#[doc(hidden)]
+pub mod subscriptions_resource_trial_settings_end_behavior;
+#[doc(inline)]
+pub use subscriptions_resource_trial_settings_end_behavior::*;
+#[doc(hidden)]
+pub mod subscriptions_resource_trial_settings_trial_settings;
+#[doc(inline)]
+pub use subscriptions_resource_trial_settings_trial_settings::*;
 #[doc(hidden)]
 pub mod subscriptions_trials_resource_end_behavior;
 #[doc(inline)]

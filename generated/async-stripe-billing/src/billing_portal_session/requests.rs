@@ -442,7 +442,7 @@ impl CreateBillingPortalSession {
     pub fn new() -> Self {
         Self { inner: CreateBillingPortalSessionBuilder::new() }
     }
-    /// The ID of an existing [configuration](https://docs.stripe.com/api/customer_portal/configuration) to use for this session, describing its functionality and features.
+    /// The ID of an existing [configuration](https://docs.stripe.com/api/customer_portal/configurations) to use for this session, describing its functionality and features.
     /// If not specified, the session uses the default configuration.
     pub fn configuration(mut self, configuration: impl Into<String>) -> Self {
         self.inner.configuration = Some(configuration.into());

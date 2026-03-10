@@ -7,13 +7,107 @@ struct DeleteSubscriptionItemBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     clear_usage: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    payment_behavior: Option<DeleteSubscriptionItemPaymentBehavior>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     proration_behavior: Option<DeleteSubscriptionItemProrationBehavior>,
     #[serde(skip_serializing_if = "Option::is_none")]
     proration_date: Option<stripe_types::Timestamp>,
 }
 impl DeleteSubscriptionItemBuilder {
     fn new() -> Self {
-        Self { clear_usage: None, proration_behavior: None, proration_date: None }
+        Self {
+            clear_usage: None,
+            payment_behavior: None,
+            proration_behavior: None,
+            proration_date: None,
+        }
+    }
+}
+/// Use `allow_incomplete` to transition the subscription to `status=past_due` if a payment is required but cannot be paid.
+/// This allows you to manage scenarios where additional user actions are needed to pay a subscription's invoice.
+/// For example, SCA regulation may require 3DS authentication to complete payment.
+/// See the [SCA Migration Guide](https://docs.stripe.com/billing/migration/strong-customer-authentication) for Billing to learn more.
+/// This is the default behavior.
+///
+/// Use `default_incomplete` to transition the subscription to `status=past_due` when payment is required and await explicit confirmation of the invoice's payment intent.
+/// This allows simpler management of scenarios where additional user actions are needed to pay a subscription’s invoice.
+/// Such as failed payments, [SCA regulation](https://docs.stripe.com/billing/migration/strong-customer-authentication), or collecting a mandate for a bank debit payment method.
+///
+/// Use `pending_if_incomplete` to update the subscription using [pending updates](https://docs.stripe.com/billing/subscriptions/pending-updates).
+/// When you use `pending_if_incomplete` you can only pass the parameters [supported by pending updates](https://docs.stripe.com/billing/pending-updates-reference#supported-attributes).
+///
+/// Use `error_if_incomplete` if you want Stripe to return an HTTP 402 status code if a subscription's invoice cannot be paid.
+/// For example, if a payment method requires 3DS authentication due to SCA regulation and further user action is needed, this parameter does not update the subscription and returns an error instead.
+/// This was the default behavior for API versions prior to 2019-03-14.
+/// See the [changelog](https://docs.stripe.com/changelog/2019-03-14) to learn more.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum DeleteSubscriptionItemPaymentBehavior {
+    AllowIncomplete,
+    DefaultIncomplete,
+    ErrorIfIncomplete,
+    PendingIfIncomplete,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl DeleteSubscriptionItemPaymentBehavior {
+    pub fn as_str(&self) -> &str {
+        use DeleteSubscriptionItemPaymentBehavior::*;
+        match self {
+            AllowIncomplete => "allow_incomplete",
+            DefaultIncomplete => "default_incomplete",
+            ErrorIfIncomplete => "error_if_incomplete",
+            PendingIfIncomplete => "pending_if_incomplete",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for DeleteSubscriptionItemPaymentBehavior {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use DeleteSubscriptionItemPaymentBehavior::*;
+        match s {
+            "allow_incomplete" => Ok(AllowIncomplete),
+            "default_incomplete" => Ok(DefaultIncomplete),
+            "error_if_incomplete" => Ok(ErrorIfIncomplete),
+            "pending_if_incomplete" => Ok(PendingIfIncomplete),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "DeleteSubscriptionItemPaymentBehavior"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for DeleteSubscriptionItemPaymentBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for DeleteSubscriptionItemPaymentBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for DeleteSubscriptionItemPaymentBehavior {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for DeleteSubscriptionItemPaymentBehavior {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Determines how to handle [prorations](https://docs.stripe.com/billing/subscriptions/prorations) when the billing cycle changes (e.g., when switching plans, resetting `billing_cycle_anchor=now`, or starting a trial), or if an item's `quantity` changes.
@@ -101,6 +195,30 @@ impl DeleteSubscriptionItem {
     /// Allowed only when the current plan's `usage_type` is `metered`.
     pub fn clear_usage(mut self, clear_usage: impl Into<bool>) -> Self {
         self.inner.clear_usage = Some(clear_usage.into());
+        self
+    }
+    /// Use `allow_incomplete` to transition the subscription to `status=past_due` if a payment is required but cannot be paid.
+    /// This allows you to manage scenarios where additional user actions are needed to pay a subscription's invoice.
+    /// For example, SCA regulation may require 3DS authentication to complete payment.
+    /// See the [SCA Migration Guide](https://docs.stripe.com/billing/migration/strong-customer-authentication) for Billing to learn more.
+    /// This is the default behavior.
+    ///
+    /// Use `default_incomplete` to transition the subscription to `status=past_due` when payment is required and await explicit confirmation of the invoice's payment intent.
+    /// This allows simpler management of scenarios where additional user actions are needed to pay a subscription’s invoice.
+    /// Such as failed payments, [SCA regulation](https://docs.stripe.com/billing/migration/strong-customer-authentication), or collecting a mandate for a bank debit payment method.
+    ///
+    /// Use `pending_if_incomplete` to update the subscription using [pending updates](https://docs.stripe.com/billing/subscriptions/pending-updates).
+    /// When you use `pending_if_incomplete` you can only pass the parameters [supported by pending updates](https://docs.stripe.com/billing/pending-updates-reference#supported-attributes).
+    ///
+    /// Use `error_if_incomplete` if you want Stripe to return an HTTP 402 status code if a subscription's invoice cannot be paid.
+    /// For example, if a payment method requires 3DS authentication due to SCA regulation and further user action is needed, this parameter does not update the subscription and returns an error instead.
+    /// This was the default behavior for API versions prior to 2019-03-14.
+    /// See the [changelog](https://docs.stripe.com/changelog/2019-03-14) to learn more.
+    pub fn payment_behavior(
+        mut self,
+        payment_behavior: impl Into<DeleteSubscriptionItemPaymentBehavior>,
+    ) -> Self {
+        self.inner.payment_behavior = Some(payment_behavior.into());
         self
     }
     /// Determines how to handle [prorations](https://docs.stripe.com/billing/subscriptions/prorations) when the billing cycle changes (e.g., when switching plans, resetting `billing_cycle_anchor=now`, or starting a trial), or if an item's `quantity` changes.

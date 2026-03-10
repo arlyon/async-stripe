@@ -255,9 +255,11 @@ pub enum TerminalReaderDeviceType {
     BbposWiseposE,
     MobilePhoneReader,
     SimulatedStripeS700,
+    SimulatedStripeS710,
     SimulatedWiseposE,
     StripeM2,
     StripeS700,
+    StripeS710,
     VerifoneP400,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
     Unknown(String),
@@ -271,9 +273,11 @@ impl TerminalReaderDeviceType {
             BbposWiseposE => "bbpos_wisepos_e",
             MobilePhoneReader => "mobile_phone_reader",
             SimulatedStripeS700 => "simulated_stripe_s700",
+            SimulatedStripeS710 => "simulated_stripe_s710",
             SimulatedWiseposE => "simulated_wisepos_e",
             StripeM2 => "stripe_m2",
             StripeS700 => "stripe_s700",
+            StripeS710 => "stripe_s710",
             VerifoneP400 => "verifone_P400",
             Unknown(v) => v,
         }
@@ -290,9 +294,11 @@ impl std::str::FromStr for TerminalReaderDeviceType {
             "bbpos_wisepos_e" => Ok(BbposWiseposE),
             "mobile_phone_reader" => Ok(MobilePhoneReader),
             "simulated_stripe_s700" => Ok(SimulatedStripeS700),
+            "simulated_stripe_s710" => Ok(SimulatedStripeS710),
             "simulated_wisepos_e" => Ok(SimulatedWiseposE),
             "stripe_m2" => Ok(StripeM2),
             "stripe_s700" => Ok(StripeS700),
+            "stripe_s710" => Ok(StripeS710),
             "verifone_P400" => Ok(VerifoneP400),
             v => {
                 tracing::warn!("Unknown value '{}' for enum '{}'", v, "TerminalReaderDeviceType");

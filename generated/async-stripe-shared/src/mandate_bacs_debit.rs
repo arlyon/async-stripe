@@ -2,6 +2,8 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct MandateBacsDebit {
+    /// The display name for the account on this mandate.
+    pub display_name: Option<String>,
     /// The status of the mandate on the Bacs network.
     /// Can be one of `pending`, `revoked`, `refused`, or `accepted`.
     pub network_status: MandateBacsDebitNetworkStatus,
@@ -9,14 +11,18 @@ pub struct MandateBacsDebit {
     pub reference: String,
     /// When the mandate is revoked on the Bacs network this field displays the reason for the revocation.
     pub revocation_reason: Option<MandateBacsDebitRevocationReason>,
+    /// The service user number for the account on this mandate.
+    pub service_user_number: Option<String>,
     /// The URL that will contain the mandate that the customer has signed.
     pub url: String,
 }
 #[doc(hidden)]
 pub struct MandateBacsDebitBuilder {
+    display_name: Option<Option<String>>,
     network_status: Option<MandateBacsDebitNetworkStatus>,
     reference: Option<String>,
     revocation_reason: Option<Option<MandateBacsDebitRevocationReason>>,
+    service_user_number: Option<Option<String>>,
     url: Option<String>,
 }
 
@@ -60,9 +66,11 @@ const _: () = {
         type Out = MandateBacsDebit;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
+                "display_name" => Deserialize::begin(&mut self.display_name),
                 "network_status" => Deserialize::begin(&mut self.network_status),
                 "reference" => Deserialize::begin(&mut self.reference),
                 "revocation_reason" => Deserialize::begin(&mut self.revocation_reason),
+                "service_user_number" => Deserialize::begin(&mut self.service_user_number),
                 "url" => Deserialize::begin(&mut self.url),
                 _ => <dyn Visitor>::ignore(),
             })
@@ -70,23 +78,42 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
+                display_name: Deserialize::default(),
                 network_status: Deserialize::default(),
                 reference: Deserialize::default(),
                 revocation_reason: Deserialize::default(),
+                service_user_number: Deserialize::default(),
                 url: Deserialize::default(),
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(network_status), Some(reference), Some(revocation_reason), Some(url)) = (
+            let (
+                Some(display_name),
+                Some(network_status),
+                Some(reference),
+                Some(revocation_reason),
+                Some(service_user_number),
+                Some(url),
+            ) = (
+                self.display_name.take(),
                 self.network_status.take(),
                 self.reference.take(),
                 self.revocation_reason.take(),
+                self.service_user_number.take(),
                 self.url.take(),
-            ) else {
+            )
+            else {
                 return None;
             };
-            Some(Self::Out { network_status, reference, revocation_reason, url })
+            Some(Self::Out {
+                display_name,
+                network_status,
+                reference,
+                revocation_reason,
+                service_user_number,
+                url,
+            })
         }
     }
 
@@ -113,9 +140,11 @@ const _: () = {
             let mut b = MandateBacsDebitBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
+                    "display_name" => b.display_name = FromValueOpt::from_value(v),
                     "network_status" => b.network_status = FromValueOpt::from_value(v),
                     "reference" => b.reference = FromValueOpt::from_value(v),
                     "revocation_reason" => b.revocation_reason = FromValueOpt::from_value(v),
+                    "service_user_number" => b.service_user_number = FromValueOpt::from_value(v),
                     "url" => b.url = FromValueOpt::from_value(v),
                     _ => {}
                 }

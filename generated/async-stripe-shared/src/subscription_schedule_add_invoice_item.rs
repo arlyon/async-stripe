@@ -4,7 +4,7 @@
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct SubscriptionScheduleAddInvoiceItem {
     /// The stackable discounts that will be applied to the item.
-    pub discounts: Vec<stripe_shared::DiscountsResourceStackableDiscount>,
+    pub discounts: Vec<stripe_shared::DiscountsResourceStackableDiscountWithDiscountEnd>,
     /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: Option<std::collections::HashMap<String, String>>,
@@ -18,7 +18,7 @@ pub struct SubscriptionScheduleAddInvoiceItem {
 }
 #[doc(hidden)]
 pub struct SubscriptionScheduleAddInvoiceItemBuilder {
-    discounts: Option<Vec<stripe_shared::DiscountsResourceStackableDiscount>>,
+    discounts: Option<Vec<stripe_shared::DiscountsResourceStackableDiscountWithDiscountEnd>>,
     metadata: Option<Option<std::collections::HashMap<String, String>>>,
     period: Option<stripe_shared::SubscriptionScheduleAddInvoiceItemPeriod>,
     price: Option<stripe_types::Expandable<stripe_shared::Price>>,

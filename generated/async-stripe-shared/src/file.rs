@@ -247,6 +247,8 @@ pub enum FilePurpose {
     TaxDocumentUserUpload,
     TerminalAndroidApk,
     TerminalReaderSplashscreen,
+    TerminalWifiCertificate,
+    TerminalWifiPrivateKey,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
     Unknown(String),
 }
@@ -273,6 +275,8 @@ impl FilePurpose {
             TaxDocumentUserUpload => "tax_document_user_upload",
             TerminalAndroidApk => "terminal_android_apk",
             TerminalReaderSplashscreen => "terminal_reader_splashscreen",
+            TerminalWifiCertificate => "terminal_wifi_certificate",
+            TerminalWifiPrivateKey => "terminal_wifi_private_key",
             Unknown(v) => v,
         }
     }
@@ -302,6 +306,8 @@ impl std::str::FromStr for FilePurpose {
             "tax_document_user_upload" => Ok(TaxDocumentUserUpload),
             "terminal_android_apk" => Ok(TerminalAndroidApk),
             "terminal_reader_splashscreen" => Ok(TerminalReaderSplashscreen),
+            "terminal_wifi_certificate" => Ok(TerminalWifiCertificate),
+            "terminal_wifi_private_key" => Ok(TerminalWifiPrivateKey),
             v => {
                 tracing::warn!("Unknown value '{}' for enum '{}'", v, "FilePurpose");
                 Ok(Unknown(v.to_owned()))

@@ -3079,6 +3079,7 @@ pub enum CreateSubscriptionPaymentSettingsPaymentMethodTypes {
     NaverPay,
     NzBankAccount,
     P24,
+    PayByBank,
     Payco,
     Paynow,
     Paypal,
@@ -3127,6 +3128,7 @@ impl CreateSubscriptionPaymentSettingsPaymentMethodTypes {
             NaverPay => "naver_pay",
             NzBankAccount => "nz_bank_account",
             P24 => "p24",
+            PayByBank => "pay_by_bank",
             Payco => "payco",
             Paynow => "paynow",
             Paypal => "paypal",
@@ -3178,6 +3180,7 @@ impl std::str::FromStr for CreateSubscriptionPaymentSettingsPaymentMethodTypes {
             "naver_pay" => Ok(NaverPay),
             "nz_bank_account" => Ok(NzBankAccount),
             "p24" => Ok(P24),
+            "pay_by_bank" => Ok(PayByBank),
             "payco" => Ok(Payco),
             "paynow" => Ok(Paynow),
             "paypal" => Ok(Paypal),
@@ -4266,9 +4269,9 @@ impl<'de> serde::Deserialize<'de> for ResumeSubscriptionProrationBehavior {
     }
 }
 /// Initiates resumption of a paused subscription, optionally resetting the billing cycle anchor and creating prorations.
-/// If a resumption invoice is generated, it must be paid or marked uncollectible before the subscription will be unpaused.
-/// If payment succeeds the subscription will become `active`, and if payment fails the subscription will be `past_due`.
-/// The resumption invoice will void automatically if not paid by the expiration date.
+/// If no resumption invoice is generated, the subscription becomes `active` immediately.
+/// If a resumption invoice is generated, the subscription remains `paused` until the invoice is paid or marked uncollectible.
+/// If the invoice is not paid by the expiration date, it is voided and the subscription remains `paused`.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct ResumeSubscription {
     inner: ResumeSubscriptionBuilder,
@@ -6806,6 +6809,7 @@ pub enum UpdateSubscriptionPaymentSettingsPaymentMethodTypes {
     NaverPay,
     NzBankAccount,
     P24,
+    PayByBank,
     Payco,
     Paynow,
     Paypal,
@@ -6854,6 +6858,7 @@ impl UpdateSubscriptionPaymentSettingsPaymentMethodTypes {
             NaverPay => "naver_pay",
             NzBankAccount => "nz_bank_account",
             P24 => "p24",
+            PayByBank => "pay_by_bank",
             Payco => "payco",
             Paynow => "paynow",
             Paypal => "paypal",
@@ -6905,6 +6910,7 @@ impl std::str::FromStr for UpdateSubscriptionPaymentSettingsPaymentMethodTypes {
             "naver_pay" => Ok(NaverPay),
             "nz_bank_account" => Ok(NzBankAccount),
             "p24" => Ok(P24),
+            "pay_by_bank" => Ok(PayByBank),
             "payco" => Ok(Payco),
             "paynow" => Ok(Paynow),
             "paypal" => Ok(Paypal),
@@ -7673,7 +7679,7 @@ impl ItemBillingThresholdsParam {
 #[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct EuBankTransferParam {
     /// The desired country code of the bank account information.
-    /// Permitted values include: `BE`, `DE`, `ES`, `FR`, `IE`, or `NL`.
+    /// Permitted values include: `DE`, `FR`, `IE`, or `NL`.
     pub country: String,
 }
 impl EuBankTransferParam {

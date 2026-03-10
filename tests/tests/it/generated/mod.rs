@@ -197,6 +197,9 @@ pub fn check_fixtures(resources: &serde_json::Value) {
     check_object::<stripe_core::Refund>(resources, "refund");
     check_object::<stripe_misc::ReportingReportRun>(resources, "reporting.report_run");
     check_object::<stripe_misc::ReportingReportType>(resources, "reporting.report_type");
+    check_object::<stripe_reserve::ReserveHold>(resources, "reserve.hold");
+    check_object::<stripe_reserve::ReservePlan>(resources, "reserve.plan");
+    check_object::<stripe_reserve::ReserveRelease>(resources, "reserve.release");
     check_object::<stripe_core::ReserveTransaction>(resources, "reserve_transaction");
     check_object::<stripe_fraud::Review>(resources, "review");
     check_object::<stripe_misc::ScheduledQueryRun>(resources, "scheduled_query_run");

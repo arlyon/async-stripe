@@ -15,6 +15,12 @@ for requests mentioned in the `Billing` section of the [Stripe API docs](https:/
 '''
 
 [[crates]]
+name = "reserve"
+packages = ["reserve"]
+description = '''This crate provides Rust bindings to the Stripe HTTP API, specifically
+centered around [Reserve](https://docs.stripe.com/api/reserves)'''
+
+[[crates]]
 name = "checkout"
 packages = ["checkout"]
 description = '''This crate provides Rust bindings to the Stripe HTTP API,

@@ -139,7 +139,7 @@ pub struct Subscription {
     /// If the subscription has a trial, the end of that trial.
     pub trial_end: Option<stripe_types::Timestamp>,
     /// Settings related to subscription trials.
-    pub trial_settings: Option<stripe_shared::SubscriptionsTrialsResourceTrialSettings>,
+    pub trial_settings: Option<stripe_shared::SubscriptionsResourceTrialSettingsTrialSettings>,
     /// If the subscription has a trial, the beginning of that trial.
     pub trial_start: Option<stripe_types::Timestamp>,
 }
@@ -189,7 +189,7 @@ pub struct SubscriptionBuilder {
     test_clock: Option<Option<stripe_types::Expandable<stripe_shared::TestHelpersTestClock>>>,
     transfer_data: Option<Option<stripe_shared::SubscriptionTransferData>>,
     trial_end: Option<Option<stripe_types::Timestamp>>,
-    trial_settings: Option<Option<stripe_shared::SubscriptionsTrialsResourceTrialSettings>>,
+    trial_settings: Option<Option<stripe_shared::SubscriptionsResourceTrialSettingsTrialSettings>>,
     trial_start: Option<Option<stripe_types::Timestamp>>,
 }
 

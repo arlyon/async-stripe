@@ -3,7 +3,7 @@
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentMethodOptionsCustomerBalanceEuBankAccount {
     /// The desired country code of the bank account information.
-    /// Permitted values include: `BE`, `DE`, `ES`, `FR`, `IE`, or `NL`.
+    /// Permitted values include: `DE`, `FR`, `IE`, or `NL`.
     pub country: PaymentMethodOptionsCustomerBalanceEuBankAccountCountry,
 }
 #[doc(hidden)]
@@ -100,7 +100,7 @@ const _: () = {
     }
 };
 /// The desired country code of the bank account information.
-/// Permitted values include: `BE`, `DE`, `ES`, `FR`, `IE`, or `NL`.
+/// Permitted values include: `DE`, `FR`, `IE`, or `NL`.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum PaymentMethodOptionsCustomerBalanceEuBankAccountCountry {

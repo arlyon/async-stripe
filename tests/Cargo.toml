@@ -28,6 +28,7 @@ async-stripe-terminal = { path = "../generated/async-stripe-terminal", features 
 async-stripe-fraud = { path = "../generated/async-stripe-fraud", features = ["serialize"] }
 async-stripe-issuing = { path = "../generated/async-stripe-issuing", features = ["serialize"] }
 async-stripe-misc = { path = "../generated/async-stripe-misc", features = ["serialize"] }
+async-stripe-reserve = { path = "../generated/async-stripe-reserve", features = ["serialize"] }
 
 async-stripe = { path = "../async-stripe", default-features = false, features = ["blocking", "async-std-surf"] }
 

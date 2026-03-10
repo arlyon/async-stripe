@@ -196,7 +196,7 @@ pub struct CreateBillingAlertUsageThreshold {
     /// You can only specify up to one filter at this time.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub filters: Option<Vec<CreateBillingAlertUsageThresholdFilters>>,
-    /// Defines at which value the alert will fire.
+    /// Defines the threshold value that triggers the alert.
     pub gte: i64,
     /// The [Billing Meter](/api/billing/meter) ID whose usage is monitored.
     pub meter: String,

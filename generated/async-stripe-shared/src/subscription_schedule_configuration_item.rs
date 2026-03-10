@@ -8,7 +8,7 @@ pub struct SubscriptionScheduleConfigurationItem {
     /// The discounts applied to the subscription item.
     /// Subscription item discounts are applied before subscription discounts.
     /// Use `expand[]=discounts` to expand each discount.
-    pub discounts: Vec<stripe_shared::DiscountsResourceStackableDiscount>,
+    pub discounts: Vec<stripe_shared::StackableDiscountWithDiscountSettings>,
     /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an item.
     /// Metadata on this item will update the underlying subscription item's `metadata` when the phase is entered.
     pub metadata: Option<std::collections::HashMap<String, String>>,
@@ -25,7 +25,7 @@ pub struct SubscriptionScheduleConfigurationItem {
 #[doc(hidden)]
 pub struct SubscriptionScheduleConfigurationItemBuilder {
     billing_thresholds: Option<Option<stripe_shared::SubscriptionItemBillingThresholds>>,
-    discounts: Option<Vec<stripe_shared::DiscountsResourceStackableDiscount>>,
+    discounts: Option<Vec<stripe_shared::StackableDiscountWithDiscountSettings>>,
     metadata: Option<Option<std::collections::HashMap<String, String>>>,
     plan: Option<stripe_types::Expandable<stripe_shared::Plan>>,
     price: Option<stripe_types::Expandable<stripe_shared::Price>>,

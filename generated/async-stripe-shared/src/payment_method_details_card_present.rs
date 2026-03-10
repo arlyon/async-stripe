@@ -50,6 +50,8 @@ pub struct PaymentMethodDetailsCardPresent {
     pub issuer: Option<String>,
     /// The last four digits of the card.
     pub last4: Option<String>,
+    /// ID of the [location](https://docs.stripe.com/api/terminal/locations) that this transaction's reader is assigned to.
+    pub location: Option<String>,
     /// Identifies which network this charge was processed on.
     /// Can be `amex`, `cartes_bancaires`, `diners`, `discover`, `eftpos_au`, `interac`, `jcb`, `link`, `mastercard`, `unionpay`, `visa`, or `unknown`.
     pub network: Option<String>,
@@ -66,6 +68,8 @@ pub struct PaymentMethodDetailsCardPresent {
     pub preferred_locales: Option<Vec<String>>,
     /// How card details were read in this transaction.
     pub read_method: Option<PaymentMethodDetailsCardPresentReadMethod>,
+    /// ID of the [reader](https://docs.stripe.com/api/terminal/readers) this transaction was made on.
+    pub reader: Option<String>,
     /// A collection of fields required to be displayed on receipts. Only required for EMV transactions.
     pub receipt: Option<stripe_shared::PaymentMethodDetailsCardPresentReceipt>,
     pub wallet: Option<stripe_shared::PaymentFlowsPrivatePaymentMethodsCardPresentCommonWallet>,
@@ -89,12 +93,14 @@ pub struct PaymentMethodDetailsCardPresentBuilder {
     incremental_authorization_supported: Option<bool>,
     issuer: Option<Option<String>>,
     last4: Option<Option<String>>,
+    location: Option<Option<String>>,
     network: Option<Option<String>>,
     network_transaction_id: Option<Option<String>>,
     offline: Option<Option<stripe_shared::PaymentMethodDetailsCardPresentOffline>>,
     overcapture_supported: Option<bool>,
     preferred_locales: Option<Option<Vec<String>>>,
     read_method: Option<Option<PaymentMethodDetailsCardPresentReadMethod>>,
+    reader: Option<Option<String>>,
     receipt: Option<Option<stripe_shared::PaymentMethodDetailsCardPresentReceipt>>,
     wallet: Option<Option<stripe_shared::PaymentFlowsPrivatePaymentMethodsCardPresentCommonWallet>>,
 }
@@ -158,12 +164,14 @@ const _: () = {
                 }
                 "issuer" => Deserialize::begin(&mut self.issuer),
                 "last4" => Deserialize::begin(&mut self.last4),
+                "location" => Deserialize::begin(&mut self.location),
                 "network" => Deserialize::begin(&mut self.network),
                 "network_transaction_id" => Deserialize::begin(&mut self.network_transaction_id),
                 "offline" => Deserialize::begin(&mut self.offline),
                 "overcapture_supported" => Deserialize::begin(&mut self.overcapture_supported),
                 "preferred_locales" => Deserialize::begin(&mut self.preferred_locales),
                 "read_method" => Deserialize::begin(&mut self.read_method),
+                "reader" => Deserialize::begin(&mut self.reader),
                 "receipt" => Deserialize::begin(&mut self.receipt),
                 "wallet" => Deserialize::begin(&mut self.wallet),
                 _ => <dyn Visitor>::ignore(),
@@ -189,12 +197,14 @@ const _: () = {
                 incremental_authorization_supported: Deserialize::default(),
                 issuer: Deserialize::default(),
                 last4: Deserialize::default(),
+                location: Deserialize::default(),
                 network: Deserialize::default(),
                 network_transaction_id: Deserialize::default(),
                 offline: Deserialize::default(),
                 overcapture_supported: Deserialize::default(),
                 preferred_locales: Deserialize::default(),
                 read_method: Deserialize::default(),
+                reader: Deserialize::default(),
                 receipt: Deserialize::default(),
                 wallet: Deserialize::default(),
             }
@@ -219,12 +229,14 @@ const _: () = {
                 Some(incremental_authorization_supported),
                 Some(issuer),
                 Some(last4),
+                Some(location),
                 Some(network),
                 Some(network_transaction_id),
                 Some(offline),
                 Some(overcapture_supported),
                 Some(preferred_locales),
                 Some(read_method),
+                Some(reader),
                 Some(receipt),
                 Some(wallet),
             ) = (
@@ -245,12 +257,14 @@ const _: () = {
                 self.incremental_authorization_supported,
                 self.issuer.take(),
                 self.last4.take(),
+                self.location.take(),
                 self.network.take(),
                 self.network_transaction_id.take(),
                 self.offline.take(),
                 self.overcapture_supported,
                 self.preferred_locales.take(),
                 self.read_method.take(),
+                self.reader.take(),
                 self.receipt.take(),
                 self.wallet.take(),
             )
@@ -275,12 +289,14 @@ const _: () = {
                 incremental_authorization_supported,
                 issuer,
                 last4,
+                location,
                 network,
                 network_transaction_id,
                 offline,
                 overcapture_supported,
                 preferred_locales,
                 read_method,
+                reader,
                 receipt,
                 wallet,
             })
@@ -329,6 +345,7 @@ const _: () = {
                     }
                     "issuer" => b.issuer = FromValueOpt::from_value(v),
                     "last4" => b.last4 = FromValueOpt::from_value(v),
+                    "location" => b.location = FromValueOpt::from_value(v),
                     "network" => b.network = FromValueOpt::from_value(v),
                     "network_transaction_id" => {
                         b.network_transaction_id = FromValueOpt::from_value(v)
@@ -339,6 +356,7 @@ const _: () = {
                     }
                     "preferred_locales" => b.preferred_locales = FromValueOpt::from_value(v),
                     "read_method" => b.read_method = FromValueOpt::from_value(v),
+                    "reader" => b.reader = FromValueOpt::from_value(v),
                     "receipt" => b.receipt = FromValueOpt::from_value(v),
                     "wallet" => b.wallet = FromValueOpt::from_value(v),
                     _ => {}
