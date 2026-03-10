@@ -34,7 +34,7 @@ pub struct SubscriptionSchedulePhaseConfiguration {
     pub description: Option<String>,
     /// The stackable discounts that will be applied to the subscription on this phase.
     /// Subscription item discounts are applied before subscription discounts.
-    pub discounts: Vec<stripe_shared::DiscountsResourceStackableDiscount>,
+    pub discounts: Vec<stripe_shared::StackableDiscountWithDiscountSettingsAndDiscountEnd>,
     /// The end of this phase of the subscription schedule.
     pub end_date: stripe_types::Timestamp,
     /// The invoice settings applicable during this phase.
@@ -70,7 +70,7 @@ pub struct SubscriptionSchedulePhaseConfigurationBuilder {
     default_payment_method: Option<Option<stripe_types::Expandable<stripe_shared::PaymentMethod>>>,
     default_tax_rates: Option<Option<Vec<stripe_shared::TaxRate>>>,
     description: Option<Option<String>>,
-    discounts: Option<Vec<stripe_shared::DiscountsResourceStackableDiscount>>,
+    discounts: Option<Vec<stripe_shared::StackableDiscountWithDiscountSettingsAndDiscountEnd>>,
     end_date: Option<stripe_types::Timestamp>,
     invoice_settings: Option<Option<stripe_shared::InvoiceSettingSubscriptionSchedulePhaseSetting>>,
     items: Option<Vec<stripe_shared::SubscriptionScheduleConfigurationItem>>,

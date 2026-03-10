@@ -1154,6 +1154,27 @@ pub enum EventObject {
     /// Occurs whenever a `ReportType` is updated (typically to indicate that a new day's data has come available).
     #[cfg(feature = "async-stripe-misc")]
     ReportingReportTypeUpdated(Box<stripe_misc::ReportingReportType>),
+    /// Occurs when a reserve hold is created.
+    #[cfg(feature = "async-stripe-reserve")]
+    ReserveHoldCreated(Box<stripe_reserve::ReserveHold>),
+    /// Occurs when a reserve hold is updated.
+    #[cfg(feature = "async-stripe-reserve")]
+    ReserveHoldUpdated(Box<stripe_reserve::ReserveHold>),
+    /// Occurs when a reserve plan is created.
+    #[cfg(feature = "async-stripe-reserve")]
+    ReservePlanCreated(Box<stripe_reserve::ReservePlan>),
+    /// Occurs when a reserve plan is disabled.
+    #[cfg(feature = "async-stripe-reserve")]
+    ReservePlanDisabled(Box<stripe_reserve::ReservePlan>),
+    /// Occurs when a reserve plan expires.
+    #[cfg(feature = "async-stripe-reserve")]
+    ReservePlanExpired(Box<stripe_reserve::ReservePlan>),
+    /// Occurs when a reserve plan is updated.
+    #[cfg(feature = "async-stripe-reserve")]
+    ReservePlanUpdated(Box<stripe_reserve::ReservePlan>),
+    /// Occurs when a reserve release is created.
+    #[cfg(feature = "async-stripe-reserve")]
+    ReserveReleaseCreated(Box<stripe_reserve::ReserveRelease>),
     /// Occurs whenever a review is closed.
     /// The review's `reason` field indicates why: `approved`, `disputed`, `refunded`, `refunded_as_fraud`, or `canceled`.
     ReviewClosed(Box<stripe_shared::Review>),
@@ -1945,6 +1966,34 @@ impl EventObject {
         #[cfg(feature = "async-stripe-misc")]
         if typ == "reporting.report_type.updated" {
             return parse_and_box(data).map(Self::ReportingReportTypeUpdated);
+        }
+        #[cfg(feature = "async-stripe-reserve")]
+        if typ == "reserve.hold.created" {
+            return parse_and_box(data).map(Self::ReserveHoldCreated);
+        }
+        #[cfg(feature = "async-stripe-reserve")]
+        if typ == "reserve.hold.updated" {
+            return parse_and_box(data).map(Self::ReserveHoldUpdated);
+        }
+        #[cfg(feature = "async-stripe-reserve")]
+        if typ == "reserve.plan.created" {
+            return parse_and_box(data).map(Self::ReservePlanCreated);
+        }
+        #[cfg(feature = "async-stripe-reserve")]
+        if typ == "reserve.plan.disabled" {
+            return parse_and_box(data).map(Self::ReservePlanDisabled);
+        }
+        #[cfg(feature = "async-stripe-reserve")]
+        if typ == "reserve.plan.expired" {
+            return parse_and_box(data).map(Self::ReservePlanExpired);
+        }
+        #[cfg(feature = "async-stripe-reserve")]
+        if typ == "reserve.plan.updated" {
+            return parse_and_box(data).map(Self::ReservePlanUpdated);
+        }
+        #[cfg(feature = "async-stripe-reserve")]
+        if typ == "reserve.release.created" {
+            return parse_and_box(data).map(Self::ReserveReleaseCreated);
         }
         if typ == "review.closed" {
             return parse_and_box(data).map(Self::ReviewClosed);
@@ -2813,6 +2862,34 @@ impl EventObject {
         #[cfg(feature = "async-stripe-misc")]
         if typ == "reporting.report_type.updated" {
             return parse_and_box(data).map(Self::ReportingReportTypeUpdated);
+        }
+        #[cfg(feature = "async-stripe-reserve")]
+        if typ == "reserve.hold.created" {
+            return parse_and_box(data).map(Self::ReserveHoldCreated);
+        }
+        #[cfg(feature = "async-stripe-reserve")]
+        if typ == "reserve.hold.updated" {
+            return parse_and_box(data).map(Self::ReserveHoldUpdated);
+        }
+        #[cfg(feature = "async-stripe-reserve")]
+        if typ == "reserve.plan.created" {
+            return parse_and_box(data).map(Self::ReservePlanCreated);
+        }
+        #[cfg(feature = "async-stripe-reserve")]
+        if typ == "reserve.plan.disabled" {
+            return parse_and_box(data).map(Self::ReservePlanDisabled);
+        }
+        #[cfg(feature = "async-stripe-reserve")]
+        if typ == "reserve.plan.expired" {
+            return parse_and_box(data).map(Self::ReservePlanExpired);
+        }
+        #[cfg(feature = "async-stripe-reserve")]
+        if typ == "reserve.plan.updated" {
+            return parse_and_box(data).map(Self::ReservePlanUpdated);
+        }
+        #[cfg(feature = "async-stripe-reserve")]
+        if typ == "reserve.release.created" {
+            return parse_and_box(data).map(Self::ReserveReleaseCreated);
         }
         if typ == "review.closed" {
             return parse_and_box(data).map(Self::ReviewClosed);

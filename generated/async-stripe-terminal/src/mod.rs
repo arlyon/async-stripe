@@ -33,8 +33,12 @@ pub use terminal_onboarding_link::types::*;
 pub mod terminal_onboarding_link;
 pub use terminal_reader::types::*;
 #[doc(hidden)]
-pub mod terminal_configuration_configuration_resource_currency_specific_config;
+pub mod terminal_configuration_configuration_resource_cellular_config;
 pub mod terminal_reader;
+#[doc(inline)]
+pub use terminal_configuration_configuration_resource_cellular_config::*;
+#[doc(hidden)]
+pub mod terminal_configuration_configuration_resource_currency_specific_config;
 #[doc(inline)]
 pub use terminal_configuration_configuration_resource_currency_specific_config::*;
 #[doc(hidden)]

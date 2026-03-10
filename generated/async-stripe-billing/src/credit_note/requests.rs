@@ -309,14 +309,16 @@ pub struct PreviewCreditNoteLines {
     /// The line item quantity to credit.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub quantity: Option<u64>,
-    /// A list of up to 10 tax amounts for the credit note line item. Cannot be mixed with `tax_rates`.
+    /// A list of up to 10 tax amounts for the credit note line item.
+    /// Not valid when `tax_rates` is used or if invoice is set up with `automatic_tax[enabled]=true`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_amounts: Option<Vec<TaxAmountWithTaxRateParam>>,
     /// The tax rates which apply to the credit note line item.
-    /// Only valid when the `type` is `custom_line_item` and cannot be mixed with `tax_amounts`.
+    /// Only valid when the `type` is `custom_line_item` and `tax_amounts` is not used.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_rates: Option<Vec<String>>,
-    /// Type of the credit note line item, one of `invoice_line_item` or `custom_line_item`
+    /// Type of the credit note line item, one of `invoice_line_item` or `custom_line_item`.
+    /// `custom_line_item` is not valid when the invoice is set up with `automatic_tax[enabled]=true`.
     #[serde(rename = "type")]
     pub type_: PreviewCreditNoteLinesType,
     /// The integer unit amount in cents (or local equivalent) of the credit note line item.
@@ -344,7 +346,8 @@ impl PreviewCreditNoteLines {
         }
     }
 }
-/// Type of the credit note line item, one of `invoice_line_item` or `custom_line_item`
+/// Type of the credit note line item, one of `invoice_line_item` or `custom_line_item`.
+/// `custom_line_item` is not valid when the invoice is set up with `automatic_tax[enabled]=true`.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum PreviewCreditNoteLinesType {
@@ -754,14 +757,16 @@ pub struct PreviewLinesCreditNoteLines {
     /// The line item quantity to credit.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub quantity: Option<u64>,
-    /// A list of up to 10 tax amounts for the credit note line item. Cannot be mixed with `tax_rates`.
+    /// A list of up to 10 tax amounts for the credit note line item.
+    /// Not valid when `tax_rates` is used or if invoice is set up with `automatic_tax[enabled]=true`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_amounts: Option<Vec<TaxAmountWithTaxRateParam>>,
     /// The tax rates which apply to the credit note line item.
-    /// Only valid when the `type` is `custom_line_item` and cannot be mixed with `tax_amounts`.
+    /// Only valid when the `type` is `custom_line_item` and `tax_amounts` is not used.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_rates: Option<Vec<String>>,
-    /// Type of the credit note line item, one of `invoice_line_item` or `custom_line_item`
+    /// Type of the credit note line item, one of `invoice_line_item` or `custom_line_item`.
+    /// `custom_line_item` is not valid when the invoice is set up with `automatic_tax[enabled]=true`.
     #[serde(rename = "type")]
     pub type_: PreviewLinesCreditNoteLinesType,
     /// The integer unit amount in cents (or local equivalent) of the credit note line item.
@@ -789,7 +794,8 @@ impl PreviewLinesCreditNoteLines {
         }
     }
 }
-/// Type of the credit note line item, one of `invoice_line_item` or `custom_line_item`
+/// Type of the credit note line item, one of `invoice_line_item` or `custom_line_item`.
+/// `custom_line_item` is not valid when the invoice is set up with `automatic_tax[enabled]=true`.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum PreviewLinesCreditNoteLinesType {
@@ -1218,14 +1224,16 @@ pub struct CreateCreditNoteLines {
     /// The line item quantity to credit.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub quantity: Option<u64>,
-    /// A list of up to 10 tax amounts for the credit note line item. Cannot be mixed with `tax_rates`.
+    /// A list of up to 10 tax amounts for the credit note line item.
+    /// Not valid when `tax_rates` is used or if invoice is set up with `automatic_tax[enabled]=true`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_amounts: Option<Vec<TaxAmountWithTaxRateParam>>,
     /// The tax rates which apply to the credit note line item.
-    /// Only valid when the `type` is `custom_line_item` and cannot be mixed with `tax_amounts`.
+    /// Only valid when the `type` is `custom_line_item` and `tax_amounts` is not used.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_rates: Option<Vec<String>>,
-    /// Type of the credit note line item, one of `invoice_line_item` or `custom_line_item`
+    /// Type of the credit note line item, one of `invoice_line_item` or `custom_line_item`.
+    /// `custom_line_item` is not valid when the invoice is set up with `automatic_tax[enabled]=true`.
     #[serde(rename = "type")]
     pub type_: CreateCreditNoteLinesType,
     /// The integer unit amount in cents (or local equivalent) of the credit note line item.
@@ -1253,7 +1261,8 @@ impl CreateCreditNoteLines {
         }
     }
 }
-/// Type of the credit note line item, one of `invoice_line_item` or `custom_line_item`
+/// Type of the credit note line item, one of `invoice_line_item` or `custom_line_item`.
+/// `custom_line_item` is not valid when the invoice is set up with `automatic_tax[enabled]=true`.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum CreateCreditNoteLinesType {

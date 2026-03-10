@@ -1351,7 +1351,7 @@ impl CreateCheckoutSessionCustomFields {
 /// Configuration for `type=dropdown` fields.
 #[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateCheckoutSessionCustomFieldsDropdown {
-    /// The value that will pre-fill the field on the payment page.Must match a `value` in the `options` array.
+    /// The value that pre-fills the field on the payment page.Must match a `value` in the `options` array.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub default_value: Option<String>,
     /// The options available for the customer to select. Up to 200 options allowed.
@@ -1458,7 +1458,7 @@ impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionCustomFieldsLabelType
 /// Configuration for `type=numeric` fields.
 #[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateCheckoutSessionCustomFieldsNumeric {
-    /// The value that will pre-fill the field on the payment page.
+    /// The value that pre-fills the field on the payment page.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub default_value: Option<String>,
     /// The maximum character length constraint for the customer's input.
@@ -1481,7 +1481,7 @@ impl Default for CreateCheckoutSessionCustomFieldsNumeric {
 /// Configuration for `type=text` fields.
 #[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateCheckoutSessionCustomFieldsText {
-    /// The value that will pre-fill the field on the payment page.
+    /// The value that pre-fills the field on the payment page.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub default_value: Option<String>,
     /// The maximum character length constraint for the customer's input.
@@ -6089,7 +6089,7 @@ impl CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransfer {
 #[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransferEuBankTransfer {
     /// The desired country code of the bank account information.
-    /// Permitted values include: `BE`, `DE`, `ES`, `FR`, `IE`, or `NL`.
+    /// Permitted values include: `DE`, `FR`, `IE`, or `NL`.
     pub country: String,
 }
 impl CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransferEuBankTransfer {
@@ -14967,7 +14967,7 @@ impl StripeRequest for ExpireCheckoutSession {
 
 #[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CustomTextPositionParam {
-    /// Text may be up to 1200 characters in length.
+    /// Text can be up to 1200 characters in length.
     pub message: String,
 }
 impl CustomTextPositionParam {

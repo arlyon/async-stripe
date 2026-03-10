@@ -2,7 +2,7 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentPagesCheckoutSessionCustomTextPosition {
-    /// Text may be up to 1200 characters in length.
+    /// Text can be up to 1200 characters in length.
     pub message: String,
 }
 #[doc(hidden)]

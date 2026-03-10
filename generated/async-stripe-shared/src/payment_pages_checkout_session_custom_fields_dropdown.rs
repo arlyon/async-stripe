@@ -2,7 +2,7 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentPagesCheckoutSessionCustomFieldsDropdown {
-    /// The value that will pre-fill on the payment page.
+    /// The value that pre-fills on the payment page.
     pub default_value: Option<String>,
     /// The options available for the customer to select. Up to 200 options allowed.
     pub options: Vec<stripe_shared::PaymentPagesCheckoutSessionCustomFieldsOption>,

@@ -17,6 +17,9 @@ pub struct PaymentIntentPaymentMethodOptionsUsBankAccount {
     /// The date must be a string in YYYY-MM-DD format.
     /// The date must be in the future and between 3 and 15 calendar days from now.
     pub target_date: Option<String>,
+    /// The purpose of the transaction.
+    pub transaction_purpose:
+        Option<PaymentIntentPaymentMethodOptionsUsBankAccountTransactionPurpose>,
     /// Bank account verification method.
     pub verification_method:
         Option<PaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod>,
@@ -28,6 +31,8 @@ pub struct PaymentIntentPaymentMethodOptionsUsBankAccountBuilder {
     setup_future_usage:
         Option<Option<PaymentIntentPaymentMethodOptionsUsBankAccountSetupFutureUsage>>,
     target_date: Option<Option<String>>,
+    transaction_purpose:
+        Option<Option<PaymentIntentPaymentMethodOptionsUsBankAccountTransactionPurpose>>,
     verification_method:
         Option<Option<PaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod>>,
 }
@@ -76,6 +81,7 @@ const _: () = {
                 "mandate_options" => Deserialize::begin(&mut self.mandate_options),
                 "setup_future_usage" => Deserialize::begin(&mut self.setup_future_usage),
                 "target_date" => Deserialize::begin(&mut self.target_date),
+                "transaction_purpose" => Deserialize::begin(&mut self.transaction_purpose),
                 "verification_method" => Deserialize::begin(&mut self.verification_method),
                 _ => <dyn Visitor>::ignore(),
             })
@@ -87,6 +93,7 @@ const _: () = {
                 mandate_options: Deserialize::default(),
                 setup_future_usage: Deserialize::default(),
                 target_date: Deserialize::default(),
+                transaction_purpose: Deserialize::default(),
                 verification_method: Deserialize::default(),
             }
         }
@@ -97,12 +104,14 @@ const _: () = {
                 Some(mandate_options),
                 Some(setup_future_usage),
                 Some(target_date),
+                Some(transaction_purpose),
                 Some(verification_method),
             ) = (
                 self.financial_connections.take(),
                 self.mandate_options.take(),
                 self.setup_future_usage.take(),
                 self.target_date.take(),
+                self.transaction_purpose.take(),
                 self.verification_method.take(),
             )
             else {
@@ -113,6 +122,7 @@ const _: () = {
                 mandate_options,
                 setup_future_usage,
                 target_date,
+                transaction_purpose,
                 verification_method,
             })
         }
@@ -147,6 +157,7 @@ const _: () = {
                     "mandate_options" => b.mandate_options = FromValueOpt::from_value(v),
                     "setup_future_usage" => b.setup_future_usage = FromValueOpt::from_value(v),
                     "target_date" => b.target_date = FromValueOpt::from_value(v),
+                    "transaction_purpose" => b.transaction_purpose = FromValueOpt::from_value(v),
                     "verification_method" => b.verification_method = FromValueOpt::from_value(v),
                     _ => {}
                 }
@@ -248,6 +259,102 @@ stripe_types::impl_from_val_with_from_str!(
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de>
     for PaymentIntentPaymentMethodOptionsUsBankAccountSetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// The purpose of the transaction.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum PaymentIntentPaymentMethodOptionsUsBankAccountTransactionPurpose {
+    Goods,
+    Other,
+    Services,
+    Unspecified,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl PaymentIntentPaymentMethodOptionsUsBankAccountTransactionPurpose {
+    pub fn as_str(&self) -> &str {
+        use PaymentIntentPaymentMethodOptionsUsBankAccountTransactionPurpose::*;
+        match self {
+            Goods => "goods",
+            Other => "other",
+            Services => "services",
+            Unspecified => "unspecified",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for PaymentIntentPaymentMethodOptionsUsBankAccountTransactionPurpose {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use PaymentIntentPaymentMethodOptionsUsBankAccountTransactionPurpose::*;
+        match s {
+            "goods" => Ok(Goods),
+            "other" => Ok(Other),
+            "services" => Ok(Services),
+            "unspecified" => Ok(Unspecified),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PaymentIntentPaymentMethodOptionsUsBankAccountTransactionPurpose"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for PaymentIntentPaymentMethodOptionsUsBankAccountTransactionPurpose {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for PaymentIntentPaymentMethodOptionsUsBankAccountTransactionPurpose {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "serialize")]
+impl serde::Serialize for PaymentIntentPaymentMethodOptionsUsBankAccountTransactionPurpose {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl miniserde::Deserialize for PaymentIntentPaymentMethodOptionsUsBankAccountTransactionPurpose {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor
+    for crate::Place<PaymentIntentPaymentMethodOptionsUsBankAccountTransactionPurpose>
+{
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(
+            PaymentIntentPaymentMethodOptionsUsBankAccountTransactionPurpose::from_str(s)
+                .expect("infallible"),
+        );
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(
+    PaymentIntentPaymentMethodOptionsUsBankAccountTransactionPurpose
+);
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for PaymentIntentPaymentMethodOptionsUsBankAccountTransactionPurpose
 {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;

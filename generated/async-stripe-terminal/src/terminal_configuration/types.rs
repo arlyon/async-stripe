@@ -9,6 +9,7 @@ pub struct TerminalConfiguration {
         Option<stripe_terminal::TerminalConfigurationConfigurationResourceDeviceTypeSpecificConfig>,
     pub bbpos_wisepos_e:
         Option<stripe_terminal::TerminalConfigurationConfigurationResourceDeviceTypeSpecificConfig>,
+    pub cellular: Option<stripe_terminal::TerminalConfigurationConfigurationResourceCellularConfig>,
     /// Unique identifier for the object.
     pub id: stripe_terminal::TerminalConfigurationId,
     /// Whether this Configuration is the default for your account
@@ -21,6 +22,8 @@ pub struct TerminalConfiguration {
     pub reboot_window:
         Option<stripe_terminal::TerminalConfigurationConfigurationResourceRebootWindow>,
     pub stripe_s700:
+        Option<stripe_terminal::TerminalConfigurationConfigurationResourceDeviceTypeSpecificConfig>,
+    pub stripe_s710:
         Option<stripe_terminal::TerminalConfigurationConfigurationResourceDeviceTypeSpecificConfig>,
     pub tipping: Option<stripe_terminal::TerminalConfigurationConfigurationResourceTipping>,
     pub verifone_p400:
@@ -35,6 +38,8 @@ pub struct TerminalConfigurationBuilder {
     bbpos_wisepos_e: Option<
         Option<stripe_terminal::TerminalConfigurationConfigurationResourceDeviceTypeSpecificConfig>,
     >,
+    cellular:
+        Option<Option<stripe_terminal::TerminalConfigurationConfigurationResourceCellularConfig>>,
     id: Option<stripe_terminal::TerminalConfigurationId>,
     is_account_default: Option<Option<bool>>,
     livemode: Option<bool>,
@@ -44,6 +49,9 @@ pub struct TerminalConfigurationBuilder {
     reboot_window:
         Option<Option<stripe_terminal::TerminalConfigurationConfigurationResourceRebootWindow>>,
     stripe_s700: Option<
+        Option<stripe_terminal::TerminalConfigurationConfigurationResourceDeviceTypeSpecificConfig>,
+    >,
+    stripe_s710: Option<
         Option<stripe_terminal::TerminalConfigurationConfigurationResourceDeviceTypeSpecificConfig>,
     >,
     tipping: Option<Option<stripe_terminal::TerminalConfigurationConfigurationResourceTipping>>,
@@ -95,6 +103,7 @@ const _: () = {
             Ok(match k {
                 "bbpos_wisepad3" => Deserialize::begin(&mut self.bbpos_wisepad3),
                 "bbpos_wisepos_e" => Deserialize::begin(&mut self.bbpos_wisepos_e),
+                "cellular" => Deserialize::begin(&mut self.cellular),
                 "id" => Deserialize::begin(&mut self.id),
                 "is_account_default" => Deserialize::begin(&mut self.is_account_default),
                 "livemode" => Deserialize::begin(&mut self.livemode),
@@ -102,6 +111,7 @@ const _: () = {
                 "offline" => Deserialize::begin(&mut self.offline),
                 "reboot_window" => Deserialize::begin(&mut self.reboot_window),
                 "stripe_s700" => Deserialize::begin(&mut self.stripe_s700),
+                "stripe_s710" => Deserialize::begin(&mut self.stripe_s710),
                 "tipping" => Deserialize::begin(&mut self.tipping),
                 "verifone_p400" => Deserialize::begin(&mut self.verifone_p400),
                 "wifi" => Deserialize::begin(&mut self.wifi),
@@ -113,6 +123,7 @@ const _: () = {
             Self {
                 bbpos_wisepad3: Deserialize::default(),
                 bbpos_wisepos_e: Deserialize::default(),
+                cellular: Deserialize::default(),
                 id: Deserialize::default(),
                 is_account_default: Deserialize::default(),
                 livemode: Deserialize::default(),
@@ -120,6 +131,7 @@ const _: () = {
                 offline: Deserialize::default(),
                 reboot_window: Deserialize::default(),
                 stripe_s700: Deserialize::default(),
+                stripe_s710: Deserialize::default(),
                 tipping: Deserialize::default(),
                 verifone_p400: Deserialize::default(),
                 wifi: Deserialize::default(),
@@ -130,6 +142,7 @@ const _: () = {
             let (
                 Some(bbpos_wisepad3),
                 Some(bbpos_wisepos_e),
+                Some(cellular),
                 Some(id),
                 Some(is_account_default),
                 Some(livemode),
@@ -137,12 +150,14 @@ const _: () = {
                 Some(offline),
                 Some(reboot_window),
                 Some(stripe_s700),
+                Some(stripe_s710),
                 Some(tipping),
                 Some(verifone_p400),
                 Some(wifi),
             ) = (
                 self.bbpos_wisepad3.take(),
                 self.bbpos_wisepos_e.take(),
+                self.cellular,
                 self.id.take(),
                 self.is_account_default,
                 self.livemode,
@@ -150,6 +165,7 @@ const _: () = {
                 self.offline,
                 self.reboot_window,
                 self.stripe_s700.take(),
+                self.stripe_s710.take(),
                 self.tipping.take(),
                 self.verifone_p400.take(),
                 self.wifi.take(),
@@ -160,6 +176,7 @@ const _: () = {
             Some(Self::Out {
                 bbpos_wisepad3,
                 bbpos_wisepos_e,
+                cellular,
                 id,
                 is_account_default,
                 livemode,
@@ -167,6 +184,7 @@ const _: () = {
                 offline,
                 reboot_window,
                 stripe_s700,
+                stripe_s710,
                 tipping,
                 verifone_p400,
                 wifi,
@@ -199,6 +217,7 @@ const _: () = {
                 match k.as_str() {
                     "bbpos_wisepad3" => b.bbpos_wisepad3 = FromValueOpt::from_value(v),
                     "bbpos_wisepos_e" => b.bbpos_wisepos_e = FromValueOpt::from_value(v),
+                    "cellular" => b.cellular = FromValueOpt::from_value(v),
                     "id" => b.id = FromValueOpt::from_value(v),
                     "is_account_default" => b.is_account_default = FromValueOpt::from_value(v),
                     "livemode" => b.livemode = FromValueOpt::from_value(v),
@@ -206,6 +225,7 @@ const _: () = {
                     "offline" => b.offline = FromValueOpt::from_value(v),
                     "reboot_window" => b.reboot_window = FromValueOpt::from_value(v),
                     "stripe_s700" => b.stripe_s700 = FromValueOpt::from_value(v),
+                    "stripe_s710" => b.stripe_s710 = FromValueOpt::from_value(v),
                     "tipping" => b.tipping = FromValueOpt::from_value(v),
                     "verifone_p400" => b.verifone_p400 = FromValueOpt::from_value(v),
                     "wifi" => b.wifi = FromValueOpt::from_value(v),
@@ -220,9 +240,10 @@ const _: () = {
 impl serde::Serialize for TerminalConfiguration {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("TerminalConfiguration", 13)?;
+        let mut s = s.serialize_struct("TerminalConfiguration", 15)?;
         s.serialize_field("bbpos_wisepad3", &self.bbpos_wisepad3)?;
         s.serialize_field("bbpos_wisepos_e", &self.bbpos_wisepos_e)?;
+        s.serialize_field("cellular", &self.cellular)?;
         s.serialize_field("id", &self.id)?;
         s.serialize_field("is_account_default", &self.is_account_default)?;
         s.serialize_field("livemode", &self.livemode)?;
@@ -230,6 +251,7 @@ impl serde::Serialize for TerminalConfiguration {
         s.serialize_field("offline", &self.offline)?;
         s.serialize_field("reboot_window", &self.reboot_window)?;
         s.serialize_field("stripe_s700", &self.stripe_s700)?;
+        s.serialize_field("stripe_s710", &self.stripe_s710)?;
         s.serialize_field("tipping", &self.tipping)?;
         s.serialize_field("verifone_p400", &self.verifone_p400)?;
         s.serialize_field("wifi", &self.wifi)?;

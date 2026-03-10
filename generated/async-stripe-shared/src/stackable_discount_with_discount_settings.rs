@@ -1,7 +1,7 @@
 #[derive(Clone, Debug)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
-pub struct DiscountsResourceStackableDiscount {
+pub struct StackableDiscountWithDiscountSettings {
     /// ID of the coupon to create a new discount for.
     pub coupon: Option<stripe_types::Expandable<stripe_shared::Coupon>>,
     /// ID of an existing discount on the object (or one of its ancestors) to reuse.
@@ -10,7 +10,7 @@ pub struct DiscountsResourceStackableDiscount {
     pub promotion_code: Option<stripe_types::Expandable<stripe_shared::PromotionCode>>,
 }
 #[doc(hidden)]
-pub struct DiscountsResourceStackableDiscountBuilder {
+pub struct StackableDiscountWithDiscountSettingsBuilder {
     coupon: Option<Option<stripe_types::Expandable<stripe_shared::Coupon>>>,
     discount: Option<Option<stripe_types::Expandable<stripe_shared::Discount>>>,
     promotion_code: Option<Option<stripe_types::Expandable<stripe_shared::PromotionCode>>>,
@@ -32,28 +32,28 @@ const _: () = {
 
     make_place!(Place);
 
-    impl Deserialize for DiscountsResourceStackableDiscount {
+    impl Deserialize for StackableDiscountWithDiscountSettings {
         fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
             Place::new(out)
         }
     }
 
     struct Builder<'a> {
-        out: &'a mut Option<DiscountsResourceStackableDiscount>,
-        builder: DiscountsResourceStackableDiscountBuilder,
+        out: &'a mut Option<StackableDiscountWithDiscountSettings>,
+        builder: StackableDiscountWithDiscountSettingsBuilder,
     }
 
-    impl Visitor for Place<DiscountsResourceStackableDiscount> {
+    impl Visitor for Place<StackableDiscountWithDiscountSettings> {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: DiscountsResourceStackableDiscountBuilder::deser_default(),
+                builder: StackableDiscountWithDiscountSettingsBuilder::deser_default(),
             }))
         }
     }
 
-    impl MapBuilder for DiscountsResourceStackableDiscountBuilder {
-        type Out = DiscountsResourceStackableDiscount;
+    impl MapBuilder for StackableDiscountWithDiscountSettingsBuilder {
+        type Out = StackableDiscountWithDiscountSettings;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "coupon" => Deserialize::begin(&mut self.coupon),
@@ -92,16 +92,16 @@ const _: () = {
         }
     }
 
-    impl ObjectDeser for DiscountsResourceStackableDiscount {
-        type Builder = DiscountsResourceStackableDiscountBuilder;
+    impl ObjectDeser for StackableDiscountWithDiscountSettings {
+        type Builder = StackableDiscountWithDiscountSettingsBuilder;
     }
 
-    impl FromValueOpt for DiscountsResourceStackableDiscount {
+    impl FromValueOpt for StackableDiscountWithDiscountSettings {
         fn from_value(v: Value) -> Option<Self> {
             let Value::Object(obj) = v else {
                 return None;
             };
-            let mut b = DiscountsResourceStackableDiscountBuilder::deser_default();
+            let mut b = StackableDiscountWithDiscountSettingsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
                     "coupon" => b.coupon = FromValueOpt::from_value(v),

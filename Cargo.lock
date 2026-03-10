@@ -672,6 +672,20 @@ dependencies = [
 ]
 
 [[package]]
+name = "async-stripe-reserve"
+version = "1.0.0-rc.2"
+dependencies = [
+ "async-stripe-client-core",
+ "async-stripe-shared",
+ "async-stripe-types",
+ "miniserde",
+ "serde",
+ "serde_json",
+ "smol_str",
+ "tracing",
+]
+
+[[package]]
 name = "async-stripe-shared"
 version = "1.0.0-rc.2"
 dependencies = [

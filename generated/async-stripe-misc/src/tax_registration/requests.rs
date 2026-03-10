@@ -421,6 +421,9 @@ pub struct CreateTaxRegistrationCountryOptions {
     /// Options for the registration in LA.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub la: Option<CreateTaxRegistrationCountryOptionsLa>,
+    /// Options for the registration in LK.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub lk: Option<CreateTaxRegistrationCountryOptionsLk>,
     /// Options for the registration in LT.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub lt: Option<CreateTaxRegistrationCountryOptionsLt>,
@@ -615,6 +618,7 @@ impl CreateTaxRegistrationCountryOptions {
             kr: None,
             kz: None,
             la: None,
+            lk: None,
             lt: None,
             lu: None,
             lv: None,
@@ -7894,6 +7898,80 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsLaType 
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
+/// Options for the registration in LK.
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+pub struct CreateTaxRegistrationCountryOptionsLk {
+    /// Type of registration to be created in `country`.
+    #[serde(rename = "type")]
+    pub type_: CreateTaxRegistrationCountryOptionsLkType,
+}
+impl CreateTaxRegistrationCountryOptionsLk {
+    pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsLkType>) -> Self {
+        Self { type_: type_.into() }
+    }
+}
+/// Type of registration to be created in `country`.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreateTaxRegistrationCountryOptionsLkType {
+    Simplified,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreateTaxRegistrationCountryOptionsLkType {
+    pub fn as_str(&self) -> &str {
+        use CreateTaxRegistrationCountryOptionsLkType::*;
+        match self {
+            Simplified => "simplified",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTaxRegistrationCountryOptionsLkType {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTaxRegistrationCountryOptionsLkType::*;
+        match s {
+            "simplified" => Ok(Simplified),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTaxRegistrationCountryOptionsLkType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CreateTaxRegistrationCountryOptionsLkType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsLkType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreateTaxRegistrationCountryOptionsLkType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsLkType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
 /// Options for the registration in LT.
 #[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsLt {
@@ -12601,7 +12679,7 @@ impl CreateTaxRegistrationCountryOptionsUs {
 #[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsUsLocalAmusementTax {
     /// A [FIPS code](https://www.census.gov/library/reference/code-lists/ansi.html) representing the local jurisdiction.
-    /// Supported FIPS codes are: `14000` (Chicago), `02154` (Arlington Heights), `06613` (Bloomington), `10906` (Campton Hills), `21696` (East Dundee), `24582` (Evanston), `45421` (Lynwood), `48892` (Midlothian), `64343` (River Grove), and `68081` (Schiller Park).
+    /// Supported FIPS codes are: `02154` (Arlington Heights), `05248` (Bensenville), `06613` (Bloomington), `10906` (Campton Hills), `14000` (Chicago), `21696` (East Dundee), `24582` (Evanston), `45421` (Lynwood), `48892` (Midlothian), `64343` (River Grove), `64421` (Riverside), `65806` (Roselle), and `68081` (Schiller Park).
     pub jurisdiction: String,
 }
 impl CreateTaxRegistrationCountryOptionsUsLocalAmusementTax {

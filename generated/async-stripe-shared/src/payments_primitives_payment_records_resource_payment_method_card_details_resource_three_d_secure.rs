@@ -2,9 +2,13 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceThreeDSecure {
+    /// For authenticated transactions: Indicates how the issuing bank authenticated the customer.
 pub authentication_flow: Option<PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceThreeDSecureAuthenticationFlow>,
+    /// Indicates the outcome of 3D Secure authentication.
 pub result: Option<PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceThreeDSecureResult>,
+    /// Additional information about why 3D Secure succeeded or failed, based on the `result`.
 pub result_reason: Option<PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceThreeDSecureResultReason>,
+    /// The version of 3D Secure that was used.
 pub version: Option<PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceThreeDSecureVersion>,
 
 }
@@ -133,6 +137,7 @@ self.version.take(),
         }
     }
 };
+/// For authenticated transactions: Indicates how the issuing bank authenticated the customer.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceThreeDSecureAuthenticationFlow
@@ -206,6 +211,7 @@ impl<'de> serde::Deserialize<'de> for PaymentsPrimitivesPaymentRecordsResourcePa
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
+/// Indicates the outcome of 3D Secure authentication.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceThreeDSecureResult
@@ -317,6 +323,7 @@ impl<'de> serde::Deserialize<'de>
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
+/// Additional information about why 3D Secure succeeded or failed, based on the `result`.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceThreeDSecureResultReason
@@ -406,6 +413,7 @@ impl<'de> serde::Deserialize<'de> for PaymentsPrimitivesPaymentRecordsResourcePa
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
+/// The version of 3D Secure that was used.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceThreeDSecureVersion

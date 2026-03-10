@@ -2,7 +2,7 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentLinksResourceCustomFieldsText {
-    /// The value that will pre-fill the field on the payment page.
+    /// The value that pre-fills the field on the payment page.
     pub default_value: Option<String>,
     /// The maximum character length constraint for the customer's input.
     pub maximum_length: Option<i64>,

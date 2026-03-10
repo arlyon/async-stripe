@@ -2088,8 +2088,10 @@
     },
     "deleted_terminal.reader": {
       "deleted": true,
+      "device_type": "verifone_P400",
       "id": "tmr_iGOgDOlmFAot3zIp2JzEqXYs",
-      "object": "terminal.reader"
+      "object": "terminal.reader",
+      "serial_number": "serial_number"
     },
     "deleted_test_helpers.test_clock": {
       "deleted": true,
@@ -4737,10 +4739,6 @@
       "created_at": 1369680106,
       "id": "obj_123",
       "insights": {
-        "card_issuer_decline": {
-          "model_score": 831183356,
-          "recommended_action": "block"
-        },
         "evaluated_at": 403283463,
         "fraudulent_dispute": {
           "recommended_action": "block",
@@ -4840,6 +4838,48 @@
       "object": "reporting.report_type",
       "updated": 1234567890,
       "version": 1
+    },
+    "reserve.hold": {
+      "amount": 1413853096,
+      "created": 1028554472,
+      "created_by": "application",
+      "currency": "usd",
+      "id": "obj_123",
+      "livemode": true,
+      "object": "reserve.hold",
+      "reason": "charge",
+      "release_schedule": {
+        "release_after": null,
+        "scheduled_release": null
+      },
+      "reserve_plan": null,
+      "source_charge": null,
+      "source_type": "card"
+    },
+    "reserve.plan": {
+      "created": 1028554472,
+      "created_by": "application",
+      "currency": null,
+      "disabled_at": null,
+      "id": "obj_123",
+      "livemode": true,
+      "object": "reserve.plan",
+      "percent": 678927291,
+      "status": "active",
+      "type": "fixed_release"
+    },
+    "reserve.release": {
+      "amount": 1413853096,
+      "created": 1028554472,
+      "created_by": "application",
+      "currency": "usd",
+      "id": "obj_123",
+      "livemode": true,
+      "object": "reserve.release",
+      "reason": "bulk_hold_expiry",
+      "released_at": 213824117,
+      "reserve_hold": null,
+      "reserve_plan": null
     },
     "review": {
       "billing_zip": null,
@@ -6539,5 +6579,5 @@
       "url": "https://example.com/my/webhook/endpoint"
     }
   },
-  "version": "v2171"
+  "version": "v2190"
 }

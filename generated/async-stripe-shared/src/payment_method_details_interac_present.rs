@@ -40,6 +40,8 @@ pub struct PaymentMethodDetailsInteracPresent {
     pub issuer: Option<String>,
     /// The last four digits of the card.
     pub last4: Option<String>,
+    /// ID of the [location](https://docs.stripe.com/api/terminal/locations) that this transaction's reader is assigned to.
+    pub location: Option<String>,
     /// Identifies which network this charge was processed on.
     /// Can be `amex`, `cartes_bancaires`, `diners`, `discover`, `eftpos_au`, `interac`, `jcb`, `link`, `mastercard`, `unionpay`, `visa`, or `unknown`.
     pub network: Option<String>,
@@ -52,6 +54,8 @@ pub struct PaymentMethodDetailsInteracPresent {
     pub preferred_locales: Option<Vec<String>>,
     /// How card details were read in this transaction.
     pub read_method: Option<PaymentMethodDetailsInteracPresentReadMethod>,
+    /// ID of the [reader](https://docs.stripe.com/api/terminal/readers) this transaction was made on.
+    pub reader: Option<String>,
     /// A collection of fields required to be displayed on receipts. Only required for EMV transactions.
     pub receipt: Option<stripe_shared::PaymentMethodDetailsInteracPresentReceipt>,
 }
@@ -70,10 +74,12 @@ pub struct PaymentMethodDetailsInteracPresentBuilder {
     iin: Option<Option<String>>,
     issuer: Option<Option<String>>,
     last4: Option<Option<String>>,
+    location: Option<Option<String>>,
     network: Option<Option<String>>,
     network_transaction_id: Option<Option<String>>,
     preferred_locales: Option<Option<Vec<String>>>,
     read_method: Option<Option<PaymentMethodDetailsInteracPresentReadMethod>>,
+    reader: Option<Option<String>>,
     receipt: Option<Option<stripe_shared::PaymentMethodDetailsInteracPresentReceipt>>,
 }
 
@@ -130,10 +136,12 @@ const _: () = {
                 "iin" => Deserialize::begin(&mut self.iin),
                 "issuer" => Deserialize::begin(&mut self.issuer),
                 "last4" => Deserialize::begin(&mut self.last4),
+                "location" => Deserialize::begin(&mut self.location),
                 "network" => Deserialize::begin(&mut self.network),
                 "network_transaction_id" => Deserialize::begin(&mut self.network_transaction_id),
                 "preferred_locales" => Deserialize::begin(&mut self.preferred_locales),
                 "read_method" => Deserialize::begin(&mut self.read_method),
+                "reader" => Deserialize::begin(&mut self.reader),
                 "receipt" => Deserialize::begin(&mut self.receipt),
                 _ => <dyn Visitor>::ignore(),
             })
@@ -154,10 +162,12 @@ const _: () = {
                 iin: Deserialize::default(),
                 issuer: Deserialize::default(),
                 last4: Deserialize::default(),
+                location: Deserialize::default(),
                 network: Deserialize::default(),
                 network_transaction_id: Deserialize::default(),
                 preferred_locales: Deserialize::default(),
                 read_method: Deserialize::default(),
+                reader: Deserialize::default(),
                 receipt: Deserialize::default(),
             }
         }
@@ -177,10 +187,12 @@ const _: () = {
                 Some(iin),
                 Some(issuer),
                 Some(last4),
+                Some(location),
                 Some(network),
                 Some(network_transaction_id),
                 Some(preferred_locales),
                 Some(read_method),
+                Some(reader),
                 Some(receipt),
             ) = (
                 self.brand.take(),
@@ -196,10 +208,12 @@ const _: () = {
                 self.iin.take(),
                 self.issuer.take(),
                 self.last4.take(),
+                self.location.take(),
                 self.network.take(),
                 self.network_transaction_id.take(),
                 self.preferred_locales.take(),
                 self.read_method.take(),
+                self.reader.take(),
                 self.receipt.take(),
             )
             else {
@@ -219,10 +233,12 @@ const _: () = {
                 iin,
                 issuer,
                 last4,
+                location,
                 network,
                 network_transaction_id,
                 preferred_locales,
                 read_method,
+                reader,
                 receipt,
             })
         }
@@ -264,12 +280,14 @@ const _: () = {
                     "iin" => b.iin = FromValueOpt::from_value(v),
                     "issuer" => b.issuer = FromValueOpt::from_value(v),
                     "last4" => b.last4 = FromValueOpt::from_value(v),
+                    "location" => b.location = FromValueOpt::from_value(v),
                     "network" => b.network = FromValueOpt::from_value(v),
                     "network_transaction_id" => {
                         b.network_transaction_id = FromValueOpt::from_value(v)
                     }
                     "preferred_locales" => b.preferred_locales = FromValueOpt::from_value(v),
                     "read_method" => b.read_method = FromValueOpt::from_value(v),
+                    "reader" => b.reader = FromValueOpt::from_value(v),
                     "receipt" => b.receipt = FromValueOpt::from_value(v),
                     _ => {}
                 }

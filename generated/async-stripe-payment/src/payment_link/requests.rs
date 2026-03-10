@@ -282,7 +282,7 @@ struct CreatePaymentLinkBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     on_behalf_of: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    optional_items: Option<Vec<CreatePaymentLinkOptionalItems>>,
+    optional_items: Option<Vec<OptionalItemParams>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     payment_intent_data: Option<CreatePaymentLinkPaymentIntentData>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -901,7 +901,7 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentLinkCustomFieldsLabelType {
 /// Configuration for `type=numeric` fields.
 #[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreatePaymentLinkCustomFieldsNumeric {
-    /// The value that will pre-fill the field on the payment page.
+    /// The value that pre-fills the field on the payment page.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub default_value: Option<String>,
     /// The maximum character length constraint for the customer's input.
@@ -924,7 +924,7 @@ impl Default for CreatePaymentLinkCustomFieldsNumeric {
 /// Configuration for `type=text` fields.
 #[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreatePaymentLinkCustomFieldsText {
-    /// The value that will pre-fill the field on the payment page.
+    /// The value that pre-fills the field on the payment page.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub default_value: Option<String>,
     /// The maximum character length constraint for the customer's input.
@@ -1586,44 +1586,6 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentLinkLineItemsPriceDataTaxBeha
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
         Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// A list of optional items the customer can add to their order at checkout.
-/// Use this parameter to pass one-time or recurring [Prices](https://docs.stripe.com/api/prices).
-/// There is a maximum of 10 optional items allowed on a payment link, and the existing limits on the number of line items allowed on a payment link apply to the combined number of line items and optional items.
-/// There is a maximum of 20 combined line items and optional items.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
-pub struct CreatePaymentLinkOptionalItems {
-    /// When set, provides configuration for the customer to adjust the quantity of the line item created when a customer chooses to add this optional item to their order.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub adjustable_quantity: Option<CreatePaymentLinkOptionalItemsAdjustableQuantity>,
-    /// The ID of the [Price](https://docs.stripe.com/api/prices) or [Plan](https://docs.stripe.com/api/plans) object.
-    pub price: String,
-    /// The initial quantity of the line item created when a customer chooses to add this optional item to their order.
-    pub quantity: u64,
-}
-impl CreatePaymentLinkOptionalItems {
-    pub fn new(price: impl Into<String>, quantity: impl Into<u64>) -> Self {
-        Self { adjustable_quantity: None, price: price.into(), quantity: quantity.into() }
-    }
-}
-/// When set, provides configuration for the customer to adjust the quantity of the line item created when a customer chooses to add this optional item to their order.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
-pub struct CreatePaymentLinkOptionalItemsAdjustableQuantity {
-    /// Set to true if the quantity can be adjusted to any non-negative integer.
-    pub enabled: bool,
-    /// The maximum quantity of this item the customer can purchase. By default this value is 99.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub maximum: Option<i64>,
-    /// The minimum quantity of this item the customer must purchase, if they choose to purchase it.
-    /// Because this item is optional, the customer will always be able to remove it from their order, even if the `minimum` configured here is greater than 0.
-    /// By default this value is 0.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub minimum: Option<i64>,
-}
-impl CreatePaymentLinkOptionalItemsAdjustableQuantity {
-    pub fn new(enabled: impl Into<bool>) -> Self {
-        Self { enabled: enabled.into(), maximum: None, minimum: None }
     }
 }
 /// A subset of parameters to be passed to PaymentIntent creation for Checkout Sessions in `payment` mode.
@@ -3190,10 +3152,7 @@ impl CreatePaymentLink {
     /// Use this parameter to pass one-time or recurring [Prices](https://docs.stripe.com/api/prices).
     /// There is a maximum of 10 optional items allowed on a payment link, and the existing limits on the number of line items allowed on a payment link apply to the combined number of line items and optional items.
     /// There is a maximum of 20 combined line items and optional items.
-    pub fn optional_items(
-        mut self,
-        optional_items: impl Into<Vec<CreatePaymentLinkOptionalItems>>,
-    ) -> Self {
+    pub fn optional_items(mut self, optional_items: impl Into<Vec<OptionalItemParams>>) -> Self {
         self.inner.optional_items = Some(optional_items.into());
         self
     }
@@ -3349,6 +3308,8 @@ struct UpdatePaymentLinkBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     name_collection: Option<NameCollectionParams>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    optional_items: Option<Vec<OptionalItemParams>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     payment_intent_data: Option<UpdatePaymentLinkPaymentIntentData>,
     #[serde(skip_serializing_if = "Option::is_none")]
     payment_method_collection: Option<UpdatePaymentLinkPaymentMethodCollection>,
@@ -3384,6 +3345,7 @@ impl UpdatePaymentLinkBuilder {
             line_items: None,
             metadata: None,
             name_collection: None,
+            optional_items: None,
             payment_intent_data: None,
             payment_method_collection: None,
             payment_method_types: None,
@@ -3705,7 +3667,7 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentLinkCustomFieldsLabelType {
 /// Configuration for `type=numeric` fields.
 #[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdatePaymentLinkCustomFieldsNumeric {
-    /// The value that will pre-fill the field on the payment page.
+    /// The value that pre-fills the field on the payment page.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub default_value: Option<String>,
     /// The maximum character length constraint for the customer's input.
@@ -3728,7 +3690,7 @@ impl Default for UpdatePaymentLinkCustomFieldsNumeric {
 /// Configuration for `type=text` fields.
 #[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdatePaymentLinkCustomFieldsText {
-    /// The value that will pre-fill the field on the payment page.
+    /// The value that pre-fills the field on the payment page.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub default_value: Option<String>,
     /// The maximum character length constraint for the customer's input.
@@ -5484,6 +5446,14 @@ impl UpdatePaymentLink {
         self.inner.name_collection = Some(name_collection.into());
         self
     }
+    /// A list of optional items the customer can add to their order at checkout.
+    /// Use this parameter to pass one-time or recurring [Prices](https://docs.stripe.com/api/prices).
+    /// There is a maximum of 10 optional items allowed on a payment link, and the existing limits on the number of line items allowed on a payment link apply to the combined number of line items and optional items.
+    /// There is a maximum of 20 combined line items and optional items.
+    pub fn optional_items(mut self, optional_items: impl Into<Vec<OptionalItemParams>>) -> Self {
+        self.inner.optional_items = Some(optional_items.into());
+        self
+    }
     /// A subset of parameters to be passed to PaymentIntent creation for Checkout Sessions in `payment` mode.
     pub fn payment_intent_data(
         mut self,
@@ -5634,7 +5604,7 @@ impl CustomFieldOptionParam {
 }
 #[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CustomTextPositionParam {
-    /// Text may be up to 1200 characters in length.
+    /// Text can be up to 1200 characters in length.
     pub message: String,
 }
 impl CustomTextPositionParam {
@@ -5703,6 +5673,24 @@ impl NameCollectionIndividualParams {
     }
 }
 #[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+pub struct OptionalItemAdjustableQuantityParams {
+    /// Set to true if the quantity can be adjusted to any non-negative integer.
+    pub enabled: bool,
+    /// The maximum quantity of this item the customer can purchase. By default this value is 99.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub maximum: Option<i64>,
+    /// The minimum quantity of this item the customer must purchase, if they choose to purchase it.
+    /// Because this item is optional, the customer will always be able to remove it from their order, even if the `minimum` configured here is greater than 0.
+    /// By default this value is 0.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub minimum: Option<i64>,
+}
+impl OptionalItemAdjustableQuantityParams {
+    pub fn new(enabled: impl Into<bool>) -> Self {
+        Self { enabled: enabled.into(), maximum: None, minimum: None }
+    }
+}
+#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct PhoneNumberCollectionParams {
     /// Set to `true` to enable phone number collection.
     pub enabled: bool,
@@ -5724,7 +5712,7 @@ impl CompletedSessionsParams {
 }
 #[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CustomFieldDropdownParam {
-    /// The value that will pre-fill the field on the payment page.Must match a `value` in the `options` array.
+    /// The value that pre-fills the field on the payment page.Must match a `value` in the `options` array.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub default_value: Option<String>,
     /// The options available for the customer to select. Up to 200 options allowed.
@@ -5782,6 +5770,21 @@ impl NameCollectionParams {
 impl Default for NameCollectionParams {
     fn default() -> Self {
         Self::new()
+    }
+}
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+pub struct OptionalItemParams {
+    /// When set, provides configuration for the customer to adjust the quantity of the line item created when a customer chooses to add this optional item to their order.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub adjustable_quantity: Option<OptionalItemAdjustableQuantityParams>,
+    /// The ID of the [Price](https://docs.stripe.com/api/prices) or [Plan](https://docs.stripe.com/api/plans) object.
+    pub price: String,
+    /// The initial quantity of the line item created when a customer chooses to add this optional item to their order.
+    pub quantity: u64,
+}
+impl OptionalItemParams {
+    pub fn new(price: impl Into<String>, quantity: impl Into<u64>) -> Self {
+        Self { adjustable_quantity: None, price: price.into(), quantity: quantity.into() }
     }
 }
 #[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]

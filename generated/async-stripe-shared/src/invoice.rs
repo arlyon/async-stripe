@@ -201,7 +201,7 @@ pub struct Invoice {
     /// The parent that generated this invoice
     pub parent: Option<stripe_shared::BillingBillResourceInvoicingParentsInvoiceParent>,
     pub payment_settings: stripe_shared::InvoicesPaymentSettings,
-    /// Payments for this invoice
+    /// Payments for this invoice. Use [invoice payment](/api/invoice-payment) to get more details.
     pub payments: Option<stripe_types::List<stripe_shared::InvoicePayment>>,
     /// End of the usage period during which invoice items were added to this invoice.
     /// This looks back one period for a subscription invoice.
