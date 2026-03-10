@@ -35,6 +35,7 @@ async-stripe-misc = { path = "../generated/async-stripe-misc", optional = true, 
 async-stripe-payment = { path = "../generated/async-stripe-payment", optional = true, version = "1.0.0-rc.2" }
 async-stripe-terminal = { path = "../generated/async-stripe-terminal", optional = true, version = "1.0.0-rc.2" }
 async-stripe-treasury = { path = "../generated/async-stripe-treasury", optional = true, version = "1.0.0-rc.2" }
+async-stripe-reserve = { path = "../generated/async-stripe-reserve", optional = true, version = "1.0.0-rc.2" }
 serde_path_to_error = { version = "0.1.20", optional = true }
 
 [dev-dependencies]

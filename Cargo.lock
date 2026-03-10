@@ -776,6 +776,7 @@ dependencies = [
  "async-stripe-fraud",
  "async-stripe-misc",
  "async-stripe-payment",
+ "async-stripe-reserve",
  "async-stripe-shared",
  "async-stripe-terminal",
  "async-stripe-treasury",
