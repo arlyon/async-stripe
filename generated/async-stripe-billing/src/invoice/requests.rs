@@ -4,7 +4,7 @@ use stripe_client_core::{
 
 /// Permanently deletes a one-off invoice draft.
 /// This cannot be undone.
-/// Attempts to delete invoices that are no longer in a draft state will fail; once an invoice has been finalized or if an invoice is for a subscription, it must be [voided](https://stripe.com/docs/api#void_invoice).
+/// Attempts to delete invoices that are no longer in a draft state will fail; once an invoice has been finalized or if an invoice is for a subscription, it must be <a href="/api/invoices/void">voided</a>.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct DeleteInvoice {
     invoice: stripe_shared::InvoiceId,
@@ -2847,7 +2847,7 @@ impl<'de> serde::Deserialize<'de> for CreateInvoiceShippingCostShippingRateDataT
     }
 }
 /// This endpoint creates a draft invoice for a given customer.
-/// The invoice remains a draft until you [finalize](https://stripe.com/docs/api#finalize_invoice) the invoice, which allows you to <a href="/api/invoices/pay">pay</a> or <a href="/api/invoices/send">send</a> the invoice to your customers.
+/// The invoice remains a draft until you <a href="/api/invoices/finalize">finalize</a> the invoice, which allows you to <a href="/api/invoices/pay">pay</a> or <a href="/api/invoices/send">send</a> the invoice to your customers.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateInvoice {
     inner: CreateInvoiceBuilder,
@@ -5746,9 +5746,15 @@ pub struct AddLinesInvoiceLines {
     /// The pricing information for the invoice item.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub pricing: Option<PricingParam>,
-    /// Non-negative integer. The quantity of units for the line item.
+    /// Non-negative integer.
+    /// The quantity of units for the line item.
+    /// Use `quantity_decimal` instead to provide decimal precision.
+    /// This field will be deprecated in favor of `quantity_decimal` in a future version.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub quantity: Option<u64>,
+    /// Non-negative decimal with at most 12 decimal places. The quantity of units for the line item.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub quantity_decimal: Option<String>,
     /// A list of up to 10 tax amounts for this line item.
     /// This can be useful if you calculate taxes on your own or use a third-party to calculate them.
     /// You cannot set tax amounts if any line item has [tax_rates](https://docs.stripe.com/api/invoices/line_item#invoice_line_item_object-tax_rates) or if the invoice has [default_tax_rates](https://docs.stripe.com/api/invoices/object#invoice_object-default_tax_rates) or uses [automatic tax](https://docs.stripe.com/tax/invoicing).
@@ -5774,6 +5780,7 @@ impl AddLinesInvoiceLines {
             price_data: None,
             pricing: None,
             quantity: None,
+            quantity_decimal: None,
             tax_amounts: None,
             tax_rates: None,
         }
@@ -6934,9 +6941,15 @@ pub struct UpdateLinesInvoiceLines {
     /// The pricing information for the invoice item.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub pricing: Option<PricingParam>,
-    /// Non-negative integer. The quantity of units for the line item.
+    /// Non-negative integer.
+    /// The quantity of units for the line item.
+    /// Use `quantity_decimal` instead to provide decimal precision.
+    /// This field will be deprecated in favor of `quantity_decimal` in a future version.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub quantity: Option<u64>,
+    /// Non-negative decimal with at most 12 decimal places. The quantity of units for the line item.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub quantity_decimal: Option<String>,
     /// A list of up to 10 tax amounts for this line item.
     /// This can be useful if you calculate taxes on your own or use a third-party to calculate them.
     /// You cannot set tax amounts if any line item has [tax_rates](https://docs.stripe.com/api/invoices/line_item#invoice_line_item_object-tax_rates) or if the invoice has [default_tax_rates](https://docs.stripe.com/api/invoices/object#invoice_object-default_tax_rates) or uses [automatic tax](https://docs.stripe.com/tax/invoicing).
@@ -6962,6 +6975,7 @@ impl UpdateLinesInvoiceLines {
             price_data: None,
             pricing: None,
             quantity: None,
+            quantity_decimal: None,
             tax_amounts: None,
             tax_rates: None,
         }
@@ -7551,10 +7565,10 @@ impl VoidInvoiceInvoiceBuilder {
 }
 /// Mark a finalized invoice as void.
 /// This cannot be undone.
-/// Voiding an invoice is similar to [deletion](https://stripe.com/docs/api#delete_invoice), however it only applies to finalized invoices and maintains a papertrail where the invoice can still be found.
+/// Voiding an invoice is similar to <a href="/api/invoices/delete">deletion</a>, however it only applies to finalized invoices and maintains a papertrail where the invoice can still be found.
 ///
 /// Consult with local regulations to determine whether and how an invoice might be amended, canceled, or voided in the jurisdiction you’re doing business in.
-/// You might need to [issue another invoice](https://stripe.com/docs/api#create_invoice) or [credit note](https://stripe.com/docs/api#create_credit_note) instead.
+/// You might need to <a href="/api/invoices/create">issue another invoice</a> or <a href="/api/credit_notes/create">credit note</a> instead.
 /// Stripe recommends that you consult with your legal counsel for advice specific to your business.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct VoidInvoiceInvoice {
@@ -8405,9 +8419,15 @@ pub struct CreatePreviewInvoiceInvoiceItems {
     /// One of `price` or `price_data` is required.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub price_data: Option<CreatePreviewInvoiceInvoiceItemsPriceData>,
-    /// Non-negative integer. The quantity of units for the invoice item.
+    /// Non-negative integer.
+    /// The quantity of units for the invoice item.
+    /// Use `quantity_decimal` instead to provide decimal precision.
+    /// This field will be deprecated in favor of `quantity_decimal` in a future version.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub quantity: Option<u64>,
+    /// Non-negative decimal with at most 12 decimal places. The quantity of units for the invoice item.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub quantity_decimal: Option<String>,
     /// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.
     /// Specifies whether the price is considered inclusive of taxes or exclusive of taxes.
     /// One of `inclusive`, `exclusive`, or `unspecified`.
@@ -8444,6 +8464,7 @@ impl CreatePreviewInvoiceInvoiceItems {
             price: None,
             price_data: None,
             quantity: None,
+            quantity_decimal: None,
             tax_behavior: None,
             tax_code: None,
             tax_rates: None,

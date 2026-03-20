@@ -76,7 +76,8 @@ pub struct Subscription {
     pub items: stripe_types::List<stripe_shared::SubscriptionItem>,
     /// The most recent invoice this subscription has generated over its lifecycle (for example, when it cycles or is updated).
     pub latest_invoice: Option<stripe_types::Expandable<stripe_shared::Invoice>>,
-    /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
+    /// If the object exists in live mode, the value is `true`.
+    /// If the object exists in test mode, the value is `false`.
     pub livemode: bool,
     /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
@@ -93,7 +94,7 @@ pub struct Subscription {
     /// Payment settings passed on to invoices created by the subscription.
     pub payment_settings: Option<stripe_shared::SubscriptionsResourcePaymentSettings>,
     /// Specifies an interval for how often to bill for any pending invoice items.
-    /// It is analogous to calling [Create an invoice](https://docs.stripe.com/api#create_invoice) for the given subscription at the specified interval.
+    /// It is analogous to calling [Create an invoice](/api/invoices/create) for the given subscription at the specified interval.
     pub pending_invoice_item_interval:
         Option<stripe_shared::SubscriptionPendingInvoiceItemInterval>,
     /// You can use this [SetupIntent](https://docs.stripe.com/api/setup_intents) to collect user authentication when creating a subscription without immediate payment or updating a subscription's payment method, allowing you to optimize for off-session payments.

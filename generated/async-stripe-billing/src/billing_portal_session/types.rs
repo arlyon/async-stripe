@@ -28,7 +28,8 @@ pub struct BillingPortalSession {
     pub flow: Option<stripe_billing::PortalFlowsFlow>,
     /// Unique identifier for the object.
     pub id: stripe_billing::BillingPortalSessionId,
-    /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
+    /// If the object exists in live mode, the value is `true`.
+    /// If the object exists in test mode, the value is `false`.
     pub livemode: bool,
     /// The IETF language tag of the locale Customer Portal is displayed in.
     /// If blank or auto, the customer’s `preferred_locales` or browser’s locale is used.

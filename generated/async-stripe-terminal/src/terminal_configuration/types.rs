@@ -14,7 +14,8 @@ pub struct TerminalConfiguration {
     pub id: stripe_terminal::TerminalConfigurationId,
     /// Whether this Configuration is the default for your account
     pub is_account_default: Option<bool>,
-    /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
+    /// If the object exists in live mode, the value is `true`.
+    /// If the object exists in test mode, the value is `false`.
     pub livemode: bool,
     /// String indicating the name of the Configuration object, set by the user
     pub name: Option<String>,

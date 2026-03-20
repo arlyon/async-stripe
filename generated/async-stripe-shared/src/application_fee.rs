@@ -24,7 +24,8 @@ pub struct ApplicationFee {
     pub fee_source: Option<stripe_shared::PlatformEarningFeeSource>,
     /// Unique identifier for the object.
     pub id: stripe_shared::ApplicationFeeId,
-    /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
+    /// If the object exists in live mode, the value is `true`.
+    /// If the object exists in test mode, the value is `false`.
     pub livemode: bool,
     /// ID of the corresponding charge on the platform account, if this fee was the result of a charge using the `destination` parameter.
     pub originating_transaction: Option<stripe_types::Expandable<stripe_shared::Charge>>,
