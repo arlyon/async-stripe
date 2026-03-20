@@ -3,7 +3,7 @@
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct InvoicePaymentMethodOptionsAcssDebit {
     pub mandate_options: Option<stripe_shared::InvoicePaymentMethodOptionsAcssDebitMandateOptions>,
-    /// Bank account verification method.
+    /// Bank account verification method. The default value is `automatic`.
     pub verification_method: Option<InvoicePaymentMethodOptionsAcssDebitVerificationMethod>,
 }
 #[doc(hidden)]
@@ -108,7 +108,7 @@ const _: () = {
         }
     }
 };
-/// Bank account verification method.
+/// Bank account verification method. The default value is `automatic`.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum InvoicePaymentMethodOptionsAcssDebitVerificationMethod {

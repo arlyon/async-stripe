@@ -7205,11 +7205,9 @@ impl Default for CompanyParam {
 #[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct TermsAcceptanceParam {
     /// The Unix timestamp marking when the cardholder accepted the Authorized User Terms.
-    /// Required for Celtic Spend Card users.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub date: Option<stripe_types::Timestamp>,
     /// The IP address from which the cardholder accepted the Authorized User Terms.
-    /// Required for Celtic Spend Card users.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ip: Option<String>,
     /// The user agent of the browser from which the cardholder accepted the Authorized User Terms.

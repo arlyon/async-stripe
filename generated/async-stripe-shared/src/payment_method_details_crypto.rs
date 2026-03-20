@@ -131,6 +131,7 @@ pub enum PaymentMethodDetailsCryptoNetwork {
     Ethereum,
     Polygon,
     Solana,
+    Tempo,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
     Unknown(String),
 }
@@ -142,6 +143,7 @@ impl PaymentMethodDetailsCryptoNetwork {
             Ethereum => "ethereum",
             Polygon => "polygon",
             Solana => "solana",
+            Tempo => "tempo",
             Unknown(v) => v,
         }
     }
@@ -156,6 +158,7 @@ impl std::str::FromStr for PaymentMethodDetailsCryptoNetwork {
             "ethereum" => Ok(Ethereum),
             "polygon" => Ok(Polygon),
             "solana" => Ok(Solana),
+            "tempo" => Ok(Tempo),
             v => {
                 tracing::warn!(
                     "Unknown value '{}' for enum '{}'",

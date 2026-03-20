@@ -4769,6 +4769,9 @@ pub struct CapabilitiesParam {
     /// The twint_payments capability.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub twint_payments: Option<CapabilityParam>,
+    /// The upi_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub upi_payments: Option<CapabilityParam>,
     /// The us_bank_account_ach_payments capability.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub us_bank_account_ach_payments: Option<CapabilityParam>,
@@ -4840,6 +4843,7 @@ impl CapabilitiesParam {
             transfers: None,
             treasury: None,
             twint_payments: None,
+            upi_payments: None,
             us_bank_account_ach_payments: None,
             us_bank_transfer_payments: None,
             zip_payments: None,

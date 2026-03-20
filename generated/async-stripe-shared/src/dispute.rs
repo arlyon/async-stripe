@@ -29,7 +29,8 @@ pub struct Dispute {
     /// If true, it's still possible to refund the disputed payment.
     /// After the payment has been fully refunded, no further funds are withdrawn from your Stripe account as a result of this dispute.
     pub is_charge_refundable: bool,
-    /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
+    /// If the object exists in live mode, the value is `true`.
+    /// If the object exists in test mode, the value is `false`.
     pub livemode: bool,
     /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.

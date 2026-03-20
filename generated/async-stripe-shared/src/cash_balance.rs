@@ -14,7 +14,8 @@ pub struct CashBalance {
     pub customer: String,
     /// The ID of an Account representing a customer whose cash balance this object represents.
     pub customer_account: Option<String>,
-    /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
+    /// If the object exists in live mode, the value is `true`.
+    /// If the object exists in test mode, the value is `false`.
     pub livemode: bool,
     pub settings: stripe_shared::CustomerBalanceCustomerBalanceSettings,
 }

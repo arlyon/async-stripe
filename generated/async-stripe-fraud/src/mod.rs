@@ -48,10 +48,6 @@ pub mod insights_resources_payment_evaluation_event;
 #[doc(inline)]
 pub use insights_resources_payment_evaluation_event::*;
 #[doc(hidden)]
-pub mod insights_resources_payment_evaluation_insights;
-#[doc(inline)]
-pub use insights_resources_payment_evaluation_insights::*;
-#[doc(hidden)]
 pub mod insights_resources_payment_evaluation_merchant_blocked;
 #[doc(inline)]
 pub use insights_resources_payment_evaluation_merchant_blocked::*;
@@ -88,13 +84,17 @@ pub mod insights_resources_payment_evaluation_rejected_card;
 #[doc(inline)]
 pub use insights_resources_payment_evaluation_rejected_card::*;
 #[doc(hidden)]
-pub mod insights_resources_payment_evaluation_scorer;
-#[doc(inline)]
-pub use insights_resources_payment_evaluation_scorer::*;
-#[doc(hidden)]
 pub mod insights_resources_payment_evaluation_shipping;
 #[doc(inline)]
 pub use insights_resources_payment_evaluation_shipping::*;
+#[doc(hidden)]
+pub mod insights_resources_payment_evaluation_signal_v2;
+#[doc(inline)]
+pub use insights_resources_payment_evaluation_signal_v2::*;
+#[doc(hidden)]
+pub mod insights_resources_payment_evaluation_signals;
+#[doc(inline)]
+pub use insights_resources_payment_evaluation_signals::*;
 #[doc(hidden)]
 pub mod insights_resources_payment_evaluation_succeeded;
 #[doc(inline)]

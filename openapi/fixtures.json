@@ -1116,6 +1116,7 @@
       "discounts": null,
       "expires_at": 1234567890,
       "id": "cs_test_a1YS1URlnyQCN5fUUduORoQ7Pw41PJqDWkIVQCpJPqkfIhd6tVY8XB1OLY",
+      "integration_identifier": null,
       "invoice": null,
       "invoice_creation": {
         "enabled": true,
@@ -1671,6 +1672,7 @@
             "id": "cnli_1Pgc75B7WZ01zgkWla6u0GdZ",
             "invoice_line_item": "il_1Pgc74B7WZ01zgkWWh45tUBA",
             "livemode": false,
+            "metadata": null,
             "object": "credit_note_line_item",
             "pretax_credit_amounts": [
               {
@@ -1716,6 +1718,7 @@
             "discount_amounts": [],
             "id": "cnli_1Pgc75B7WZ01zgkW9m0EaOVh",
             "livemode": false,
+            "metadata": null,
             "object": "credit_note_line_item",
             "pretax_credit_amounts": [
               {
@@ -1800,6 +1803,7 @@
       "id": "cnli_1Pgc75B7WZ01zgkWPb1sOn7l",
       "invoice_line_item": "il_1Pgc75B7WZ01zgkWOwaRplc5",
       "livemode": false,
+      "metadata": null,
       "object": "credit_note_line_item",
       "pretax_credit_amounts": [
         {
@@ -2766,6 +2770,7 @@
               "unit_amount_decimal": null
             },
             "quantity": 1,
+            "quantity_decimal": null,
             "subscription": null,
             "subtotal": 2060319484,
             "taxes": null
@@ -2911,6 +2916,7 @@
       },
       "proration": false,
       "quantity": 1,
+      "quantity_decimal": "174352450",
       "tax_rates": [],
       "test_clock": null
     },
@@ -2990,6 +2996,11 @@
         "latest_fraud_warning": {
           "started_at": null,
           "type": null
+        },
+        "lifecycle_controls": {
+          "cancel_after": {
+            "payment_count": 1758972310
+          }
         },
         "livemode": false,
         "metadata": {},
@@ -3214,6 +3225,11 @@
       "latest_fraud_warning": {
         "started_at": null,
         "type": null
+      },
+      "lifecycle_controls": {
+        "cancel_after": {
+          "payment_count": 1758972310
+        }
       },
       "livemode": false,
       "metadata": {},
@@ -3568,6 +3584,7 @@
         "unit_amount_decimal": null
       },
       "quantity": 1,
+      "quantity_decimal": null,
       "subscription": null,
       "subtotal": 2060319484,
       "taxes": null
@@ -4738,16 +4755,17 @@
     "radar.payment_evaluation": {
       "created_at": 1369680106,
       "id": "obj_123",
-      "insights": {
-        "evaluated_at": 403283463,
-        "fraudulent_dispute": {
-          "recommended_action": "block",
-          "risk_score": 130512162
-        }
-      },
       "livemode": true,
       "metadata": null,
-      "object": "radar.payment_evaluation"
+      "object": "radar.payment_evaluation",
+      "recommended_action": "block",
+      "signals": {
+        "fraudulent_payment": {
+          "evaluated_at": 403283463,
+          "risk_level": "normal",
+          "score": 109264530
+        }
+      }
     },
     "radar.value_list": {
       "alias": "custom_ip_blocklist",
@@ -6579,5 +6597,5 @@
       "url": "https://example.com/my/webhook/endpoint"
     }
   },
-  "version": "v2190"
+  "version": "v2204"
 }

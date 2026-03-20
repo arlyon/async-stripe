@@ -39,7 +39,8 @@ pub struct InvoiceItem {
     pub id: stripe_billing::InvoiceItemId,
     /// The ID of the invoice this invoice item belongs to.
     pub invoice: Option<stripe_types::Expandable<stripe_shared::Invoice>>,
-    /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
+    /// If the object exists in live mode, the value is `true`.
+    /// If the object exists in test mode, the value is `false`.
     pub livemode: bool,
     /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
@@ -55,9 +56,13 @@ pub struct InvoiceItem {
     /// Whether the invoice item was created automatically as a proration adjustment when the customer switched plans.
     pub proration: bool,
     pub proration_details: Option<stripe_billing::ProrationDetails>,
-    /// Quantity of units for the invoice item.
+    /// Quantity of units for the invoice item in integer format, with any decimal precision truncated.
+    /// For the item's full-precision decimal quantity, use `quantity_decimal`.
+    /// This field will be deprecated in favor of `quantity_decimal` in a future version.
     /// If the invoice item is a proration, the quantity of the subscription that the proration was computed for.
     pub quantity: u64,
+    /// Non-negative decimal with at most 12 decimal places. The quantity of units for the invoice item.
+    pub quantity_decimal: String,
     /// The tax rates which apply to the invoice item.
     /// When set, the `default_tax_rates` on the invoice do not apply to this invoice item.
     pub tax_rates: Option<Vec<stripe_shared::TaxRate>>,
@@ -85,6 +90,7 @@ pub struct InvoiceItemBuilder {
     proration: Option<bool>,
     proration_details: Option<Option<stripe_billing::ProrationDetails>>,
     quantity: Option<u64>,
+    quantity_decimal: Option<String>,
     tax_rates: Option<Option<Vec<stripe_shared::TaxRate>>>,
     test_clock: Option<Option<stripe_types::Expandable<stripe_shared::TestHelpersTestClock>>>,
 }
@@ -148,6 +154,7 @@ const _: () = {
                 "proration" => Deserialize::begin(&mut self.proration),
                 "proration_details" => Deserialize::begin(&mut self.proration_details),
                 "quantity" => Deserialize::begin(&mut self.quantity),
+                "quantity_decimal" => Deserialize::begin(&mut self.quantity_decimal),
                 "tax_rates" => Deserialize::begin(&mut self.tax_rates),
                 "test_clock" => Deserialize::begin(&mut self.test_clock),
                 _ => <dyn Visitor>::ignore(),
@@ -175,6 +182,7 @@ const _: () = {
                 proration: Deserialize::default(),
                 proration_details: Deserialize::default(),
                 quantity: Deserialize::default(),
+                quantity_decimal: Deserialize::default(),
                 tax_rates: Deserialize::default(),
                 test_clock: Deserialize::default(),
             }
@@ -201,6 +209,7 @@ const _: () = {
                 Some(proration),
                 Some(proration_details),
                 Some(quantity),
+                Some(quantity_decimal),
                 Some(tax_rates),
                 Some(test_clock),
             ) = (
@@ -223,6 +232,7 @@ const _: () = {
                 self.proration,
                 self.proration_details.take(),
                 self.quantity,
+                self.quantity_decimal.take(),
                 self.tax_rates.take(),
                 self.test_clock.take(),
             )
@@ -249,6 +259,7 @@ const _: () = {
                 proration,
                 proration_details,
                 quantity,
+                quantity_decimal,
                 tax_rates,
                 test_clock,
             })
@@ -297,6 +308,7 @@ const _: () = {
                     "proration" => b.proration = FromValueOpt::from_value(v),
                     "proration_details" => b.proration_details = FromValueOpt::from_value(v),
                     "quantity" => b.quantity = FromValueOpt::from_value(v),
+                    "quantity_decimal" => b.quantity_decimal = FromValueOpt::from_value(v),
                     "tax_rates" => b.tax_rates = FromValueOpt::from_value(v),
                     "test_clock" => b.test_clock = FromValueOpt::from_value(v),
                     _ => {}
@@ -310,7 +322,7 @@ const _: () = {
 impl serde::Serialize for InvoiceItem {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("InvoiceItem", 22)?;
+        let mut s = s.serialize_struct("InvoiceItem", 23)?;
         s.serialize_field("amount", &self.amount)?;
         s.serialize_field("currency", &self.currency)?;
         s.serialize_field("customer", &self.customer)?;
@@ -330,6 +342,7 @@ impl serde::Serialize for InvoiceItem {
         s.serialize_field("proration", &self.proration)?;
         s.serialize_field("proration_details", &self.proration_details)?;
         s.serialize_field("quantity", &self.quantity)?;
+        s.serialize_field("quantity_decimal", &self.quantity_decimal)?;
         s.serialize_field("tax_rates", &self.tax_rates)?;
         s.serialize_field("test_clock", &self.test_clock)?;
 

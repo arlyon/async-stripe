@@ -89,13 +89,17 @@ pub struct CheckoutSession {
     pub expires_at: stripe_types::Timestamp,
     /// Unique identifier for the object.
     pub id: stripe_shared::CheckoutSessionId,
+    /// The integration identifier for this Checkout Session.
+    /// Multiple Checkout Sessions can have the same integration identifier.
+    pub integration_identifier: Option<String>,
     /// ID of the invoice created by the Checkout Session, if it exists.
     pub invoice: Option<stripe_types::Expandable<stripe_shared::Invoice>>,
     /// Details on the state of invoice creation for the Checkout Session.
     pub invoice_creation: Option<stripe_shared::PaymentPagesCheckoutSessionInvoiceCreation>,
     /// The line items purchased by the customer.
     pub line_items: Option<stripe_types::List<stripe_shared::CheckoutSessionItem>>,
-    /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
+    /// If the object exists in live mode, the value is `true`.
+    /// If the object exists in test mode, the value is `false`.
     pub livemode: bool,
     /// The IETF language tag of the locale Checkout is displayed in.
     /// If blank or `auto`, the browser's locale is used.
@@ -219,6 +223,7 @@ pub struct CheckoutSessionBuilder {
     excluded_payment_method_types: Option<Option<Vec<String>>>,
     expires_at: Option<stripe_types::Timestamp>,
     id: Option<stripe_shared::CheckoutSessionId>,
+    integration_identifier: Option<Option<String>>,
     invoice: Option<Option<stripe_types::Expandable<stripe_shared::Invoice>>>,
     invoice_creation: Option<Option<stripe_shared::PaymentPagesCheckoutSessionInvoiceCreation>>,
     line_items: Option<Option<stripe_types::List<stripe_shared::CheckoutSessionItem>>>,
@@ -334,6 +339,7 @@ const _: () = {
                 }
                 "expires_at" => Deserialize::begin(&mut self.expires_at),
                 "id" => Deserialize::begin(&mut self.id),
+                "integration_identifier" => Deserialize::begin(&mut self.integration_identifier),
                 "invoice" => Deserialize::begin(&mut self.invoice),
                 "invoice_creation" => Deserialize::begin(&mut self.invoice_creation),
                 "line_items" => Deserialize::begin(&mut self.line_items),
@@ -413,6 +419,7 @@ const _: () = {
                 excluded_payment_method_types: Deserialize::default(),
                 expires_at: Deserialize::default(),
                 id: Deserialize::default(),
+                integration_identifier: Deserialize::default(),
                 invoice: Deserialize::default(),
                 invoice_creation: Deserialize::default(),
                 line_items: Deserialize::default(),
@@ -483,6 +490,7 @@ const _: () = {
                 Some(excluded_payment_method_types),
                 Some(expires_at),
                 Some(id),
+                Some(integration_identifier),
                 Some(invoice),
                 Some(invoice_creation),
                 Some(line_items),
@@ -549,6 +557,7 @@ const _: () = {
                 self.excluded_payment_method_types.take(),
                 self.expires_at,
                 self.id.take(),
+                self.integration_identifier.take(),
                 self.invoice.take(),
                 self.invoice_creation.take(),
                 self.line_items.take(),
@@ -619,6 +628,7 @@ const _: () = {
                 excluded_payment_method_types,
                 expires_at,
                 id,
+                integration_identifier,
                 invoice,
                 invoice_creation,
                 line_items,
@@ -719,6 +729,9 @@ const _: () = {
                     }
                     "expires_at" => b.expires_at = FromValueOpt::from_value(v),
                     "id" => b.id = FromValueOpt::from_value(v),
+                    "integration_identifier" => {
+                        b.integration_identifier = FromValueOpt::from_value(v)
+                    }
                     "invoice" => b.invoice = FromValueOpt::from_value(v),
                     "invoice_creation" => b.invoice_creation = FromValueOpt::from_value(v),
                     "line_items" => b.line_items = FromValueOpt::from_value(v),
@@ -781,7 +794,7 @@ const _: () = {
 impl serde::Serialize for CheckoutSession {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("CheckoutSession", 66)?;
+        let mut s = s.serialize_struct("CheckoutSession", 67)?;
         s.serialize_field("adaptive_pricing", &self.adaptive_pricing)?;
         s.serialize_field("after_expiration", &self.after_expiration)?;
         s.serialize_field("allow_promotion_codes", &self.allow_promotion_codes)?;
@@ -810,6 +823,7 @@ impl serde::Serialize for CheckoutSession {
         s.serialize_field("excluded_payment_method_types", &self.excluded_payment_method_types)?;
         s.serialize_field("expires_at", &self.expires_at)?;
         s.serialize_field("id", &self.id)?;
+        s.serialize_field("integration_identifier", &self.integration_identifier)?;
         s.serialize_field("invoice", &self.invoice)?;
         s.serialize_field("invoice_creation", &self.invoice_creation)?;
         s.serialize_field("line_items", &self.line_items)?;
@@ -1789,8 +1803,12 @@ impl<'de> serde::Deserialize<'de> for CheckoutSessionSubmitType {
 #[non_exhaustive]
 pub enum CheckoutSessionUiMode {
     Custom,
+    Elements,
     Embedded,
+    EmbeddedPage,
+    Form,
     Hosted,
+    HostedPage,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
     Unknown(String),
 }
@@ -1799,8 +1817,12 @@ impl CheckoutSessionUiMode {
         use CheckoutSessionUiMode::*;
         match self {
             Custom => "custom",
+            Elements => "elements",
             Embedded => "embedded",
+            EmbeddedPage => "embedded_page",
+            Form => "form",
             Hosted => "hosted",
+            HostedPage => "hosted_page",
             Unknown(v) => v,
         }
     }
@@ -1812,8 +1834,12 @@ impl std::str::FromStr for CheckoutSessionUiMode {
         use CheckoutSessionUiMode::*;
         match s {
             "custom" => Ok(Custom),
+            "elements" => Ok(Elements),
             "embedded" => Ok(Embedded),
+            "embedded_page" => Ok(EmbeddedPage),
+            "form" => Ok(Form),
             "hosted" => Ok(Hosted),
+            "hosted_page" => Ok(HostedPage),
             v => {
                 tracing::warn!("Unknown value '{}' for enum '{}'", v, "CheckoutSessionUiMode");
                 Ok(Unknown(v.to_owned()))

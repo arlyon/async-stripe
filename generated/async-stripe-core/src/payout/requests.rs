@@ -357,7 +357,7 @@ impl<'de> serde::Deserialize<'de> for CreatePayoutSourceType {
 /// If your API key is in test mode, money won’t actually be sent, though every other action occurs as if you’re in live mode.
 ///
 /// If you create a manual payout on a Stripe account that uses multiple payment source types, you need to specify the source type balance that the payout draws from.
-/// The [balance object](https://stripe.com/docs/api#balance_object) details available and pending amounts by source type.
+/// The <a href="/api/balances/object">balance object</a> details available and pending amounts by source type.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreatePayout {
     inner: CreatePayoutBuilder,

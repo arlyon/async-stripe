@@ -14,7 +14,8 @@ pub struct TestHelpersTestClock {
     pub frozen_time: stripe_types::Timestamp,
     /// Unique identifier for the object.
     pub id: stripe_shared::TestHelpersTestClockId,
-    /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
+    /// If the object exists in live mode, the value is `true`.
+    /// If the object exists in test mode, the value is `false`.
     pub livemode: bool,
     /// The custom name supplied at creation.
     pub name: Option<String>,
