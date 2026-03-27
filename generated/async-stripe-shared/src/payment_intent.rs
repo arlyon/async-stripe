@@ -83,7 +83,8 @@ pub struct PaymentIntent {
     /// ID of the latest [Charge object](https://docs.stripe.com/api/charges) created by this PaymentIntent.
     /// This property is `null` until PaymentIntent confirmation is attempted.
     pub latest_charge: Option<stripe_types::Expandable<stripe_shared::Charge>>,
-    /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
+    /// If the object exists in live mode, the value is `true`.
+    /// If the object exists in test mode, the value is `false`.
     pub livemode: bool,
     /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
@@ -1033,6 +1034,7 @@ pub enum PaymentIntentExcludedPaymentMethodTypes {
     Sofort,
     Swish,
     Twint,
+    Upi,
     UsBankAccount,
     WechatPay,
     Zip,
@@ -1089,6 +1091,7 @@ impl PaymentIntentExcludedPaymentMethodTypes {
             Sofort => "sofort",
             Swish => "swish",
             Twint => "twint",
+            Upi => "upi",
             UsBankAccount => "us_bank_account",
             WechatPay => "wechat_pay",
             Zip => "zip",
@@ -1148,6 +1151,7 @@ impl std::str::FromStr for PaymentIntentExcludedPaymentMethodTypes {
             "sofort" => Ok(Sofort),
             "swish" => Ok(Swish),
             "twint" => Ok(Twint),
+            "upi" => Ok(Upi),
             "us_bank_account" => Ok(UsBankAccount),
             "wechat_pay" => Ok(WechatPay),
             "zip" => Ok(Zip),

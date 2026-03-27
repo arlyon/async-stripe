@@ -265,6 +265,8 @@ struct CreateInvoiceItemBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     quantity: Option<u64>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    quantity_decimal: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     subscription: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     tax_behavior: Option<CreateInvoiceItemTaxBehavior>,
@@ -292,6 +294,7 @@ impl CreateInvoiceItemBuilder {
             price_data: None,
             pricing: None,
             quantity: None,
+            quantity_decimal: None,
             subscription: None,
             tax_behavior: None,
             tax_code: None,
@@ -568,9 +571,17 @@ impl CreateInvoiceItem {
         self.inner.pricing = Some(pricing.into());
         self
     }
-    /// Non-negative integer. The quantity of units for the invoice item.
+    /// Non-negative integer.
+    /// The quantity of units for the invoice item.
+    /// Use `quantity_decimal` instead to provide decimal precision.
+    /// This field will be deprecated in favor of `quantity_decimal` in a future version.
     pub fn quantity(mut self, quantity: impl Into<u64>) -> Self {
         self.inner.quantity = Some(quantity.into());
+        self
+    }
+    /// Non-negative decimal with at most 12 decimal places. The quantity of units for the invoice item.
+    pub fn quantity_decimal(mut self, quantity_decimal: impl Into<String>) -> Self {
+        self.inner.quantity_decimal = Some(quantity_decimal.into());
         self
     }
     /// The ID of a subscription to add this invoice item to.
@@ -662,6 +673,8 @@ struct UpdateInvoiceItemBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     quantity: Option<u64>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    quantity_decimal: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     tax_behavior: Option<UpdateInvoiceItemTaxBehavior>,
     #[serde(skip_serializing_if = "Option::is_none")]
     tax_code: Option<String>,
@@ -683,6 +696,7 @@ impl UpdateInvoiceItemBuilder {
             price_data: None,
             pricing: None,
             quantity: None,
+            quantity_decimal: None,
             tax_behavior: None,
             tax_code: None,
             tax_rates: None,
@@ -937,9 +951,17 @@ impl UpdateInvoiceItem {
         self.inner.pricing = Some(pricing.into());
         self
     }
-    /// Non-negative integer. The quantity of units for the invoice item.
+    /// Non-negative integer.
+    /// The quantity of units for the invoice item.
+    /// Use `quantity_decimal` instead to provide decimal precision.
+    /// This field will be deprecated in favor of `quantity_decimal` in a future version.
     pub fn quantity(mut self, quantity: impl Into<u64>) -> Self {
         self.inner.quantity = Some(quantity.into());
+        self
+    }
+    /// Non-negative decimal with at most 12 decimal places. The quantity of units for the line item.
+    pub fn quantity_decimal(mut self, quantity_decimal: impl Into<String>) -> Self {
+        self.inner.quantity_decimal = Some(quantity_decimal.into());
         self
     }
     /// Only required if a [default tax behavior](https://docs.stripe.com/tax/products-prices-tax-categories-tax-behavior#setting-a-default-tax-behavior-(recommended)) was not provided in the Stripe Tax settings.

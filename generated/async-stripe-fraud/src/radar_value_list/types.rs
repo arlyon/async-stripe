@@ -15,11 +15,12 @@ pub struct RadarValueList {
     /// Unique identifier for the object.
     pub id: stripe_fraud::RadarValueListId,
     /// The type of items in the value list.
-    /// One of `card_fingerprint`, `card_bin`, `email`, `ip_address`, `country`, `string`, `case_sensitive_string`, `customer_id`, `sepa_debit_fingerprint`, or `us_bank_account_fingerprint`.
+    /// One of `card_fingerprint`, `card_bin`, `crypto_fingerprint`, `email`, `ip_address`, `country`, `string`, `case_sensitive_string`, `customer_id`, `sepa_debit_fingerprint`, or `us_bank_account_fingerprint`.
     pub item_type: stripe_fraud::RadarValueListItemType,
     /// List of items contained within this value list.
     pub list_items: stripe_types::List<stripe_fraud::RadarValueListItem>,
-    /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
+    /// If the object exists in live mode, the value is `true`.
+    /// If the object exists in test mode, the value is `false`.
     pub livemode: bool,
     /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
@@ -222,6 +223,7 @@ pub enum RadarValueListItemType {
     CardFingerprint,
     CaseSensitiveString,
     Country,
+    CryptoFingerprint,
     CustomerId,
     Email,
     IpAddress,
@@ -239,6 +241,7 @@ impl RadarValueListItemType {
             CardFingerprint => "card_fingerprint",
             CaseSensitiveString => "case_sensitive_string",
             Country => "country",
+            CryptoFingerprint => "crypto_fingerprint",
             CustomerId => "customer_id",
             Email => "email",
             IpAddress => "ip_address",
@@ -259,6 +262,7 @@ impl std::str::FromStr for RadarValueListItemType {
             "card_fingerprint" => Ok(CardFingerprint),
             "case_sensitive_string" => Ok(CaseSensitiveString),
             "country" => Ok(Country),
+            "crypto_fingerprint" => Ok(CryptoFingerprint),
             "customer_id" => Ok(CustomerId),
             "email" => Ok(Email),
             "ip_address" => Ok(IpAddress),

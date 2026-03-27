@@ -2080,16 +2080,16 @@ pub struct CreateIssuingAuthorizationRiskAssessmentCardTestingRisk {
     pub invalid_credentials_decline_rate_past_hour: Option<i64>,
     /// The likelihood that this authorization is associated with card testing activity.
     /// This is assessed by evaluating decline activity over the last hour.
-    pub risk_level: CreateIssuingAuthorizationRiskAssessmentCardTestingRiskRiskLevel,
+    pub level: CreateIssuingAuthorizationRiskAssessmentCardTestingRiskLevel,
 }
 impl CreateIssuingAuthorizationRiskAssessmentCardTestingRisk {
     pub fn new(
-        risk_level: impl Into<CreateIssuingAuthorizationRiskAssessmentCardTestingRiskRiskLevel>,
+        level: impl Into<CreateIssuingAuthorizationRiskAssessmentCardTestingRiskLevel>,
     ) -> Self {
         Self {
             invalid_account_number_decline_rate_past_hour: None,
             invalid_credentials_decline_rate_past_hour: None,
-            risk_level: risk_level.into(),
+            level: level.into(),
         }
     }
 }
@@ -2097,7 +2097,7 @@ impl CreateIssuingAuthorizationRiskAssessmentCardTestingRisk {
 /// This is assessed by evaluating decline activity over the last hour.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
-pub enum CreateIssuingAuthorizationRiskAssessmentCardTestingRiskRiskLevel {
+pub enum CreateIssuingAuthorizationRiskAssessmentCardTestingRiskLevel {
     Elevated,
     Highest,
     Low,
@@ -2108,9 +2108,9 @@ pub enum CreateIssuingAuthorizationRiskAssessmentCardTestingRiskRiskLevel {
     /// This variant is prefixed with an underscore to avoid conflicts with Stripe's 'Unknown' variant.
     _Unknown(String),
 }
-impl CreateIssuingAuthorizationRiskAssessmentCardTestingRiskRiskLevel {
+impl CreateIssuingAuthorizationRiskAssessmentCardTestingRiskLevel {
     pub fn as_str(&self) -> &str {
-        use CreateIssuingAuthorizationRiskAssessmentCardTestingRiskRiskLevel::*;
+        use CreateIssuingAuthorizationRiskAssessmentCardTestingRiskLevel::*;
         match self {
             Elevated => "elevated",
             Highest => "highest",
@@ -2123,10 +2123,10 @@ impl CreateIssuingAuthorizationRiskAssessmentCardTestingRiskRiskLevel {
     }
 }
 
-impl std::str::FromStr for CreateIssuingAuthorizationRiskAssessmentCardTestingRiskRiskLevel {
+impl std::str::FromStr for CreateIssuingAuthorizationRiskAssessmentCardTestingRiskLevel {
     type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateIssuingAuthorizationRiskAssessmentCardTestingRiskRiskLevel::*;
+        use CreateIssuingAuthorizationRiskAssessmentCardTestingRiskLevel::*;
         match s {
             "elevated" => Ok(Elevated),
             "highest" => Ok(Highest),
@@ -2138,25 +2138,25 @@ impl std::str::FromStr for CreateIssuingAuthorizationRiskAssessmentCardTestingRi
                 tracing::warn!(
                     "Unknown value '{}' for enum '{}'",
                     v,
-                    "CreateIssuingAuthorizationRiskAssessmentCardTestingRiskRiskLevel"
+                    "CreateIssuingAuthorizationRiskAssessmentCardTestingRiskLevel"
                 );
                 Ok(_Unknown(v.to_owned()))
             }
         }
     }
 }
-impl std::fmt::Display for CreateIssuingAuthorizationRiskAssessmentCardTestingRiskRiskLevel {
+impl std::fmt::Display for CreateIssuingAuthorizationRiskAssessmentCardTestingRiskLevel {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
 
-impl std::fmt::Debug for CreateIssuingAuthorizationRiskAssessmentCardTestingRiskRiskLevel {
+impl std::fmt::Debug for CreateIssuingAuthorizationRiskAssessmentCardTestingRiskLevel {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
-impl serde::Serialize for CreateIssuingAuthorizationRiskAssessmentCardTestingRiskRiskLevel {
+impl serde::Serialize for CreateIssuingAuthorizationRiskAssessmentCardTestingRiskLevel {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,
@@ -2165,9 +2165,7 @@ impl serde::Serialize for CreateIssuingAuthorizationRiskAssessmentCardTestingRis
     }
 }
 #[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de>
-    for CreateIssuingAuthorizationRiskAssessmentCardTestingRiskRiskLevel
-{
+impl<'de> serde::Deserialize<'de> for CreateIssuingAuthorizationRiskAssessmentCardTestingRiskLevel {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
@@ -2277,19 +2275,19 @@ pub struct CreateIssuingAuthorizationRiskAssessmentMerchantDisputeRisk {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub dispute_rate: Option<i64>,
     /// The likelihood that authorizations from this merchant will result in a dispute based on their history on Stripe Issuing.
-    pub risk_level: CreateIssuingAuthorizationRiskAssessmentMerchantDisputeRiskRiskLevel,
+    pub level: CreateIssuingAuthorizationRiskAssessmentMerchantDisputeRiskLevel,
 }
 impl CreateIssuingAuthorizationRiskAssessmentMerchantDisputeRisk {
     pub fn new(
-        risk_level: impl Into<CreateIssuingAuthorizationRiskAssessmentMerchantDisputeRiskRiskLevel>,
+        level: impl Into<CreateIssuingAuthorizationRiskAssessmentMerchantDisputeRiskLevel>,
     ) -> Self {
-        Self { dispute_rate: None, risk_level: risk_level.into() }
+        Self { dispute_rate: None, level: level.into() }
     }
 }
 /// The likelihood that authorizations from this merchant will result in a dispute based on their history on Stripe Issuing.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
-pub enum CreateIssuingAuthorizationRiskAssessmentMerchantDisputeRiskRiskLevel {
+pub enum CreateIssuingAuthorizationRiskAssessmentMerchantDisputeRiskLevel {
     Elevated,
     Highest,
     Low,
@@ -2300,9 +2298,9 @@ pub enum CreateIssuingAuthorizationRiskAssessmentMerchantDisputeRiskRiskLevel {
     /// This variant is prefixed with an underscore to avoid conflicts with Stripe's 'Unknown' variant.
     _Unknown(String),
 }
-impl CreateIssuingAuthorizationRiskAssessmentMerchantDisputeRiskRiskLevel {
+impl CreateIssuingAuthorizationRiskAssessmentMerchantDisputeRiskLevel {
     pub fn as_str(&self) -> &str {
-        use CreateIssuingAuthorizationRiskAssessmentMerchantDisputeRiskRiskLevel::*;
+        use CreateIssuingAuthorizationRiskAssessmentMerchantDisputeRiskLevel::*;
         match self {
             Elevated => "elevated",
             Highest => "highest",
@@ -2315,10 +2313,10 @@ impl CreateIssuingAuthorizationRiskAssessmentMerchantDisputeRiskRiskLevel {
     }
 }
 
-impl std::str::FromStr for CreateIssuingAuthorizationRiskAssessmentMerchantDisputeRiskRiskLevel {
+impl std::str::FromStr for CreateIssuingAuthorizationRiskAssessmentMerchantDisputeRiskLevel {
     type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use CreateIssuingAuthorizationRiskAssessmentMerchantDisputeRiskRiskLevel::*;
+        use CreateIssuingAuthorizationRiskAssessmentMerchantDisputeRiskLevel::*;
         match s {
             "elevated" => Ok(Elevated),
             "highest" => Ok(Highest),
@@ -2330,25 +2328,25 @@ impl std::str::FromStr for CreateIssuingAuthorizationRiskAssessmentMerchantDispu
                 tracing::warn!(
                     "Unknown value '{}' for enum '{}'",
                     v,
-                    "CreateIssuingAuthorizationRiskAssessmentMerchantDisputeRiskRiskLevel"
+                    "CreateIssuingAuthorizationRiskAssessmentMerchantDisputeRiskLevel"
                 );
                 Ok(_Unknown(v.to_owned()))
             }
         }
     }
 }
-impl std::fmt::Display for CreateIssuingAuthorizationRiskAssessmentMerchantDisputeRiskRiskLevel {
+impl std::fmt::Display for CreateIssuingAuthorizationRiskAssessmentMerchantDisputeRiskLevel {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
 
-impl std::fmt::Debug for CreateIssuingAuthorizationRiskAssessmentMerchantDisputeRiskRiskLevel {
+impl std::fmt::Debug for CreateIssuingAuthorizationRiskAssessmentMerchantDisputeRiskLevel {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
-impl serde::Serialize for CreateIssuingAuthorizationRiskAssessmentMerchantDisputeRiskRiskLevel {
+impl serde::Serialize for CreateIssuingAuthorizationRiskAssessmentMerchantDisputeRiskLevel {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,
@@ -2358,7 +2356,7 @@ impl serde::Serialize for CreateIssuingAuthorizationRiskAssessmentMerchantDisput
 }
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de>
-    for CreateIssuingAuthorizationRiskAssessmentMerchantDisputeRiskRiskLevel
+    for CreateIssuingAuthorizationRiskAssessmentMerchantDisputeRiskLevel
 {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;

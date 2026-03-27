@@ -16,7 +16,8 @@ pub struct ReservePlan {
     pub fixed_release: Option<stripe_reserve::ReservesReservePlansResourcesFixedRelease>,
     /// Unique identifier for the object.
     pub id: stripe_reserve::ReservePlanId,
-    /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
+    /// If the object exists in live mode, the value is `true`.
+    /// If the object exists in test mode, the value is `false`.
     pub livemode: bool,
     /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.

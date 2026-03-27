@@ -9,7 +9,8 @@ pub struct TaxSettings {
     pub defaults: stripe_misc::TaxProductResourceTaxSettingsDefaults,
     /// The place where your business is located.
     pub head_office: Option<stripe_misc::TaxProductResourceTaxSettingsHeadOffice>,
-    /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
+    /// If the object exists in live mode, the value is `true`.
+    /// If the object exists in test mode, the value is `false`.
     pub livemode: bool,
     /// The status of the Tax `Settings`.
     pub status: TaxSettingsStatus,

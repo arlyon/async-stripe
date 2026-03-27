@@ -2,11 +2,11 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TaxProductResourceTaxTransactionShippingCost {
-    /// The shipping amount in the [smallest currency unit](https://docs.stripe.com/currencies#zero-decimal).
+    /// The shipping amount in the [smallest currency unit](https://docs.stripe.com/currencies#minor-units).
     /// If `tax_behavior=inclusive`, then this amount includes taxes.
     /// Otherwise, taxes were calculated on top of this amount.
     pub amount: i64,
-    /// The amount of tax calculated for shipping, in the [smallest currency unit](https://docs.stripe.com/currencies#zero-decimal).
+    /// The amount of tax calculated for shipping, in the [smallest currency unit](https://docs.stripe.com/currencies#minor-units).
     pub amount_tax: i64,
     /// The ID of an existing [ShippingRate](https://docs.stripe.com/api/shipping_rates/object).
     pub shipping_rate: Option<String>,

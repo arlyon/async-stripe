@@ -6,7 +6,8 @@ pub struct BillingAlertTriggered {
     pub created: stripe_types::Timestamp,
     /// ID of customer for which the alert triggered
     pub customer: String,
-    /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
+    /// If the object exists in live mode, the value is `true`.
+    /// If the object exists in test mode, the value is `false`.
     pub livemode: bool,
     /// The value triggering the alert
     pub value: i64,

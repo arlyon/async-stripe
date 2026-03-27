@@ -280,6 +280,8 @@ struct CreatePaymentMethodConfigurationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     twint: Option<CreatePaymentMethodConfigurationTwint>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    upi: Option<CreatePaymentMethodConfigurationUpi>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     us_bank_account: Option<CreatePaymentMethodConfigurationUsBankAccount>,
     #[serde(skip_serializing_if = "Option::is_none")]
     wechat_pay: Option<CreatePaymentMethodConfigurationWechatPay>,
@@ -345,6 +347,7 @@ impl CreatePaymentMethodConfigurationBuilder {
             sofort: None,
             swish: None,
             twint: None,
+            upi: None,
             us_bank_account: None,
             wechat_pay: None,
             zip: None,
@@ -5985,6 +5988,110 @@ impl<'de> serde::Deserialize<'de>
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
+/// Unified Payment Interface (UPI) is India's leading payment method with exponential growth since it launched in 2016.
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+pub struct CreatePaymentMethodConfigurationUpi {
+    /// Whether or not the payment method should be displayed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub display_preference: Option<CreatePaymentMethodConfigurationUpiDisplayPreference>,
+}
+impl CreatePaymentMethodConfigurationUpi {
+    pub fn new() -> Self {
+        Self { display_preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationUpi {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Whether or not the payment method should be displayed.
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+pub struct CreatePaymentMethodConfigurationUpiDisplayPreference {
+    /// The account's preference for whether or not to display this payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub preference: Option<CreatePaymentMethodConfigurationUpiDisplayPreferencePreference>,
+}
+impl CreatePaymentMethodConfigurationUpiDisplayPreference {
+    pub fn new() -> Self {
+        Self { preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationUpiDisplayPreference {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The account's preference for whether or not to display this payment method.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreatePaymentMethodConfigurationUpiDisplayPreferencePreference {
+    None,
+    Off,
+    On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreatePaymentMethodConfigurationUpiDisplayPreferencePreference {
+    pub fn as_str(&self) -> &str {
+        use CreatePaymentMethodConfigurationUpiDisplayPreferencePreference::*;
+        match self {
+            None => "none",
+            Off => "off",
+            On => "on",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePaymentMethodConfigurationUpiDisplayPreferencePreference {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreatePaymentMethodConfigurationUpiDisplayPreferencePreference::*;
+        match s {
+            "none" => Ok(None),
+            "off" => Ok(Off),
+            "on" => Ok(On),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePaymentMethodConfigurationUpiDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CreatePaymentMethodConfigurationUpiDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePaymentMethodConfigurationUpiDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreatePaymentMethodConfigurationUpiDisplayPreferencePreference {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentMethodConfigurationUpiDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
 /// Stripe users in the United States can accept ACH direct debit payments from customers with a US bank account using the Automated Clearing House (ACH) payments system operated by Nacha.
 /// Check this [page](https://docs.stripe.com/payments/ach-direct-debit) for more details.
 #[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
@@ -6738,6 +6845,11 @@ impl CreatePaymentMethodConfiguration {
         self.inner.twint = Some(twint.into());
         self
     }
+    /// Unified Payment Interface (UPI) is India's leading payment method with exponential growth since it launched in 2016.
+    pub fn upi(mut self, upi: impl Into<CreatePaymentMethodConfigurationUpi>) -> Self {
+        self.inner.upi = Some(upi.into());
+        self
+    }
     /// Stripe users in the United States can accept ACH direct debit payments from customers with a US bank account using the Automated Clearing House (ACH) payments system operated by Nacha.
     /// Check this [page](https://docs.stripe.com/payments/ach-direct-debit) for more details.
     pub fn us_bank_account(
@@ -6910,6 +7022,8 @@ struct UpdatePaymentMethodConfigurationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     twint: Option<UpdatePaymentMethodConfigurationTwint>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    upi: Option<UpdatePaymentMethodConfigurationUpi>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     us_bank_account: Option<UpdatePaymentMethodConfigurationUsBankAccount>,
     #[serde(skip_serializing_if = "Option::is_none")]
     wechat_pay: Option<UpdatePaymentMethodConfigurationWechatPay>,
@@ -6975,6 +7089,7 @@ impl UpdatePaymentMethodConfigurationBuilder {
             sofort: None,
             swish: None,
             twint: None,
+            upi: None,
             us_bank_account: None,
             wechat_pay: None,
             zip: None,
@@ -12615,6 +12730,110 @@ impl<'de> serde::Deserialize<'de>
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
+/// Unified Payment Interface (UPI) is India's leading payment method with exponential growth since it launched in 2016.
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+pub struct UpdatePaymentMethodConfigurationUpi {
+    /// Whether or not the payment method should be displayed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub display_preference: Option<UpdatePaymentMethodConfigurationUpiDisplayPreference>,
+}
+impl UpdatePaymentMethodConfigurationUpi {
+    pub fn new() -> Self {
+        Self { display_preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationUpi {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Whether or not the payment method should be displayed.
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+pub struct UpdatePaymentMethodConfigurationUpiDisplayPreference {
+    /// The account's preference for whether or not to display this payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub preference: Option<UpdatePaymentMethodConfigurationUpiDisplayPreferencePreference>,
+}
+impl UpdatePaymentMethodConfigurationUpiDisplayPreference {
+    pub fn new() -> Self {
+        Self { preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationUpiDisplayPreference {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The account's preference for whether or not to display this payment method.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum UpdatePaymentMethodConfigurationUpiDisplayPreferencePreference {
+    None,
+    Off,
+    On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl UpdatePaymentMethodConfigurationUpiDisplayPreferencePreference {
+    pub fn as_str(&self) -> &str {
+        use UpdatePaymentMethodConfigurationUpiDisplayPreferencePreference::*;
+        match self {
+            None => "none",
+            Off => "off",
+            On => "on",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for UpdatePaymentMethodConfigurationUpiDisplayPreferencePreference {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdatePaymentMethodConfigurationUpiDisplayPreferencePreference::*;
+        match s {
+            "none" => Ok(None),
+            "off" => Ok(Off),
+            "on" => Ok(On),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdatePaymentMethodConfigurationUpiDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for UpdatePaymentMethodConfigurationUpiDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationUpiDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for UpdatePaymentMethodConfigurationUpiDisplayPreferencePreference {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentMethodConfigurationUpiDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
 /// Stripe users in the United States can accept ACH direct debit payments from customers with a US bank account using the Automated Clearing House (ACH) payments system operated by Nacha.
 /// Check this [page](https://docs.stripe.com/payments/ach-direct-debit) for more details.
 #[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
@@ -13370,6 +13589,11 @@ impl UpdatePaymentMethodConfiguration {
     /// Check this [page](https://docs.stripe.com/payments/twint) for more details.
     pub fn twint(mut self, twint: impl Into<UpdatePaymentMethodConfigurationTwint>) -> Self {
         self.inner.twint = Some(twint.into());
+        self
+    }
+    /// Unified Payment Interface (UPI) is India's leading payment method with exponential growth since it launched in 2016.
+    pub fn upi(mut self, upi: impl Into<UpdatePaymentMethodConfigurationUpi>) -> Self {
+        self.inner.upi = Some(upi.into());
         self
     }
     /// Stripe users in the United States can accept ACH direct debit payments from customers with a US bank account using the Automated Clearing House (ACH) payments system operated by Nacha.

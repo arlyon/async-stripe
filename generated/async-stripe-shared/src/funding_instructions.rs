@@ -12,7 +12,8 @@ pub struct FundingInstructions {
     pub currency: stripe_types::Currency,
     /// The `funding_type` of the returned instructions
     pub funding_type: FundingInstructionsFundingType,
-    /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
+    /// If the object exists in live mode, the value is `true`.
+    /// If the object exists in test mode, the value is `false`.
     pub livemode: bool,
 }
 #[doc(hidden)]
