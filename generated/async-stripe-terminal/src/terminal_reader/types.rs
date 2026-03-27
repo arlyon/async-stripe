@@ -22,7 +22,8 @@ pub struct TerminalReader {
     /// Timestamp is measured in milliseconds since the Unix epoch.
     /// Unlike most other Stripe timestamp fields which use seconds, this field uses milliseconds.
     pub last_seen_at: Option<stripe_types::Timestamp>,
-    /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
+    /// If the object exists in live mode, the value is `true`.
+    /// If the object exists in test mode, the value is `false`.
     pub livemode: bool,
     /// The location identifier of the reader.
     pub location: Option<stripe_types::Expandable<stripe_terminal::TerminalLocation>>,

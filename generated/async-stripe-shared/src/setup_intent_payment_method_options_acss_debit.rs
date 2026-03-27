@@ -6,7 +6,7 @@ pub struct SetupIntentPaymentMethodOptionsAcssDebit {
     pub currency: Option<SetupIntentPaymentMethodOptionsAcssDebitCurrency>,
     pub mandate_options:
         Option<stripe_shared::SetupIntentPaymentMethodOptionsMandateOptionsAcssDebit>,
-    /// Bank account verification method.
+    /// Bank account verification method. The default value is `automatic`.
     pub verification_method: Option<SetupIntentPaymentMethodOptionsAcssDebitVerificationMethod>,
 }
 #[doc(hidden)]
@@ -200,7 +200,7 @@ impl<'de> serde::Deserialize<'de> for SetupIntentPaymentMethodOptionsAcssDebitCu
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-/// Bank account verification method.
+/// Bank account verification method. The default value is `automatic`.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum SetupIntentPaymentMethodOptionsAcssDebitVerificationMethod {

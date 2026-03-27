@@ -90,6 +90,7 @@ pub enum ListPaymentMethodType {
     Sofort,
     Swish,
     Twint,
+    Upi,
     UsBankAccount,
     WechatPay,
     Zip,
@@ -148,6 +149,7 @@ impl ListPaymentMethodType {
             Sofort => "sofort",
             Swish => "swish",
             Twint => "twint",
+            Upi => "upi",
             UsBankAccount => "us_bank_account",
             WechatPay => "wechat_pay",
             Zip => "zip",
@@ -209,6 +211,7 @@ impl std::str::FromStr for ListPaymentMethodType {
             "sofort" => Ok(Sofort),
             "swish" => Ok(Swish),
             "twint" => Ok(Twint),
+            "upi" => Ok(Upi),
             "us_bank_account" => Ok(UsBankAccount),
             "wechat_pay" => Ok(WechatPay),
             "zip" => Ok(Zip),
@@ -550,6 +553,8 @@ struct CreatePaymentMethodBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     type_: Option<CreatePaymentMethodType>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    upi: Option<CreatePaymentMethodUpi>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     us_bank_account: Option<CreatePaymentMethodUsBankAccount>,
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
@@ -618,6 +623,7 @@ impl CreatePaymentMethodBuilder {
             swish: None,
             twint: None,
             type_: None,
+            upi: None,
             us_bank_account: None,
             wechat_pay: None,
             zip: None,
@@ -1844,6 +1850,7 @@ pub enum CreatePaymentMethodType {
     Sofort,
     Swish,
     Twint,
+    Upi,
     UsBankAccount,
     WechatPay,
     Zip,
@@ -1902,6 +1909,7 @@ impl CreatePaymentMethodType {
             Sofort => "sofort",
             Swish => "swish",
             Twint => "twint",
+            Upi => "upi",
             UsBankAccount => "us_bank_account",
             WechatPay => "wechat_pay",
             Zip => "zip",
@@ -1963,6 +1971,7 @@ impl std::str::FromStr for CreatePaymentMethodType {
             "sofort" => Ok(Sofort),
             "swish" => Ok(Swish),
             "twint" => Ok(Twint),
+            "upi" => Ok(Upi),
             "us_bank_account" => Ok(UsBankAccount),
             "wechat_pay" => Ok(WechatPay),
             "zip" => Ok(Zip),
@@ -1994,6 +2003,118 @@ impl serde::Serialize for CreatePaymentMethodType {
 }
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for CreatePaymentMethodType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// If this is a `upi` PaymentMethod, this hash contains details about the UPI payment method.
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+pub struct CreatePaymentMethodUpi {
+    /// Configuration options for setting up an eMandate
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mandate_options: Option<CreatePaymentMethodUpiMandateOptions>,
+}
+impl CreatePaymentMethodUpi {
+    pub fn new() -> Self {
+        Self { mandate_options: None }
+    }
+}
+impl Default for CreatePaymentMethodUpi {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Configuration options for setting up an eMandate
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+pub struct CreatePaymentMethodUpiMandateOptions {
+    /// Amount to be charged for future payments.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount: Option<i64>,
+    /// One of `fixed` or `maximum`.
+    /// If `fixed`, the `amount` param refers to the exact amount to be charged in future payments.
+    /// If `maximum`, the amount charged can be up to the value passed for the `amount` param.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount_type: Option<CreatePaymentMethodUpiMandateOptionsAmountType>,
+    /// A description of the mandate or subscription that is meant to be displayed to the customer.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
+    /// End date of the mandate or subscription.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub end_date: Option<stripe_types::Timestamp>,
+}
+impl CreatePaymentMethodUpiMandateOptions {
+    pub fn new() -> Self {
+        Self { amount: None, amount_type: None, description: None, end_date: None }
+    }
+}
+impl Default for CreatePaymentMethodUpiMandateOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// One of `fixed` or `maximum`.
+/// If `fixed`, the `amount` param refers to the exact amount to be charged in future payments.
+/// If `maximum`, the amount charged can be up to the value passed for the `amount` param.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreatePaymentMethodUpiMandateOptionsAmountType {
+    Fixed,
+    Maximum,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreatePaymentMethodUpiMandateOptionsAmountType {
+    pub fn as_str(&self) -> &str {
+        use CreatePaymentMethodUpiMandateOptionsAmountType::*;
+        match self {
+            Fixed => "fixed",
+            Maximum => "maximum",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePaymentMethodUpiMandateOptionsAmountType {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreatePaymentMethodUpiMandateOptionsAmountType::*;
+        match s {
+            "fixed" => Ok(Fixed),
+            "maximum" => Ok(Maximum),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePaymentMethodUpiMandateOptionsAmountType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CreatePaymentMethodUpiMandateOptionsAmountType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePaymentMethodUpiMandateOptionsAmountType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreatePaymentMethodUpiMandateOptionsAmountType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreatePaymentMethodUpiMandateOptionsAmountType {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
@@ -2493,6 +2614,11 @@ impl CreatePaymentMethod {
     /// It contains additional information specific to the PaymentMethod type.
     pub fn type_(mut self, type_: impl Into<CreatePaymentMethodType>) -> Self {
         self.inner.type_ = Some(type_.into());
+        self
+    }
+    /// If this is a `upi` PaymentMethod, this hash contains details about the UPI payment method.
+    pub fn upi(mut self, upi: impl Into<CreatePaymentMethodUpi>) -> Self {
+        self.inner.upi = Some(upi.into());
         self
     }
     /// If this is an `us_bank_account` PaymentMethod, this hash contains details about the US bank account payment method.

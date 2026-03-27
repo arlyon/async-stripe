@@ -22,6 +22,7 @@ pub struct MandatePaymentMethodDetails {
     /// The `payment_method_details` includes an additional hash with the same name and contains mandate information that's specific to that payment method.
     #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "type"))]
     pub type_: String,
+    pub upi: Option<stripe_shared::MandateUpi>,
     pub us_bank_account: Option<stripe_shared::MandateUsBankAccount>,
 }
 #[doc(hidden)]
@@ -43,6 +44,7 @@ pub struct MandatePaymentMethodDetailsBuilder {
     revolut_pay: Option<Option<stripe_shared::MandateRevolutPay>>,
     sepa_debit: Option<Option<stripe_shared::MandateSepaDebit>>,
     type_: Option<String>,
+    upi: Option<Option<stripe_shared::MandateUpi>>,
     us_bank_account: Option<Option<stripe_shared::MandateUsBankAccount>>,
 }
 
@@ -103,6 +105,7 @@ const _: () = {
                 "revolut_pay" => Deserialize::begin(&mut self.revolut_pay),
                 "sepa_debit" => Deserialize::begin(&mut self.sepa_debit),
                 "type" => Deserialize::begin(&mut self.type_),
+                "upi" => Deserialize::begin(&mut self.upi),
                 "us_bank_account" => Deserialize::begin(&mut self.us_bank_account),
                 _ => <dyn Visitor>::ignore(),
             })
@@ -127,6 +130,7 @@ const _: () = {
                 revolut_pay: Deserialize::default(),
                 sepa_debit: Deserialize::default(),
                 type_: Deserialize::default(),
+                upi: Deserialize::default(),
                 us_bank_account: Deserialize::default(),
             }
         }
@@ -150,6 +154,7 @@ const _: () = {
                 Some(revolut_pay),
                 Some(sepa_debit),
                 Some(type_),
+                Some(upi),
                 Some(us_bank_account),
             ) = (
                 self.acss_debit.take(),
@@ -169,6 +174,7 @@ const _: () = {
                 self.revolut_pay,
                 self.sepa_debit.take(),
                 self.type_.take(),
+                self.upi.take(),
                 self.us_bank_account.take(),
             )
             else {
@@ -192,6 +198,7 @@ const _: () = {
                 revolut_pay,
                 sepa_debit,
                 type_,
+                upi,
                 us_bank_account,
             })
         }
@@ -237,6 +244,7 @@ const _: () = {
                     "revolut_pay" => b.revolut_pay = FromValueOpt::from_value(v),
                     "sepa_debit" => b.sepa_debit = FromValueOpt::from_value(v),
                     "type" => b.type_ = FromValueOpt::from_value(v),
+                    "upi" => b.upi = FromValueOpt::from_value(v),
                     "us_bank_account" => b.us_bank_account = FromValueOpt::from_value(v),
                     _ => {}
                 }

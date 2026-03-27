@@ -43,6 +43,7 @@ pub struct CheckoutSessionPaymentMethodOptions {
     pub sofort: Option<stripe_shared::CheckoutSofortPaymentMethodOptions>,
     pub swish: Option<stripe_shared::CheckoutSwishPaymentMethodOptions>,
     pub twint: Option<stripe_shared::CheckoutTwintPaymentMethodOptions>,
+    pub upi: Option<stripe_shared::CheckoutUpiPaymentMethodOptions>,
     pub us_bank_account: Option<stripe_shared::CheckoutUsBankAccountPaymentMethodOptions>,
 }
 #[doc(hidden)]
@@ -88,6 +89,7 @@ pub struct CheckoutSessionPaymentMethodOptionsBuilder {
     sofort: Option<Option<stripe_shared::CheckoutSofortPaymentMethodOptions>>,
     swish: Option<Option<stripe_shared::CheckoutSwishPaymentMethodOptions>>,
     twint: Option<Option<stripe_shared::CheckoutTwintPaymentMethodOptions>>,
+    upi: Option<Option<stripe_shared::CheckoutUpiPaymentMethodOptions>>,
     us_bank_account: Option<Option<stripe_shared::CheckoutUsBankAccountPaymentMethodOptions>>,
 }
 
@@ -172,6 +174,7 @@ const _: () = {
                 "sofort" => Deserialize::begin(&mut self.sofort),
                 "swish" => Deserialize::begin(&mut self.swish),
                 "twint" => Deserialize::begin(&mut self.twint),
+                "upi" => Deserialize::begin(&mut self.upi),
                 "us_bank_account" => Deserialize::begin(&mut self.us_bank_account),
                 _ => <dyn Visitor>::ignore(),
             })
@@ -220,6 +223,7 @@ const _: () = {
                 sofort: Deserialize::default(),
                 swish: Deserialize::default(),
                 twint: Deserialize::default(),
+                upi: Deserialize::default(),
                 us_bank_account: Deserialize::default(),
             }
         }
@@ -267,6 +271,7 @@ const _: () = {
                 Some(sofort),
                 Some(swish),
                 Some(twint),
+                Some(upi),
                 Some(us_bank_account),
             ) = (
                 self.acss_debit.take(),
@@ -310,6 +315,7 @@ const _: () = {
                 self.sofort.take(),
                 self.swish.take(),
                 self.twint.take(),
+                self.upi.take(),
                 self.us_bank_account.take(),
             )
             else {
@@ -357,6 +363,7 @@ const _: () = {
                 sofort,
                 swish,
                 twint,
+                upi,
                 us_bank_account,
             })
         }
@@ -426,6 +433,7 @@ const _: () = {
                     "sofort" => b.sofort = FromValueOpt::from_value(v),
                     "swish" => b.swish = FromValueOpt::from_value(v),
                     "twint" => b.twint = FromValueOpt::from_value(v),
+                    "upi" => b.upi = FromValueOpt::from_value(v),
                     "us_bank_account" => b.us_bank_account = FromValueOpt::from_value(v),
                     _ => {}
                 }

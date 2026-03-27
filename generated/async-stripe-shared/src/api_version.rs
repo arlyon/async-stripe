@@ -122,6 +122,7 @@ pub enum ApiVersion {
     V2025_12_15_clover,
     V2026_01_28_clover,
     V2026_02_25_clover,
+    V2026_03_25_dahlia,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
     Unknown(String),
 }
@@ -250,6 +251,7 @@ impl ApiVersion {
             V2025_12_15_clover => "2025-12-15.clover",
             V2026_01_28_clover => "2026-01-28.clover",
             V2026_02_25_clover => "2026-02-25.clover",
+            V2026_03_25_dahlia => "2026-03-25.dahlia",
             Unknown(v) => v,
         }
     }
@@ -381,6 +383,7 @@ impl std::str::FromStr for ApiVersion {
             "2025-12-15.clover" => Ok(V2025_12_15_clover),
             "2026-01-28.clover" => Ok(V2026_01_28_clover),
             "2026-02-25.clover" => Ok(V2026_02_25_clover),
+            "2026-03-25.dahlia" => Ok(V2026_03_25_dahlia),
             v => {
                 tracing::warn!("Unknown value '{}' for enum '{}'", v, "ApiVersion");
                 Ok(Unknown(v.to_owned()))

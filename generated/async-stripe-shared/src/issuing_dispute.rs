@@ -18,7 +18,8 @@ pub struct IssuingDispute {
     pub evidence: stripe_shared::IssuingDisputeEvidence,
     /// Unique identifier for the object.
     pub id: stripe_shared::IssuingDisputeId,
-    /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
+    /// If the object exists in live mode, the value is `true`.
+    /// If the object exists in test mode, the value is `false`.
     pub livemode: bool,
     /// The enum that describes the dispute loss outcome.
     /// If the dispute is not lost, this field will be absent.

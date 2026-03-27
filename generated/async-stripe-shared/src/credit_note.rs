@@ -36,7 +36,8 @@ pub struct CreditNote {
     pub invoice: stripe_types::Expandable<stripe_shared::Invoice>,
     /// Line items that make up the credit note
     pub lines: stripe_types::List<stripe_shared::CreditNoteLineItem>,
-    /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
+    /// If the object exists in live mode, the value is `true`.
+    /// If the object exists in test mode, the value is `false`.
     pub livemode: bool,
     /// Customer-facing text that appears on the credit note PDF.
     pub memo: Option<String>,

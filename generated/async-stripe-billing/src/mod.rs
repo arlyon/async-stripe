@@ -308,6 +308,7 @@ pub use stripe_shared::subscriptions_resource_payment_method_options::*;
 pub use stripe_shared::subscriptions_resource_payment_settings::*;
 pub use stripe_shared::subscriptions_resource_pending_update::*;
 pub use stripe_shared::subscriptions_resource_subscription_invoice_settings::*;
+pub use stripe_shared::subscriptions_resource_subscription_presentment_details::*;
 pub use stripe_shared::subscriptions_resource_trial_settings_end_behavior::*;
 pub use stripe_shared::subscriptions_resource_trial_settings_trial_settings::*;
 pub use stripe_shared::tax_i_ds_owner::*;

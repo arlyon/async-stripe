@@ -11,7 +11,8 @@ pub struct IssuingPersonalizationDesign {
     pub created: stripe_types::Timestamp,
     /// Unique identifier for the object.
     pub id: stripe_shared::IssuingPersonalizationDesignId,
-    /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
+    /// If the object exists in live mode, the value is `true`.
+    /// If the object exists in test mode, the value is `false`.
     pub livemode: bool,
     /// A lookup key used to retrieve personalization designs dynamically from a static string.
     /// This may be up to 200 characters.

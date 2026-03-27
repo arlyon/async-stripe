@@ -24,7 +24,8 @@ pub struct FinancialConnectionsAccount {
     pub institution_name: String,
     /// The last 4 digits of the account number. If present, this will be 4 numeric characters.
     pub last4: Option<String>,
-    /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
+    /// If the object exists in live mode, the value is `true`.
+    /// If the object exists in test mode, the value is `false`.
     pub livemode: bool,
     /// The most recent information about the account's owners.
     pub ownership:

@@ -19,7 +19,8 @@ pub struct BillingPortalConfiguration {
     /// Whether the configuration is the default.
     /// If `true`, this configuration can be managed in the Dashboard and portal sessions will use this configuration unless it is overriden when creating the session.
     pub is_default: bool,
-    /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
+    /// If the object exists in live mode, the value is `true`.
+    /// If the object exists in test mode, the value is `false`.
     pub livemode: bool,
     pub login_page: stripe_billing::PortalLoginPage,
     /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
