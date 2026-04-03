@@ -41,7 +41,8 @@ pub struct IssuingAuthorization {
     pub fuel: Option<stripe_shared::IssuingAuthorizationFuelData>,
     /// Unique identifier for the object.
     pub id: stripe_shared::IssuingAuthorizationId,
-    /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
+    /// If the object exists in live mode, the value is `true`.
+    /// If the object exists in test mode, the value is `false`.
     pub livemode: bool,
     /// The total amount that was authorized or rejected.
     /// This amount is in the `merchant_currency` and in the [smallest currency unit](https://stripe.com/docs/currencies#zero-decimal).

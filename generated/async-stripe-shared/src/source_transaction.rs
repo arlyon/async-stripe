@@ -17,7 +17,8 @@ pub struct SourceTransaction {
     pub gbp_credit_transfer: Option<stripe_shared::SourceTransactionGbpCreditTransferData>,
     /// Unique identifier for the object.
     pub id: stripe_shared::SourceTransactionId,
-    /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
+    /// If the object exists in live mode, the value is `true`.
+    /// If the object exists in test mode, the value is `false`.
     pub livemode: bool,
     pub paper_check: Option<stripe_shared::SourceTransactionPaperCheckData>,
     pub sepa_credit_transfer: Option<stripe_shared::SourceTransactionSepaCreditTransferData>,

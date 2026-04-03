@@ -5,7 +5,6 @@
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct SubscriptionsResourcePauseCollection {
     /// The payment collection behavior for this subscription while paused.
-    /// One of `keep_as_draft`, `mark_uncollectible`, or `void`.
     pub behavior: SubscriptionsResourcePauseCollectionBehavior,
     /// The time after which the subscription will resume collecting payments.
     pub resumes_at: Option<stripe_types::Timestamp>,
@@ -107,7 +106,6 @@ const _: () = {
     }
 };
 /// The payment collection behavior for this subscription while paused.
-/// One of `keep_as_draft`, `mark_uncollectible`, or `void`.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum SubscriptionsResourcePauseCollectionBehavior {

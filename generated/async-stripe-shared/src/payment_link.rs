@@ -45,7 +45,8 @@ pub struct PaymentLink {
     pub invoice_creation: Option<stripe_shared::PaymentLinksResourceInvoiceCreation>,
     /// The line items representing what is being sold.
     pub line_items: Option<stripe_types::List<stripe_shared::CheckoutSessionItem>>,
-    /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
+    /// If the object exists in live mode, the value is `true`.
+    /// If the object exists in test mode, the value is `false`.
     pub livemode: bool,
     /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
@@ -771,6 +772,7 @@ pub enum PaymentLinkPaymentMethodTypes {
     Sofort,
     Swish,
     Twint,
+    Upi,
     UsBankAccount,
     WechatPay,
     Zip,
@@ -817,6 +819,7 @@ impl PaymentLinkPaymentMethodTypes {
             Sofort => "sofort",
             Swish => "swish",
             Twint => "twint",
+            Upi => "upi",
             UsBankAccount => "us_bank_account",
             WechatPay => "wechat_pay",
             Zip => "zip",
@@ -866,6 +869,7 @@ impl std::str::FromStr for PaymentLinkPaymentMethodTypes {
             "sofort" => Ok(Sofort),
             "swish" => Ok(Swish),
             "twint" => Ok(Twint),
+            "upi" => Ok(Upi),
             "us_bank_account" => Ok(UsBankAccount),
             "wechat_pay" => Ok(WechatPay),
             "zip" => Ok(Zip),

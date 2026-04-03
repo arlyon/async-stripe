@@ -276,9 +276,9 @@ impl CreateReversalTaxTransactionBuilder {
 /// The line item amounts to reverse.
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateReversalTaxTransactionLineItems {
-    /// The amount to reverse, in the [smallest currency unit](https://docs.stripe.com/currencies#zero-decimal) in negative.
+    /// The amount to reverse, in the [smallest currency unit](https://docs.stripe.com/currencies#minor-units) in negative.
     pub amount: i64,
-    /// The amount of tax to reverse, in the [smallest currency unit](https://docs.stripe.com/currencies#zero-decimal) in negative.
+    /// The amount of tax to reverse, in the [smallest currency unit](https://docs.stripe.com/currencies#minor-units) in negative.
     pub amount_tax: i64,
     /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
@@ -379,9 +379,9 @@ impl<'de> serde::Deserialize<'de> for CreateReversalTaxTransactionMode {
 /// The shipping cost to reverse.
 #[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateReversalTaxTransactionShippingCost {
-    /// The amount to reverse, in the [smallest currency unit](https://docs.stripe.com/currencies#zero-decimal) in negative.
+    /// The amount to reverse, in the [smallest currency unit](https://docs.stripe.com/currencies#minor-units) in negative.
     pub amount: i64,
-    /// The amount of tax to reverse, in the [smallest currency unit](https://docs.stripe.com/currencies#zero-decimal) in negative.
+    /// The amount of tax to reverse, in the [smallest currency unit](https://docs.stripe.com/currencies#minor-units) in negative.
     pub amount_tax: i64,
 }
 impl CreateReversalTaxTransactionShippingCost {
@@ -414,7 +414,7 @@ impl CreateReversalTaxTransaction {
         self.inner.expand = Some(expand.into());
         self
     }
-    /// A flat amount to reverse across the entire transaction, in the [smallest currency unit](https://docs.stripe.com/currencies#zero-decimal) in negative.
+    /// A flat amount to reverse across the entire transaction, in the [smallest currency unit](https://docs.stripe.com/currencies#minor-units) in negative.
     /// This value represents the total amount to refund from the transaction, including taxes.
     pub fn flat_amount(mut self, flat_amount: impl Into<i64>) -> Self {
         self.inner.flat_amount = Some(flat_amount.into());

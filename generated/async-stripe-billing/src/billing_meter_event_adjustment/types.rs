@@ -7,7 +7,8 @@ pub struct BillingMeterEventAdjustment {
     pub cancel: Option<stripe_billing::BillingMeterResourceBillingMeterEventAdjustmentCancel>,
     /// The name of the meter event. Corresponds with the `event_name` field on a meter.
     pub event_name: String,
-    /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
+    /// If the object exists in live mode, the value is `true`.
+    /// If the object exists in test mode, the value is `false`.
     pub livemode: bool,
     /// The meter event adjustment's status.
     pub status: BillingMeterEventAdjustmentStatus,

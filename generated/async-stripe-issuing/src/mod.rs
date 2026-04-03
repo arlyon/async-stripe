@@ -56,6 +56,8 @@ pub use stripe_shared::issuing_card_apple_pay::*;
 pub use stripe_shared::issuing_card_authorization_controls::*;
 pub use stripe_shared::issuing_card_fraud_warning::*;
 pub use stripe_shared::issuing_card_google_pay::*;
+pub use stripe_shared::issuing_card_lifecycle_conditions::*;
+pub use stripe_shared::issuing_card_lifecycle_controls::*;
 pub use stripe_shared::issuing_card_shipping::*;
 pub use stripe_shared::issuing_card_shipping_address_validation::*;
 pub use stripe_shared::issuing_card_shipping_customs::*;

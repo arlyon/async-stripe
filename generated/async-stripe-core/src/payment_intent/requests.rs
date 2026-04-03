@@ -860,8 +860,6 @@ pub struct CreatePaymentIntentPaymentDetails {
     pub customer_reference: Option<String>,
     /// A unique value assigned by the business to identify the transaction. Required for L2 and L3 rates.
     ///
-    /// Required when the Payment Method Types array contains `card`, including when [automatic_payment_methods.enabled](/api/payment_intents/create#create_payment_intent-automatic_payment_methods-enabled) is set to `true`.
-    ///
     /// For Cards, this field is truncated to 25 alphanumeric characters, excluding spaces, before being sent to card networks.
     /// For Klarna, this field is truncated to 255 characters and is visible to customers when they view the order in the Klarna app.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1079,6 +1077,9 @@ pub struct CreatePaymentIntentPaymentMethodData {
     /// It contains additional information specific to the PaymentMethod type.
     #[serde(rename = "type")]
     pub type_: CreatePaymentIntentPaymentMethodDataType,
+    /// If this is a `upi` PaymentMethod, this hash contains details about the UPI payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub upi: Option<CreatePaymentIntentPaymentMethodDataUpi>,
     /// If this is an `us_bank_account` PaymentMethod, this hash contains details about the US bank account payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub us_bank_account: Option<CreatePaymentIntentPaymentMethodDataUsBankAccount>,
@@ -1146,6 +1147,7 @@ impl CreatePaymentIntentPaymentMethodData {
             swish: None,
             twint: None,
             type_: type_.into(),
+            upi: None,
             us_bank_account: None,
             wechat_pay: None,
             zip: None,
@@ -2314,6 +2316,7 @@ pub enum CreatePaymentIntentPaymentMethodDataType {
     Sofort,
     Swish,
     Twint,
+    Upi,
     UsBankAccount,
     WechatPay,
     Zip,
@@ -2370,6 +2373,7 @@ impl CreatePaymentIntentPaymentMethodDataType {
             Sofort => "sofort",
             Swish => "swish",
             Twint => "twint",
+            Upi => "upi",
             UsBankAccount => "us_bank_account",
             WechatPay => "wechat_pay",
             Zip => "zip",
@@ -2429,6 +2433,7 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodDataType {
             "sofort" => Ok(Sofort),
             "swish" => Ok(Swish),
             "twint" => Ok(Twint),
+            "upi" => Ok(Upi),
             "us_bank_account" => Ok(UsBankAccount),
             "wechat_pay" => Ok(WechatPay),
             "zip" => Ok(Zip),
@@ -2464,6 +2469,120 @@ impl serde::Serialize for CreatePaymentIntentPaymentMethodDataType {
 }
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodDataType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// If this is a `upi` PaymentMethod, this hash contains details about the UPI payment method.
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+pub struct CreatePaymentIntentPaymentMethodDataUpi {
+    /// Configuration options for setting up an eMandate
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mandate_options: Option<CreatePaymentIntentPaymentMethodDataUpiMandateOptions>,
+}
+impl CreatePaymentIntentPaymentMethodDataUpi {
+    pub fn new() -> Self {
+        Self { mandate_options: None }
+    }
+}
+impl Default for CreatePaymentIntentPaymentMethodDataUpi {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Configuration options for setting up an eMandate
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+pub struct CreatePaymentIntentPaymentMethodDataUpiMandateOptions {
+    /// Amount to be charged for future payments.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount: Option<i64>,
+    /// One of `fixed` or `maximum`.
+    /// If `fixed`, the `amount` param refers to the exact amount to be charged in future payments.
+    /// If `maximum`, the amount charged can be up to the value passed for the `amount` param.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount_type: Option<CreatePaymentIntentPaymentMethodDataUpiMandateOptionsAmountType>,
+    /// A description of the mandate or subscription that is meant to be displayed to the customer.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
+    /// End date of the mandate or subscription.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub end_date: Option<stripe_types::Timestamp>,
+}
+impl CreatePaymentIntentPaymentMethodDataUpiMandateOptions {
+    pub fn new() -> Self {
+        Self { amount: None, amount_type: None, description: None, end_date: None }
+    }
+}
+impl Default for CreatePaymentIntentPaymentMethodDataUpiMandateOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// One of `fixed` or `maximum`.
+/// If `fixed`, the `amount` param refers to the exact amount to be charged in future payments.
+/// If `maximum`, the amount charged can be up to the value passed for the `amount` param.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreatePaymentIntentPaymentMethodDataUpiMandateOptionsAmountType {
+    Fixed,
+    Maximum,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreatePaymentIntentPaymentMethodDataUpiMandateOptionsAmountType {
+    pub fn as_str(&self) -> &str {
+        use CreatePaymentIntentPaymentMethodDataUpiMandateOptionsAmountType::*;
+        match self {
+            Fixed => "fixed",
+            Maximum => "maximum",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePaymentIntentPaymentMethodDataUpiMandateOptionsAmountType {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreatePaymentIntentPaymentMethodDataUpiMandateOptionsAmountType::*;
+        match s {
+            "fixed" => Ok(Fixed),
+            "maximum" => Ok(Maximum),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePaymentIntentPaymentMethodDataUpiMandateOptionsAmountType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CreatePaymentIntentPaymentMethodDataUpiMandateOptionsAmountType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodDataUpiMandateOptionsAmountType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreatePaymentIntentPaymentMethodDataUpiMandateOptionsAmountType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentIntentPaymentMethodDataUpiMandateOptionsAmountType
+{
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
@@ -2790,6 +2909,9 @@ pub struct CreatePaymentIntentPaymentMethodOptions {
     /// If this is a `twint` PaymentMethod, this sub-hash contains details about the TWINT payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub twint: Option<CreatePaymentIntentPaymentMethodOptionsTwint>,
+    /// If this is a `upi` PaymentIntent, this sub-hash contains details about the UPI payment method options.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub upi: Option<CreatePaymentIntentPaymentMethodOptionsUpi>,
     /// If this is a `us_bank_account` PaymentMethod, this sub-hash contains details about the US bank account payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub us_bank_account: Option<CreatePaymentIntentPaymentMethodOptionsUsBankAccount>,
@@ -2852,6 +2974,7 @@ impl CreatePaymentIntentPaymentMethodOptions {
             sofort: None,
             swish: None,
             twint: None,
+            upi: None,
             us_bank_account: None,
             wechat_pay: None,
             zip: None,
@@ -2887,7 +3010,7 @@ pub struct CreatePaymentIntentPaymentMethodOptionsAcssDebit {
     /// The date must be in the future and between 3 and 15 calendar days from now.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub target_date: Option<String>,
-    /// Bank account verification method.
+    /// Bank account verification method. The default value is `automatic`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub verification_method:
         Option<CreatePaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod>,
@@ -3175,7 +3298,7 @@ impl<'de> serde::Deserialize<'de>
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-/// Bank account verification method.
+/// Bank account verification method. The default value is `automatic`.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum CreatePaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod {
@@ -5035,7 +5158,7 @@ impl<'de> serde::Deserialize<'de>
 /// Configuration options for setting up an eMandate for cards issued in India.
 #[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsCardMandateOptions {
-    /// Amount to be charged for future payments.
+    /// Amount to be charged for future payments, specified in the presentment currency.
     pub amount: i64,
     /// One of `fixed` or `maximum`.
     /// If `fixed`, the `amount` param refers to the exact amount to be charged in future payments.
@@ -11814,6 +11937,189 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodOptionsTwi
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
+/// If this is a `upi` PaymentIntent, this sub-hash contains details about the UPI payment method options.
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+pub struct CreatePaymentIntentPaymentMethodOptionsUpi {
+    /// Configuration options for setting up an eMandate
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mandate_options: Option<CreatePaymentIntentPaymentMethodOptionsUpiMandateOptions>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub setup_future_usage: Option<CreatePaymentIntentPaymentMethodOptionsUpiSetupFutureUsage>,
+}
+impl CreatePaymentIntentPaymentMethodOptionsUpi {
+    pub fn new() -> Self {
+        Self { mandate_options: None, setup_future_usage: None }
+    }
+}
+impl Default for CreatePaymentIntentPaymentMethodOptionsUpi {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Configuration options for setting up an eMandate
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+pub struct CreatePaymentIntentPaymentMethodOptionsUpiMandateOptions {
+    /// Amount to be charged for future payments.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount: Option<i64>,
+    /// One of `fixed` or `maximum`.
+    /// If `fixed`, the `amount` param refers to the exact amount to be charged in future payments.
+    /// If `maximum`, the amount charged can be up to the value passed for the `amount` param.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount_type: Option<CreatePaymentIntentPaymentMethodOptionsUpiMandateOptionsAmountType>,
+    /// A description of the mandate or subscription that is meant to be displayed to the customer.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
+    /// End date of the mandate or subscription.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub end_date: Option<stripe_types::Timestamp>,
+}
+impl CreatePaymentIntentPaymentMethodOptionsUpiMandateOptions {
+    pub fn new() -> Self {
+        Self { amount: None, amount_type: None, description: None, end_date: None }
+    }
+}
+impl Default for CreatePaymentIntentPaymentMethodOptionsUpiMandateOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// One of `fixed` or `maximum`.
+/// If `fixed`, the `amount` param refers to the exact amount to be charged in future payments.
+/// If `maximum`, the amount charged can be up to the value passed for the `amount` param.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreatePaymentIntentPaymentMethodOptionsUpiMandateOptionsAmountType {
+    Fixed,
+    Maximum,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreatePaymentIntentPaymentMethodOptionsUpiMandateOptionsAmountType {
+    pub fn as_str(&self) -> &str {
+        use CreatePaymentIntentPaymentMethodOptionsUpiMandateOptionsAmountType::*;
+        match self {
+            Fixed => "fixed",
+            Maximum => "maximum",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsUpiMandateOptionsAmountType {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreatePaymentIntentPaymentMethodOptionsUpiMandateOptionsAmountType::*;
+        match s {
+            "fixed" => Ok(Fixed),
+            "maximum" => Ok(Maximum),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePaymentIntentPaymentMethodOptionsUpiMandateOptionsAmountType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsUpiMandateOptionsAmountType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsUpiMandateOptionsAmountType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsUpiMandateOptionsAmountType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentIntentPaymentMethodOptionsUpiMandateOptionsAmountType
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreatePaymentIntentPaymentMethodOptionsUpiSetupFutureUsage {
+    None,
+    OffSession,
+    OnSession,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreatePaymentIntentPaymentMethodOptionsUpiSetupFutureUsage {
+    pub fn as_str(&self) -> &str {
+        use CreatePaymentIntentPaymentMethodOptionsUpiSetupFutureUsage::*;
+        match self {
+            None => "none",
+            OffSession => "off_session",
+            OnSession => "on_session",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsUpiSetupFutureUsage {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreatePaymentIntentPaymentMethodOptionsUpiSetupFutureUsage::*;
+        match s {
+            "none" => Ok(None),
+            "off_session" => Ok(OffSession),
+            "on_session" => Ok(OnSession),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePaymentIntentPaymentMethodOptionsUpiSetupFutureUsage"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsUpiSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsUpiSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsUpiSetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodOptionsUpiSetupFutureUsage {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
 /// If this is a `us_bank_account` PaymentMethod, this sub-hash contains details about the US bank account payment method options.
 #[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsUsBankAccount {
@@ -11849,7 +12155,7 @@ pub struct CreatePaymentIntentPaymentMethodOptionsUsBankAccount {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub transaction_purpose:
         Option<CreatePaymentIntentPaymentMethodOptionsUsBankAccountTransactionPurpose>,
-    /// Bank account verification method.
+    /// Bank account verification method. The default value is `automatic`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub verification_method:
         Option<CreatePaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod>,
@@ -12472,7 +12778,7 @@ impl<'de> serde::Deserialize<'de>
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-/// Bank account verification method.
+/// Bank account verification method. The default value is `automatic`.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum CreatePaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod {
@@ -13595,8 +13901,6 @@ pub struct UpdatePaymentIntentPaymentDetails {
     pub customer_reference: Option<String>,
     /// A unique value assigned by the business to identify the transaction. Required for L2 and L3 rates.
     ///
-    /// Required when the Payment Method Types array contains `card`, including when [automatic_payment_methods.enabled](/api/payment_intents/create#create_payment_intent-automatic_payment_methods-enabled) is set to `true`.
-    ///
     /// For Cards, this field is truncated to 25 alphanumeric characters, excluding spaces, before being sent to card networks.
     /// For Klarna, this field is truncated to 255 characters and is visible to customers when they view the order in the Klarna app.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -13814,6 +14118,9 @@ pub struct UpdatePaymentIntentPaymentMethodData {
     /// It contains additional information specific to the PaymentMethod type.
     #[serde(rename = "type")]
     pub type_: UpdatePaymentIntentPaymentMethodDataType,
+    /// If this is a `upi` PaymentMethod, this hash contains details about the UPI payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub upi: Option<UpdatePaymentIntentPaymentMethodDataUpi>,
     /// If this is an `us_bank_account` PaymentMethod, this hash contains details about the US bank account payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub us_bank_account: Option<UpdatePaymentIntentPaymentMethodDataUsBankAccount>,
@@ -13881,6 +14188,7 @@ impl UpdatePaymentIntentPaymentMethodData {
             swish: None,
             twint: None,
             type_: type_.into(),
+            upi: None,
             us_bank_account: None,
             wechat_pay: None,
             zip: None,
@@ -15049,6 +15357,7 @@ pub enum UpdatePaymentIntentPaymentMethodDataType {
     Sofort,
     Swish,
     Twint,
+    Upi,
     UsBankAccount,
     WechatPay,
     Zip,
@@ -15105,6 +15414,7 @@ impl UpdatePaymentIntentPaymentMethodDataType {
             Sofort => "sofort",
             Swish => "swish",
             Twint => "twint",
+            Upi => "upi",
             UsBankAccount => "us_bank_account",
             WechatPay => "wechat_pay",
             Zip => "zip",
@@ -15164,6 +15474,7 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodDataType {
             "sofort" => Ok(Sofort),
             "swish" => Ok(Swish),
             "twint" => Ok(Twint),
+            "upi" => Ok(Upi),
             "us_bank_account" => Ok(UsBankAccount),
             "wechat_pay" => Ok(WechatPay),
             "zip" => Ok(Zip),
@@ -15199,6 +15510,120 @@ impl serde::Serialize for UpdatePaymentIntentPaymentMethodDataType {
 }
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodDataType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// If this is a `upi` PaymentMethod, this hash contains details about the UPI payment method.
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+pub struct UpdatePaymentIntentPaymentMethodDataUpi {
+    /// Configuration options for setting up an eMandate
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mandate_options: Option<UpdatePaymentIntentPaymentMethodDataUpiMandateOptions>,
+}
+impl UpdatePaymentIntentPaymentMethodDataUpi {
+    pub fn new() -> Self {
+        Self { mandate_options: None }
+    }
+}
+impl Default for UpdatePaymentIntentPaymentMethodDataUpi {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Configuration options for setting up an eMandate
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+pub struct UpdatePaymentIntentPaymentMethodDataUpiMandateOptions {
+    /// Amount to be charged for future payments.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount: Option<i64>,
+    /// One of `fixed` or `maximum`.
+    /// If `fixed`, the `amount` param refers to the exact amount to be charged in future payments.
+    /// If `maximum`, the amount charged can be up to the value passed for the `amount` param.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount_type: Option<UpdatePaymentIntentPaymentMethodDataUpiMandateOptionsAmountType>,
+    /// A description of the mandate or subscription that is meant to be displayed to the customer.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
+    /// End date of the mandate or subscription.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub end_date: Option<stripe_types::Timestamp>,
+}
+impl UpdatePaymentIntentPaymentMethodDataUpiMandateOptions {
+    pub fn new() -> Self {
+        Self { amount: None, amount_type: None, description: None, end_date: None }
+    }
+}
+impl Default for UpdatePaymentIntentPaymentMethodDataUpiMandateOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// One of `fixed` or `maximum`.
+/// If `fixed`, the `amount` param refers to the exact amount to be charged in future payments.
+/// If `maximum`, the amount charged can be up to the value passed for the `amount` param.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum UpdatePaymentIntentPaymentMethodDataUpiMandateOptionsAmountType {
+    Fixed,
+    Maximum,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl UpdatePaymentIntentPaymentMethodDataUpiMandateOptionsAmountType {
+    pub fn as_str(&self) -> &str {
+        use UpdatePaymentIntentPaymentMethodDataUpiMandateOptionsAmountType::*;
+        match self {
+            Fixed => "fixed",
+            Maximum => "maximum",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for UpdatePaymentIntentPaymentMethodDataUpiMandateOptionsAmountType {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdatePaymentIntentPaymentMethodDataUpiMandateOptionsAmountType::*;
+        match s {
+            "fixed" => Ok(Fixed),
+            "maximum" => Ok(Maximum),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdatePaymentIntentPaymentMethodDataUpiMandateOptionsAmountType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for UpdatePaymentIntentPaymentMethodDataUpiMandateOptionsAmountType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodDataUpiMandateOptionsAmountType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for UpdatePaymentIntentPaymentMethodDataUpiMandateOptionsAmountType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentIntentPaymentMethodDataUpiMandateOptionsAmountType
+{
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
@@ -15525,6 +15950,9 @@ pub struct UpdatePaymentIntentPaymentMethodOptions {
     /// If this is a `twint` PaymentMethod, this sub-hash contains details about the TWINT payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub twint: Option<UpdatePaymentIntentPaymentMethodOptionsTwint>,
+    /// If this is a `upi` PaymentIntent, this sub-hash contains details about the UPI payment method options.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub upi: Option<UpdatePaymentIntentPaymentMethodOptionsUpi>,
     /// If this is a `us_bank_account` PaymentMethod, this sub-hash contains details about the US bank account payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub us_bank_account: Option<UpdatePaymentIntentPaymentMethodOptionsUsBankAccount>,
@@ -15587,6 +16015,7 @@ impl UpdatePaymentIntentPaymentMethodOptions {
             sofort: None,
             swish: None,
             twint: None,
+            upi: None,
             us_bank_account: None,
             wechat_pay: None,
             zip: None,
@@ -15622,7 +16051,7 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsAcssDebit {
     /// The date must be in the future and between 3 and 15 calendar days from now.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub target_date: Option<String>,
-    /// Bank account verification method.
+    /// Bank account verification method. The default value is `automatic`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub verification_method:
         Option<UpdatePaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod>,
@@ -15910,7 +16339,7 @@ impl<'de> serde::Deserialize<'de>
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-/// Bank account verification method.
+/// Bank account verification method. The default value is `automatic`.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum UpdatePaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod {
@@ -17770,7 +18199,7 @@ impl<'de> serde::Deserialize<'de>
 /// Configuration options for setting up an eMandate for cards issued in India.
 #[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsCardMandateOptions {
-    /// Amount to be charged for future payments.
+    /// Amount to be charged for future payments, specified in the presentment currency.
     pub amount: i64,
     /// One of `fixed` or `maximum`.
     /// If `fixed`, the `amount` param refers to the exact amount to be charged in future payments.
@@ -24549,6 +24978,189 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodOptionsTwi
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
+/// If this is a `upi` PaymentIntent, this sub-hash contains details about the UPI payment method options.
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+pub struct UpdatePaymentIntentPaymentMethodOptionsUpi {
+    /// Configuration options for setting up an eMandate
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mandate_options: Option<UpdatePaymentIntentPaymentMethodOptionsUpiMandateOptions>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub setup_future_usage: Option<UpdatePaymentIntentPaymentMethodOptionsUpiSetupFutureUsage>,
+}
+impl UpdatePaymentIntentPaymentMethodOptionsUpi {
+    pub fn new() -> Self {
+        Self { mandate_options: None, setup_future_usage: None }
+    }
+}
+impl Default for UpdatePaymentIntentPaymentMethodOptionsUpi {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Configuration options for setting up an eMandate
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+pub struct UpdatePaymentIntentPaymentMethodOptionsUpiMandateOptions {
+    /// Amount to be charged for future payments.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount: Option<i64>,
+    /// One of `fixed` or `maximum`.
+    /// If `fixed`, the `amount` param refers to the exact amount to be charged in future payments.
+    /// If `maximum`, the amount charged can be up to the value passed for the `amount` param.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount_type: Option<UpdatePaymentIntentPaymentMethodOptionsUpiMandateOptionsAmountType>,
+    /// A description of the mandate or subscription that is meant to be displayed to the customer.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
+    /// End date of the mandate or subscription.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub end_date: Option<stripe_types::Timestamp>,
+}
+impl UpdatePaymentIntentPaymentMethodOptionsUpiMandateOptions {
+    pub fn new() -> Self {
+        Self { amount: None, amount_type: None, description: None, end_date: None }
+    }
+}
+impl Default for UpdatePaymentIntentPaymentMethodOptionsUpiMandateOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// One of `fixed` or `maximum`.
+/// If `fixed`, the `amount` param refers to the exact amount to be charged in future payments.
+/// If `maximum`, the amount charged can be up to the value passed for the `amount` param.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum UpdatePaymentIntentPaymentMethodOptionsUpiMandateOptionsAmountType {
+    Fixed,
+    Maximum,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl UpdatePaymentIntentPaymentMethodOptionsUpiMandateOptionsAmountType {
+    pub fn as_str(&self) -> &str {
+        use UpdatePaymentIntentPaymentMethodOptionsUpiMandateOptionsAmountType::*;
+        match self {
+            Fixed => "fixed",
+            Maximum => "maximum",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsUpiMandateOptionsAmountType {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdatePaymentIntentPaymentMethodOptionsUpiMandateOptionsAmountType::*;
+        match s {
+            "fixed" => Ok(Fixed),
+            "maximum" => Ok(Maximum),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdatePaymentIntentPaymentMethodOptionsUpiMandateOptionsAmountType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsUpiMandateOptionsAmountType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsUpiMandateOptionsAmountType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsUpiMandateOptionsAmountType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentIntentPaymentMethodOptionsUpiMandateOptionsAmountType
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum UpdatePaymentIntentPaymentMethodOptionsUpiSetupFutureUsage {
+    None,
+    OffSession,
+    OnSession,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl UpdatePaymentIntentPaymentMethodOptionsUpiSetupFutureUsage {
+    pub fn as_str(&self) -> &str {
+        use UpdatePaymentIntentPaymentMethodOptionsUpiSetupFutureUsage::*;
+        match self {
+            None => "none",
+            OffSession => "off_session",
+            OnSession => "on_session",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsUpiSetupFutureUsage {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdatePaymentIntentPaymentMethodOptionsUpiSetupFutureUsage::*;
+        match s {
+            "none" => Ok(None),
+            "off_session" => Ok(OffSession),
+            "on_session" => Ok(OnSession),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdatePaymentIntentPaymentMethodOptionsUpiSetupFutureUsage"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsUpiSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsUpiSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsUpiSetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodOptionsUpiSetupFutureUsage {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
 /// If this is a `us_bank_account` PaymentMethod, this sub-hash contains details about the US bank account payment method options.
 #[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsUsBankAccount {
@@ -24584,7 +25196,7 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsUsBankAccount {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub transaction_purpose:
         Option<UpdatePaymentIntentPaymentMethodOptionsUsBankAccountTransactionPurpose>,
-    /// Bank account verification method.
+    /// Bank account verification method. The default value is `automatic`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub verification_method:
         Option<UpdatePaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod>,
@@ -25207,7 +25819,7 @@ impl<'de> serde::Deserialize<'de>
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-/// Bank account verification method.
+/// Bank account verification method. The default value is `automatic`.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum UpdatePaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod {
@@ -26047,8 +26659,8 @@ impl<'de> serde::Deserialize<'de> for CancelPaymentIntentCancellationReason {
 /// For PaymentIntents with a `status` of `requires_capture`, the remaining `amount_capturable` is automatically refunded.
 ///
 ///
-/// You can’t cancel the PaymentIntent for a Checkout Session.
-/// [Expire the Checkout Session](https://stripe.com/docs/api/checkout/sessions/expire) instead.
+/// You can directly cancel the PaymentIntent for a Checkout Session only when the PaymentIntent has a status of `requires_capture`.
+/// Otherwise, you must [expire the Checkout Session](https://stripe.com/docs/api/checkout/sessions/expire).
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct CancelPaymentIntent {
     inner: CancelPaymentIntentBuilder,
@@ -26415,8 +27027,6 @@ pub struct CapturePaymentIntentPaymentDetails {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub customer_reference: Option<String>,
     /// A unique value assigned by the business to identify the transaction. Required for L2 and L3 rates.
-    ///
-    /// Required when the Payment Method Types array contains `card`, including when [automatic_payment_methods.enabled](/api/payment_intents/create#create_payment_intent-automatic_payment_methods-enabled) is set to `true`.
     ///
     /// For Cards, this field is truncated to 25 alphanumeric characters, excluding spaces, before being sent to card networks.
     /// For Klarna, this field is truncated to 255 characters and is visible to customers when they view the order in the Klarna app.
@@ -27157,8 +27767,6 @@ pub struct ConfirmPaymentIntentPaymentDetails {
     pub customer_reference: Option<String>,
     /// A unique value assigned by the business to identify the transaction. Required for L2 and L3 rates.
     ///
-    /// Required when the Payment Method Types array contains `card`, including when [automatic_payment_methods.enabled](/api/payment_intents/create#create_payment_intent-automatic_payment_methods-enabled) is set to `true`.
-    ///
     /// For Cards, this field is truncated to 25 alphanumeric characters, excluding spaces, before being sent to card networks.
     /// For Klarna, this field is truncated to 255 characters and is visible to customers when they view the order in the Klarna app.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -27376,6 +27984,9 @@ pub struct ConfirmPaymentIntentPaymentMethodData {
     /// It contains additional information specific to the PaymentMethod type.
     #[serde(rename = "type")]
     pub type_: ConfirmPaymentIntentPaymentMethodDataType,
+    /// If this is a `upi` PaymentMethod, this hash contains details about the UPI payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub upi: Option<ConfirmPaymentIntentPaymentMethodDataUpi>,
     /// If this is an `us_bank_account` PaymentMethod, this hash contains details about the US bank account payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub us_bank_account: Option<ConfirmPaymentIntentPaymentMethodDataUsBankAccount>,
@@ -27443,6 +28054,7 @@ impl ConfirmPaymentIntentPaymentMethodData {
             swish: None,
             twint: None,
             type_: type_.into(),
+            upi: None,
             us_bank_account: None,
             wechat_pay: None,
             zip: None,
@@ -28611,6 +29223,7 @@ pub enum ConfirmPaymentIntentPaymentMethodDataType {
     Sofort,
     Swish,
     Twint,
+    Upi,
     UsBankAccount,
     WechatPay,
     Zip,
@@ -28667,6 +29280,7 @@ impl ConfirmPaymentIntentPaymentMethodDataType {
             Sofort => "sofort",
             Swish => "swish",
             Twint => "twint",
+            Upi => "upi",
             UsBankAccount => "us_bank_account",
             WechatPay => "wechat_pay",
             Zip => "zip",
@@ -28726,6 +29340,7 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodDataType {
             "sofort" => Ok(Sofort),
             "swish" => Ok(Swish),
             "twint" => Ok(Twint),
+            "upi" => Ok(Upi),
             "us_bank_account" => Ok(UsBankAccount),
             "wechat_pay" => Ok(WechatPay),
             "zip" => Ok(Zip),
@@ -28761,6 +29376,120 @@ impl serde::Serialize for ConfirmPaymentIntentPaymentMethodDataType {
 }
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentMethodDataType {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// If this is a `upi` PaymentMethod, this hash contains details about the UPI payment method.
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+pub struct ConfirmPaymentIntentPaymentMethodDataUpi {
+    /// Configuration options for setting up an eMandate
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mandate_options: Option<ConfirmPaymentIntentPaymentMethodDataUpiMandateOptions>,
+}
+impl ConfirmPaymentIntentPaymentMethodDataUpi {
+    pub fn new() -> Self {
+        Self { mandate_options: None }
+    }
+}
+impl Default for ConfirmPaymentIntentPaymentMethodDataUpi {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Configuration options for setting up an eMandate
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+pub struct ConfirmPaymentIntentPaymentMethodDataUpiMandateOptions {
+    /// Amount to be charged for future payments.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount: Option<i64>,
+    /// One of `fixed` or `maximum`.
+    /// If `fixed`, the `amount` param refers to the exact amount to be charged in future payments.
+    /// If `maximum`, the amount charged can be up to the value passed for the `amount` param.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount_type: Option<ConfirmPaymentIntentPaymentMethodDataUpiMandateOptionsAmountType>,
+    /// A description of the mandate or subscription that is meant to be displayed to the customer.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
+    /// End date of the mandate or subscription.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub end_date: Option<stripe_types::Timestamp>,
+}
+impl ConfirmPaymentIntentPaymentMethodDataUpiMandateOptions {
+    pub fn new() -> Self {
+        Self { amount: None, amount_type: None, description: None, end_date: None }
+    }
+}
+impl Default for ConfirmPaymentIntentPaymentMethodDataUpiMandateOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// One of `fixed` or `maximum`.
+/// If `fixed`, the `amount` param refers to the exact amount to be charged in future payments.
+/// If `maximum`, the amount charged can be up to the value passed for the `amount` param.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum ConfirmPaymentIntentPaymentMethodDataUpiMandateOptionsAmountType {
+    Fixed,
+    Maximum,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl ConfirmPaymentIntentPaymentMethodDataUpiMandateOptionsAmountType {
+    pub fn as_str(&self) -> &str {
+        use ConfirmPaymentIntentPaymentMethodDataUpiMandateOptionsAmountType::*;
+        match self {
+            Fixed => "fixed",
+            Maximum => "maximum",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodDataUpiMandateOptionsAmountType {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use ConfirmPaymentIntentPaymentMethodDataUpiMandateOptionsAmountType::*;
+        match s {
+            "fixed" => Ok(Fixed),
+            "maximum" => Ok(Maximum),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "ConfirmPaymentIntentPaymentMethodDataUpiMandateOptionsAmountType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodDataUpiMandateOptionsAmountType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodDataUpiMandateOptionsAmountType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for ConfirmPaymentIntentPaymentMethodDataUpiMandateOptionsAmountType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for ConfirmPaymentIntentPaymentMethodDataUpiMandateOptionsAmountType
+{
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
@@ -29089,6 +29818,9 @@ pub struct ConfirmPaymentIntentPaymentMethodOptions {
     /// If this is a `twint` PaymentMethod, this sub-hash contains details about the TWINT payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub twint: Option<ConfirmPaymentIntentPaymentMethodOptionsTwint>,
+    /// If this is a `upi` PaymentIntent, this sub-hash contains details about the UPI payment method options.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub upi: Option<ConfirmPaymentIntentPaymentMethodOptionsUpi>,
     /// If this is a `us_bank_account` PaymentMethod, this sub-hash contains details about the US bank account payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub us_bank_account: Option<ConfirmPaymentIntentPaymentMethodOptionsUsBankAccount>,
@@ -29151,6 +29883,7 @@ impl ConfirmPaymentIntentPaymentMethodOptions {
             sofort: None,
             swish: None,
             twint: None,
+            upi: None,
             us_bank_account: None,
             wechat_pay: None,
             zip: None,
@@ -29186,7 +29919,7 @@ pub struct ConfirmPaymentIntentPaymentMethodOptionsAcssDebit {
     /// The date must be in the future and between 3 and 15 calendar days from now.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub target_date: Option<String>,
-    /// Bank account verification method.
+    /// Bank account verification method. The default value is `automatic`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub verification_method:
         Option<ConfirmPaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod>,
@@ -29474,7 +30207,7 @@ impl<'de> serde::Deserialize<'de>
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-/// Bank account verification method.
+/// Bank account verification method. The default value is `automatic`.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod {
@@ -31338,7 +32071,7 @@ impl<'de> serde::Deserialize<'de>
 /// Configuration options for setting up an eMandate for cards issued in India.
 #[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodOptionsCardMandateOptions {
-    /// Amount to be charged for future payments.
+    /// Amount to be charged for future payments, specified in the presentment currency.
     pub amount: i64,
     /// One of `fixed` or `maximum`.
     /// If `fixed`, the `amount` param refers to the exact amount to be charged in future payments.
@@ -38129,6 +38862,189 @@ impl<'de> serde::Deserialize<'de>
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
+/// If this is a `upi` PaymentIntent, this sub-hash contains details about the UPI payment method options.
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+pub struct ConfirmPaymentIntentPaymentMethodOptionsUpi {
+    /// Configuration options for setting up an eMandate
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mandate_options: Option<ConfirmPaymentIntentPaymentMethodOptionsUpiMandateOptions>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub setup_future_usage: Option<ConfirmPaymentIntentPaymentMethodOptionsUpiSetupFutureUsage>,
+}
+impl ConfirmPaymentIntentPaymentMethodOptionsUpi {
+    pub fn new() -> Self {
+        Self { mandate_options: None, setup_future_usage: None }
+    }
+}
+impl Default for ConfirmPaymentIntentPaymentMethodOptionsUpi {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Configuration options for setting up an eMandate
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+pub struct ConfirmPaymentIntentPaymentMethodOptionsUpiMandateOptions {
+    /// Amount to be charged for future payments.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount: Option<i64>,
+    /// One of `fixed` or `maximum`.
+    /// If `fixed`, the `amount` param refers to the exact amount to be charged in future payments.
+    /// If `maximum`, the amount charged can be up to the value passed for the `amount` param.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount_type: Option<ConfirmPaymentIntentPaymentMethodOptionsUpiMandateOptionsAmountType>,
+    /// A description of the mandate or subscription that is meant to be displayed to the customer.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
+    /// End date of the mandate or subscription.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub end_date: Option<stripe_types::Timestamp>,
+}
+impl ConfirmPaymentIntentPaymentMethodOptionsUpiMandateOptions {
+    pub fn new() -> Self {
+        Self { amount: None, amount_type: None, description: None, end_date: None }
+    }
+}
+impl Default for ConfirmPaymentIntentPaymentMethodOptionsUpiMandateOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// One of `fixed` or `maximum`.
+/// If `fixed`, the `amount` param refers to the exact amount to be charged in future payments.
+/// If `maximum`, the amount charged can be up to the value passed for the `amount` param.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum ConfirmPaymentIntentPaymentMethodOptionsUpiMandateOptionsAmountType {
+    Fixed,
+    Maximum,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl ConfirmPaymentIntentPaymentMethodOptionsUpiMandateOptionsAmountType {
+    pub fn as_str(&self) -> &str {
+        use ConfirmPaymentIntentPaymentMethodOptionsUpiMandateOptionsAmountType::*;
+        match self {
+            Fixed => "fixed",
+            Maximum => "maximum",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsUpiMandateOptionsAmountType {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use ConfirmPaymentIntentPaymentMethodOptionsUpiMandateOptionsAmountType::*;
+        match s {
+            "fixed" => Ok(Fixed),
+            "maximum" => Ok(Maximum),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "ConfirmPaymentIntentPaymentMethodOptionsUpiMandateOptionsAmountType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsUpiMandateOptionsAmountType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsUpiMandateOptionsAmountType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsUpiMandateOptionsAmountType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for ConfirmPaymentIntentPaymentMethodOptionsUpiMandateOptionsAmountType
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum ConfirmPaymentIntentPaymentMethodOptionsUpiSetupFutureUsage {
+    None,
+    OffSession,
+    OnSession,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl ConfirmPaymentIntentPaymentMethodOptionsUpiSetupFutureUsage {
+    pub fn as_str(&self) -> &str {
+        use ConfirmPaymentIntentPaymentMethodOptionsUpiSetupFutureUsage::*;
+        match self {
+            None => "none",
+            OffSession => "off_session",
+            OnSession => "on_session",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsUpiSetupFutureUsage {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use ConfirmPaymentIntentPaymentMethodOptionsUpiSetupFutureUsage::*;
+        match s {
+            "none" => Ok(None),
+            "off_session" => Ok(OffSession),
+            "on_session" => Ok(OnSession),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "ConfirmPaymentIntentPaymentMethodOptionsUpiSetupFutureUsage"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsUpiSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsUpiSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsUpiSetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentMethodOptionsUpiSetupFutureUsage {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
 /// If this is a `us_bank_account` PaymentMethod, this sub-hash contains details about the US bank account payment method options.
 #[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodOptionsUsBankAccount {
@@ -38165,7 +39081,7 @@ pub struct ConfirmPaymentIntentPaymentMethodOptionsUsBankAccount {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub transaction_purpose:
         Option<ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountTransactionPurpose>,
-    /// Bank account verification method.
+    /// Bank account verification method. The default value is `automatic`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub verification_method:
         Option<ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod>,
@@ -38788,7 +39704,7 @@ impl<'de> serde::Deserialize<'de>
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-/// Bank account verification method.
+/// Bank account verification method. The default value is `automatic`.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod {
@@ -39754,8 +40670,6 @@ pub struct IncrementAuthorizationPaymentIntentPaymentDetails {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub customer_reference: Option<String>,
     /// A unique value assigned by the business to identify the transaction. Required for L2 and L3 rates.
-    ///
-    /// Required when the Payment Method Types array contains `card`, including when [automatic_payment_methods.enabled](/api/payment_intents/create#create_payment_intent-automatic_payment_methods-enabled) is set to `true`.
     ///
     /// For Cards, this field is truncated to 25 alphanumeric characters, excluding spaces, before being sent to card networks.
     /// For Klarna, this field is truncated to 255 characters and is visible to customers when they view the order in the Klarna app.

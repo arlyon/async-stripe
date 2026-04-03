@@ -26,6 +26,8 @@ pub struct PaymentIntentNextAction {
     /// Examples include: `redirect_to_url`, `use_stripe_sdk`, `alipay_handle_redirect`, `oxxo_display_details`, or `verify_with_microdeposits`.
     #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "type"))]
     pub type_: String,
+    pub upi_handle_redirect_or_display_qr_code:
+        Option<stripe_shared::PaymentIntentNextActionUpiHandleRedirectOrDisplayQrCode>,
     /// When confirming a PaymentIntent with Stripe.js, Stripe.js depends on the contents of this dictionary to invoke authentication flows.
     /// The shape of the contents is subject to change and is only intended to be used by Stripe.js.
     #[cfg_attr(
@@ -66,6 +68,8 @@ pub struct PaymentIntentNextActionBuilder {
     swish_handle_redirect_or_display_qr_code:
         Option<Option<stripe_shared::PaymentIntentNextActionSwishHandleRedirectOrDisplayQrCode>>,
     type_: Option<String>,
+    upi_handle_redirect_or_display_qr_code:
+        Option<Option<stripe_shared::PaymentIntentNextActionUpiHandleRedirectOrDisplayQrCode>>,
     use_stripe_sdk: Option<Option<miniserde::json::Value>>,
     verify_with_microdeposits:
         Option<Option<stripe_shared::PaymentIntentNextActionVerifyWithMicrodeposits>>,
@@ -141,6 +145,9 @@ const _: () = {
                     Deserialize::begin(&mut self.swish_handle_redirect_or_display_qr_code)
                 }
                 "type" => Deserialize::begin(&mut self.type_),
+                "upi_handle_redirect_or_display_qr_code" => {
+                    Deserialize::begin(&mut self.upi_handle_redirect_or_display_qr_code)
+                }
                 "use_stripe_sdk" => Deserialize::begin(&mut self.use_stripe_sdk),
                 "verify_with_microdeposits" => {
                     Deserialize::begin(&mut self.verify_with_microdeposits)
@@ -174,6 +181,7 @@ const _: () = {
                 redirect_to_url: Deserialize::default(),
                 swish_handle_redirect_or_display_qr_code: Deserialize::default(),
                 type_: Deserialize::default(),
+                upi_handle_redirect_or_display_qr_code: Deserialize::default(),
                 use_stripe_sdk: Deserialize::default(),
                 verify_with_microdeposits: Deserialize::default(),
                 wechat_pay_display_qr_code: Deserialize::default(),
@@ -198,6 +206,7 @@ const _: () = {
                 Some(redirect_to_url),
                 Some(swish_handle_redirect_or_display_qr_code),
                 Some(type_),
+                Some(upi_handle_redirect_or_display_qr_code),
                 Some(use_stripe_sdk),
                 Some(verify_with_microdeposits),
                 Some(wechat_pay_display_qr_code),
@@ -218,6 +227,7 @@ const _: () = {
                 self.redirect_to_url.take(),
                 self.swish_handle_redirect_or_display_qr_code.take(),
                 self.type_.take(),
+                self.upi_handle_redirect_or_display_qr_code.take(),
                 self.use_stripe_sdk.take(),
                 self.verify_with_microdeposits.take(),
                 self.wechat_pay_display_qr_code.take(),
@@ -242,6 +252,7 @@ const _: () = {
                 redirect_to_url,
                 swish_handle_redirect_or_display_qr_code,
                 type_,
+                upi_handle_redirect_or_display_qr_code,
                 use_stripe_sdk,
                 verify_with_microdeposits,
                 wechat_pay_display_qr_code,
@@ -308,6 +319,9 @@ const _: () = {
                         b.swish_handle_redirect_or_display_qr_code = FromValueOpt::from_value(v)
                     }
                     "type" => b.type_ = FromValueOpt::from_value(v),
+                    "upi_handle_redirect_or_display_qr_code" => {
+                        b.upi_handle_redirect_or_display_qr_code = FromValueOpt::from_value(v)
+                    }
                     "use_stripe_sdk" => b.use_stripe_sdk = FromValueOpt::from_value(v),
                     "verify_with_microdeposits" => {
                         b.verify_with_microdeposits = FromValueOpt::from_value(v)

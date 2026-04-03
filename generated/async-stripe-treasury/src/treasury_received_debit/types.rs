@@ -23,7 +23,8 @@ pub hosted_regulatory_receipt_url: Option<String>,
 pub id: stripe_treasury::TreasuryReceivedDebitId,
 pub initiating_payment_method_details: Option<stripe_treasury::TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethodDetails>,
 pub linked_flows: stripe_treasury::TreasuryReceivedDebitsResourceLinkedFlows,
-        /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
+        /// If the object exists in live mode, the value is `true`.
+    /// If the object exists in test mode, the value is `false`.
 pub livemode: bool,
     /// The network used for the ReceivedDebit.
 pub network: TreasuryReceivedDebitNetwork,

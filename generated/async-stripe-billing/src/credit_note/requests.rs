@@ -293,7 +293,7 @@ impl<'de> serde::Deserialize<'de> for PreviewCreditNoteEmailType {
 }
 /// Line items that make up the credit note.
 /// One of `amount`, `lines`, or `shipping_cost` must be provided.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct PreviewCreditNoteLines {
     /// The line item amount to credit.
     /// Only valid when `type` is `invoice_line_item`.
@@ -306,6 +306,12 @@ pub struct PreviewCreditNoteLines {
     /// The invoice line item to credit. Only valid when the `type` is `invoice_line_item`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub invoice_line_item: Option<String>,
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
+    /// This can be useful for storing additional information about the object in a structured format.
+    /// Individual keys can be unset by posting an empty value to them.
+    /// All keys can be unset by posting an empty value to `metadata`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<std::collections::HashMap<String, String>>,
     /// The line item quantity to credit.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub quantity: Option<u64>,
@@ -337,6 +343,7 @@ impl PreviewCreditNoteLines {
             amount: None,
             description: None,
             invoice_line_item: None,
+            metadata: None,
             quantity: None,
             tax_amounts: None,
             tax_rates: None,
@@ -741,7 +748,7 @@ impl<'de> serde::Deserialize<'de> for PreviewLinesCreditNoteEmailType {
 }
 /// Line items that make up the credit note.
 /// One of `amount`, `lines`, or `shipping_cost` must be provided.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct PreviewLinesCreditNoteLines {
     /// The line item amount to credit.
     /// Only valid when `type` is `invoice_line_item`.
@@ -754,6 +761,12 @@ pub struct PreviewLinesCreditNoteLines {
     /// The invoice line item to credit. Only valid when the `type` is `invoice_line_item`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub invoice_line_item: Option<String>,
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
+    /// This can be useful for storing additional information about the object in a structured format.
+    /// Individual keys can be unset by posting an empty value to them.
+    /// All keys can be unset by posting an empty value to `metadata`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<std::collections::HashMap<String, String>>,
     /// The line item quantity to credit.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub quantity: Option<u64>,
@@ -785,6 +798,7 @@ impl PreviewLinesCreditNoteLines {
             amount: None,
             description: None,
             invoice_line_item: None,
+            metadata: None,
             quantity: None,
             tax_amounts: None,
             tax_rates: None,
@@ -1208,7 +1222,7 @@ impl<'de> serde::Deserialize<'de> for CreateCreditNoteEmailType {
 }
 /// Line items that make up the credit note.
 /// One of `amount`, `lines`, or `shipping_cost` must be provided.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize)]
 pub struct CreateCreditNoteLines {
     /// The line item amount to credit.
     /// Only valid when `type` is `invoice_line_item`.
@@ -1221,6 +1235,12 @@ pub struct CreateCreditNoteLines {
     /// The invoice line item to credit. Only valid when the `type` is `invoice_line_item`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub invoice_line_item: Option<String>,
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
+    /// This can be useful for storing additional information about the object in a structured format.
+    /// Individual keys can be unset by posting an empty value to them.
+    /// All keys can be unset by posting an empty value to `metadata`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<std::collections::HashMap<String, String>>,
     /// The line item quantity to credit.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub quantity: Option<u64>,
@@ -1252,6 +1272,7 @@ impl CreateCreditNoteLines {
             amount: None,
             description: None,
             invoice_line_item: None,
+            metadata: None,
             quantity: None,
             tax_amounts: None,
             tax_rates: None,

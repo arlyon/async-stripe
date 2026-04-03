@@ -2,7 +2,7 @@
 /// might want to apply to a customer.
 /// Coupons may be applied to [subscriptions](https://api.stripe.com#subscriptions), [invoices](https://api.stripe.com#invoices),.
 /// [checkout sessions](https://docs.stripe.com/api/checkout/sessions), [quotes](https://api.stripe.com#quotes), and more.
-/// Coupons do not work with conventional one-off [charges](https://api.stripe.com#create_charge) or [payment intents](https://docs.stripe.com/api/payment_intents).
+/// Coupons do not work with conventional one-off [charges](/api/charges/create) or [payment intents](https://docs.stripe.com/api/payment_intents).
 ///
 /// For more details see <<https://stripe.com/docs/api/coupons/object>>.
 #[derive(Clone, Debug)]
@@ -28,7 +28,8 @@ pub struct Coupon {
     pub duration_in_months: Option<i64>,
     /// Unique identifier for the object.
     pub id: stripe_shared::CouponId,
-    /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
+    /// If the object exists in live mode, the value is `true`.
+    /// If the object exists in test mode, the value is `false`.
     pub livemode: bool,
     /// Maximum number of times this coupon can be redeemed, in total, across all customers, before it is no longer valid.
     pub max_redemptions: Option<i64>,

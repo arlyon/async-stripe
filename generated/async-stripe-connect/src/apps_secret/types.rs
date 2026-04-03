@@ -22,7 +22,8 @@ pub struct AppsSecret {
     pub expires_at: Option<stripe_types::Timestamp>,
     /// Unique identifier for the object.
     pub id: stripe_connect::AppsSecretId,
-    /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
+    /// If the object exists in live mode, the value is `true`.
+    /// If the object exists in test mode, the value is `false`.
     pub livemode: bool,
     /// A name for the secret that's unique within the scope.
     pub name: String,

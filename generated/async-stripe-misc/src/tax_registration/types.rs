@@ -20,7 +20,8 @@ pub struct TaxRegistration {
     pub expires_at: Option<stripe_types::Timestamp>,
     /// Unique identifier for the object.
     pub id: stripe_misc::TaxRegistrationId,
-    /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
+    /// If the object exists in live mode, the value is `true`.
+    /// If the object exists in test mode, the value is `false`.
     pub livemode: bool,
     /// The status of the registration.
     /// This field is present for convenience and can be deduced from `active_from` and `expires_at`.

@@ -17,7 +17,8 @@ pub struct RadarEarlyFraudWarning {
     pub fraud_type: String,
     /// Unique identifier for the object.
     pub id: stripe_fraud::RadarEarlyFraudWarningId,
-    /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
+    /// If the object exists in live mode, the value is `true`.
+    /// If the object exists in test mode, the value is `false`.
     pub livemode: bool,
     /// ID of the Payment Intent this early fraud warning is for, optionally expanded.
     pub payment_intent: Option<stripe_types::Expandable<stripe_shared::PaymentIntent>>,

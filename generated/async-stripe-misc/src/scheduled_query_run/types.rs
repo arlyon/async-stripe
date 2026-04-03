@@ -16,7 +16,8 @@ pub struct ScheduledQueryRun {
     pub file: Option<stripe_shared::File>,
     /// Unique identifier for the object.
     pub id: stripe_misc::ScheduledQueryRunId,
-    /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
+    /// If the object exists in live mode, the value is `true`.
+    /// If the object exists in test mode, the value is `false`.
     pub livemode: bool,
     /// Time at which the result expires and is no longer available for download.
     pub result_available_until: stripe_types::Timestamp,

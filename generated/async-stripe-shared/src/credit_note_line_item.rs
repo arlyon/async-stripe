@@ -16,8 +16,12 @@ pub struct CreditNoteLineItem {
     pub id: stripe_shared::CreditNoteLineItemId,
     /// ID of the invoice line item being credited
     pub invoice_line_item: Option<String>,
-    /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
+    /// If the object exists in live mode, the value is `true`.
+    /// If the object exists in test mode, the value is `false`.
     pub livemode: bool,
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
+    /// This can be useful for storing additional information about the object in a structured format.
+    pub metadata: Option<std::collections::HashMap<String, String>>,
     /// The pretax credit amounts (ex: discount, credit grants, etc) for this line item.
     pub pretax_credit_amounts: Vec<stripe_shared::CreditNotesPretaxCreditAmount>,
     /// The number of units of product being credited.
@@ -44,6 +48,7 @@ pub struct CreditNoteLineItemBuilder {
     id: Option<stripe_shared::CreditNoteLineItemId>,
     invoice_line_item: Option<Option<String>>,
     livemode: Option<bool>,
+    metadata: Option<Option<std::collections::HashMap<String, String>>>,
     pretax_credit_amounts: Option<Vec<stripe_shared::CreditNotesPretaxCreditAmount>>,
     quantity: Option<Option<u64>>,
     tax_rates: Option<Vec<stripe_shared::TaxRate>>,
@@ -100,6 +105,7 @@ const _: () = {
                 "id" => Deserialize::begin(&mut self.id),
                 "invoice_line_item" => Deserialize::begin(&mut self.invoice_line_item),
                 "livemode" => Deserialize::begin(&mut self.livemode),
+                "metadata" => Deserialize::begin(&mut self.metadata),
                 "pretax_credit_amounts" => Deserialize::begin(&mut self.pretax_credit_amounts),
                 "quantity" => Deserialize::begin(&mut self.quantity),
                 "tax_rates" => Deserialize::begin(&mut self.tax_rates),
@@ -120,6 +126,7 @@ const _: () = {
                 id: Deserialize::default(),
                 invoice_line_item: Deserialize::default(),
                 livemode: Deserialize::default(),
+                metadata: Deserialize::default(),
                 pretax_credit_amounts: Deserialize::default(),
                 quantity: Deserialize::default(),
                 tax_rates: Deserialize::default(),
@@ -139,6 +146,7 @@ const _: () = {
                 Some(id),
                 Some(invoice_line_item),
                 Some(livemode),
+                Some(metadata),
                 Some(pretax_credit_amounts),
                 Some(quantity),
                 Some(tax_rates),
@@ -154,6 +162,7 @@ const _: () = {
                 self.id.take(),
                 self.invoice_line_item.take(),
                 self.livemode,
+                self.metadata.take(),
                 self.pretax_credit_amounts.take(),
                 self.quantity,
                 self.tax_rates.take(),
@@ -173,6 +182,7 @@ const _: () = {
                 id,
                 invoice_line_item,
                 livemode,
+                metadata,
                 pretax_credit_amounts,
                 quantity,
                 tax_rates,
@@ -214,6 +224,7 @@ const _: () = {
                     "id" => b.id = FromValueOpt::from_value(v),
                     "invoice_line_item" => b.invoice_line_item = FromValueOpt::from_value(v),
                     "livemode" => b.livemode = FromValueOpt::from_value(v),
+                    "metadata" => b.metadata = FromValueOpt::from_value(v),
                     "pretax_credit_amounts" => {
                         b.pretax_credit_amounts = FromValueOpt::from_value(v)
                     }
@@ -234,7 +245,7 @@ const _: () = {
 impl serde::Serialize for CreditNoteLineItem {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("CreditNoteLineItem", 15)?;
+        let mut s = s.serialize_struct("CreditNoteLineItem", 16)?;
         s.serialize_field("amount", &self.amount)?;
         s.serialize_field("description", &self.description)?;
         s.serialize_field("discount_amount", &self.discount_amount)?;
@@ -242,6 +253,7 @@ impl serde::Serialize for CreditNoteLineItem {
         s.serialize_field("id", &self.id)?;
         s.serialize_field("invoice_line_item", &self.invoice_line_item)?;
         s.serialize_field("livemode", &self.livemode)?;
+        s.serialize_field("metadata", &self.metadata)?;
         s.serialize_field("pretax_credit_amounts", &self.pretax_credit_amounts)?;
         s.serialize_field("quantity", &self.quantity)?;
         s.serialize_field("tax_rates", &self.tax_rates)?;

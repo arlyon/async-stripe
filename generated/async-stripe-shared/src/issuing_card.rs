@@ -31,7 +31,11 @@ pub struct IssuingCard {
     /// Stripe’s assessment of whether this card’s details have been compromised.
     /// If this property isn't null, cancel and reissue the card to prevent fraudulent activity risk.
     pub latest_fraud_warning: Option<stripe_shared::IssuingCardFraudWarning>,
-    /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
+    /// Rules that control the lifecycle of this card, such as automatic cancellation.
+    /// Refer to our [documentation](/issuing/controls/lifecycle-controls) for more details.
+    pub lifecycle_controls: Option<stripe_shared::IssuingCardLifecycleControls>,
+    /// If the object exists in live mode, the value is `true`.
+    /// If the object exists in test mode, the value is `false`.
     pub livemode: bool,
     /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
@@ -78,6 +82,7 @@ pub struct IssuingCardBuilder {
     id: Option<stripe_shared::IssuingCardId>,
     last4: Option<String>,
     latest_fraud_warning: Option<Option<stripe_shared::IssuingCardFraudWarning>>,
+    lifecycle_controls: Option<Option<stripe_shared::IssuingCardLifecycleControls>>,
     livemode: Option<bool>,
     metadata: Option<std::collections::HashMap<String, String>>,
     number: Option<Option<String>>,
@@ -146,6 +151,7 @@ const _: () = {
                 "id" => Deserialize::begin(&mut self.id),
                 "last4" => Deserialize::begin(&mut self.last4),
                 "latest_fraud_warning" => Deserialize::begin(&mut self.latest_fraud_warning),
+                "lifecycle_controls" => Deserialize::begin(&mut self.lifecycle_controls),
                 "livemode" => Deserialize::begin(&mut self.livemode),
                 "metadata" => Deserialize::begin(&mut self.metadata),
                 "number" => Deserialize::begin(&mut self.number),
@@ -177,6 +183,7 @@ const _: () = {
                 id: Deserialize::default(),
                 last4: Deserialize::default(),
                 latest_fraud_warning: Deserialize::default(),
+                lifecycle_controls: Deserialize::default(),
                 livemode: Deserialize::default(),
                 metadata: Deserialize::default(),
                 number: Deserialize::default(),
@@ -207,6 +214,7 @@ const _: () = {
                 Some(id),
                 Some(last4),
                 Some(latest_fraud_warning),
+                Some(lifecycle_controls),
                 Some(livemode),
                 Some(metadata),
                 Some(number),
@@ -233,6 +241,7 @@ const _: () = {
                 self.id.take(),
                 self.last4.take(),
                 self.latest_fraud_warning.take(),
+                self.lifecycle_controls,
                 self.livemode,
                 self.metadata.take(),
                 self.number.take(),
@@ -263,6 +272,7 @@ const _: () = {
                 id,
                 last4,
                 latest_fraud_warning,
+                lifecycle_controls,
                 livemode,
                 metadata,
                 number,
@@ -315,6 +325,7 @@ const _: () = {
                     "id" => b.id = FromValueOpt::from_value(v),
                     "last4" => b.last4 = FromValueOpt::from_value(v),
                     "latest_fraud_warning" => b.latest_fraud_warning = FromValueOpt::from_value(v),
+                    "lifecycle_controls" => b.lifecycle_controls = FromValueOpt::from_value(v),
                     "livemode" => b.livemode = FromValueOpt::from_value(v),
                     "metadata" => b.metadata = FromValueOpt::from_value(v),
                     "number" => b.number = FromValueOpt::from_value(v),
@@ -341,7 +352,7 @@ const _: () = {
 impl serde::Serialize for IssuingCard {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("IssuingCard", 26)?;
+        let mut s = s.serialize_struct("IssuingCard", 27)?;
         s.serialize_field("brand", &self.brand)?;
         s.serialize_field("cancellation_reason", &self.cancellation_reason)?;
         s.serialize_field("cardholder", &self.cardholder)?;
@@ -354,6 +365,7 @@ impl serde::Serialize for IssuingCard {
         s.serialize_field("id", &self.id)?;
         s.serialize_field("last4", &self.last4)?;
         s.serialize_field("latest_fraud_warning", &self.latest_fraud_warning)?;
+        s.serialize_field("lifecycle_controls", &self.lifecycle_controls)?;
         s.serialize_field("livemode", &self.livemode)?;
         s.serialize_field("metadata", &self.metadata)?;
         s.serialize_field("number", &self.number)?;
