@@ -20,7 +20,8 @@ pub struct ReportingReportType {
     pub default_columns: Option<Vec<String>>,
     /// The [ID of the Report Type](https://docs.stripe.com/reporting/statements/api#available-report-types), such as `balance.summary.1`.
     pub id: stripe_misc::ReportingReportTypeId,
-    /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
+    /// If the object exists in live mode, the value is `true`.
+    /// If the object exists in test mode, the value is `false`.
     pub livemode: bool,
     /// Human-readable name of the Report Type
     pub name: String,

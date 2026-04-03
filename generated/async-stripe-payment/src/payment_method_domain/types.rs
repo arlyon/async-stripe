@@ -21,7 +21,8 @@ pub struct PaymentMethodDomain {
     pub id: stripe_payment::PaymentMethodDomainId,
     pub klarna: stripe_payment::PaymentMethodDomainResourcePaymentMethodStatus,
     pub link: stripe_payment::PaymentMethodDomainResourcePaymentMethodStatus,
-    /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
+    /// If the object exists in live mode, the value is `true`.
+    /// If the object exists in test mode, the value is `false`.
     pub livemode: bool,
     pub paypal: stripe_payment::PaymentMethodDomainResourcePaymentMethodStatus,
 }

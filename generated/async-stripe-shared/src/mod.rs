@@ -521,6 +521,10 @@ pub mod checkout_twint_payment_method_options;
 #[doc(inline)]
 pub use checkout_twint_payment_method_options::*;
 #[doc(hidden)]
+pub mod checkout_upi_payment_method_options;
+#[doc(inline)]
+pub use checkout_upi_payment_method_options::*;
+#[doc(hidden)]
 pub mod checkout_us_bank_account_payment_method_options;
 #[doc(inline)]
 pub use checkout_us_bank_account_payment_method_options::*;
@@ -1149,6 +1153,14 @@ pub mod issuing_card_google_pay;
 #[doc(inline)]
 pub use issuing_card_google_pay::*;
 #[doc(hidden)]
+pub mod issuing_card_lifecycle_conditions;
+#[doc(inline)]
+pub use issuing_card_lifecycle_conditions::*;
+#[doc(hidden)]
+pub mod issuing_card_lifecycle_controls;
+#[doc(inline)]
+pub use issuing_card_lifecycle_controls::*;
+#[doc(hidden)]
 pub mod issuing_card_shipping;
 #[doc(inline)]
 pub use issuing_card_shipping::*;
@@ -1493,6 +1505,10 @@ pub mod mandate_options_payto;
 #[doc(inline)]
 pub use mandate_options_payto::*;
 #[doc(hidden)]
+pub mod mandate_options_upi;
+#[doc(inline)]
+pub use mandate_options_upi::*;
+#[doc(hidden)]
 pub mod mandate_payment_method_details;
 #[doc(inline)]
 pub use mandate_payment_method_details::*;
@@ -1516,6 +1532,10 @@ pub use mandate_sepa_debit::*;
 pub mod mandate_single_use;
 #[doc(inline)]
 pub use mandate_single_use::*;
+#[doc(hidden)]
+pub mod mandate_upi;
+#[doc(inline)]
+pub use mandate_upi::*;
 #[doc(hidden)]
 pub mod mandate_us_bank_account;
 #[doc(inline)]
@@ -1764,6 +1784,14 @@ pub use payment_intent_next_action_swish_handle_redirect_or_display_qr_code::*;
 pub mod payment_intent_next_action_swish_qr_code;
 #[doc(inline)]
 pub use payment_intent_next_action_swish_qr_code::*;
+#[doc(hidden)]
+pub mod payment_intent_next_action_upi_handle_redirect_or_display_qr_code;
+#[doc(inline)]
+pub use payment_intent_next_action_upi_handle_redirect_or_display_qr_code::*;
+#[doc(hidden)]
+pub mod payment_intent_next_action_upiqr_code;
+#[doc(inline)]
+pub use payment_intent_next_action_upiqr_code::*;
 #[doc(hidden)]
 pub mod payment_intent_next_action_verify_with_microdeposits;
 #[doc(inline)]
@@ -2357,6 +2385,10 @@ pub mod payment_method_details_payment_record_giropay;
 #[doc(inline)]
 pub use payment_method_details_payment_record_giropay::*;
 #[doc(hidden)]
+pub mod payment_method_details_payment_record_ideal;
+#[doc(inline)]
+pub use payment_method_details_payment_record_ideal::*;
+#[doc(hidden)]
 pub mod payment_method_details_payment_record_kakao_pay;
 #[doc(inline)]
 pub use payment_method_details_payment_record_kakao_pay::*;
@@ -2368,6 +2400,10 @@ pub use payment_method_details_payment_record_konbini::*;
 pub mod payment_method_details_payment_record_mb_way;
 #[doc(inline)]
 pub use payment_method_details_payment_record_mb_way::*;
+#[doc(hidden)]
+pub mod payment_method_details_payment_record_mobilepay;
+#[doc(inline)]
+pub use payment_method_details_payment_record_mobilepay::*;
 #[doc(hidden)]
 pub mod payment_method_details_payment_record_multibanco;
 #[doc(inline)]
@@ -2381,13 +2417,41 @@ pub mod payment_method_details_payment_record_oxxo;
 #[doc(inline)]
 pub use payment_method_details_payment_record_oxxo::*;
 #[doc(hidden)]
+pub mod payment_method_details_payment_record_payco;
+#[doc(inline)]
+pub use payment_method_details_payment_record_payco::*;
+#[doc(hidden)]
 pub mod payment_method_details_payment_record_paynow;
 #[doc(inline)]
 pub use payment_method_details_payment_record_paynow::*;
 #[doc(hidden)]
+pub mod payment_method_details_payment_record_pix;
+#[doc(inline)]
+pub use payment_method_details_payment_record_pix::*;
+#[doc(hidden)]
 pub mod payment_method_details_payment_record_promptpay;
 #[doc(inline)]
 pub use payment_method_details_payment_record_promptpay::*;
+#[doc(hidden)]
+pub mod payment_method_details_payment_record_samsung_pay;
+#[doc(inline)]
+pub use payment_method_details_payment_record_samsung_pay::*;
+#[doc(hidden)]
+pub mod payment_method_details_payment_record_sepa_debit;
+#[doc(inline)]
+pub use payment_method_details_payment_record_sepa_debit::*;
+#[doc(hidden)]
+pub mod payment_method_details_payment_record_sofort;
+#[doc(inline)]
+pub use payment_method_details_payment_record_sofort::*;
+#[doc(hidden)]
+pub mod payment_method_details_payment_record_swish;
+#[doc(inline)]
+pub use payment_method_details_payment_record_swish::*;
+#[doc(hidden)]
+pub mod payment_method_details_payment_record_twint;
+#[doc(inline)]
+pub use payment_method_details_payment_record_twint::*;
 #[doc(hidden)]
 pub mod payment_method_details_payment_record_us_bank_account;
 #[doc(inline)]
@@ -2456,6 +2520,10 @@ pub use payment_method_details_swish::*;
 pub mod payment_method_details_twint;
 #[doc(inline)]
 pub use payment_method_details_twint::*;
+#[doc(hidden)]
+pub mod payment_method_details_upi;
+#[doc(inline)]
+pub use payment_method_details_upi::*;
 #[doc(hidden)]
 pub mod payment_method_details_us_bank_account;
 #[doc(inline)]
@@ -2637,6 +2705,10 @@ pub mod payment_method_options_kr_card;
 #[doc(inline)]
 pub use payment_method_options_kr_card::*;
 #[doc(hidden)]
+pub mod payment_method_options_mandate_options_upi;
+#[doc(inline)]
+pub use payment_method_options_mandate_options_upi::*;
+#[doc(hidden)]
 pub mod payment_method_options_mb_way;
 #[doc(inline)]
 pub use payment_method_options_mb_way::*;
@@ -2688,6 +2760,10 @@ pub use payment_method_options_sofort::*;
 pub mod payment_method_options_twint;
 #[doc(inline)]
 pub use payment_method_options_twint::*;
+#[doc(hidden)]
+pub mod payment_method_options_upi;
+#[doc(inline)]
+pub use payment_method_options_upi::*;
 #[doc(hidden)]
 pub mod payment_method_options_us_bank_account_mandate_options;
 #[doc(inline)]
@@ -2764,6 +2840,10 @@ pub use payment_method_swish::*;
 pub mod payment_method_twint;
 #[doc(inline)]
 pub use payment_method_twint::*;
+#[doc(hidden)]
+pub mod payment_method_upi;
+#[doc(inline)]
+pub use payment_method_upi::*;
 #[doc(hidden)]
 pub mod payment_method_us_bank_account;
 #[doc(inline)]
@@ -3020,6 +3100,10 @@ pub use payments_primitives_payment_records_resource_payment_method_details::*;
 pub mod payments_primitives_payment_records_resource_payment_method_konbini_details_resource_store;
 #[doc(inline)]
 pub use payments_primitives_payment_records_resource_payment_method_konbini_details_resource_store::*;
+#[doc(hidden)]
+pub mod payments_primitives_payment_records_resource_payment_method_mobilepay_details_resource_card;
+#[doc(inline)]
+pub use payments_primitives_payment_records_resource_payment_method_mobilepay_details_resource_card::*;
 #[doc(hidden)]
 pub mod payments_primitives_payment_records_resource_processor_details;
 #[doc(inline)]
@@ -3341,6 +3425,10 @@ pub mod setup_attempt_payment_method_details_sofort;
 #[doc(inline)]
 pub use setup_attempt_payment_method_details_sofort::*;
 #[doc(hidden)]
+pub mod setup_attempt_payment_method_details_upi;
+#[doc(inline)]
+pub use setup_attempt_payment_method_details_upi::*;
+#[doc(hidden)]
 pub mod setup_attempt_payment_method_details_us_bank_account;
 #[doc(inline)]
 pub use setup_attempt_payment_method_details_us_bank_account::*;
@@ -3424,6 +3512,10 @@ pub use setup_intent_payment_method_options_payto::*;
 pub mod setup_intent_payment_method_options_sepa_debit;
 #[doc(inline)]
 pub use setup_intent_payment_method_options_sepa_debit::*;
+#[doc(hidden)]
+pub mod setup_intent_payment_method_options_upi;
+#[doc(inline)]
+pub use setup_intent_payment_method_options_upi::*;
 #[doc(hidden)]
 pub mod setup_intent_payment_method_options_us_bank_account;
 #[doc(inline)]
@@ -3692,6 +3784,10 @@ pub use subscriptions_resource_pending_update::*;
 pub mod subscriptions_resource_subscription_invoice_settings;
 #[doc(inline)]
 pub use subscriptions_resource_subscription_invoice_settings::*;
+#[doc(hidden)]
+pub mod subscriptions_resource_subscription_presentment_details;
+#[doc(inline)]
+pub use subscriptions_resource_subscription_presentment_details::*;
 #[doc(hidden)]
 pub mod subscriptions_resource_trial_settings_end_behavior;
 #[doc(inline)]

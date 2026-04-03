@@ -62,7 +62,8 @@ pub struct PaymentMethodConfiguration {
     pub konbini: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
     pub kr_card: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
     pub link: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
-    /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
+    /// If the object exists in live mode, the value is `true`.
+    /// If the object exists in test mode, the value is `false`.
     pub livemode: bool,
     pub mb_way: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
     pub mobilepay: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
@@ -89,6 +90,7 @@ pub struct PaymentMethodConfiguration {
     pub sofort: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
     pub swish: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
     pub twint: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
+    pub upi: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
     pub us_bank_account: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
     pub wechat_pay: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
     pub zip: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
@@ -158,6 +160,7 @@ pub struct PaymentMethodConfigurationBuilder {
     sofort: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
     swish: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
     twint: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
+    upi: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
     us_bank_account:
         Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
     wechat_pay: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
@@ -262,6 +265,7 @@ const _: () = {
                 "sofort" => Deserialize::begin(&mut self.sofort),
                 "swish" => Deserialize::begin(&mut self.swish),
                 "twint" => Deserialize::begin(&mut self.twint),
+                "upi" => Deserialize::begin(&mut self.upi),
                 "us_bank_account" => Deserialize::begin(&mut self.us_bank_account),
                 "wechat_pay" => Deserialize::begin(&mut self.wechat_pay),
                 "zip" => Deserialize::begin(&mut self.zip),
@@ -329,6 +333,7 @@ const _: () = {
                 sofort: Deserialize::default(),
                 swish: Deserialize::default(),
                 twint: Deserialize::default(),
+                upi: Deserialize::default(),
                 us_bank_account: Deserialize::default(),
                 wechat_pay: Deserialize::default(),
                 zip: Deserialize::default(),
@@ -395,6 +400,7 @@ const _: () = {
                 Some(sofort),
                 Some(swish),
                 Some(twint),
+                Some(upi),
                 Some(us_bank_account),
                 Some(wechat_pay),
                 Some(zip),
@@ -457,6 +463,7 @@ const _: () = {
                 self.sofort.take(),
                 self.swish.take(),
                 self.twint.take(),
+                self.upi.take(),
                 self.us_bank_account.take(),
                 self.wechat_pay.take(),
                 self.zip.take(),
@@ -523,6 +530,7 @@ const _: () = {
                 sofort,
                 swish,
                 twint,
+                upi,
                 us_bank_account,
                 wechat_pay,
                 zip,
@@ -611,6 +619,7 @@ const _: () = {
                     "sofort" => b.sofort = FromValueOpt::from_value(v),
                     "swish" => b.swish = FromValueOpt::from_value(v),
                     "twint" => b.twint = FromValueOpt::from_value(v),
+                    "upi" => b.upi = FromValueOpt::from_value(v),
                     "us_bank_account" => b.us_bank_account = FromValueOpt::from_value(v),
                     "wechat_pay" => b.wechat_pay = FromValueOpt::from_value(v),
                     "zip" => b.zip = FromValueOpt::from_value(v),
@@ -625,7 +634,7 @@ const _: () = {
 impl serde::Serialize for PaymentMethodConfiguration {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("PaymentMethodConfiguration", 62)?;
+        let mut s = s.serialize_struct("PaymentMethodConfiguration", 63)?;
         s.serialize_field("acss_debit", &self.acss_debit)?;
         s.serialize_field("active", &self.active)?;
         s.serialize_field("affirm", &self.affirm)?;
@@ -684,6 +693,7 @@ impl serde::Serialize for PaymentMethodConfiguration {
         s.serialize_field("sofort", &self.sofort)?;
         s.serialize_field("swish", &self.swish)?;
         s.serialize_field("twint", &self.twint)?;
+        s.serialize_field("upi", &self.upi)?;
         s.serialize_field("us_bank_account", &self.us_bank_account)?;
         s.serialize_field("wechat_pay", &self.wechat_pay)?;
         s.serialize_field("zip", &self.zip)?;

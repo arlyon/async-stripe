@@ -12,6 +12,7 @@ pub struct SetupIntentPaymentMethodOptions {
     pub paypal: Option<stripe_shared::SetupIntentPaymentMethodOptionsPaypal>,
     pub payto: Option<stripe_shared::SetupIntentPaymentMethodOptionsPayto>,
     pub sepa_debit: Option<stripe_shared::SetupIntentPaymentMethodOptionsSepaDebit>,
+    pub upi: Option<stripe_shared::SetupIntentPaymentMethodOptionsUpi>,
     pub us_bank_account: Option<stripe_shared::SetupIntentPaymentMethodOptionsUsBankAccount>,
 }
 #[doc(hidden)]
@@ -26,6 +27,7 @@ pub struct SetupIntentPaymentMethodOptionsBuilder {
     paypal: Option<Option<stripe_shared::SetupIntentPaymentMethodOptionsPaypal>>,
     payto: Option<Option<stripe_shared::SetupIntentPaymentMethodOptionsPayto>>,
     sepa_debit: Option<Option<stripe_shared::SetupIntentPaymentMethodOptionsSepaDebit>>,
+    upi: Option<Option<stripe_shared::SetupIntentPaymentMethodOptionsUpi>>,
     us_bank_account: Option<Option<stripe_shared::SetupIntentPaymentMethodOptionsUsBankAccount>>,
 }
 
@@ -79,6 +81,7 @@ const _: () = {
                 "paypal" => Deserialize::begin(&mut self.paypal),
                 "payto" => Deserialize::begin(&mut self.payto),
                 "sepa_debit" => Deserialize::begin(&mut self.sepa_debit),
+                "upi" => Deserialize::begin(&mut self.upi),
                 "us_bank_account" => Deserialize::begin(&mut self.us_bank_account),
                 _ => <dyn Visitor>::ignore(),
             })
@@ -96,6 +99,7 @@ const _: () = {
                 paypal: Deserialize::default(),
                 payto: Deserialize::default(),
                 sepa_debit: Deserialize::default(),
+                upi: Deserialize::default(),
                 us_bank_account: Deserialize::default(),
             }
         }
@@ -112,6 +116,7 @@ const _: () = {
                 Some(paypal),
                 Some(payto),
                 Some(sepa_debit),
+                Some(upi),
                 Some(us_bank_account),
             ) = (
                 self.acss_debit.take(),
@@ -124,6 +129,7 @@ const _: () = {
                 self.paypal.take(),
                 self.payto.take(),
                 self.sepa_debit.take(),
+                self.upi.take(),
                 self.us_bank_account.take(),
             )
             else {
@@ -140,6 +146,7 @@ const _: () = {
                 paypal,
                 payto,
                 sepa_debit,
+                upi,
                 us_bank_account,
             })
         }
@@ -178,6 +185,7 @@ const _: () = {
                     "paypal" => b.paypal = FromValueOpt::from_value(v),
                     "payto" => b.payto = FromValueOpt::from_value(v),
                     "sepa_debit" => b.sepa_debit = FromValueOpt::from_value(v),
+                    "upi" => b.upi = FromValueOpt::from_value(v),
                     "us_bank_account" => b.us_bank_account = FromValueOpt::from_value(v),
                     _ => {}
                 }

@@ -4,7 +4,7 @@
 pub struct SetupIntentPaymentMethodOptionsUsBankAccount {
     pub financial_connections: Option<stripe_shared::LinkedAccountOptionsCommon>,
     pub mandate_options: Option<stripe_shared::PaymentMethodOptionsUsBankAccountMandateOptions>,
-    /// Bank account verification method.
+    /// Bank account verification method. The default value is `automatic`.
     pub verification_method: Option<SetupIntentPaymentMethodOptionsUsBankAccountVerificationMethod>,
 }
 #[doc(hidden)]
@@ -117,7 +117,7 @@ const _: () = {
         }
     }
 };
-/// Bank account verification method.
+/// Bank account verification method. The default value is `automatic`.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum SetupIntentPaymentMethodOptionsUsBankAccountVerificationMethod {

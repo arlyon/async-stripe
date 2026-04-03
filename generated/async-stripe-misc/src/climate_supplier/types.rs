@@ -168,6 +168,7 @@ pub enum ClimateSupplierRemovalPathway {
     BiomassCarbonRemovalAndStorage,
     DirectAirCapture,
     EnhancedWeathering,
+    MarineCarbonRemoval,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
     Unknown(String),
 }
@@ -178,6 +179,7 @@ impl ClimateSupplierRemovalPathway {
             BiomassCarbonRemovalAndStorage => "biomass_carbon_removal_and_storage",
             DirectAirCapture => "direct_air_capture",
             EnhancedWeathering => "enhanced_weathering",
+            MarineCarbonRemoval => "marine_carbon_removal",
             Unknown(v) => v,
         }
     }
@@ -191,6 +193,7 @@ impl std::str::FromStr for ClimateSupplierRemovalPathway {
             "biomass_carbon_removal_and_storage" => Ok(BiomassCarbonRemovalAndStorage),
             "direct_air_capture" => Ok(DirectAirCapture),
             "enhanced_weathering" => Ok(EnhancedWeathering),
+            "marine_carbon_removal" => Ok(MarineCarbonRemoval),
             v => {
                 tracing::warn!(
                     "Unknown value '{}' for enum '{}'",

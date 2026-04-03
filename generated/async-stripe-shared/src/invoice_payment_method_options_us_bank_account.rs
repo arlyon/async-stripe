@@ -4,7 +4,7 @@
 pub struct InvoicePaymentMethodOptionsUsBankAccount {
     pub financial_connections:
         Option<stripe_shared::InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptions>,
-    /// Bank account verification method.
+    /// Bank account verification method. The default value is `automatic`.
     pub verification_method: Option<InvoicePaymentMethodOptionsUsBankAccountVerificationMethod>,
 }
 #[doc(hidden)]
@@ -111,7 +111,7 @@ const _: () = {
         }
     }
 };
-/// Bank account verification method.
+/// Bank account verification method. The default value is `automatic`.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum InvoicePaymentMethodOptionsUsBankAccountVerificationMethod {

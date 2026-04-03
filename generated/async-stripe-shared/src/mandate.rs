@@ -7,7 +7,8 @@ pub struct Mandate {
     pub customer_acceptance: stripe_shared::CustomerAcceptance,
     /// Unique identifier for the object.
     pub id: stripe_shared::MandateId,
-    /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
+    /// If the object exists in live mode, the value is `true`.
+    /// If the object exists in test mode, the value is `false`.
     pub livemode: bool,
     pub multi_use: Option<stripe_shared::MandateMultiUse>,
     /// The account (if any) that the mandate is intended for.

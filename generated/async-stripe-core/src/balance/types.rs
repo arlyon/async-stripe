@@ -18,7 +18,8 @@ pub struct Balance {
     /// Funds that you can pay out using Instant Payouts.
     pub instant_available: Option<Vec<stripe_core::BalanceAmountNet>>,
     pub issuing: Option<stripe_core::BalanceDetail>,
-    /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
+    /// If the object exists in live mode, the value is `true`.
+    /// If the object exists in test mode, the value is `false`.
     pub livemode: bool,
     /// Funds that aren't available in the balance yet.
     /// You can find the pending balance for each currency and each payment type in the `source_types` property.

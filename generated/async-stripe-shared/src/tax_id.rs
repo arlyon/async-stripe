@@ -17,7 +17,8 @@ pub struct TaxId {
     pub customer_account: Option<String>,
     /// Unique identifier for the object.
     pub id: stripe_shared::TaxIdId,
-    /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
+    /// If the object exists in live mode, the value is `true`.
+    /// If the object exists in test mode, the value is `false`.
     pub livemode: bool,
     /// The account or customer the tax ID belongs to.
     pub owner: Option<stripe_shared::TaxIDsOwner>,
