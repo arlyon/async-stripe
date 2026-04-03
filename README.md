@@ -51,38 +51,42 @@ Here's a quick example of how to create a new Stripe Customer.
 You'll need the main `async-stripe` crate for the client and a resource
 crate for the APIs you want to use (e.g., `stripe-core` for customers).
 
-    [dependencies]
-    async-stripe = "=1.0.0-alpha.8"
-    async-stripe-core = { version = "=1.0.0-alpha.8", features = ["customer"] }
-    tokio = { version = "1", features = ["full"] }
+```toml
+[dependencies]
+async-stripe = "=1.0.0-alpha.8"
+async-stripe-core = { version = "=1.0.0-alpha.8", features = ["customer"] }
+tokio = { version = "1", features = ["full"] }
+```
 
 **2. Create a Customer:**
 
 The new API uses a builder pattern that flows naturally from request
 creation to sending.
 
-    use stripe::Client;
-    use stripe_core::customer::CreateCustomer;
+```rust
+use stripe::Client;
+use stripe_core::customer::CreateCustomer;
 
-    #[tokio::main]
-    async fn main() -> Result<(), Box<dyn std::error::Error>> {
-        // 1. Initialize the client
-        let secret_key = std::env::var("STRIPE_SECRET_KEY").expect("Missing STRIPE_SECRET_KEY in env");
-        let client = Client::new(secret_key);
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    // 1. Initialize the client
+    let secret_key = std::env::var("STRIPE_SECRET_KEY").expect("Missing STRIPE_SECRET_KEY in env");
+    let client = Client::new(secret_key);
 
-        // 2. Create a customer using the builder pattern
-        let customer = CreateCustomer::new()
-            .name("Alexander Lyon")
-            .email("test@async-stripe.com")
-            .description("A fake customer that is used to illustrate the examples in async-stripe.")
-            .metadata([(String::from("async-stripe"), String::from("true"))])
-            .send(&client)
-            .await?;
+    // 2. Create a customer using the builder pattern
+    let customer = CreateCustomer::new()
+        .name("Alexander Lyon")
+        .email("test@async-stripe.com")
+        .description("A fake customer that is used to illustrate the examples in async-stripe.")
+        .metadata([(String::from("async-stripe"), String::from("true"))])
+        .send(&client)
+        .await?;
 
-        println!("Successfully created customer: {} ({})", customer.name.unwrap_or_default(), customer.id);
+    println!("Successfully created customer: {} ({})", customer.name.unwrap_or_default(), customer.id);
 
-        Ok(())
-    }
+    Ok(())
+}
+```
 
 ## How It Works
 
@@ -138,6 +142,7 @@ to include the ones corresponding to the API sections you use.
 | **Treasury** | `stripe-treasury` | Financial accounts and money movement. |
 | **Miscellaneous** | `stripe-misc` | Tax, Identity, Reporting, Sigma, etc. |
 
+> [!NOTE]
 > For a complete, up-to-date mapping of every API object to its crate
 > and feature flag, see the
 > [`crate_info.md`](https://www.google.com/search?q=crate_info.md "null")
@@ -167,26 +172,28 @@ For each Stripe resource you want to interact with, add its crate and
 enable the corresponding feature flag. For example, to use `Customer`
 and `Charge` objects:
 
-    # Cargo.toml
-    [dependencies]
-    # ...
-    stripe-core = { version = "...", features = ["customer", "charge"] }
+```toml
+[dependencies]
+stripe-core = { version = "...", features = ["customer", "charge"] }
+```
 
 ### 3. Pagination
 
 Listing resources is now more ergonomic. You can call `.paginate()`
 directly on a `List*` request struct to get a stream of results.
 
-    use stripe_core::customer::ListCustomer;
-    use futures_util::TryStreamExt;
+```rust
+use stripe_core::customer::ListCustomer;
+use futures_util::TryStreamExt;
 
-    # async fn run(client: &stripe::Client) -> Result<(), stripe::StripeError> {
+async fn run(client: &stripe::Client) -> Result<(), stripe::StripeError> {
     let mut stream = ListCustomer::new().paginate().stream(client);
     while let Some(customer) = stream.try_next().await? {
         println!("Got customer: {}", customer.id);
     }
-    # Ok(())
-    # }
+    Ok(())
+}
+```
 
 ### 4. Handling Webhooks
 
@@ -194,20 +201,22 @@ Webhook handling is now isolated in the `stripe-webhook` crate and the
 API is much simpler. You can now match directly on the event object
 type.
 
-    use stripe_webhook::{Event, EventObject, Webhook};
+```rust
+use stripe_webhook::{Event, EventObject, Webhook};
 
-    fn handle_webhook(payload: &str, sig: &str, secret: &str) {
-        let event = Webhook::construct_event(payload, sig, secret).unwrap();
-        match event.data.object {
-            EventObject::CheckoutSessionCompleted(session) => {
-                println!("Received checkout session completed webhook with id: {:?}", session.id);
-            }
-            EventObject::AccountUpdated(account) => {
-                println!("Received account updated webhook for account: {:?}", account.id);
-            }
-            _ => println!("Unknown event encountered in webhook: {:?}", event.type_),
+fn handle_webhook(payload: &str, sig: &str, secret: &str) {
+    let event = Webhook::construct_event(payload, sig, secret).unwrap();
+    match event.data.object {
+        EventObject::CheckoutSessionCompleted(session) => {
+            println!("Received checkout session completed webhook with id: {:?}", session.id);
         }
+        EventObject::AccountUpdated(account) => {
+            println!("Received account updated webhook for account: {:?}", account.id);
+        }
+        _ => println!("Unknown event encountered in webhook: {:?}", event.type_),
     }
+}
+```
 
 ## Project Status
 
@@ -221,7 +230,7 @@ latest Stripe features as soon as they are available.
 ## Contributing
 
 Contributions are welcome! Please see
-[CONTRIBUTING.md](https://www.google.com/search?q=CONTRIBUTING.md "null")
+[CONTRIBUTING.md](CONTRIBUTING.md)
 for details on how to get started, run tests, and contribute to the code
 generation process.
 
@@ -230,13 +239,13 @@ generation process.
 This project is licensed under either of:
 
 - Apache License, Version 2.0
-  ([LICENSE-APACHE](https://www.google.com/search?q=LICENSE-APACHE "null")
+  ([LICENSE-APACHE](LICENSE-APACHE)
   or http://www.apache.org/licenses/LICENSE-2.0)
 
 - MIT license
-  ([LICENSE-MIT](https://www.google.com/search?q=LICENSE-MIT "null") or
+  ([LICENSE-MIT](LICENSE-MIT) or
   http://opensource.org/licenses/MIT)
 
 This project began as a fork of
-[stripe-rs](https://github.com/wyyerd/stripe-rs "null"), and we are
+[stripe-rs](https://github.com/wyyerd/stripe-rs), and we are
 incredibly grateful for their foundational work.
