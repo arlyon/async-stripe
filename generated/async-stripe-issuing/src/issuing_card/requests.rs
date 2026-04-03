@@ -227,6 +227,8 @@ struct CreateIssuingCardBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     financial_account: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    lifecycle_controls: Option<CreateIssuingCardLifecycleControls>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     metadata: Option<std::collections::HashMap<String, String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     personalization_design: Option<String>,
@@ -259,6 +261,7 @@ impl CreateIssuingCardBuilder {
             exp_year: None,
             expand: None,
             financial_account: None,
+            lifecycle_controls: None,
             metadata: None,
             personalization_design: None,
             pin: None,
@@ -270,6 +273,30 @@ impl CreateIssuingCardBuilder {
             status: None,
             type_: type_.into(),
         }
+    }
+}
+/// Rules that control the lifecycle of this card, such as automatic cancellation.
+/// Refer to our [documentation](/issuing/controls/lifecycle-controls) for more details.
+#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+pub struct CreateIssuingCardLifecycleControls {
+    /// Cancels the card after the specified conditions are met.
+    pub cancel_after: CreateIssuingCardLifecycleControlsCancelAfter,
+}
+impl CreateIssuingCardLifecycleControls {
+    pub fn new(cancel_after: impl Into<CreateIssuingCardLifecycleControlsCancelAfter>) -> Self {
+        Self { cancel_after: cancel_after.into() }
+    }
+}
+/// Cancels the card after the specified conditions are met.
+#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+pub struct CreateIssuingCardLifecycleControlsCancelAfter {
+    /// The card is automatically cancelled when it makes this number of non-zero payment authorizations and transactions.
+    /// The count includes penny authorizations, but doesn't include non-payment actions, such as authorization advice.
+    pub payment_count: u64,
+}
+impl CreateIssuingCardLifecycleControlsCancelAfter {
+    pub fn new(payment_count: impl Into<u64>) -> Self {
+        Self { payment_count: payment_count.into() }
     }
 }
 /// The address where the card will be shipped.
@@ -3884,6 +3911,15 @@ impl CreateIssuingCard {
     /// This field allows a card to be reassigned to a different financial account.
     pub fn financial_account(mut self, financial_account: impl Into<String>) -> Self {
         self.inner.financial_account = Some(financial_account.into());
+        self
+    }
+    /// Rules that control the lifecycle of this card, such as automatic cancellation.
+    /// Refer to our [documentation](/issuing/controls/lifecycle-controls) for more details.
+    pub fn lifecycle_controls(
+        mut self,
+        lifecycle_controls: impl Into<CreateIssuingCardLifecycleControls>,
+    ) -> Self {
+        self.inner.lifecycle_controls = Some(lifecycle_controls.into());
         self
     }
     /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.

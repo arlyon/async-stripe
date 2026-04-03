@@ -23,7 +23,8 @@ pub struct InvoiceLineItem {
     pub id: stripe_shared::InvoiceLineItemId,
     /// The ID of the invoice that contains this line item.
     pub invoice: Option<String>,
-    /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
+    /// If the object exists in live mode, the value is `true`.
+    /// If the object exists in test mode, the value is `false`.
     pub livemode: bool,
     /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
@@ -37,8 +38,13 @@ pub struct InvoiceLineItem {
     pub pretax_credit_amounts: Option<Vec<stripe_shared::InvoicesResourcePretaxCreditAmount>>,
     /// The pricing information of the line item.
     pub pricing: Option<stripe_shared::BillingBillResourceInvoicingPricingPricing>,
-    /// The quantity of the subscription, if the line item is a subscription or a proration.
+    /// Quantity of units for the invoice line item in integer format, with any decimal precision truncated.
+    /// For the line item's full-precision decimal quantity, use `quantity_decimal`.
+    /// This field will be deprecated in favor of `quantity_decimal` in a future version.
+    /// If the line item is a proration or subscription, the quantity of the subscription that the proration was computed for.
     pub quantity: Option<u64>,
+    /// Non-negative decimal with at most 12 decimal places. The quantity of units for the line item.
+    pub quantity_decimal: Option<String>,
     pub subscription: Option<stripe_types::Expandable<stripe_shared::Subscription>>,
     /// The subtotal of the line item, in cents (or local equivalent), before any discounts or taxes.
     pub subtotal: i64,
@@ -64,6 +70,7 @@ pub struct InvoiceLineItemBuilder {
     pretax_credit_amounts: Option<Option<Vec<stripe_shared::InvoicesResourcePretaxCreditAmount>>>,
     pricing: Option<Option<stripe_shared::BillingBillResourceInvoicingPricingPricing>>,
     quantity: Option<Option<u64>>,
+    quantity_decimal: Option<Option<String>>,
     subscription: Option<Option<stripe_types::Expandable<stripe_shared::Subscription>>>,
     subtotal: Option<i64>,
     taxes: Option<Option<Vec<stripe_shared::BillingBillResourceInvoicingTaxesTax>>>,
@@ -124,6 +131,7 @@ const _: () = {
                 "pretax_credit_amounts" => Deserialize::begin(&mut self.pretax_credit_amounts),
                 "pricing" => Deserialize::begin(&mut self.pricing),
                 "quantity" => Deserialize::begin(&mut self.quantity),
+                "quantity_decimal" => Deserialize::begin(&mut self.quantity_decimal),
                 "subscription" => Deserialize::begin(&mut self.subscription),
                 "subtotal" => Deserialize::begin(&mut self.subtotal),
                 "taxes" => Deserialize::begin(&mut self.taxes),
@@ -148,6 +156,7 @@ const _: () = {
                 pretax_credit_amounts: Deserialize::default(),
                 pricing: Deserialize::default(),
                 quantity: Deserialize::default(),
+                quantity_decimal: Deserialize::default(),
                 subscription: Deserialize::default(),
                 subtotal: Deserialize::default(),
                 taxes: Deserialize::default(),
@@ -171,6 +180,7 @@ const _: () = {
                 Some(pretax_credit_amounts),
                 Some(pricing),
                 Some(quantity),
+                Some(quantity_decimal),
                 Some(subscription),
                 Some(subtotal),
                 Some(taxes),
@@ -190,6 +200,7 @@ const _: () = {
                 self.pretax_credit_amounts.take(),
                 self.pricing.take(),
                 self.quantity,
+                self.quantity_decimal.take(),
                 self.subscription.take(),
                 self.subtotal,
                 self.taxes.take(),
@@ -213,6 +224,7 @@ const _: () = {
                 pretax_credit_amounts,
                 pricing,
                 quantity,
+                quantity_decimal,
                 subscription,
                 subtotal,
                 taxes,
@@ -260,6 +272,7 @@ const _: () = {
                     }
                     "pricing" => b.pricing = FromValueOpt::from_value(v),
                     "quantity" => b.quantity = FromValueOpt::from_value(v),
+                    "quantity_decimal" => b.quantity_decimal = FromValueOpt::from_value(v),
                     "subscription" => b.subscription = FromValueOpt::from_value(v),
                     "subtotal" => b.subtotal = FromValueOpt::from_value(v),
                     "taxes" => b.taxes = FromValueOpt::from_value(v),
@@ -274,7 +287,7 @@ const _: () = {
 impl serde::Serialize for InvoiceLineItem {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("InvoiceLineItem", 19)?;
+        let mut s = s.serialize_struct("InvoiceLineItem", 20)?;
         s.serialize_field("amount", &self.amount)?;
         s.serialize_field("currency", &self.currency)?;
         s.serialize_field("description", &self.description)?;
@@ -290,6 +303,7 @@ impl serde::Serialize for InvoiceLineItem {
         s.serialize_field("pretax_credit_amounts", &self.pretax_credit_amounts)?;
         s.serialize_field("pricing", &self.pricing)?;
         s.serialize_field("quantity", &self.quantity)?;
+        s.serialize_field("quantity_decimal", &self.quantity_decimal)?;
         s.serialize_field("subscription", &self.subscription)?;
         s.serialize_field("subtotal", &self.subtotal)?;
         s.serialize_field("taxes", &self.taxes)?;

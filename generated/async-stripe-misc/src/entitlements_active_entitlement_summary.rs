@@ -6,7 +6,8 @@ pub struct EntitlementsActiveEntitlementSummary {
     pub customer: String,
     /// The list of entitlements this customer has.
     pub entitlements: stripe_types::List<stripe_misc::EntitlementsActiveEntitlement>,
-    /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
+    /// If the object exists in live mode, the value is `true`.
+    /// If the object exists in test mode, the value is `false`.
     pub livemode: bool,
 }
 #[doc(hidden)]

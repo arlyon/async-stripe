@@ -17,7 +17,7 @@ pub struct PaymentIntentPaymentMethodOptionsAcssDebit {
     /// The date must be a string in YYYY-MM-DD format.
     /// The date must be in the future and between 3 and 15 calendar days from now.
     pub target_date: Option<String>,
-    /// Bank account verification method.
+    /// Bank account verification method. The default value is `automatic`.
     pub verification_method: Option<PaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod>,
 }
 #[doc(hidden)]
@@ -243,7 +243,7 @@ impl<'de> serde::Deserialize<'de> for PaymentIntentPaymentMethodOptionsAcssDebit
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-/// Bank account verification method.
+/// Bank account verification method. The default value is `automatic`.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum PaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod {

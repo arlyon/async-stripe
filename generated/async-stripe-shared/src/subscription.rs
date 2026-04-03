@@ -76,7 +76,8 @@ pub struct Subscription {
     pub items: stripe_types::List<stripe_shared::SubscriptionItem>,
     /// The most recent invoice this subscription has generated over its lifecycle (for example, when it cycles or is updated).
     pub latest_invoice: Option<stripe_types::Expandable<stripe_shared::Invoice>>,
-    /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
+    /// If the object exists in live mode, the value is `true`.
+    /// If the object exists in test mode, the value is `false`.
     pub livemode: bool,
     /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
@@ -93,7 +94,7 @@ pub struct Subscription {
     /// Payment settings passed on to invoices created by the subscription.
     pub payment_settings: Option<stripe_shared::SubscriptionsResourcePaymentSettings>,
     /// Specifies an interval for how often to bill for any pending invoice items.
-    /// It is analogous to calling [Create an invoice](https://docs.stripe.com/api#create_invoice) for the given subscription at the specified interval.
+    /// It is analogous to calling [Create an invoice](/api/invoices/create) for the given subscription at the specified interval.
     pub pending_invoice_item_interval:
         Option<stripe_shared::SubscriptionPendingInvoiceItemInterval>,
     /// You can use this [SetupIntent](https://docs.stripe.com/api/setup_intents) to collect user authentication when creating a subscription without immediate payment or updating a subscription's payment method, allowing you to optimize for off-session payments.
@@ -101,6 +102,8 @@ pub struct Subscription {
     pub pending_setup_intent: Option<stripe_types::Expandable<stripe_shared::SetupIntent>>,
     /// If specified, [pending updates](https://docs.stripe.com/billing/subscriptions/pending-updates) that will be applied to the subscription once the `latest_invoice` has been paid.
     pub pending_update: Option<stripe_shared::SubscriptionsResourcePendingUpdate>,
+    pub presentment_details:
+        Option<stripe_shared::SubscriptionsResourceSubscriptionPresentmentDetails>,
     /// The schedule attached to the subscription
     pub schedule: Option<stripe_types::Expandable<stripe_shared::SubscriptionSchedule>>,
     /// Date when the subscription was first created.
@@ -183,6 +186,8 @@ pub struct SubscriptionBuilder {
         Option<Option<stripe_shared::SubscriptionPendingInvoiceItemInterval>>,
     pending_setup_intent: Option<Option<stripe_types::Expandable<stripe_shared::SetupIntent>>>,
     pending_update: Option<Option<stripe_shared::SubscriptionsResourcePendingUpdate>>,
+    presentment_details:
+        Option<Option<stripe_shared::SubscriptionsResourceSubscriptionPresentmentDetails>>,
     schedule: Option<Option<stripe_types::Expandable<stripe_shared::SubscriptionSchedule>>>,
     start_date: Option<stripe_types::Timestamp>,
     status: Option<SubscriptionStatus>,
@@ -275,6 +280,7 @@ const _: () = {
                 }
                 "pending_setup_intent" => Deserialize::begin(&mut self.pending_setup_intent),
                 "pending_update" => Deserialize::begin(&mut self.pending_update),
+                "presentment_details" => Deserialize::begin(&mut self.presentment_details),
                 "schedule" => Deserialize::begin(&mut self.schedule),
                 "start_date" => Deserialize::begin(&mut self.start_date),
                 "status" => Deserialize::begin(&mut self.status),
@@ -325,6 +331,7 @@ const _: () = {
                 pending_invoice_item_interval: Deserialize::default(),
                 pending_setup_intent: Deserialize::default(),
                 pending_update: Deserialize::default(),
+                presentment_details: Deserialize::default(),
                 schedule: Deserialize::default(),
                 start_date: Deserialize::default(),
                 status: Deserialize::default(),
@@ -374,6 +381,7 @@ const _: () = {
                 Some(pending_invoice_item_interval),
                 Some(pending_setup_intent),
                 Some(pending_update),
+                Some(presentment_details),
                 Some(schedule),
                 Some(start_date),
                 Some(status),
@@ -419,6 +427,7 @@ const _: () = {
                 self.pending_invoice_item_interval.take(),
                 self.pending_setup_intent.take(),
                 self.pending_update.take(),
+                self.presentment_details.take(),
                 self.schedule.take(),
                 self.start_date,
                 self.status.take(),
@@ -468,6 +477,7 @@ const _: () = {
                 pending_invoice_item_interval,
                 pending_setup_intent,
                 pending_update,
+                presentment_details,
                 schedule,
                 start_date,
                 status,
@@ -549,6 +559,7 @@ const _: () = {
                     }
                     "pending_setup_intent" => b.pending_setup_intent = FromValueOpt::from_value(v),
                     "pending_update" => b.pending_update = FromValueOpt::from_value(v),
+                    "presentment_details" => b.presentment_details = FromValueOpt::from_value(v),
                     "schedule" => b.schedule = FromValueOpt::from_value(v),
                     "start_date" => b.start_date = FromValueOpt::from_value(v),
                     "status" => b.status = FromValueOpt::from_value(v),
@@ -568,7 +579,7 @@ const _: () = {
 impl serde::Serialize for Subscription {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("Subscription", 45)?;
+        let mut s = s.serialize_struct("Subscription", 46)?;
         s.serialize_field("application", &self.application)?;
         s.serialize_field("application_fee_percent", &self.application_fee_percent)?;
         s.serialize_field("automatic_tax", &self.automatic_tax)?;
@@ -608,6 +619,7 @@ impl serde::Serialize for Subscription {
         s.serialize_field("pending_invoice_item_interval", &self.pending_invoice_item_interval)?;
         s.serialize_field("pending_setup_intent", &self.pending_setup_intent)?;
         s.serialize_field("pending_update", &self.pending_update)?;
+        s.serialize_field("presentment_details", &self.presentment_details)?;
         s.serialize_field("schedule", &self.schedule)?;
         s.serialize_field("start_date", &self.start_date)?;
         s.serialize_field("status", &self.status)?;

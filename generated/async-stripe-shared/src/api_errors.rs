@@ -396,6 +396,7 @@ pub enum ApiErrorsCode {
     RoutingNumberInvalid,
     SecretKeyRequired,
     SepaUnsupportedAccount,
+    ServicePeriodCouponWithMeteredTieredItemUnsupported,
     SetupAttemptFailed,
     SetupIntentAuthenticationFailure,
     SetupIntentInvalidParameter,
@@ -612,6 +613,9 @@ impl ApiErrorsCode {
             RoutingNumberInvalid => "routing_number_invalid",
             SecretKeyRequired => "secret_key_required",
             SepaUnsupportedAccount => "sepa_unsupported_account",
+            ServicePeriodCouponWithMeteredTieredItemUnsupported => {
+                "service_period_coupon_with_metered_tiered_item_unsupported"
+            }
             SetupAttemptFailed => "setup_attempt_failed",
             SetupIntentAuthenticationFailure => "setup_intent_authentication_failure",
             SetupIntentInvalidParameter => "setup_intent_invalid_parameter",
@@ -843,6 +847,9 @@ impl std::str::FromStr for ApiErrorsCode {
             "routing_number_invalid" => Ok(RoutingNumberInvalid),
             "secret_key_required" => Ok(SecretKeyRequired),
             "sepa_unsupported_account" => Ok(SepaUnsupportedAccount),
+            "service_period_coupon_with_metered_tiered_item_unsupported" => {
+                Ok(ServicePeriodCouponWithMeteredTieredItemUnsupported)
+            }
             "setup_attempt_failed" => Ok(SetupAttemptFailed),
             "setup_intent_authentication_failure" => Ok(SetupIntentAuthenticationFailure),
             "setup_intent_invalid_parameter" => Ok(SetupIntentInvalidParameter),

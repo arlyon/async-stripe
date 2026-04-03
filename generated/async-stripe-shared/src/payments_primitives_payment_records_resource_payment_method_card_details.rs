@@ -7,7 +7,7 @@ pub struct PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetails {
 pub authorization_code: Option<String>,
         /// Card brand.
     /// Can be `amex`, `cartes_bancaires`, `diners`, `discover`, `eftpos_au`, `jcb`, `link`, `mastercard`, `unionpay`, `visa` or `unknown`.
-pub brand: PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsBrand,
+pub brand: Option<PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsBrand>,
         /// When using manual capture, a future timestamp at which the charge will be automatically refunded if uncaptured.
 pub capture_before: Option<stripe_types::Timestamp>,
     /// Check results by Card networks on Card address and CVC at time of payment.
@@ -18,9 +18,9 @@ pub country: Option<String>,
     /// A high-level description of the type of cards issued in this range.
 pub description: Option<String>,
     /// Two-digit number representing the card's expiration month.
-pub exp_month: i64,
+pub exp_month: Option<i64>,
     /// Four-digit number representing the card's expiration year.
-pub exp_year: i64,
+pub exp_year: Option<i64>,
         /// Uniquely identifies this particular card number.
     /// You can use this attribute to check whether two customers who’ve signed up with you are using the same card number, for example.
     /// For payment methods that tokenize card information (Apple Pay, Google Pay), the tokenized number might be provided instead of the underlying card number.
@@ -28,7 +28,7 @@ pub exp_year: i64,
         /// *As of May 1, 2021, card fingerprint in India for Connect changed to allow two fingerprints for the same card---one for India and one for the rest of the world.*.
 pub fingerprint: Option<String>,
     /// Card funding type. Can be `credit`, `debit`, `prepaid`, or `unknown`.
-pub funding: PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsFunding,
+pub funding: Option<PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsFunding>,
     /// Issuer identification number of the card.
 pub iin: Option<String>,
     /// Installment details for this payment.
@@ -36,7 +36,7 @@ pub installments: Option<stripe_shared::PaymentsPrimitivesPaymentRecordsResource
     /// The name of the card's issuing bank.
 pub issuer: Option<String>,
     /// The last four digits of the card.
-pub last4: String,
+pub last4: Option<String>,
     /// True if this payment was marked as MOTO and out of scope for SCA.
 pub moto: Option<bool>,
         /// Identifies which network this charge was processed on.
@@ -63,19 +63,19 @@ pub wallet: Option<stripe_shared::PaymentsPrimitivesPaymentRecordsResourcePaymen
 #[doc(hidden)]
 pub struct PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsBuilder {
     authorization_code: Option<Option<String>>,
-brand: Option<PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsBrand>,
+brand: Option<Option<PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsBrand>>,
 capture_before: Option<Option<stripe_types::Timestamp>>,
 checks: Option<Option<stripe_shared::PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceChecks>>,
 country: Option<Option<String>>,
 description: Option<Option<String>>,
-exp_month: Option<i64>,
-exp_year: Option<i64>,
+exp_month: Option<Option<i64>>,
+exp_year: Option<Option<i64>>,
 fingerprint: Option<Option<String>>,
-funding: Option<PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsFunding>,
+funding: Option<Option<PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsFunding>>,
 iin: Option<Option<String>>,
 installments: Option<Option<stripe_shared::PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceInstallments>>,
 issuer: Option<Option<String>>,
-last4: Option<String>,
+last4: Option<Option<String>>,
 moto: Option<Option<bool>>,
 network: Option<Option<PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsNetwork>>,
 network_advice_code: Option<Option<String>>,
