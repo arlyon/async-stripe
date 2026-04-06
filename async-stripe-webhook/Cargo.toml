@@ -17,8 +17,8 @@ name = "stripe_webhook"
 [dependencies]
 async-stripe-types = { path = "../async-stripe-types", version = "1.0.0-rc.3" }
 async-stripe-shared = { path = "../generated/async-stripe-shared", version = "1.0.0-rc.3" }
-hmac = "0.12"
-sha2 = "0.10"
+hmac = "0.13"
+sha2 = "0.11"
 hex = "0.4"
 chrono = { version = "0.4", default-features = false, features = ["clock"] }
 thiserror = "2.0.16"
