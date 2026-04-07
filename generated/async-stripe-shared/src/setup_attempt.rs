@@ -28,7 +28,8 @@ pub struct SetupAttempt {
     pub flow_directions: Option<Vec<SetupAttemptFlowDirections>>,
     /// Unique identifier for the object.
     pub id: stripe_shared::SetupAttemptId,
-    /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
+    /// If the object exists in live mode, the value is `true`.
+    /// If the object exists in test mode, the value is `false`.
     pub livemode: bool,
     /// The value of [on_behalf_of](https://docs.stripe.com/api/setup_intents/object#setup_intent_object-on_behalf_of) on the SetupIntent at the time of this confirmation.
     pub on_behalf_of: Option<stripe_types::Expandable<stripe_shared::Account>>,

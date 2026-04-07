@@ -118,6 +118,8 @@ pub struct AccountCapabilities {
     pub treasury: Option<stripe_shared::AccountCapabilitiesStatus>,
     /// The status of the TWINT capability of the account, or whether the account can directly process TWINT charges.
     pub twint_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    /// The status of the upi payments capability of the account, or whether the account can directly process upi charges.
+    pub upi_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
     /// The status of the US bank account ACH payments capability of the account, or whether the account can directly process US bank account charges.
     pub us_bank_account_ach_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
     /// The status of the US customer_balance payments (USD currency) capability of the account, or whether the account can directly process US customer_balance charges.
@@ -185,6 +187,7 @@ pub struct AccountCapabilitiesBuilder {
     transfers: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
     treasury: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
     twint_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
+    upi_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
     us_bank_account_ach_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
     us_bank_transfer_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
     zip_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
@@ -306,6 +309,7 @@ const _: () = {
                 "transfers" => Deserialize::begin(&mut self.transfers),
                 "treasury" => Deserialize::begin(&mut self.treasury),
                 "twint_payments" => Deserialize::begin(&mut self.twint_payments),
+                "upi_payments" => Deserialize::begin(&mut self.upi_payments),
                 "us_bank_account_ach_payments" => {
                     Deserialize::begin(&mut self.us_bank_account_ach_payments)
                 }
@@ -377,6 +381,7 @@ const _: () = {
                 transfers: Deserialize::default(),
                 treasury: Deserialize::default(),
                 twint_payments: Deserialize::default(),
+                upi_payments: Deserialize::default(),
                 us_bank_account_ach_payments: Deserialize::default(),
                 us_bank_transfer_payments: Deserialize::default(),
                 zip_payments: Deserialize::default(),
@@ -443,6 +448,7 @@ const _: () = {
                 Some(transfers),
                 Some(treasury),
                 Some(twint_payments),
+                Some(upi_payments),
                 Some(us_bank_account_ach_payments),
                 Some(us_bank_transfer_payments),
                 Some(zip_payments),
@@ -505,6 +511,7 @@ const _: () = {
                 self.transfers.take(),
                 self.treasury.take(),
                 self.twint_payments.take(),
+                self.upi_payments.take(),
                 self.us_bank_account_ach_payments.take(),
                 self.us_bank_transfer_payments.take(),
                 self.zip_payments.take(),
@@ -571,6 +578,7 @@ const _: () = {
                 transfers,
                 treasury,
                 twint_payments,
+                upi_payments,
                 us_bank_account_ach_payments,
                 us_bank_transfer_payments,
                 zip_payments,
@@ -683,6 +691,7 @@ const _: () = {
                     "transfers" => b.transfers = FromValueOpt::from_value(v),
                     "treasury" => b.treasury = FromValueOpt::from_value(v),
                     "twint_payments" => b.twint_payments = FromValueOpt::from_value(v),
+                    "upi_payments" => b.upi_payments = FromValueOpt::from_value(v),
                     "us_bank_account_ach_payments" => {
                         b.us_bank_account_ach_payments = FromValueOpt::from_value(v)
                     }

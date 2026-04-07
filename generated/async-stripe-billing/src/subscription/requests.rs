@@ -125,7 +125,7 @@ impl<'de> serde::Deserialize<'de> for CancelSubscriptionCancellationDetailsFeedb
 /// The customer won’t be charged again for the subscription.
 /// After it’s canceled, you can no longer update the subscription or its <a href="/metadata">metadata</a>.
 ///
-/// Any pending invoice items that you’ve created are still charged at the end of the period, unless manually [deleted](https://stripe.com/docs/api#delete_invoiceitem).
+/// Any pending invoice items that you’ve created are still charged at the end of the period, unless manually <a href="/api/invoiceitems/delete">deleted</a>.
 /// If you’ve set the subscription to cancel at the end of the period, any pending prorations are also left in place and collected at the end of the period.
 /// But if the subscription is set to cancel immediately, pending prorations are removed if `invoice_now` and `prorate` are both set to true.
 ///
@@ -2282,7 +2282,7 @@ impl Default for CreateSubscriptionPaymentSettingsPaymentMethodOptionsCard {
 /// Configuration options for setting up an eMandate for cards issued in India.
 #[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateSubscriptionPaymentSettingsPaymentMethodOptionsCardMandateOptions {
-    /// Amount to be charged for future payments.
+    /// Amount to be charged for future payments, specified in the presentment currency.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount: Option<i64>,
     /// One of `fixed` or `maximum`.
@@ -3298,7 +3298,7 @@ impl<'de> serde::Deserialize<'de> for CreateSubscriptionPaymentSettingsSaveDefau
     }
 }
 /// Specifies an interval for how often to bill for any pending invoice items.
-/// It is analogous to calling [Create an invoice](https://docs.stripe.com/api#create_invoice) for the given subscription at the specified interval.
+/// It is analogous to calling [Create an invoice](/api/invoices/create) for the given subscription at the specified interval.
 #[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct CreateSubscriptionPendingInvoiceItemInterval {
     /// Specifies invoicing frequency. Either `day`, `week`, `month` or `year`.
@@ -3804,7 +3804,7 @@ impl CreateSubscription {
         self
     }
     /// Specifies an interval for how often to bill for any pending invoice items.
-    /// It is analogous to calling [Create an invoice](https://docs.stripe.com/api#create_invoice) for the given subscription at the specified interval.
+    /// It is analogous to calling [Create an invoice](/api/invoices/create) for the given subscription at the specified interval.
     pub fn pending_invoice_item_interval(
         mut self,
         pending_invoice_item_interval: impl Into<CreateSubscriptionPendingInvoiceItemInterval>,
@@ -5438,7 +5438,6 @@ impl<'de> serde::Deserialize<'de> for UpdateSubscriptionItemsPriceDataTaxBehavio
 #[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdateSubscriptionPauseCollection {
     /// The payment collection behavior for this subscription while paused.
-    /// One of `keep_as_draft`, `mark_uncollectible`, or `void`.
     pub behavior: UpdateSubscriptionPauseCollectionBehavior,
     /// The time after which the subscription will resume collecting payments.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5450,7 +5449,6 @@ impl UpdateSubscriptionPauseCollection {
     }
 }
 /// The payment collection behavior for this subscription while paused.
-/// One of `keep_as_draft`, `mark_uncollectible`, or `void`.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum UpdateSubscriptionPauseCollectionBehavior {
@@ -6012,7 +6010,7 @@ impl Default for UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCard {
 /// Configuration options for setting up an eMandate for cards issued in India.
 #[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdateSubscriptionPaymentSettingsPaymentMethodOptionsCardMandateOptions {
-    /// Amount to be charged for future payments.
+    /// Amount to be charged for future payments, specified in the presentment currency.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount: Option<i64>,
     /// One of `fixed` or `maximum`.
@@ -7028,7 +7026,7 @@ impl<'de> serde::Deserialize<'de> for UpdateSubscriptionPaymentSettingsSaveDefau
     }
 }
 /// Specifies an interval for how often to bill for any pending invoice items.
-/// It is analogous to calling [Create an invoice](https://docs.stripe.com/api#create_invoice) for the given subscription at the specified interval.
+/// It is analogous to calling [Create an invoice](/api/invoices/create) for the given subscription at the specified interval.
 #[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
 pub struct UpdateSubscriptionPendingInvoiceItemInterval {
     /// Specifies invoicing frequency. Either `day`, `week`, `month` or `year`.
@@ -7539,7 +7537,7 @@ impl UpdateSubscription {
         self
     }
     /// Specifies an interval for how often to bill for any pending invoice items.
-    /// It is analogous to calling [Create an invoice](https://docs.stripe.com/api#create_invoice) for the given subscription at the specified interval.
+    /// It is analogous to calling [Create an invoice](/api/invoices/create) for the given subscription at the specified interval.
     pub fn pending_invoice_item_interval(
         mut self,
         pending_invoice_item_interval: impl Into<UpdateSubscriptionPendingInvoiceItemInterval>,

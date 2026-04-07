@@ -27,7 +27,8 @@ pub struct InvoicePayment {
     /// Stripe automatically creates a default InvoicePayment when the invoice is finalized, and keeps it synchronized with the invoice’s `amount_remaining`.
     /// The PaymentIntent associated with the default payment can’t be edited or canceled directly.
     pub is_default: bool,
-    /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
+    /// If the object exists in live mode, the value is `true`.
+    /// If the object exists in test mode, the value is `false`.
     pub livemode: bool,
     pub payment: stripe_shared::InvoicesPaymentsInvoicePaymentAssociatedPayment,
     /// The status of the payment, one of `open`, `paid`, or `canceled`.

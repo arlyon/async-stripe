@@ -3,7 +3,7 @@
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct IssuingNetworkTokenVisa {
     /// A unique reference ID from Visa to represent the card account number.
-    pub card_reference_id: String,
+    pub card_reference_id: Option<String>,
     /// The network-unique identifier for the token.
     pub token_reference_id: String,
     /// The ID of the entity requesting tokenization, specific to Visa.
@@ -14,7 +14,7 @@ pub struct IssuingNetworkTokenVisa {
 }
 #[doc(hidden)]
 pub struct IssuingNetworkTokenVisaBuilder {
-    card_reference_id: Option<String>,
+    card_reference_id: Option<Option<String>>,
     token_reference_id: Option<String>,
     token_requestor_id: Option<String>,
     token_risk_score: Option<Option<String>>,

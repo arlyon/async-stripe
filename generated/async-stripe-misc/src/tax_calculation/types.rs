@@ -6,7 +6,7 @@
 #[derive(Clone, Debug)]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TaxCalculation {
-    /// Total amount after taxes in the [smallest currency unit](https://docs.stripe.com/currencies#zero-decimal).
+    /// Total amount after taxes in the [smallest currency unit](https://docs.stripe.com/currencies#minor-units).
     pub amount_total: i64,
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
@@ -20,7 +20,8 @@ pub struct TaxCalculation {
     pub id: Option<stripe_misc::TaxCalculationId>,
     /// The list of items the customer is purchasing.
     pub line_items: Option<stripe_types::List<stripe_misc::TaxCalculationLineItem>>,
-    /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
+    /// If the object exists in live mode, the value is `true`.
+    /// If the object exists in test mode, the value is `false`.
     pub livemode: bool,
     /// The details of the ship from location, such as the address.
     pub ship_from_details: Option<stripe_misc::TaxProductResourceShipFromDetails>,

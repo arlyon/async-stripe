@@ -34,7 +34,8 @@ pub struct Event {
     pub data: stripe_shared::NotificationEventData,
     /// Unique identifier for the object.
     pub id: stripe_shared::EventId,
-    /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
+    /// If the object exists in live mode, the value is `true`.
+    /// If the object exists in test mode, the value is `false`.
     pub livemode: bool,
     /// Number of webhooks that haven't been successfully delivered (for example, to return a 20x response) to the URLs you specify.
     pub pending_webhooks: i64,

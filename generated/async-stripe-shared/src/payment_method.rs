@@ -50,7 +50,8 @@ pub struct PaymentMethod {
     pub konbini: Option<stripe_shared::PaymentMethodKonbini>,
     pub kr_card: Option<stripe_shared::PaymentMethodKrCard>,
     pub link: Option<stripe_shared::PaymentMethodLink>,
-    /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
+    /// If the object exists in live mode, the value is `true`.
+    /// If the object exists in test mode, the value is `false`.
     pub livemode: bool,
     pub mb_way: Option<stripe_shared::PaymentMethodMbWay>,
     /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
@@ -82,6 +83,7 @@ pub struct PaymentMethod {
     /// It contains additional information specific to the PaymentMethod type.
     #[cfg_attr(feature = "deserialize", serde(rename = "type"))]
     pub type_: PaymentMethodType,
+    pub upi: Option<stripe_shared::PaymentMethodUpi>,
     pub us_bank_account: Option<stripe_shared::PaymentMethodUsBankAccount>,
     pub wechat_pay: Option<stripe_shared::PaymentMethodWechatPay>,
     pub zip: Option<stripe_shared::PaymentMethodZip>,
@@ -148,6 +150,7 @@ pub struct PaymentMethodBuilder {
     swish: Option<Option<stripe_shared::PaymentMethodSwish>>,
     twint: Option<Option<stripe_shared::PaymentMethodTwint>>,
     type_: Option<PaymentMethodType>,
+    upi: Option<Option<stripe_shared::PaymentMethodUpi>>,
     us_bank_account: Option<Option<stripe_shared::PaymentMethodUsBankAccount>>,
     wechat_pay: Option<Option<stripe_shared::PaymentMethodWechatPay>>,
     zip: Option<Option<stripe_shared::PaymentMethodZip>>,
@@ -253,6 +256,7 @@ const _: () = {
                 "swish" => Deserialize::begin(&mut self.swish),
                 "twint" => Deserialize::begin(&mut self.twint),
                 "type" => Deserialize::begin(&mut self.type_),
+                "upi" => Deserialize::begin(&mut self.upi),
                 "us_bank_account" => Deserialize::begin(&mut self.us_bank_account),
                 "wechat_pay" => Deserialize::begin(&mut self.wechat_pay),
                 "zip" => Deserialize::begin(&mut self.zip),
@@ -322,6 +326,7 @@ const _: () = {
                 swish: Deserialize::default(),
                 twint: Deserialize::default(),
                 type_: Deserialize::default(),
+                upi: Deserialize::default(),
                 us_bank_account: Deserialize::default(),
                 wechat_pay: Deserialize::default(),
                 zip: Deserialize::default(),
@@ -390,6 +395,7 @@ const _: () = {
                 Some(swish),
                 Some(twint),
                 Some(type_),
+                Some(upi),
                 Some(us_bank_account),
                 Some(wechat_pay),
                 Some(zip),
@@ -454,6 +460,7 @@ const _: () = {
                 self.swish,
                 self.twint,
                 self.type_.take(),
+                self.upi.take(),
                 self.us_bank_account.take(),
                 self.wechat_pay,
                 self.zip,
@@ -522,6 +529,7 @@ const _: () = {
                 swish,
                 twint,
                 type_,
+                upi,
                 us_bank_account,
                 wechat_pay,
                 zip,
@@ -612,6 +620,7 @@ const _: () = {
                     "swish" => b.swish = FromValueOpt::from_value(v),
                     "twint" => b.twint = FromValueOpt::from_value(v),
                     "type" => b.type_ = FromValueOpt::from_value(v),
+                    "upi" => b.upi = FromValueOpt::from_value(v),
                     "us_bank_account" => b.us_bank_account = FromValueOpt::from_value(v),
                     "wechat_pay" => b.wechat_pay = FromValueOpt::from_value(v),
                     "zip" => b.zip = FromValueOpt::from_value(v),
@@ -626,7 +635,7 @@ const _: () = {
 impl serde::Serialize for PaymentMethod {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("PaymentMethod", 64)?;
+        let mut s = s.serialize_struct("PaymentMethod", 65)?;
         s.serialize_field("acss_debit", &self.acss_debit)?;
         s.serialize_field("affirm", &self.affirm)?;
         s.serialize_field("afterpay_clearpay", &self.afterpay_clearpay)?;
@@ -687,6 +696,7 @@ impl serde::Serialize for PaymentMethod {
         s.serialize_field("swish", &self.swish)?;
         s.serialize_field("twint", &self.twint)?;
         s.serialize_field("type", &self.type_)?;
+        s.serialize_field("upi", &self.upi)?;
         s.serialize_field("us_bank_account", &self.us_bank_account)?;
         s.serialize_field("wechat_pay", &self.wechat_pay)?;
         s.serialize_field("zip", &self.zip)?;
@@ -751,6 +761,7 @@ pub enum PaymentMethodType {
     Sofort,
     Swish,
     Twint,
+    Upi,
     UsBankAccount,
     WechatPay,
     Zip,
@@ -811,6 +822,7 @@ impl PaymentMethodType {
             Sofort => "sofort",
             Swish => "swish",
             Twint => "twint",
+            Upi => "upi",
             UsBankAccount => "us_bank_account",
             WechatPay => "wechat_pay",
             Zip => "zip",
@@ -874,6 +886,7 @@ impl std::str::FromStr for PaymentMethodType {
             "sofort" => Ok(Sofort),
             "swish" => Ok(Swish),
             "twint" => Ok(Twint),
+            "upi" => Ok(Upi),
             "us_bank_account" => Ok(UsBankAccount),
             "wechat_pay" => Ok(WechatPay),
             "zip" => Ok(Zip),

@@ -117,6 +117,8 @@ struct UpdateInvoiceLineItemBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     quantity: Option<u64>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    quantity_decimal: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     tax_amounts: Option<Vec<UpdateInvoiceLineItemTaxAmounts>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     tax_rates: Option<Vec<String>>,
@@ -134,6 +136,7 @@ impl UpdateInvoiceLineItemBuilder {
             price_data: None,
             pricing: None,
             quantity: None,
+            quantity_decimal: None,
             tax_amounts: None,
             tax_rates: None,
         }
@@ -784,7 +787,7 @@ impl UpdateInvoiceLineItem {
     /// This can be useful for storing additional information about the object in a structured format.
     /// Individual keys can be unset by posting an empty value to them.
     /// All keys can be unset by posting an empty value to `metadata`.
-    /// For [type=subscription](https://docs.stripe.com/api/invoices/line_item#invoice_line_item_object-type) line items, the incoming metadata specified on the request is directly used to set this value, in contrast to [type=invoiceitem](api/invoices/line_item#invoice_line_item_object-type) line items, where any existing metadata on the invoice line is merged with the incoming data.
+    /// For [type=subscription](/api/invoices/line_item) line items, the incoming metadata specified on the request is directly used to set this value, in contrast to [type=invoiceitem](/api/invoices/line_item) line items, where any existing metadata on the invoice line is merged with the incoming data.
     pub fn metadata(
         mut self,
         metadata: impl Into<std::collections::HashMap<String, String>>,
@@ -810,9 +813,17 @@ impl UpdateInvoiceLineItem {
         self.inner.pricing = Some(pricing.into());
         self
     }
-    /// Non-negative integer. The quantity of units for the line item.
+    /// Non-negative integer.
+    /// The quantity of units for the line item.
+    /// Use `quantity_decimal` instead to provide decimal precision.
+    /// This field will be deprecated in favor of `quantity_decimal` in a future version.
     pub fn quantity(mut self, quantity: impl Into<u64>) -> Self {
         self.inner.quantity = Some(quantity.into());
+        self
+    }
+    /// Non-negative decimal with at most 12 decimal places. The quantity of units for the line item.
+    pub fn quantity_decimal(mut self, quantity_decimal: impl Into<String>) -> Self {
+        self.inner.quantity_decimal = Some(quantity_decimal.into());
         self
     }
     /// A list of up to 10 tax amounts for this line item.

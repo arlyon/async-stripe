@@ -23,7 +23,8 @@ pub struct CustomerSession {
     pub customer_account: Option<String>,
     /// The timestamp at which this Customer Session will expire.
     pub expires_at: stripe_types::Timestamp,
-    /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
+    /// If the object exists in live mode, the value is `true`.
+    /// If the object exists in test mode, the value is `false`.
     pub livemode: bool,
 }
 #[doc(hidden)]

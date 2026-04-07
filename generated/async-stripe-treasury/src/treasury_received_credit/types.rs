@@ -23,7 +23,8 @@ pub hosted_regulatory_receipt_url: Option<String>,
 pub id: stripe_treasury::TreasuryReceivedCreditId,
 pub initiating_payment_method_details: stripe_treasury::TreasurySharedResourceInitiatingPaymentMethodDetailsInitiatingPaymentMethodDetails,
 pub linked_flows: stripe_treasury::TreasuryReceivedCreditsResourceLinkedFlows,
-        /// Has the value `true` if the object exists in live mode or the value `false` if the object exists in test mode.
+        /// If the object exists in live mode, the value is `true`.
+    /// If the object exists in test mode, the value is `false`.
 pub livemode: bool,
     /// The rails used to send the funds.
 pub network: TreasuryReceivedCreditNetwork,

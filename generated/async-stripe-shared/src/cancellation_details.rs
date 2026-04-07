@@ -217,6 +217,7 @@ impl<'de> serde::Deserialize<'de> for CancellationDetailsFeedback {
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum CancellationDetailsReason {
+    CanceledByRetentionPolicy,
     CancellationRequested,
     PaymentDisputed,
     PaymentFailed,
@@ -227,6 +228,7 @@ impl CancellationDetailsReason {
     pub fn as_str(&self) -> &str {
         use CancellationDetailsReason::*;
         match self {
+            CanceledByRetentionPolicy => "canceled_by_retention_policy",
             CancellationRequested => "cancellation_requested",
             PaymentDisputed => "payment_disputed",
             PaymentFailed => "payment_failed",
@@ -240,6 +242,7 @@ impl std::str::FromStr for CancellationDetailsReason {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use CancellationDetailsReason::*;
         match s {
+            "canceled_by_retention_policy" => Ok(CanceledByRetentionPolicy),
             "cancellation_requested" => Ok(CancellationRequested),
             "payment_disputed" => Ok(PaymentDisputed),
             "payment_failed" => Ok(PaymentFailed),

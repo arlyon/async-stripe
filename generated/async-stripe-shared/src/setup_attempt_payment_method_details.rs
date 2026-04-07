@@ -28,6 +28,7 @@ pub struct SetupAttemptPaymentMethodDetails {
     /// It contains confirmation-specific information for the payment method.
     #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "type"))]
     pub type_: String,
+    pub upi: Option<stripe_shared::SetupAttemptPaymentMethodDetailsUpi>,
     pub us_bank_account: Option<stripe_shared::SetupAttemptPaymentMethodDetailsUsBankAccount>,
 }
 #[doc(hidden)]
@@ -54,6 +55,7 @@ pub struct SetupAttemptPaymentMethodDetailsBuilder {
     sepa_debit: Option<Option<stripe_shared::SetupAttemptPaymentMethodDetailsSepaDebit>>,
     sofort: Option<Option<stripe_shared::SetupAttemptPaymentMethodDetailsSofort>>,
     type_: Option<String>,
+    upi: Option<Option<stripe_shared::SetupAttemptPaymentMethodDetailsUpi>>,
     us_bank_account: Option<Option<stripe_shared::SetupAttemptPaymentMethodDetailsUsBankAccount>>,
 }
 
@@ -119,6 +121,7 @@ const _: () = {
                 "sepa_debit" => Deserialize::begin(&mut self.sepa_debit),
                 "sofort" => Deserialize::begin(&mut self.sofort),
                 "type" => Deserialize::begin(&mut self.type_),
+                "upi" => Deserialize::begin(&mut self.upi),
                 "us_bank_account" => Deserialize::begin(&mut self.us_bank_account),
                 _ => <dyn Visitor>::ignore(),
             })
@@ -148,6 +151,7 @@ const _: () = {
                 sepa_debit: Deserialize::default(),
                 sofort: Deserialize::default(),
                 type_: Deserialize::default(),
+                upi: Deserialize::default(),
                 us_bank_account: Deserialize::default(),
             }
         }
@@ -176,6 +180,7 @@ const _: () = {
                 Some(sepa_debit),
                 Some(sofort),
                 Some(type_),
+                Some(upi),
                 Some(us_bank_account),
             ) = (
                 self.acss_debit,
@@ -200,6 +205,7 @@ const _: () = {
                 self.sepa_debit,
                 self.sofort.take(),
                 self.type_.take(),
+                self.upi,
                 self.us_bank_account,
             )
             else {
@@ -228,6 +234,7 @@ const _: () = {
                 sepa_debit,
                 sofort,
                 type_,
+                upi,
                 us_bank_account,
             })
         }
@@ -278,6 +285,7 @@ const _: () = {
                     "sepa_debit" => b.sepa_debit = FromValueOpt::from_value(v),
                     "sofort" => b.sofort = FromValueOpt::from_value(v),
                     "type" => b.type_ = FromValueOpt::from_value(v),
+                    "upi" => b.upi = FromValueOpt::from_value(v),
                     "us_bank_account" => b.us_bank_account = FromValueOpt::from_value(v),
                     _ => {}
                 }

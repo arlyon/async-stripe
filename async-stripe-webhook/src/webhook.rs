@@ -535,12 +535,13 @@ mod tests {
                 "end": 1533204620
             },
             "proration": false,
-            "quantity": 3
+            "quantity": 3,
+            "quantity_decimal": "0"
         });
         let payload = mock_webhook_event(&EventType::InvoiceitemCreated, object);
         let event_timestamp = 1533204620;
         let signature = format!(
-            "t={event_timestamp},v1=5a81ebe328da1df19581cbc6c7377920947ffd30b56eebcc7ba9a6938a090965,v0=63f3a72374a733066c4be69ed7f8e5ac85c22c9f0a6a612ab9a025a9e4ee7eef"
+            "t={event_timestamp},v1=d7373bc68f4bd320b253cd7461f87af6e1cdf1b4d7db1614d8d1d746972d2d0a,v0=63f3a72374a733066c4be69ed7f8e5ac85c22c9f0a6a612ab9a025a9e4ee7eef"
         );
 
         let webhook = Webhook { current_timestamp: event_timestamp };
