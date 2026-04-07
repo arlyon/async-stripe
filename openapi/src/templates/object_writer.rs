@@ -76,13 +76,26 @@ pub fn write_derives_line(out: &mut String, derives: Derives) {
         let _ = write!(out, "Copy,");
     }
     let _ = write!(out, "Clone,");
-    if derives.debug {
-        let _ = write!(out, "Debug,");
-    }
     if derives.eq {
         let _ = write!(out, "Eq, PartialEq,");
     }
     let _ = out.write_str(")]");
+    if derives.debug {
+        let _ = out.write_str(r#"#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]"#);
+    }
+}
+
+/// Write a redacted `Debug` impl that only shows the type name.
+pub fn write_redacted_debug_impl(out: &mut String, name: &str, lifetime_str: &str) {
+    let _ = writeln!(out, r#"#[cfg(feature = "redact-generated-debug")]"#);
+    let _ = writeln!(
+        out,
+        r#"impl{lifetime_str} std::fmt::Debug for {name}{lifetime_str} {{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {{
+        f.debug_struct("{name}").finish_non_exhaustive()
+    }}
+}}"#
+    );
 }
 
 #[derive(Debug, Copy, Clone, Eq, PartialEq, Hash)]

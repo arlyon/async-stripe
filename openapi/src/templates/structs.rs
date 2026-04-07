@@ -5,11 +5,11 @@ use indoc::{formatdoc, writedoc};
 use crate::printable::PrintableWithLifetime;
 use crate::rust_object::{ObjectKind, Struct, StructField};
 use crate::rust_type::{ExtType, RustType, SimpleType};
-use crate::templates::ObjectWriter;
-use crate::templates::object_writer::write_derives_line;
+use crate::templates::object_writer::{write_derives_line, write_redacted_debug_impl};
 use crate::templates::utils::{
-    SerdeDeriveState, ShouldDerive, write_default_impl, write_doc_comment,
+    write_default_impl, write_doc_comment, SerdeDeriveState, ShouldDerive,
 };
+use crate::templates::ObjectWriter;
 
 impl ObjectWriter<'_> {
     pub fn write_struct_definition(&self, out: &mut String, struct_: &Struct) {
@@ -49,6 +49,10 @@ impl ObjectWriter<'_> {
         }}
     "
         );
+
+        if self.derives.debug {
+            write_redacted_debug_impl(out, name.as_ref(), lifetime_str);
+        }
 
         if self.usage.should_impl_deserialize() {
             self.gen_miniserde_struct_deserialize(out, fields)

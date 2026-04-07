@@ -5,7 +5,9 @@ use indoc::writedoc;
 use crate::printable::PrintableWithLifetime;
 use crate::rust_object::{EnumOfObjects, EnumVariant, FieldlessVariant};
 use crate::templates::miniserde::gen_enum_of_objects_miniserde;
-use crate::templates::object_writer::{ObjectWriter, write_derives_line};
+use crate::templates::object_writer::{
+    write_derives_line, write_redacted_debug_impl, ObjectWriter,
+};
 use crate::templates::utils::{SerdeDeriveState, ShouldDerive};
 
 impl ObjectWriter<'_> {
@@ -45,6 +47,9 @@ impl ObjectWriter<'_> {
             }}
         "#
         );
+        if self.derives.debug {
+            write_redacted_debug_impl(out, enum_name.as_ref(), lifetime_str);
+        }
     }
 
     pub fn write_enum_of_objects(&self, out: &mut String, objects: &EnumOfObjects) {
@@ -112,6 +117,9 @@ impl ObjectWriter<'_> {
             {miniserde_impl}
         "#
         );
+        if self.derives.debug {
+            write_redacted_debug_impl(out, enum_name.as_ref(), "");
+        }
     }
 
     /// Generate the enum definition and core methods
@@ -207,9 +215,16 @@ impl ObjectWriter<'_> {
                 }}
             }}
 
+            #[cfg(not(feature = "redact-generated-debug"))]
             impl std::fmt::Debug for {enum_name} {{
                 fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {{
                     f.write_str(self.as_str())
+                }}
+            }}
+            #[cfg(feature = "redact-generated-debug")]
+            impl std::fmt::Debug for {enum_name} {{
+                fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {{
+                    f.debug_struct(stringify!({enum_name})).finish_non_exhaustive()
                 }}
             }}
         "#

@@ -12,7 +12,7 @@ use crate::rust_object::{ObjectUsage, RustObject, as_enum_of_objects};
 use crate::rust_type::RustType;
 use crate::spec_inference::Inference;
 use crate::templates::ObjectWriter;
-use crate::templates::object_writer::write_derives_line;
+use crate::templates::object_writer::{write_derives_line, write_redacted_debug_impl};
 use crate::templates::utils::write_doc_comment;
 use crate::types::RustIdent;
 use crate::utils::append_to_file;
@@ -102,6 +102,7 @@ fn write_event_object(components: &Components, out_path: &Path) -> anyhow::Resul
         {enum_body}
     }}
     "#};
+    write_redacted_debug_impl(&mut out, "EventObject", "");
 
     let _ = writedoc! {out, r#"
     impl EventObject {{
