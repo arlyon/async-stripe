@@ -101,6 +101,23 @@ jobs:
       - name: Run clippy
         run: cargo clippy --no-default-features --features "full serialize deserialize ${{ matrix.features }}"
 
+  clippy-redact-generated-debug:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v6
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: ${{ env.rust_min }}
+          components: clippy
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Run clippy with redact-generated-debug
+        run: cargo clippy --no-default-features --features "full serialize deserialize redact-generated-debug default-tls"
+
   test-clients:
     name: Test Clients
     runs-on: ubuntu-latest

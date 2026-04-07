@@ -43,6 +43,7 @@ pub fn gen_crate_toml(
 
     let ser_features = get_serialization_feature(&crate_deps, "serialize");
     let deser_features = get_serialization_feature(&crate_deps, "deserialize");
+    let redact_debug_features = get_serialization_feature(&crate_deps, "redact-generated-debug");
 
     let features =
         if krate == Crate::SHARED { "".into() } else { gen_feature_section(crate_features) };
@@ -82,6 +83,7 @@ pub fn gen_crate_toml(
         [features]
         serialize = [{ser_features}]
         deserialize = [{deser_features}, "dep:serde_json"]
+        redact-generated-debug = [{redact_debug_features}]
         {features}
         "#
     }

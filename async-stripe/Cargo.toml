@@ -52,6 +52,7 @@ blocking = ["__hyper"]
 async-std-surf = ["async-std", "surf", "http-types"]
 
 uuid = ["async-stripe-client-core/uuid"]
+redact-generated-debug = ["async-stripe-client-core/redact-generated-debug", "async-stripe-shared/redact-generated-debug"]
 
 [dev-dependencies]
 serde.workspace = true

@@ -68,6 +68,19 @@ deserialize = [
        "async-stripe-treasury?/deserialize",
 ]
 
+redact-generated-debug = [
+       "async-stripe-types/redact-generated-debug",
+       "async-stripe-shared/redact-generated-debug",
+       "async-stripe-billing?/redact-generated-debug",
+       "async-stripe-checkout?/redact-generated-debug",
+       "async-stripe-core?/redact-generated-debug",
+       "async-stripe-fraud?/redact-generated-debug",
+       "async-stripe-misc?/redact-generated-debug",
+       "async-stripe-payment?/redact-generated-debug",
+       "async-stripe-terminal?/redact-generated-debug",
+       "async-stripe-treasury?/redact-generated-debug",
+       "async-stripe-reserve?/redact-generated-debug",
+]
 detailed-errors = ["dep:serde_path_to_error"]
 
 full = [

@@ -24,6 +24,7 @@ serde_json = { workspace = true, optional = true }
 [features]
 serialize = []
 deserialize = ["dep:serde_json"]
+redact-generated-debug = []
 
 [dev-dependencies]
 serde_qs.workspace = true
