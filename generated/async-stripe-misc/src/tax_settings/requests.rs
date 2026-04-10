@@ -2,10 +2,18 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RetrieveForMyAccountTaxSettingsBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveForMyAccountTaxSettingsBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveForMyAccountTaxSettingsBuilder").finish_non_exhaustive()
+    }
 }
 impl RetrieveForMyAccountTaxSettingsBuilder {
     fn new() -> Self {
@@ -13,9 +21,17 @@ impl RetrieveForMyAccountTaxSettingsBuilder {
     }
 }
 /// Retrieves Tax `Settings` for a merchant.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RetrieveForMyAccountTaxSettings {
     inner: RetrieveForMyAccountTaxSettingsBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveForMyAccountTaxSettings {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveForMyAccountTaxSettings").finish_non_exhaustive()
+    }
 }
 impl RetrieveForMyAccountTaxSettings {
     /// Construct a new `RetrieveForMyAccountTaxSettings`.
@@ -58,7 +74,9 @@ impl StripeRequest for RetrieveForMyAccountTaxSettings {
         RequestBuilder::new(StripeMethod::Get, "/tax/settings").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct UpdateTaxSettingsBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     defaults: Option<UpdateTaxSettingsDefaults>,
@@ -67,13 +85,21 @@ struct UpdateTaxSettingsBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     head_office: Option<UpdateTaxSettingsHeadOffice>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateTaxSettingsBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateTaxSettingsBuilder").finish_non_exhaustive()
+    }
+}
 impl UpdateTaxSettingsBuilder {
     fn new() -> Self {
         Self { defaults: None, expand: None, head_office: None }
     }
 }
 /// Default configuration to be used on Stripe Tax calculations.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateTaxSettingsDefaults {
     /// Specifies the default [tax behavior](https://stripe.com/docs/tax/products-prices-tax-categories-tax-behavior#tax-behavior) to be used when the item's price has unspecified tax behavior.
     /// One of inclusive, exclusive, or inferred_by_currency.
@@ -83,6 +109,12 @@ pub struct UpdateTaxSettingsDefaults {
     /// A [tax code](https://docs.stripe.com/tax/tax-categories) ID.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_code: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateTaxSettingsDefaults {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateTaxSettingsDefaults").finish_non_exhaustive()
+    }
 }
 impl UpdateTaxSettingsDefaults {
     pub fn new() -> Self {
@@ -143,9 +175,16 @@ impl std::fmt::Display for UpdateTaxSettingsDefaultsTaxBehavior {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdateTaxSettingsDefaultsTaxBehavior {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateTaxSettingsDefaultsTaxBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdateTaxSettingsDefaultsTaxBehavior)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdateTaxSettingsDefaultsTaxBehavior {
@@ -165,10 +204,18 @@ impl<'de> serde::Deserialize<'de> for UpdateTaxSettingsDefaultsTaxBehavior {
     }
 }
 /// The place where your business is located.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateTaxSettingsHeadOffice {
     /// The location of the business for tax purposes.
     pub address: UpdateTaxSettingsHeadOfficeAddress,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateTaxSettingsHeadOffice {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateTaxSettingsHeadOffice").finish_non_exhaustive()
+    }
 }
 impl UpdateTaxSettingsHeadOffice {
     pub fn new(address: impl Into<UpdateTaxSettingsHeadOfficeAddress>) -> Self {
@@ -176,7 +223,9 @@ impl UpdateTaxSettingsHeadOffice {
     }
 }
 /// The location of the business for tax purposes.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateTaxSettingsHeadOfficeAddress {
     /// City, district, suburb, town, or village.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -197,6 +246,12 @@ pub struct UpdateTaxSettingsHeadOfficeAddress {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateTaxSettingsHeadOfficeAddress {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateTaxSettingsHeadOfficeAddress").finish_non_exhaustive()
+    }
+}
 impl UpdateTaxSettingsHeadOfficeAddress {
     pub fn new() -> Self {
         Self { city: None, country: None, line1: None, line2: None, postal_code: None, state: None }
@@ -209,9 +264,17 @@ impl Default for UpdateTaxSettingsHeadOfficeAddress {
 }
 /// Updates Tax `Settings` parameters used in tax calculations.
 /// All parameters are editable but none can be removed once set.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateTaxSettings {
     inner: UpdateTaxSettingsBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateTaxSettings {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateTaxSettings").finish_non_exhaustive()
+    }
 }
 impl UpdateTaxSettings {
     /// Construct a new `UpdateTaxSettings`.

@@ -1,4 +1,5 @@
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct DisputeEnhancedEvidenceVisaCompliance {
@@ -7,6 +8,12 @@ pub struct DisputeEnhancedEvidenceVisaCompliance {
     /// Stripe collects a 500 USD (or local equivalent) amount to cover the network costs associated with resolving compliance disputes.
     /// Stripe refunds the 500 USD network fee if you win the dispute.
     pub fee_acknowledged: bool,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for DisputeEnhancedEvidenceVisaCompliance {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("DisputeEnhancedEvidenceVisaCompliance").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct DisputeEnhancedEvidenceVisaComplianceBuilder {

@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaypalSellerProtection {
@@ -6,6 +7,12 @@ pub struct PaypalSellerProtection {
     pub dispute_categories: Option<Vec<PaypalSellerProtectionDisputeCategories>>,
     /// Indicates whether the transaction is eligible for PayPal's seller protection.
     pub status: PaypalSellerProtectionStatus,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaypalSellerProtection {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PaypalSellerProtection").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct PaypalSellerProtectionBuilder {
@@ -149,9 +156,16 @@ impl std::fmt::Display for PaypalSellerProtectionDisputeCategories {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for PaypalSellerProtectionDisputeCategories {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaypalSellerProtectionDisputeCategories {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(PaypalSellerProtectionDisputeCategories)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -233,9 +247,16 @@ impl std::fmt::Display for PaypalSellerProtectionStatus {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for PaypalSellerProtectionStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaypalSellerProtectionStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(PaypalSellerProtectionStatus)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

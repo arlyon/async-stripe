@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct BillingBillResourceInvoicingTaxesTax {
@@ -16,6 +17,12 @@ pub struct BillingBillResourceInvoicingTaxesTax {
     /// The type of tax information.
     #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "type"))]
     pub type_: BillingBillResourceInvoicingTaxesTaxType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for BillingBillResourceInvoicingTaxesTax {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("BillingBillResourceInvoicingTaxesTax").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct BillingBillResourceInvoicingTaxesTaxBuilder {
@@ -199,9 +206,17 @@ impl std::fmt::Display for BillingBillResourceInvoicingTaxesTaxTaxBehavior {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for BillingBillResourceInvoicingTaxesTaxTaxBehavior {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for BillingBillResourceInvoicingTaxesTaxTaxBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(BillingBillResourceInvoicingTaxesTaxTaxBehavior))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -324,9 +339,17 @@ impl std::fmt::Display for BillingBillResourceInvoicingTaxesTaxTaxabilityReason 
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for BillingBillResourceInvoicingTaxesTaxTaxabilityReason {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for BillingBillResourceInvoicingTaxesTaxTaxabilityReason {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(BillingBillResourceInvoicingTaxesTaxTaxabilityReason))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -404,9 +427,16 @@ impl std::fmt::Display for BillingBillResourceInvoicingTaxesTaxType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for BillingBillResourceInvoicingTaxesTaxType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for BillingBillResourceInvoicingTaxesTaxType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(BillingBillResourceInvoicingTaxesTaxType)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

@@ -2,7 +2,9 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ListPaymentLinkBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     active: Option<bool>,
@@ -15,15 +17,29 @@ struct ListPaymentLinkBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     starting_after: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListPaymentLinkBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListPaymentLinkBuilder").finish_non_exhaustive()
+    }
+}
 impl ListPaymentLinkBuilder {
     fn new() -> Self {
         Self { active: None, ending_before: None, expand: None, limit: None, starting_after: None }
     }
 }
 /// Returns a list of your payment links.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListPaymentLink {
     inner: ListPaymentLinkBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListPaymentLink {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListPaymentLink").finish_non_exhaustive()
+    }
 }
 impl ListPaymentLink {
     /// Construct a new `ListPaymentLink`.
@@ -97,10 +113,18 @@ impl StripeRequest for ListPaymentLink {
         RequestBuilder::new(StripeMethod::Get, "/payment_links").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RetrievePaymentLinkBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrievePaymentLinkBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrievePaymentLinkBuilder").finish_non_exhaustive()
+    }
 }
 impl RetrievePaymentLinkBuilder {
     fn new() -> Self {
@@ -108,10 +132,18 @@ impl RetrievePaymentLinkBuilder {
     }
 }
 /// Retrieve a payment link.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RetrievePaymentLink {
     inner: RetrievePaymentLinkBuilder,
     payment_link: stripe_shared::PaymentLinkId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrievePaymentLink {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrievePaymentLink").finish_non_exhaustive()
+    }
 }
 impl RetrievePaymentLink {
     /// Construct a new `RetrievePaymentLink`.
@@ -151,7 +183,9 @@ impl StripeRequest for RetrievePaymentLink {
             .query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ListLineItemsPaymentLinkBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<String>,
@@ -162,6 +196,12 @@ struct ListLineItemsPaymentLinkBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     starting_after: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListLineItemsPaymentLinkBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListLineItemsPaymentLinkBuilder").finish_non_exhaustive()
+    }
+}
 impl ListLineItemsPaymentLinkBuilder {
     fn new() -> Self {
         Self { ending_before: None, expand: None, limit: None, starting_after: None }
@@ -169,10 +209,18 @@ impl ListLineItemsPaymentLinkBuilder {
 }
 /// When retrieving a payment link, there is an includable **line_items** property containing the first handful of those items.
 /// There is also a URL where you can retrieve the full (paginated) list of line items.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListLineItemsPaymentLink {
     inner: ListLineItemsPaymentLinkBuilder,
     payment_link: stripe_shared::PaymentLinkId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListLineItemsPaymentLink {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListLineItemsPaymentLink").finish_non_exhaustive()
+    }
 }
 impl ListLineItemsPaymentLink {
     /// Construct a new `ListLineItemsPaymentLink`.
@@ -244,7 +292,9 @@ impl StripeRequest for ListLineItemsPaymentLink {
             .query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct CreatePaymentLinkBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     after_completion: Option<CreatePaymentLinkAfterCompletion>,
@@ -306,6 +356,12 @@ struct CreatePaymentLinkBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     transfer_data: Option<CreatePaymentLinkTransferData>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentLinkBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentLinkBuilder").finish_non_exhaustive()
+    }
+}
 impl CreatePaymentLinkBuilder {
     fn new(line_items: impl Into<Vec<CreatePaymentLinkLineItems>>) -> Self {
         Self {
@@ -343,7 +399,9 @@ impl CreatePaymentLinkBuilder {
     }
 }
 /// Behavior after the purchase is complete.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentLinkAfterCompletion {
     /// Configuration when `type=hosted_confirmation`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -354,6 +412,12 @@ pub struct CreatePaymentLinkAfterCompletion {
     /// The specified behavior after the purchase is complete. Either `redirect` or `hosted_confirmation`.
     #[serde(rename = "type")]
     pub type_: CreatePaymentLinkAfterCompletionType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentLinkAfterCompletion {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentLinkAfterCompletion").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentLinkAfterCompletion {
     pub fn new(type_: impl Into<CreatePaymentLinkAfterCompletionType>) -> Self {
@@ -404,9 +468,16 @@ impl std::fmt::Display for CreatePaymentLinkAfterCompletionType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentLinkAfterCompletionType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentLinkAfterCompletionType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentLinkAfterCompletionType)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentLinkAfterCompletionType {
@@ -426,7 +497,9 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentLinkAfterCompletionType {
     }
 }
 /// Configuration for automatic tax collection.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentLinkAutomaticTax {
     /// Set to `true` to [calculate tax automatically](https://docs.stripe.com/tax) using the customer's location.
     ///
@@ -438,6 +511,12 @@ pub struct CreatePaymentLinkAutomaticTax {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub liability: Option<CreatePaymentLinkAutomaticTaxLiability>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentLinkAutomaticTax {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentLinkAutomaticTax").finish_non_exhaustive()
+    }
+}
 impl CreatePaymentLinkAutomaticTax {
     pub fn new(enabled: impl Into<bool>) -> Self {
         Self { enabled: enabled.into(), liability: None }
@@ -446,7 +525,9 @@ impl CreatePaymentLinkAutomaticTax {
 /// The account that's liable for tax.
 /// If set, the business address and tax registrations required to perform the tax calculation are loaded from this account.
 /// The tax transaction is returned in the report of the connected account.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentLinkAutomaticTaxLiability {
     /// The connected account being referenced when `type` is `account`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -454,6 +535,12 @@ pub struct CreatePaymentLinkAutomaticTaxLiability {
     /// Type of the account referenced in the request.
     #[serde(rename = "type")]
     pub type_: CreatePaymentLinkAutomaticTaxLiabilityType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentLinkAutomaticTaxLiability {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentLinkAutomaticTaxLiability").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentLinkAutomaticTaxLiability {
     pub fn new(type_: impl Into<CreatePaymentLinkAutomaticTaxLiabilityType>) -> Self {
@@ -504,9 +591,17 @@ impl std::fmt::Display for CreatePaymentLinkAutomaticTaxLiabilityType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentLinkAutomaticTaxLiabilityType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentLinkAutomaticTaxLiabilityType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentLinkAutomaticTaxLiabilityType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentLinkAutomaticTaxLiabilityType {
@@ -526,7 +621,9 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentLinkAutomaticTaxLiabilityType
     }
 }
 /// Configure fields to gather active consent from customers.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentLinkConsentCollection {
     /// Determines the display of payment method reuse agreement text in the UI.
     /// If set to `hidden`, it will hide legal text related to the reuse of a payment method.
@@ -544,6 +641,12 @@ pub struct CreatePaymentLinkConsentCollection {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub terms_of_service: Option<CreatePaymentLinkConsentCollectionTermsOfService>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentLinkConsentCollection {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentLinkConsentCollection").finish_non_exhaustive()
+    }
+}
 impl CreatePaymentLinkConsentCollection {
     pub fn new() -> Self {
         Self { payment_method_reuse_agreement: None, promotions: None, terms_of_service: None }
@@ -556,13 +659,22 @@ impl Default for CreatePaymentLinkConsentCollection {
 }
 /// Determines the display of payment method reuse agreement text in the UI.
 /// If set to `hidden`, it will hide legal text related to the reuse of a payment method.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentLinkConsentCollectionPaymentMethodReuseAgreement {
     /// Determines the position and visibility of the payment method reuse agreement in the UI.
     /// When set to `auto`, Stripe's.
     /// defaults will be used.
     /// When set to `hidden`, the payment method reuse agreement text will always be hidden in the UI.
     pub position: CreatePaymentLinkConsentCollectionPaymentMethodReuseAgreementPosition,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentLinkConsentCollectionPaymentMethodReuseAgreement {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentLinkConsentCollectionPaymentMethodReuseAgreement")
+            .finish_non_exhaustive()
+    }
 }
 impl CreatePaymentLinkConsentCollectionPaymentMethodReuseAgreement {
     pub fn new(
@@ -618,9 +730,19 @@ impl std::fmt::Display for CreatePaymentLinkConsentCollectionPaymentMethodReuseA
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentLinkConsentCollectionPaymentMethodReuseAgreementPosition {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentLinkConsentCollectionPaymentMethodReuseAgreementPosition {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePaymentLinkConsentCollectionPaymentMethodReuseAgreementPosition
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentLinkConsentCollectionPaymentMethodReuseAgreementPosition {
@@ -688,9 +810,17 @@ impl std::fmt::Display for CreatePaymentLinkConsentCollectionPromotions {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentLinkConsentCollectionPromotions {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentLinkConsentCollectionPromotions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentLinkConsentCollectionPromotions))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentLinkConsentCollectionPromotions {
@@ -754,9 +884,17 @@ impl std::fmt::Display for CreatePaymentLinkConsentCollectionTermsOfService {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentLinkConsentCollectionTermsOfService {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentLinkConsentCollectionTermsOfService {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentLinkConsentCollectionTermsOfService))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentLinkConsentCollectionTermsOfService {
@@ -778,7 +916,9 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentLinkConsentCollectionTermsOfS
 /// Collect additional information from your customer using custom fields.
 /// Up to 3 fields are supported.
 /// You can't set this parameter if `ui_mode` is `custom`.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentLinkCustomFields {
     /// Configuration for `type=dropdown` fields.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -802,6 +942,12 @@ pub struct CreatePaymentLinkCustomFields {
     #[serde(rename = "type")]
     pub type_: CreatePaymentLinkCustomFieldsType,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentLinkCustomFields {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentLinkCustomFields").finish_non_exhaustive()
+    }
+}
 impl CreatePaymentLinkCustomFields {
     pub fn new(
         key: impl Into<String>,
@@ -820,13 +966,21 @@ impl CreatePaymentLinkCustomFields {
     }
 }
 /// The label for the field, displayed to the customer.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentLinkCustomFieldsLabel {
     /// Custom text for the label, displayed to the customer. Up to 50 characters.
     pub custom: String,
     /// The type of the label.
     #[serde(rename = "type")]
     pub type_: CreatePaymentLinkCustomFieldsLabelType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentLinkCustomFieldsLabel {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentLinkCustomFieldsLabel").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentLinkCustomFieldsLabel {
     pub fn new(
@@ -877,9 +1031,16 @@ impl std::fmt::Display for CreatePaymentLinkCustomFieldsLabelType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentLinkCustomFieldsLabelType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentLinkCustomFieldsLabelType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentLinkCustomFieldsLabelType)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentLinkCustomFieldsLabelType {
@@ -899,7 +1060,9 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentLinkCustomFieldsLabelType {
     }
 }
 /// Configuration for `type=numeric` fields.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentLinkCustomFieldsNumeric {
     /// The value that pre-fills the field on the payment page.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -910,6 +1073,12 @@ pub struct CreatePaymentLinkCustomFieldsNumeric {
     /// The minimum character length requirement for the customer's input.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub minimum_length: Option<i64>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentLinkCustomFieldsNumeric {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentLinkCustomFieldsNumeric").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentLinkCustomFieldsNumeric {
     pub fn new() -> Self {
@@ -922,7 +1091,9 @@ impl Default for CreatePaymentLinkCustomFieldsNumeric {
     }
 }
 /// Configuration for `type=text` fields.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentLinkCustomFieldsText {
     /// The value that pre-fills the field on the payment page.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -933,6 +1104,12 @@ pub struct CreatePaymentLinkCustomFieldsText {
     /// The minimum character length requirement for the customer's input.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub minimum_length: Option<i64>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentLinkCustomFieldsText {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentLinkCustomFieldsText").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentLinkCustomFieldsText {
     pub fn new() -> Self {
@@ -991,9 +1168,16 @@ impl std::fmt::Display for CreatePaymentLinkCustomFieldsType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentLinkCustomFieldsType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentLinkCustomFieldsType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentLinkCustomFieldsType)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentLinkCustomFieldsType {
@@ -1056,9 +1240,16 @@ impl std::fmt::Display for CreatePaymentLinkCustomerCreation {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentLinkCustomerCreation {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentLinkCustomerCreation {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentLinkCustomerCreation)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentLinkCustomerCreation {
@@ -1078,7 +1269,9 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentLinkCustomerCreation {
     }
 }
 /// Generate a post-purchase Invoice for one-time payments.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentLinkInvoiceCreation {
     /// Whether the feature is enabled
     pub enabled: bool,
@@ -1086,13 +1279,21 @@ pub struct CreatePaymentLinkInvoiceCreation {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub invoice_data: Option<CreatePaymentLinkInvoiceCreationInvoiceData>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentLinkInvoiceCreation {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentLinkInvoiceCreation").finish_non_exhaustive()
+    }
+}
 impl CreatePaymentLinkInvoiceCreation {
     pub fn new(enabled: impl Into<bool>) -> Self {
         Self { enabled: enabled.into(), invoice_data: None }
     }
 }
 /// Invoice PDF configuration.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentLinkInvoiceCreationInvoiceData {
     /// The account tax IDs associated with the invoice.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1120,6 +1321,12 @@ pub struct CreatePaymentLinkInvoiceCreationInvoiceData {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub rendering_options: Option<CreatePaymentLinkInvoiceCreationInvoiceDataRenderingOptions>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentLinkInvoiceCreationInvoiceData {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentLinkInvoiceCreationInvoiceData").finish_non_exhaustive()
+    }
+}
 impl CreatePaymentLinkInvoiceCreationInvoiceData {
     pub fn new() -> Self {
         Self {
@@ -1140,7 +1347,9 @@ impl Default for CreatePaymentLinkInvoiceCreationInvoiceData {
 }
 /// The connected account that issues the invoice.
 /// The invoice is presented with the branding and support information of the specified account.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentLinkInvoiceCreationInvoiceDataIssuer {
     /// The connected account being referenced when `type` is `account`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1148,6 +1357,12 @@ pub struct CreatePaymentLinkInvoiceCreationInvoiceDataIssuer {
     /// Type of the account referenced in the request.
     #[serde(rename = "type")]
     pub type_: CreatePaymentLinkInvoiceCreationInvoiceDataIssuerType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentLinkInvoiceCreationInvoiceDataIssuer {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentLinkInvoiceCreationInvoiceDataIssuer").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentLinkInvoiceCreationInvoiceDataIssuer {
     pub fn new(type_: impl Into<CreatePaymentLinkInvoiceCreationInvoiceDataIssuerType>) -> Self {
@@ -1198,9 +1413,17 @@ impl std::fmt::Display for CreatePaymentLinkInvoiceCreationInvoiceDataIssuerType
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentLinkInvoiceCreationInvoiceDataIssuerType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentLinkInvoiceCreationInvoiceDataIssuerType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentLinkInvoiceCreationInvoiceDataIssuerType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentLinkInvoiceCreationInvoiceDataIssuerType {
@@ -1220,7 +1443,9 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentLinkInvoiceCreationInvoiceDat
     }
 }
 /// Default options for invoice PDF rendering for this customer.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentLinkInvoiceCreationInvoiceDataRenderingOptions {
     /// How line-item prices and amounts will be displayed with respect to tax on invoice PDFs.
     /// One of `exclude_tax` or `include_inclusive_tax`.
@@ -1232,6 +1457,13 @@ pub struct CreatePaymentLinkInvoiceCreationInvoiceDataRenderingOptions {
     /// ID of the invoice rendering template to use for this invoice.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub template: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentLinkInvoiceCreationInvoiceDataRenderingOptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentLinkInvoiceCreationInvoiceDataRenderingOptions")
+            .finish_non_exhaustive()
+    }
 }
 impl CreatePaymentLinkInvoiceCreationInvoiceDataRenderingOptions {
     pub fn new() -> Self {
@@ -1294,11 +1526,23 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for CreatePaymentLinkInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for CreatePaymentLinkInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePaymentLinkInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -1324,7 +1568,9 @@ impl<'de> serde::Deserialize<'de>
 /// The line items representing what is being sold.
 /// Each line item represents an item being sold.
 /// Up to 20 line items are supported.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentLinkLineItems {
     /// When set, provides configuration for this item’s quantity to be adjusted by the customer during checkout.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1340,6 +1586,12 @@ pub struct CreatePaymentLinkLineItems {
     /// The quantity of the line item being purchased.
     pub quantity: u64,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentLinkLineItems {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentLinkLineItems").finish_non_exhaustive()
+    }
+}
 impl CreatePaymentLinkLineItems {
     pub fn new(quantity: impl Into<u64>) -> Self {
         Self { adjustable_quantity: None, price: None, price_data: None, quantity: quantity.into() }
@@ -1347,7 +1599,9 @@ impl CreatePaymentLinkLineItems {
 }
 /// Data used to generate a new [Price](https://docs.stripe.com/api/prices) object inline.
 /// One of `price` or `price_data` is required.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentLinkLineItemsPriceData {
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
@@ -1378,6 +1632,12 @@ pub struct CreatePaymentLinkLineItemsPriceData {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_amount_decimal: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentLinkLineItemsPriceData {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentLinkLineItemsPriceData").finish_non_exhaustive()
+    }
+}
 impl CreatePaymentLinkLineItemsPriceData {
     pub fn new(currency: impl Into<stripe_types::Currency>) -> Self {
         Self {
@@ -1393,7 +1653,9 @@ impl CreatePaymentLinkLineItemsPriceData {
 }
 /// Data used to generate a new [Product](https://docs.stripe.com/api/products) object inline.
 /// One of `product` or `product_data` is required.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentLinkLineItemsPriceDataProductData {
     /// The product's description, meant to be displayable to the customer.
     /// Use this field to optionally store a long form explanation of the product being sold for your own rendering purposes.
@@ -1418,6 +1680,12 @@ pub struct CreatePaymentLinkLineItemsPriceDataProductData {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_label: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentLinkLineItemsPriceDataProductData {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentLinkLineItemsPriceDataProductData").finish_non_exhaustive()
+    }
+}
 impl CreatePaymentLinkLineItemsPriceDataProductData {
     pub fn new(name: impl Into<String>) -> Self {
         Self {
@@ -1431,7 +1699,9 @@ impl CreatePaymentLinkLineItemsPriceDataProductData {
     }
 }
 /// The recurring components of a price such as `interval` and `interval_count`.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentLinkLineItemsPriceDataRecurring {
     /// Specifies billing frequency. Either `day`, `week`, `month` or `year`.
     pub interval: CreatePaymentLinkLineItemsPriceDataRecurringInterval,
@@ -1440,6 +1710,12 @@ pub struct CreatePaymentLinkLineItemsPriceDataRecurring {
     /// Maximum of three years interval allowed (3 years, 36 months, or 156 weeks).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub interval_count: Option<u64>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentLinkLineItemsPriceDataRecurring {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentLinkLineItemsPriceDataRecurring").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentLinkLineItemsPriceDataRecurring {
     pub fn new(interval: impl Into<CreatePaymentLinkLineItemsPriceDataRecurringInterval>) -> Self {
@@ -1496,9 +1772,17 @@ impl std::fmt::Display for CreatePaymentLinkLineItemsPriceDataRecurringInterval 
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentLinkLineItemsPriceDataRecurringInterval {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentLinkLineItemsPriceDataRecurringInterval {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentLinkLineItemsPriceDataRecurringInterval))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentLinkLineItemsPriceDataRecurringInterval {
@@ -1567,9 +1851,17 @@ impl std::fmt::Display for CreatePaymentLinkLineItemsPriceDataTaxBehavior {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentLinkLineItemsPriceDataTaxBehavior {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentLinkLineItemsPriceDataTaxBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentLinkLineItemsPriceDataTaxBehavior))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentLinkLineItemsPriceDataTaxBehavior {
@@ -1589,7 +1881,9 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentLinkLineItemsPriceDataTaxBeha
     }
 }
 /// A subset of parameters to be passed to PaymentIntent creation for Checkout Sessions in `payment` mode.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentLinkPaymentIntentData {
     /// Controls when the funds will be captured from the customer's account.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1632,6 +1926,12 @@ pub struct CreatePaymentLinkPaymentIntentData {
     /// See the PaymentIntents [use case for connected accounts](https://docs.stripe.com/connect/separate-charges-and-transfers) for details.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub transfer_group: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentLinkPaymentIntentData {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentLinkPaymentIntentData").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentLinkPaymentIntentData {
     pub fn new() -> Self {
@@ -1698,9 +1998,17 @@ impl std::fmt::Display for CreatePaymentLinkPaymentIntentDataCaptureMethod {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentLinkPaymentIntentDataCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentLinkPaymentIntentDataCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentLinkPaymentIntentDataCaptureMethod))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentLinkPaymentIntentDataCaptureMethod {
@@ -1774,9 +2082,17 @@ impl std::fmt::Display for CreatePaymentLinkPaymentIntentDataSetupFutureUsage {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentLinkPaymentIntentDataSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentLinkPaymentIntentDataSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentLinkPaymentIntentDataSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentLinkPaymentIntentDataSetupFutureUsage {
@@ -1844,9 +2160,16 @@ impl std::fmt::Display for CreatePaymentLinkPaymentMethodCollection {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentLinkPaymentMethodCollection {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentLinkPaymentMethodCollection {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentLinkPaymentMethodCollection)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentLinkPaymentMethodCollection {
@@ -1866,11 +2189,19 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentLinkPaymentMethodCollection {
     }
 }
 /// Configuration for collecting the customer's shipping address.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentLinkShippingAddressCollection {
     /// An array of two-letter ISO country codes representing which countries Checkout should provide as options for.
     /// shipping locations.
     pub allowed_countries: Vec<CreatePaymentLinkShippingAddressCollectionAllowedCountries>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentLinkShippingAddressCollection {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentLinkShippingAddressCollection").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentLinkShippingAddressCollection {
     pub fn new(
@@ -2632,9 +2963,17 @@ impl std::fmt::Display for CreatePaymentLinkShippingAddressCollectionAllowedCoun
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentLinkShippingAddressCollectionAllowedCountries {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentLinkShippingAddressCollectionAllowedCountries {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentLinkShippingAddressCollectionAllowedCountries))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentLinkShippingAddressCollectionAllowedCountries {
@@ -2654,11 +2993,19 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentLinkShippingAddressCollection
     }
 }
 /// The shipping rate options to apply to [checkout sessions](https://docs.stripe.com/api/checkout/sessions) created by this payment link.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentLinkShippingOptions {
     /// The ID of the Shipping Rate to use for this shipping option.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub shipping_rate: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentLinkShippingOptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentLinkShippingOptions").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentLinkShippingOptions {
     pub fn new() -> Self {
@@ -2672,7 +3019,9 @@ impl Default for CreatePaymentLinkShippingOptions {
 }
 /// When creating a subscription, the specified configuration data will be used.
 /// There must be at least one line item with a recurring price to use `subscription_data`.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentLinkSubscriptionData {
     /// The subscription's description, meant to be displayable to the customer.
     /// Use this field to optionally store an explanation of the subscription for rendering in Stripe surfaces and certain local payment methods UIs.
@@ -2694,6 +3043,12 @@ pub struct CreatePaymentLinkSubscriptionData {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub trial_settings: Option<CreatePaymentLinkSubscriptionDataTrialSettings>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentLinkSubscriptionData {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentLinkSubscriptionData").finish_non_exhaustive()
+    }
+}
 impl CreatePaymentLinkSubscriptionData {
     pub fn new() -> Self {
         Self {
@@ -2711,12 +3066,20 @@ impl Default for CreatePaymentLinkSubscriptionData {
     }
 }
 /// All invoices will be billed using the specified settings.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentLinkSubscriptionDataInvoiceSettings {
     /// The connected account that issues the invoice.
     /// The invoice is presented with the branding and support information of the specified account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub issuer: Option<CreatePaymentLinkSubscriptionDataInvoiceSettingsIssuer>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentLinkSubscriptionDataInvoiceSettings {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentLinkSubscriptionDataInvoiceSettings").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentLinkSubscriptionDataInvoiceSettings {
     pub fn new() -> Self {
@@ -2730,7 +3093,9 @@ impl Default for CreatePaymentLinkSubscriptionDataInvoiceSettings {
 }
 /// The connected account that issues the invoice.
 /// The invoice is presented with the branding and support information of the specified account.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentLinkSubscriptionDataInvoiceSettingsIssuer {
     /// The connected account being referenced when `type` is `account`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2738,6 +3103,13 @@ pub struct CreatePaymentLinkSubscriptionDataInvoiceSettingsIssuer {
     /// Type of the account referenced in the request.
     #[serde(rename = "type")]
     pub type_: CreatePaymentLinkSubscriptionDataInvoiceSettingsIssuerType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentLinkSubscriptionDataInvoiceSettingsIssuer {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentLinkSubscriptionDataInvoiceSettingsIssuer")
+            .finish_non_exhaustive()
+    }
 }
 impl CreatePaymentLinkSubscriptionDataInvoiceSettingsIssuer {
     pub fn new(
@@ -2790,9 +3162,17 @@ impl std::fmt::Display for CreatePaymentLinkSubscriptionDataInvoiceSettingsIssue
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentLinkSubscriptionDataInvoiceSettingsIssuerType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentLinkSubscriptionDataInvoiceSettingsIssuerType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentLinkSubscriptionDataInvoiceSettingsIssuerType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentLinkSubscriptionDataInvoiceSettingsIssuerType {
@@ -2812,10 +3192,18 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentLinkSubscriptionDataInvoiceSe
     }
 }
 /// Settings related to subscription trials.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentLinkSubscriptionDataTrialSettings {
     /// Defines how the subscription should behave when the user's free trial ends.
     pub end_behavior: CreatePaymentLinkSubscriptionDataTrialSettingsEndBehavior,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentLinkSubscriptionDataTrialSettings {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentLinkSubscriptionDataTrialSettings").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentLinkSubscriptionDataTrialSettings {
     pub fn new(
@@ -2825,11 +3213,20 @@ impl CreatePaymentLinkSubscriptionDataTrialSettings {
     }
 }
 /// Defines how the subscription should behave when the user's free trial ends.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentLinkSubscriptionDataTrialSettingsEndBehavior {
     /// Indicates how the subscription should change when the trial ends if the user did not provide a payment method.
     pub missing_payment_method:
         CreatePaymentLinkSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentLinkSubscriptionDataTrialSettingsEndBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentLinkSubscriptionDataTrialSettingsEndBehavior")
+            .finish_non_exhaustive()
+    }
 }
 impl CreatePaymentLinkSubscriptionDataTrialSettingsEndBehavior {
     pub fn new(
@@ -2891,11 +3288,23 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for CreatePaymentLinkSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for CreatePaymentLinkSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePaymentLinkSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -2919,7 +3328,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Controls tax ID collection during checkout.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentLinkTaxIdCollection {
     /// Enable tax ID collection during checkout. Defaults to `false`.
     pub enabled: bool,
@@ -2928,6 +3339,12 @@ pub struct CreatePaymentLinkTaxIdCollection {
     /// You can't set this parameter if `ui_mode` is `custom`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub required: Option<CreatePaymentLinkTaxIdCollectionRequired>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentLinkTaxIdCollection {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentLinkTaxIdCollection").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentLinkTaxIdCollection {
     pub fn new(enabled: impl Into<bool>) -> Self {
@@ -2980,9 +3397,16 @@ impl std::fmt::Display for CreatePaymentLinkTaxIdCollectionRequired {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentLinkTaxIdCollectionRequired {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentLinkTaxIdCollectionRequired {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentLinkTaxIdCollectionRequired)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentLinkTaxIdCollectionRequired {
@@ -3002,7 +3426,9 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentLinkTaxIdCollectionRequired {
     }
 }
 /// The account (if any) the payments will be attributed to for tax reporting, and where funds from each payment will be transferred to.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentLinkTransferData {
     /// The amount that will be transferred automatically when a charge succeeds.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3013,15 +3439,29 @@ pub struct CreatePaymentLinkTransferData {
     /// returned on the successful charge's `transfer` field.
     pub destination: String,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentLinkTransferData {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentLinkTransferData").finish_non_exhaustive()
+    }
+}
 impl CreatePaymentLinkTransferData {
     pub fn new(destination: impl Into<String>) -> Self {
         Self { amount: None, destination: destination.into() }
     }
 }
 /// Creates a payment link.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentLink {
     inner: CreatePaymentLinkBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentLink {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentLink").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentLink {
     /// Construct a new `CreatePaymentLink`.
@@ -3277,7 +3717,9 @@ impl StripeRequest for CreatePaymentLink {
         RequestBuilder::new(StripeMethod::Post, "/payment_links").form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct UpdatePaymentLinkBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     active: Option<bool>,
@@ -3328,6 +3770,12 @@ struct UpdatePaymentLinkBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     tax_id_collection: Option<UpdatePaymentLinkTaxIdCollection>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentLinkBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentLinkBuilder").finish_non_exhaustive()
+    }
+}
 impl UpdatePaymentLinkBuilder {
     fn new() -> Self {
         Self {
@@ -3359,7 +3807,9 @@ impl UpdatePaymentLinkBuilder {
     }
 }
 /// Behavior after the purchase is complete.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentLinkAfterCompletion {
     /// Configuration when `type=hosted_confirmation`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3370,6 +3820,12 @@ pub struct UpdatePaymentLinkAfterCompletion {
     /// The specified behavior after the purchase is complete. Either `redirect` or `hosted_confirmation`.
     #[serde(rename = "type")]
     pub type_: UpdatePaymentLinkAfterCompletionType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentLinkAfterCompletion {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentLinkAfterCompletion").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentLinkAfterCompletion {
     pub fn new(type_: impl Into<UpdatePaymentLinkAfterCompletionType>) -> Self {
@@ -3420,9 +3876,16 @@ impl std::fmt::Display for UpdatePaymentLinkAfterCompletionType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentLinkAfterCompletionType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentLinkAfterCompletionType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentLinkAfterCompletionType)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentLinkAfterCompletionType {
@@ -3442,7 +3905,9 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentLinkAfterCompletionType {
     }
 }
 /// Configuration for automatic tax collection.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentLinkAutomaticTax {
     /// Set to `true` to [calculate tax automatically](https://docs.stripe.com/tax) using the customer's location.
     ///
@@ -3454,6 +3919,12 @@ pub struct UpdatePaymentLinkAutomaticTax {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub liability: Option<UpdatePaymentLinkAutomaticTaxLiability>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentLinkAutomaticTax {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentLinkAutomaticTax").finish_non_exhaustive()
+    }
+}
 impl UpdatePaymentLinkAutomaticTax {
     pub fn new(enabled: impl Into<bool>) -> Self {
         Self { enabled: enabled.into(), liability: None }
@@ -3462,7 +3933,9 @@ impl UpdatePaymentLinkAutomaticTax {
 /// The account that's liable for tax.
 /// If set, the business address and tax registrations required to perform the tax calculation are loaded from this account.
 /// The tax transaction is returned in the report of the connected account.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentLinkAutomaticTaxLiability {
     /// The connected account being referenced when `type` is `account`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3470,6 +3943,12 @@ pub struct UpdatePaymentLinkAutomaticTaxLiability {
     /// Type of the account referenced in the request.
     #[serde(rename = "type")]
     pub type_: UpdatePaymentLinkAutomaticTaxLiabilityType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentLinkAutomaticTaxLiability {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentLinkAutomaticTaxLiability").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentLinkAutomaticTaxLiability {
     pub fn new(type_: impl Into<UpdatePaymentLinkAutomaticTaxLiabilityType>) -> Self {
@@ -3520,9 +3999,17 @@ impl std::fmt::Display for UpdatePaymentLinkAutomaticTaxLiabilityType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentLinkAutomaticTaxLiabilityType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentLinkAutomaticTaxLiabilityType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentLinkAutomaticTaxLiabilityType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentLinkAutomaticTaxLiabilityType {
@@ -3544,7 +4031,9 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentLinkAutomaticTaxLiabilityType
 /// Collect additional information from your customer using custom fields.
 /// Up to 3 fields are supported.
 /// You can't set this parameter if `ui_mode` is `custom`.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentLinkCustomFields {
     /// Configuration for `type=dropdown` fields.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3568,6 +4057,12 @@ pub struct UpdatePaymentLinkCustomFields {
     #[serde(rename = "type")]
     pub type_: UpdatePaymentLinkCustomFieldsType,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentLinkCustomFields {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentLinkCustomFields").finish_non_exhaustive()
+    }
+}
 impl UpdatePaymentLinkCustomFields {
     pub fn new(
         key: impl Into<String>,
@@ -3586,13 +4081,21 @@ impl UpdatePaymentLinkCustomFields {
     }
 }
 /// The label for the field, displayed to the customer.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentLinkCustomFieldsLabel {
     /// Custom text for the label, displayed to the customer. Up to 50 characters.
     pub custom: String,
     /// The type of the label.
     #[serde(rename = "type")]
     pub type_: UpdatePaymentLinkCustomFieldsLabelType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentLinkCustomFieldsLabel {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentLinkCustomFieldsLabel").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentLinkCustomFieldsLabel {
     pub fn new(
@@ -3643,9 +4146,16 @@ impl std::fmt::Display for UpdatePaymentLinkCustomFieldsLabelType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentLinkCustomFieldsLabelType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentLinkCustomFieldsLabelType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentLinkCustomFieldsLabelType)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentLinkCustomFieldsLabelType {
@@ -3665,7 +4175,9 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentLinkCustomFieldsLabelType {
     }
 }
 /// Configuration for `type=numeric` fields.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentLinkCustomFieldsNumeric {
     /// The value that pre-fills the field on the payment page.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3676,6 +4188,12 @@ pub struct UpdatePaymentLinkCustomFieldsNumeric {
     /// The minimum character length requirement for the customer's input.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub minimum_length: Option<i64>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentLinkCustomFieldsNumeric {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentLinkCustomFieldsNumeric").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentLinkCustomFieldsNumeric {
     pub fn new() -> Self {
@@ -3688,7 +4206,9 @@ impl Default for UpdatePaymentLinkCustomFieldsNumeric {
     }
 }
 /// Configuration for `type=text` fields.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentLinkCustomFieldsText {
     /// The value that pre-fills the field on the payment page.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3699,6 +4219,12 @@ pub struct UpdatePaymentLinkCustomFieldsText {
     /// The minimum character length requirement for the customer's input.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub minimum_length: Option<i64>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentLinkCustomFieldsText {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentLinkCustomFieldsText").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentLinkCustomFieldsText {
     pub fn new() -> Self {
@@ -3757,9 +4283,16 @@ impl std::fmt::Display for UpdatePaymentLinkCustomFieldsType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentLinkCustomFieldsType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentLinkCustomFieldsType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentLinkCustomFieldsType)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentLinkCustomFieldsType {
@@ -3822,9 +4355,16 @@ impl std::fmt::Display for UpdatePaymentLinkCustomerCreation {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentLinkCustomerCreation {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentLinkCustomerCreation {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentLinkCustomerCreation)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentLinkCustomerCreation {
@@ -3844,7 +4384,9 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentLinkCustomerCreation {
     }
 }
 /// Generate a post-purchase Invoice for one-time payments.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentLinkInvoiceCreation {
     /// Whether the feature is enabled
     pub enabled: bool,
@@ -3852,13 +4394,21 @@ pub struct UpdatePaymentLinkInvoiceCreation {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub invoice_data: Option<UpdatePaymentLinkInvoiceCreationInvoiceData>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentLinkInvoiceCreation {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentLinkInvoiceCreation").finish_non_exhaustive()
+    }
+}
 impl UpdatePaymentLinkInvoiceCreation {
     pub fn new(enabled: impl Into<bool>) -> Self {
         Self { enabled: enabled.into(), invoice_data: None }
     }
 }
 /// Invoice PDF configuration.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentLinkInvoiceCreationInvoiceData {
     /// The account tax IDs associated with the invoice.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3886,6 +4436,12 @@ pub struct UpdatePaymentLinkInvoiceCreationInvoiceData {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub rendering_options: Option<UpdatePaymentLinkInvoiceCreationInvoiceDataRenderingOptions>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentLinkInvoiceCreationInvoiceData {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentLinkInvoiceCreationInvoiceData").finish_non_exhaustive()
+    }
+}
 impl UpdatePaymentLinkInvoiceCreationInvoiceData {
     pub fn new() -> Self {
         Self {
@@ -3906,7 +4462,9 @@ impl Default for UpdatePaymentLinkInvoiceCreationInvoiceData {
 }
 /// The connected account that issues the invoice.
 /// The invoice is presented with the branding and support information of the specified account.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentLinkInvoiceCreationInvoiceDataIssuer {
     /// The connected account being referenced when `type` is `account`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3914,6 +4472,12 @@ pub struct UpdatePaymentLinkInvoiceCreationInvoiceDataIssuer {
     /// Type of the account referenced in the request.
     #[serde(rename = "type")]
     pub type_: UpdatePaymentLinkInvoiceCreationInvoiceDataIssuerType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentLinkInvoiceCreationInvoiceDataIssuer {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentLinkInvoiceCreationInvoiceDataIssuer").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentLinkInvoiceCreationInvoiceDataIssuer {
     pub fn new(type_: impl Into<UpdatePaymentLinkInvoiceCreationInvoiceDataIssuerType>) -> Self {
@@ -3964,9 +4528,17 @@ impl std::fmt::Display for UpdatePaymentLinkInvoiceCreationInvoiceDataIssuerType
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentLinkInvoiceCreationInvoiceDataIssuerType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentLinkInvoiceCreationInvoiceDataIssuerType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentLinkInvoiceCreationInvoiceDataIssuerType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentLinkInvoiceCreationInvoiceDataIssuerType {
@@ -3986,7 +4558,9 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentLinkInvoiceCreationInvoiceDat
     }
 }
 /// Default options for invoice PDF rendering for this customer.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentLinkInvoiceCreationInvoiceDataRenderingOptions {
     /// How line-item prices and amounts will be displayed with respect to tax on invoice PDFs.
     /// One of `exclude_tax` or `include_inclusive_tax`.
@@ -3998,6 +4572,13 @@ pub struct UpdatePaymentLinkInvoiceCreationInvoiceDataRenderingOptions {
     /// ID of the invoice rendering template to use for this invoice.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub template: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentLinkInvoiceCreationInvoiceDataRenderingOptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentLinkInvoiceCreationInvoiceDataRenderingOptions")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentLinkInvoiceCreationInvoiceDataRenderingOptions {
     pub fn new() -> Self {
@@ -4060,11 +4641,23 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for UpdatePaymentLinkInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for UpdatePaymentLinkInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdatePaymentLinkInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -4090,7 +4683,9 @@ impl<'de> serde::Deserialize<'de>
 /// The line items representing what is being sold.
 /// Each line item represents an item being sold.
 /// Up to 20 line items are supported.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentLinkLineItems {
     /// When set, provides configuration for this item’s quantity to be adjusted by the customer during checkout.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4101,13 +4696,21 @@ pub struct UpdatePaymentLinkLineItems {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub quantity: Option<u64>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentLinkLineItems {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentLinkLineItems").finish_non_exhaustive()
+    }
+}
 impl UpdatePaymentLinkLineItems {
     pub fn new(id: impl Into<String>) -> Self {
         Self { adjustable_quantity: None, id: id.into(), quantity: None }
     }
 }
 /// A subset of parameters to be passed to PaymentIntent creation for Checkout Sessions in `payment` mode.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentLinkPaymentIntentData {
     /// An arbitrary string attached to the object. Often useful for displaying to users.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4133,6 +4736,12 @@ pub struct UpdatePaymentLinkPaymentIntentData {
     /// See the PaymentIntents [use case for connected accounts](https://docs.stripe.com/connect/separate-charges-and-transfers) for details.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub transfer_group: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentLinkPaymentIntentData {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentLinkPaymentIntentData").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentLinkPaymentIntentData {
     pub fn new() -> Self {
@@ -4199,9 +4808,16 @@ impl std::fmt::Display for UpdatePaymentLinkPaymentMethodCollection {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentLinkPaymentMethodCollection {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentLinkPaymentMethodCollection {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentLinkPaymentMethodCollection)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentLinkPaymentMethodCollection {
@@ -4221,11 +4837,19 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentLinkPaymentMethodCollection {
     }
 }
 /// Configuration for collecting the customer's shipping address.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentLinkShippingAddressCollection {
     /// An array of two-letter ISO country codes representing which countries Checkout should provide as options for.
     /// shipping locations.
     pub allowed_countries: Vec<UpdatePaymentLinkShippingAddressCollectionAllowedCountries>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentLinkShippingAddressCollection {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentLinkShippingAddressCollection").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentLinkShippingAddressCollection {
     pub fn new(
@@ -4987,9 +5611,17 @@ impl std::fmt::Display for UpdatePaymentLinkShippingAddressCollectionAllowedCoun
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentLinkShippingAddressCollectionAllowedCountries {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentLinkShippingAddressCollectionAllowedCountries {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentLinkShippingAddressCollectionAllowedCountries))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentLinkShippingAddressCollectionAllowedCountries {
@@ -5010,7 +5642,9 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentLinkShippingAddressCollection
 }
 /// When creating a subscription, the specified configuration data will be used.
 /// There must be at least one line item with a recurring price to use `subscription_data`.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentLinkSubscriptionData {
     /// All invoices will be billed using the specified settings.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5028,6 +5662,12 @@ pub struct UpdatePaymentLinkSubscriptionData {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub trial_settings: Option<UpdatePaymentLinkSubscriptionDataTrialSettings>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentLinkSubscriptionData {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentLinkSubscriptionData").finish_non_exhaustive()
+    }
+}
 impl UpdatePaymentLinkSubscriptionData {
     pub fn new() -> Self {
         Self {
@@ -5044,12 +5684,20 @@ impl Default for UpdatePaymentLinkSubscriptionData {
     }
 }
 /// All invoices will be billed using the specified settings.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentLinkSubscriptionDataInvoiceSettings {
     /// The connected account that issues the invoice.
     /// The invoice is presented with the branding and support information of the specified account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub issuer: Option<UpdatePaymentLinkSubscriptionDataInvoiceSettingsIssuer>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentLinkSubscriptionDataInvoiceSettings {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentLinkSubscriptionDataInvoiceSettings").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentLinkSubscriptionDataInvoiceSettings {
     pub fn new() -> Self {
@@ -5063,7 +5711,9 @@ impl Default for UpdatePaymentLinkSubscriptionDataInvoiceSettings {
 }
 /// The connected account that issues the invoice.
 /// The invoice is presented with the branding and support information of the specified account.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentLinkSubscriptionDataInvoiceSettingsIssuer {
     /// The connected account being referenced when `type` is `account`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5071,6 +5721,13 @@ pub struct UpdatePaymentLinkSubscriptionDataInvoiceSettingsIssuer {
     /// Type of the account referenced in the request.
     #[serde(rename = "type")]
     pub type_: UpdatePaymentLinkSubscriptionDataInvoiceSettingsIssuerType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentLinkSubscriptionDataInvoiceSettingsIssuer {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentLinkSubscriptionDataInvoiceSettingsIssuer")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentLinkSubscriptionDataInvoiceSettingsIssuer {
     pub fn new(
@@ -5123,9 +5780,17 @@ impl std::fmt::Display for UpdatePaymentLinkSubscriptionDataInvoiceSettingsIssue
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentLinkSubscriptionDataInvoiceSettingsIssuerType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentLinkSubscriptionDataInvoiceSettingsIssuerType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentLinkSubscriptionDataInvoiceSettingsIssuerType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentLinkSubscriptionDataInvoiceSettingsIssuerType {
@@ -5145,10 +5810,18 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentLinkSubscriptionDataInvoiceSe
     }
 }
 /// Settings related to subscription trials.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentLinkSubscriptionDataTrialSettings {
     /// Defines how the subscription should behave when the user's free trial ends.
     pub end_behavior: UpdatePaymentLinkSubscriptionDataTrialSettingsEndBehavior,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentLinkSubscriptionDataTrialSettings {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentLinkSubscriptionDataTrialSettings").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentLinkSubscriptionDataTrialSettings {
     pub fn new(
@@ -5158,11 +5831,20 @@ impl UpdatePaymentLinkSubscriptionDataTrialSettings {
     }
 }
 /// Defines how the subscription should behave when the user's free trial ends.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentLinkSubscriptionDataTrialSettingsEndBehavior {
     /// Indicates how the subscription should change when the trial ends if the user did not provide a payment method.
     pub missing_payment_method:
         UpdatePaymentLinkSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentLinkSubscriptionDataTrialSettingsEndBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentLinkSubscriptionDataTrialSettingsEndBehavior")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentLinkSubscriptionDataTrialSettingsEndBehavior {
     pub fn new(
@@ -5224,11 +5906,23 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for UpdatePaymentLinkSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for UpdatePaymentLinkSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdatePaymentLinkSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -5252,7 +5946,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Controls tax ID collection during checkout.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentLinkTaxIdCollection {
     /// Enable tax ID collection during checkout. Defaults to `false`.
     pub enabled: bool,
@@ -5261,6 +5957,12 @@ pub struct UpdatePaymentLinkTaxIdCollection {
     /// You can't set this parameter if `ui_mode` is `custom`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub required: Option<UpdatePaymentLinkTaxIdCollectionRequired>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentLinkTaxIdCollection {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentLinkTaxIdCollection").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentLinkTaxIdCollection {
     pub fn new(enabled: impl Into<bool>) -> Self {
@@ -5313,9 +6015,16 @@ impl std::fmt::Display for UpdatePaymentLinkTaxIdCollectionRequired {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentLinkTaxIdCollectionRequired {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentLinkTaxIdCollectionRequired {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentLinkTaxIdCollectionRequired)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentLinkTaxIdCollectionRequired {
@@ -5335,10 +6044,18 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentLinkTaxIdCollectionRequired {
     }
 }
 /// Updates a payment link.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentLink {
     inner: UpdatePaymentLinkBuilder,
     payment_link: stripe_shared::PaymentLinkId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentLink {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentLink").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentLink {
     /// Construct a new `UpdatePaymentLink`.
@@ -5562,11 +6279,19 @@ impl StripeRequest for UpdatePaymentLink {
     }
 }
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct AfterCompletionConfirmationPageParams {
     /// A custom message to display to the customer after the purchase is complete.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub custom_message: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for AfterCompletionConfirmationPageParams {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("AfterCompletionConfirmationPageParams").finish_non_exhaustive()
+    }
 }
 impl AfterCompletionConfirmationPageParams {
     pub fn new() -> Self {
@@ -5578,18 +6303,28 @@ impl Default for AfterCompletionConfirmationPageParams {
         Self::new()
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct AfterCompletionRedirectParams {
     /// The URL the customer will be redirected to after the purchase is complete.
     /// You can embed `{CHECKOUT_SESSION_ID}` into the URL to have the `id` of the completed [checkout session](https://docs.stripe.com/api/checkout/sessions/object#checkout_session_object-id) included.
     pub url: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for AfterCompletionRedirectParams {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("AfterCompletionRedirectParams").finish_non_exhaustive()
+    }
 }
 impl AfterCompletionRedirectParams {
     pub fn new(url: impl Into<String>) -> Self {
         Self { url: url.into() }
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CustomFieldOptionParam {
     /// The label for the option, displayed to the customer. Up to 100 characters.
     pub label: String,
@@ -5597,34 +6332,58 @@ pub struct CustomFieldOptionParam {
     /// Must be unique to this option, alphanumeric, and up to 100 characters.
     pub value: String,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CustomFieldOptionParam {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CustomFieldOptionParam").finish_non_exhaustive()
+    }
+}
 impl CustomFieldOptionParam {
     pub fn new(label: impl Into<String>, value: impl Into<String>) -> Self {
         Self { label: label.into(), value: value.into() }
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CustomTextPositionParam {
     /// Text can be up to 1200 characters in length.
     pub message: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CustomTextPositionParam {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CustomTextPositionParam").finish_non_exhaustive()
+    }
 }
 impl CustomTextPositionParam {
     pub fn new(message: impl Into<String>) -> Self {
         Self { message: message.into() }
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CustomFieldParams {
     /// The name of the custom field. This may be up to 40 characters.
     pub name: String,
     /// The value of the custom field. This may be up to 140 characters.
     pub value: String,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CustomFieldParams {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CustomFieldParams").finish_non_exhaustive()
+    }
+}
 impl CustomFieldParams {
     pub fn new(name: impl Into<String>, value: impl Into<String>) -> Self {
         Self { name: name.into(), value: value.into() }
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct AdjustableQuantityParams {
     /// Set to true if the quantity can be adjusted to any non-negative Integer.
     pub enabled: bool,
@@ -5639,12 +6398,20 @@ pub struct AdjustableQuantityParams {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub minimum: Option<i64>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for AdjustableQuantityParams {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("AdjustableQuantityParams").finish_non_exhaustive()
+    }
+}
 impl AdjustableQuantityParams {
     pub fn new(enabled: impl Into<bool>) -> Self {
         Self { enabled: enabled.into(), maximum: None, minimum: None }
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct NameCollectionBusinessParams {
     /// Enable business name collection on the payment link. Defaults to `false`.
     pub enabled: bool,
@@ -5653,12 +6420,20 @@ pub struct NameCollectionBusinessParams {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for NameCollectionBusinessParams {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("NameCollectionBusinessParams").finish_non_exhaustive()
+    }
+}
 impl NameCollectionBusinessParams {
     pub fn new(enabled: impl Into<bool>) -> Self {
         Self { enabled: enabled.into(), optional: None }
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct NameCollectionIndividualParams {
     /// Enable individual name collection on the payment link. Defaults to `false`.
     pub enabled: bool,
@@ -5667,12 +6442,20 @@ pub struct NameCollectionIndividualParams {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for NameCollectionIndividualParams {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("NameCollectionIndividualParams").finish_non_exhaustive()
+    }
+}
 impl NameCollectionIndividualParams {
     pub fn new(enabled: impl Into<bool>) -> Self {
         Self { enabled: enabled.into(), optional: None }
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct OptionalItemAdjustableQuantityParams {
     /// Set to true if the quantity can be adjusted to any non-negative integer.
     pub enabled: bool,
@@ -5685,32 +6468,56 @@ pub struct OptionalItemAdjustableQuantityParams {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub minimum: Option<i64>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for OptionalItemAdjustableQuantityParams {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("OptionalItemAdjustableQuantityParams").finish_non_exhaustive()
+    }
+}
 impl OptionalItemAdjustableQuantityParams {
     pub fn new(enabled: impl Into<bool>) -> Self {
         Self { enabled: enabled.into(), maximum: None, minimum: None }
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct PhoneNumberCollectionParams {
     /// Set to `true` to enable phone number collection.
     pub enabled: bool,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PhoneNumberCollectionParams {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PhoneNumberCollectionParams").finish_non_exhaustive()
+    }
 }
 impl PhoneNumberCollectionParams {
     pub fn new(enabled: impl Into<bool>) -> Self {
         Self { enabled: enabled.into() }
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CompletedSessionsParams {
     /// The maximum number of checkout sessions that can be completed for the `completed_sessions` restriction to be met.
     pub limit: i64,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CompletedSessionsParams {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CompletedSessionsParams").finish_non_exhaustive()
+    }
 }
 impl CompletedSessionsParams {
     pub fn new(limit: impl Into<i64>) -> Self {
         Self { limit: limit.into() }
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CustomFieldDropdownParam {
     /// The value that pre-fills the field on the payment page.Must match a `value` in the `options` array.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5718,12 +6525,20 @@ pub struct CustomFieldDropdownParam {
     /// The options available for the customer to select. Up to 200 options allowed.
     pub options: Vec<CustomFieldOptionParam>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CustomFieldDropdownParam {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CustomFieldDropdownParam").finish_non_exhaustive()
+    }
+}
 impl CustomFieldDropdownParam {
     pub fn new(options: impl Into<Vec<CustomFieldOptionParam>>) -> Self {
         Self { default_value: None, options: options.into() }
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CustomTextParam {
     /// Custom text that should be displayed after the payment confirmation button.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5737,6 +6552,12 @@ pub struct CustomTextParam {
     /// Custom text that should be displayed in place of the default terms of service agreement text.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub terms_of_service_acceptance: Option<CustomTextPositionParam>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CustomTextParam {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CustomTextParam").finish_non_exhaustive()
+    }
 }
 impl CustomTextParam {
     pub fn new() -> Self {
@@ -5753,7 +6574,9 @@ impl Default for CustomTextParam {
         Self::new()
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct NameCollectionParams {
     /// Controls settings applied for collecting the customer's business name.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5761,6 +6584,12 @@ pub struct NameCollectionParams {
     /// Controls settings applied for collecting the customer's individual name.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub individual: Option<NameCollectionIndividualParams>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for NameCollectionParams {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("NameCollectionParams").finish_non_exhaustive()
+    }
 }
 impl NameCollectionParams {
     pub fn new() -> Self {
@@ -5772,7 +6601,9 @@ impl Default for NameCollectionParams {
         Self::new()
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct OptionalItemParams {
     /// When set, provides configuration for the customer to adjust the quantity of the line item created when a customer chooses to add this optional item to their order.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5782,15 +6613,29 @@ pub struct OptionalItemParams {
     /// The initial quantity of the line item created when a customer chooses to add this optional item to their order.
     pub quantity: u64,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for OptionalItemParams {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("OptionalItemParams").finish_non_exhaustive()
+    }
+}
 impl OptionalItemParams {
     pub fn new(price: impl Into<String>, quantity: impl Into<u64>) -> Self {
         Self { adjustable_quantity: None, price: price.into(), quantity: quantity.into() }
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RestrictionsParams {
     /// Configuration for the `completed_sessions` restriction type.
     pub completed_sessions: CompletedSessionsParams,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RestrictionsParams {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RestrictionsParams").finish_non_exhaustive()
+    }
 }
 impl RestrictionsParams {
     pub fn new(completed_sessions: impl Into<CompletedSessionsParams>) -> Self {

@@ -15,7 +15,8 @@
 /// Stripe’s limits.
 ///
 /// Related guide: [Forward card details to third-party API endpoints](https://docs.stripe.com/payments/forwarding).
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct ForwardingRequest {
     /// Time at which the object was created. Measured in seconds since the Unix epoch.
@@ -41,6 +42,12 @@ pub struct ForwardingRequest {
     pub response_details: Option<stripe_misc::ForwardedResponseDetails>,
     /// The destination URL for the forwarded request. Must be supported by the config.
     pub url: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ForwardingRequest {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ForwardingRequest").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct ForwardingRequestBuilder {
@@ -290,9 +297,16 @@ impl std::fmt::Display for ForwardingRequestReplacements {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ForwardingRequestReplacements {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ForwardingRequestReplacements {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ForwardingRequestReplacements)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ForwardingRequestReplacements {

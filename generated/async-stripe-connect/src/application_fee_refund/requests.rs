@@ -2,10 +2,18 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RetrieveApplicationFeeRefundBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveApplicationFeeRefundBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveApplicationFeeRefundBuilder").finish_non_exhaustive()
+    }
 }
 impl RetrieveApplicationFeeRefundBuilder {
     fn new() -> Self {
@@ -13,11 +21,19 @@ impl RetrieveApplicationFeeRefundBuilder {
     }
 }
 /// By default, you can see the 10 most recent refunds stored directly on the application fee object, but you can also retrieve details about a specific refund stored on the application fee.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RetrieveApplicationFeeRefund {
     inner: RetrieveApplicationFeeRefundBuilder,
     fee: stripe_shared::ApplicationFeeId,
     id: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveApplicationFeeRefund {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveApplicationFeeRefund").finish_non_exhaustive()
+    }
 }
 impl RetrieveApplicationFeeRefund {
     /// Construct a new `RetrieveApplicationFeeRefund`.
@@ -58,7 +74,9 @@ impl StripeRequest for RetrieveApplicationFeeRefund {
             .query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ListIdApplicationFeeRefundBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<String>,
@@ -69,6 +87,12 @@ struct ListIdApplicationFeeRefundBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     starting_after: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListIdApplicationFeeRefundBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListIdApplicationFeeRefundBuilder").finish_non_exhaustive()
+    }
+}
 impl ListIdApplicationFeeRefundBuilder {
     fn new() -> Self {
         Self { ending_before: None, expand: None, limit: None, starting_after: None }
@@ -77,10 +101,18 @@ impl ListIdApplicationFeeRefundBuilder {
 /// You can see a list of the refunds belonging to a specific application fee.
 /// Note that the 10 most recent refunds are always available by default on the application fee object.
 /// If you need more than those 10, you can use this API method and the `limit` and `starting_after` parameters to page through additional refunds.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListIdApplicationFeeRefund {
     inner: ListIdApplicationFeeRefundBuilder,
     id: stripe_shared::ApplicationFeeId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListIdApplicationFeeRefund {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListIdApplicationFeeRefund").finish_non_exhaustive()
+    }
 }
 impl ListIdApplicationFeeRefund {
     /// Construct a new `ListIdApplicationFeeRefund`.
@@ -152,12 +184,20 @@ impl StripeRequest for ListIdApplicationFeeRefund {
             .query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct UpdateApplicationFeeRefundBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     metadata: Option<std::collections::HashMap<String, String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateApplicationFeeRefundBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateApplicationFeeRefundBuilder").finish_non_exhaustive()
+    }
 }
 impl UpdateApplicationFeeRefundBuilder {
     fn new() -> Self {
@@ -168,11 +208,19 @@ impl UpdateApplicationFeeRefundBuilder {
 /// Any parameters not provided will be left unchanged.
 ///
 /// This request only accepts metadata as an argument.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateApplicationFeeRefund {
     inner: UpdateApplicationFeeRefundBuilder,
     fee: stripe_shared::ApplicationFeeId,
     id: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateApplicationFeeRefund {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateApplicationFeeRefund").finish_non_exhaustive()
+    }
 }
 impl UpdateApplicationFeeRefund {
     /// Construct a new `UpdateApplicationFeeRefund`.
@@ -224,7 +272,9 @@ impl StripeRequest for UpdateApplicationFeeRefund {
             .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct CreateIdApplicationFeeRefundBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     amount: Option<i64>,
@@ -232,6 +282,12 @@ struct CreateIdApplicationFeeRefundBuilder {
     expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     metadata: Option<std::collections::HashMap<String, String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateIdApplicationFeeRefundBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateIdApplicationFeeRefundBuilder").finish_non_exhaustive()
+    }
 }
 impl CreateIdApplicationFeeRefundBuilder {
     fn new() -> Self {
@@ -247,10 +303,18 @@ impl CreateIdApplicationFeeRefundBuilder {
 /// Once entirely refunded, an application fee can’t be refunded again.
 /// This method will raise an error when called on an already-refunded application fee,
 /// or when trying to refund more money than is left on an application fee.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateIdApplicationFeeRefund {
     inner: CreateIdApplicationFeeRefundBuilder,
     id: stripe_shared::ApplicationFeeId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateIdApplicationFeeRefund {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateIdApplicationFeeRefund").finish_non_exhaustive()
+    }
 }
 impl CreateIdApplicationFeeRefund {
     /// Construct a new `CreateIdApplicationFeeRefund`.

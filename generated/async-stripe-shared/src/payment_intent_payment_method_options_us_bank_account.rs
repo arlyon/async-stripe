@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentIntentPaymentMethodOptionsUsBankAccount {
@@ -23,6 +24,12 @@ pub struct PaymentIntentPaymentMethodOptionsUsBankAccount {
     /// Bank account verification method. The default value is `automatic`.
     pub verification_method:
         Option<PaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentIntentPaymentMethodOptionsUsBankAccount {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PaymentIntentPaymentMethodOptionsUsBankAccount").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct PaymentIntentPaymentMethodOptionsUsBankAccountBuilder {
@@ -220,9 +227,17 @@ impl std::fmt::Display for PaymentIntentPaymentMethodOptionsUsBankAccountSetupFu
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for PaymentIntentPaymentMethodOptionsUsBankAccountSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentIntentPaymentMethodOptionsUsBankAccountSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(PaymentIntentPaymentMethodOptionsUsBankAccountSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -316,9 +331,17 @@ impl std::fmt::Display for PaymentIntentPaymentMethodOptionsUsBankAccountTransac
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for PaymentIntentPaymentMethodOptionsUsBankAccountTransactionPurpose {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentIntentPaymentMethodOptionsUsBankAccountTransactionPurpose {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(PaymentIntentPaymentMethodOptionsUsBankAccountTransactionPurpose))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -409,9 +432,17 @@ impl std::fmt::Display for PaymentIntentPaymentMethodOptionsUsBankAccountVerific
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for PaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(PaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

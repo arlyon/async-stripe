@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct SubscriptionSchedulesResourceInvoiceItemPeriodResourcePeriodStart {
@@ -8,6 +9,13 @@ pub struct SubscriptionSchedulesResourceInvoiceItemPeriodResourcePeriodStart {
     /// Select how to calculate the start of the invoice item period.
     #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "type"))]
     pub type_: SubscriptionSchedulesResourceInvoiceItemPeriodResourcePeriodStartType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for SubscriptionSchedulesResourceInvoiceItemPeriodResourcePeriodStart {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("SubscriptionSchedulesResourceInvoiceItemPeriodResourcePeriodStart")
+            .finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct SubscriptionSchedulesResourceInvoiceItemPeriodResourcePeriodStartBuilder {
@@ -152,9 +160,19 @@ impl std::fmt::Display for SubscriptionSchedulesResourceInvoiceItemPeriodResourc
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for SubscriptionSchedulesResourceInvoiceItemPeriodResourcePeriodStartType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for SubscriptionSchedulesResourceInvoiceItemPeriodResourcePeriodStartType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            SubscriptionSchedulesResourceInvoiceItemPeriodResourcePeriodStartType
+        ))
+        .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

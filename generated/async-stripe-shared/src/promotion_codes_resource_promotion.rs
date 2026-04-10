@@ -1,4 +1,5 @@
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PromotionCodesResourcePromotion {
@@ -7,6 +8,12 @@ pub struct PromotionCodesResourcePromotion {
     /// The type of promotion.
     #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "type"))]
     pub type_: PromotionCodesResourcePromotionType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PromotionCodesResourcePromotion {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PromotionCodesResourcePromotion").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct PromotionCodesResourcePromotionBuilder {
@@ -145,9 +152,16 @@ impl std::fmt::Display for PromotionCodesResourcePromotionType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for PromotionCodesResourcePromotionType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PromotionCodesResourcePromotionType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(PromotionCodesResourcePromotionType)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

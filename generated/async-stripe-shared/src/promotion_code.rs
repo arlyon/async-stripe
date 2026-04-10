@@ -5,7 +5,8 @@
 /// Customers can also view the currently active promotion codes and coupons on each of their subscriptions in the portal.
 ///
 /// For more details see <<https://stripe.com/docs/api/promotion_codes/object>>.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PromotionCode {
     /// Whether the promotion code is currently active.
@@ -37,6 +38,12 @@ pub struct PromotionCode {
     pub restrictions: stripe_shared::PromotionCodesResourceRestrictions,
     /// Number of times this promotion code has been used.
     pub times_redeemed: i64,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PromotionCode {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PromotionCode").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct PromotionCodeBuilder {

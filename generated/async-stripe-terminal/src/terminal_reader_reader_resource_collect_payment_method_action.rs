@@ -1,5 +1,6 @@
 /// Represents a reader action to collect a payment method
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TerminalReaderReaderResourceCollectPaymentMethodAction {
@@ -7,6 +8,13 @@ pub struct TerminalReaderReaderResourceCollectPaymentMethodAction {
     /// Most recent PaymentIntent processed by the reader.
     pub payment_intent: stripe_types::Expandable<stripe_shared::PaymentIntent>,
     pub payment_method: Option<stripe_shared::PaymentMethod>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TerminalReaderReaderResourceCollectPaymentMethodAction {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("TerminalReaderReaderResourceCollectPaymentMethodAction")
+            .finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct TerminalReaderReaderResourceCollectPaymentMethodActionBuilder {

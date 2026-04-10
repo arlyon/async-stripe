@@ -1,4 +1,5 @@
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct ConnectEmbeddedPaymentsFeatures {
@@ -12,6 +13,12 @@ pub struct ConnectEmbeddedPaymentsFeatures {
     pub dispute_management: bool,
     /// Whether sending refunds is enabled. This is `true` by default.
     pub refund_management: bool,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConnectEmbeddedPaymentsFeatures {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConnectEmbeddedPaymentsFeatures").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct ConnectEmbeddedPaymentsFeaturesBuilder {

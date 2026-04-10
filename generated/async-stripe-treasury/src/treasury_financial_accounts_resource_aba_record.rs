@@ -1,5 +1,6 @@
 /// ABA Records contain U.S. bank account details per the ABA format.
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TreasuryFinancialAccountsResourceAbaRecord {
@@ -13,6 +14,12 @@ pub struct TreasuryFinancialAccountsResourceAbaRecord {
     pub bank_name: String,
     /// Routing number for the account.
     pub routing_number: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TreasuryFinancialAccountsResourceAbaRecord {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("TreasuryFinancialAccountsResourceAbaRecord").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct TreasuryFinancialAccountsResourceAbaRecordBuilder {

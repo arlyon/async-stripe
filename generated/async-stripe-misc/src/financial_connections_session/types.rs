@@ -1,7 +1,8 @@
 /// A Financial Connections Session is the secure way to programmatically launch the client-side Stripe.js modal that lets your users link their accounts.
 ///
 /// For more details see <<https://stripe.com/docs/api/financial_connections/sessions/object>>.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct FinancialConnectionsSession {
     /// The account holder for whom accounts are collected in this session.
@@ -23,6 +24,12 @@ pub struct FinancialConnectionsSession {
     /// For webview integrations only.
     /// Upon completing OAuth login in the native browser, the user will be redirected to this URL to return to your app.
     pub return_url: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for FinancialConnectionsSession {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("FinancialConnectionsSession").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct FinancialConnectionsSessionBuilder {
@@ -261,9 +268,16 @@ impl std::fmt::Display for FinancialConnectionsSessionPermissions {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for FinancialConnectionsSessionPermissions {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for FinancialConnectionsSessionPermissions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(FinancialConnectionsSessionPermissions)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for FinancialConnectionsSessionPermissions {
@@ -343,9 +357,16 @@ impl std::fmt::Display for FinancialConnectionsSessionPrefetch {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for FinancialConnectionsSessionPrefetch {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for FinancialConnectionsSessionPrefetch {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(FinancialConnectionsSessionPrefetch)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for FinancialConnectionsSessionPrefetch {

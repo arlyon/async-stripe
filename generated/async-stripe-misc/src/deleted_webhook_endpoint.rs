@@ -1,10 +1,17 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct DeletedWebhookEndpoint {
     #[allow(dead_code)]
     deleted: stripe_types::AlwaysTrue,
     /// Unique identifier for the object.
     pub id: stripe_misc::WebhookEndpointId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for DeletedWebhookEndpoint {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("DeletedWebhookEndpoint").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct DeletedWebhookEndpointBuilder {

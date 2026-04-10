@@ -3,10 +3,18 @@ use stripe_client_core::{
 };
 
 /// Deletes the feature attachment to a product
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct DeleteProductFeature {
     id: String,
     product: stripe_shared::ProductId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for DeleteProductFeature {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("DeleteProductFeature").finish_non_exhaustive()
+    }
 }
 impl DeleteProductFeature {
     /// Construct a new `DeleteProductFeature`.
@@ -41,7 +49,9 @@ impl StripeRequest for DeleteProductFeature {
         RequestBuilder::new(StripeMethod::Delete, format!("/products/{product}/features/{id}"))
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ListProductProductFeatureBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<String>,
@@ -52,16 +62,30 @@ struct ListProductProductFeatureBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     starting_after: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListProductProductFeatureBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListProductProductFeatureBuilder").finish_non_exhaustive()
+    }
+}
 impl ListProductProductFeatureBuilder {
     fn new() -> Self {
         Self { ending_before: None, expand: None, limit: None, starting_after: None }
     }
 }
 /// Retrieve a list of features for a product
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListProductProductFeature {
     inner: ListProductProductFeatureBuilder,
     product: stripe_shared::ProductId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListProductProductFeature {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListProductProductFeature").finish_non_exhaustive()
+    }
 }
 impl ListProductProductFeature {
     /// Construct a new `ListProductProductFeature`.
@@ -132,10 +156,18 @@ impl StripeRequest for ListProductProductFeature {
             .query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RetrieveProductFeatureBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveProductFeatureBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveProductFeatureBuilder").finish_non_exhaustive()
+    }
 }
 impl RetrieveProductFeatureBuilder {
     fn new() -> Self {
@@ -143,11 +175,19 @@ impl RetrieveProductFeatureBuilder {
     }
 }
 /// Retrieves a product_feature, which represents a feature attachment to a product
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RetrieveProductFeature {
     inner: RetrieveProductFeatureBuilder,
     id: String,
     product: stripe_shared::ProductId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveProductFeature {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveProductFeature").finish_non_exhaustive()
+    }
 }
 impl RetrieveProductFeature {
     /// Construct a new `RetrieveProductFeature`.
@@ -188,11 +228,19 @@ impl StripeRequest for RetrieveProductFeature {
             .query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct CreateProductProductFeatureBuilder {
     entitlement_feature: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateProductProductFeatureBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateProductProductFeatureBuilder").finish_non_exhaustive()
+    }
 }
 impl CreateProductProductFeatureBuilder {
     fn new(entitlement_feature: impl Into<String>) -> Self {
@@ -200,10 +248,18 @@ impl CreateProductProductFeatureBuilder {
     }
 }
 /// Creates a product_feature, which represents a feature attachment to a product
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateProductProductFeature {
     inner: CreateProductProductFeatureBuilder,
     product: stripe_shared::ProductId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateProductProductFeature {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateProductProductFeature").finish_non_exhaustive()
+    }
 }
 impl CreateProductProductFeature {
     /// Construct a new `CreateProductProductFeature`.

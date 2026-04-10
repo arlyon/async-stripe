@@ -1,9 +1,17 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TaxProductRegistrationsResourceCountryOptionsUsLocalAmusementTax {
     /// A [FIPS code](https://www.census.gov/library/reference/code-lists/ansi.html) representing the local jurisdiction.
     pub jurisdiction: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TaxProductRegistrationsResourceCountryOptionsUsLocalAmusementTax {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("TaxProductRegistrationsResourceCountryOptionsUsLocalAmusementTax")
+            .finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct TaxProductRegistrationsResourceCountryOptionsUsLocalAmusementTaxBuilder {

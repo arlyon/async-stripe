@@ -1,5 +1,6 @@
 /// A Tax Association exposes the Tax Transactions that Stripe attempted to create on your behalf based on the PaymentIntent input.
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TaxAssociation {
     /// The [Tax Calculation](https://docs.stripe.com/api/tax/calculations/object) that was included in PaymentIntent.
@@ -11,6 +12,12 @@ pub struct TaxAssociation {
     /// Information about the tax transactions linked to this payment intent
     pub tax_transaction_attempts:
         Option<Vec<stripe_misc::TaxProductResourceTaxAssociationTransactionAttempts>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TaxAssociation {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("TaxAssociation").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct TaxAssociationBuilder {

@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PortalSubscriptionCancellationReason {
@@ -6,6 +7,12 @@ pub struct PortalSubscriptionCancellationReason {
     pub enabled: bool,
     /// Which cancellation reasons will be given as options to the customer.
     pub options: Vec<PortalSubscriptionCancellationReasonOptions>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PortalSubscriptionCancellationReason {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PortalSubscriptionCancellationReason").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct PortalSubscriptionCancellationReasonBuilder {
@@ -165,9 +172,17 @@ impl std::fmt::Display for PortalSubscriptionCancellationReasonOptions {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for PortalSubscriptionCancellationReasonOptions {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PortalSubscriptionCancellationReasonOptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(PortalSubscriptionCancellationReasonOptions))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

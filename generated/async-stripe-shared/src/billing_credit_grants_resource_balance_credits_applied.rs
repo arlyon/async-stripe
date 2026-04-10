@@ -1,4 +1,5 @@
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct BillingCreditGrantsResourceBalanceCreditsApplied {
@@ -6,6 +7,12 @@ pub struct BillingCreditGrantsResourceBalanceCreditsApplied {
     pub invoice: stripe_types::Expandable<stripe_shared::Invoice>,
     /// The invoice line item to which the billing credits were applied.
     pub invoice_line_item: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for BillingCreditGrantsResourceBalanceCreditsApplied {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("BillingCreditGrantsResourceBalanceCreditsApplied").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct BillingCreditGrantsResourceBalanceCreditsAppliedBuilder {

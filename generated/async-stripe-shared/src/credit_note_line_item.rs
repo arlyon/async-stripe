@@ -1,7 +1,8 @@
 /// The credit note line item object
 ///
 /// For more details see <<https://stripe.com/docs/api/credit_notes/line_item>>.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct CreditNoteLineItem {
     /// The integer amount in cents (or local equivalent) representing the gross amount being credited for this line item, excluding (exclusive) tax and discounts.
@@ -38,6 +39,12 @@ pub struct CreditNoteLineItem {
     pub unit_amount: Option<i64>,
     /// Same as `unit_amount`, but contains a decimal value with at most 12 decimal places.
     pub unit_amount_decimal: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreditNoteLineItem {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreditNoteLineItem").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct CreditNoteLineItemBuilder {
@@ -307,9 +314,16 @@ impl std::fmt::Display for CreditNoteLineItemType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreditNoteLineItemType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreditNoteLineItemType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreditNoteLineItemType)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

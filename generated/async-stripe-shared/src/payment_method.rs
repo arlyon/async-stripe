@@ -5,7 +5,8 @@
 /// Related guides: [Payment Methods](https://docs.stripe.com/payments/payment-methods) and [More Payment Scenarios](https://docs.stripe.com/payments/more-payment-scenarios).
 ///
 /// For more details see <<https://stripe.com/docs/api/payment_methods/object>>.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentMethod {
     pub acss_debit: Option<stripe_shared::PaymentMethodAcssDebit>,
@@ -87,6 +88,12 @@ pub struct PaymentMethod {
     pub us_bank_account: Option<stripe_shared::PaymentMethodUsBankAccount>,
     pub wechat_pay: Option<stripe_shared::PaymentMethodWechatPay>,
     pub zip: Option<stripe_shared::PaymentMethodZip>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PaymentMethod").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct PaymentMethodBuilder {
@@ -903,9 +910,16 @@ impl std::fmt::Display for PaymentMethodType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for PaymentMethodType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentMethodType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(PaymentMethodType)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -997,9 +1011,16 @@ impl std::fmt::Display for PaymentMethodAllowRedisplay {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for PaymentMethodAllowRedisplay {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentMethodAllowRedisplay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(PaymentMethodAllowRedisplay)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for PaymentMethodAllowRedisplay {

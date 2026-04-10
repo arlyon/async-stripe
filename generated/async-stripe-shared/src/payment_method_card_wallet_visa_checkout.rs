@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentMethodCardWalletVisaCheckout {
@@ -18,6 +19,12 @@ pub struct PaymentMethodCardWalletVisaCheckout {
     /// Values are verified or provided by the wallet directly (if supported) at the time of authorization or settlement.
     /// They cannot be set or mutated.
     pub shipping_address: Option<stripe_shared::Address>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentMethodCardWalletVisaCheckout {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PaymentMethodCardWalletVisaCheckout").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct PaymentMethodCardWalletVisaCheckoutBuilder {

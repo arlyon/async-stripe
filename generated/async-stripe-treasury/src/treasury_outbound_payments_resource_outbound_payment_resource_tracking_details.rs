@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TreasuryOutboundPaymentsResourceOutboundPaymentResourceTrackingDetails {
@@ -8,6 +9,13 @@ pub struct TreasuryOutboundPaymentsResourceOutboundPaymentResourceTrackingDetail
     pub type_: TreasuryOutboundPaymentsResourceOutboundPaymentResourceTrackingDetailsType,
     pub us_domestic_wire:
         Option<stripe_treasury::TreasuryOutboundPaymentsResourceUsDomesticWireTrackingDetails>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TreasuryOutboundPaymentsResourceOutboundPaymentResourceTrackingDetails {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("TreasuryOutboundPaymentsResourceOutboundPaymentResourceTrackingDetails")
+            .finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct TreasuryOutboundPaymentsResourceOutboundPaymentResourceTrackingDetailsBuilder {
@@ -165,11 +173,23 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for TreasuryOutboundPaymentsResourceOutboundPaymentResourceTrackingDetailsType
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for TreasuryOutboundPaymentsResourceOutboundPaymentResourceTrackingDetailsType
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            TreasuryOutboundPaymentsResourceOutboundPaymentResourceTrackingDetailsType
+        ))
+        .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

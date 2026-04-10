@@ -1,4 +1,5 @@
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentPagesCheckoutSessionOptionalItemAdjustableQuantity {
@@ -12,6 +13,13 @@ pub struct PaymentPagesCheckoutSessionOptionalItemAdjustableQuantity {
     /// Because this item is optional, the customer will always be able to remove it from their order, even if the `minimum` configured here is greater than 0.
     /// By default this value is 0.
     pub minimum: Option<i64>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentPagesCheckoutSessionOptionalItemAdjustableQuantity {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PaymentPagesCheckoutSessionOptionalItemAdjustableQuantity")
+            .finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct PaymentPagesCheckoutSessionOptionalItemAdjustableQuantityBuilder {

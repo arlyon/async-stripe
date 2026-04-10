@@ -1,5 +1,6 @@
 /// A line item.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct CheckoutSessionItem {
     pub adjustable_quantity: Option<stripe_shared::LineItemsAdjustableQuantity>,
@@ -31,6 +32,12 @@ pub struct CheckoutSessionItem {
     pub quantity: Option<u64>,
     /// The taxes applied to the line item.
     pub taxes: Option<Vec<stripe_shared::LineItemsTaxAmount>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CheckoutSessionItem {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CheckoutSessionItem").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct CheckoutSessionItemBuilder {

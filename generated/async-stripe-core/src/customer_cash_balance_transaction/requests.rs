@@ -2,7 +2,9 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ListCustomerCustomerCashBalanceTransactionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<String>,
@@ -13,16 +15,30 @@ struct ListCustomerCustomerCashBalanceTransactionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     starting_after: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListCustomerCustomerCashBalanceTransactionBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListCustomerCustomerCashBalanceTransactionBuilder").finish_non_exhaustive()
+    }
+}
 impl ListCustomerCustomerCashBalanceTransactionBuilder {
     fn new() -> Self {
         Self { ending_before: None, expand: None, limit: None, starting_after: None }
     }
 }
 /// Returns a list of transactions that modified the customer’s [cash balance](https://stripe.com/docs/payments/customer-balance).
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListCustomerCustomerCashBalanceTransaction {
     inner: ListCustomerCustomerCashBalanceTransactionBuilder,
     customer: stripe_shared::CustomerId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListCustomerCustomerCashBalanceTransaction {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListCustomerCustomerCashBalanceTransaction").finish_non_exhaustive()
+    }
 }
 impl ListCustomerCustomerCashBalanceTransaction {
     /// Construct a new `ListCustomerCustomerCashBalanceTransaction`.
@@ -101,10 +117,18 @@ impl StripeRequest for ListCustomerCustomerCashBalanceTransaction {
         .query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RetrieveCustomerCashBalanceTransactionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveCustomerCashBalanceTransactionBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveCustomerCashBalanceTransactionBuilder").finish_non_exhaustive()
+    }
 }
 impl RetrieveCustomerCashBalanceTransactionBuilder {
     fn new() -> Self {
@@ -112,11 +136,19 @@ impl RetrieveCustomerCashBalanceTransactionBuilder {
     }
 }
 /// Retrieves a specific cash balance transaction, which updated the customer’s [cash balance](https://stripe.com/docs/payments/customer-balance).
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RetrieveCustomerCashBalanceTransaction {
     inner: RetrieveCustomerCashBalanceTransactionBuilder,
     customer: stripe_shared::CustomerId,
     transaction: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveCustomerCashBalanceTransaction {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveCustomerCashBalanceTransaction").finish_non_exhaustive()
+    }
 }
 impl RetrieveCustomerCashBalanceTransaction {
     /// Construct a new `RetrieveCustomerCashBalanceTransaction`.

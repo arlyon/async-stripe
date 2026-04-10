@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentMethodDetailsCardPresentReceipt {
@@ -26,6 +27,12 @@ pub struct PaymentMethodDetailsCardPresentReceipt {
     /// An indication of which steps were completed during the card read process.
     /// Referenced from EMV Tag 9B.
     pub transaction_status_information: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentMethodDetailsCardPresentReceipt {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PaymentMethodDetailsCardPresentReceipt").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct PaymentMethodDetailsCardPresentReceiptBuilder {
@@ -258,9 +265,17 @@ impl std::fmt::Display for PaymentMethodDetailsCardPresentReceiptAccountType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for PaymentMethodDetailsCardPresentReceiptAccountType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentMethodDetailsCardPresentReceiptAccountType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(PaymentMethodDetailsCardPresentReceiptAccountType))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

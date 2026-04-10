@@ -1,4 +1,5 @@
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentPagesCheckoutSessionInvoiceSettings {
@@ -18,6 +19,12 @@ pub struct PaymentPagesCheckoutSessionInvoiceSettings {
     pub metadata: Option<std::collections::HashMap<String, String>>,
     /// Options for invoice PDF rendering.
     pub rendering_options: Option<stripe_shared::InvoiceSettingCheckoutRenderingOptions>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentPagesCheckoutSessionInvoiceSettings {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PaymentPagesCheckoutSessionInvoiceSettings").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct PaymentPagesCheckoutSessionInvoiceSettingsBuilder {

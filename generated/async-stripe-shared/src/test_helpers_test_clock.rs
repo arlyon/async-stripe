@@ -3,7 +3,8 @@
 /// objects at a frozen time in the past or future, and advance to a specific future time to observe webhooks and state changes.
 /// After the clock advances,.
 /// you can either validate the current state of your scenario (and test your assumptions), change the current state of your scenario (and test more complex scenarios), or keep advancing forward in time.
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TestHelpersTestClock {
     /// Time at which the object was created. Measured in seconds since the Unix epoch.
@@ -22,6 +23,12 @@ pub struct TestHelpersTestClock {
     /// The status of the Test Clock.
     pub status: TestHelpersTestClockStatus,
     pub status_details: stripe_shared::BillingClocksResourceStatusDetailsStatusDetails,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TestHelpersTestClock {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("TestHelpersTestClock").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct TestHelpersTestClockBuilder {
@@ -235,9 +242,16 @@ impl std::fmt::Display for TestHelpersTestClockStatus {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for TestHelpersTestClockStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TestHelpersTestClockStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(TestHelpersTestClockStatus)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

@@ -1,5 +1,6 @@
 /// Payment method details attached to this payment evaluation.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct InsightsResourcesPaymentEvaluationPaymentMethodDetails {
@@ -7,6 +8,13 @@ pub struct InsightsResourcesPaymentEvaluationPaymentMethodDetails {
     pub billing_details: Option<stripe_fraud::InsightsResourcesPaymentEvaluationBillingDetails>,
     /// The payment method used in this payment evaluation.
     pub payment_method: stripe_types::Expandable<stripe_shared::PaymentMethod>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for InsightsResourcesPaymentEvaluationPaymentMethodDetails {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("InsightsResourcesPaymentEvaluationPaymentMethodDetails")
+            .finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct InsightsResourcesPaymentEvaluationPaymentMethodDetailsBuilder {

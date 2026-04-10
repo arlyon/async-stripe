@@ -6,7 +6,8 @@
 /// Related guide: [Balances and settlement time](https://docs.stripe.com/payments/balances), [Understanding Connect account balances](https://docs.stripe.com/connect/account-balances).
 ///
 /// For more details see <<https://stripe.com/docs/api/balance/balance_object>>.
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct Balance {
     /// Available funds that you can transfer or pay out automatically by Stripe or explicitly through the [Transfers API](https://api.stripe.com#transfers) or [Payouts API](https://api.stripe.com#payouts).
@@ -25,6 +26,12 @@ pub struct Balance {
     /// You can find the pending balance for each currency and each payment type in the `source_types` property.
     pub pending: Vec<stripe_core::BalanceAmount>,
     pub refund_and_dispute_prefunding: Option<stripe_core::BalanceDetailUngated>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for Balance {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("Balance").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct BalanceBuilder {

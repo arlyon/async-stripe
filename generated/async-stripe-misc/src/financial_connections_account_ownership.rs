@@ -1,5 +1,6 @@
 /// Describes a snapshot of the owners of an account at a particular point in time.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct FinancialConnectionsAccountOwnership {
     /// Time at which the object was created. Measured in seconds since the Unix epoch.
@@ -8,6 +9,12 @@ pub struct FinancialConnectionsAccountOwnership {
     pub id: stripe_misc::FinancialConnectionsAccountOwnershipId,
     /// A paginated list of owners for this account.
     pub owners: stripe_types::List<stripe_misc::FinancialConnectionsAccountOwner>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for FinancialConnectionsAccountOwnership {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("FinancialConnectionsAccountOwnership").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct FinancialConnectionsAccountOwnershipBuilder {

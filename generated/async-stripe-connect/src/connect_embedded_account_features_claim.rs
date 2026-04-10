@@ -1,4 +1,5 @@
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct ConnectEmbeddedAccountFeaturesClaim {
@@ -11,6 +12,12 @@ pub struct ConnectEmbeddedAccountFeaturesClaim {
     /// This feature can only be `false` for accounts where you’re responsible for collecting updated information when requirements are due or change, like Custom accounts.
     /// The default value for this feature is `true`.
     pub external_account_collection: bool,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConnectEmbeddedAccountFeaturesClaim {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConnectEmbeddedAccountFeaturesClaim").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct ConnectEmbeddedAccountFeaturesClaimBuilder {

@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentIntentAmountDetailsLineItem {
         /// The discount applied on this line item represented in the [smallest currency unit](https://docs.stripe.com/currencies#zero-decimal).
@@ -32,6 +33,12 @@ pub unit_cost: i64,
     /// At most 12 alphanumeric characters long.
 pub unit_of_measure: Option<String>,
 
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentIntentAmountDetailsLineItem {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PaymentIntentAmountDetailsLineItem").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct PaymentIntentAmountDetailsLineItemBuilder {

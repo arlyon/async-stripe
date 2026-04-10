@@ -1,4 +1,5 @@
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct CustomerBalanceResourceCashBalanceTransactionResourceAdjustedForOverdraft {
@@ -6,6 +7,13 @@ pub struct CustomerBalanceResourceCashBalanceTransactionResourceAdjustedForOverd
     pub balance_transaction: stripe_types::Expandable<stripe_shared::BalanceTransaction>,
     /// The [Cash Balance Transaction](https://docs.stripe.com/api/cash_balance_transactions/object) that brought the customer balance negative, triggering the clawback of funds.
     pub linked_transaction: stripe_types::Expandable<stripe_shared::CustomerCashBalanceTransaction>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CustomerBalanceResourceCashBalanceTransactionResourceAdjustedForOverdraft {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CustomerBalanceResourceCashBalanceTransactionResourceAdjustedForOverdraft")
+            .finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct CustomerBalanceResourceCashBalanceTransactionResourceAdjustedForOverdraftBuilder {

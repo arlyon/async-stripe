@@ -1,8 +1,15 @@
 /// Options for customizing account balances and payout settings for a Stripe platform’s connected accounts.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct BalanceSettings {
     pub payments: stripe_core::BalanceSettingsResourcePayments,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for BalanceSettings {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("BalanceSettings").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct BalanceSettingsBuilder {

@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PortalFlowsSubscriptionUpdateConfirmItem {
@@ -9,6 +10,12 @@ pub struct PortalFlowsSubscriptionUpdateConfirmItem {
     pub price: Option<String>,
     /// [Quantity](https://docs.stripe.com/subscriptions/quantities) for this item that the customer should subscribe to through this flow.
     pub quantity: Option<u64>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PortalFlowsSubscriptionUpdateConfirmItem {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PortalFlowsSubscriptionUpdateConfirmItem").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct PortalFlowsSubscriptionUpdateConfirmItemBuilder {

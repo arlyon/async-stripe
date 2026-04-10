@@ -4,7 +4,8 @@
 /// For more information on how to register to collect tax, see [our guide](https://docs.stripe.com/tax/registering).
 ///
 /// Related guide: [Using the Registrations API](https://docs.stripe.com/tax/registrations-api)
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TaxRegistration {
     /// Time at which the registration becomes active. Measured in seconds since the Unix epoch.
@@ -26,6 +27,12 @@ pub struct TaxRegistration {
     /// The status of the registration.
     /// This field is present for convenience and can be deduced from `active_from` and `expires_at`.
     pub status: TaxRegistrationStatus,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TaxRegistration {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("TaxRegistration").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct TaxRegistrationBuilder {
@@ -240,9 +247,16 @@ impl std::fmt::Display for TaxRegistrationStatus {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for TaxRegistrationStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TaxRegistrationStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(TaxRegistrationStatus)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

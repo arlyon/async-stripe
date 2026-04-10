@@ -2,7 +2,8 @@
 /// one plan, making it easy to represent complex billing relationships.
 ///
 /// For more details see <<https://stripe.com/docs/api/subscription_items/object>>.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct SubscriptionItem {
     /// Define thresholds at which an invoice will be sent, and the related subscription advanced to a new billing period.
@@ -31,6 +32,12 @@ pub struct SubscriptionItem {
     /// The tax rates which apply to this `subscription_item`.
     /// When set, the `default_tax_rates` on the subscription do not apply to this `subscription_item`.
     pub tax_rates: Option<Vec<stripe_shared::TaxRate>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for SubscriptionItem {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("SubscriptionItem").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct SubscriptionItemBuilder {

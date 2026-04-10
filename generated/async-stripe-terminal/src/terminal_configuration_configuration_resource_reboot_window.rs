@@ -1,4 +1,5 @@
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TerminalConfigurationConfigurationResourceRebootWindow {
@@ -7,6 +8,13 @@ pub struct TerminalConfigurationConfigurationResourceRebootWindow {
     pub end_hour: i64,
     /// Integer between 0 to 23 that represents the start hour of the reboot time window.
     pub start_hour: i64,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TerminalConfigurationConfigurationResourceRebootWindow {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("TerminalConfigurationConfigurationResourceRebootWindow")
+            .finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct TerminalConfigurationConfigurationResourceRebootWindowBuilder {

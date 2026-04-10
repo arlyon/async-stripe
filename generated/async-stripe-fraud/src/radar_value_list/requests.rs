@@ -4,9 +4,17 @@ use stripe_client_core::{
 
 /// Deletes a `ValueList` object, also deleting any items contained within the value list.
 /// To be deleted, a value list must not be referenced in any rules.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct DeleteRadarValueList {
     value_list: stripe_fraud::RadarValueListId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for DeleteRadarValueList {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("DeleteRadarValueList").finish_non_exhaustive()
+    }
 }
 impl DeleteRadarValueList {
     /// Construct a new `DeleteRadarValueList`.
@@ -40,7 +48,9 @@ impl StripeRequest for DeleteRadarValueList {
         RequestBuilder::new(StripeMethod::Delete, format!("/radar/value_lists/{value_list}"))
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ListRadarValueListBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     alias: Option<String>,
@@ -57,6 +67,12 @@ struct ListRadarValueListBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     starting_after: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListRadarValueListBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListRadarValueListBuilder").finish_non_exhaustive()
+    }
+}
 impl ListRadarValueListBuilder {
     fn new() -> Self {
         Self {
@@ -72,9 +88,17 @@ impl ListRadarValueListBuilder {
 }
 /// Returns a list of `ValueList` objects.
 /// The objects are sorted in descending order by creation date, with the most recently created object appearing first.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListRadarValueList {
     inner: ListRadarValueListBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListRadarValueList {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListRadarValueList").finish_non_exhaustive()
+    }
 }
 impl ListRadarValueList {
     /// Construct a new `ListRadarValueList`.
@@ -158,10 +182,18 @@ impl StripeRequest for ListRadarValueList {
         RequestBuilder::new(StripeMethod::Get, "/radar/value_lists").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RetrieveRadarValueListBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveRadarValueListBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveRadarValueListBuilder").finish_non_exhaustive()
+    }
 }
 impl RetrieveRadarValueListBuilder {
     fn new() -> Self {
@@ -169,10 +201,18 @@ impl RetrieveRadarValueListBuilder {
     }
 }
 /// Retrieves a `ValueList` object.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RetrieveRadarValueList {
     inner: RetrieveRadarValueListBuilder,
     value_list: stripe_fraud::RadarValueListId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveRadarValueList {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveRadarValueList").finish_non_exhaustive()
+    }
 }
 impl RetrieveRadarValueList {
     /// Construct a new `RetrieveRadarValueList`.
@@ -212,7 +252,9 @@ impl StripeRequest for RetrieveRadarValueList {
             .query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct CreateRadarValueListBuilder {
     alias: String,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -222,6 +264,12 @@ struct CreateRadarValueListBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     metadata: Option<std::collections::HashMap<String, String>>,
     name: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateRadarValueListBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateRadarValueListBuilder").finish_non_exhaustive()
+    }
 }
 impl CreateRadarValueListBuilder {
     fn new(alias: impl Into<String>, name: impl Into<String>) -> Self {
@@ -235,9 +283,17 @@ impl CreateRadarValueListBuilder {
     }
 }
 /// Creates a new `ValueList` object, which can then be referenced in rules.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateRadarValueList {
     inner: CreateRadarValueListBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateRadarValueList {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateRadarValueList").finish_non_exhaustive()
+    }
 }
 impl CreateRadarValueList {
     /// Construct a new `CreateRadarValueList`.
@@ -293,7 +349,9 @@ impl StripeRequest for CreateRadarValueList {
         RequestBuilder::new(StripeMethod::Post, "/radar/value_lists").form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct UpdateRadarValueListBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     alias: Option<String>,
@@ -304,6 +362,12 @@ struct UpdateRadarValueListBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     name: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateRadarValueListBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateRadarValueListBuilder").finish_non_exhaustive()
+    }
+}
 impl UpdateRadarValueListBuilder {
     fn new() -> Self {
         Self { alias: None, expand: None, metadata: None, name: None }
@@ -312,10 +376,18 @@ impl UpdateRadarValueListBuilder {
 /// Updates a `ValueList` object by setting the values of the parameters passed.
 /// Any parameters not provided will be left unchanged.
 /// Note that `item_type` is immutable.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateRadarValueList {
     inner: UpdateRadarValueListBuilder,
     value_list: stripe_fraud::RadarValueListId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateRadarValueList {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateRadarValueList").finish_non_exhaustive()
+    }
 }
 impl UpdateRadarValueList {
     /// Construct a new `UpdateRadarValueList`.

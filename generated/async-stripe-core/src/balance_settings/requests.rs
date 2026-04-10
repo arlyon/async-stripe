@@ -2,10 +2,18 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RetrieveForMyAccountBalanceSettingsBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveForMyAccountBalanceSettingsBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveForMyAccountBalanceSettingsBuilder").finish_non_exhaustive()
+    }
 }
 impl RetrieveForMyAccountBalanceSettingsBuilder {
     fn new() -> Self {
@@ -14,9 +22,17 @@ impl RetrieveForMyAccountBalanceSettingsBuilder {
 }
 /// Retrieves balance settings for a given connected account.
 ///  Related guide: <a href="/connect/authentication">Making API calls for connected accounts</a>
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RetrieveForMyAccountBalanceSettings {
     inner: RetrieveForMyAccountBalanceSettingsBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveForMyAccountBalanceSettings {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveForMyAccountBalanceSettings").finish_non_exhaustive()
+    }
 }
 impl RetrieveForMyAccountBalanceSettings {
     /// Construct a new `RetrieveForMyAccountBalanceSettings`.
@@ -59,12 +75,20 @@ impl StripeRequest for RetrieveForMyAccountBalanceSettings {
         RequestBuilder::new(StripeMethod::Get, "/balance_settings").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct UpdateBalanceSettingsBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     payments: Option<UpdateBalanceSettingsPayments>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateBalanceSettingsBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateBalanceSettingsBuilder").finish_non_exhaustive()
+    }
 }
 impl UpdateBalanceSettingsBuilder {
     fn new() -> Self {
@@ -72,7 +96,9 @@ impl UpdateBalanceSettingsBuilder {
     }
 }
 /// Settings that apply to the [Payments Balance](https://docs.stripe.com/api/balance).
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateBalanceSettingsPayments {
     /// A Boolean indicating whether Stripe should try to reclaim negative balances from an attached bank account.
     /// For details, see [Understanding Connect Account Balances](/connect/account-balances).
@@ -85,6 +111,12 @@ pub struct UpdateBalanceSettingsPayments {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub settlement_timing: Option<UpdateBalanceSettingsPaymentsSettlementTiming>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateBalanceSettingsPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateBalanceSettingsPayments").finish_non_exhaustive()
+    }
+}
 impl UpdateBalanceSettingsPayments {
     pub fn new() -> Self {
         Self { debit_negative_balances: None, payouts: None, settlement_timing: None }
@@ -96,7 +128,9 @@ impl Default for UpdateBalanceSettingsPayments {
     }
 }
 /// Settings specific to the account's payouts.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateBalanceSettingsPaymentsPayouts {
     /// The minimum balance amount to retain per currency after automatic payouts.
     /// Only funds that exceed these amounts are paid out.
@@ -112,6 +146,12 @@ pub struct UpdateBalanceSettingsPaymentsPayouts {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub statement_descriptor: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateBalanceSettingsPaymentsPayouts {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateBalanceSettingsPaymentsPayouts").finish_non_exhaustive()
+    }
+}
 impl UpdateBalanceSettingsPaymentsPayouts {
     pub fn new() -> Self {
         Self { minimum_balance_by_currency: None, schedule: None, statement_descriptor: None }
@@ -124,7 +164,9 @@ impl Default for UpdateBalanceSettingsPaymentsPayouts {
 }
 /// Details on when funds from charges are available, and when they are paid out to an external account.
 /// For details, see our [Setting Bank and Debit Card Payouts](/connect/bank-transfers#payout-information) documentation.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateBalanceSettingsPaymentsPayoutsSchedule {
     /// How frequently available funds are paid out.
     /// One of: `daily`, `manual`, `weekly`, or `monthly`.
@@ -141,6 +183,12 @@ pub struct UpdateBalanceSettingsPaymentsPayoutsSchedule {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub weekly_payout_days:
         Option<Vec<UpdateBalanceSettingsPaymentsPayoutsScheduleWeeklyPayoutDays>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateBalanceSettingsPaymentsPayoutsSchedule {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateBalanceSettingsPaymentsPayoutsSchedule").finish_non_exhaustive()
+    }
 }
 impl UpdateBalanceSettingsPaymentsPayoutsSchedule {
     pub fn new() -> Self {
@@ -204,9 +252,17 @@ impl std::fmt::Display for UpdateBalanceSettingsPaymentsPayoutsScheduleInterval 
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdateBalanceSettingsPaymentsPayoutsScheduleInterval {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateBalanceSettingsPaymentsPayoutsScheduleInterval {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdateBalanceSettingsPaymentsPayoutsScheduleInterval))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdateBalanceSettingsPaymentsPayoutsScheduleInterval {
@@ -279,9 +335,17 @@ impl std::fmt::Display for UpdateBalanceSettingsPaymentsPayoutsScheduleWeeklyPay
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdateBalanceSettingsPaymentsPayoutsScheduleWeeklyPayoutDays {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateBalanceSettingsPaymentsPayoutsScheduleWeeklyPayoutDays {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdateBalanceSettingsPaymentsPayoutsScheduleWeeklyPayoutDays))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdateBalanceSettingsPaymentsPayoutsScheduleWeeklyPayoutDays {
@@ -301,7 +365,9 @@ impl<'de> serde::Deserialize<'de> for UpdateBalanceSettingsPaymentsPayoutsSchedu
     }
 }
 /// Settings related to the account's balance settlement timing.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateBalanceSettingsPaymentsSettlementTiming {
     /// Change `delay_days` for this account, which determines the number of days charge funds are held before becoming available.
     /// The maximum value is 31.
@@ -309,6 +375,12 @@ pub struct UpdateBalanceSettingsPaymentsSettlementTiming {
     /// [Learn more about controlling delay days](/connect/manage-payout-schedule).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub delay_days_override: Option<u32>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateBalanceSettingsPaymentsSettlementTiming {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateBalanceSettingsPaymentsSettlementTiming").finish_non_exhaustive()
+    }
 }
 impl UpdateBalanceSettingsPaymentsSettlementTiming {
     pub fn new() -> Self {
@@ -322,9 +394,17 @@ impl Default for UpdateBalanceSettingsPaymentsSettlementTiming {
 }
 /// Updates balance settings for a given connected account.
 ///  Related guide: <a href="/connect/authentication">Making API calls for connected accounts</a>
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateBalanceSettings {
     inner: UpdateBalanceSettingsBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateBalanceSettings {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateBalanceSettings").finish_non_exhaustive()
+    }
 }
 impl UpdateBalanceSettings {
     /// Construct a new `UpdateBalanceSettings`.

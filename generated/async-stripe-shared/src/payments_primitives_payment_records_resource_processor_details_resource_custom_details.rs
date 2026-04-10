@@ -1,12 +1,24 @@
 /// Custom processors represent payment processors not modeled directly in
 /// the Stripe API. This resource consists of details about the custom processor
 /// used for this payment attempt.
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentsPrimitivesPaymentRecordsResourceProcessorDetailsResourceCustomDetails {
     /// An opaque string for manual reconciliation of this payment, for example a check number or a payment processor ID.
     pub payment_reference: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for PaymentsPrimitivesPaymentRecordsResourceProcessorDetailsResourceCustomDetails
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(
+            "PaymentsPrimitivesPaymentRecordsResourceProcessorDetailsResourceCustomDetails",
+        )
+        .finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct PaymentsPrimitivesPaymentRecordsResourceProcessorDetailsResourceCustomDetailsBuilder {

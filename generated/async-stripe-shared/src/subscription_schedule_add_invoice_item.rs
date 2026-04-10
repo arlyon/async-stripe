@@ -1,5 +1,6 @@
 /// An Add Invoice Item describes the prices and quantities that will be added as pending invoice items when entering a phase.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct SubscriptionScheduleAddInvoiceItem {
@@ -15,6 +16,12 @@ pub struct SubscriptionScheduleAddInvoiceItem {
     pub quantity: Option<u64>,
     /// The tax rates which apply to the item. When set, the `default_tax_rates` do not apply to this item.
     pub tax_rates: Option<Vec<stripe_shared::TaxRate>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for SubscriptionScheduleAddInvoiceItem {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("SubscriptionScheduleAddInvoiceItem").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct SubscriptionScheduleAddInvoiceItemBuilder {

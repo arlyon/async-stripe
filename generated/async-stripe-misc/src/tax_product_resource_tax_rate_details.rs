@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TaxProductResourceTaxRateDetails {
@@ -18,6 +19,12 @@ pub struct TaxProductResourceTaxRateDetails {
     pub state: Option<String>,
     /// The tax type, such as `vat` or `sales_tax`.
     pub tax_type: Option<TaxProductResourceTaxRateDetailsTaxType>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TaxProductResourceTaxRateDetails {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("TaxProductResourceTaxRateDetails").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct TaxProductResourceTaxRateDetailsBuilder {
@@ -195,9 +202,16 @@ impl std::fmt::Display for TaxProductResourceTaxRateDetailsRateType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for TaxProductResourceTaxRateDetailsRateType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TaxProductResourceTaxRateDetailsRateType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(TaxProductResourceTaxRateDetailsRateType)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -312,9 +326,16 @@ impl std::fmt::Display for TaxProductResourceTaxRateDetailsTaxType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for TaxProductResourceTaxRateDetailsTaxType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TaxProductResourceTaxRateDetailsTaxType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(TaxProductResourceTaxRateDetailsTaxType)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

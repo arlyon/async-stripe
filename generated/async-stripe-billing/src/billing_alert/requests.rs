@@ -2,7 +2,9 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ListBillingAlertBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     alert_type: Option<stripe_billing::BillingAlertAlertType>,
@@ -17,6 +19,12 @@ struct ListBillingAlertBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     starting_after: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListBillingAlertBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListBillingAlertBuilder").finish_non_exhaustive()
+    }
+}
 impl ListBillingAlertBuilder {
     fn new() -> Self {
         Self {
@@ -30,9 +38,17 @@ impl ListBillingAlertBuilder {
     }
 }
 /// Lists billing active and inactive alerts
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListBillingAlert {
     inner: ListBillingAlertBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListBillingAlert {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListBillingAlert").finish_non_exhaustive()
+    }
 }
 impl ListBillingAlert {
     /// Construct a new `ListBillingAlert`.
@@ -114,10 +130,18 @@ impl StripeRequest for ListBillingAlert {
         RequestBuilder::new(StripeMethod::Get, "/billing/alerts").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RetrieveBillingAlertBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveBillingAlertBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveBillingAlertBuilder").finish_non_exhaustive()
+    }
 }
 impl RetrieveBillingAlertBuilder {
     fn new() -> Self {
@@ -125,10 +149,18 @@ impl RetrieveBillingAlertBuilder {
     }
 }
 /// Retrieves a billing alert given an ID
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RetrieveBillingAlert {
     inner: RetrieveBillingAlertBuilder,
     id: stripe_billing::BillingAlertId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveBillingAlert {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveBillingAlert").finish_non_exhaustive()
+    }
 }
 impl RetrieveBillingAlert {
     /// Construct a new `RetrieveBillingAlert`.
@@ -167,7 +199,9 @@ impl StripeRequest for RetrieveBillingAlert {
         RequestBuilder::new(StripeMethod::Get, format!("/billing/alerts/{id}")).query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct CreateBillingAlertBuilder {
     alert_type: stripe_billing::BillingAlertAlertType,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -175,6 +209,12 @@ struct CreateBillingAlertBuilder {
     title: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     usage_threshold: Option<CreateBillingAlertUsageThreshold>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateBillingAlertBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateBillingAlertBuilder").finish_non_exhaustive()
+    }
 }
 impl CreateBillingAlertBuilder {
     fn new(
@@ -190,7 +230,9 @@ impl CreateBillingAlertBuilder {
     }
 }
 /// The configuration of the usage threshold.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateBillingAlertUsageThreshold {
     /// The filters allows limiting the scope of this usage alert.
     /// You can only specify up to one filter at this time.
@@ -203,6 +245,12 @@ pub struct CreateBillingAlertUsageThreshold {
     /// Defines how the alert will behave.
     pub recurrence: CreateBillingAlertUsageThresholdRecurrence,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateBillingAlertUsageThreshold {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateBillingAlertUsageThreshold").finish_non_exhaustive()
+    }
+}
 impl CreateBillingAlertUsageThreshold {
     pub fn new(
         gte: impl Into<i64>,
@@ -214,7 +262,9 @@ impl CreateBillingAlertUsageThreshold {
 }
 /// The filters allows limiting the scope of this usage alert.
 /// You can only specify up to one filter at this time.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateBillingAlertUsageThresholdFilters {
     /// Limit the scope to this usage alert only to this customer.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -222,6 +272,12 @@ pub struct CreateBillingAlertUsageThresholdFilters {
     /// What type of filter is being applied to this usage alert.
     #[serde(rename = "type")]
     pub type_: CreateBillingAlertUsageThresholdFiltersType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateBillingAlertUsageThresholdFilters {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateBillingAlertUsageThresholdFilters").finish_non_exhaustive()
+    }
 }
 impl CreateBillingAlertUsageThresholdFilters {
     pub fn new(type_: impl Into<CreateBillingAlertUsageThresholdFiltersType>) -> Self {
@@ -269,9 +325,17 @@ impl std::fmt::Display for CreateBillingAlertUsageThresholdFiltersType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateBillingAlertUsageThresholdFiltersType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateBillingAlertUsageThresholdFiltersType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateBillingAlertUsageThresholdFiltersType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateBillingAlertUsageThresholdFiltersType {
@@ -331,9 +395,17 @@ impl std::fmt::Display for CreateBillingAlertUsageThresholdRecurrence {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateBillingAlertUsageThresholdRecurrence {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateBillingAlertUsageThresholdRecurrence {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateBillingAlertUsageThresholdRecurrence))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateBillingAlertUsageThresholdRecurrence {
@@ -353,9 +425,17 @@ impl<'de> serde::Deserialize<'de> for CreateBillingAlertUsageThresholdRecurrence
     }
 }
 /// Creates a billing alert
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateBillingAlert {
     inner: CreateBillingAlertBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateBillingAlert {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateBillingAlert").finish_non_exhaustive()
+    }
 }
 impl CreateBillingAlert {
     /// Construct a new `CreateBillingAlert`.
@@ -404,10 +484,18 @@ impl StripeRequest for CreateBillingAlert {
         RequestBuilder::new(StripeMethod::Post, "/billing/alerts").form(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ActivateBillingAlertBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ActivateBillingAlertBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ActivateBillingAlertBuilder").finish_non_exhaustive()
+    }
 }
 impl ActivateBillingAlertBuilder {
     fn new() -> Self {
@@ -415,10 +503,18 @@ impl ActivateBillingAlertBuilder {
     }
 }
 /// Reactivates this alert, allowing it to trigger again.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ActivateBillingAlert {
     inner: ActivateBillingAlertBuilder,
     id: stripe_billing::BillingAlertId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ActivateBillingAlert {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ActivateBillingAlert").finish_non_exhaustive()
+    }
 }
 impl ActivateBillingAlert {
     /// Construct a new `ActivateBillingAlert`.
@@ -458,10 +554,18 @@ impl StripeRequest for ActivateBillingAlert {
             .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ArchiveBillingAlertBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ArchiveBillingAlertBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ArchiveBillingAlertBuilder").finish_non_exhaustive()
+    }
 }
 impl ArchiveBillingAlertBuilder {
     fn new() -> Self {
@@ -469,10 +573,18 @@ impl ArchiveBillingAlertBuilder {
     }
 }
 /// Archives this alert, removing it from the list view and APIs. This is non-reversible.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ArchiveBillingAlert {
     inner: ArchiveBillingAlertBuilder,
     id: stripe_billing::BillingAlertId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ArchiveBillingAlert {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ArchiveBillingAlert").finish_non_exhaustive()
+    }
 }
 impl ArchiveBillingAlert {
     /// Construct a new `ArchiveBillingAlert`.
@@ -512,10 +624,18 @@ impl StripeRequest for ArchiveBillingAlert {
             .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct DeactivateBillingAlertBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for DeactivateBillingAlertBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("DeactivateBillingAlertBuilder").finish_non_exhaustive()
+    }
 }
 impl DeactivateBillingAlertBuilder {
     fn new() -> Self {
@@ -523,10 +643,18 @@ impl DeactivateBillingAlertBuilder {
     }
 }
 /// Deactivates this alert, preventing it from triggering.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct DeactivateBillingAlert {
     inner: DeactivateBillingAlertBuilder,
     id: stripe_billing::BillingAlertId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for DeactivateBillingAlert {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("DeactivateBillingAlert").finish_non_exhaustive()
+    }
 }
 impl DeactivateBillingAlert {
     /// Construct a new `DeactivateBillingAlert`.

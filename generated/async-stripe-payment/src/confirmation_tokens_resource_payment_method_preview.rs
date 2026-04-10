@@ -1,5 +1,6 @@
 /// Details of the PaymentMethod collected by Payment Element
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct ConfirmationTokensResourcePaymentMethodPreview {
@@ -70,6 +71,12 @@ pub struct ConfirmationTokensResourcePaymentMethodPreview {
     pub us_bank_account: Option<stripe_shared::PaymentMethodUsBankAccount>,
     pub wechat_pay: Option<stripe_shared::PaymentMethodWechatPay>,
     pub zip: Option<stripe_shared::PaymentMethodZip>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmationTokensResourcePaymentMethodPreview {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmationTokensResourcePaymentMethodPreview").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct ConfirmationTokensResourcePaymentMethodPreviewBuilder {
@@ -621,9 +628,17 @@ impl std::fmt::Display for ConfirmationTokensResourcePaymentMethodPreviewAllowRe
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmationTokensResourcePaymentMethodPreviewAllowRedisplay {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmationTokensResourcePaymentMethodPreviewAllowRedisplay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ConfirmationTokensResourcePaymentMethodPreviewAllowRedisplay))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -867,9 +882,17 @@ impl std::fmt::Display for ConfirmationTokensResourcePaymentMethodPreviewType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmationTokensResourcePaymentMethodPreviewType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmationTokensResourcePaymentMethodPreviewType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ConfirmationTokensResourcePaymentMethodPreviewType))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

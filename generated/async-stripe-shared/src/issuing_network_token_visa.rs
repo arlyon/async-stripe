@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct IssuingNetworkTokenVisa {
@@ -11,6 +12,12 @@ pub struct IssuingNetworkTokenVisa {
     /// Degree of risk associated with the token between `01` and `99`, with higher number indicating higher risk.
     /// A `00` value indicates the token was not scored by Visa.
     pub token_risk_score: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for IssuingNetworkTokenVisa {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("IssuingNetworkTokenVisa").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct IssuingNetworkTokenVisaBuilder {

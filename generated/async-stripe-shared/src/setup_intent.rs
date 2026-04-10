@@ -21,7 +21,8 @@
 /// Related guide: [Setup Intents API](https://docs.stripe.com/payments/setup-intents)
 ///
 /// For more details see <<https://stripe.com/docs/api/setup_intents/object>>.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct SetupIntent {
     /// ID of the Connect application that created the SetupIntent.
@@ -105,6 +106,12 @@ pub struct SetupIntent {
     /// Use `off_session` if your customer may or may not be in your checkout flow.
     /// If not provided, this value defaults to `off_session`.
     pub usage: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for SetupIntent {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("SetupIntent").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct SetupIntentBuilder {
@@ -491,9 +498,16 @@ impl std::fmt::Display for SetupIntentStatus {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for SetupIntentStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for SetupIntentStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(SetupIntentStatus)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -585,9 +599,16 @@ impl std::fmt::Display for SetupIntentCancellationReason {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for SetupIntentCancellationReason {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for SetupIntentCancellationReason {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(SetupIntentCancellationReason)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for SetupIntentCancellationReason {
@@ -808,9 +829,16 @@ impl std::fmt::Display for SetupIntentExcludedPaymentMethodTypes {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for SetupIntentExcludedPaymentMethodTypes {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for SetupIntentExcludedPaymentMethodTypes {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(SetupIntentExcludedPaymentMethodTypes)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for SetupIntentExcludedPaymentMethodTypes {
@@ -883,9 +911,16 @@ impl std::fmt::Display for SetupIntentFlowDirections {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for SetupIntentFlowDirections {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for SetupIntentFlowDirections {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(SetupIntentFlowDirections)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for SetupIntentFlowDirections {

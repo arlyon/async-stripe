@@ -6,7 +6,8 @@
 /// Learn more about [handling identity verification with the API](/connect/handling-api-verification#person-information).
 ///
 /// For more details see <<https://stripe.com/docs/api/persons/object>>.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct Person {
     /// The account the person is associated with.
@@ -76,6 +77,12 @@ pub struct Person {
     /// Demographic data related to the person.
     pub us_cfpb_data: Option<stripe_shared::PersonUsCfpbData>,
     pub verification: Option<stripe_shared::LegalEntityPersonVerification>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for Person {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("Person").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct PersonBuilder {
@@ -485,9 +492,16 @@ impl std::fmt::Display for PersonPoliticalExposure {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for PersonPoliticalExposure {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PersonPoliticalExposure {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(PersonPoliticalExposure)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for PersonPoliticalExposure {

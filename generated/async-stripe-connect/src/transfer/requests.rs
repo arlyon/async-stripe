@@ -2,7 +2,9 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ListTransferBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     created: Option<stripe_types::RangeQueryTs>,
@@ -19,6 +21,12 @@ struct ListTransferBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     transfer_group: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListTransferBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListTransferBuilder").finish_non_exhaustive()
+    }
+}
 impl ListTransferBuilder {
     fn new() -> Self {
         Self {
@@ -34,9 +42,17 @@ impl ListTransferBuilder {
 }
 /// Returns a list of existing transfers sent to connected accounts.
 /// The transfers are returned in sorted order, with the most recently created transfers appearing first.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListTransfer {
     inner: ListTransferBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListTransfer {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListTransfer").finish_non_exhaustive()
+    }
 }
 impl ListTransfer {
     /// Construct a new `ListTransfer`.
@@ -120,10 +136,18 @@ impl StripeRequest for ListTransfer {
         RequestBuilder::new(StripeMethod::Get, "/transfers").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RetrieveTransferBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveTransferBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveTransferBuilder").finish_non_exhaustive()
+    }
 }
 impl RetrieveTransferBuilder {
     fn new() -> Self {
@@ -132,10 +156,18 @@ impl RetrieveTransferBuilder {
 }
 /// Retrieves the details of an existing transfer.
 /// Supply the unique transfer ID from either a transfer creation request or the transfer list, and Stripe will return the corresponding transfer information.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RetrieveTransfer {
     inner: RetrieveTransferBuilder,
     transfer: stripe_shared::TransferId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveTransfer {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveTransfer").finish_non_exhaustive()
+    }
 }
 impl RetrieveTransfer {
     /// Construct a new `RetrieveTransfer`.
@@ -174,7 +206,9 @@ impl StripeRequest for RetrieveTransfer {
         RequestBuilder::new(StripeMethod::Get, format!("/transfers/{transfer}")).query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct CreateTransferBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     amount: Option<i64>,
@@ -192,6 +226,12 @@ struct CreateTransferBuilder {
     source_type: Option<CreateTransferSourceType>,
     #[serde(skip_serializing_if = "Option::is_none")]
     transfer_group: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTransferBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTransferBuilder").finish_non_exhaustive()
+    }
 }
 impl CreateTransferBuilder {
     fn new(currency: impl Into<stripe_types::Currency>, destination: impl Into<String>) -> Self {
@@ -253,9 +293,16 @@ impl std::fmt::Display for CreateTransferSourceType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTransferSourceType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTransferSourceType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTransferSourceType)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTransferSourceType {
@@ -276,9 +323,17 @@ impl<'de> serde::Deserialize<'de> for CreateTransferSourceType {
 }
 /// To send funds from your Stripe account to a connected account, you create a new transfer object.
 /// Your [Stripe balance](https://stripe.com/docs/api#balance) must be able to cover the transfer amount, or you’ll receive an “Insufficient Funds” error.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTransfer {
     inner: CreateTransferBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTransfer {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTransfer").finish_non_exhaustive()
+    }
 }
 impl CreateTransfer {
     /// Construct a new `CreateTransfer`.
@@ -360,7 +415,9 @@ impl StripeRequest for CreateTransfer {
         RequestBuilder::new(StripeMethod::Post, "/transfers").form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct UpdateTransferBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     description: Option<String>,
@@ -368,6 +425,12 @@ struct UpdateTransferBuilder {
     expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     metadata: Option<std::collections::HashMap<String, String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateTransferBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateTransferBuilder").finish_non_exhaustive()
+    }
 }
 impl UpdateTransferBuilder {
     fn new() -> Self {
@@ -378,10 +441,18 @@ impl UpdateTransferBuilder {
 /// Any parameters not provided will be left unchanged.
 ///
 /// This request accepts only metadata as an argument.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateTransfer {
     inner: UpdateTransferBuilder,
     transfer: stripe_shared::TransferId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateTransfer {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateTransfer").finish_non_exhaustive()
+    }
 }
 impl UpdateTransfer {
     /// Construct a new `UpdateTransfer`.

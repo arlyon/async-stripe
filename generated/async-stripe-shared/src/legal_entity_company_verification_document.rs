@@ -1,4 +1,5 @@
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct LegalEntityCompanyVerificationDocument {
@@ -13,6 +14,12 @@ pub struct LegalEntityCompanyVerificationDocument {
     /// The front of a document returned by a [file upload](https://api.stripe.com#create_file) with a `purpose` value of `additional_verification`.
     /// Note that `additional_verification` files are [not downloadable](/file-upload#uploading-a-file).
     pub front: Option<stripe_types::Expandable<stripe_shared::File>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for LegalEntityCompanyVerificationDocument {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("LegalEntityCompanyVerificationDocument").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct LegalEntityCompanyVerificationDocumentBuilder {

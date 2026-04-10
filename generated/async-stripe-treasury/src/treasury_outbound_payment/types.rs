@@ -5,7 +5,8 @@
 /// These methods can only be called on test mode objects.
 ///
 /// Related guide: [Moving money with Treasury using OutboundPayment objects](https://docs.stripe.com/docs/treasury/moving-money/financial-accounts/out-of/outbound-payments).
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TreasuryOutboundPayment {
     /// Amount (in cents) transferred.
@@ -62,6 +63,12 @@ pub struct TreasuryOutboundPayment {
     >,
     /// The Transaction associated with this object.
     pub transaction: stripe_types::Expandable<stripe_treasury::TreasuryTransaction>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TreasuryOutboundPayment {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("TreasuryOutboundPayment").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct TreasuryOutboundPaymentBuilder {
@@ -428,9 +435,16 @@ impl std::fmt::Display for TreasuryOutboundPaymentStatus {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for TreasuryOutboundPaymentStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TreasuryOutboundPaymentStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(TreasuryOutboundPaymentStatus)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for TreasuryOutboundPaymentStatus {

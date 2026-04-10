@@ -1,10 +1,18 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentFlowsPrivatePaymentMethodsCardPresentCommonWallet {
     /// The type of mobile wallet, one of `apple_pay`, `google_pay`, `samsung_pay`, or `unknown`.
     #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "type"))]
     pub type_: PaymentFlowsPrivatePaymentMethodsCardPresentCommonWalletType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentFlowsPrivatePaymentMethodsCardPresentCommonWallet {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PaymentFlowsPrivatePaymentMethodsCardPresentCommonWallet")
+            .finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct PaymentFlowsPrivatePaymentMethodsCardPresentCommonWalletBuilder {
@@ -152,9 +160,17 @@ impl std::fmt::Display for PaymentFlowsPrivatePaymentMethodsCardPresentCommonWal
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for PaymentFlowsPrivatePaymentMethodsCardPresentCommonWalletType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentFlowsPrivatePaymentMethodsCardPresentCommonWalletType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(PaymentFlowsPrivatePaymentMethodsCardPresentCommonWalletType))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

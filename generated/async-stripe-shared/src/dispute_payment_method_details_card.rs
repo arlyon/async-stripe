@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct DisputePaymentMethodDetailsCard {
@@ -10,6 +11,12 @@ pub struct DisputePaymentMethodDetailsCard {
     /// The card network's specific dispute reason code, which maps to one of Stripe's primary dispute categories to simplify response guidance.
     /// The [Network code map](https://stripe.com/docs/disputes/categories#network-code-map) lists all available dispute reason codes by network.
     pub network_reason_code: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for DisputePaymentMethodDetailsCard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("DisputePaymentMethodDetailsCard").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct DisputePaymentMethodDetailsCardBuilder {
@@ -169,9 +176,16 @@ impl std::fmt::Display for DisputePaymentMethodDetailsCardCaseType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for DisputePaymentMethodDetailsCardCaseType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for DisputePaymentMethodDetailsCardCaseType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(DisputePaymentMethodDetailsCardCaseType)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

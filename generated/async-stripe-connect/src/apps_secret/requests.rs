@@ -2,7 +2,9 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ListAppsSecretBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<String>,
@@ -13,6 +15,12 @@ struct ListAppsSecretBuilder {
     scope: ListAppsSecretScope,
     #[serde(skip_serializing_if = "Option::is_none")]
     starting_after: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListAppsSecretBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListAppsSecretBuilder").finish_non_exhaustive()
+    }
 }
 impl ListAppsSecretBuilder {
     fn new(scope: impl Into<ListAppsSecretScope>) -> Self {
@@ -27,7 +35,9 @@ impl ListAppsSecretBuilder {
 }
 /// Specifies the scoping of the secret.
 /// Requests originating from UI extensions can only access account-scoped secrets or secrets scoped to their own user.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListAppsSecretScope {
     /// The secret scope type.
     #[serde(rename = "type")]
@@ -36,6 +46,12 @@ pub struct ListAppsSecretScope {
     /// This field is required if `type` is set to `user`, and should not be provided if `type` is set to `account`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub user: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListAppsSecretScope {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListAppsSecretScope").finish_non_exhaustive()
+    }
 }
 impl ListAppsSecretScope {
     pub fn new(type_: impl Into<ListAppsSecretScopeType>) -> Self {
@@ -82,9 +98,16 @@ impl std::fmt::Display for ListAppsSecretScopeType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ListAppsSecretScopeType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListAppsSecretScopeType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ListAppsSecretScopeType)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ListAppsSecretScopeType {
@@ -104,9 +127,17 @@ impl<'de> serde::Deserialize<'de> for ListAppsSecretScopeType {
     }
 }
 /// List all secrets stored on the given scope.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListAppsSecret {
     inner: ListAppsSecretBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListAppsSecret {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListAppsSecret").finish_non_exhaustive()
+    }
 }
 impl ListAppsSecret {
     /// Construct a new `ListAppsSecret`.
@@ -170,12 +201,20 @@ impl StripeRequest for ListAppsSecret {
         RequestBuilder::new(StripeMethod::Get, "/apps/secrets").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct FindAppsSecretBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
     name: String,
     scope: FindAppsSecretScope,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for FindAppsSecretBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("FindAppsSecretBuilder").finish_non_exhaustive()
+    }
 }
 impl FindAppsSecretBuilder {
     fn new(name: impl Into<String>, scope: impl Into<FindAppsSecretScope>) -> Self {
@@ -184,7 +223,9 @@ impl FindAppsSecretBuilder {
 }
 /// Specifies the scoping of the secret.
 /// Requests originating from UI extensions can only access account-scoped secrets or secrets scoped to their own user.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct FindAppsSecretScope {
     /// The secret scope type.
     #[serde(rename = "type")]
@@ -193,6 +234,12 @@ pub struct FindAppsSecretScope {
     /// This field is required if `type` is set to `user`, and should not be provided if `type` is set to `account`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub user: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for FindAppsSecretScope {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("FindAppsSecretScope").finish_non_exhaustive()
+    }
 }
 impl FindAppsSecretScope {
     pub fn new(type_: impl Into<FindAppsSecretScopeType>) -> Self {
@@ -239,9 +286,16 @@ impl std::fmt::Display for FindAppsSecretScopeType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for FindAppsSecretScopeType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for FindAppsSecretScopeType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(FindAppsSecretScopeType)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for FindAppsSecretScopeType {
@@ -261,9 +315,17 @@ impl<'de> serde::Deserialize<'de> for FindAppsSecretScopeType {
     }
 }
 /// Finds a secret in the secret store by name and scope.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct FindAppsSecret {
     inner: FindAppsSecretBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for FindAppsSecret {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("FindAppsSecret").finish_non_exhaustive()
+    }
 }
 impl FindAppsSecret {
     /// Construct a new `FindAppsSecret`.
@@ -301,7 +363,9 @@ impl StripeRequest for FindAppsSecret {
         RequestBuilder::new(StripeMethod::Get, "/apps/secrets/find").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct CreateAppsSecretBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -310,6 +374,12 @@ struct CreateAppsSecretBuilder {
     name: String,
     payload: String,
     scope: CreateAppsSecretScope,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAppsSecretBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAppsSecretBuilder").finish_non_exhaustive()
+    }
 }
 impl CreateAppsSecretBuilder {
     fn new(
@@ -328,7 +398,9 @@ impl CreateAppsSecretBuilder {
 }
 /// Specifies the scoping of the secret.
 /// Requests originating from UI extensions can only access account-scoped secrets or secrets scoped to their own user.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateAppsSecretScope {
     /// The secret scope type.
     #[serde(rename = "type")]
@@ -337,6 +409,12 @@ pub struct CreateAppsSecretScope {
     /// This field is required if `type` is set to `user`, and should not be provided if `type` is set to `account`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub user: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAppsSecretScope {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAppsSecretScope").finish_non_exhaustive()
+    }
 }
 impl CreateAppsSecretScope {
     pub fn new(type_: impl Into<CreateAppsSecretScopeType>) -> Self {
@@ -383,9 +461,16 @@ impl std::fmt::Display for CreateAppsSecretScopeType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateAppsSecretScopeType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAppsSecretScopeType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateAppsSecretScopeType)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateAppsSecretScopeType {
@@ -405,9 +490,17 @@ impl<'de> serde::Deserialize<'de> for CreateAppsSecretScopeType {
     }
 }
 /// Create or replace a secret in the secret store.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateAppsSecret {
     inner: CreateAppsSecretBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAppsSecret {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAppsSecret").finish_non_exhaustive()
+    }
 }
 impl CreateAppsSecret {
     /// Construct a new `CreateAppsSecret`.
@@ -454,12 +547,20 @@ impl StripeRequest for CreateAppsSecret {
         RequestBuilder::new(StripeMethod::Post, "/apps/secrets").form(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct DeleteWhereAppsSecretBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
     name: String,
     scope: DeleteWhereAppsSecretScope,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for DeleteWhereAppsSecretBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("DeleteWhereAppsSecretBuilder").finish_non_exhaustive()
+    }
 }
 impl DeleteWhereAppsSecretBuilder {
     fn new(name: impl Into<String>, scope: impl Into<DeleteWhereAppsSecretScope>) -> Self {
@@ -468,7 +569,9 @@ impl DeleteWhereAppsSecretBuilder {
 }
 /// Specifies the scoping of the secret.
 /// Requests originating from UI extensions can only access account-scoped secrets or secrets scoped to their own user.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct DeleteWhereAppsSecretScope {
     /// The secret scope type.
     #[serde(rename = "type")]
@@ -477,6 +580,12 @@ pub struct DeleteWhereAppsSecretScope {
     /// This field is required if `type` is set to `user`, and should not be provided if `type` is set to `account`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub user: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for DeleteWhereAppsSecretScope {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("DeleteWhereAppsSecretScope").finish_non_exhaustive()
+    }
 }
 impl DeleteWhereAppsSecretScope {
     pub fn new(type_: impl Into<DeleteWhereAppsSecretScopeType>) -> Self {
@@ -527,9 +636,16 @@ impl std::fmt::Display for DeleteWhereAppsSecretScopeType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for DeleteWhereAppsSecretScopeType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for DeleteWhereAppsSecretScopeType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(DeleteWhereAppsSecretScopeType)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for DeleteWhereAppsSecretScopeType {
@@ -549,9 +665,17 @@ impl<'de> serde::Deserialize<'de> for DeleteWhereAppsSecretScopeType {
     }
 }
 /// Deletes a secret from the secret store by name and scope.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct DeleteWhereAppsSecret {
     inner: DeleteWhereAppsSecretBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for DeleteWhereAppsSecret {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("DeleteWhereAppsSecret").finish_non_exhaustive()
+    }
 }
 impl DeleteWhereAppsSecret {
     /// Construct a new `DeleteWhereAppsSecret`.

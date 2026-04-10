@@ -8,7 +8,8 @@
 /// Related guide: [Receiving payouts](https://docs.stripe.com/payouts)
 ///
 /// For more details see <<https://stripe.com/docs/api/payouts/object>>.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct Payout {
     /// The amount (in cents (or local equivalent)) that transfers to your bank account or debit card.
@@ -78,6 +79,12 @@ pub struct Payout {
     /// Can be `bank_account` or `card`.
     #[cfg_attr(feature = "deserialize", serde(rename = "type"))]
     pub type_: PayoutType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for Payout {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("Payout").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct PayoutBuilder {
@@ -442,9 +449,16 @@ impl std::fmt::Display for PayoutReconciliationStatus {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for PayoutReconciliationStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PayoutReconciliationStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(PayoutReconciliationStatus)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -519,9 +533,16 @@ impl std::fmt::Display for PayoutType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for PayoutType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PayoutType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(PayoutType)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

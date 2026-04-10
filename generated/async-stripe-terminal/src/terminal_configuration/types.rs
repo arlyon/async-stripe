@@ -2,7 +2,8 @@
 /// For information about how to use it, see the [Terminal configurations documentation](https://docs.stripe.com/terminal/fleet/configurations-overview).
 ///
 /// For more details see <<https://stripe.com/docs/api/terminal/configuration/object>>.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TerminalConfiguration {
     pub bbpos_wisepad3:
@@ -30,6 +31,12 @@ pub struct TerminalConfiguration {
     pub verifone_p400:
         Option<stripe_terminal::TerminalConfigurationConfigurationResourceDeviceTypeSpecificConfig>,
     pub wifi: Option<stripe_terminal::TerminalConfigurationConfigurationResourceWifiConfig>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TerminalConfiguration {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("TerminalConfiguration").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct TerminalConfigurationBuilder {

@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct BalanceAmountNet {
@@ -10,6 +11,12 @@ pub struct BalanceAmountNet {
     /// Breakdown of balance by destination.
     pub net_available: Option<Vec<stripe_core::BalanceNetAvailable>>,
     pub source_types: Option<stripe_core::BalanceAmountBySourceType>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for BalanceAmountNet {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("BalanceAmountNet").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct BalanceAmountNetBuilder {

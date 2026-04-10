@@ -14,7 +14,8 @@
 /// Related guide: [Checkout quickstart](https://docs.stripe.com/checkout/quickstart)
 ///
 /// For more details see <<https://stripe.com/docs/api/checkout/sessions/object>>.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct CheckoutSession {
     /// Settings for price localization with [Adaptive Pricing](https://docs.stripe.com/payments/checkout/adaptive-pricing).
@@ -189,6 +190,12 @@ pub struct CheckoutSession {
     pub url: Option<String>,
     /// Wallet-specific configuration for this Checkout Session.
     pub wallet_options: Option<stripe_shared::CheckoutSessionWalletOptions>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CheckoutSession {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CheckoutSession").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct CheckoutSessionBuilder {
@@ -913,9 +920,16 @@ impl std::fmt::Display for CheckoutSessionCustomerCreation {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CheckoutSessionCustomerCreation {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CheckoutSessionCustomerCreation {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CheckoutSessionCustomerCreation)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -994,9 +1008,16 @@ impl std::fmt::Display for CheckoutSessionPaymentMethodCollection {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CheckoutSessionPaymentMethodCollection {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CheckoutSessionPaymentMethodCollection {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CheckoutSessionPaymentMethodCollection)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -1079,9 +1100,16 @@ impl std::fmt::Display for CheckoutSessionPaymentStatus {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CheckoutSessionPaymentStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CheckoutSessionPaymentStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CheckoutSessionPaymentStatus)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -1170,9 +1198,16 @@ impl std::fmt::Display for CheckoutSessionBillingAddressCollection {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CheckoutSessionBillingAddressCollection {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CheckoutSessionBillingAddressCollection {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CheckoutSessionBillingAddressCollection)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CheckoutSessionBillingAddressCollection {
@@ -1362,9 +1397,16 @@ impl std::fmt::Display for CheckoutSessionLocale {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CheckoutSessionLocale {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CheckoutSessionLocale {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CheckoutSessionLocale)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CheckoutSessionLocale {
@@ -1440,9 +1482,16 @@ impl std::fmt::Display for CheckoutSessionMode {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CheckoutSessionMode {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CheckoutSessionMode {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CheckoutSessionMode)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CheckoutSessionMode {
@@ -1519,9 +1568,16 @@ impl std::fmt::Display for CheckoutSessionOriginContext {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CheckoutSessionOriginContext {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CheckoutSessionOriginContext {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CheckoutSessionOriginContext)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CheckoutSessionOriginContext {
@@ -1601,9 +1657,16 @@ impl std::fmt::Display for CheckoutSessionRedirectOnCompletion {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CheckoutSessionRedirectOnCompletion {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CheckoutSessionRedirectOnCompletion {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CheckoutSessionRedirectOnCompletion)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CheckoutSessionRedirectOnCompletion {
@@ -1679,9 +1742,16 @@ impl std::fmt::Display for CheckoutSessionStatus {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CheckoutSessionStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CheckoutSessionStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CheckoutSessionStatus)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CheckoutSessionStatus {
@@ -1763,9 +1833,16 @@ impl std::fmt::Display for CheckoutSessionSubmitType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CheckoutSessionSubmitType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CheckoutSessionSubmitType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CheckoutSessionSubmitType)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CheckoutSessionSubmitType {
@@ -1844,9 +1921,16 @@ impl std::fmt::Display for CheckoutSessionUiMode {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CheckoutSessionUiMode {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CheckoutSessionUiMode {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CheckoutSessionUiMode)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CheckoutSessionUiMode {

@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct InvoicesResourceInvoiceRendering {
@@ -10,6 +11,12 @@ pub struct InvoicesResourceInvoiceRendering {
     pub template: Option<String>,
     /// Version of the rendering template that the invoice is using.
     pub template_version: Option<i64>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for InvoicesResourceInvoiceRendering {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("InvoicesResourceInvoiceRendering").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct InvoicesResourceInvoiceRenderingBuilder {

@@ -1,10 +1,18 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TaxProductRegistrationsResourceCountryOptionsThailand {
     /// Type of registration in `country`.
     #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "type"))]
     pub type_: TaxProductRegistrationsResourceCountryOptionsThailandType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TaxProductRegistrationsResourceCountryOptionsThailand {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("TaxProductRegistrationsResourceCountryOptionsThailand")
+            .finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct TaxProductRegistrationsResourceCountryOptionsThailandBuilder {
@@ -142,9 +150,17 @@ impl std::fmt::Display for TaxProductRegistrationsResourceCountryOptionsThailand
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for TaxProductRegistrationsResourceCountryOptionsThailandType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TaxProductRegistrationsResourceCountryOptionsThailandType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(TaxProductRegistrationsResourceCountryOptionsThailandType))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

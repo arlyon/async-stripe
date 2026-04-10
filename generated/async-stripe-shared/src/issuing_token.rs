@@ -2,7 +2,8 @@
 /// As a [card issuer](https://docs.stripe.com/issuing), you can [view and manage these tokens](https://docs.stripe.com/issuing/controls/token-management) through Stripe.
 ///
 /// For more details see <<https://stripe.com/docs/api/issuing/tokens/object>>.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct IssuingToken {
     /// Card associated with this token.
@@ -28,6 +29,12 @@ pub struct IssuingToken {
     pub status: stripe_shared::IssuingTokenStatus,
     /// The digital wallet for this token, if one was used.
     pub wallet_provider: Option<IssuingTokenWalletProvider>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for IssuingToken {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("IssuingToken").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct IssuingTokenBuilder {
@@ -262,9 +269,16 @@ impl std::fmt::Display for IssuingTokenNetwork {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for IssuingTokenNetwork {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for IssuingTokenNetwork {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(IssuingTokenNetwork)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -342,9 +356,16 @@ impl std::fmt::Display for IssuingTokenWalletProvider {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for IssuingTokenWalletProvider {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for IssuingTokenWalletProvider {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(IssuingTokenWalletProvider)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -435,9 +456,16 @@ impl std::fmt::Display for IssuingTokenStatus {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for IssuingTokenStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for IssuingTokenStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(IssuingTokenStatus)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for IssuingTokenStatus {

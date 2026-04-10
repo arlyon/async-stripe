@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TransferSchedule {
@@ -21,6 +22,12 @@ pub struct TransferSchedule {
     /// The days of the week when available funds are paid out, specified as an array, for example, [`monday`, `tuesday`].
     /// Only shown if `interval` is weekly.
     pub weekly_payout_days: Option<Vec<TransferScheduleWeeklyPayoutDays>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TransferSchedule {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("TransferSchedule").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct TransferScheduleBuilder {
@@ -213,9 +220,16 @@ impl std::fmt::Display for TransferScheduleWeeklyPayoutDays {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for TransferScheduleWeeklyPayoutDays {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TransferScheduleWeeklyPayoutDays {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(TransferScheduleWeeklyPayoutDays)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

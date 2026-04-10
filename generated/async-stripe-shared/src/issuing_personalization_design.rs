@@ -1,5 +1,6 @@
 /// A Personalization Design is a logical grouping of a Physical Bundle, card logo, and carrier text that represents a product line.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct IssuingPersonalizationDesign {
     /// The file for the card logo to use with physical bundles that support card logos.
@@ -28,6 +29,12 @@ pub struct IssuingPersonalizationDesign {
     pub rejection_reasons: stripe_shared::IssuingPersonalizationDesignRejectionReasons,
     /// Whether this personalization design can be used to create cards.
     pub status: stripe_shared::IssuingPersonalizationDesignStatus,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for IssuingPersonalizationDesign {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("IssuingPersonalizationDesign").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct IssuingPersonalizationDesignBuilder {
@@ -290,9 +297,16 @@ impl std::fmt::Display for IssuingPersonalizationDesignStatus {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for IssuingPersonalizationDesignStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for IssuingPersonalizationDesignStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(IssuingPersonalizationDesignStatus)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for IssuingPersonalizationDesignStatus {

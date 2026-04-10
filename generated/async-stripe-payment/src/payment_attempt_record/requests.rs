@@ -2,7 +2,9 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ListPaymentAttemptRecordBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -11,6 +13,12 @@ struct ListPaymentAttemptRecordBuilder {
     payment_record: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     starting_after: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListPaymentAttemptRecordBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListPaymentAttemptRecordBuilder").finish_non_exhaustive()
+    }
 }
 impl ListPaymentAttemptRecordBuilder {
     fn new(payment_record: impl Into<String>) -> Self {
@@ -23,9 +31,17 @@ impl ListPaymentAttemptRecordBuilder {
     }
 }
 /// List all the Payment Attempt Records attached to the specified Payment Record.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListPaymentAttemptRecord {
     inner: ListPaymentAttemptRecordBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListPaymentAttemptRecord {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListPaymentAttemptRecord").finish_non_exhaustive()
+    }
 }
 impl ListPaymentAttemptRecord {
     /// Construct a new `ListPaymentAttemptRecord`.
@@ -83,10 +99,18 @@ impl StripeRequest for ListPaymentAttemptRecord {
         RequestBuilder::new(StripeMethod::Get, "/payment_attempt_records").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RetrievePaymentAttemptRecordBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrievePaymentAttemptRecordBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrievePaymentAttemptRecordBuilder").finish_non_exhaustive()
+    }
 }
 impl RetrievePaymentAttemptRecordBuilder {
     fn new() -> Self {
@@ -94,10 +118,18 @@ impl RetrievePaymentAttemptRecordBuilder {
     }
 }
 /// Retrieves a Payment Attempt Record with the given ID
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RetrievePaymentAttemptRecord {
     inner: RetrievePaymentAttemptRecordBuilder,
     id: stripe_payment::PaymentAttemptRecordId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrievePaymentAttemptRecord {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrievePaymentAttemptRecord").finish_non_exhaustive()
+    }
 }
 impl RetrievePaymentAttemptRecord {
     /// Construct a new `RetrievePaymentAttemptRecord`.

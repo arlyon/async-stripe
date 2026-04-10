@@ -29,4 +29,5 @@ async-stripe-types = {path = "../../async-stripe-types", version = "1.0.0-rc.4" 
 [features]
 serialize = ["async-stripe-types/serialize"]
 deserialize = ["async-stripe-types/deserialize", "dep:serde_json"]
+redact-generated-debug = ["async-stripe-types/redact-generated-debug"]
 

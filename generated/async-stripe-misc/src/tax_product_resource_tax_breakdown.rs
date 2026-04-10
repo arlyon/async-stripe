@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TaxProductResourceTaxBreakdown {
@@ -12,6 +13,12 @@ pub struct TaxProductResourceTaxBreakdown {
     pub taxability_reason: TaxProductResourceTaxBreakdownTaxabilityReason,
     /// The amount on which tax is calculated, in the [smallest currency unit](https://docs.stripe.com/currencies#minor-units).
     pub taxable_amount: i64,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TaxProductResourceTaxBreakdown {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("TaxProductResourceTaxBreakdown").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct TaxProductResourceTaxBreakdownBuilder {
@@ -227,9 +234,17 @@ impl std::fmt::Display for TaxProductResourceTaxBreakdownTaxabilityReason {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for TaxProductResourceTaxBreakdownTaxabilityReason {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TaxProductResourceTaxBreakdownTaxabilityReason {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(TaxProductResourceTaxBreakdownTaxabilityReason))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

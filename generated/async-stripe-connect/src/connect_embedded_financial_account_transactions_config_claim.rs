@@ -1,10 +1,18 @@
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct ConnectEmbeddedFinancialAccountTransactionsConfigClaim {
     /// Whether the embedded component is enabled.
     pub enabled: bool,
     pub features: stripe_connect::ConnectEmbeddedFinancialAccountTransactionsFeatures,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConnectEmbeddedFinancialAccountTransactionsConfigClaim {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConnectEmbeddedFinancialAccountTransactionsConfigClaim")
+            .finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct ConnectEmbeddedFinancialAccountTransactionsConfigClaimBuilder {

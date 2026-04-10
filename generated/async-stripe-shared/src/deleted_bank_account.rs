@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct DeletedBankAccount {
     /// Three-letter [ISO code for the currency](https://stripe.com/docs/payouts) paid out to the bank account.
@@ -7,6 +8,12 @@ pub struct DeletedBankAccount {
     deleted: stripe_types::AlwaysTrue,
     /// Unique identifier for the object.
     pub id: stripe_shared::BankAccountId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for DeletedBankAccount {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("DeletedBankAccount").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct DeletedBankAccountBuilder {

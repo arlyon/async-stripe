@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct IssuingCardAuthorizationControls {
@@ -27,6 +28,12 @@ pub struct IssuingCardAuthorizationControls {
     pub spending_limits: Option<Vec<stripe_shared::IssuingCardSpendingLimit>>,
     /// Currency of the amounts within `spending_limits`. Always the same as the currency of the card.
     pub spending_limits_currency: Option<stripe_types::Currency>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for IssuingCardAuthorizationControls {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("IssuingCardAuthorizationControls").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct IssuingCardAuthorizationControlsBuilder {
@@ -1194,9 +1201,17 @@ impl std::fmt::Display for IssuingCardAuthorizationControlsAllowedCategories {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for IssuingCardAuthorizationControlsAllowedCategories {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for IssuingCardAuthorizationControlsAllowedCategories {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(IssuingCardAuthorizationControlsAllowedCategories))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -2250,9 +2265,17 @@ impl std::fmt::Display for IssuingCardAuthorizationControlsBlockedCategories {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for IssuingCardAuthorizationControlsBlockedCategories {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for IssuingCardAuthorizationControlsBlockedCategories {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(IssuingCardAuthorizationControlsBlockedCategories))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

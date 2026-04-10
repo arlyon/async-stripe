@@ -1,4 +1,5 @@
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentIntentNextActionCardAwaitNotification {
@@ -8,6 +9,12 @@ pub struct PaymentIntentNextActionCardAwaitNotification {
     /// For payments greater than INR 15000, the customer must provide explicit approval of the payment with their bank.
     /// For payments of lower amount, no customer action is required.
     pub customer_approval_required: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentIntentNextActionCardAwaitNotification {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PaymentIntentNextActionCardAwaitNotification").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct PaymentIntentNextActionCardAwaitNotificationBuilder {

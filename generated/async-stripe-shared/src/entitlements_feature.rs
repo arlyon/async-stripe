@@ -1,6 +1,7 @@
 /// A feature represents a monetizable ability or functionality in your system.
 /// Features can be assigned to products, and when those products are purchased, Stripe will create an entitlement to the feature for the purchasing customer.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct EntitlementsFeature {
     /// Inactive features cannot be attached to new products and will not be returned from the features list endpoint.
@@ -17,6 +18,12 @@ pub struct EntitlementsFeature {
     pub metadata: std::collections::HashMap<String, String>,
     /// The feature's name, for your own purpose, not meant to be displayable to the customer.
     pub name: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for EntitlementsFeature {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("EntitlementsFeature").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct EntitlementsFeatureBuilder {

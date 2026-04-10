@@ -1,4 +1,5 @@
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TaxCalculationLineItem {
     /// The line item amount in the [smallest currency unit](https://docs.stripe.com/currencies#minor-units).
@@ -28,6 +29,12 @@ pub struct TaxCalculationLineItem {
     pub tax_breakdown: Option<Vec<stripe_misc::TaxProductResourceLineItemTaxBreakdown>>,
     /// The [tax code](https://docs.stripe.com/tax/tax-categories) ID used for this resource.
     pub tax_code: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TaxCalculationLineItem {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("TaxCalculationLineItem").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct TaxCalculationLineItemBuilder {
@@ -267,9 +274,16 @@ impl std::fmt::Display for TaxCalculationLineItemTaxBehavior {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for TaxCalculationLineItemTaxBehavior {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TaxCalculationLineItemTaxBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(TaxCalculationLineItemTaxBehavior)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

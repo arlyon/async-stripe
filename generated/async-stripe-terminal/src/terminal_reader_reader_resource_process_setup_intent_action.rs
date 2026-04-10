@@ -1,5 +1,6 @@
 /// Represents a reader action to process a setup intent
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TerminalReaderReaderResourceProcessSetupIntentAction {
@@ -9,6 +10,13 @@ pub struct TerminalReaderReaderResourceProcessSetupIntentAction {
     pub process_config: Option<stripe_terminal::TerminalReaderReaderResourceProcessSetupConfig>,
     /// Most recent SetupIntent processed by the reader.
     pub setup_intent: stripe_types::Expandable<stripe_shared::SetupIntent>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TerminalReaderReaderResourceProcessSetupIntentAction {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("TerminalReaderReaderResourceProcessSetupIntentAction")
+            .finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct TerminalReaderReaderResourceProcessSetupIntentActionBuilder {

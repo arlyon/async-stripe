@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct Level3 {
@@ -8,6 +9,12 @@ pub struct Level3 {
     pub shipping_address_zip: Option<String>,
     pub shipping_amount: Option<i64>,
     pub shipping_from_zip: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for Level3 {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("Level3").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct Level3Builder {

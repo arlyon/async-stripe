@@ -1,5 +1,6 @@
 /// Transactions represent changes to a [FinancialAccount's](https://api.stripe.com#financial_accounts) balance.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TreasuryTransaction {
     /// Amount (in cents) transferred.
@@ -32,6 +33,12 @@ pub struct TreasuryTransaction {
     pub status: stripe_treasury::TreasuryTransactionStatus,
     pub status_transitions:
         stripe_treasury::TreasuryTransactionsResourceAbstractTransactionResourceStatusTransitions,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TreasuryTransaction {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("TreasuryTransaction").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct TreasuryTransactionBuilder {
@@ -317,9 +324,16 @@ impl std::fmt::Display for TreasuryTransactionFlowType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for TreasuryTransactionFlowType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TreasuryTransactionFlowType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(TreasuryTransactionFlowType)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -407,9 +421,16 @@ impl std::fmt::Display for TreasuryTransactionStatus {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for TreasuryTransactionStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TreasuryTransactionStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(TreasuryTransactionStatus)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for TreasuryTransactionStatus {

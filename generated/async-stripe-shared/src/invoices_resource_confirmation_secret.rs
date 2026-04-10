@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct InvoicesResourceConfirmationSecret {
@@ -8,6 +9,12 @@ pub struct InvoicesResourceConfirmationSecret {
     /// Currently this is always payment_intent, referencing the default payment_intent that Stripe creates during invoice finalization.
     #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "type"))]
     pub type_: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for InvoicesResourceConfirmationSecret {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("InvoicesResourceConfirmationSecret").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct InvoicesResourceConfirmationSecretBuilder {

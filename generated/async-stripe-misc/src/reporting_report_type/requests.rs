@@ -2,10 +2,18 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ListReportingReportTypeBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListReportingReportTypeBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListReportingReportTypeBuilder").finish_non_exhaustive()
+    }
 }
 impl ListReportingReportTypeBuilder {
     fn new() -> Self {
@@ -13,9 +21,17 @@ impl ListReportingReportTypeBuilder {
     }
 }
 /// Returns a full list of Report Types.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListReportingReportType {
     inner: ListReportingReportTypeBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListReportingReportType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListReportingReportType").finish_non_exhaustive()
+    }
 }
 impl ListReportingReportType {
     /// Construct a new `ListReportingReportType`.
@@ -65,10 +81,18 @@ impl StripeRequest for ListReportingReportType {
         RequestBuilder::new(StripeMethod::Get, "/reporting/report_types").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RetrieveReportingReportTypeBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveReportingReportTypeBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveReportingReportTypeBuilder").finish_non_exhaustive()
+    }
 }
 impl RetrieveReportingReportTypeBuilder {
     fn new() -> Self {
@@ -77,10 +101,18 @@ impl RetrieveReportingReportTypeBuilder {
 }
 /// Retrieves the details of a Report Type.
 /// (Certain report types require a [live-mode API key](https://stripe.com/docs/keys#test-live-modes).).
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RetrieveReportingReportType {
     inner: RetrieveReportingReportTypeBuilder,
     report_type: stripe_misc::ReportingReportTypeId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveReportingReportType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveReportingReportType").finish_non_exhaustive()
+    }
 }
 impl RetrieveReportingReportType {
     /// Construct a new `RetrieveReportingReportType`.

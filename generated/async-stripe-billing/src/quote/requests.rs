@@ -2,7 +2,9 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ListQuoteBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     customer: Option<String>,
@@ -21,6 +23,12 @@ struct ListQuoteBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     test_clock: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListQuoteBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListQuoteBuilder").finish_non_exhaustive()
+    }
+}
 impl ListQuoteBuilder {
     fn new() -> Self {
         Self {
@@ -36,9 +44,17 @@ impl ListQuoteBuilder {
     }
 }
 /// Returns a list of your quotes.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListQuote {
     inner: ListQuoteBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListQuote {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListQuote").finish_non_exhaustive()
+    }
 }
 impl ListQuote {
     /// Construct a new `ListQuote`.
@@ -128,10 +144,18 @@ impl StripeRequest for ListQuote {
         RequestBuilder::new(StripeMethod::Get, "/quotes").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RetrieveQuoteBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveQuoteBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveQuoteBuilder").finish_non_exhaustive()
+    }
 }
 impl RetrieveQuoteBuilder {
     fn new() -> Self {
@@ -139,10 +163,18 @@ impl RetrieveQuoteBuilder {
     }
 }
 /// Retrieves the quote with the given ID.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RetrieveQuote {
     inner: RetrieveQuoteBuilder,
     quote: stripe_billing::QuoteId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveQuote {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveQuote").finish_non_exhaustive()
+    }
 }
 impl RetrieveQuote {
     /// Construct a new `RetrieveQuote`.
@@ -181,7 +213,9 @@ impl StripeRequest for RetrieveQuote {
         RequestBuilder::new(StripeMethod::Get, format!("/quotes/{quote}")).query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ListComputedUpfrontLineItemsQuoteBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<String>,
@@ -192,6 +226,12 @@ struct ListComputedUpfrontLineItemsQuoteBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     starting_after: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListComputedUpfrontLineItemsQuoteBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListComputedUpfrontLineItemsQuoteBuilder").finish_non_exhaustive()
+    }
+}
 impl ListComputedUpfrontLineItemsQuoteBuilder {
     fn new() -> Self {
         Self { ending_before: None, expand: None, limit: None, starting_after: None }
@@ -199,10 +239,18 @@ impl ListComputedUpfrontLineItemsQuoteBuilder {
 }
 /// When retrieving a quote, there is an includable <a href="<https://stripe.com/docs/api/quotes/object#quote_object-computed-upfront-line_items>">**computed.upfront.line_items**</a> property containing the first handful of those items.
 /// There is also a URL where you can retrieve the full (paginated) list of upfront line items.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListComputedUpfrontLineItemsQuote {
     inner: ListComputedUpfrontLineItemsQuoteBuilder,
     quote: stripe_billing::QuoteId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListComputedUpfrontLineItemsQuote {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListComputedUpfrontLineItemsQuote").finish_non_exhaustive()
+    }
 }
 impl ListComputedUpfrontLineItemsQuote {
     /// Construct a new `ListComputedUpfrontLineItemsQuote`.
@@ -277,7 +325,9 @@ impl StripeRequest for ListComputedUpfrontLineItemsQuote {
         .query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ListLineItemsQuoteBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<String>,
@@ -288,6 +338,12 @@ struct ListLineItemsQuoteBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     starting_after: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListLineItemsQuoteBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListLineItemsQuoteBuilder").finish_non_exhaustive()
+    }
+}
 impl ListLineItemsQuoteBuilder {
     fn new() -> Self {
         Self { ending_before: None, expand: None, limit: None, starting_after: None }
@@ -295,10 +351,18 @@ impl ListLineItemsQuoteBuilder {
 }
 /// When retrieving a quote, there is an includable **line_items** property containing the first handful of those items.
 /// There is also a URL where you can retrieve the full (paginated) list of line items.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListLineItemsQuote {
     inner: ListLineItemsQuoteBuilder,
     quote: stripe_billing::QuoteId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListLineItemsQuote {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListLineItemsQuote").finish_non_exhaustive()
+    }
 }
 impl ListLineItemsQuote {
     /// Construct a new `ListLineItemsQuote`.
@@ -370,7 +434,9 @@ impl StripeRequest for ListLineItemsQuote {
             .query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct CreateQuoteBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     application_fee_amount: Option<i64>,
@@ -415,6 +481,12 @@ struct CreateQuoteBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     transfer_data: Option<TransferDataSpecs>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateQuoteBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateQuoteBuilder").finish_non_exhaustive()
+    }
+}
 impl CreateQuoteBuilder {
     fn new() -> Self {
         Self {
@@ -443,7 +515,9 @@ impl CreateQuoteBuilder {
     }
 }
 /// Settings for automatic tax lookup for this quote and resulting invoices and subscriptions.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateQuoteAutomaticTax {
     /// Controls whether Stripe will automatically compute tax on the resulting invoices or subscriptions as well as the quote itself.
     pub enabled: bool,
@@ -453,6 +527,12 @@ pub struct CreateQuoteAutomaticTax {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub liability: Option<CreateQuoteAutomaticTaxLiability>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateQuoteAutomaticTax {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateQuoteAutomaticTax").finish_non_exhaustive()
+    }
+}
 impl CreateQuoteAutomaticTax {
     pub fn new(enabled: impl Into<bool>) -> Self {
         Self { enabled: enabled.into(), liability: None }
@@ -461,7 +541,9 @@ impl CreateQuoteAutomaticTax {
 /// The account that's liable for tax.
 /// If set, the business address and tax registrations required to perform the tax calculation are loaded from this account.
 /// The tax transaction is returned in the report of the connected account.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateQuoteAutomaticTaxLiability {
     /// The connected account being referenced when `type` is `account`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -469,6 +551,12 @@ pub struct CreateQuoteAutomaticTaxLiability {
     /// Type of the account referenced in the request.
     #[serde(rename = "type")]
     pub type_: CreateQuoteAutomaticTaxLiabilityType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateQuoteAutomaticTaxLiability {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateQuoteAutomaticTaxLiability").finish_non_exhaustive()
+    }
 }
 impl CreateQuoteAutomaticTaxLiability {
     pub fn new(type_: impl Into<CreateQuoteAutomaticTaxLiabilityType>) -> Self {
@@ -519,9 +607,16 @@ impl std::fmt::Display for CreateQuoteAutomaticTaxLiabilityType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateQuoteAutomaticTaxLiabilityType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateQuoteAutomaticTaxLiabilityType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateQuoteAutomaticTaxLiabilityType)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateQuoteAutomaticTaxLiabilityType {
@@ -543,7 +638,9 @@ impl<'de> serde::Deserialize<'de> for CreateQuoteAutomaticTaxLiabilityType {
 /// Clone an existing quote.
 /// The new quote will be created in `status=draft`.
 /// When using this parameter, you cannot specify any other parameters except for `expires_at`.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateQuoteFromQuote {
     /// Whether this quote is a revision of the previous quote.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -551,13 +648,21 @@ pub struct CreateQuoteFromQuote {
     /// The `id` of the quote that will be cloned.
     pub quote: String,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateQuoteFromQuote {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateQuoteFromQuote").finish_non_exhaustive()
+    }
+}
 impl CreateQuoteFromQuote {
     pub fn new(quote: impl Into<String>) -> Self {
         Self { is_revision: None, quote: quote.into() }
     }
 }
 /// All invoices will be billed using the specified settings.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateQuoteInvoiceSettings {
     /// Number of days within which a customer must pay the invoice generated by this quote.
     /// This value will be `null` for quotes where `collection_method=charge_automatically`.
@@ -567,6 +672,12 @@ pub struct CreateQuoteInvoiceSettings {
     /// The invoice is presented with the branding and support information of the specified account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub issuer: Option<CreateQuoteInvoiceSettingsIssuer>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateQuoteInvoiceSettings {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateQuoteInvoiceSettings").finish_non_exhaustive()
+    }
 }
 impl CreateQuoteInvoiceSettings {
     pub fn new() -> Self {
@@ -580,7 +691,9 @@ impl Default for CreateQuoteInvoiceSettings {
 }
 /// The connected account that issues the invoice.
 /// The invoice is presented with the branding and support information of the specified account.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateQuoteInvoiceSettingsIssuer {
     /// The connected account being referenced when `type` is `account`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -588,6 +701,12 @@ pub struct CreateQuoteInvoiceSettingsIssuer {
     /// Type of the account referenced in the request.
     #[serde(rename = "type")]
     pub type_: CreateQuoteInvoiceSettingsIssuerType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateQuoteInvoiceSettingsIssuer {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateQuoteInvoiceSettingsIssuer").finish_non_exhaustive()
+    }
 }
 impl CreateQuoteInvoiceSettingsIssuer {
     pub fn new(type_: impl Into<CreateQuoteInvoiceSettingsIssuerType>) -> Self {
@@ -638,9 +757,16 @@ impl std::fmt::Display for CreateQuoteInvoiceSettingsIssuerType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateQuoteInvoiceSettingsIssuerType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateQuoteInvoiceSettingsIssuerType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateQuoteInvoiceSettingsIssuerType)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateQuoteInvoiceSettingsIssuerType {
@@ -661,7 +787,9 @@ impl<'de> serde::Deserialize<'de> for CreateQuoteInvoiceSettingsIssuerType {
 }
 /// A list of line items the customer is being quoted for.
 /// Each line item includes information about the product, the quantity, and the resulting cost.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateQuoteLineItems {
     /// The discounts applied to this line item.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -681,6 +809,12 @@ pub struct CreateQuoteLineItems {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_rates: Option<Vec<String>>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateQuoteLineItems {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateQuoteLineItems").finish_non_exhaustive()
+    }
+}
 impl CreateQuoteLineItems {
     pub fn new() -> Self {
         Self { discounts: None, price: None, price_data: None, quantity: None, tax_rates: None }
@@ -693,7 +827,9 @@ impl Default for CreateQuoteLineItems {
 }
 /// Data used to generate a new [Price](https://docs.stripe.com/api/prices) object inline.
 /// One of `price` or `price_data` is required.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateQuoteLineItemsPriceData {
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
@@ -717,6 +853,12 @@ pub struct CreateQuoteLineItemsPriceData {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_amount_decimal: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateQuoteLineItemsPriceData {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateQuoteLineItemsPriceData").finish_non_exhaustive()
+    }
+}
 impl CreateQuoteLineItemsPriceData {
     pub fn new(currency: impl Into<stripe_types::Currency>, product: impl Into<String>) -> Self {
         Self {
@@ -730,7 +872,9 @@ impl CreateQuoteLineItemsPriceData {
     }
 }
 /// The recurring components of a price such as `interval` and `interval_count`.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateQuoteLineItemsPriceDataRecurring {
     /// Specifies billing frequency. Either `day`, `week`, `month` or `year`.
     pub interval: CreateQuoteLineItemsPriceDataRecurringInterval,
@@ -739,6 +883,12 @@ pub struct CreateQuoteLineItemsPriceDataRecurring {
     /// Maximum of three years interval allowed (3 years, 36 months, or 156 weeks).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub interval_count: Option<u64>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateQuoteLineItemsPriceDataRecurring {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateQuoteLineItemsPriceDataRecurring").finish_non_exhaustive()
+    }
 }
 impl CreateQuoteLineItemsPriceDataRecurring {
     pub fn new(interval: impl Into<CreateQuoteLineItemsPriceDataRecurringInterval>) -> Self {
@@ -795,9 +945,17 @@ impl std::fmt::Display for CreateQuoteLineItemsPriceDataRecurringInterval {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateQuoteLineItemsPriceDataRecurringInterval {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateQuoteLineItemsPriceDataRecurringInterval {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateQuoteLineItemsPriceDataRecurringInterval))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateQuoteLineItemsPriceDataRecurringInterval {
@@ -866,9 +1024,16 @@ impl std::fmt::Display for CreateQuoteLineItemsPriceDataTaxBehavior {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateQuoteLineItemsPriceDataTaxBehavior {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateQuoteLineItemsPriceDataTaxBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateQuoteLineItemsPriceDataTaxBehavior)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateQuoteLineItemsPriceDataTaxBehavior {
@@ -890,7 +1055,9 @@ impl<'de> serde::Deserialize<'de> for CreateQuoteLineItemsPriceDataTaxBehavior {
 /// When creating a subscription or subscription schedule, the specified configuration data will be used.
 /// There must be at least one line item with a recurring price for a subscription or subscription schedule to be created.
 /// A subscription schedule is created if `subscription_data[effective_date]` is present and in the future, otherwise a subscription is created.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateQuoteSubscriptionData {
     /// Controls how prorations and invoices for subscriptions are calculated and orchestrated.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -914,6 +1081,12 @@ pub struct CreateQuoteSubscriptionData {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub trial_period_days: Option<u32>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateQuoteSubscriptionData {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateQuoteSubscriptionData").finish_non_exhaustive()
+    }
+}
 impl CreateQuoteSubscriptionData {
     pub fn new() -> Self {
         Self {
@@ -931,7 +1104,9 @@ impl Default for CreateQuoteSubscriptionData {
     }
 }
 /// Controls how prorations and invoices for subscriptions are calculated and orchestrated.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateQuoteSubscriptionDataBillingMode {
     /// Configure behavior for flexible billing mode.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -941,18 +1116,32 @@ pub struct CreateQuoteSubscriptionDataBillingMode {
     #[serde(rename = "type")]
     pub type_: CreateQuoteSubscriptionDataBillingModeType,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateQuoteSubscriptionDataBillingMode {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateQuoteSubscriptionDataBillingMode").finish_non_exhaustive()
+    }
+}
 impl CreateQuoteSubscriptionDataBillingMode {
     pub fn new(type_: impl Into<CreateQuoteSubscriptionDataBillingModeType>) -> Self {
         Self { flexible: None, type_: type_.into() }
     }
 }
 /// Configure behavior for flexible billing mode.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateQuoteSubscriptionDataBillingModeFlexible {
     /// Controls how invoices and invoice items display proration amounts and discount amounts.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub proration_discounts:
         Option<CreateQuoteSubscriptionDataBillingModeFlexibleProrationDiscounts>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateQuoteSubscriptionDataBillingModeFlexible {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateQuoteSubscriptionDataBillingModeFlexible").finish_non_exhaustive()
+    }
 }
 impl CreateQuoteSubscriptionDataBillingModeFlexible {
     pub fn new() -> Self {
@@ -1008,9 +1197,17 @@ impl std::fmt::Display for CreateQuoteSubscriptionDataBillingModeFlexibleProrati
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateQuoteSubscriptionDataBillingModeFlexibleProrationDiscounts {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateQuoteSubscriptionDataBillingModeFlexibleProrationDiscounts {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateQuoteSubscriptionDataBillingModeFlexibleProrationDiscounts))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateQuoteSubscriptionDataBillingModeFlexibleProrationDiscounts {
@@ -1076,9 +1273,17 @@ impl std::fmt::Display for CreateQuoteSubscriptionDataBillingModeType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateQuoteSubscriptionDataBillingModeType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateQuoteSubscriptionDataBillingModeType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateQuoteSubscriptionDataBillingModeType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateQuoteSubscriptionDataBillingModeType {
@@ -1099,18 +1304,34 @@ impl<'de> serde::Deserialize<'de> for CreateQuoteSubscriptionDataBillingModeType
 }
 /// When creating a new subscription, the date of which the subscription schedule will start after the quote is accepted.
 /// The `effective_date` is ignored if it is in the past when the quote is accepted.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 #[serde(rename_all = "snake_case")]
 pub enum CreateQuoteSubscriptionDataEffectiveDate {
     CurrentPeriodEnd,
     #[serde(untagged)]
     Timestamp(stripe_types::Timestamp),
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateQuoteSubscriptionDataEffectiveDate {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateQuoteSubscriptionDataEffectiveDate").finish_non_exhaustive()
+    }
+}
 /// A quote models prices and services for a customer.
 /// Default options for `header`, `description`, `footer`, and `expires_at` can be set in the dashboard via the [quote template](https://dashboard.stripe.com/settings/billing/quote).
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateQuote {
     inner: CreateQuoteBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateQuote {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateQuote").finish_non_exhaustive()
+    }
 }
 impl CreateQuote {
     /// Construct a new `CreateQuote`.
@@ -1288,7 +1509,9 @@ impl StripeRequest for CreateQuote {
         RequestBuilder::new(StripeMethod::Post, "/quotes").form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct UpdateQuoteBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     application_fee_amount: Option<i64>,
@@ -1329,6 +1552,12 @@ struct UpdateQuoteBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     transfer_data: Option<TransferDataSpecs>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateQuoteBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateQuoteBuilder").finish_non_exhaustive()
+    }
+}
 impl UpdateQuoteBuilder {
     fn new() -> Self {
         Self {
@@ -1355,7 +1584,9 @@ impl UpdateQuoteBuilder {
     }
 }
 /// Settings for automatic tax lookup for this quote and resulting invoices and subscriptions.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateQuoteAutomaticTax {
     /// Controls whether Stripe will automatically compute tax on the resulting invoices or subscriptions as well as the quote itself.
     pub enabled: bool,
@@ -1365,6 +1596,12 @@ pub struct UpdateQuoteAutomaticTax {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub liability: Option<UpdateQuoteAutomaticTaxLiability>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateQuoteAutomaticTax {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateQuoteAutomaticTax").finish_non_exhaustive()
+    }
+}
 impl UpdateQuoteAutomaticTax {
     pub fn new(enabled: impl Into<bool>) -> Self {
         Self { enabled: enabled.into(), liability: None }
@@ -1373,7 +1610,9 @@ impl UpdateQuoteAutomaticTax {
 /// The account that's liable for tax.
 /// If set, the business address and tax registrations required to perform the tax calculation are loaded from this account.
 /// The tax transaction is returned in the report of the connected account.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateQuoteAutomaticTaxLiability {
     /// The connected account being referenced when `type` is `account`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1381,6 +1620,12 @@ pub struct UpdateQuoteAutomaticTaxLiability {
     /// Type of the account referenced in the request.
     #[serde(rename = "type")]
     pub type_: UpdateQuoteAutomaticTaxLiabilityType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateQuoteAutomaticTaxLiability {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateQuoteAutomaticTaxLiability").finish_non_exhaustive()
+    }
 }
 impl UpdateQuoteAutomaticTaxLiability {
     pub fn new(type_: impl Into<UpdateQuoteAutomaticTaxLiabilityType>) -> Self {
@@ -1431,9 +1676,16 @@ impl std::fmt::Display for UpdateQuoteAutomaticTaxLiabilityType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdateQuoteAutomaticTaxLiabilityType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateQuoteAutomaticTaxLiabilityType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdateQuoteAutomaticTaxLiabilityType)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdateQuoteAutomaticTaxLiabilityType {
@@ -1453,7 +1705,9 @@ impl<'de> serde::Deserialize<'de> for UpdateQuoteAutomaticTaxLiabilityType {
     }
 }
 /// All invoices will be billed using the specified settings.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateQuoteInvoiceSettings {
     /// Number of days within which a customer must pay the invoice generated by this quote.
     /// This value will be `null` for quotes where `collection_method=charge_automatically`.
@@ -1463,6 +1717,12 @@ pub struct UpdateQuoteInvoiceSettings {
     /// The invoice is presented with the branding and support information of the specified account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub issuer: Option<UpdateQuoteInvoiceSettingsIssuer>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateQuoteInvoiceSettings {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateQuoteInvoiceSettings").finish_non_exhaustive()
+    }
 }
 impl UpdateQuoteInvoiceSettings {
     pub fn new() -> Self {
@@ -1476,7 +1736,9 @@ impl Default for UpdateQuoteInvoiceSettings {
 }
 /// The connected account that issues the invoice.
 /// The invoice is presented with the branding and support information of the specified account.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateQuoteInvoiceSettingsIssuer {
     /// The connected account being referenced when `type` is `account`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1484,6 +1746,12 @@ pub struct UpdateQuoteInvoiceSettingsIssuer {
     /// Type of the account referenced in the request.
     #[serde(rename = "type")]
     pub type_: UpdateQuoteInvoiceSettingsIssuerType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateQuoteInvoiceSettingsIssuer {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateQuoteInvoiceSettingsIssuer").finish_non_exhaustive()
+    }
 }
 impl UpdateQuoteInvoiceSettingsIssuer {
     pub fn new(type_: impl Into<UpdateQuoteInvoiceSettingsIssuerType>) -> Self {
@@ -1534,9 +1802,16 @@ impl std::fmt::Display for UpdateQuoteInvoiceSettingsIssuerType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdateQuoteInvoiceSettingsIssuerType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateQuoteInvoiceSettingsIssuerType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdateQuoteInvoiceSettingsIssuerType)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdateQuoteInvoiceSettingsIssuerType {
@@ -1557,7 +1832,9 @@ impl<'de> serde::Deserialize<'de> for UpdateQuoteInvoiceSettingsIssuerType {
 }
 /// A list of line items the customer is being quoted for.
 /// Each line item includes information about the product, the quantity, and the resulting cost.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateQuoteLineItems {
     /// The discounts applied to this line item.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1580,6 +1857,12 @@ pub struct UpdateQuoteLineItems {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_rates: Option<Vec<String>>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateQuoteLineItems {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateQuoteLineItems").finish_non_exhaustive()
+    }
+}
 impl UpdateQuoteLineItems {
     pub fn new() -> Self {
         Self {
@@ -1599,7 +1882,9 @@ impl Default for UpdateQuoteLineItems {
 }
 /// Data used to generate a new [Price](https://docs.stripe.com/api/prices) object inline.
 /// One of `price` or `price_data` is required.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateQuoteLineItemsPriceData {
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
@@ -1623,6 +1908,12 @@ pub struct UpdateQuoteLineItemsPriceData {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_amount_decimal: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateQuoteLineItemsPriceData {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateQuoteLineItemsPriceData").finish_non_exhaustive()
+    }
+}
 impl UpdateQuoteLineItemsPriceData {
     pub fn new(currency: impl Into<stripe_types::Currency>, product: impl Into<String>) -> Self {
         Self {
@@ -1636,7 +1927,9 @@ impl UpdateQuoteLineItemsPriceData {
     }
 }
 /// The recurring components of a price such as `interval` and `interval_count`.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateQuoteLineItemsPriceDataRecurring {
     /// Specifies billing frequency. Either `day`, `week`, `month` or `year`.
     pub interval: UpdateQuoteLineItemsPriceDataRecurringInterval,
@@ -1645,6 +1938,12 @@ pub struct UpdateQuoteLineItemsPriceDataRecurring {
     /// Maximum of three years interval allowed (3 years, 36 months, or 156 weeks).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub interval_count: Option<u64>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateQuoteLineItemsPriceDataRecurring {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateQuoteLineItemsPriceDataRecurring").finish_non_exhaustive()
+    }
 }
 impl UpdateQuoteLineItemsPriceDataRecurring {
     pub fn new(interval: impl Into<UpdateQuoteLineItemsPriceDataRecurringInterval>) -> Self {
@@ -1701,9 +2000,17 @@ impl std::fmt::Display for UpdateQuoteLineItemsPriceDataRecurringInterval {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdateQuoteLineItemsPriceDataRecurringInterval {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateQuoteLineItemsPriceDataRecurringInterval {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdateQuoteLineItemsPriceDataRecurringInterval))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdateQuoteLineItemsPriceDataRecurringInterval {
@@ -1772,9 +2079,16 @@ impl std::fmt::Display for UpdateQuoteLineItemsPriceDataTaxBehavior {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdateQuoteLineItemsPriceDataTaxBehavior {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateQuoteLineItemsPriceDataTaxBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdateQuoteLineItemsPriceDataTaxBehavior)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdateQuoteLineItemsPriceDataTaxBehavior {
@@ -1796,7 +2110,9 @@ impl<'de> serde::Deserialize<'de> for UpdateQuoteLineItemsPriceDataTaxBehavior {
 /// When creating a subscription or subscription schedule, the specified configuration data will be used.
 /// There must be at least one line item with a recurring price for a subscription or subscription schedule to be created.
 /// A subscription schedule is created if `subscription_data[effective_date]` is present and in the future, otherwise a subscription is created.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateQuoteSubscriptionData {
     /// The subscription's description, meant to be displayable to the customer.
     /// Use this field to optionally store an explanation of the subscription for rendering in Stripe surfaces and certain local payment methods UIs.
@@ -1817,6 +2133,12 @@ pub struct UpdateQuoteSubscriptionData {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub trial_period_days: Option<u32>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateQuoteSubscriptionData {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateQuoteSubscriptionData").finish_non_exhaustive()
+    }
+}
 impl UpdateQuoteSubscriptionData {
     pub fn new() -> Self {
         Self { description: None, effective_date: None, metadata: None, trial_period_days: None }
@@ -1829,18 +2151,34 @@ impl Default for UpdateQuoteSubscriptionData {
 }
 /// When creating a new subscription, the date of which the subscription schedule will start after the quote is accepted.
 /// The `effective_date` is ignored if it is in the past when the quote is accepted.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 #[serde(rename_all = "snake_case")]
 pub enum UpdateQuoteSubscriptionDataEffectiveDate {
     CurrentPeriodEnd,
     #[serde(untagged)]
     Timestamp(stripe_types::Timestamp),
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateQuoteSubscriptionDataEffectiveDate {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateQuoteSubscriptionDataEffectiveDate").finish_non_exhaustive()
+    }
+}
 /// A quote models prices and services for a customer.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateQuote {
     inner: UpdateQuoteBuilder,
     quote: stripe_billing::QuoteId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateQuote {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateQuote").finish_non_exhaustive()
+    }
 }
 impl UpdateQuote {
     /// Construct a new `UpdateQuote`.
@@ -1998,10 +2336,18 @@ impl StripeRequest for UpdateQuote {
         RequestBuilder::new(StripeMethod::Post, format!("/quotes/{quote}")).form(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct AcceptQuoteBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for AcceptQuoteBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("AcceptQuoteBuilder").finish_non_exhaustive()
+    }
 }
 impl AcceptQuoteBuilder {
     fn new() -> Self {
@@ -2009,10 +2355,18 @@ impl AcceptQuoteBuilder {
     }
 }
 /// Accepts the specified quote.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct AcceptQuote {
     inner: AcceptQuoteBuilder,
     quote: stripe_billing::QuoteId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for AcceptQuote {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("AcceptQuote").finish_non_exhaustive()
+    }
 }
 impl AcceptQuote {
     /// Construct a new `AcceptQuote`.
@@ -2051,10 +2405,18 @@ impl StripeRequest for AcceptQuote {
         RequestBuilder::new(StripeMethod::Post, format!("/quotes/{quote}/accept")).form(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct CancelQuoteBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CancelQuoteBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CancelQuoteBuilder").finish_non_exhaustive()
+    }
 }
 impl CancelQuoteBuilder {
     fn new() -> Self {
@@ -2062,10 +2424,18 @@ impl CancelQuoteBuilder {
     }
 }
 /// Cancels the quote.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CancelQuote {
     inner: CancelQuoteBuilder,
     quote: stripe_billing::QuoteId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CancelQuote {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CancelQuote").finish_non_exhaustive()
+    }
 }
 impl CancelQuote {
     /// Construct a new `CancelQuote`.
@@ -2104,12 +2474,20 @@ impl StripeRequest for CancelQuote {
         RequestBuilder::new(StripeMethod::Post, format!("/quotes/{quote}/cancel")).form(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct FinalizeQuoteQuoteBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     expires_at: Option<stripe_types::Timestamp>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for FinalizeQuoteQuoteBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("FinalizeQuoteQuoteBuilder").finish_non_exhaustive()
+    }
 }
 impl FinalizeQuoteQuoteBuilder {
     fn new() -> Self {
@@ -2117,10 +2495,18 @@ impl FinalizeQuoteQuoteBuilder {
     }
 }
 /// Finalizes the quote.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct FinalizeQuoteQuote {
     inner: FinalizeQuoteQuoteBuilder,
     quote: stripe_billing::QuoteId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for FinalizeQuoteQuote {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("FinalizeQuoteQuote").finish_non_exhaustive()
+    }
 }
 impl FinalizeQuoteQuote {
     /// Construct a new `FinalizeQuoteQuote`.
@@ -2167,7 +2553,9 @@ impl StripeRequest for FinalizeQuoteQuote {
     }
 }
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct DiscountsDataParam {
     /// ID of the coupon to create a new discount for.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2179,6 +2567,12 @@ pub struct DiscountsDataParam {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub promotion_code: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for DiscountsDataParam {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("DiscountsDataParam").finish_non_exhaustive()
+    }
+}
 impl DiscountsDataParam {
     pub fn new() -> Self {
         Self { coupon: None, discount: None, promotion_code: None }
@@ -2189,7 +2583,9 @@ impl Default for DiscountsDataParam {
         Self::new()
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct TransferDataSpecs {
     /// The amount that will be transferred automatically when the invoice is paid.
     /// If no amount is set, the full amount is transferred.
@@ -2204,6 +2600,12 @@ pub struct TransferDataSpecs {
     pub amount_percent: Option<f64>,
     /// ID of an existing, connected Stripe account.
     pub destination: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TransferDataSpecs {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("TransferDataSpecs").finish_non_exhaustive()
+    }
 }
 impl TransferDataSpecs {
     pub fn new(destination: impl Into<String>) -> Self {

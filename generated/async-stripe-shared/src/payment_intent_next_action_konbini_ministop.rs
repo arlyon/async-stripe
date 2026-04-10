@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentIntentNextActionKonbiniMinistop {
@@ -6,6 +7,12 @@ pub struct PaymentIntentNextActionKonbiniMinistop {
     pub confirmation_number: Option<String>,
     /// The payment code.
     pub payment_code: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentIntentNextActionKonbiniMinistop {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PaymentIntentNextActionKonbiniMinistop").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct PaymentIntentNextActionKonbiniMinistopBuilder {

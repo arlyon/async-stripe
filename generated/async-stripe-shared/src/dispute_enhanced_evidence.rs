@@ -1,10 +1,17 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct DisputeEnhancedEvidence {
     pub visa_compelling_evidence_3:
         Option<stripe_shared::DisputeEnhancedEvidenceVisaCompellingEvidence3>,
     pub visa_compliance: Option<stripe_shared::DisputeEnhancedEvidenceVisaCompliance>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for DisputeEnhancedEvidence {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("DisputeEnhancedEvidence").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct DisputeEnhancedEvidenceBuilder {

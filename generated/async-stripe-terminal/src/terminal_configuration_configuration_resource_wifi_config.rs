@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TerminalConfigurationConfigurationResourceWifiConfig {
@@ -12,6 +13,13 @@ pub struct TerminalConfigurationConfigurationResourceWifiConfig {
     /// The hash with the corresponding name contains the credentials for this security type.
     #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "type"))]
     pub type_: TerminalConfigurationConfigurationResourceWifiConfigType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TerminalConfigurationConfigurationResourceWifiConfig {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("TerminalConfigurationConfigurationResourceWifiConfig")
+            .finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct TerminalConfigurationConfigurationResourceWifiConfigBuilder {
@@ -186,9 +194,17 @@ impl std::fmt::Display for TerminalConfigurationConfigurationResourceWifiConfigT
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for TerminalConfigurationConfigurationResourceWifiConfigType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TerminalConfigurationConfigurationResourceWifiConfigType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(TerminalConfigurationConfigurationResourceWifiConfigType))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

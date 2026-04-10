@@ -3,7 +3,8 @@
 /// Related guide: [Creating subscriptions](https://docs.stripe.com/billing/subscriptions/creating)
 ///
 /// For more details see <<https://stripe.com/docs/api/subscriptions/object>>.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct Subscription {
     /// ID of the Connect Application that created the subscription.
@@ -145,6 +146,12 @@ pub struct Subscription {
     pub trial_settings: Option<stripe_shared::SubscriptionsResourceTrialSettingsTrialSettings>,
     /// If the subscription has a trial, the beginning of that trial.
     pub trial_start: Option<stripe_types::Timestamp>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for Subscription {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("Subscription").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct SubscriptionBuilder {
@@ -715,9 +722,16 @@ impl std::fmt::Display for SubscriptionStatus {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for SubscriptionStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for SubscriptionStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(SubscriptionStatus)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -806,9 +820,16 @@ impl std::fmt::Display for SubscriptionCollectionMethod {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for SubscriptionCollectionMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for SubscriptionCollectionMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(SubscriptionCollectionMethod)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for SubscriptionCollectionMethod {

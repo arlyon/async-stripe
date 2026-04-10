@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct MandateBacsDebit {
@@ -15,6 +16,12 @@ pub struct MandateBacsDebit {
     pub service_user_number: Option<String>,
     /// The URL that will contain the mandate that the customer has signed.
     pub url: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for MandateBacsDebit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("MandateBacsDebit").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct MandateBacsDebitBuilder {
@@ -204,9 +211,16 @@ impl std::fmt::Display for MandateBacsDebitNetworkStatus {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for MandateBacsDebitNetworkStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for MandateBacsDebitNetworkStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(MandateBacsDebitNetworkStatus)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -294,9 +308,16 @@ impl std::fmt::Display for MandateBacsDebitRevocationReason {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for MandateBacsDebitRevocationReason {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for MandateBacsDebitRevocationReason {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(MandateBacsDebitRevocationReason)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

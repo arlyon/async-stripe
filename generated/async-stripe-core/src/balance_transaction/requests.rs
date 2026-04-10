@@ -2,7 +2,9 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ListBalanceTransactionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     created: Option<stripe_types::RangeQueryTs>,
@@ -24,6 +26,12 @@ struct ListBalanceTransactionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     type_: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListBalanceTransactionBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListBalanceTransactionBuilder").finish_non_exhaustive()
+    }
+}
 impl ListBalanceTransactionBuilder {
     fn new() -> Self {
         Self {
@@ -43,9 +51,17 @@ impl ListBalanceTransactionBuilder {
 /// The transactions are returned in sorted order, with the most recent transactions appearing first.
 ///
 /// Note that this endpoint was previously called “Balance history” and used the path `/v1/balance/history`.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListBalanceTransaction {
     inner: ListBalanceTransactionBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListBalanceTransaction {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListBalanceTransaction").finish_non_exhaustive()
+    }
 }
 impl ListBalanceTransaction {
     /// Construct a new `ListBalanceTransaction`.
@@ -143,10 +159,18 @@ impl StripeRequest for ListBalanceTransaction {
         RequestBuilder::new(StripeMethod::Get, "/balance_transactions").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RetrieveBalanceTransactionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveBalanceTransactionBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveBalanceTransactionBuilder").finish_non_exhaustive()
+    }
 }
 impl RetrieveBalanceTransactionBuilder {
     fn new() -> Self {
@@ -156,10 +180,18 @@ impl RetrieveBalanceTransactionBuilder {
 /// Retrieves the balance transaction with the given ID.
 ///
 /// Note that this endpoint previously used the path `/v1/balance/history/:id`.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RetrieveBalanceTransaction {
     inner: RetrieveBalanceTransactionBuilder,
     id: stripe_shared::BalanceTransactionId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveBalanceTransaction {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveBalanceTransaction").finish_non_exhaustive()
+    }
 }
 impl RetrieveBalanceTransaction {
     /// Construct a new `RetrieveBalanceTransaction`.

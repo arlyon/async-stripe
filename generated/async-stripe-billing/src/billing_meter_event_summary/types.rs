@@ -3,7 +3,8 @@
 /// usage was accrued by a customer for that period.
 ///
 /// Note: Meters events are aggregated asynchronously so the meter event summaries provide an eventually consistent view of the reported usage.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct BillingMeterEventSummary {
     /// Aggregated value of all the events within `start_time` (inclusive) and `end_time` (inclusive).
@@ -20,6 +21,12 @@ pub struct BillingMeterEventSummary {
     pub meter: String,
     /// Start timestamp for this event summary (inclusive). Must be aligned with minute boundaries.
     pub start_time: stripe_types::Timestamp,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for BillingMeterEventSummary {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("BillingMeterEventSummary").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct BillingMeterEventSummaryBuilder {

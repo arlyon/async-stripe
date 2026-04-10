@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct RefundDestinationDetailsCard {
@@ -11,6 +12,12 @@ pub struct RefundDestinationDetailsCard {
     /// The type of refund. This can be `refund`, `reversal`, or `pending`.
     #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "type"))]
     pub type_: RefundDestinationDetailsCardType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RefundDestinationDetailsCard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RefundDestinationDetailsCard").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct RefundDestinationDetailsCardBuilder {
@@ -171,9 +178,16 @@ impl std::fmt::Display for RefundDestinationDetailsCardType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for RefundDestinationDetailsCardType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RefundDestinationDetailsCardType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(RefundDestinationDetailsCardType)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

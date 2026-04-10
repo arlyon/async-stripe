@@ -2,7 +2,9 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ListBillingMeterBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<String>,
@@ -15,15 +17,29 @@ struct ListBillingMeterBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     status: Option<stripe_billing::BillingMeterStatus>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListBillingMeterBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListBillingMeterBuilder").finish_non_exhaustive()
+    }
+}
 impl ListBillingMeterBuilder {
     fn new() -> Self {
         Self { ending_before: None, expand: None, limit: None, starting_after: None, status: None }
     }
 }
 /// Retrieve a list of billing meters.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListBillingMeter {
     inner: ListBillingMeterBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListBillingMeter {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListBillingMeter").finish_non_exhaustive()
+    }
 }
 impl ListBillingMeter {
     /// Construct a new `ListBillingMeter`.
@@ -97,10 +113,18 @@ impl StripeRequest for ListBillingMeter {
         RequestBuilder::new(StripeMethod::Get, "/billing/meters").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RetrieveBillingMeterBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveBillingMeterBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveBillingMeterBuilder").finish_non_exhaustive()
+    }
 }
 impl RetrieveBillingMeterBuilder {
     fn new() -> Self {
@@ -108,10 +132,18 @@ impl RetrieveBillingMeterBuilder {
     }
 }
 /// Retrieves a billing meter given an ID.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RetrieveBillingMeter {
     inner: RetrieveBillingMeterBuilder,
     id: stripe_billing::BillingMeterId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveBillingMeter {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveBillingMeter").finish_non_exhaustive()
+    }
 }
 impl RetrieveBillingMeter {
     /// Construct a new `RetrieveBillingMeter`.
@@ -150,7 +182,9 @@ impl StripeRequest for RetrieveBillingMeter {
         RequestBuilder::new(StripeMethod::Get, format!("/billing/meters/{id}")).query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct CreateBillingMeterBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     customer_mapping: Option<CreateBillingMeterCustomerMapping>,
@@ -163,6 +197,12 @@ struct CreateBillingMeterBuilder {
     expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     value_settings: Option<CreateBillingMeterValueSettings>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateBillingMeterBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateBillingMeterBuilder").finish_non_exhaustive()
+    }
 }
 impl CreateBillingMeterBuilder {
     fn new(
@@ -182,13 +222,21 @@ impl CreateBillingMeterBuilder {
     }
 }
 /// Fields that specify how to map a meter event to a customer.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateBillingMeterCustomerMapping {
     /// The key in the meter event payload to use for mapping the event to a customer.
     pub event_payload_key: String,
     /// The method for mapping a meter event to a customer. Must be `by_id`.
     #[serde(rename = "type")]
     pub type_: CreateBillingMeterCustomerMappingType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateBillingMeterCustomerMapping {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateBillingMeterCustomerMapping").finish_non_exhaustive()
+    }
 }
 impl CreateBillingMeterCustomerMapping {
     pub fn new(
@@ -239,9 +287,16 @@ impl std::fmt::Display for CreateBillingMeterCustomerMappingType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateBillingMeterCustomerMappingType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateBillingMeterCustomerMappingType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateBillingMeterCustomerMappingType)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateBillingMeterCustomerMappingType {
@@ -261,11 +316,19 @@ impl<'de> serde::Deserialize<'de> for CreateBillingMeterCustomerMappingType {
     }
 }
 /// The default settings to aggregate a meter's events with.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateBillingMeterDefaultAggregation {
     /// Specifies how events are aggregated.
     /// Allowed values are `count` to count the number of events, `sum` to sum each event's value and `last` to take the last event's value in the window.
     pub formula: CreateBillingMeterDefaultAggregationFormula,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateBillingMeterDefaultAggregation {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateBillingMeterDefaultAggregation").finish_non_exhaustive()
+    }
 }
 impl CreateBillingMeterDefaultAggregation {
     pub fn new(formula: impl Into<CreateBillingMeterDefaultAggregationFormula>) -> Self {
@@ -320,9 +383,17 @@ impl std::fmt::Display for CreateBillingMeterDefaultAggregationFormula {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateBillingMeterDefaultAggregationFormula {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateBillingMeterDefaultAggregationFormula {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateBillingMeterDefaultAggregationFormula))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateBillingMeterDefaultAggregationFormula {
@@ -342,11 +413,19 @@ impl<'de> serde::Deserialize<'de> for CreateBillingMeterDefaultAggregationFormul
     }
 }
 /// Fields that specify how to calculate a meter event's value.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateBillingMeterValueSettings {
     /// The key in the usage event payload to use as the value for this meter.
     /// For example, if the event payload contains usage on a `bytes_used` field, then set the event_payload_key to "bytes_used".
     pub event_payload_key: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateBillingMeterValueSettings {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateBillingMeterValueSettings").finish_non_exhaustive()
+    }
 }
 impl CreateBillingMeterValueSettings {
     pub fn new(event_payload_key: impl Into<String>) -> Self {
@@ -354,9 +433,17 @@ impl CreateBillingMeterValueSettings {
     }
 }
 /// Creates a billing meter.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateBillingMeter {
     inner: CreateBillingMeterBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateBillingMeter {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateBillingMeter").finish_non_exhaustive()
+    }
 }
 impl CreateBillingMeter {
     /// Construct a new `CreateBillingMeter`.
@@ -428,12 +515,20 @@ impl StripeRequest for CreateBillingMeter {
         RequestBuilder::new(StripeMethod::Post, "/billing/meters").form(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct UpdateBillingMeterBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     display_name: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateBillingMeterBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateBillingMeterBuilder").finish_non_exhaustive()
+    }
 }
 impl UpdateBillingMeterBuilder {
     fn new() -> Self {
@@ -441,10 +536,18 @@ impl UpdateBillingMeterBuilder {
     }
 }
 /// Updates a billing meter.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateBillingMeter {
     inner: UpdateBillingMeterBuilder,
     id: stripe_billing::BillingMeterId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateBillingMeter {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateBillingMeter").finish_non_exhaustive()
+    }
 }
 impl UpdateBillingMeter {
     /// Construct a new `UpdateBillingMeter`.
@@ -488,10 +591,18 @@ impl StripeRequest for UpdateBillingMeter {
         RequestBuilder::new(StripeMethod::Post, format!("/billing/meters/{id}")).form(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct DeactivateBillingMeterBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for DeactivateBillingMeterBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("DeactivateBillingMeterBuilder").finish_non_exhaustive()
+    }
 }
 impl DeactivateBillingMeterBuilder {
     fn new() -> Self {
@@ -500,10 +611,18 @@ impl DeactivateBillingMeterBuilder {
 }
 /// When a meter is deactivated, no more meter events will be accepted for this meter.
 /// You can’t attach a deactivated meter to a price.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct DeactivateBillingMeter {
     inner: DeactivateBillingMeterBuilder,
     id: stripe_billing::BillingMeterId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for DeactivateBillingMeter {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("DeactivateBillingMeter").finish_non_exhaustive()
+    }
 }
 impl DeactivateBillingMeter {
     /// Construct a new `DeactivateBillingMeter`.
@@ -543,10 +662,18 @@ impl StripeRequest for DeactivateBillingMeter {
             .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ReactivateBillingMeterBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ReactivateBillingMeterBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ReactivateBillingMeterBuilder").finish_non_exhaustive()
+    }
 }
 impl ReactivateBillingMeterBuilder {
     fn new() -> Self {
@@ -554,10 +681,18 @@ impl ReactivateBillingMeterBuilder {
     }
 }
 /// When a meter is reactivated, events for this meter can be accepted and you can attach the meter to a price.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ReactivateBillingMeter {
     inner: ReactivateBillingMeterBuilder,
     id: stripe_billing::BillingMeterId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ReactivateBillingMeter {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ReactivateBillingMeter").finish_non_exhaustive()
+    }
 }
 impl ReactivateBillingMeter {
     /// Construct a new `ReactivateBillingMeter`.

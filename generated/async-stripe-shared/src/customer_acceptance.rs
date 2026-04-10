@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct CustomerAcceptance {
@@ -9,6 +10,12 @@ pub struct CustomerAcceptance {
     /// The mandate includes the type of customer acceptance information, such as: `online` or `offline`.
     #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "type"))]
     pub type_: CustomerAcceptanceType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CustomerAcceptance {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CustomerAcceptance").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct CustomerAcceptanceBuilder {
@@ -159,9 +166,16 @@ impl std::fmt::Display for CustomerAcceptanceType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CustomerAcceptanceType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CustomerAcceptanceType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CustomerAcceptanceType)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

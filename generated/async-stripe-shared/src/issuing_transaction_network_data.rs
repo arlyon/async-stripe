@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct IssuingTransactionNetworkData {
@@ -13,6 +14,12 @@ pub struct IssuingTransactionNetworkData {
     pub processing_date: Option<String>,
     /// Unique identifier for the authorization assigned by the card network used to match subsequent messages, disputes, and transactions.
     pub transaction_id: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for IssuingTransactionNetworkData {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("IssuingTransactionNetworkData").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct IssuingTransactionNetworkDataBuilder {

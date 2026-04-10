@@ -3,9 +3,17 @@ use stripe_client_core::{
 };
 
 /// Deletes a `Configuration` object.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct DeleteTerminalConfiguration {
     configuration: stripe_terminal::TerminalConfigurationId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for DeleteTerminalConfiguration {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("DeleteTerminalConfiguration").finish_non_exhaustive()
+    }
 }
 impl DeleteTerminalConfiguration {
     /// Construct a new `DeleteTerminalConfiguration`.
@@ -42,7 +50,9 @@ impl StripeRequest for DeleteTerminalConfiguration {
         )
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ListTerminalConfigurationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<String>,
@@ -54,6 +64,12 @@ struct ListTerminalConfigurationBuilder {
     limit: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
     starting_after: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListTerminalConfigurationBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListTerminalConfigurationBuilder").finish_non_exhaustive()
+    }
 }
 impl ListTerminalConfigurationBuilder {
     fn new() -> Self {
@@ -67,9 +83,17 @@ impl ListTerminalConfigurationBuilder {
     }
 }
 /// Returns a list of `Configuration` objects.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListTerminalConfiguration {
     inner: ListTerminalConfigurationBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListTerminalConfiguration {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListTerminalConfiguration").finish_non_exhaustive()
+    }
 }
 impl ListTerminalConfiguration {
     /// Construct a new `ListTerminalConfiguration`.
@@ -144,10 +168,18 @@ impl StripeRequest for ListTerminalConfiguration {
         RequestBuilder::new(StripeMethod::Get, "/terminal/configurations").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RetrieveTerminalConfigurationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveTerminalConfigurationBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveTerminalConfigurationBuilder").finish_non_exhaustive()
+    }
 }
 impl RetrieveTerminalConfigurationBuilder {
     fn new() -> Self {
@@ -155,10 +187,18 @@ impl RetrieveTerminalConfigurationBuilder {
     }
 }
 /// Retrieves a `Configuration` object.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RetrieveTerminalConfiguration {
     inner: RetrieveTerminalConfigurationBuilder,
     configuration: stripe_terminal::TerminalConfigurationId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveTerminalConfiguration {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveTerminalConfiguration").finish_non_exhaustive()
+    }
 }
 impl RetrieveTerminalConfiguration {
     /// Construct a new `RetrieveTerminalConfiguration`.
@@ -201,7 +241,8 @@ impl StripeRequest for RetrieveTerminalConfiguration {
             .query(&self.inner)
     }
 }
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(untagged))]
@@ -283,7 +324,15 @@ const _: () = {
     }
 };
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveTerminalConfigurationReturned {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveTerminalConfigurationReturned").finish_non_exhaustive()
+    }
+}
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct CreateTerminalConfigurationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     bbpos_wisepad3: Option<CreateTerminalConfigurationBbposWisepad3>,
@@ -310,6 +359,12 @@ struct CreateTerminalConfigurationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     wifi: Option<CreateTerminalConfigurationWifi>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTerminalConfigurationBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTerminalConfigurationBuilder").finish_non_exhaustive()
+    }
+}
 impl CreateTerminalConfigurationBuilder {
     fn new() -> Self {
         Self {
@@ -329,11 +384,19 @@ impl CreateTerminalConfigurationBuilder {
     }
 }
 /// An object containing device type specific settings for BBPOS WisePad 3 readers.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTerminalConfigurationBbposWisepad3 {
     /// A File ID representing an image you want to display on the reader.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub splashscreen: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTerminalConfigurationBbposWisepad3 {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTerminalConfigurationBbposWisepad3").finish_non_exhaustive()
+    }
 }
 impl CreateTerminalConfigurationBbposWisepad3 {
     pub fn new() -> Self {
@@ -346,11 +409,19 @@ impl Default for CreateTerminalConfigurationBbposWisepad3 {
     }
 }
 /// An object containing device type specific settings for Stripe S700 readers.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTerminalConfigurationStripeS700 {
     /// A File ID representing an image you want to display on the reader.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub splashscreen: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTerminalConfigurationStripeS700 {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTerminalConfigurationStripeS700").finish_non_exhaustive()
+    }
 }
 impl CreateTerminalConfigurationStripeS700 {
     pub fn new() -> Self {
@@ -363,11 +434,19 @@ impl Default for CreateTerminalConfigurationStripeS700 {
     }
 }
 /// An object containing device type specific settings for Stripe S710 readers.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTerminalConfigurationStripeS710 {
     /// A File ID representing an image you want to display on the reader.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub splashscreen: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTerminalConfigurationStripeS710 {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTerminalConfigurationStripeS710").finish_non_exhaustive()
+    }
 }
 impl CreateTerminalConfigurationStripeS710 {
     pub fn new() -> Self {
@@ -380,11 +459,19 @@ impl Default for CreateTerminalConfigurationStripeS710 {
     }
 }
 /// An object containing device type specific settings for Verifone P400 readers.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTerminalConfigurationVerifoneP400 {
     /// A File ID representing an image you want to display on the reader.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub splashscreen: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTerminalConfigurationVerifoneP400 {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTerminalConfigurationVerifoneP400").finish_non_exhaustive()
+    }
 }
 impl CreateTerminalConfigurationVerifoneP400 {
     pub fn new() -> Self {
@@ -397,7 +484,9 @@ impl Default for CreateTerminalConfigurationVerifoneP400 {
     }
 }
 /// Configurations for connecting to a WiFi network.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTerminalConfigurationWifi {
     /// Credentials for a WPA-Enterprise WiFi network using the EAP-PEAP authentication method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -412,6 +501,12 @@ pub struct CreateTerminalConfigurationWifi {
     /// Fill out the hash with the corresponding name to provide the set of credentials for this security type.
     #[serde(rename = "type")]
     pub type_: CreateTerminalConfigurationWifiType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTerminalConfigurationWifi {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTerminalConfigurationWifi").finish_non_exhaustive()
+    }
 }
 impl CreateTerminalConfigurationWifi {
     pub fn new(type_: impl Into<CreateTerminalConfigurationWifiType>) -> Self {
@@ -471,9 +566,16 @@ impl std::fmt::Display for CreateTerminalConfigurationWifiType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTerminalConfigurationWifiType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTerminalConfigurationWifiType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTerminalConfigurationWifiType)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTerminalConfigurationWifiType {
@@ -493,9 +595,17 @@ impl<'de> serde::Deserialize<'de> for CreateTerminalConfigurationWifiType {
     }
 }
 /// Creates a new `Configuration` object.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTerminalConfiguration {
     inner: CreateTerminalConfigurationBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTerminalConfiguration {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTerminalConfiguration").finish_non_exhaustive()
+    }
 }
 impl CreateTerminalConfiguration {
     /// Construct a new `CreateTerminalConfiguration`.
@@ -605,7 +715,9 @@ impl StripeRequest for CreateTerminalConfiguration {
         RequestBuilder::new(StripeMethod::Post, "/terminal/configurations").form(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct UpdateTerminalConfigurationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     bbpos_wisepad3: Option<UpdateTerminalConfigurationBbposWisepad3>,
@@ -632,6 +744,12 @@ struct UpdateTerminalConfigurationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     wifi: Option<UpdateTerminalConfigurationWifi>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateTerminalConfigurationBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateTerminalConfigurationBuilder").finish_non_exhaustive()
+    }
+}
 impl UpdateTerminalConfigurationBuilder {
     fn new() -> Self {
         Self {
@@ -651,11 +769,19 @@ impl UpdateTerminalConfigurationBuilder {
     }
 }
 /// An object containing device type specific settings for BBPOS WisePad 3 readers.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateTerminalConfigurationBbposWisepad3 {
     /// A File ID representing an image you want to display on the reader.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub splashscreen: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateTerminalConfigurationBbposWisepad3 {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateTerminalConfigurationBbposWisepad3").finish_non_exhaustive()
+    }
 }
 impl UpdateTerminalConfigurationBbposWisepad3 {
     pub fn new() -> Self {
@@ -668,11 +794,19 @@ impl Default for UpdateTerminalConfigurationBbposWisepad3 {
     }
 }
 /// An object containing device type specific settings for Stripe S700 readers.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateTerminalConfigurationStripeS700 {
     /// A File ID representing an image you want to display on the reader.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub splashscreen: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateTerminalConfigurationStripeS700 {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateTerminalConfigurationStripeS700").finish_non_exhaustive()
+    }
 }
 impl UpdateTerminalConfigurationStripeS700 {
     pub fn new() -> Self {
@@ -685,11 +819,19 @@ impl Default for UpdateTerminalConfigurationStripeS700 {
     }
 }
 /// An object containing device type specific settings for Stripe S710 readers.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateTerminalConfigurationStripeS710 {
     /// A File ID representing an image you want to display on the reader.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub splashscreen: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateTerminalConfigurationStripeS710 {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateTerminalConfigurationStripeS710").finish_non_exhaustive()
+    }
 }
 impl UpdateTerminalConfigurationStripeS710 {
     pub fn new() -> Self {
@@ -702,11 +844,19 @@ impl Default for UpdateTerminalConfigurationStripeS710 {
     }
 }
 /// An object containing device type specific settings for Verifone P400 readers.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateTerminalConfigurationVerifoneP400 {
     /// A File ID representing an image you want to display on the reader.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub splashscreen: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateTerminalConfigurationVerifoneP400 {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateTerminalConfigurationVerifoneP400").finish_non_exhaustive()
+    }
 }
 impl UpdateTerminalConfigurationVerifoneP400 {
     pub fn new() -> Self {
@@ -719,7 +869,9 @@ impl Default for UpdateTerminalConfigurationVerifoneP400 {
     }
 }
 /// Configurations for connecting to a WiFi network.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateTerminalConfigurationWifi {
     /// Credentials for a WPA-Enterprise WiFi network using the EAP-PEAP authentication method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -734,6 +886,12 @@ pub struct UpdateTerminalConfigurationWifi {
     /// Fill out the hash with the corresponding name to provide the set of credentials for this security type.
     #[serde(rename = "type")]
     pub type_: UpdateTerminalConfigurationWifiType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateTerminalConfigurationWifi {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateTerminalConfigurationWifi").finish_non_exhaustive()
+    }
 }
 impl UpdateTerminalConfigurationWifi {
     pub fn new(type_: impl Into<UpdateTerminalConfigurationWifiType>) -> Self {
@@ -793,9 +951,16 @@ impl std::fmt::Display for UpdateTerminalConfigurationWifiType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdateTerminalConfigurationWifiType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateTerminalConfigurationWifiType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdateTerminalConfigurationWifiType)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdateTerminalConfigurationWifiType {
@@ -815,10 +980,18 @@ impl<'de> serde::Deserialize<'de> for UpdateTerminalConfigurationWifiType {
     }
 }
 /// Updates a new `Configuration` object.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateTerminalConfiguration {
     inner: UpdateTerminalConfigurationBuilder,
     configuration: stripe_terminal::TerminalConfigurationId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateTerminalConfiguration {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateTerminalConfiguration").finish_non_exhaustive()
+    }
 }
 impl UpdateTerminalConfiguration {
     /// Construct a new `UpdateTerminalConfiguration`.
@@ -928,7 +1101,8 @@ impl StripeRequest for UpdateTerminalConfiguration {
             .form(&self.inner)
     }
 }
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(untagged))]
@@ -1010,11 +1184,26 @@ const _: () = {
     }
 };
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateTerminalConfigurationReturned {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateTerminalConfigurationReturned").finish_non_exhaustive()
+    }
+}
+
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct BbposWisePose {
     /// A File ID representing an image to display on the reader
     #[serde(skip_serializing_if = "Option::is_none")]
     pub splashscreen: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for BbposWisePose {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("BbposWisePose").finish_non_exhaustive()
+    }
 }
 impl BbposWisePose {
     pub fn new() -> Self {
@@ -1026,28 +1215,46 @@ impl Default for BbposWisePose {
         Self::new()
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct Cellular {
     /// Determines whether to allow the reader to connect to a cellular network. Defaults to false.
     pub enabled: bool,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for Cellular {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("Cellular").finish_non_exhaustive()
+    }
 }
 impl Cellular {
     pub fn new(enabled: impl Into<bool>) -> Self {
         Self { enabled: enabled.into() }
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct Offline {
     /// Determines whether to allow transactions to be collected while reader is offline.
     /// Defaults to false.
     pub enabled: bool,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for Offline {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("Offline").finish_non_exhaustive()
+    }
 }
 impl Offline {
     pub fn new(enabled: impl Into<bool>) -> Self {
         Self { enabled: enabled.into() }
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RebootWindow {
     /// Integer between 0 to 23 that represents the end hour of the reboot time window.
     /// The value must be different than the start_hour.
@@ -1055,12 +1262,20 @@ pub struct RebootWindow {
     /// Integer between 0 to 23 that represents the start hour of the reboot time window.
     pub start_hour: i64,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RebootWindow {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RebootWindow").finish_non_exhaustive()
+    }
+}
 impl RebootWindow {
     pub fn new(end_hour: impl Into<i64>, start_hour: impl Into<i64>) -> Self {
         Self { end_hour: end_hour.into(), start_hour: start_hour.into() }
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CurrencySpecificConfig {
     /// Fixed amounts displayed when collecting a tip
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1072,6 +1287,12 @@ pub struct CurrencySpecificConfig {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub smart_tip_threshold: Option<i64>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CurrencySpecificConfig {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CurrencySpecificConfig").finish_non_exhaustive()
+    }
+}
 impl CurrencySpecificConfig {
     pub fn new() -> Self {
         Self { fixed_amounts: None, percentages: None, smart_tip_threshold: None }
@@ -1082,7 +1303,9 @@ impl Default for CurrencySpecificConfig {
         Self::new()
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct EnterprisePeapConfig {
     /// A File ID representing a PEM file containing the server certificate
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1093,6 +1316,12 @@ pub struct EnterprisePeapConfig {
     pub ssid: String,
     /// Username for connecting to the WiFi network
     pub username: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for EnterprisePeapConfig {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("EnterprisePeapConfig").finish_non_exhaustive()
+    }
 }
 impl EnterprisePeapConfig {
     pub fn new(
@@ -1108,7 +1337,9 @@ impl EnterprisePeapConfig {
         }
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct EnterpriseTlsConfig {
     /// A File ID representing a PEM file containing the server certificate
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1122,6 +1353,12 @@ pub struct EnterpriseTlsConfig {
     pub private_key_file_password: Option<String>,
     /// Name of the WiFi network
     pub ssid: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for EnterpriseTlsConfig {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("EnterpriseTlsConfig").finish_non_exhaustive()
+    }
 }
 impl EnterpriseTlsConfig {
     pub fn new(
@@ -1138,19 +1375,29 @@ impl EnterpriseTlsConfig {
         }
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct PersonalPskConfig {
     /// Password for connecting to the WiFi network
     pub password: String,
     /// Name of the WiFi network
     pub ssid: String,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PersonalPskConfig {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PersonalPskConfig").finish_non_exhaustive()
+    }
+}
 impl PersonalPskConfig {
     pub fn new(password: impl Into<String>, ssid: impl Into<String>) -> Self {
         Self { password: password.into(), ssid: ssid.into() }
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct Tipping {
     /// Tipping configuration for AED
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1215,6 +1462,12 @@ pub struct Tipping {
     /// Tipping configuration for USD
     #[serde(skip_serializing_if = "Option::is_none")]
     pub usd: Option<CurrencySpecificConfig>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for Tipping {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("Tipping").finish_non_exhaustive()
+    }
 }
 impl Tipping {
     pub fn new() -> Self {

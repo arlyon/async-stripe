@@ -2,7 +2,9 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ListTreasuryInboundTransferBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<String>,
@@ -15,6 +17,12 @@ struct ListTreasuryInboundTransferBuilder {
     starting_after: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     status: Option<stripe_treasury::TreasuryInboundTransferStatus>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListTreasuryInboundTransferBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListTreasuryInboundTransferBuilder").finish_non_exhaustive()
+    }
 }
 impl ListTreasuryInboundTransferBuilder {
     fn new(financial_account: impl Into<String>) -> Self {
@@ -29,9 +37,17 @@ impl ListTreasuryInboundTransferBuilder {
     }
 }
 /// Returns a list of InboundTransfers sent from the specified FinancialAccount.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListTreasuryInboundTransfer {
     inner: ListTreasuryInboundTransferBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListTreasuryInboundTransfer {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListTreasuryInboundTransfer").finish_non_exhaustive()
+    }
 }
 impl ListTreasuryInboundTransfer {
     /// Construct a new `ListTreasuryInboundTransfer`.
@@ -105,10 +121,18 @@ impl StripeRequest for ListTreasuryInboundTransfer {
         RequestBuilder::new(StripeMethod::Get, "/treasury/inbound_transfers").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RetrieveTreasuryInboundTransferBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveTreasuryInboundTransferBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveTreasuryInboundTransferBuilder").finish_non_exhaustive()
+    }
 }
 impl RetrieveTreasuryInboundTransferBuilder {
     fn new() -> Self {
@@ -116,10 +140,18 @@ impl RetrieveTreasuryInboundTransferBuilder {
     }
 }
 /// Retrieves the details of an existing InboundTransfer.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RetrieveTreasuryInboundTransfer {
     inner: RetrieveTreasuryInboundTransferBuilder,
     id: stripe_treasury::TreasuryInboundTransferId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveTreasuryInboundTransfer {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveTreasuryInboundTransfer").finish_non_exhaustive()
+    }
 }
 impl RetrieveTreasuryInboundTransfer {
     /// Construct a new `RetrieveTreasuryInboundTransfer`.
@@ -159,12 +191,20 @@ impl StripeRequest for RetrieveTreasuryInboundTransfer {
             .query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct FailTreasuryInboundTransferBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     failure_details: Option<FailTreasuryInboundTransferFailureDetails>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for FailTreasuryInboundTransferBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("FailTreasuryInboundTransferBuilder").finish_non_exhaustive()
+    }
 }
 impl FailTreasuryInboundTransferBuilder {
     fn new() -> Self {
@@ -172,11 +212,19 @@ impl FailTreasuryInboundTransferBuilder {
     }
 }
 /// Details about a failed InboundTransfer.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct FailTreasuryInboundTransferFailureDetails {
     /// Reason for the failure.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub code: Option<FailTreasuryInboundTransferFailureDetailsCode>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for FailTreasuryInboundTransferFailureDetails {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("FailTreasuryInboundTransferFailureDetails").finish_non_exhaustive()
+    }
 }
 impl FailTreasuryInboundTransferFailureDetails {
     pub fn new() -> Self {
@@ -265,9 +313,17 @@ impl std::fmt::Display for FailTreasuryInboundTransferFailureDetailsCode {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for FailTreasuryInboundTransferFailureDetailsCode {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for FailTreasuryInboundTransferFailureDetailsCode {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(FailTreasuryInboundTransferFailureDetailsCode))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for FailTreasuryInboundTransferFailureDetailsCode {
@@ -288,10 +344,18 @@ impl<'de> serde::Deserialize<'de> for FailTreasuryInboundTransferFailureDetailsC
 }
 /// Transitions a test mode created InboundTransfer to the `failed` status.
 /// The InboundTransfer must already be in the `processing` state.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct FailTreasuryInboundTransfer {
     inner: FailTreasuryInboundTransferBuilder,
     id: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for FailTreasuryInboundTransfer {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("FailTreasuryInboundTransfer").finish_non_exhaustive()
+    }
 }
 impl FailTreasuryInboundTransfer {
     /// Construct a new `FailTreasuryInboundTransfer`.
@@ -342,10 +406,19 @@ impl StripeRequest for FailTreasuryInboundTransfer {
         .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ReturnInboundTransferTreasuryInboundTransferBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ReturnInboundTransferTreasuryInboundTransferBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ReturnInboundTransferTreasuryInboundTransferBuilder")
+            .finish_non_exhaustive()
+    }
 }
 impl ReturnInboundTransferTreasuryInboundTransferBuilder {
     fn new() -> Self {
@@ -354,10 +427,18 @@ impl ReturnInboundTransferTreasuryInboundTransferBuilder {
 }
 /// Marks the test mode InboundTransfer object as returned and links the InboundTransfer to a ReceivedDebit.
 /// The InboundTransfer must already be in the `succeeded` state.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ReturnInboundTransferTreasuryInboundTransfer {
     inner: ReturnInboundTransferTreasuryInboundTransferBuilder,
     id: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ReturnInboundTransferTreasuryInboundTransfer {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ReturnInboundTransferTreasuryInboundTransfer").finish_non_exhaustive()
+    }
 }
 impl ReturnInboundTransferTreasuryInboundTransfer {
     /// Construct a new `ReturnInboundTransferTreasuryInboundTransfer`.
@@ -400,10 +481,18 @@ impl StripeRequest for ReturnInboundTransferTreasuryInboundTransfer {
         .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct SucceedTreasuryInboundTransferBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for SucceedTreasuryInboundTransferBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("SucceedTreasuryInboundTransferBuilder").finish_non_exhaustive()
+    }
 }
 impl SucceedTreasuryInboundTransferBuilder {
     fn new() -> Self {
@@ -412,10 +501,18 @@ impl SucceedTreasuryInboundTransferBuilder {
 }
 /// Transitions a test mode created InboundTransfer to the `succeeded` status.
 /// The InboundTransfer must already be in the `processing` state.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct SucceedTreasuryInboundTransfer {
     inner: SucceedTreasuryInboundTransferBuilder,
     id: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for SucceedTreasuryInboundTransfer {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("SucceedTreasuryInboundTransfer").finish_non_exhaustive()
+    }
 }
 impl SucceedTreasuryInboundTransfer {
     /// Construct a new `SucceedTreasuryInboundTransfer`.
@@ -458,7 +555,9 @@ impl StripeRequest for SucceedTreasuryInboundTransfer {
         .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct CreateTreasuryInboundTransferBuilder {
     amount: i64,
     currency: stripe_types::Currency,
@@ -472,6 +571,12 @@ struct CreateTreasuryInboundTransferBuilder {
     origin_payment_method: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     statement_descriptor: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTreasuryInboundTransferBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTreasuryInboundTransferBuilder").finish_non_exhaustive()
+    }
 }
 impl CreateTreasuryInboundTransferBuilder {
     fn new(
@@ -493,9 +598,17 @@ impl CreateTreasuryInboundTransferBuilder {
     }
 }
 /// Creates an InboundTransfer.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTreasuryInboundTransfer {
     inner: CreateTreasuryInboundTransferBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTreasuryInboundTransfer {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTreasuryInboundTransfer").finish_non_exhaustive()
+    }
 }
 impl CreateTreasuryInboundTransfer {
     /// Construct a new `CreateTreasuryInboundTransfer`.
@@ -568,10 +681,18 @@ impl StripeRequest for CreateTreasuryInboundTransfer {
         RequestBuilder::new(StripeMethod::Post, "/treasury/inbound_transfers").form(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct CancelTreasuryInboundTransferBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CancelTreasuryInboundTransferBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CancelTreasuryInboundTransferBuilder").finish_non_exhaustive()
+    }
 }
 impl CancelTreasuryInboundTransferBuilder {
     fn new() -> Self {
@@ -579,10 +700,18 @@ impl CancelTreasuryInboundTransferBuilder {
     }
 }
 /// Cancels an InboundTransfer.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CancelTreasuryInboundTransfer {
     inner: CancelTreasuryInboundTransferBuilder,
     inbound_transfer: stripe_treasury::TreasuryInboundTransferId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CancelTreasuryInboundTransfer {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CancelTreasuryInboundTransfer").finish_non_exhaustive()
+    }
 }
 impl CancelTreasuryInboundTransfer {
     /// Construct a new `CancelTreasuryInboundTransfer`.

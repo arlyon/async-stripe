@@ -2,7 +2,9 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ListShippingRateBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     active: Option<bool>,
@@ -19,6 +21,12 @@ struct ListShippingRateBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     starting_after: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListShippingRateBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListShippingRateBuilder").finish_non_exhaustive()
+    }
+}
 impl ListShippingRateBuilder {
     fn new() -> Self {
         Self {
@@ -33,9 +41,17 @@ impl ListShippingRateBuilder {
     }
 }
 /// Returns a list of your shipping rates.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListShippingRate {
     inner: ListShippingRateBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListShippingRate {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListShippingRate").finish_non_exhaustive()
+    }
 }
 impl ListShippingRate {
     /// Construct a new `ListShippingRate`.
@@ -120,10 +136,18 @@ impl StripeRequest for ListShippingRate {
         RequestBuilder::new(StripeMethod::Get, "/shipping_rates").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RetrieveShippingRateBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveShippingRateBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveShippingRateBuilder").finish_non_exhaustive()
+    }
 }
 impl RetrieveShippingRateBuilder {
     fn new() -> Self {
@@ -131,10 +155,18 @@ impl RetrieveShippingRateBuilder {
     }
 }
 /// Returns the shipping rate object with the given ID.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RetrieveShippingRate {
     inner: RetrieveShippingRateBuilder,
     shipping_rate_token: stripe_shared::ShippingRateId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveShippingRate {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveShippingRate").finish_non_exhaustive()
+    }
 }
 impl RetrieveShippingRate {
     /// Construct a new `RetrieveShippingRate`.
@@ -177,7 +209,9 @@ impl StripeRequest for RetrieveShippingRate {
             .query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct CreateShippingRateBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     delivery_estimate: Option<CreateShippingRateDeliveryEstimate>,
@@ -196,6 +230,12 @@ struct CreateShippingRateBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     type_: Option<stripe_shared::ShippingRateType>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateShippingRateBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateShippingRateBuilder").finish_non_exhaustive()
+    }
+}
 impl CreateShippingRateBuilder {
     fn new(display_name: impl Into<String>) -> Self {
         Self {
@@ -212,7 +252,9 @@ impl CreateShippingRateBuilder {
 }
 /// The estimated range for how long shipping will take, meant to be displayable to the customer.
 /// This will appear on CheckoutSessions.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateShippingRateDeliveryEstimate {
     /// The upper bound of the estimated range. If empty, represents no upper bound i.e., infinite.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -220,6 +262,12 @@ pub struct CreateShippingRateDeliveryEstimate {
     /// The lower bound of the estimated range. If empty, represents no lower bound.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub minimum: Option<CreateShippingRateDeliveryEstimateMinimum>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateShippingRateDeliveryEstimate {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateShippingRateDeliveryEstimate").finish_non_exhaustive()
+    }
 }
 impl CreateShippingRateDeliveryEstimate {
     pub fn new() -> Self {
@@ -232,12 +280,20 @@ impl Default for CreateShippingRateDeliveryEstimate {
     }
 }
 /// The upper bound of the estimated range. If empty, represents no upper bound i.e., infinite.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateShippingRateDeliveryEstimateMaximum {
     /// A unit of time.
     pub unit: CreateShippingRateDeliveryEstimateMaximumUnit,
     /// Must be greater than 0.
     pub value: i64,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateShippingRateDeliveryEstimateMaximum {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateShippingRateDeliveryEstimateMaximum").finish_non_exhaustive()
+    }
 }
 impl CreateShippingRateDeliveryEstimateMaximum {
     pub fn new(
@@ -300,9 +356,17 @@ impl std::fmt::Display for CreateShippingRateDeliveryEstimateMaximumUnit {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateShippingRateDeliveryEstimateMaximumUnit {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateShippingRateDeliveryEstimateMaximumUnit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateShippingRateDeliveryEstimateMaximumUnit))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateShippingRateDeliveryEstimateMaximumUnit {
@@ -322,12 +386,20 @@ impl<'de> serde::Deserialize<'de> for CreateShippingRateDeliveryEstimateMaximumU
     }
 }
 /// The lower bound of the estimated range. If empty, represents no lower bound.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateShippingRateDeliveryEstimateMinimum {
     /// A unit of time.
     pub unit: CreateShippingRateDeliveryEstimateMinimumUnit,
     /// Must be greater than 0.
     pub value: i64,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateShippingRateDeliveryEstimateMinimum {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateShippingRateDeliveryEstimateMinimum").finish_non_exhaustive()
+    }
 }
 impl CreateShippingRateDeliveryEstimateMinimum {
     pub fn new(
@@ -390,9 +462,17 @@ impl std::fmt::Display for CreateShippingRateDeliveryEstimateMinimumUnit {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateShippingRateDeliveryEstimateMinimumUnit {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateShippingRateDeliveryEstimateMinimumUnit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateShippingRateDeliveryEstimateMinimumUnit))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateShippingRateDeliveryEstimateMinimumUnit {
@@ -412,7 +492,9 @@ impl<'de> serde::Deserialize<'de> for CreateShippingRateDeliveryEstimateMinimumU
     }
 }
 /// Describes a fixed amount to charge for shipping. Must be present if type is `fixed_amount`.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateShippingRateFixedAmount {
     /// A non-negative integer in cents representing how much to charge.
     pub amount: i64,
@@ -429,6 +511,12 @@ pub struct CreateShippingRateFixedAmount {
         >,
     >,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateShippingRateFixedAmount {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateShippingRateFixedAmount").finish_non_exhaustive()
+    }
+}
 impl CreateShippingRateFixedAmount {
     pub fn new(amount: impl Into<i64>, currency: impl Into<stripe_types::Currency>) -> Self {
         Self { amount: amount.into(), currency: currency.into(), currency_options: None }
@@ -436,7 +524,9 @@ impl CreateShippingRateFixedAmount {
 }
 /// Shipping rates defined in each available currency option.
 /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateShippingRateFixedAmountCurrencyOptions {
     /// A non-negative integer in cents representing how much to charge.
     pub amount: i64,
@@ -445,15 +535,29 @@ pub struct CreateShippingRateFixedAmountCurrencyOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_behavior: Option<stripe_shared::ShippingRateTaxBehavior>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateShippingRateFixedAmountCurrencyOptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateShippingRateFixedAmountCurrencyOptions").finish_non_exhaustive()
+    }
+}
 impl CreateShippingRateFixedAmountCurrencyOptions {
     pub fn new(amount: impl Into<i64>) -> Self {
         Self { amount: amount.into(), tax_behavior: None }
     }
 }
 /// Creates a new shipping rate object.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateShippingRate {
     inner: CreateShippingRateBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateShippingRate {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateShippingRate").finish_non_exhaustive()
+    }
 }
 impl CreateShippingRate {
     /// Construct a new `CreateShippingRate`.
@@ -536,7 +640,9 @@ impl StripeRequest for CreateShippingRate {
         RequestBuilder::new(StripeMethod::Post, "/shipping_rates").form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct UpdateShippingRateBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     active: Option<bool>,
@@ -549,13 +655,21 @@ struct UpdateShippingRateBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     tax_behavior: Option<stripe_shared::ShippingRateTaxBehavior>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateShippingRateBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateShippingRateBuilder").finish_non_exhaustive()
+    }
+}
 impl UpdateShippingRateBuilder {
     fn new() -> Self {
         Self { active: None, expand: None, fixed_amount: None, metadata: None, tax_behavior: None }
     }
 }
 /// Describes a fixed amount to charge for shipping. Must be present if type is `fixed_amount`.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateShippingRateFixedAmount {
     /// Shipping rates defined in each available currency option.
     /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
@@ -566,6 +680,12 @@ pub struct UpdateShippingRateFixedAmount {
             UpdateShippingRateFixedAmountCurrencyOptions,
         >,
     >,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateShippingRateFixedAmount {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateShippingRateFixedAmount").finish_non_exhaustive()
+    }
 }
 impl UpdateShippingRateFixedAmount {
     pub fn new() -> Self {
@@ -579,7 +699,9 @@ impl Default for UpdateShippingRateFixedAmount {
 }
 /// Shipping rates defined in each available currency option.
 /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateShippingRateFixedAmountCurrencyOptions {
     /// A non-negative integer in cents representing how much to charge.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -588,6 +710,12 @@ pub struct UpdateShippingRateFixedAmountCurrencyOptions {
     /// One of `inclusive`, `exclusive`, or `unspecified`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_behavior: Option<stripe_shared::ShippingRateTaxBehavior>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateShippingRateFixedAmountCurrencyOptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateShippingRateFixedAmountCurrencyOptions").finish_non_exhaustive()
+    }
 }
 impl UpdateShippingRateFixedAmountCurrencyOptions {
     pub fn new() -> Self {
@@ -600,10 +728,18 @@ impl Default for UpdateShippingRateFixedAmountCurrencyOptions {
     }
 }
 /// Updates an existing shipping rate object.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateShippingRate {
     inner: UpdateShippingRateBuilder,
     shipping_rate_token: stripe_shared::ShippingRateId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateShippingRate {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateShippingRate").finish_non_exhaustive()
+    }
 }
 impl UpdateShippingRate {
     /// Construct a new `UpdateShippingRate`.

@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentIntentNextActionAlipayHandleRedirect {
@@ -10,6 +11,12 @@ pub struct PaymentIntentNextActionAlipayHandleRedirect {
     pub return_url: Option<String>,
     /// The URL you must redirect your customer to in order to authenticate the payment.
     pub url: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentIntentNextActionAlipayHandleRedirect {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PaymentIntentNextActionAlipayHandleRedirect").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct PaymentIntentNextActionAlipayHandleRedirectBuilder {

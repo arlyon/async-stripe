@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct BillingMeterResourceCustomerMappingSettings {
@@ -7,6 +8,12 @@ pub struct BillingMeterResourceCustomerMappingSettings {
     /// The method for mapping a meter event to a customer.
     #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "type"))]
     pub type_: BillingMeterResourceCustomerMappingSettingsType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for BillingMeterResourceCustomerMappingSettings {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("BillingMeterResourceCustomerMappingSettings").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct BillingMeterResourceCustomerMappingSettingsBuilder {
@@ -147,9 +154,17 @@ impl std::fmt::Display for BillingMeterResourceCustomerMappingSettingsType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for BillingMeterResourceCustomerMappingSettingsType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for BillingMeterResourceCustomerMappingSettingsType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(BillingMeterResourceCustomerMappingSettingsType))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

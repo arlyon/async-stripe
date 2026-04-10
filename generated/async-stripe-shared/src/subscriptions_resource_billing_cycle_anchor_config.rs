@@ -1,4 +1,5 @@
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct SubscriptionsResourceBillingCycleAnchorConfig {
@@ -12,6 +13,12 @@ pub struct SubscriptionsResourceBillingCycleAnchorConfig {
     pub month: Option<i64>,
     /// The second of the minute of the billing_cycle_anchor.
     pub second: Option<i64>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for SubscriptionsResourceBillingCycleAnchorConfig {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("SubscriptionsResourceBillingCycleAnchorConfig").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct SubscriptionsResourceBillingCycleAnchorConfigBuilder {

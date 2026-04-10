@@ -1,5 +1,6 @@
 /// Change to a FinancialAccount's balance
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TreasuryTransactionsResourceBalanceImpact {
@@ -9,6 +10,12 @@ pub struct TreasuryTransactionsResourceBalanceImpact {
     pub inbound_pending: i64,
     /// The change made to funds in the account, but not spendable because they are being held for pending outbound flows.
     pub outbound_pending: i64,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TreasuryTransactionsResourceBalanceImpact {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("TreasuryTransactionsResourceBalanceImpact").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct TreasuryTransactionsResourceBalanceImpactBuilder {

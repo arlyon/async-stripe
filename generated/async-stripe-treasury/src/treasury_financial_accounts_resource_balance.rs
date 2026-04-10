@@ -1,5 +1,6 @@
 /// Balance information for the FinancialAccount
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TreasuryFinancialAccountsResourceBalance {
@@ -9,6 +10,12 @@ pub struct TreasuryFinancialAccountsResourceBalance {
     pub inbound_pending: std::collections::HashMap<String, i64>,
     /// Funds in the account, but not spendable because they are being held for pending outbound flows.
     pub outbound_pending: std::collections::HashMap<String, i64>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TreasuryFinancialAccountsResourceBalance {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("TreasuryFinancialAccountsResourceBalance").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct TreasuryFinancialAccountsResourceBalanceBuilder {

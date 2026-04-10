@@ -1,4 +1,5 @@
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(tag = "object"))]
@@ -101,7 +102,14 @@ const _: () = {
     }
 };
 
-#[derive(Clone, Debug)]
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for AccountExternalAccountCreated {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("AccountExternalAccountCreated").finish_non_exhaustive()
+    }
+}
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(tag = "object"))]
@@ -204,7 +212,14 @@ const _: () = {
     }
 };
 
-#[derive(Clone, Debug)]
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for AccountExternalAccountDeleted {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("AccountExternalAccountDeleted").finish_non_exhaustive()
+    }
+}
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(tag = "object"))]
@@ -307,7 +322,14 @@ const _: () = {
     }
 };
 
-#[derive(Clone, Debug)]
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for AccountExternalAccountUpdated {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("AccountExternalAccountUpdated").finish_non_exhaustive()
+    }
+}
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(tag = "object"))]
@@ -410,7 +432,14 @@ const _: () = {
     }
 };
 
-#[derive(Clone, Debug)]
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CustomerSourceCreated {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CustomerSourceCreated").finish_non_exhaustive()
+    }
+}
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(tag = "object"))]
@@ -513,7 +542,14 @@ const _: () = {
     }
 };
 
-#[derive(Clone, Debug)]
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CustomerSourceDeleted {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CustomerSourceDeleted").finish_non_exhaustive()
+    }
+}
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(tag = "object"))]
@@ -613,7 +649,14 @@ const _: () = {
     }
 };
 
-#[derive(Clone, Debug)]
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CustomerSourceExpiring {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CustomerSourceExpiring").finish_non_exhaustive()
+    }
+}
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(tag = "object"))]
@@ -716,7 +759,14 @@ const _: () = {
     }
 };
 
-#[derive(Clone, Debug)]
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CustomerSourceUpdated {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CustomerSourceUpdated").finish_non_exhaustive()
+    }
+}
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 #[cfg_attr(any(feature = "serialize", feature = "deserialize"), serde(untagged))]
@@ -1364,6 +1414,12 @@ pub enum EventObject {
         serde(with = "stripe_types::with_serde_json")
     )]
     Unknown(miniserde::json::Value),
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for EventObject {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("EventObject").finish_non_exhaustive()
+    }
 }
 impl EventObject {
     #[inline(never)]

@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct InvoiceMandateOptionsCard {
@@ -10,6 +11,12 @@ pub struct InvoiceMandateOptionsCard {
     pub amount_type: Option<InvoiceMandateOptionsCardAmountType>,
     /// A description of the mandate or subscription that is meant to be displayed to the customer.
     pub description: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for InvoiceMandateOptionsCard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("InvoiceMandateOptionsCard").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct InvoiceMandateOptionsCardBuilder {
@@ -162,9 +169,16 @@ impl std::fmt::Display for InvoiceMandateOptionsCardAmountType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for InvoiceMandateOptionsCardAmountType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for InvoiceMandateOptionsCardAmountType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(InvoiceMandateOptionsCardAmountType)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

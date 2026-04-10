@@ -1,4 +1,5 @@
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct SubscriptionSchedulesResourceDefaultSettings {
@@ -30,6 +31,12 @@ pub struct SubscriptionSchedulesResourceDefaultSettings {
     pub on_behalf_of: Option<stripe_types::Expandable<stripe_shared::Account>>,
     /// The account (if any) the associated subscription's payments will be attributed to for tax reporting, and where funds from each payment will be transferred to for each of the subscription's invoices.
     pub transfer_data: Option<stripe_shared::SubscriptionTransferData>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for SubscriptionSchedulesResourceDefaultSettings {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("SubscriptionSchedulesResourceDefaultSettings").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct SubscriptionSchedulesResourceDefaultSettingsBuilder {
@@ -248,9 +255,17 @@ impl std::fmt::Display for SubscriptionSchedulesResourceDefaultSettingsBillingCy
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for SubscriptionSchedulesResourceDefaultSettingsBillingCycleAnchor {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for SubscriptionSchedulesResourceDefaultSettingsBillingCycleAnchor {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(SubscriptionSchedulesResourceDefaultSettingsBillingCycleAnchor))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -340,9 +355,17 @@ impl std::fmt::Display for SubscriptionSchedulesResourceDefaultSettingsCollectio
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for SubscriptionSchedulesResourceDefaultSettingsCollectionMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for SubscriptionSchedulesResourceDefaultSettingsCollectionMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(SubscriptionSchedulesResourceDefaultSettingsCollectionMethod))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

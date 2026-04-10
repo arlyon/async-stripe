@@ -1,5 +1,6 @@
 /// Result from a document check
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct GelatoDocumentReport {
@@ -34,6 +35,12 @@ pub struct GelatoDocumentReport {
     pub unparsed_place_of_birth: Option<String>,
     /// Sex as it appears in the document.
     pub unparsed_sex: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for GelatoDocumentReport {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("GelatoDocumentReport").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct GelatoDocumentReportBuilder {
@@ -284,9 +291,16 @@ impl std::fmt::Display for GelatoDocumentReportSex {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for GelatoDocumentReportSex {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for GelatoDocumentReportSex {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(GelatoDocumentReportSex)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -361,9 +375,16 @@ impl std::fmt::Display for GelatoDocumentReportStatus {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for GelatoDocumentReportStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for GelatoDocumentReportStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(GelatoDocumentReportStatus)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -441,9 +462,16 @@ impl std::fmt::Display for GelatoDocumentReportType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for GelatoDocumentReportType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for GelatoDocumentReportType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(GelatoDocumentReportType)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

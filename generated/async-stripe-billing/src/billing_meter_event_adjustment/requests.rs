@@ -2,7 +2,9 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct CreateBillingMeterEventAdjustmentBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     cancel: Option<CreateBillingMeterEventAdjustmentCancel>,
@@ -11,6 +13,12 @@ struct CreateBillingMeterEventAdjustmentBuilder {
     expand: Option<Vec<String>>,
     #[serde(rename = "type")]
     type_: stripe_billing::BillingMeterEventAdjustmentType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateBillingMeterEventAdjustmentBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateBillingMeterEventAdjustmentBuilder").finish_non_exhaustive()
+    }
 }
 impl CreateBillingMeterEventAdjustmentBuilder {
     fn new(
@@ -21,12 +29,20 @@ impl CreateBillingMeterEventAdjustmentBuilder {
     }
 }
 /// Specifies which event to cancel.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateBillingMeterEventAdjustmentCancel {
     /// Unique identifier for the event.
     /// You can only cancel events within 24 hours of Stripe receiving them.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub identifier: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateBillingMeterEventAdjustmentCancel {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateBillingMeterEventAdjustmentCancel").finish_non_exhaustive()
+    }
 }
 impl CreateBillingMeterEventAdjustmentCancel {
     pub fn new() -> Self {
@@ -39,9 +55,17 @@ impl Default for CreateBillingMeterEventAdjustmentCancel {
     }
 }
 /// Creates a billing meter event adjustment.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateBillingMeterEventAdjustment {
     inner: CreateBillingMeterEventAdjustmentBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateBillingMeterEventAdjustment {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateBillingMeterEventAdjustment").finish_non_exhaustive()
+    }
 }
 impl CreateBillingMeterEventAdjustment {
     /// Construct a new `CreateBillingMeterEventAdjustment`.

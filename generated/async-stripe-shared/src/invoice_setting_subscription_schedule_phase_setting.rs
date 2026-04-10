@@ -1,4 +1,5 @@
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct InvoiceSettingSubscriptionSchedulePhaseSetting {
@@ -11,6 +12,12 @@ pub struct InvoiceSettingSubscriptionSchedulePhaseSetting {
     /// The connected account that issues the invoice.
     /// The invoice is presented with the branding and support information of the specified account.
     pub issuer: Option<stripe_shared::ConnectAccountReference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for InvoiceSettingSubscriptionSchedulePhaseSetting {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("InvoiceSettingSubscriptionSchedulePhaseSetting").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct InvoiceSettingSubscriptionSchedulePhaseSettingBuilder {

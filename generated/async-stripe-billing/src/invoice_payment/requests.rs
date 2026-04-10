@@ -2,7 +2,9 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ListInvoicePaymentBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     created: Option<stripe_types::RangeQueryTs>,
@@ -21,6 +23,12 @@ struct ListInvoicePaymentBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     status: Option<ListInvoicePaymentStatus>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListInvoicePaymentBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListInvoicePaymentBuilder").finish_non_exhaustive()
+    }
+}
 impl ListInvoicePaymentBuilder {
     fn new() -> Self {
         Self {
@@ -36,7 +44,9 @@ impl ListInvoicePaymentBuilder {
     }
 }
 /// The payment details of the invoice payments to return.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListInvoicePaymentPayment {
     /// Only return invoice payments associated by this payment intent ID.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -47,6 +57,12 @@ pub struct ListInvoicePaymentPayment {
     /// Only return invoice payments associated by this payment type.
     #[serde(rename = "type")]
     pub type_: ListInvoicePaymentPaymentType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListInvoicePaymentPayment {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListInvoicePaymentPayment").finish_non_exhaustive()
+    }
 }
 impl ListInvoicePaymentPayment {
     pub fn new(type_: impl Into<ListInvoicePaymentPaymentType>) -> Self {
@@ -97,9 +113,16 @@ impl std::fmt::Display for ListInvoicePaymentPaymentType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ListInvoicePaymentPaymentType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListInvoicePaymentPaymentType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ListInvoicePaymentPaymentType)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ListInvoicePaymentPaymentType {
@@ -161,9 +184,16 @@ impl std::fmt::Display for ListInvoicePaymentStatus {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ListInvoicePaymentStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListInvoicePaymentStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ListInvoicePaymentStatus)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ListInvoicePaymentStatus {
@@ -184,9 +214,17 @@ impl<'de> serde::Deserialize<'de> for ListInvoicePaymentStatus {
 }
 /// When retrieving an invoice, there is an includable payments property containing the first handful of those items.
 /// There is also a URL where you can retrieve the full (paginated) list of payments.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListInvoicePayment {
     inner: ListInvoicePaymentBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListInvoicePayment {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListInvoicePayment").finish_non_exhaustive()
+    }
 }
 impl ListInvoicePayment {
     /// Construct a new `ListInvoicePayment`.
@@ -275,10 +313,18 @@ impl StripeRequest for ListInvoicePayment {
         RequestBuilder::new(StripeMethod::Get, "/invoice_payments").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RetrieveInvoicePaymentBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveInvoicePaymentBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveInvoicePaymentBuilder").finish_non_exhaustive()
+    }
 }
 impl RetrieveInvoicePaymentBuilder {
     fn new() -> Self {
@@ -286,10 +332,18 @@ impl RetrieveInvoicePaymentBuilder {
     }
 }
 /// Retrieves the invoice payment with the given ID.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RetrieveInvoicePayment {
     inner: RetrieveInvoicePaymentBuilder,
     invoice_payment: stripe_shared::InvoicePaymentId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveInvoicePayment {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveInvoicePayment").finish_non_exhaustive()
+    }
 }
 impl RetrieveInvoicePayment {
     /// Construct a new `RetrieveInvoicePayment`.

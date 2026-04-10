@@ -2,7 +2,9 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ListSetupAttemptBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     created: Option<stripe_types::RangeQueryTs>,
@@ -15,6 +17,12 @@ struct ListSetupAttemptBuilder {
     setup_intent: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     starting_after: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListSetupAttemptBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListSetupAttemptBuilder").finish_non_exhaustive()
+    }
 }
 impl ListSetupAttemptBuilder {
     fn new(setup_intent: impl Into<String>) -> Self {
@@ -29,9 +37,17 @@ impl ListSetupAttemptBuilder {
     }
 }
 /// Returns a list of SetupAttempts that associate with a provided SetupIntent.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListSetupAttempt {
     inner: ListSetupAttemptBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListSetupAttempt {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListSetupAttempt").finish_non_exhaustive()
+    }
 }
 impl ListSetupAttempt {
     /// Construct a new `ListSetupAttempt`.

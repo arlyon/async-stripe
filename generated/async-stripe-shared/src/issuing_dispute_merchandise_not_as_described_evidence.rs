@@ -1,4 +1,5 @@
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct IssuingDisputeMerchandiseNotAsDescribedEvidence {
@@ -14,6 +15,12 @@ pub struct IssuingDisputeMerchandiseNotAsDescribedEvidence {
     pub return_status: Option<IssuingDisputeMerchandiseNotAsDescribedEvidenceReturnStatus>,
     /// Date when the product was returned or attempted to be returned.
     pub returned_at: Option<stripe_types::Timestamp>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for IssuingDisputeMerchandiseNotAsDescribedEvidence {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("IssuingDisputeMerchandiseNotAsDescribedEvidence").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct IssuingDisputeMerchandiseNotAsDescribedEvidenceBuilder {
@@ -200,9 +207,17 @@ impl std::fmt::Display for IssuingDisputeMerchandiseNotAsDescribedEvidenceReturn
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for IssuingDisputeMerchandiseNotAsDescribedEvidenceReturnStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for IssuingDisputeMerchandiseNotAsDescribedEvidenceReturnStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(IssuingDisputeMerchandiseNotAsDescribedEvidenceReturnStatus))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

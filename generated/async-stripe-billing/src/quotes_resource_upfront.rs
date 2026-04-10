@@ -1,4 +1,5 @@
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct QuotesResourceUpfront {
@@ -10,6 +11,12 @@ pub struct QuotesResourceUpfront {
     /// This does not include pending invoice items that exist on the customer but may still be included in the next invoice.
     pub line_items: Option<stripe_types::List<stripe_shared::CheckoutSessionItem>>,
     pub total_details: stripe_billing::QuotesResourceTotalDetails,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for QuotesResourceUpfront {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("QuotesResourceUpfront").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct QuotesResourceUpfrontBuilder {

@@ -2,7 +2,9 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ListIssuingPersonalizationDesignBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<String>,
@@ -19,6 +21,12 @@ struct ListIssuingPersonalizationDesignBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     status: Option<stripe_shared::IssuingPersonalizationDesignStatus>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListIssuingPersonalizationDesignBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListIssuingPersonalizationDesignBuilder").finish_non_exhaustive()
+    }
+}
 impl ListIssuingPersonalizationDesignBuilder {
     fn new() -> Self {
         Self {
@@ -33,7 +41,9 @@ impl ListIssuingPersonalizationDesignBuilder {
     }
 }
 /// Only return personalization designs with the given preferences.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListIssuingPersonalizationDesignPreferences {
     /// Only return the personalization design that's set as the default.
     /// A connected account uses the Connect platform's default design if no personalization design is set as the default.
@@ -43,6 +53,12 @@ pub struct ListIssuingPersonalizationDesignPreferences {
     /// This parameter is only applicable to connected accounts.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub is_platform_default: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListIssuingPersonalizationDesignPreferences {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListIssuingPersonalizationDesignPreferences").finish_non_exhaustive()
+    }
 }
 impl ListIssuingPersonalizationDesignPreferences {
     pub fn new() -> Self {
@@ -56,9 +72,17 @@ impl Default for ListIssuingPersonalizationDesignPreferences {
 }
 /// Returns a list of personalization design objects.
 /// The objects are sorted in descending order by creation date, with the most recently created object appearing first.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListIssuingPersonalizationDesign {
     inner: ListIssuingPersonalizationDesignBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListIssuingPersonalizationDesign {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListIssuingPersonalizationDesign").finish_non_exhaustive()
+    }
 }
 impl ListIssuingPersonalizationDesign {
     /// Construct a new `ListIssuingPersonalizationDesign`.
@@ -151,10 +175,18 @@ impl StripeRequest for ListIssuingPersonalizationDesign {
             .query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RetrieveIssuingPersonalizationDesignBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveIssuingPersonalizationDesignBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveIssuingPersonalizationDesignBuilder").finish_non_exhaustive()
+    }
 }
 impl RetrieveIssuingPersonalizationDesignBuilder {
     fn new() -> Self {
@@ -162,10 +194,18 @@ impl RetrieveIssuingPersonalizationDesignBuilder {
     }
 }
 /// Retrieves a personalization design object.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RetrieveIssuingPersonalizationDesign {
     inner: RetrieveIssuingPersonalizationDesignBuilder,
     personalization_design: stripe_shared::IssuingPersonalizationDesignId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveIssuingPersonalizationDesign {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveIssuingPersonalizationDesign").finish_non_exhaustive()
+    }
 }
 impl RetrieveIssuingPersonalizationDesign {
     /// Construct a new `RetrieveIssuingPersonalizationDesign`.
@@ -213,7 +253,9 @@ impl StripeRequest for RetrieveIssuingPersonalizationDesign {
         .query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct CreateIssuingPersonalizationDesignBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     card_logo: Option<String>,
@@ -233,6 +275,12 @@ struct CreateIssuingPersonalizationDesignBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     transfer_lookup_key: Option<bool>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateIssuingPersonalizationDesignBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateIssuingPersonalizationDesignBuilder").finish_non_exhaustive()
+    }
+}
 impl CreateIssuingPersonalizationDesignBuilder {
     fn new(physical_bundle: impl Into<String>) -> Self {
         Self {
@@ -249,9 +297,17 @@ impl CreateIssuingPersonalizationDesignBuilder {
     }
 }
 /// Creates a personalization design object.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateIssuingPersonalizationDesign {
     inner: CreateIssuingPersonalizationDesignBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateIssuingPersonalizationDesign {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateIssuingPersonalizationDesign").finish_non_exhaustive()
+    }
 }
 impl CreateIssuingPersonalizationDesign {
     /// Construct a new `CreateIssuingPersonalizationDesign`.
@@ -333,7 +389,9 @@ impl StripeRequest for CreateIssuingPersonalizationDesign {
             .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct UpdateIssuingPersonalizationDesignBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     card_logo: Option<String>,
@@ -354,6 +412,12 @@ struct UpdateIssuingPersonalizationDesignBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     transfer_lookup_key: Option<bool>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateIssuingPersonalizationDesignBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateIssuingPersonalizationDesignBuilder").finish_non_exhaustive()
+    }
+}
 impl UpdateIssuingPersonalizationDesignBuilder {
     fn new() -> Self {
         Self {
@@ -370,10 +434,18 @@ impl UpdateIssuingPersonalizationDesignBuilder {
     }
 }
 /// Updates a card personalization object.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateIssuingPersonalizationDesign {
     inner: UpdateIssuingPersonalizationDesignBuilder,
     personalization_design: stripe_shared::IssuingPersonalizationDesignId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateIssuingPersonalizationDesign {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateIssuingPersonalizationDesign").finish_non_exhaustive()
+    }
 }
 impl UpdateIssuingPersonalizationDesign {
     /// Construct a new `UpdateIssuingPersonalizationDesign`.
@@ -469,10 +541,18 @@ impl StripeRequest for UpdateIssuingPersonalizationDesign {
         .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ActivateIssuingPersonalizationDesignBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ActivateIssuingPersonalizationDesignBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ActivateIssuingPersonalizationDesignBuilder").finish_non_exhaustive()
+    }
 }
 impl ActivateIssuingPersonalizationDesignBuilder {
     fn new() -> Self {
@@ -480,10 +560,18 @@ impl ActivateIssuingPersonalizationDesignBuilder {
     }
 }
 /// Updates the `status` of the specified testmode personalization design object to `active`.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ActivateIssuingPersonalizationDesign {
     inner: ActivateIssuingPersonalizationDesignBuilder,
     personalization_design: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ActivateIssuingPersonalizationDesign {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ActivateIssuingPersonalizationDesign").finish_non_exhaustive()
+    }
 }
 impl ActivateIssuingPersonalizationDesign {
     /// Construct a new `ActivateIssuingPersonalizationDesign`.
@@ -531,10 +619,18 @@ impl StripeRequest for ActivateIssuingPersonalizationDesign {
         .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct DeactivateIssuingPersonalizationDesignBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for DeactivateIssuingPersonalizationDesignBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("DeactivateIssuingPersonalizationDesignBuilder").finish_non_exhaustive()
+    }
 }
 impl DeactivateIssuingPersonalizationDesignBuilder {
     fn new() -> Self {
@@ -542,10 +638,18 @@ impl DeactivateIssuingPersonalizationDesignBuilder {
     }
 }
 /// Updates the `status` of the specified testmode personalization design object to `inactive`.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct DeactivateIssuingPersonalizationDesign {
     inner: DeactivateIssuingPersonalizationDesignBuilder,
     personalization_design: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for DeactivateIssuingPersonalizationDesign {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("DeactivateIssuingPersonalizationDesign").finish_non_exhaustive()
+    }
 }
 impl DeactivateIssuingPersonalizationDesign {
     /// Construct a new `DeactivateIssuingPersonalizationDesign`.
@@ -593,11 +697,19 @@ impl StripeRequest for DeactivateIssuingPersonalizationDesign {
         .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RejectIssuingPersonalizationDesignBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
     rejection_reasons: RejectIssuingPersonalizationDesignRejectionReasons,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RejectIssuingPersonalizationDesignBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RejectIssuingPersonalizationDesignBuilder").finish_non_exhaustive()
+    }
 }
 impl RejectIssuingPersonalizationDesignBuilder {
     fn new(
@@ -607,7 +719,9 @@ impl RejectIssuingPersonalizationDesignBuilder {
     }
 }
 /// The reason(s) the personalization design was rejected.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RejectIssuingPersonalizationDesignRejectionReasons {
     /// The reason(s) the card logo was rejected.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -615,6 +729,12 @@ pub struct RejectIssuingPersonalizationDesignRejectionReasons {
     /// The reason(s) the carrier text was rejected.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub carrier_text: Option<Vec<RejectIssuingPersonalizationDesignRejectionReasonsCarrierText>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RejectIssuingPersonalizationDesignRejectionReasons {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RejectIssuingPersonalizationDesignRejectionReasons").finish_non_exhaustive()
+    }
 }
 impl RejectIssuingPersonalizationDesignRejectionReasons {
     pub fn new() -> Self {
@@ -688,9 +808,17 @@ impl std::fmt::Display for RejectIssuingPersonalizationDesignRejectionReasonsCar
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for RejectIssuingPersonalizationDesignRejectionReasonsCardLogo {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RejectIssuingPersonalizationDesignRejectionReasonsCardLogo {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(RejectIssuingPersonalizationDesignRejectionReasonsCardLogo))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for RejectIssuingPersonalizationDesignRejectionReasonsCardLogo {
@@ -768,9 +896,17 @@ impl std::fmt::Display for RejectIssuingPersonalizationDesignRejectionReasonsCar
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for RejectIssuingPersonalizationDesignRejectionReasonsCarrierText {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RejectIssuingPersonalizationDesignRejectionReasonsCarrierText {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(RejectIssuingPersonalizationDesignRejectionReasonsCarrierText))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for RejectIssuingPersonalizationDesignRejectionReasonsCarrierText {
@@ -792,10 +928,18 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Updates the `status` of the specified testmode personalization design object to `rejected`.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RejectIssuingPersonalizationDesign {
     inner: RejectIssuingPersonalizationDesignBuilder,
     personalization_design: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RejectIssuingPersonalizationDesign {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RejectIssuingPersonalizationDesign").finish_non_exhaustive()
+    }
 }
 impl RejectIssuingPersonalizationDesign {
     /// Construct a new `RejectIssuingPersonalizationDesign`.
@@ -847,7 +991,9 @@ impl StripeRequest for RejectIssuingPersonalizationDesign {
     }
 }
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CarrierTextParam {
     /// The footer body text of the carrier letter.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -862,6 +1008,12 @@ pub struct CarrierTextParam {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub header_title: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CarrierTextParam {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CarrierTextParam").finish_non_exhaustive()
+    }
+}
 impl CarrierTextParam {
     pub fn new() -> Self {
         Self { footer_body: None, footer_title: None, header_body: None, header_title: None }
@@ -872,11 +1024,19 @@ impl Default for CarrierTextParam {
         Self::new()
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct PreferencesParam {
     /// Whether we use this personalization design to create cards when one isn't specified.
     /// A connected account uses the Connect platform's default design if no personalization design is set as the default design.
     pub is_default: bool,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PreferencesParam {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PreferencesParam").finish_non_exhaustive()
+    }
 }
 impl PreferencesParam {
     pub fn new(is_default: impl Into<bool>) -> Self {

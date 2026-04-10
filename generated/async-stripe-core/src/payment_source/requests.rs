@@ -2,7 +2,9 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ListCustomerPaymentSourceBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<String>,
@@ -15,16 +17,30 @@ struct ListCustomerPaymentSourceBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     starting_after: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListCustomerPaymentSourceBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListCustomerPaymentSourceBuilder").finish_non_exhaustive()
+    }
+}
 impl ListCustomerPaymentSourceBuilder {
     fn new() -> Self {
         Self { ending_before: None, expand: None, limit: None, object: None, starting_after: None }
     }
 }
 /// List sources for a specified customer.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListCustomerPaymentSource {
     inner: ListCustomerPaymentSourceBuilder,
     customer: stripe_shared::CustomerId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListCustomerPaymentSource {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListCustomerPaymentSource").finish_non_exhaustive()
+    }
 }
 impl ListCustomerPaymentSource {
     /// Construct a new `ListCustomerPaymentSource`.
@@ -100,10 +116,18 @@ impl StripeRequest for ListCustomerPaymentSource {
             .query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RetrievePaymentSourceBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrievePaymentSourceBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrievePaymentSourceBuilder").finish_non_exhaustive()
+    }
 }
 impl RetrievePaymentSourceBuilder {
     fn new() -> Self {
@@ -111,11 +135,19 @@ impl RetrievePaymentSourceBuilder {
     }
 }
 /// Retrieve a specified source for a given customer.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RetrievePaymentSource {
     inner: RetrievePaymentSourceBuilder,
     customer: stripe_shared::CustomerId,
     id: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrievePaymentSource {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrievePaymentSource").finish_non_exhaustive()
+    }
 }
 impl RetrievePaymentSource {
     /// Construct a new `RetrievePaymentSource`.
@@ -160,7 +192,9 @@ impl StripeRequest for RetrievePaymentSource {
             .query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct CreateCustomerPaymentSourceBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -169,6 +203,12 @@ struct CreateCustomerPaymentSourceBuilder {
     source: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     validate: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCustomerPaymentSourceBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCustomerPaymentSourceBuilder").finish_non_exhaustive()
+    }
 }
 impl CreateCustomerPaymentSourceBuilder {
     fn new(source: impl Into<String>) -> Self {
@@ -180,10 +220,18 @@ impl CreateCustomerPaymentSourceBuilder {
 /// If the card’s owner has no default card, then the new card will become the default.
 /// However, if the owner already has a default, then it will not change.
 /// To change the default, you should <a href="/api/customers/update">update the customer</a> to have a new `default_source`.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCustomerPaymentSource {
     inner: CreateCustomerPaymentSourceBuilder,
     customer: stripe_shared::CustomerId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCustomerPaymentSource {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCustomerPaymentSource").finish_non_exhaustive()
+    }
 }
 impl CreateCustomerPaymentSource {
     /// Construct a new `CreateCustomerPaymentSource`.

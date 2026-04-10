@@ -3,7 +3,8 @@
 /// Related guide: [Subscription schedules](https://docs.stripe.com/billing/subscriptions/subscription-schedules).
 ///
 /// For more details see <<https://stripe.com/docs/api/subscription_schedules/object>>.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct SubscriptionSchedule {
     /// ID of the Connect Application that created the schedule.
@@ -49,6 +50,12 @@ pub struct SubscriptionSchedule {
     pub subscription: Option<stripe_types::Expandable<stripe_shared::Subscription>>,
     /// ID of the test clock this subscription schedule belongs to.
     pub test_clock: Option<stripe_types::Expandable<stripe_shared::TestHelpersTestClock>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for SubscriptionSchedule {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("SubscriptionSchedule").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct SubscriptionScheduleBuilder {
@@ -360,9 +367,16 @@ impl std::fmt::Display for SubscriptionScheduleStatus {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for SubscriptionScheduleStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for SubscriptionScheduleStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(SubscriptionScheduleStatus)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -457,9 +471,16 @@ impl std::fmt::Display for SubscriptionScheduleEndBehavior {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for SubscriptionScheduleEndBehavior {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for SubscriptionScheduleEndBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(SubscriptionScheduleEndBehavior)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for SubscriptionScheduleEndBehavior {

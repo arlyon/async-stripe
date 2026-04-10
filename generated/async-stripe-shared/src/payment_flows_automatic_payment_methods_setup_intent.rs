@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentFlowsAutomaticPaymentMethodsSetupIntent {
@@ -9,6 +10,12 @@ pub struct PaymentFlowsAutomaticPaymentMethodsSetupIntent {
     pub allow_redirects: Option<PaymentFlowsAutomaticPaymentMethodsSetupIntentAllowRedirects>,
     /// Automatically calculates compatible payment methods
     pub enabled: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentFlowsAutomaticPaymentMethodsSetupIntent {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PaymentFlowsAutomaticPaymentMethodsSetupIntent").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct PaymentFlowsAutomaticPaymentMethodsSetupIntentBuilder {
@@ -155,9 +162,17 @@ impl std::fmt::Display for PaymentFlowsAutomaticPaymentMethodsSetupIntentAllowRe
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for PaymentFlowsAutomaticPaymentMethodsSetupIntentAllowRedirects {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentFlowsAutomaticPaymentMethodsSetupIntentAllowRedirects {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(PaymentFlowsAutomaticPaymentMethodsSetupIntentAllowRedirects))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

@@ -1,5 +1,6 @@
 /// TransactionEntries represent individual units of money movements within a single [Transaction](https://api.stripe.com#transactions).
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TreasuryTransactionEntry {
     pub balance_impact: stripe_treasury::TreasuryTransactionsResourceBalanceImpact,
@@ -28,6 +29,12 @@ pub struct TreasuryTransactionEntry {
     /// The specific money movement that generated the TransactionEntry.
     #[cfg_attr(feature = "deserialize", serde(rename = "type"))]
     pub type_: TreasuryTransactionEntryType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TreasuryTransactionEntry {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("TreasuryTransactionEntry").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct TreasuryTransactionEntryBuilder {
@@ -295,9 +302,16 @@ impl std::fmt::Display for TreasuryTransactionEntryFlowType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for TreasuryTransactionEntryFlowType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TreasuryTransactionEntryFlowType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(TreasuryTransactionEntryFlowType)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -430,9 +444,16 @@ impl std::fmt::Display for TreasuryTransactionEntryType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for TreasuryTransactionEntryType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TreasuryTransactionEntryType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(TreasuryTransactionEntryType)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

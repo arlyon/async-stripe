@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentPagesCheckoutSessionCustomFieldsOption {
@@ -7,6 +8,12 @@ pub struct PaymentPagesCheckoutSessionCustomFieldsOption {
     /// The value for this option, not displayed to the customer, used by your integration to reconcile the option selected by the customer.
     /// Must be unique to this option, alphanumeric, and up to 100 characters.
     pub value: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentPagesCheckoutSessionCustomFieldsOption {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PaymentPagesCheckoutSessionCustomFieldsOption").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct PaymentPagesCheckoutSessionCustomFieldsOptionBuilder {

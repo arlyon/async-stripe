@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TaxProductResourceCustomerDetails {
@@ -12,6 +13,12 @@ pub struct TaxProductResourceCustomerDetails {
     pub tax_ids: Vec<stripe_misc::TaxProductResourceCustomerDetailsResourceTaxId>,
     /// The taxability override used for taxation.
     pub taxability_override: TaxProductResourceCustomerDetailsTaxabilityOverride,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TaxProductResourceCustomerDetails {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("TaxProductResourceCustomerDetails").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct TaxProductResourceCustomerDetailsBuilder {
@@ -181,9 +188,17 @@ impl std::fmt::Display for TaxProductResourceCustomerDetailsAddressSource {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for TaxProductResourceCustomerDetailsAddressSource {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TaxProductResourceCustomerDetailsAddressSource {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(TaxProductResourceCustomerDetailsAddressSource))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -266,9 +281,17 @@ impl std::fmt::Display for TaxProductResourceCustomerDetailsTaxabilityOverride {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for TaxProductResourceCustomerDetailsTaxabilityOverride {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TaxProductResourceCustomerDetailsTaxabilityOverride {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(TaxProductResourceCustomerDetailsTaxabilityOverride))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

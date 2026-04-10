@@ -3,7 +3,8 @@
 /// Related guide: [Fleet management](https://docs.stripe.com/terminal/fleet/locations)
 ///
 /// For more details see <<https://stripe.com/docs/api/terminal/locations/object>>.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TerminalLocation {
     pub address: stripe_shared::Address,
@@ -27,6 +28,12 @@ pub struct TerminalLocation {
     pub metadata: std::collections::HashMap<String, String>,
     /// The phone number of the location.
     pub phone: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TerminalLocation {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("TerminalLocation").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct TerminalLocationBuilder {

@@ -1,7 +1,8 @@
 /// A Mandate is a record of the permission that your customer gives you to debit their payment method.
 ///
 /// For more details see <<https://stripe.com/docs/api/mandates/object>>.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct Mandate {
     pub customer_acceptance: stripe_shared::CustomerAcceptance,
@@ -22,6 +23,12 @@ pub struct Mandate {
     /// The type of the mandate.
     #[cfg_attr(feature = "deserialize", serde(rename = "type"))]
     pub type_: MandateType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for Mandate {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("Mandate").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct MandateBuilder {
@@ -250,9 +257,16 @@ impl std::fmt::Display for MandateStatus {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for MandateStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for MandateStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(MandateStatus)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -327,9 +341,16 @@ impl std::fmt::Display for MandateType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for MandateType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for MandateType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(MandateType)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

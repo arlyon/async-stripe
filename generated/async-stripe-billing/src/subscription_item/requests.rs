@@ -2,7 +2,9 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct DeleteSubscriptionItemBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     clear_usage: Option<bool>,
@@ -12,6 +14,12 @@ struct DeleteSubscriptionItemBuilder {
     proration_behavior: Option<DeleteSubscriptionItemProrationBehavior>,
     #[serde(skip_serializing_if = "Option::is_none")]
     proration_date: Option<stripe_types::Timestamp>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for DeleteSubscriptionItemBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("DeleteSubscriptionItemBuilder").finish_non_exhaustive()
+    }
 }
 impl DeleteSubscriptionItemBuilder {
     fn new() -> Self {
@@ -89,9 +97,16 @@ impl std::fmt::Display for DeleteSubscriptionItemPaymentBehavior {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for DeleteSubscriptionItemPaymentBehavior {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for DeleteSubscriptionItemPaymentBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(DeleteSubscriptionItemPaymentBehavior)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for DeleteSubscriptionItemPaymentBehavior {
@@ -158,9 +173,16 @@ impl std::fmt::Display for DeleteSubscriptionItemProrationBehavior {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for DeleteSubscriptionItemProrationBehavior {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for DeleteSubscriptionItemProrationBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(DeleteSubscriptionItemProrationBehavior)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for DeleteSubscriptionItemProrationBehavior {
@@ -181,10 +203,18 @@ impl<'de> serde::Deserialize<'de> for DeleteSubscriptionItemProrationBehavior {
 }
 /// Deletes an item from the subscription.
 /// Removing a subscription item from a subscription will not cancel the subscription.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct DeleteSubscriptionItem {
     inner: DeleteSubscriptionItemBuilder,
     item: stripe_shared::SubscriptionItemId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for DeleteSubscriptionItem {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("DeleteSubscriptionItem").finish_non_exhaustive()
+    }
 }
 impl DeleteSubscriptionItem {
     /// Construct a new `DeleteSubscriptionItem`.
@@ -264,7 +294,9 @@ impl StripeRequest for DeleteSubscriptionItem {
             .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ListSubscriptionItemBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<String>,
@@ -275,6 +307,12 @@ struct ListSubscriptionItemBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     starting_after: Option<String>,
     subscription: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListSubscriptionItemBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListSubscriptionItemBuilder").finish_non_exhaustive()
+    }
 }
 impl ListSubscriptionItemBuilder {
     fn new(subscription: impl Into<String>) -> Self {
@@ -288,9 +326,17 @@ impl ListSubscriptionItemBuilder {
     }
 }
 /// Returns a list of your subscription items for a given subscription.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListSubscriptionItem {
     inner: ListSubscriptionItemBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListSubscriptionItem {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListSubscriptionItem").finish_non_exhaustive()
+    }
 }
 impl ListSubscriptionItem {
     /// Construct a new `ListSubscriptionItem`.
@@ -355,10 +401,18 @@ impl StripeRequest for ListSubscriptionItem {
         RequestBuilder::new(StripeMethod::Get, "/subscription_items").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RetrieveSubscriptionItemBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveSubscriptionItemBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveSubscriptionItemBuilder").finish_non_exhaustive()
+    }
 }
 impl RetrieveSubscriptionItemBuilder {
     fn new() -> Self {
@@ -366,10 +420,18 @@ impl RetrieveSubscriptionItemBuilder {
     }
 }
 /// Retrieves the subscription item with the given ID.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RetrieveSubscriptionItem {
     inner: RetrieveSubscriptionItemBuilder,
     item: stripe_shared::SubscriptionItemId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveSubscriptionItem {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveSubscriptionItem").finish_non_exhaustive()
+    }
 }
 impl RetrieveSubscriptionItem {
     /// Construct a new `RetrieveSubscriptionItem`.
@@ -409,7 +471,9 @@ impl StripeRequest for RetrieveSubscriptionItem {
             .query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct CreateSubscriptionItemBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     billing_thresholds: Option<ItemBillingThresholdsParam>,
@@ -436,6 +500,12 @@ struct CreateSubscriptionItemBuilder {
     subscription: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     tax_rates: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateSubscriptionItemBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateSubscriptionItemBuilder").finish_non_exhaustive()
+    }
 }
 impl CreateSubscriptionItemBuilder {
     fn new(subscription: impl Into<String>) -> Self {
@@ -522,9 +592,16 @@ impl std::fmt::Display for CreateSubscriptionItemPaymentBehavior {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateSubscriptionItemPaymentBehavior {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateSubscriptionItemPaymentBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateSubscriptionItemPaymentBehavior)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateSubscriptionItemPaymentBehavior {
@@ -544,7 +621,9 @@ impl<'de> serde::Deserialize<'de> for CreateSubscriptionItemPaymentBehavior {
     }
 }
 /// Data used to generate a new [Price](https://docs.stripe.com/api/prices) object inline.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateSubscriptionItemPriceData {
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
@@ -567,6 +646,12 @@ pub struct CreateSubscriptionItemPriceData {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_amount_decimal: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateSubscriptionItemPriceData {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateSubscriptionItemPriceData").finish_non_exhaustive()
+    }
+}
 impl CreateSubscriptionItemPriceData {
     pub fn new(
         currency: impl Into<stripe_types::Currency>,
@@ -584,7 +669,9 @@ impl CreateSubscriptionItemPriceData {
     }
 }
 /// The recurring components of a price such as `interval` and `interval_count`.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateSubscriptionItemPriceDataRecurring {
     /// Specifies billing frequency. Either `day`, `week`, `month` or `year`.
     pub interval: CreateSubscriptionItemPriceDataRecurringInterval,
@@ -593,6 +680,12 @@ pub struct CreateSubscriptionItemPriceDataRecurring {
     /// Maximum of three years interval allowed (3 years, 36 months, or 156 weeks).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub interval_count: Option<u64>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateSubscriptionItemPriceDataRecurring {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateSubscriptionItemPriceDataRecurring").finish_non_exhaustive()
+    }
 }
 impl CreateSubscriptionItemPriceDataRecurring {
     pub fn new(interval: impl Into<CreateSubscriptionItemPriceDataRecurringInterval>) -> Self {
@@ -649,9 +742,17 @@ impl std::fmt::Display for CreateSubscriptionItemPriceDataRecurringInterval {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateSubscriptionItemPriceDataRecurringInterval {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateSubscriptionItemPriceDataRecurringInterval {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateSubscriptionItemPriceDataRecurringInterval))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateSubscriptionItemPriceDataRecurringInterval {
@@ -720,9 +821,17 @@ impl std::fmt::Display for CreateSubscriptionItemPriceDataTaxBehavior {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateSubscriptionItemPriceDataTaxBehavior {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateSubscriptionItemPriceDataTaxBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateSubscriptionItemPriceDataTaxBehavior))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateSubscriptionItemPriceDataTaxBehavior {
@@ -789,9 +898,16 @@ impl std::fmt::Display for CreateSubscriptionItemProrationBehavior {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateSubscriptionItemProrationBehavior {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateSubscriptionItemProrationBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateSubscriptionItemProrationBehavior)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateSubscriptionItemProrationBehavior {
@@ -811,9 +927,17 @@ impl<'de> serde::Deserialize<'de> for CreateSubscriptionItemProrationBehavior {
     }
 }
 /// Adds a new item to an existing subscription. No existing items will be changed or replaced.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateSubscriptionItem {
     inner: CreateSubscriptionItemBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateSubscriptionItem {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateSubscriptionItem").finish_non_exhaustive()
+    }
 }
 impl CreateSubscriptionItem {
     /// Construct a new `CreateSubscriptionItem`.
@@ -942,7 +1066,9 @@ impl StripeRequest for CreateSubscriptionItem {
         RequestBuilder::new(StripeMethod::Post, "/subscription_items").form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct UpdateSubscriptionItemBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     billing_thresholds: Option<ItemBillingThresholdsParam>,
@@ -970,6 +1096,12 @@ struct UpdateSubscriptionItemBuilder {
     quantity: Option<u64>,
     #[serde(skip_serializing_if = "Option::is_none")]
     tax_rates: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateSubscriptionItemBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateSubscriptionItemBuilder").finish_non_exhaustive()
+    }
 }
 impl UpdateSubscriptionItemBuilder {
     fn new() -> Self {
@@ -1056,9 +1188,16 @@ impl std::fmt::Display for UpdateSubscriptionItemPaymentBehavior {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdateSubscriptionItemPaymentBehavior {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateSubscriptionItemPaymentBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdateSubscriptionItemPaymentBehavior)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdateSubscriptionItemPaymentBehavior {
@@ -1079,7 +1218,9 @@ impl<'de> serde::Deserialize<'de> for UpdateSubscriptionItemPaymentBehavior {
 }
 /// Data used to generate a new [Price](https://docs.stripe.com/api/prices) object inline.
 /// One of `price` or `price_data` is required.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateSubscriptionItemPriceData {
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
@@ -1102,6 +1243,12 @@ pub struct UpdateSubscriptionItemPriceData {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_amount_decimal: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateSubscriptionItemPriceData {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateSubscriptionItemPriceData").finish_non_exhaustive()
+    }
+}
 impl UpdateSubscriptionItemPriceData {
     pub fn new(
         currency: impl Into<stripe_types::Currency>,
@@ -1119,7 +1266,9 @@ impl UpdateSubscriptionItemPriceData {
     }
 }
 /// The recurring components of a price such as `interval` and `interval_count`.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateSubscriptionItemPriceDataRecurring {
     /// Specifies billing frequency. Either `day`, `week`, `month` or `year`.
     pub interval: UpdateSubscriptionItemPriceDataRecurringInterval,
@@ -1128,6 +1277,12 @@ pub struct UpdateSubscriptionItemPriceDataRecurring {
     /// Maximum of three years interval allowed (3 years, 36 months, or 156 weeks).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub interval_count: Option<u64>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateSubscriptionItemPriceDataRecurring {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateSubscriptionItemPriceDataRecurring").finish_non_exhaustive()
+    }
 }
 impl UpdateSubscriptionItemPriceDataRecurring {
     pub fn new(interval: impl Into<UpdateSubscriptionItemPriceDataRecurringInterval>) -> Self {
@@ -1184,9 +1339,17 @@ impl std::fmt::Display for UpdateSubscriptionItemPriceDataRecurringInterval {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdateSubscriptionItemPriceDataRecurringInterval {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateSubscriptionItemPriceDataRecurringInterval {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdateSubscriptionItemPriceDataRecurringInterval))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdateSubscriptionItemPriceDataRecurringInterval {
@@ -1255,9 +1418,17 @@ impl std::fmt::Display for UpdateSubscriptionItemPriceDataTaxBehavior {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdateSubscriptionItemPriceDataTaxBehavior {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateSubscriptionItemPriceDataTaxBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdateSubscriptionItemPriceDataTaxBehavior))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdateSubscriptionItemPriceDataTaxBehavior {
@@ -1324,9 +1495,16 @@ impl std::fmt::Display for UpdateSubscriptionItemProrationBehavior {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdateSubscriptionItemProrationBehavior {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateSubscriptionItemProrationBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdateSubscriptionItemProrationBehavior)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdateSubscriptionItemProrationBehavior {
@@ -1346,10 +1524,18 @@ impl<'de> serde::Deserialize<'de> for UpdateSubscriptionItemProrationBehavior {
     }
 }
 /// Updates the plan or quantity of an item on a current subscription.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateSubscriptionItem {
     inner: UpdateSubscriptionItemBuilder,
     item: stripe_shared::SubscriptionItemId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateSubscriptionItem {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateSubscriptionItem").finish_non_exhaustive()
+    }
 }
 impl UpdateSubscriptionItem {
     /// Construct a new `UpdateSubscriptionItem`.
@@ -1490,17 +1676,27 @@ impl StripeRequest for UpdateSubscriptionItem {
     }
 }
 
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ItemBillingThresholdsParam {
     /// Number of units that meets the billing threshold to advance the subscription to a new billing period (e.g., it takes 10 $5 units to meet a $50 [monetary threshold](https://docs.stripe.com/api/subscriptions/update#update_subscription-billing_thresholds-amount_gte)).
     pub usage_gte: i64,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ItemBillingThresholdsParam {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ItemBillingThresholdsParam").finish_non_exhaustive()
+    }
 }
 impl ItemBillingThresholdsParam {
     pub fn new(usage_gte: impl Into<i64>) -> Self {
         Self { usage_gte: usage_gte.into() }
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct DiscountsDataParam {
     /// ID of the coupon to create a new discount for.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1511,6 +1707,12 @@ pub struct DiscountsDataParam {
     /// ID of the promotion code to create a new discount for.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub promotion_code: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for DiscountsDataParam {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("DiscountsDataParam").finish_non_exhaustive()
+    }
 }
 impl DiscountsDataParam {
     pub fn new() -> Self {

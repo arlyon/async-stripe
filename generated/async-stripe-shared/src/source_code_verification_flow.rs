@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct SourceCodeVerificationFlow {
@@ -6,6 +7,12 @@ pub struct SourceCodeVerificationFlow {
     pub attempts_remaining: i64,
     /// The status of the code verification, either `pending` (awaiting verification, `attempts_remaining` should be greater than 0), `succeeded` (successful verification) or `failed` (failed verification, cannot be verified anymore as `attempts_remaining` should be 0).
     pub status: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for SourceCodeVerificationFlow {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("SourceCodeVerificationFlow").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct SourceCodeVerificationFlowBuilder {

@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct GelatoReportDocumentOptions {
@@ -12,6 +13,12 @@ pub struct GelatoReportDocumentOptions {
     /// Capture a face image and perform a [selfie check](https://docs.stripe.com/identity/verification-checks?type=selfie) comparing a photo ID and a picture of your user’s face.
     /// [Learn more](https://docs.stripe.com/identity/selfie).
     pub require_matching_selfie: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for GelatoReportDocumentOptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("GelatoReportDocumentOptions").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct GelatoReportDocumentOptionsBuilder {
@@ -186,9 +193,16 @@ impl std::fmt::Display for GelatoReportDocumentOptionsAllowedTypes {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for GelatoReportDocumentOptionsAllowedTypes {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for GelatoReportDocumentOptionsAllowedTypes {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(GelatoReportDocumentOptionsAllowedTypes)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

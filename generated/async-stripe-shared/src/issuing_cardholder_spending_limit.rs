@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct IssuingCardholderSpendingLimit {
@@ -10,6 +11,12 @@ pub struct IssuingCardholderSpendingLimit {
     pub categories: Option<Vec<IssuingCardholderSpendingLimitCategories>>,
     /// Interval (or event) to which the amount applies.
     pub interval: IssuingCardholderSpendingLimitInterval,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for IssuingCardholderSpendingLimit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("IssuingCardholderSpendingLimit").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct IssuingCardholderSpendingLimitBuilder {
@@ -1132,9 +1139,16 @@ impl std::fmt::Display for IssuingCardholderSpendingLimitCategories {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for IssuingCardholderSpendingLimitCategories {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for IssuingCardholderSpendingLimitCategories {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(IssuingCardholderSpendingLimitCategories)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -1225,9 +1239,16 @@ impl std::fmt::Display for IssuingCardholderSpendingLimitInterval {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for IssuingCardholderSpendingLimitInterval {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for IssuingCardholderSpendingLimitInterval {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(IssuingCardholderSpendingLimitInterval)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

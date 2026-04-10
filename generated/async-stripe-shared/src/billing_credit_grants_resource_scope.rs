@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct BillingCreditGrantsResourceScope {
@@ -12,6 +13,12 @@ pub struct BillingCreditGrantsResourceScope {
     /// This refers to prices that have a [Billing Meter](https://docs.stripe.com/api/billing/meter) attached to them.
     /// Cannot be used in combination with `price_type`.
     pub prices: Option<Vec<stripe_shared::BillingCreditGrantsResourceApplicablePrice>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for BillingCreditGrantsResourceScope {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("BillingCreditGrantsResourceScope").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct BillingCreditGrantsResourceScopeBuilder {
@@ -154,9 +161,17 @@ impl std::fmt::Display for BillingCreditGrantsResourceScopePriceType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for BillingCreditGrantsResourceScopePriceType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for BillingCreditGrantsResourceScopePriceType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(BillingCreditGrantsResourceScopePriceType))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

@@ -2,7 +2,9 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ListPaymentMethodDomainBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     domain_name: Option<String>,
@@ -17,6 +19,12 @@ struct ListPaymentMethodDomainBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     starting_after: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListPaymentMethodDomainBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListPaymentMethodDomainBuilder").finish_non_exhaustive()
+    }
+}
 impl ListPaymentMethodDomainBuilder {
     fn new() -> Self {
         Self {
@@ -30,9 +38,17 @@ impl ListPaymentMethodDomainBuilder {
     }
 }
 /// Lists the details of existing payment method domains.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListPaymentMethodDomain {
     inner: ListPaymentMethodDomainBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListPaymentMethodDomain {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListPaymentMethodDomain").finish_non_exhaustive()
+    }
 }
 impl ListPaymentMethodDomain {
     /// Construct a new `ListPaymentMethodDomain`.
@@ -113,10 +129,18 @@ impl StripeRequest for ListPaymentMethodDomain {
         RequestBuilder::new(StripeMethod::Get, "/payment_method_domains").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RetrievePaymentMethodDomainBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrievePaymentMethodDomainBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrievePaymentMethodDomainBuilder").finish_non_exhaustive()
+    }
 }
 impl RetrievePaymentMethodDomainBuilder {
     fn new() -> Self {
@@ -124,10 +148,18 @@ impl RetrievePaymentMethodDomainBuilder {
     }
 }
 /// Retrieves the details of an existing payment method domain.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RetrievePaymentMethodDomain {
     inner: RetrievePaymentMethodDomainBuilder,
     payment_method_domain: stripe_payment::PaymentMethodDomainId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrievePaymentMethodDomain {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrievePaymentMethodDomain").finish_non_exhaustive()
+    }
 }
 impl RetrievePaymentMethodDomain {
     /// Construct a new `RetrievePaymentMethodDomain`.
@@ -173,7 +205,9 @@ impl StripeRequest for RetrievePaymentMethodDomain {
         .query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct CreatePaymentMethodDomainBuilder {
     domain_name: String,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -181,15 +215,29 @@ struct CreatePaymentMethodDomainBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodDomainBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodDomainBuilder").finish_non_exhaustive()
+    }
+}
 impl CreatePaymentMethodDomainBuilder {
     fn new(domain_name: impl Into<String>) -> Self {
         Self { domain_name: domain_name.into(), enabled: None, expand: None }
     }
 }
 /// Creates a payment method domain.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodDomain {
     inner: CreatePaymentMethodDomainBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodDomain {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodDomain").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodDomain {
     /// Construct a new `CreatePaymentMethodDomain`.
@@ -233,12 +281,20 @@ impl StripeRequest for CreatePaymentMethodDomain {
         RequestBuilder::new(StripeMethod::Post, "/payment_method_domains").form(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct UpdatePaymentMethodDomainBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     enabled: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodDomainBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodDomainBuilder").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodDomainBuilder {
     fn new() -> Self {
@@ -246,10 +302,18 @@ impl UpdatePaymentMethodDomainBuilder {
     }
 }
 /// Updates an existing payment method domain.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodDomain {
     inner: UpdatePaymentMethodDomainBuilder,
     payment_method_domain: stripe_payment::PaymentMethodDomainId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodDomain {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodDomain").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodDomain {
     /// Construct a new `UpdatePaymentMethodDomain`.
@@ -301,10 +365,18 @@ impl StripeRequest for UpdatePaymentMethodDomain {
         .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ValidatePaymentMethodDomainBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ValidatePaymentMethodDomainBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ValidatePaymentMethodDomainBuilder").finish_non_exhaustive()
+    }
 }
 impl ValidatePaymentMethodDomainBuilder {
     fn new() -> Self {
@@ -318,10 +390,18 @@ impl ValidatePaymentMethodDomainBuilder {
 /// To activate a payment method on an existing payment method domain, complete the required registration steps specific to the payment method, and then validate the payment method domain with this endpoint.
 ///
 /// Related guides: [Payment method domains](https://stripe.com/docs/payments/payment-methods/pmd-registration).
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ValidatePaymentMethodDomain {
     inner: ValidatePaymentMethodDomainBuilder,
     payment_method_domain: stripe_payment::PaymentMethodDomainId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ValidatePaymentMethodDomain {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ValidatePaymentMethodDomain").finish_non_exhaustive()
+    }
 }
 impl ValidatePaymentMethodDomain {
     /// Construct a new `ValidatePaymentMethodDomain`.

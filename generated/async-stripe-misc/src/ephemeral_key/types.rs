@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct EphemeralKey {
     /// Time at which the object was created. Measured in seconds since the Unix epoch.
@@ -12,6 +13,12 @@ pub struct EphemeralKey {
     pub livemode: bool,
     /// The key's secret. You can use this value to make authorized requests to the Stripe API.
     pub secret: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for EphemeralKey {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("EphemeralKey").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct EphemeralKeyBuilder {

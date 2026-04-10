@@ -2,7 +2,9 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ListIssuingAuthorizationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     card: Option<String>,
@@ -21,6 +23,12 @@ struct ListIssuingAuthorizationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     status: Option<stripe_shared::IssuingAuthorizationStatus>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListIssuingAuthorizationBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListIssuingAuthorizationBuilder").finish_non_exhaustive()
+    }
+}
 impl ListIssuingAuthorizationBuilder {
     fn new() -> Self {
         Self {
@@ -37,9 +45,17 @@ impl ListIssuingAuthorizationBuilder {
 }
 /// Returns a list of Issuing `Authorization` objects.
 /// The objects are sorted in descending order by creation date, with the most recently created object appearing first.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListIssuingAuthorization {
     inner: ListIssuingAuthorizationBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListIssuingAuthorization {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListIssuingAuthorization").finish_non_exhaustive()
+    }
 }
 impl ListIssuingAuthorization {
     /// Construct a new `ListIssuingAuthorization`.
@@ -129,10 +145,18 @@ impl StripeRequest for ListIssuingAuthorization {
         RequestBuilder::new(StripeMethod::Get, "/issuing/authorizations").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RetrieveIssuingAuthorizationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveIssuingAuthorizationBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveIssuingAuthorizationBuilder").finish_non_exhaustive()
+    }
 }
 impl RetrieveIssuingAuthorizationBuilder {
     fn new() -> Self {
@@ -140,10 +164,18 @@ impl RetrieveIssuingAuthorizationBuilder {
     }
 }
 /// Retrieves an Issuing `Authorization` object.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RetrieveIssuingAuthorization {
     inner: RetrieveIssuingAuthorizationBuilder,
     authorization: stripe_shared::IssuingAuthorizationId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveIssuingAuthorization {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveIssuingAuthorization").finish_non_exhaustive()
+    }
 }
 impl RetrieveIssuingAuthorization {
     /// Construct a new `RetrieveIssuingAuthorization`.
@@ -186,12 +218,20 @@ impl StripeRequest for RetrieveIssuingAuthorization {
             .query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct UpdateIssuingAuthorizationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     metadata: Option<std::collections::HashMap<String, String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateIssuingAuthorizationBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateIssuingAuthorizationBuilder").finish_non_exhaustive()
+    }
 }
 impl UpdateIssuingAuthorizationBuilder {
     fn new() -> Self {
@@ -200,10 +240,18 @@ impl UpdateIssuingAuthorizationBuilder {
 }
 /// Updates the specified Issuing `Authorization` object by setting the values of the parameters passed.
 /// Any parameters not provided will be left unchanged.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateIssuingAuthorization {
     inner: UpdateIssuingAuthorizationBuilder,
     authorization: stripe_shared::IssuingAuthorizationId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateIssuingAuthorization {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateIssuingAuthorization").finish_non_exhaustive()
+    }
 }
 impl UpdateIssuingAuthorization {
     /// Construct a new `UpdateIssuingAuthorization`.
@@ -257,7 +305,9 @@ impl StripeRequest for UpdateIssuingAuthorization {
             .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ApproveIssuingAuthorizationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     amount: Option<i64>,
@@ -265,6 +315,12 @@ struct ApproveIssuingAuthorizationBuilder {
     expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     metadata: Option<std::collections::HashMap<String, String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ApproveIssuingAuthorizationBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ApproveIssuingAuthorizationBuilder").finish_non_exhaustive()
+    }
 }
 impl ApproveIssuingAuthorizationBuilder {
     fn new() -> Self {
@@ -276,10 +332,18 @@ impl ApproveIssuingAuthorizationBuilder {
 ///
 /// This method is deprecated.
 /// Instead, [respond directly to the webhook request to approve an authorization](https://stripe.com/docs/issuing/controls/real-time-authorizations#authorization-handling).
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ApproveIssuingAuthorization {
     inner: ApproveIssuingAuthorizationBuilder,
     authorization: stripe_shared::IssuingAuthorizationId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ApproveIssuingAuthorization {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ApproveIssuingAuthorization").finish_non_exhaustive()
+    }
 }
 impl ApproveIssuingAuthorization {
     /// Construct a new `ApproveIssuingAuthorization`.
@@ -342,12 +406,20 @@ impl StripeRequest for ApproveIssuingAuthorization {
         .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct DeclineIssuingAuthorizationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     metadata: Option<std::collections::HashMap<String, String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for DeclineIssuingAuthorizationBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("DeclineIssuingAuthorizationBuilder").finish_non_exhaustive()
+    }
 }
 impl DeclineIssuingAuthorizationBuilder {
     fn new() -> Self {
@@ -358,10 +430,18 @@ impl DeclineIssuingAuthorizationBuilder {
 /// This request should be made within the timeout window of the [real time authorization](https://stripe.com/docs/issuing/controls/real-time-authorizations) flow.
 /// This method is deprecated.
 /// Instead, [respond directly to the webhook request to decline an authorization](https://stripe.com/docs/issuing/controls/real-time-authorizations#authorization-handling).
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct DeclineIssuingAuthorization {
     inner: DeclineIssuingAuthorizationBuilder,
     authorization: stripe_shared::IssuingAuthorizationId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for DeclineIssuingAuthorization {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("DeclineIssuingAuthorization").finish_non_exhaustive()
+    }
 }
 impl DeclineIssuingAuthorization {
     /// Construct a new `DeclineIssuingAuthorization`.
@@ -418,7 +498,9 @@ impl StripeRequest for DeclineIssuingAuthorization {
         .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct CreateIssuingAuthorizationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     amount: Option<i64>,
@@ -454,6 +536,12 @@ struct CreateIssuingAuthorizationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     wallet: Option<CreateIssuingAuthorizationWallet>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateIssuingAuthorizationBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateIssuingAuthorizationBuilder").finish_non_exhaustive()
+    }
+}
 impl CreateIssuingAuthorizationBuilder {
     fn new(card: impl Into<String>) -> Self {
         Self {
@@ -479,7 +567,9 @@ impl CreateIssuingAuthorizationBuilder {
 }
 /// Detailed breakdown of amount components.
 /// These amounts are denominated in `currency` and in the [smallest currency unit](https://docs.stripe.com/currencies#zero-decimal).
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateIssuingAuthorizationAmountDetails {
     /// The ATM withdrawal fee.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -487,6 +577,12 @@ pub struct CreateIssuingAuthorizationAmountDetails {
     /// The amount of cash requested by the cardholder.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub cashback_amount: Option<i64>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateIssuingAuthorizationAmountDetails {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateIssuingAuthorizationAmountDetails").finish_non_exhaustive()
+    }
 }
 impl CreateIssuingAuthorizationAmountDetails {
     pub fn new() -> Self {
@@ -499,7 +595,9 @@ impl Default for CreateIssuingAuthorizationAmountDetails {
     }
 }
 /// Fleet-specific information for authorizations using Fleet cards.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateIssuingAuthorizationFleet {
     /// Answers to prompts presented to the cardholder at the point of sale.
     /// Prompted fields vary depending on the configuration of your physical fleet cards.
@@ -516,6 +614,12 @@ pub struct CreateIssuingAuthorizationFleet {
     /// The type of fuel service. One of `non_fuel_transaction`, `full_service`, or `self_service`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub service_type: Option<CreateIssuingAuthorizationFleetServiceType>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateIssuingAuthorizationFleet {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateIssuingAuthorizationFleet").finish_non_exhaustive()
+    }
 }
 impl CreateIssuingAuthorizationFleet {
     pub fn new() -> Self {
@@ -579,9 +683,17 @@ impl std::fmt::Display for CreateIssuingAuthorizationFleetPurchaseType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateIssuingAuthorizationFleetPurchaseType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateIssuingAuthorizationFleetPurchaseType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateIssuingAuthorizationFleetPurchaseType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateIssuingAuthorizationFleetPurchaseType {
@@ -647,9 +759,17 @@ impl std::fmt::Display for CreateIssuingAuthorizationFleetServiceType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateIssuingAuthorizationFleetServiceType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateIssuingAuthorizationFleetServiceType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateIssuingAuthorizationFleetServiceType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateIssuingAuthorizationFleetServiceType {
@@ -720,9 +840,17 @@ impl std::fmt::Display for CreateIssuingAuthorizationFraudDisputabilityLikelihoo
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateIssuingAuthorizationFraudDisputabilityLikelihood {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateIssuingAuthorizationFraudDisputabilityLikelihood {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateIssuingAuthorizationFraudDisputabilityLikelihood))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateIssuingAuthorizationFraudDisputabilityLikelihood {
@@ -742,7 +870,9 @@ impl<'de> serde::Deserialize<'de> for CreateIssuingAuthorizationFraudDisputabili
     }
 }
 /// Information about fuel that was purchased with this transaction.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateIssuingAuthorizationFuel {
     /// [Conexxus Payment System Product Code](https://www.conexxus.org/conexxus-payment-system-product-codes) identifying the primary fuel product purchased.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -762,6 +892,12 @@ pub struct CreateIssuingAuthorizationFuel {
     /// The cost in cents per each unit of fuel, represented as a decimal string with at most 12 decimal places.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_cost_decimal: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateIssuingAuthorizationFuel {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateIssuingAuthorizationFuel").finish_non_exhaustive()
+    }
 }
 impl CreateIssuingAuthorizationFuel {
     pub fn new() -> Self {
@@ -833,9 +969,16 @@ impl std::fmt::Display for CreateIssuingAuthorizationFuelType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateIssuingAuthorizationFuelType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateIssuingAuthorizationFuelType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateIssuingAuthorizationFuelType)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateIssuingAuthorizationFuelType {
@@ -917,9 +1060,16 @@ impl std::fmt::Display for CreateIssuingAuthorizationFuelUnit {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateIssuingAuthorizationFuelUnit {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateIssuingAuthorizationFuelUnit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateIssuingAuthorizationFuelUnit)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateIssuingAuthorizationFuelUnit {
@@ -939,7 +1089,9 @@ impl<'de> serde::Deserialize<'de> for CreateIssuingAuthorizationFuelUnit {
     }
 }
 /// Details about the seller (grocery store, e-commerce website, etc.) where the card authorization happened.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateIssuingAuthorizationMerchantData {
     /// A categorization of the seller's type of business.
     /// See our [merchant categories guide](https://docs.stripe.com/issuing/merchant-categories) for a list of possible values.
@@ -970,6 +1122,12 @@ pub struct CreateIssuingAuthorizationMerchantData {
     /// URL provided by the merchant on a 3DS request
     #[serde(skip_serializing_if = "Option::is_none")]
     pub url: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateIssuingAuthorizationMerchantData {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateIssuingAuthorizationMerchantData").finish_non_exhaustive()
+    }
 }
 impl CreateIssuingAuthorizationMerchantData {
     pub fn new() -> Self {
@@ -2004,9 +2162,17 @@ impl std::fmt::Display for CreateIssuingAuthorizationMerchantDataCategory {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateIssuingAuthorizationMerchantDataCategory {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateIssuingAuthorizationMerchantDataCategory {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateIssuingAuthorizationMerchantDataCategory))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateIssuingAuthorizationMerchantDataCategory {
@@ -2026,11 +2192,19 @@ impl<'de> serde::Deserialize<'de> for CreateIssuingAuthorizationMerchantDataCate
     }
 }
 /// Details about the authorization, such as identifiers, set by the card network.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateIssuingAuthorizationNetworkData {
     /// Identifier assigned to the acquirer by the card network.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub acquiring_institution_id: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateIssuingAuthorizationNetworkData {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateIssuingAuthorizationNetworkData").finish_non_exhaustive()
+    }
 }
 impl CreateIssuingAuthorizationNetworkData {
     pub fn new() -> Self {
@@ -2043,7 +2217,9 @@ impl Default for CreateIssuingAuthorizationNetworkData {
     }
 }
 /// Stripe’s assessment of the fraud risk for this authorization.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateIssuingAuthorizationRiskAssessment {
     /// Stripe's assessment of this authorization's likelihood of being card testing activity.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2054,6 +2230,12 @@ pub struct CreateIssuingAuthorizationRiskAssessment {
     /// The dispute risk of the merchant (the seller on a purchase) on an authorization based on all Stripe Issuing activity.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub merchant_dispute_risk: Option<CreateIssuingAuthorizationRiskAssessmentMerchantDisputeRisk>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateIssuingAuthorizationRiskAssessment {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateIssuingAuthorizationRiskAssessment").finish_non_exhaustive()
+    }
 }
 impl CreateIssuingAuthorizationRiskAssessment {
     pub fn new() -> Self {
@@ -2066,7 +2248,9 @@ impl Default for CreateIssuingAuthorizationRiskAssessment {
     }
 }
 /// Stripe's assessment of this authorization's likelihood of being card testing activity.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateIssuingAuthorizationRiskAssessmentCardTestingRisk {
     /// The % of declines due to a card number not existing in the past hour, taking place at the same merchant.
     /// Higher rates correspond to a greater probability of card testing activity, meaning bad actors may be attempting different card number combinations to guess a correct one.
@@ -2081,6 +2265,13 @@ pub struct CreateIssuingAuthorizationRiskAssessmentCardTestingRisk {
     /// The likelihood that this authorization is associated with card testing activity.
     /// This is assessed by evaluating decline activity over the last hour.
     pub level: CreateIssuingAuthorizationRiskAssessmentCardTestingRiskLevel,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateIssuingAuthorizationRiskAssessmentCardTestingRisk {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateIssuingAuthorizationRiskAssessmentCardTestingRisk")
+            .finish_non_exhaustive()
+    }
 }
 impl CreateIssuingAuthorizationRiskAssessmentCardTestingRisk {
     pub fn new(
@@ -2151,9 +2342,17 @@ impl std::fmt::Display for CreateIssuingAuthorizationRiskAssessmentCardTestingRi
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateIssuingAuthorizationRiskAssessmentCardTestingRiskLevel {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateIssuingAuthorizationRiskAssessmentCardTestingRiskLevel {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateIssuingAuthorizationRiskAssessmentCardTestingRiskLevel))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateIssuingAuthorizationRiskAssessmentCardTestingRiskLevel {
@@ -2173,7 +2372,9 @@ impl<'de> serde::Deserialize<'de> for CreateIssuingAuthorizationRiskAssessmentCa
     }
 }
 /// Stripe’s assessment of this authorization’s likelihood to be fraudulent.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateIssuingAuthorizationRiskAssessmentFraudRisk {
     /// Stripe’s assessment of the likelihood of fraud on an authorization.
     pub level: CreateIssuingAuthorizationRiskAssessmentFraudRiskLevel,
@@ -2181,6 +2382,12 @@ pub struct CreateIssuingAuthorizationRiskAssessmentFraudRisk {
     /// A higher score means a higher likelihood of fraudulent activity, and anything above 25 is considered high risk.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub score: Option<f64>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateIssuingAuthorizationRiskAssessmentFraudRisk {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateIssuingAuthorizationRiskAssessmentFraudRisk").finish_non_exhaustive()
+    }
 }
 impl CreateIssuingAuthorizationRiskAssessmentFraudRisk {
     pub fn new(level: impl Into<CreateIssuingAuthorizationRiskAssessmentFraudRiskLevel>) -> Self {
@@ -2244,9 +2451,17 @@ impl std::fmt::Display for CreateIssuingAuthorizationRiskAssessmentFraudRiskLeve
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateIssuingAuthorizationRiskAssessmentFraudRiskLevel {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateIssuingAuthorizationRiskAssessmentFraudRiskLevel {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateIssuingAuthorizationRiskAssessmentFraudRiskLevel))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateIssuingAuthorizationRiskAssessmentFraudRiskLevel {
@@ -2266,7 +2481,9 @@ impl<'de> serde::Deserialize<'de> for CreateIssuingAuthorizationRiskAssessmentFr
     }
 }
 /// The dispute risk of the merchant (the seller on a purchase) on an authorization based on all Stripe Issuing activity.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateIssuingAuthorizationRiskAssessmentMerchantDisputeRisk {
     /// The dispute rate observed across all Stripe Issuing authorizations for this merchant.
     /// For example, a value of 50 means 50% of authorizations from this merchant on Stripe Issuing have resulted in a dispute.
@@ -2276,6 +2493,13 @@ pub struct CreateIssuingAuthorizationRiskAssessmentMerchantDisputeRisk {
     pub dispute_rate: Option<i64>,
     /// The likelihood that authorizations from this merchant will result in a dispute based on their history on Stripe Issuing.
     pub level: CreateIssuingAuthorizationRiskAssessmentMerchantDisputeRiskLevel,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateIssuingAuthorizationRiskAssessmentMerchantDisputeRisk {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateIssuingAuthorizationRiskAssessmentMerchantDisputeRisk")
+            .finish_non_exhaustive()
+    }
 }
 impl CreateIssuingAuthorizationRiskAssessmentMerchantDisputeRisk {
     pub fn new(
@@ -2341,9 +2565,17 @@ impl std::fmt::Display for CreateIssuingAuthorizationRiskAssessmentMerchantDispu
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateIssuingAuthorizationRiskAssessmentMerchantDisputeRiskLevel {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateIssuingAuthorizationRiskAssessmentMerchantDisputeRiskLevel {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateIssuingAuthorizationRiskAssessmentMerchantDisputeRiskLevel))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateIssuingAuthorizationRiskAssessmentMerchantDisputeRiskLevel {
@@ -2365,7 +2597,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Verifications that Stripe performed on information that the cardholder provided to the merchant.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateIssuingAuthorizationVerificationData {
     /// Whether the cardholder provided an address first line and if it matched the cardholder’s `billing.address.line1`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2387,6 +2621,12 @@ pub struct CreateIssuingAuthorizationVerificationData {
     /// 3D Secure details.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub three_d_secure: Option<CreateIssuingAuthorizationVerificationDataThreeDSecure>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateIssuingAuthorizationVerificationData {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateIssuingAuthorizationVerificationData").finish_non_exhaustive()
+    }
 }
 impl CreateIssuingAuthorizationVerificationData {
     pub fn new() -> Self {
@@ -2452,9 +2692,17 @@ impl std::fmt::Display for CreateIssuingAuthorizationVerificationDataAddressLine
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateIssuingAuthorizationVerificationDataAddressLine1Check {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateIssuingAuthorizationVerificationDataAddressLine1Check {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateIssuingAuthorizationVerificationDataAddressLine1Check))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateIssuingAuthorizationVerificationDataAddressLine1Check {
@@ -2520,9 +2768,17 @@ impl std::fmt::Display for CreateIssuingAuthorizationVerificationDataAddressPost
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateIssuingAuthorizationVerificationDataAddressPostalCodeCheck {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateIssuingAuthorizationVerificationDataAddressPostalCodeCheck {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateIssuingAuthorizationVerificationDataAddressPostalCodeCheck))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateIssuingAuthorizationVerificationDataAddressPostalCodeCheck {
@@ -2544,13 +2800,22 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// The exemption applied to this authorization.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateIssuingAuthorizationVerificationDataAuthenticationExemption {
     /// The entity that requested the exemption, either the acquiring merchant or the Issuing user.
     pub claimed_by: CreateIssuingAuthorizationVerificationDataAuthenticationExemptionClaimedBy,
     /// The specific exemption claimed for this authorization.
     #[serde(rename = "type")]
     pub type_: CreateIssuingAuthorizationVerificationDataAuthenticationExemptionType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateIssuingAuthorizationVerificationDataAuthenticationExemption {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateIssuingAuthorizationVerificationDataAuthenticationExemption")
+            .finish_non_exhaustive()
+    }
 }
 impl CreateIssuingAuthorizationVerificationDataAuthenticationExemption {
     pub fn new(
@@ -2610,11 +2875,23 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for CreateIssuingAuthorizationVerificationDataAuthenticationExemptionClaimedBy
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for CreateIssuingAuthorizationVerificationDataAuthenticationExemptionClaimedBy
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreateIssuingAuthorizationVerificationDataAuthenticationExemptionClaimedBy
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -2685,9 +2962,19 @@ impl std::fmt::Display for CreateIssuingAuthorizationVerificationDataAuthenticat
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateIssuingAuthorizationVerificationDataAuthenticationExemptionType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateIssuingAuthorizationVerificationDataAuthenticationExemptionType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreateIssuingAuthorizationVerificationDataAuthenticationExemptionType
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateIssuingAuthorizationVerificationDataAuthenticationExemptionType {
@@ -2755,9 +3042,17 @@ impl std::fmt::Display for CreateIssuingAuthorizationVerificationDataCvcCheck {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateIssuingAuthorizationVerificationDataCvcCheck {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateIssuingAuthorizationVerificationDataCvcCheck {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateIssuingAuthorizationVerificationDataCvcCheck))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateIssuingAuthorizationVerificationDataCvcCheck {
@@ -2823,9 +3118,17 @@ impl std::fmt::Display for CreateIssuingAuthorizationVerificationDataExpiryCheck
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateIssuingAuthorizationVerificationDataExpiryCheck {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateIssuingAuthorizationVerificationDataExpiryCheck {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateIssuingAuthorizationVerificationDataExpiryCheck))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateIssuingAuthorizationVerificationDataExpiryCheck {
@@ -2845,10 +3148,19 @@ impl<'de> serde::Deserialize<'de> for CreateIssuingAuthorizationVerificationData
     }
 }
 /// 3D Secure details.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateIssuingAuthorizationVerificationDataThreeDSecure {
     /// The outcome of the 3D Secure authentication request.
     pub result: CreateIssuingAuthorizationVerificationDataThreeDSecureResult,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateIssuingAuthorizationVerificationDataThreeDSecure {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateIssuingAuthorizationVerificationDataThreeDSecure")
+            .finish_non_exhaustive()
+    }
 }
 impl CreateIssuingAuthorizationVerificationDataThreeDSecure {
     pub fn new(
@@ -2907,9 +3219,17 @@ impl std::fmt::Display for CreateIssuingAuthorizationVerificationDataThreeDSecur
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateIssuingAuthorizationVerificationDataThreeDSecureResult {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateIssuingAuthorizationVerificationDataThreeDSecureResult {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateIssuingAuthorizationVerificationDataThreeDSecureResult))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateIssuingAuthorizationVerificationDataThreeDSecureResult {
@@ -2977,9 +3297,16 @@ impl std::fmt::Display for CreateIssuingAuthorizationWallet {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateIssuingAuthorizationWallet {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateIssuingAuthorizationWallet {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateIssuingAuthorizationWallet)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateIssuingAuthorizationWallet {
@@ -2999,9 +3326,17 @@ impl<'de> serde::Deserialize<'de> for CreateIssuingAuthorizationWallet {
     }
 }
 /// Create a test-mode authorization.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateIssuingAuthorization {
     inner: CreateIssuingAuthorizationBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateIssuingAuthorization {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateIssuingAuthorization").finish_non_exhaustive()
+    }
 }
 impl CreateIssuingAuthorization {
     /// Construct a new `CreateIssuingAuthorization`.
@@ -3153,7 +3488,9 @@ impl StripeRequest for CreateIssuingAuthorization {
             .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct CaptureIssuingAuthorizationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     capture_amount: Option<i64>,
@@ -3163,6 +3500,12 @@ struct CaptureIssuingAuthorizationBuilder {
     expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     purchase_details: Option<CaptureIssuingAuthorizationPurchaseDetails>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CaptureIssuingAuthorizationBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CaptureIssuingAuthorizationBuilder").finish_non_exhaustive()
+    }
 }
 impl CaptureIssuingAuthorizationBuilder {
     fn new() -> Self {
@@ -3175,7 +3518,9 @@ impl CaptureIssuingAuthorizationBuilder {
     }
 }
 /// Additional purchase information that is optionally provided by the merchant.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CaptureIssuingAuthorizationPurchaseDetails {
     /// Fleet-specific information for transactions using Fleet cards.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3196,6 +3541,12 @@ pub struct CaptureIssuingAuthorizationPurchaseDetails {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reference: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CaptureIssuingAuthorizationPurchaseDetails {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CaptureIssuingAuthorizationPurchaseDetails").finish_non_exhaustive()
+    }
+}
 impl CaptureIssuingAuthorizationPurchaseDetails {
     pub fn new() -> Self {
         Self {
@@ -3214,7 +3565,9 @@ impl Default for CaptureIssuingAuthorizationPurchaseDetails {
     }
 }
 /// Fleet-specific information for transactions using Fleet cards.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CaptureIssuingAuthorizationPurchaseDetailsFleet {
     /// Answers to prompts presented to the cardholder at the point of sale.
     /// Prompted fields vary depending on the configuration of your physical fleet cards.
@@ -3231,6 +3584,12 @@ pub struct CaptureIssuingAuthorizationPurchaseDetailsFleet {
     /// The type of fuel service. One of `non_fuel_transaction`, `full_service`, or `self_service`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub service_type: Option<CaptureIssuingAuthorizationPurchaseDetailsFleetServiceType>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CaptureIssuingAuthorizationPurchaseDetailsFleet {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CaptureIssuingAuthorizationPurchaseDetailsFleet").finish_non_exhaustive()
+    }
 }
 impl CaptureIssuingAuthorizationPurchaseDetailsFleet {
     pub fn new() -> Self {
@@ -3294,9 +3653,17 @@ impl std::fmt::Display for CaptureIssuingAuthorizationPurchaseDetailsFleetPurcha
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CaptureIssuingAuthorizationPurchaseDetailsFleetPurchaseType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CaptureIssuingAuthorizationPurchaseDetailsFleetPurchaseType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CaptureIssuingAuthorizationPurchaseDetailsFleetPurchaseType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CaptureIssuingAuthorizationPurchaseDetailsFleetPurchaseType {
@@ -3362,9 +3729,17 @@ impl std::fmt::Display for CaptureIssuingAuthorizationPurchaseDetailsFleetServic
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CaptureIssuingAuthorizationPurchaseDetailsFleetServiceType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CaptureIssuingAuthorizationPurchaseDetailsFleetServiceType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CaptureIssuingAuthorizationPurchaseDetailsFleetServiceType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CaptureIssuingAuthorizationPurchaseDetailsFleetServiceType {
@@ -3384,7 +3759,9 @@ impl<'de> serde::Deserialize<'de> for CaptureIssuingAuthorizationPurchaseDetails
     }
 }
 /// Information about the flight that was purchased with this transaction.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CaptureIssuingAuthorizationPurchaseDetailsFlight {
     /// The time that the flight departed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3401,6 +3778,12 @@ pub struct CaptureIssuingAuthorizationPurchaseDetailsFlight {
     /// The travel agency that issued the ticket.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub travel_agency: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CaptureIssuingAuthorizationPurchaseDetailsFlight {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CaptureIssuingAuthorizationPurchaseDetailsFlight").finish_non_exhaustive()
+    }
 }
 impl CaptureIssuingAuthorizationPurchaseDetailsFlight {
     pub fn new() -> Self {
@@ -3419,7 +3802,9 @@ impl Default for CaptureIssuingAuthorizationPurchaseDetailsFlight {
     }
 }
 /// The legs of the trip.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CaptureIssuingAuthorizationPurchaseDetailsFlightSegments {
     /// The three-letter IATA airport code of the flight's destination.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3440,6 +3825,13 @@ pub struct CaptureIssuingAuthorizationPurchaseDetailsFlightSegments {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub stopover_allowed: Option<bool>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CaptureIssuingAuthorizationPurchaseDetailsFlightSegments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CaptureIssuingAuthorizationPurchaseDetailsFlightSegments")
+            .finish_non_exhaustive()
+    }
+}
 impl CaptureIssuingAuthorizationPurchaseDetailsFlightSegments {
     pub fn new() -> Self {
         Self {
@@ -3458,7 +3850,9 @@ impl Default for CaptureIssuingAuthorizationPurchaseDetailsFlightSegments {
     }
 }
 /// Information about fuel that was purchased with this transaction.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CaptureIssuingAuthorizationPurchaseDetailsFuel {
     /// [Conexxus Payment System Product Code](https://www.conexxus.org/conexxus-payment-system-product-codes) identifying the primary fuel product purchased.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3478,6 +3872,12 @@ pub struct CaptureIssuingAuthorizationPurchaseDetailsFuel {
     /// The cost in cents per each unit of fuel, represented as a decimal string with at most 12 decimal places.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_cost_decimal: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CaptureIssuingAuthorizationPurchaseDetailsFuel {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CaptureIssuingAuthorizationPurchaseDetailsFuel").finish_non_exhaustive()
+    }
 }
 impl CaptureIssuingAuthorizationPurchaseDetailsFuel {
     pub fn new() -> Self {
@@ -3549,9 +3949,17 @@ impl std::fmt::Display for CaptureIssuingAuthorizationPurchaseDetailsFuelType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CaptureIssuingAuthorizationPurchaseDetailsFuelType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CaptureIssuingAuthorizationPurchaseDetailsFuelType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CaptureIssuingAuthorizationPurchaseDetailsFuelType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CaptureIssuingAuthorizationPurchaseDetailsFuelType {
@@ -3633,9 +4041,17 @@ impl std::fmt::Display for CaptureIssuingAuthorizationPurchaseDetailsFuelUnit {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CaptureIssuingAuthorizationPurchaseDetailsFuelUnit {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CaptureIssuingAuthorizationPurchaseDetailsFuelUnit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CaptureIssuingAuthorizationPurchaseDetailsFuelUnit))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CaptureIssuingAuthorizationPurchaseDetailsFuelUnit {
@@ -3655,7 +4071,9 @@ impl<'de> serde::Deserialize<'de> for CaptureIssuingAuthorizationPurchaseDetails
     }
 }
 /// Information about lodging that was purchased with this transaction.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CaptureIssuingAuthorizationPurchaseDetailsLodging {
     /// The time of checking into the lodging.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3663,6 +4081,12 @@ pub struct CaptureIssuingAuthorizationPurchaseDetailsLodging {
     /// The number of nights stayed at the lodging.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub nights: Option<i64>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CaptureIssuingAuthorizationPurchaseDetailsLodging {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CaptureIssuingAuthorizationPurchaseDetailsLodging").finish_non_exhaustive()
+    }
 }
 impl CaptureIssuingAuthorizationPurchaseDetailsLodging {
     pub fn new() -> Self {
@@ -3675,7 +4099,9 @@ impl Default for CaptureIssuingAuthorizationPurchaseDetailsLodging {
     }
 }
 /// The line items in the purchase.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CaptureIssuingAuthorizationPurchaseDetailsReceipt {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
@@ -3685,6 +4111,12 @@ pub struct CaptureIssuingAuthorizationPurchaseDetailsReceipt {
     pub total: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_cost: Option<i64>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CaptureIssuingAuthorizationPurchaseDetailsReceipt {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CaptureIssuingAuthorizationPurchaseDetailsReceipt").finish_non_exhaustive()
+    }
 }
 impl CaptureIssuingAuthorizationPurchaseDetailsReceipt {
     pub fn new() -> Self {
@@ -3697,10 +4129,18 @@ impl Default for CaptureIssuingAuthorizationPurchaseDetailsReceipt {
     }
 }
 /// Capture a test-mode authorization.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CaptureIssuingAuthorization {
     inner: CaptureIssuingAuthorizationBuilder,
     authorization: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CaptureIssuingAuthorization {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CaptureIssuingAuthorization").finish_non_exhaustive()
+    }
 }
 impl CaptureIssuingAuthorization {
     /// Construct a new `CaptureIssuingAuthorization`.
@@ -3768,10 +4208,18 @@ impl StripeRequest for CaptureIssuingAuthorization {
         .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ExpireIssuingAuthorizationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ExpireIssuingAuthorizationBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ExpireIssuingAuthorizationBuilder").finish_non_exhaustive()
+    }
 }
 impl ExpireIssuingAuthorizationBuilder {
     fn new() -> Self {
@@ -3779,10 +4227,18 @@ impl ExpireIssuingAuthorizationBuilder {
     }
 }
 /// Expire a test-mode Authorization.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ExpireIssuingAuthorization {
     inner: ExpireIssuingAuthorizationBuilder,
     authorization: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ExpireIssuingAuthorization {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ExpireIssuingAuthorization").finish_non_exhaustive()
+    }
 }
 impl ExpireIssuingAuthorization {
     /// Construct a new `ExpireIssuingAuthorization`.
@@ -3828,7 +4284,9 @@ impl StripeRequest for ExpireIssuingAuthorization {
         .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct FinalizeAmountIssuingAuthorizationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -3838,13 +4296,21 @@ struct FinalizeAmountIssuingAuthorizationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     fuel: Option<FinalizeAmountIssuingAuthorizationFuel>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for FinalizeAmountIssuingAuthorizationBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("FinalizeAmountIssuingAuthorizationBuilder").finish_non_exhaustive()
+    }
+}
 impl FinalizeAmountIssuingAuthorizationBuilder {
     fn new(final_amount: impl Into<i64>) -> Self {
         Self { expand: None, final_amount: final_amount.into(), fleet: None, fuel: None }
     }
 }
 /// Fleet-specific information for authorizations using Fleet cards.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct FinalizeAmountIssuingAuthorizationFleet {
     /// Answers to prompts presented to the cardholder at the point of sale.
     /// Prompted fields vary depending on the configuration of your physical fleet cards.
@@ -3861,6 +4327,12 @@ pub struct FinalizeAmountIssuingAuthorizationFleet {
     /// The type of fuel service. One of `non_fuel_transaction`, `full_service`, or `self_service`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub service_type: Option<FinalizeAmountIssuingAuthorizationFleetServiceType>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for FinalizeAmountIssuingAuthorizationFleet {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("FinalizeAmountIssuingAuthorizationFleet").finish_non_exhaustive()
+    }
 }
 impl FinalizeAmountIssuingAuthorizationFleet {
     pub fn new() -> Self {
@@ -3924,9 +4396,17 @@ impl std::fmt::Display for FinalizeAmountIssuingAuthorizationFleetPurchaseType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for FinalizeAmountIssuingAuthorizationFleetPurchaseType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for FinalizeAmountIssuingAuthorizationFleetPurchaseType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(FinalizeAmountIssuingAuthorizationFleetPurchaseType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for FinalizeAmountIssuingAuthorizationFleetPurchaseType {
@@ -3992,9 +4472,17 @@ impl std::fmt::Display for FinalizeAmountIssuingAuthorizationFleetServiceType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for FinalizeAmountIssuingAuthorizationFleetServiceType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for FinalizeAmountIssuingAuthorizationFleetServiceType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(FinalizeAmountIssuingAuthorizationFleetServiceType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for FinalizeAmountIssuingAuthorizationFleetServiceType {
@@ -4014,7 +4502,9 @@ impl<'de> serde::Deserialize<'de> for FinalizeAmountIssuingAuthorizationFleetSer
     }
 }
 /// Information about fuel that was purchased with this transaction.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct FinalizeAmountIssuingAuthorizationFuel {
     /// [Conexxus Payment System Product Code](https://www.conexxus.org/conexxus-payment-system-product-codes) identifying the primary fuel product purchased.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4034,6 +4524,12 @@ pub struct FinalizeAmountIssuingAuthorizationFuel {
     /// The cost in cents per each unit of fuel, represented as a decimal string with at most 12 decimal places.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_cost_decimal: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for FinalizeAmountIssuingAuthorizationFuel {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("FinalizeAmountIssuingAuthorizationFuel").finish_non_exhaustive()
+    }
 }
 impl FinalizeAmountIssuingAuthorizationFuel {
     pub fn new() -> Self {
@@ -4105,9 +4601,17 @@ impl std::fmt::Display for FinalizeAmountIssuingAuthorizationFuelType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for FinalizeAmountIssuingAuthorizationFuelType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for FinalizeAmountIssuingAuthorizationFuelType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(FinalizeAmountIssuingAuthorizationFuelType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for FinalizeAmountIssuingAuthorizationFuelType {
@@ -4189,9 +4693,17 @@ impl std::fmt::Display for FinalizeAmountIssuingAuthorizationFuelUnit {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for FinalizeAmountIssuingAuthorizationFuelUnit {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for FinalizeAmountIssuingAuthorizationFuelUnit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(FinalizeAmountIssuingAuthorizationFuelUnit))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for FinalizeAmountIssuingAuthorizationFuelUnit {
@@ -4211,10 +4723,18 @@ impl<'de> serde::Deserialize<'de> for FinalizeAmountIssuingAuthorizationFuelUnit
     }
 }
 /// Finalize the amount on an Authorization prior to capture, when the initial authorization was for an estimated amount.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct FinalizeAmountIssuingAuthorization {
     inner: FinalizeAmountIssuingAuthorizationBuilder,
     authorization: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for FinalizeAmountIssuingAuthorization {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("FinalizeAmountIssuingAuthorization").finish_non_exhaustive()
+    }
 }
 impl FinalizeAmountIssuingAuthorization {
     /// Construct a new `FinalizeAmountIssuingAuthorization`.
@@ -4270,11 +4790,19 @@ impl StripeRequest for FinalizeAmountIssuingAuthorization {
         .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RespondIssuingAuthorizationBuilder {
     confirmed: bool,
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RespondIssuingAuthorizationBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RespondIssuingAuthorizationBuilder").finish_non_exhaustive()
+    }
 }
 impl RespondIssuingAuthorizationBuilder {
     fn new(confirmed: impl Into<bool>) -> Self {
@@ -4282,10 +4810,18 @@ impl RespondIssuingAuthorizationBuilder {
     }
 }
 /// Respond to a fraud challenge on a testmode Issuing authorization, simulating either a confirmation of fraud or a correction of legitimacy.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RespondIssuingAuthorization {
     inner: RespondIssuingAuthorizationBuilder,
     authorization: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RespondIssuingAuthorization {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RespondIssuingAuthorization").finish_non_exhaustive()
+    }
 }
 impl RespondIssuingAuthorization {
     /// Construct a new `RespondIssuingAuthorization`.
@@ -4333,13 +4869,21 @@ impl StripeRequest for RespondIssuingAuthorization {
         .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct IncrementIssuingAuthorizationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
     increment_amount: i64,
     #[serde(skip_serializing_if = "Option::is_none")]
     is_amount_controllable: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for IncrementIssuingAuthorizationBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("IncrementIssuingAuthorizationBuilder").finish_non_exhaustive()
+    }
 }
 impl IncrementIssuingAuthorizationBuilder {
     fn new(increment_amount: impl Into<i64>) -> Self {
@@ -4351,10 +4895,18 @@ impl IncrementIssuingAuthorizationBuilder {
     }
 }
 /// Increment a test-mode Authorization.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct IncrementIssuingAuthorization {
     inner: IncrementIssuingAuthorizationBuilder,
     authorization: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for IncrementIssuingAuthorization {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("IncrementIssuingAuthorization").finish_non_exhaustive()
+    }
 }
 impl IncrementIssuingAuthorization {
     /// Construct a new `IncrementIssuingAuthorization`.
@@ -4405,12 +4957,20 @@ impl StripeRequest for IncrementIssuingAuthorization {
         .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ReverseIssuingAuthorizationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     reverse_amount: Option<i64>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ReverseIssuingAuthorizationBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ReverseIssuingAuthorizationBuilder").finish_non_exhaustive()
+    }
 }
 impl ReverseIssuingAuthorizationBuilder {
     fn new() -> Self {
@@ -4418,10 +4978,18 @@ impl ReverseIssuingAuthorizationBuilder {
     }
 }
 /// Reverse a test-mode Authorization.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ReverseIssuingAuthorization {
     inner: ReverseIssuingAuthorizationBuilder,
     authorization: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ReverseIssuingAuthorization {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ReverseIssuingAuthorization").finish_non_exhaustive()
+    }
 }
 impl ReverseIssuingAuthorization {
     /// Construct a new `ReverseIssuingAuthorization`.
@@ -4475,7 +5043,9 @@ impl StripeRequest for ReverseIssuingAuthorization {
     }
 }
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct FleetCardholderPromptDataSpecs {
     /// Driver ID.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4494,6 +5064,12 @@ pub struct FleetCardholderPromptDataSpecs {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub vehicle_number: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for FleetCardholderPromptDataSpecs {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("FleetCardholderPromptDataSpecs").finish_non_exhaustive()
+    }
+}
 impl FleetCardholderPromptDataSpecs {
     pub fn new() -> Self {
         Self {
@@ -4510,11 +5086,19 @@ impl Default for FleetCardholderPromptDataSpecs {
         Self::new()
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct FleetReportedBreakdownFuelSpecs {
     /// Gross fuel amount that should equal Fuel Volume multipled by Fuel Unit Cost, inclusive of taxes.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub gross_amount_decimal: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for FleetReportedBreakdownFuelSpecs {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("FleetReportedBreakdownFuelSpecs").finish_non_exhaustive()
+    }
 }
 impl FleetReportedBreakdownFuelSpecs {
     pub fn new() -> Self {
@@ -4526,11 +5110,19 @@ impl Default for FleetReportedBreakdownFuelSpecs {
         Self::new()
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct FleetReportedBreakdownNonFuelSpecs {
     /// Gross non-fuel amount that should equal the sum of the line items, inclusive of taxes.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub gross_amount_decimal: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for FleetReportedBreakdownNonFuelSpecs {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("FleetReportedBreakdownNonFuelSpecs").finish_non_exhaustive()
+    }
 }
 impl FleetReportedBreakdownNonFuelSpecs {
     pub fn new() -> Self {
@@ -4542,7 +5134,9 @@ impl Default for FleetReportedBreakdownNonFuelSpecs {
         Self::new()
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct FleetReportedBreakdownTaxSpecs {
     /// Amount of state or provincial Sales Tax included in the transaction amount.
     /// Null if not reported by merchant or not subject to tax.
@@ -4552,6 +5146,12 @@ pub struct FleetReportedBreakdownTaxSpecs {
     /// Null if not reported by merchant or not subject to tax.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub national_amount_decimal: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for FleetReportedBreakdownTaxSpecs {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("FleetReportedBreakdownTaxSpecs").finish_non_exhaustive()
+    }
 }
 impl FleetReportedBreakdownTaxSpecs {
     pub fn new() -> Self {
@@ -4563,7 +5163,9 @@ impl Default for FleetReportedBreakdownTaxSpecs {
         Self::new()
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct FleetReportedBreakdownSpecs {
     /// Breakdown of fuel portion of the purchase.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4574,6 +5176,12 @@ pub struct FleetReportedBreakdownSpecs {
     /// Information about tax included in this transaction.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax: Option<FleetReportedBreakdownTaxSpecs>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for FleetReportedBreakdownSpecs {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("FleetReportedBreakdownSpecs").finish_non_exhaustive()
+    }
 }
 impl FleetReportedBreakdownSpecs {
     pub fn new() -> Self {

@@ -1,4 +1,5 @@
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentMethodDetailsPaymentRecordSofort {
@@ -23,6 +24,12 @@ pub struct PaymentMethodDetailsPaymentRecordSofort {
     /// Values are verified or provided by SOFORT directly (if supported) at the time of authorization or settlement.
     /// They cannot be set or mutated.
     pub verified_name: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentMethodDetailsPaymentRecordSofort {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PaymentMethodDetailsPaymentRecordSofort").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct PaymentMethodDetailsPaymentRecordSofortBuilder {
@@ -246,9 +253,17 @@ impl std::fmt::Display for PaymentMethodDetailsPaymentRecordSofortPreferredLangu
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for PaymentMethodDetailsPaymentRecordSofortPreferredLanguage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentMethodDetailsPaymentRecordSofortPreferredLanguage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(PaymentMethodDetailsPaymentRecordSofortPreferredLanguage))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

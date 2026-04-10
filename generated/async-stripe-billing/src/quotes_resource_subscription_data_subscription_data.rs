@@ -1,4 +1,5 @@
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct QuotesResourceSubscriptionDataSubscriptionData {
@@ -18,6 +19,12 @@ pub struct QuotesResourceSubscriptionDataSubscriptionData {
     pub metadata: Option<std::collections::HashMap<String, String>>,
     /// Integer representing the number of trial period days before the customer is charged for the first time.
     pub trial_period_days: Option<u32>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for QuotesResourceSubscriptionDataSubscriptionData {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("QuotesResourceSubscriptionDataSubscriptionData").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct QuotesResourceSubscriptionDataSubscriptionDataBuilder {

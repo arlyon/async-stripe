@@ -2,7 +2,9 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct CreateBillingMeterEventBuilder {
     event_name: String,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -12,6 +14,12 @@ struct CreateBillingMeterEventBuilder {
     payload: std::collections::HashMap<String, String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     timestamp: Option<stripe_types::Timestamp>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateBillingMeterEventBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateBillingMeterEventBuilder").finish_non_exhaustive()
+    }
 }
 impl CreateBillingMeterEventBuilder {
     fn new(
@@ -28,9 +36,17 @@ impl CreateBillingMeterEventBuilder {
     }
 }
 /// Creates a billing meter event.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateBillingMeterEvent {
     inner: CreateBillingMeterEventBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateBillingMeterEvent {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateBillingMeterEvent").finish_non_exhaustive()
+    }
 }
 impl CreateBillingMeterEvent {
     /// Construct a new `CreateBillingMeterEvent`.

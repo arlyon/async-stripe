@@ -2,7 +2,9 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ListIdentityVerificationReportBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     client_reference_id: Option<String>,
@@ -21,6 +23,12 @@ struct ListIdentityVerificationReportBuilder {
     type_: Option<ListIdentityVerificationReportType>,
     #[serde(skip_serializing_if = "Option::is_none")]
     verification_session: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListIdentityVerificationReportBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListIdentityVerificationReportBuilder").finish_non_exhaustive()
+    }
 }
 impl ListIdentityVerificationReportBuilder {
     fn new() -> Self {
@@ -80,9 +88,16 @@ impl std::fmt::Display for ListIdentityVerificationReportType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ListIdentityVerificationReportType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListIdentityVerificationReportType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ListIdentityVerificationReportType)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ListIdentityVerificationReportType {
@@ -102,9 +117,17 @@ impl<'de> serde::Deserialize<'de> for ListIdentityVerificationReportType {
     }
 }
 /// List all verification reports.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListIdentityVerificationReport {
     inner: ListIdentityVerificationReportBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListIdentityVerificationReport {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListIdentityVerificationReport").finish_non_exhaustive()
+    }
 }
 impl ListIdentityVerificationReport {
     /// Construct a new `ListIdentityVerificationReport`.
@@ -197,10 +220,18 @@ impl StripeRequest for ListIdentityVerificationReport {
         RequestBuilder::new(StripeMethod::Get, "/identity/verification_reports").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RetrieveIdentityVerificationReportBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveIdentityVerificationReportBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveIdentityVerificationReportBuilder").finish_non_exhaustive()
+    }
 }
 impl RetrieveIdentityVerificationReportBuilder {
     fn new() -> Self {
@@ -208,10 +239,18 @@ impl RetrieveIdentityVerificationReportBuilder {
     }
 }
 /// Retrieves an existing VerificationReport
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RetrieveIdentityVerificationReport {
     inner: RetrieveIdentityVerificationReportBuilder,
     report: stripe_misc::IdentityVerificationReportId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveIdentityVerificationReport {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveIdentityVerificationReport").finish_non_exhaustive()
+    }
 }
 impl RetrieveIdentityVerificationReport {
     /// Construct a new `RetrieveIdentityVerificationReport`.

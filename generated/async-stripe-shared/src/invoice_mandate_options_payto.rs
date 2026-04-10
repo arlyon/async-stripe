@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct InvoiceMandateOptionsPayto {
@@ -9,6 +10,12 @@ pub struct InvoiceMandateOptionsPayto {
     pub amount_type: Option<InvoiceMandateOptionsPaytoAmountType>,
     /// The purpose for which payments are made. Has a default value based on your merchant category code.
     pub purpose: Option<InvoiceMandateOptionsPaytoPurpose>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for InvoiceMandateOptionsPayto {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("InvoiceMandateOptionsPayto").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct InvoiceMandateOptionsPaytoBuilder {
@@ -159,9 +166,16 @@ impl std::fmt::Display for InvoiceMandateOptionsPaytoAmountType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for InvoiceMandateOptionsPaytoAmountType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for InvoiceMandateOptionsPaytoAmountType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(InvoiceMandateOptionsPaytoAmountType)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -267,9 +281,16 @@ impl std::fmt::Display for InvoiceMandateOptionsPaytoPurpose {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for InvoiceMandateOptionsPaytoPurpose {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for InvoiceMandateOptionsPaytoPurpose {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(InvoiceMandateOptionsPaytoPurpose)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

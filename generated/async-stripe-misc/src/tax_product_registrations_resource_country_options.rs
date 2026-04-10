@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TaxProductRegistrationsResourceCountryOptions {
@@ -104,6 +105,12 @@ pub struct TaxProductRegistrationsResourceCountryOptions {
     pub za: Option<stripe_misc::TaxProductRegistrationsResourceCountryOptionsDefault>,
     pub zm: Option<stripe_misc::TaxProductRegistrationsResourceCountryOptionsSimplified>,
     pub zw: Option<stripe_misc::TaxProductRegistrationsResourceCountryOptionsDefault>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TaxProductRegistrationsResourceCountryOptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("TaxProductRegistrationsResourceCountryOptions").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct TaxProductRegistrationsResourceCountryOptionsBuilder {

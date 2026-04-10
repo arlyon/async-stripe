@@ -1,5 +1,6 @@
 /// Details about the Payment Method used in this payment attempt.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentsPrimitivesPaymentRecordsResourcePaymentMethodDetails {
@@ -75,6 +76,13 @@ pub struct PaymentsPrimitivesPaymentRecordsResourcePaymentMethodDetails {
     pub wechat: Option<stripe_shared::PaymentMethodDetailsWechat>,
     pub wechat_pay: Option<stripe_shared::PaymentMethodDetailsPaymentRecordWechatPay>,
     pub zip: Option<stripe_shared::PaymentMethodDetailsPaymentRecordZip>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentsPrimitivesPaymentRecordsResourcePaymentMethodDetails {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PaymentsPrimitivesPaymentRecordsResourcePaymentMethodDetails")
+            .finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct PaymentsPrimitivesPaymentRecordsResourcePaymentMethodDetailsBuilder {

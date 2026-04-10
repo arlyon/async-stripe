@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct IssuingCardholderRequirements {
@@ -6,6 +7,12 @@ pub struct IssuingCardholderRequirements {
     pub disabled_reason: Option<IssuingCardholderRequirementsDisabledReason>,
     /// Array of fields that need to be collected in order to verify and re-enable the cardholder.
     pub past_due: Option<Vec<IssuingCardholderRequirementsPastDue>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for IssuingCardholderRequirements {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("IssuingCardholderRequirements").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct IssuingCardholderRequirementsBuilder {
@@ -155,9 +162,17 @@ impl std::fmt::Display for IssuingCardholderRequirementsDisabledReason {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for IssuingCardholderRequirementsDisabledReason {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for IssuingCardholderRequirementsDisabledReason {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(IssuingCardholderRequirementsDisabledReason))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -266,9 +281,16 @@ impl std::fmt::Display for IssuingCardholderRequirementsPastDue {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for IssuingCardholderRequirementsPastDue {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for IssuingCardholderRequirementsPastDue {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(IssuingCardholderRequirementsPastDue)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

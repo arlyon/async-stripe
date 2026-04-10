@@ -1,5 +1,6 @@
 /// The delivery of a specified quantity of carbon for an order.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct ClimateRemovalsOrderDeliveries {
@@ -12,6 +13,12 @@ pub struct ClimateRemovalsOrderDeliveries {
     /// Once retired, a URL to the registry entry for the tons from this delivery.
     pub registry_url: Option<String>,
     pub supplier: stripe_misc::ClimateSupplier,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ClimateRemovalsOrderDeliveries {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ClimateRemovalsOrderDeliveries").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct ClimateRemovalsOrderDeliveriesBuilder {

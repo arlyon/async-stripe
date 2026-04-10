@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct IssuingTransactionFlightDataLeg {
@@ -14,6 +15,12 @@ pub struct IssuingTransactionFlightDataLeg {
     pub service_class: Option<String>,
     /// Whether a stopover is allowed on this flight.
     pub stopover_allowed: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for IssuingTransactionFlightDataLeg {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("IssuingTransactionFlightDataLeg").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct IssuingTransactionFlightDataLegBuilder {

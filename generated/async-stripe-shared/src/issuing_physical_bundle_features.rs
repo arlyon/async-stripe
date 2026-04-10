@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct IssuingPhysicalBundleFeatures {
@@ -8,6 +9,12 @@ pub struct IssuingPhysicalBundleFeatures {
     pub carrier_text: IssuingPhysicalBundleFeaturesCarrierText,
     /// The policy for how to use a second line on a card with this physical bundle.
     pub second_line: IssuingPhysicalBundleFeaturesSecondLine,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for IssuingPhysicalBundleFeatures {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("IssuingPhysicalBundleFeatures").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct IssuingPhysicalBundleFeaturesBuilder {
@@ -161,9 +168,16 @@ impl std::fmt::Display for IssuingPhysicalBundleFeaturesCardLogo {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for IssuingPhysicalBundleFeaturesCardLogo {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for IssuingPhysicalBundleFeaturesCardLogo {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(IssuingPhysicalBundleFeaturesCardLogo)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -245,9 +259,16 @@ impl std::fmt::Display for IssuingPhysicalBundleFeaturesCarrierText {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for IssuingPhysicalBundleFeaturesCarrierText {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for IssuingPhysicalBundleFeaturesCarrierText {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(IssuingPhysicalBundleFeaturesCarrierText)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -329,9 +350,16 @@ impl std::fmt::Display for IssuingPhysicalBundleFeaturesSecondLine {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for IssuingPhysicalBundleFeaturesSecondLine {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for IssuingPhysicalBundleFeaturesSecondLine {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(IssuingPhysicalBundleFeaturesSecondLine)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

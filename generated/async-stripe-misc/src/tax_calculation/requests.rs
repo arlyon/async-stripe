@@ -2,10 +2,18 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RetrieveTaxCalculationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveTaxCalculationBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveTaxCalculationBuilder").finish_non_exhaustive()
+    }
 }
 impl RetrieveTaxCalculationBuilder {
     fn new() -> Self {
@@ -13,10 +21,18 @@ impl RetrieveTaxCalculationBuilder {
     }
 }
 /// Retrieves a Tax `Calculation` object, if the calculation hasn’t expired.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RetrieveTaxCalculation {
     inner: RetrieveTaxCalculationBuilder,
     calculation: stripe_misc::TaxCalculationId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveTaxCalculation {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveTaxCalculation").finish_non_exhaustive()
+    }
 }
 impl RetrieveTaxCalculation {
     /// Construct a new `RetrieveTaxCalculation`.
@@ -56,7 +72,9 @@ impl StripeRequest for RetrieveTaxCalculation {
             .query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ListLineItemsTaxCalculationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<String>,
@@ -67,16 +85,30 @@ struct ListLineItemsTaxCalculationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     starting_after: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListLineItemsTaxCalculationBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListLineItemsTaxCalculationBuilder").finish_non_exhaustive()
+    }
+}
 impl ListLineItemsTaxCalculationBuilder {
     fn new() -> Self {
         Self { ending_before: None, expand: None, limit: None, starting_after: None }
     }
 }
 /// Retrieves the line items of a tax calculation as a collection, if the calculation hasn’t expired.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListLineItemsTaxCalculation {
     inner: ListLineItemsTaxCalculationBuilder,
     calculation: stripe_misc::TaxCalculationId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListLineItemsTaxCalculation {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListLineItemsTaxCalculation").finish_non_exhaustive()
+    }
 }
 impl ListLineItemsTaxCalculation {
     /// Construct a new `ListLineItemsTaxCalculation`.
@@ -151,7 +183,9 @@ impl StripeRequest for ListLineItemsTaxCalculation {
         .query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct CreateTaxCalculationBuilder {
     currency: stripe_types::Currency,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -167,6 +201,12 @@ struct CreateTaxCalculationBuilder {
     shipping_cost: Option<CreateTaxCalculationShippingCost>,
     #[serde(skip_serializing_if = "Option::is_none")]
     tax_date: Option<stripe_types::Timestamp>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxCalculationBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxCalculationBuilder").finish_non_exhaustive()
+    }
 }
 impl CreateTaxCalculationBuilder {
     fn new(
@@ -186,7 +226,9 @@ impl CreateTaxCalculationBuilder {
     }
 }
 /// Details about the customer, including address and tax IDs.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxCalculationCustomerDetails {
     /// The customer's postal address (for example, home or business location).
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -208,6 +250,12 @@ pub struct CreateTaxCalculationCustomerDetails {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub taxability_override: Option<CreateTaxCalculationCustomerDetailsTaxabilityOverride>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxCalculationCustomerDetails {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxCalculationCustomerDetails").finish_non_exhaustive()
+    }
+}
 impl CreateTaxCalculationCustomerDetails {
     pub fn new() -> Self {
         Self {
@@ -225,7 +273,9 @@ impl Default for CreateTaxCalculationCustomerDetails {
     }
 }
 /// The customer's postal address (for example, home or business location).
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxCalculationCustomerDetailsAddress {
     /// City, district, suburb, town, or village.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -245,6 +295,12 @@ pub struct CreateTaxCalculationCustomerDetailsAddress {
     /// We recommend sending [ISO 3166-2](https://en.wikipedia.org/wiki/ISO_3166-2) subdivision code value when possible.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxCalculationCustomerDetailsAddress {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxCalculationCustomerDetailsAddress").finish_non_exhaustive()
+    }
 }
 impl CreateTaxCalculationCustomerDetailsAddress {
     pub fn new(country: impl Into<String>) -> Self {
@@ -302,9 +358,17 @@ impl std::fmt::Display for CreateTaxCalculationCustomerDetailsAddressSource {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxCalculationCustomerDetailsAddressSource {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxCalculationCustomerDetailsAddressSource {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxCalculationCustomerDetailsAddressSource))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxCalculationCustomerDetailsAddressSource {
@@ -326,13 +390,21 @@ impl<'de> serde::Deserialize<'de> for CreateTaxCalculationCustomerDetailsAddress
 /// The customer's tax IDs.
 /// Stripe Tax might consider a transaction with applicable tax IDs to be B2B, which might affect the tax calculation result.
 /// Stripe Tax doesn't validate tax IDs for correctness.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxCalculationCustomerDetailsTaxIds {
     /// Type of the tax ID, one of `ad_nrt`, `ae_trn`, `al_tin`, `am_tin`, `ao_tin`, `ar_cuit`, `au_abn`, `au_arn`, `aw_tin`, `az_tin`, `ba_tin`, `bb_tin`, `bd_bin`, `bf_ifu`, `bg_uic`, `bh_vat`, `bj_ifu`, `bo_tin`, `br_cnpj`, `br_cpf`, `bs_tin`, `by_tin`, `ca_bn`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `ca_qst`, `cd_nif`, `ch_uid`, `ch_vat`, `cl_tin`, `cm_niu`, `cn_tin`, `co_nit`, `cr_tin`, `cv_nif`, `de_stn`, `do_rcn`, `ec_ruc`, `eg_tin`, `es_cif`, `et_tin`, `eu_oss_vat`, `eu_vat`, `gb_vat`, `ge_vat`, `gn_nif`, `hk_br`, `hr_oib`, `hu_tin`, `id_npwp`, `il_vat`, `in_gst`, `is_vat`, `jp_cn`, `jp_rn`, `jp_trn`, `ke_pin`, `kg_tin`, `kh_tin`, `kr_brn`, `kz_bin`, `la_tin`, `li_uid`, `li_vat`, `lk_vat`, `ma_vat`, `md_vat`, `me_pib`, `mk_vat`, `mr_nif`, `mx_rfc`, `my_frp`, `my_itn`, `my_sst`, `ng_tin`, `no_vat`, `no_voec`, `np_pan`, `nz_gst`, `om_vat`, `pe_ruc`, `ph_tin`, `pl_nip`, `ro_tin`, `rs_pib`, `ru_inn`, `ru_kpp`, `sa_vat`, `sg_gst`, `sg_uen`, `si_tin`, `sn_ninea`, `sr_fin`, `sv_nit`, `th_vat`, `tj_tin`, `tr_tin`, `tw_vat`, `tz_vat`, `ua_vat`, `ug_tin`, `us_ein`, `uy_ruc`, `uz_tin`, `uz_vat`, `ve_rif`, `vn_tin`, `za_vat`, `zm_tin`, or `zw_tin`.
     #[serde(rename = "type")]
     pub type_: CreateTaxCalculationCustomerDetailsTaxIdsType,
     /// Value of the tax ID.
     pub value: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxCalculationCustomerDetailsTaxIds {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxCalculationCustomerDetailsTaxIds").finish_non_exhaustive()
+    }
 }
 impl CreateTaxCalculationCustomerDetailsTaxIds {
     pub fn new(
@@ -716,9 +788,17 @@ impl std::fmt::Display for CreateTaxCalculationCustomerDetailsTaxIdsType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxCalculationCustomerDetailsTaxIdsType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxCalculationCustomerDetailsTaxIdsType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxCalculationCustomerDetailsTaxIdsType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxCalculationCustomerDetailsTaxIdsType {
@@ -786,9 +866,17 @@ impl std::fmt::Display for CreateTaxCalculationCustomerDetailsTaxabilityOverride
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxCalculationCustomerDetailsTaxabilityOverride {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxCalculationCustomerDetailsTaxabilityOverride {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxCalculationCustomerDetailsTaxabilityOverride))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxCalculationCustomerDetailsTaxabilityOverride {
@@ -808,7 +896,9 @@ impl<'de> serde::Deserialize<'de> for CreateTaxCalculationCustomerDetailsTaxabil
     }
 }
 /// A list of items the customer is purchasing.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxCalculationLineItems {
     /// A positive integer representing the line item's total price in the [smallest currency unit](https://docs.stripe.com/currencies#minor-units).
     /// If `tax_behavior=inclusive`, then this amount includes taxes.
@@ -838,6 +928,12 @@ pub struct CreateTaxCalculationLineItems {
     /// If neither `tax_code` nor `product` is provided, we will use the default tax code from your Tax Settings.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_code: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxCalculationLineItems {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxCalculationLineItems").finish_non_exhaustive()
+    }
 }
 impl CreateTaxCalculationLineItems {
     pub fn new(amount: impl Into<i64>) -> Self {
@@ -896,9 +992,16 @@ impl std::fmt::Display for CreateTaxCalculationLineItemsTaxBehavior {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxCalculationLineItemsTaxBehavior {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxCalculationLineItemsTaxBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxCalculationLineItemsTaxBehavior)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxCalculationLineItemsTaxBehavior {
@@ -918,10 +1021,18 @@ impl<'de> serde::Deserialize<'de> for CreateTaxCalculationLineItemsTaxBehavior {
     }
 }
 /// Details about the address from which the goods are being shipped.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxCalculationShipFromDetails {
     /// The address from which the goods are being shipped from.
     pub address: CreateTaxCalculationShipFromDetailsAddress,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxCalculationShipFromDetails {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxCalculationShipFromDetails").finish_non_exhaustive()
+    }
 }
 impl CreateTaxCalculationShipFromDetails {
     pub fn new(address: impl Into<CreateTaxCalculationShipFromDetailsAddress>) -> Self {
@@ -929,7 +1040,9 @@ impl CreateTaxCalculationShipFromDetails {
     }
 }
 /// The address from which the goods are being shipped from.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxCalculationShipFromDetailsAddress {
     /// City, district, suburb, town, or village.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -949,6 +1062,12 @@ pub struct CreateTaxCalculationShipFromDetailsAddress {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxCalculationShipFromDetailsAddress {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxCalculationShipFromDetailsAddress").finish_non_exhaustive()
+    }
+}
 impl CreateTaxCalculationShipFromDetailsAddress {
     pub fn new(country: impl Into<String>) -> Self {
         Self {
@@ -962,7 +1081,9 @@ impl CreateTaxCalculationShipFromDetailsAddress {
     }
 }
 /// Shipping cost details to be used for the calculation.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxCalculationShippingCost {
     /// A positive integer in the [smallest currency unit](https://docs.stripe.com/currencies#minor-units) representing the shipping charge.
     /// If `tax_behavior=inclusive`, then this amount includes taxes.
@@ -982,6 +1103,12 @@ pub struct CreateTaxCalculationShippingCost {
     /// If not provided, the default shipping tax code from your [Tax Settings](https://dashboard.stripe.com/settings/tax) is used.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_code: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxCalculationShippingCost {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxCalculationShippingCost").finish_non_exhaustive()
+    }
 }
 impl CreateTaxCalculationShippingCost {
     pub fn new() -> Self {
@@ -1039,9 +1166,17 @@ impl std::fmt::Display for CreateTaxCalculationShippingCostTaxBehavior {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxCalculationShippingCostTaxBehavior {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxCalculationShippingCostTaxBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxCalculationShippingCostTaxBehavior))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxCalculationShippingCostTaxBehavior {
@@ -1061,9 +1196,17 @@ impl<'de> serde::Deserialize<'de> for CreateTaxCalculationShippingCostTaxBehavio
     }
 }
 /// Calculates tax based on the input and returns a Tax `Calculation` object.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxCalculation {
     inner: CreateTaxCalculationBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxCalculation {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxCalculation").finish_non_exhaustive()
+    }
 }
 impl CreateTaxCalculation {
     /// Construct a new `CreateTaxCalculation`.

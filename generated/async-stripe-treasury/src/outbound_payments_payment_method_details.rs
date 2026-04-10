@@ -1,4 +1,5 @@
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct OutboundPaymentsPaymentMethodDetails {
@@ -9,6 +10,12 @@ pub struct OutboundPaymentsPaymentMethodDetails {
     #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "type"))]
     pub type_: OutboundPaymentsPaymentMethodDetailsType,
     pub us_bank_account: Option<stripe_treasury::OutboundPaymentsPaymentMethodDetailsUsBankAccount>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for OutboundPaymentsPaymentMethodDetails {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("OutboundPaymentsPaymentMethodDetails").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct OutboundPaymentsPaymentMethodDetailsBuilder {
@@ -174,9 +181,16 @@ impl std::fmt::Display for OutboundPaymentsPaymentMethodDetailsType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for OutboundPaymentsPaymentMethodDetailsType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for OutboundPaymentsPaymentMethodDetailsType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(OutboundPaymentsPaymentMethodDetailsType)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

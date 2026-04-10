@@ -1,4 +1,5 @@
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TreasuryTransactionsResourceAbstractTransactionResourceStatusTransitions {
@@ -6,6 +7,13 @@ pub struct TreasuryTransactionsResourceAbstractTransactionResourceStatusTransiti
     pub posted_at: Option<stripe_types::Timestamp>,
     /// Timestamp describing when the Transaction changed status to `void`.
     pub void_at: Option<stripe_types::Timestamp>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TreasuryTransactionsResourceAbstractTransactionResourceStatusTransitions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("TreasuryTransactionsResourceAbstractTransactionResourceStatusTransitions")
+            .finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct TreasuryTransactionsResourceAbstractTransactionResourceStatusTransitionsBuilder {

@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentMethodConfigBizPaymentMethodConfigurationDetails {
@@ -6,6 +7,13 @@ pub struct PaymentMethodConfigBizPaymentMethodConfigurationDetails {
     pub id: String,
     /// ID of the parent payment method configuration used.
     pub parent: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentMethodConfigBizPaymentMethodConfigurationDetails {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PaymentMethodConfigBizPaymentMethodConfigurationDetails")
+            .finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct PaymentMethodConfigBizPaymentMethodConfigurationDetailsBuilder {

@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct CheckoutAcssDebitPaymentMethodOptions {
@@ -20,6 +21,12 @@ pub struct CheckoutAcssDebitPaymentMethodOptions {
     pub target_date: Option<String>,
     /// Bank account verification method. The default value is `automatic`.
     pub verification_method: Option<CheckoutAcssDebitPaymentMethodOptionsVerificationMethod>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CheckoutAcssDebitPaymentMethodOptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CheckoutAcssDebitPaymentMethodOptions").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct CheckoutAcssDebitPaymentMethodOptionsBuilder {
@@ -195,9 +202,17 @@ impl std::fmt::Display for CheckoutAcssDebitPaymentMethodOptionsCurrency {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CheckoutAcssDebitPaymentMethodOptionsCurrency {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CheckoutAcssDebitPaymentMethodOptionsCurrency {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CheckoutAcssDebitPaymentMethodOptionsCurrency))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -287,9 +302,17 @@ impl std::fmt::Display for CheckoutAcssDebitPaymentMethodOptionsSetupFutureUsage
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CheckoutAcssDebitPaymentMethodOptionsSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CheckoutAcssDebitPaymentMethodOptionsSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CheckoutAcssDebitPaymentMethodOptionsSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -375,9 +398,17 @@ impl std::fmt::Display for CheckoutAcssDebitPaymentMethodOptionsVerificationMeth
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CheckoutAcssDebitPaymentMethodOptionsVerificationMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CheckoutAcssDebitPaymentMethodOptionsVerificationMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CheckoutAcssDebitPaymentMethodOptionsVerificationMethod))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

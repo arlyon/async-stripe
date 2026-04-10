@@ -2,7 +2,8 @@
 /// Customers can be instructed to send any amount, and it can be made up of
 /// multiple transactions. As such, sources can have multiple associated
 /// transactions.
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct SourceTransaction {
     pub ach_credit_transfer: Option<stripe_shared::SourceTransactionAchCreditTransferData>,
@@ -29,6 +30,12 @@ pub struct SourceTransaction {
     /// The type of source this transaction is attached to.
     #[cfg_attr(feature = "deserialize", serde(rename = "type"))]
     pub type_: SourceTransactionType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for SourceTransaction {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("SourceTransaction").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct SourceTransactionBuilder {
@@ -321,9 +328,16 @@ impl std::fmt::Display for SourceTransactionType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for SourceTransactionType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for SourceTransactionType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(SourceTransactionType)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

@@ -2,7 +2,9 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ListRadarEarlyFraudWarningBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     charge: Option<String>,
@@ -19,6 +21,12 @@ struct ListRadarEarlyFraudWarningBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     starting_after: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListRadarEarlyFraudWarningBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListRadarEarlyFraudWarningBuilder").finish_non_exhaustive()
+    }
+}
 impl ListRadarEarlyFraudWarningBuilder {
     fn new() -> Self {
         Self {
@@ -33,9 +41,17 @@ impl ListRadarEarlyFraudWarningBuilder {
     }
 }
 /// Returns a list of early fraud warnings.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListRadarEarlyFraudWarning {
     inner: ListRadarEarlyFraudWarningBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListRadarEarlyFraudWarning {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListRadarEarlyFraudWarning").finish_non_exhaustive()
+    }
 }
 impl ListRadarEarlyFraudWarning {
     /// Construct a new `ListRadarEarlyFraudWarning`.
@@ -120,10 +136,18 @@ impl StripeRequest for ListRadarEarlyFraudWarning {
         RequestBuilder::new(StripeMethod::Get, "/radar/early_fraud_warnings").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RetrieveRadarEarlyFraudWarningBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveRadarEarlyFraudWarningBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveRadarEarlyFraudWarningBuilder").finish_non_exhaustive()
+    }
 }
 impl RetrieveRadarEarlyFraudWarningBuilder {
     fn new() -> Self {
@@ -133,10 +157,18 @@ impl RetrieveRadarEarlyFraudWarningBuilder {
 /// Retrieves the details of an early fraud warning that has previously been created.
 ///
 /// Please refer to the [early fraud warning](https://stripe.com/docs/api#early_fraud_warning_object) object reference for more details.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RetrieveRadarEarlyFraudWarning {
     inner: RetrieveRadarEarlyFraudWarningBuilder,
     early_fraud_warning: stripe_fraud::RadarEarlyFraudWarningId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveRadarEarlyFraudWarning {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveRadarEarlyFraudWarning").finish_non_exhaustive()
+    }
 }
 impl RetrieveRadarEarlyFraudWarning {
     /// Construct a new `RetrieveRadarEarlyFraudWarning`.

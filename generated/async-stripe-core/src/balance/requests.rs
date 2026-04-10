@@ -2,10 +2,18 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RetrieveForMyAccountBalanceBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveForMyAccountBalanceBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveForMyAccountBalanceBuilder").finish_non_exhaustive()
+    }
 }
 impl RetrieveForMyAccountBalanceBuilder {
     fn new() -> Self {
@@ -14,9 +22,17 @@ impl RetrieveForMyAccountBalanceBuilder {
 }
 /// Retrieves the current account balance, based on the authentication that was used to make the request.
 /// For a sample request, see [Accounting for negative balances](https://stripe.com/docs/connect/account-balances#accounting-for-negative-balances).
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RetrieveForMyAccountBalance {
     inner: RetrieveForMyAccountBalanceBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveForMyAccountBalance {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveForMyAccountBalance").finish_non_exhaustive()
+    }
 }
 impl RetrieveForMyAccountBalance {
     /// Construct a new `RetrieveForMyAccountBalance`.

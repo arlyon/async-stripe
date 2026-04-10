@@ -2,7 +2,9 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ListIssuingPhysicalBundleBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<String>,
@@ -18,6 +20,12 @@ struct ListIssuingPhysicalBundleBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     type_: Option<stripe_shared::IssuingPhysicalBundleType>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListIssuingPhysicalBundleBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListIssuingPhysicalBundleBuilder").finish_non_exhaustive()
+    }
+}
 impl ListIssuingPhysicalBundleBuilder {
     fn new() -> Self {
         Self {
@@ -32,9 +40,17 @@ impl ListIssuingPhysicalBundleBuilder {
 }
 /// Returns a list of physical bundle objects.
 /// The objects are sorted in descending order by creation date, with the most recently created object appearing first.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListIssuingPhysicalBundle {
     inner: ListIssuingPhysicalBundleBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListIssuingPhysicalBundle {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListIssuingPhysicalBundle").finish_non_exhaustive()
+    }
 }
 impl ListIssuingPhysicalBundle {
     /// Construct a new `ListIssuingPhysicalBundle`.
@@ -114,10 +130,18 @@ impl StripeRequest for ListIssuingPhysicalBundle {
         RequestBuilder::new(StripeMethod::Get, "/issuing/physical_bundles").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RetrieveIssuingPhysicalBundleBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveIssuingPhysicalBundleBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveIssuingPhysicalBundleBuilder").finish_non_exhaustive()
+    }
 }
 impl RetrieveIssuingPhysicalBundleBuilder {
     fn new() -> Self {
@@ -125,10 +149,18 @@ impl RetrieveIssuingPhysicalBundleBuilder {
     }
 }
 /// Retrieves a physical bundle object.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RetrieveIssuingPhysicalBundle {
     inner: RetrieveIssuingPhysicalBundleBuilder,
     physical_bundle: stripe_shared::IssuingPhysicalBundleId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveIssuingPhysicalBundle {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveIssuingPhysicalBundle").finish_non_exhaustive()
+    }
 }
 impl RetrieveIssuingPhysicalBundle {
     /// Construct a new `RetrieveIssuingPhysicalBundle`.

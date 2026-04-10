@@ -2,10 +2,18 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RetrieveTaxTransactionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveTaxTransactionBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveTaxTransactionBuilder").finish_non_exhaustive()
+    }
 }
 impl RetrieveTaxTransactionBuilder {
     fn new() -> Self {
@@ -13,10 +21,18 @@ impl RetrieveTaxTransactionBuilder {
     }
 }
 /// Retrieves a Tax `Transaction` object.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RetrieveTaxTransaction {
     inner: RetrieveTaxTransactionBuilder,
     transaction: stripe_misc::TaxTransactionId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveTaxTransaction {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveTaxTransaction").finish_non_exhaustive()
+    }
 }
 impl RetrieveTaxTransaction {
     /// Construct a new `RetrieveTaxTransaction`.
@@ -56,7 +72,9 @@ impl StripeRequest for RetrieveTaxTransaction {
             .query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ListLineItemsTaxTransactionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<String>,
@@ -67,16 +85,30 @@ struct ListLineItemsTaxTransactionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     starting_after: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListLineItemsTaxTransactionBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListLineItemsTaxTransactionBuilder").finish_non_exhaustive()
+    }
+}
 impl ListLineItemsTaxTransactionBuilder {
     fn new() -> Self {
         Self { ending_before: None, expand: None, limit: None, starting_after: None }
     }
 }
 /// Retrieves the line items of a committed standalone transaction as a collection.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListLineItemsTaxTransaction {
     inner: ListLineItemsTaxTransactionBuilder,
     transaction: stripe_misc::TaxTransactionId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListLineItemsTaxTransaction {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListLineItemsTaxTransaction").finish_non_exhaustive()
+    }
 }
 impl ListLineItemsTaxTransaction {
     /// Construct a new `ListLineItemsTaxTransaction`.
@@ -151,7 +183,9 @@ impl StripeRequest for ListLineItemsTaxTransaction {
         .query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct CreateFromCalculationTaxTransactionBuilder {
     calculation: String,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -161,6 +195,12 @@ struct CreateFromCalculationTaxTransactionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     posted_at: Option<stripe_types::Timestamp>,
     reference: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateFromCalculationTaxTransactionBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateFromCalculationTaxTransactionBuilder").finish_non_exhaustive()
+    }
 }
 impl CreateFromCalculationTaxTransactionBuilder {
     fn new(calculation: impl Into<String>, reference: impl Into<String>) -> Self {
@@ -175,9 +215,17 @@ impl CreateFromCalculationTaxTransactionBuilder {
 }
 /// Creates a Tax Transaction from a calculation, if that calculation hasn’t expired.
 /// Calculations expire after 90 days.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateFromCalculationTaxTransaction {
     inner: CreateFromCalculationTaxTransactionBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateFromCalculationTaxTransaction {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateFromCalculationTaxTransaction").finish_non_exhaustive()
+    }
 }
 impl CreateFromCalculationTaxTransaction {
     /// Construct a new `CreateFromCalculationTaxTransaction`.
@@ -239,7 +287,9 @@ impl StripeRequest for CreateFromCalculationTaxTransaction {
             .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct CreateReversalTaxTransactionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -254,6 +304,12 @@ struct CreateReversalTaxTransactionBuilder {
     reference: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     shipping_cost: Option<CreateReversalTaxTransactionShippingCost>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateReversalTaxTransactionBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateReversalTaxTransactionBuilder").finish_non_exhaustive()
+    }
 }
 impl CreateReversalTaxTransactionBuilder {
     fn new(
@@ -274,7 +330,9 @@ impl CreateReversalTaxTransactionBuilder {
     }
 }
 /// The line item amounts to reverse.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateReversalTaxTransactionLineItems {
     /// The amount to reverse, in the [smallest currency unit](https://docs.stripe.com/currencies#minor-units) in negative.
     pub amount: i64,
@@ -292,6 +350,12 @@ pub struct CreateReversalTaxTransactionLineItems {
     pub quantity: Option<u64>,
     /// A custom identifier for this line item in the reversal transaction, such as 'L1-refund'.
     pub reference: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateReversalTaxTransactionLineItems {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateReversalTaxTransactionLineItems").finish_non_exhaustive()
+    }
 }
 impl CreateReversalTaxTransactionLineItems {
     pub fn new(
@@ -355,9 +419,16 @@ impl std::fmt::Display for CreateReversalTaxTransactionMode {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateReversalTaxTransactionMode {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateReversalTaxTransactionMode {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateReversalTaxTransactionMode)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateReversalTaxTransactionMode {
@@ -377,12 +448,20 @@ impl<'de> serde::Deserialize<'de> for CreateReversalTaxTransactionMode {
     }
 }
 /// The shipping cost to reverse.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateReversalTaxTransactionShippingCost {
     /// The amount to reverse, in the [smallest currency unit](https://docs.stripe.com/currencies#minor-units) in negative.
     pub amount: i64,
     /// The amount of tax to reverse, in the [smallest currency unit](https://docs.stripe.com/currencies#minor-units) in negative.
     pub amount_tax: i64,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateReversalTaxTransactionShippingCost {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateReversalTaxTransactionShippingCost").finish_non_exhaustive()
+    }
 }
 impl CreateReversalTaxTransactionShippingCost {
     pub fn new(amount: impl Into<i64>, amount_tax: impl Into<i64>) -> Self {
@@ -390,9 +469,17 @@ impl CreateReversalTaxTransactionShippingCost {
     }
 }
 /// Partially or fully reverses a previously created `Transaction`.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateReversalTaxTransaction {
     inner: CreateReversalTaxTransactionBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateReversalTaxTransaction {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateReversalTaxTransaction").finish_non_exhaustive()
+    }
 }
 impl CreateReversalTaxTransaction {
     /// Construct a new `CreateReversalTaxTransaction`.

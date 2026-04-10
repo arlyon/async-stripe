@@ -1,10 +1,17 @@
 /// Defines how a subscription behaves when a trial ends.
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct SubscriptionsResourceTrialSettingsEndBehavior {
     /// Indicates how the subscription should change when the trial ends if the user did not provide a payment method.
     pub missing_payment_method: SubscriptionsResourceTrialSettingsEndBehaviorMissingPaymentMethod,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for SubscriptionsResourceTrialSettingsEndBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("SubscriptionsResourceTrialSettingsEndBehavior").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct SubscriptionsResourceTrialSettingsEndBehaviorBuilder {
@@ -149,9 +156,19 @@ impl std::fmt::Display for SubscriptionsResourceTrialSettingsEndBehaviorMissingP
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for SubscriptionsResourceTrialSettingsEndBehaviorMissingPaymentMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for SubscriptionsResourceTrialSettingsEndBehaviorMissingPaymentMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            SubscriptionsResourceTrialSettingsEndBehaviorMissingPaymentMethod
+        ))
+        .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

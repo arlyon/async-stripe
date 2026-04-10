@@ -1,5 +1,6 @@
 /// For more details see <<https://stripe.com/docs/api/application_fees/object>>.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct ApplicationFee {
     /// ID of the Stripe account this fee was taken from.
@@ -34,6 +35,12 @@ pub struct ApplicationFee {
     pub refunded: bool,
     /// A list of refunds that have been applied to the fee.
     pub refunds: stripe_types::List<stripe_shared::ApplicationFeeRefund>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ApplicationFee {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ApplicationFee").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct ApplicationFeeBuilder {

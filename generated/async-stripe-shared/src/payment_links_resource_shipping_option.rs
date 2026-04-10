@@ -1,4 +1,5 @@
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentLinksResourceShippingOption {
@@ -6,6 +7,12 @@ pub struct PaymentLinksResourceShippingOption {
     pub shipping_amount: i64,
     /// The ID of the Shipping Rate to use for this shipping option.
     pub shipping_rate: stripe_types::Expandable<stripe_shared::ShippingRate>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentLinksResourceShippingOption {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PaymentLinksResourceShippingOption").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct PaymentLinksResourceShippingOptionBuilder {

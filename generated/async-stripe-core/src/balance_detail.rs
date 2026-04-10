@@ -1,9 +1,16 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct BalanceDetail {
     /// Funds that are available for use.
     pub available: Vec<stripe_core::BalanceAmount>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for BalanceDetail {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("BalanceDetail").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct BalanceDetailBuilder {

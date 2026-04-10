@@ -3,7 +3,8 @@
 /// Related guide: [Managing list items](https://docs.stripe.com/radar/lists#managing-list-items)
 ///
 /// For more details see <<https://stripe.com/docs/api/radar/value_list_items/object>>.
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct RadarValueListItem {
     /// Time at which the object was created. Measured in seconds since the Unix epoch.
@@ -19,6 +20,12 @@ pub struct RadarValueListItem {
     pub value: String,
     /// The identifier of the value list this item belongs to.
     pub value_list: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RadarValueListItem {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RadarValueListItem").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct RadarValueListItemBuilder {

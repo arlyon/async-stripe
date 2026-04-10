@@ -1,7 +1,8 @@
 /// You can [create physical or virtual cards](https://docs.stripe.com/issuing) that are issued to cardholders.
 ///
 /// For more details see <<https://stripe.com/docs/api/issuing/cards/object>>.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct IssuingCard {
     /// The brand of the card.
@@ -67,6 +68,12 @@ pub struct IssuingCard {
     pub type_: stripe_shared::IssuingCardType,
     /// Information relating to digital wallets (like Apple Pay and Google Pay).
     pub wallets: Option<stripe_shared::IssuingCardWallets>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for IssuingCard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("IssuingCard").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct IssuingCardBuilder {
@@ -431,9 +438,16 @@ impl std::fmt::Display for IssuingCardCancellationReason {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for IssuingCardCancellationReason {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for IssuingCardCancellationReason {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(IssuingCardCancellationReason)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -528,9 +542,16 @@ impl std::fmt::Display for IssuingCardReplacementReason {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for IssuingCardReplacementReason {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for IssuingCardReplacementReason {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(IssuingCardReplacementReason)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for IssuingCardReplacementReason {
@@ -606,9 +627,16 @@ impl std::fmt::Display for IssuingCardStatus {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for IssuingCardStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for IssuingCardStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(IssuingCardStatus)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for IssuingCardStatus {
@@ -681,9 +709,16 @@ impl std::fmt::Display for IssuingCardType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for IssuingCardType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for IssuingCardType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(IssuingCardType)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for IssuingCardType {

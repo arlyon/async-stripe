@@ -1,4 +1,5 @@
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TaxIDsOwner {
@@ -13,6 +14,12 @@ pub struct TaxIDsOwner {
     /// Type of owner referenced.
     #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "type"))]
     pub type_: TaxIDsOwnerType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TaxIDsOwner {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("TaxIDsOwner").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct TaxIDsOwnerBuilder {
@@ -184,9 +191,16 @@ impl std::fmt::Display for TaxIDsOwnerType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for TaxIDsOwnerType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TaxIDsOwnerType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(TaxIDsOwnerType)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

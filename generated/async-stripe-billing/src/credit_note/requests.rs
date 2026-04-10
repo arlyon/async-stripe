@@ -2,7 +2,9 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ListCreditNoteBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     created: Option<stripe_types::RangeQueryTs>,
@@ -21,6 +23,12 @@ struct ListCreditNoteBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     starting_after: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListCreditNoteBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListCreditNoteBuilder").finish_non_exhaustive()
+    }
+}
 impl ListCreditNoteBuilder {
     fn new() -> Self {
         Self {
@@ -36,9 +44,17 @@ impl ListCreditNoteBuilder {
     }
 }
 /// Returns a list of credit notes.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListCreditNote {
     inner: ListCreditNoteBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListCreditNote {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListCreditNote").finish_non_exhaustive()
+    }
 }
 impl ListCreditNote {
     /// Construct a new `ListCreditNote`.
@@ -127,10 +143,18 @@ impl StripeRequest for ListCreditNote {
         RequestBuilder::new(StripeMethod::Get, "/credit_notes").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RetrieveCreditNoteBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveCreditNoteBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveCreditNoteBuilder").finish_non_exhaustive()
+    }
 }
 impl RetrieveCreditNoteBuilder {
     fn new() -> Self {
@@ -138,10 +162,18 @@ impl RetrieveCreditNoteBuilder {
     }
 }
 /// Retrieves the credit note object with the given identifier.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RetrieveCreditNote {
     inner: RetrieveCreditNoteBuilder,
     id: stripe_shared::CreditNoteId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveCreditNote {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveCreditNote").finish_non_exhaustive()
+    }
 }
 impl RetrieveCreditNote {
     /// Construct a new `RetrieveCreditNote`.
@@ -180,7 +212,9 @@ impl StripeRequest for RetrieveCreditNote {
         RequestBuilder::new(StripeMethod::Get, format!("/credit_notes/{id}")).query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct PreviewCreditNoteBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     amount: Option<i64>,
@@ -209,6 +243,12 @@ struct PreviewCreditNoteBuilder {
     refunds: Option<Vec<PreviewCreditNoteRefunds>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     shipping_cost: Option<CreditNoteShippingCost>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PreviewCreditNoteBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PreviewCreditNoteBuilder").finish_non_exhaustive()
+    }
 }
 impl PreviewCreditNoteBuilder {
     fn new(invoice: impl Into<String>) -> Self {
@@ -270,9 +310,16 @@ impl std::fmt::Display for PreviewCreditNoteEmailType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for PreviewCreditNoteEmailType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PreviewCreditNoteEmailType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(PreviewCreditNoteEmailType)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for PreviewCreditNoteEmailType {
@@ -293,7 +340,9 @@ impl<'de> serde::Deserialize<'de> for PreviewCreditNoteEmailType {
 }
 /// Line items that make up the credit note.
 /// One of `amount`, `lines`, or `shipping_cost` must be provided.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct PreviewCreditNoteLines {
     /// The line item amount to credit.
     /// Only valid when `type` is `invoice_line_item`.
@@ -336,6 +385,12 @@ pub struct PreviewCreditNoteLines {
     /// Only one of `unit_amount` and `unit_amount_decimal` can be set.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_amount_decimal: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PreviewCreditNoteLines {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PreviewCreditNoteLines").finish_non_exhaustive()
+    }
 }
 impl PreviewCreditNoteLines {
     pub fn new(type_: impl Into<PreviewCreditNoteLinesType>) -> Self {
@@ -394,9 +449,16 @@ impl std::fmt::Display for PreviewCreditNoteLinesType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for PreviewCreditNoteLinesType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PreviewCreditNoteLinesType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(PreviewCreditNoteLinesType)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for PreviewCreditNoteLinesType {
@@ -416,7 +478,9 @@ impl<'de> serde::Deserialize<'de> for PreviewCreditNoteLinesType {
     }
 }
 /// Refunds to link to this credit note.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct PreviewCreditNoteRefunds {
     /// Amount of the refund that applies to this credit note, in cents (or local equivalent).
     /// Defaults to the entire refund amount.
@@ -433,6 +497,12 @@ pub struct PreviewCreditNoteRefunds {
     #[serde(rename = "type")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub type_: Option<PreviewCreditNoteRefundsType>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PreviewCreditNoteRefunds {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PreviewCreditNoteRefunds").finish_non_exhaustive()
+    }
 }
 impl PreviewCreditNoteRefunds {
     pub fn new() -> Self {
@@ -488,9 +558,16 @@ impl std::fmt::Display for PreviewCreditNoteRefundsType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for PreviewCreditNoteRefundsType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PreviewCreditNoteRefundsType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(PreviewCreditNoteRefundsType)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for PreviewCreditNoteRefundsType {
@@ -510,9 +587,17 @@ impl<'de> serde::Deserialize<'de> for PreviewCreditNoteRefundsType {
     }
 }
 /// Get a preview of a credit note without creating it.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct PreviewCreditNote {
     inner: PreviewCreditNoteBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PreviewCreditNote {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PreviewCreditNote").finish_non_exhaustive()
+    }
 }
 impl PreviewCreditNote {
     /// Construct a new `PreviewCreditNote`.
@@ -622,7 +707,9 @@ impl StripeRequest for PreviewCreditNote {
         RequestBuilder::new(StripeMethod::Get, "/credit_notes/preview").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct PreviewLinesCreditNoteBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     amount: Option<i64>,
@@ -657,6 +744,12 @@ struct PreviewLinesCreditNoteBuilder {
     shipping_cost: Option<CreditNoteShippingCost>,
     #[serde(skip_serializing_if = "Option::is_none")]
     starting_after: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PreviewLinesCreditNoteBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PreviewLinesCreditNoteBuilder").finish_non_exhaustive()
+    }
 }
 impl PreviewLinesCreditNoteBuilder {
     fn new(invoice: impl Into<String>) -> Self {
@@ -725,9 +818,16 @@ impl std::fmt::Display for PreviewLinesCreditNoteEmailType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for PreviewLinesCreditNoteEmailType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PreviewLinesCreditNoteEmailType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(PreviewLinesCreditNoteEmailType)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for PreviewLinesCreditNoteEmailType {
@@ -748,7 +848,9 @@ impl<'de> serde::Deserialize<'de> for PreviewLinesCreditNoteEmailType {
 }
 /// Line items that make up the credit note.
 /// One of `amount`, `lines`, or `shipping_cost` must be provided.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct PreviewLinesCreditNoteLines {
     /// The line item amount to credit.
     /// Only valid when `type` is `invoice_line_item`.
@@ -791,6 +893,12 @@ pub struct PreviewLinesCreditNoteLines {
     /// Only one of `unit_amount` and `unit_amount_decimal` can be set.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_amount_decimal: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PreviewLinesCreditNoteLines {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PreviewLinesCreditNoteLines").finish_non_exhaustive()
+    }
 }
 impl PreviewLinesCreditNoteLines {
     pub fn new(type_: impl Into<PreviewLinesCreditNoteLinesType>) -> Self {
@@ -853,9 +961,16 @@ impl std::fmt::Display for PreviewLinesCreditNoteLinesType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for PreviewLinesCreditNoteLinesType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PreviewLinesCreditNoteLinesType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(PreviewLinesCreditNoteLinesType)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for PreviewLinesCreditNoteLinesType {
@@ -875,7 +990,9 @@ impl<'de> serde::Deserialize<'de> for PreviewLinesCreditNoteLinesType {
     }
 }
 /// Refunds to link to this credit note.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct PreviewLinesCreditNoteRefunds {
     /// Amount of the refund that applies to this credit note, in cents (or local equivalent).
     /// Defaults to the entire refund amount.
@@ -892,6 +1009,12 @@ pub struct PreviewLinesCreditNoteRefunds {
     #[serde(rename = "type")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub type_: Option<PreviewLinesCreditNoteRefundsType>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PreviewLinesCreditNoteRefunds {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PreviewLinesCreditNoteRefunds").finish_non_exhaustive()
+    }
 }
 impl PreviewLinesCreditNoteRefunds {
     pub fn new() -> Self {
@@ -947,9 +1070,16 @@ impl std::fmt::Display for PreviewLinesCreditNoteRefundsType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for PreviewLinesCreditNoteRefundsType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PreviewLinesCreditNoteRefundsType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(PreviewLinesCreditNoteRefundsType)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for PreviewLinesCreditNoteRefundsType {
@@ -970,9 +1100,17 @@ impl<'de> serde::Deserialize<'de> for PreviewLinesCreditNoteRefundsType {
 }
 /// When retrieving a credit note preview, you’ll get a **lines** property containing the first handful of those items.
 /// This URL you can retrieve the full (paginated) list of line items.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct PreviewLinesCreditNote {
     inner: PreviewLinesCreditNoteBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PreviewLinesCreditNote {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PreviewLinesCreditNote").finish_non_exhaustive()
+    }
 }
 impl PreviewLinesCreditNote {
     /// Construct a new `PreviewLinesCreditNote`.
@@ -1109,7 +1247,9 @@ impl StripeRequest for PreviewLinesCreditNote {
         RequestBuilder::new(StripeMethod::Get, "/credit_notes/preview/lines").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct CreateCreditNoteBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     amount: Option<i64>,
@@ -1138,6 +1278,12 @@ struct CreateCreditNoteBuilder {
     refunds: Option<Vec<CreateCreditNoteRefunds>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     shipping_cost: Option<CreditNoteShippingCost>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCreditNoteBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCreditNoteBuilder").finish_non_exhaustive()
+    }
 }
 impl CreateCreditNoteBuilder {
     fn new(invoice: impl Into<String>) -> Self {
@@ -1199,9 +1345,16 @@ impl std::fmt::Display for CreateCreditNoteEmailType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCreditNoteEmailType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCreditNoteEmailType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCreditNoteEmailType)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCreditNoteEmailType {
@@ -1222,7 +1375,9 @@ impl<'de> serde::Deserialize<'de> for CreateCreditNoteEmailType {
 }
 /// Line items that make up the credit note.
 /// One of `amount`, `lines`, or `shipping_cost` must be provided.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCreditNoteLines {
     /// The line item amount to credit.
     /// Only valid when `type` is `invoice_line_item`.
@@ -1265,6 +1420,12 @@ pub struct CreateCreditNoteLines {
     /// Only one of `unit_amount` and `unit_amount_decimal` can be set.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_amount_decimal: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCreditNoteLines {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCreditNoteLines").finish_non_exhaustive()
+    }
 }
 impl CreateCreditNoteLines {
     pub fn new(type_: impl Into<CreateCreditNoteLinesType>) -> Self {
@@ -1323,9 +1484,16 @@ impl std::fmt::Display for CreateCreditNoteLinesType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCreditNoteLinesType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCreditNoteLinesType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCreditNoteLinesType)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCreditNoteLinesType {
@@ -1345,7 +1513,9 @@ impl<'de> serde::Deserialize<'de> for CreateCreditNoteLinesType {
     }
 }
 /// Refunds to link to this credit note.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCreditNoteRefunds {
     /// Amount of the refund that applies to this credit note, in cents (or local equivalent).
     /// Defaults to the entire refund amount.
@@ -1362,6 +1532,12 @@ pub struct CreateCreditNoteRefunds {
     #[serde(rename = "type")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub type_: Option<CreateCreditNoteRefundsType>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCreditNoteRefunds {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCreditNoteRefunds").finish_non_exhaustive()
+    }
 }
 impl CreateCreditNoteRefunds {
     pub fn new() -> Self {
@@ -1417,9 +1593,16 @@ impl std::fmt::Display for CreateCreditNoteRefundsType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCreditNoteRefundsType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCreditNoteRefundsType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCreditNoteRefundsType)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCreditNoteRefundsType {
@@ -1454,9 +1637,17 @@ impl<'de> serde::Deserialize<'de> for CreateCreditNoteRefundsType {
 /// You may issue multiple credit notes for an invoice.
 /// Each credit note may increment the invoice’s `pre_payment_credit_notes_amount`,.
 /// `post_payment_credit_notes_amount`, or both, depending on the invoice’s `amount_remaining` at the time of credit note creation.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCreditNote {
     inner: CreateCreditNoteBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCreditNote {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCreditNote").finish_non_exhaustive()
+    }
 }
 impl CreateCreditNote {
     /// Construct a new `CreateCreditNote`.
@@ -1566,7 +1757,9 @@ impl StripeRequest for CreateCreditNote {
         RequestBuilder::new(StripeMethod::Post, "/credit_notes").form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct UpdateCreditNoteBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -1575,16 +1768,30 @@ struct UpdateCreditNoteBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     metadata: Option<std::collections::HashMap<String, String>>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateCreditNoteBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateCreditNoteBuilder").finish_non_exhaustive()
+    }
+}
 impl UpdateCreditNoteBuilder {
     fn new() -> Self {
         Self { expand: None, memo: None, metadata: None }
     }
 }
 /// Updates an existing credit note.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateCreditNote {
     inner: UpdateCreditNoteBuilder,
     id: stripe_shared::CreditNoteId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateCreditNote {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateCreditNote").finish_non_exhaustive()
+    }
 }
 impl UpdateCreditNote {
     /// Construct a new `UpdateCreditNote`.
@@ -1639,10 +1846,18 @@ impl StripeRequest for UpdateCreditNote {
         RequestBuilder::new(StripeMethod::Post, format!("/credit_notes/{id}")).form(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct VoidCreditNoteCreditNoteBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for VoidCreditNoteCreditNoteBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("VoidCreditNoteCreditNoteBuilder").finish_non_exhaustive()
+    }
 }
 impl VoidCreditNoteCreditNoteBuilder {
     fn new() -> Self {
@@ -1651,10 +1866,18 @@ impl VoidCreditNoteCreditNoteBuilder {
 }
 /// Marks a credit note as void.
 /// Learn more about [voiding credit notes](https://stripe.com/docs/billing/invoices/credit-notes#voiding).
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct VoidCreditNoteCreditNote {
     inner: VoidCreditNoteCreditNoteBuilder,
     id: stripe_shared::CreditNoteId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for VoidCreditNoteCreditNote {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("VoidCreditNoteCreditNote").finish_non_exhaustive()
+    }
 }
 impl VoidCreditNoteCreditNote {
     /// Construct a new `VoidCreditNoteCreditNote`.
@@ -1695,7 +1918,9 @@ impl StripeRequest for VoidCreditNoteCreditNote {
     }
 }
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct TaxAmountWithTaxRateParam {
     /// The amount, in cents (or local equivalent), of the tax.
     pub amount: i64,
@@ -1704,6 +1929,12 @@ pub struct TaxAmountWithTaxRateParam {
     pub tax_rate: String,
     /// The amount on which tax is calculated, in cents (or local equivalent).
     pub taxable_amount: i64,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TaxAmountWithTaxRateParam {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("TaxAmountWithTaxRateParam").finish_non_exhaustive()
+    }
 }
 impl TaxAmountWithTaxRateParam {
     pub fn new(
@@ -1718,7 +1949,9 @@ impl TaxAmountWithTaxRateParam {
         }
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct PaymentRecordRefundParams {
     /// The ID of the PaymentRecord with the refund to link to this credit note.
     pub payment_record: String,
@@ -1726,16 +1959,30 @@ pub struct PaymentRecordRefundParams {
     /// For refunds processed off-Stripe, this will correspond to the `processor_details.custom.refund_reference` field provided when reporting the refund on the PaymentRecord.
     pub refund_group: String,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentRecordRefundParams {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PaymentRecordRefundParams").finish_non_exhaustive()
+    }
+}
 impl PaymentRecordRefundParams {
     pub fn new(payment_record: impl Into<String>, refund_group: impl Into<String>) -> Self {
         Self { payment_record: payment_record.into(), refund_group: refund_group.into() }
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreditNoteShippingCost {
     /// The ID of the shipping rate to use for this order.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub shipping_rate: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreditNoteShippingCost {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreditNoteShippingCost").finish_non_exhaustive()
+    }
 }
 impl CreditNoteShippingCost {
     pub fn new() -> Self {

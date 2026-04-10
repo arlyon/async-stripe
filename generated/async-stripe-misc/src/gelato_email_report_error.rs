@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct GelatoEmailReportError {
@@ -7,6 +8,12 @@ pub struct GelatoEmailReportError {
     /// A human-readable message giving the reason for the failure.
     /// These messages can be shown to your users.
     pub reason: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for GelatoEmailReportError {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("GelatoEmailReportError").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct GelatoEmailReportErrorBuilder {
@@ -144,9 +151,16 @@ impl std::fmt::Display for GelatoEmailReportErrorCode {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for GelatoEmailReportErrorCode {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for GelatoEmailReportErrorCode {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(GelatoEmailReportErrorCode)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

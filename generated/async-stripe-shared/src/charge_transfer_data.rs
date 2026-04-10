@@ -1,4 +1,5 @@
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct ChargeTransferData {
@@ -7,6 +8,12 @@ pub struct ChargeTransferData {
     pub amount: Option<i64>,
     /// ID of an existing, connected Stripe account to transfer funds to if `transfer_data` was specified in the charge request.
     pub destination: stripe_types::Expandable<stripe_shared::Account>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ChargeTransferData {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ChargeTransferData").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct ChargeTransferDataBuilder {

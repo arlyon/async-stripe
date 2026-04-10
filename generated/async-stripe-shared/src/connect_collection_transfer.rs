@@ -1,4 +1,5 @@
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct ConnectCollectionTransfer {
     /// Amount transferred, in cents (or local equivalent).
@@ -13,6 +14,12 @@ pub struct ConnectCollectionTransfer {
     /// If the object exists in live mode, the value is `true`.
     /// If the object exists in test mode, the value is `false`.
     pub livemode: bool,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConnectCollectionTransfer {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConnectCollectionTransfer").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct ConnectCollectionTransferBuilder {

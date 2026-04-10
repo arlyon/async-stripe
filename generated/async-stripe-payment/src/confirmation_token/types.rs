@@ -5,7 +5,8 @@
 /// To learn more about how to use ConfirmationToken, visit the related guides:
 /// - [Finalize payments on the server](https://docs.stripe.com/payments/finalize-payments-on-the-server).
 /// - [Build two-step confirmation](https://docs.stripe.com/payments/build-a-two-step-confirmation).
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct ConfirmationToken {
     /// Time at which the object was created. Measured in seconds since the Unix epoch.
@@ -40,6 +41,12 @@ pub struct ConfirmationToken {
     /// Indicates whether the Stripe SDK is used to handle confirmation flow.
     /// Defaults to `true` on ConfirmationToken.
     pub use_stripe_sdk: bool,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmationToken {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmationToken").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct ConfirmationTokenBuilder {
@@ -310,9 +317,16 @@ impl std::fmt::Display for ConfirmationTokenSetupFutureUsage {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmationTokenSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmationTokenSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ConfirmationTokenSetupFutureUsage)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmationTokenSetupFutureUsage {

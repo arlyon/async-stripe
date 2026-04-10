@@ -2,7 +2,9 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ListTreasuryReceivedCreditBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<String>,
@@ -18,6 +20,12 @@ struct ListTreasuryReceivedCreditBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     status: Option<stripe_treasury::TreasuryReceivedCreditStatus>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListTreasuryReceivedCreditBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListTreasuryReceivedCreditBuilder").finish_non_exhaustive()
+    }
+}
 impl ListTreasuryReceivedCreditBuilder {
     fn new(financial_account: impl Into<String>) -> Self {
         Self {
@@ -32,10 +40,18 @@ impl ListTreasuryReceivedCreditBuilder {
     }
 }
 /// Only return ReceivedCredits described by the flow.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListTreasuryReceivedCreditLinkedFlows {
     /// The source flow type.
     pub source_flow_type: ListTreasuryReceivedCreditLinkedFlowsSourceFlowType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListTreasuryReceivedCreditLinkedFlows {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListTreasuryReceivedCreditLinkedFlows").finish_non_exhaustive()
+    }
 }
 impl ListTreasuryReceivedCreditLinkedFlows {
     pub fn new(
@@ -97,9 +113,17 @@ impl std::fmt::Display for ListTreasuryReceivedCreditLinkedFlowsSourceFlowType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ListTreasuryReceivedCreditLinkedFlowsSourceFlowType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListTreasuryReceivedCreditLinkedFlowsSourceFlowType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ListTreasuryReceivedCreditLinkedFlowsSourceFlowType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ListTreasuryReceivedCreditLinkedFlowsSourceFlowType {
@@ -119,9 +143,17 @@ impl<'de> serde::Deserialize<'de> for ListTreasuryReceivedCreditLinkedFlowsSourc
     }
 }
 /// Returns a list of ReceivedCredits.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListTreasuryReceivedCredit {
     inner: ListTreasuryReceivedCreditBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListTreasuryReceivedCredit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListTreasuryReceivedCredit").finish_non_exhaustive()
+    }
 }
 impl ListTreasuryReceivedCredit {
     /// Construct a new `ListTreasuryReceivedCredit`.
@@ -203,10 +235,18 @@ impl StripeRequest for ListTreasuryReceivedCredit {
         RequestBuilder::new(StripeMethod::Get, "/treasury/received_credits").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RetrieveTreasuryReceivedCreditBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveTreasuryReceivedCreditBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveTreasuryReceivedCreditBuilder").finish_non_exhaustive()
+    }
 }
 impl RetrieveTreasuryReceivedCreditBuilder {
     fn new() -> Self {
@@ -214,10 +254,18 @@ impl RetrieveTreasuryReceivedCreditBuilder {
     }
 }
 /// Retrieves the details of an existing ReceivedCredit by passing the unique ReceivedCredit ID from the ReceivedCredit list.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RetrieveTreasuryReceivedCredit {
     inner: RetrieveTreasuryReceivedCreditBuilder,
     id: stripe_treasury::TreasuryReceivedCreditId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveTreasuryReceivedCredit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveTreasuryReceivedCredit").finish_non_exhaustive()
+    }
 }
 impl RetrieveTreasuryReceivedCredit {
     /// Construct a new `RetrieveTreasuryReceivedCredit`.
@@ -257,7 +305,9 @@ impl StripeRequest for RetrieveTreasuryReceivedCredit {
             .query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct CreateTreasuryReceivedCreditBuilder {
     amount: i64,
     currency: stripe_types::Currency,
@@ -270,6 +320,12 @@ struct CreateTreasuryReceivedCreditBuilder {
     initiating_payment_method_details:
         Option<CreateTreasuryReceivedCreditInitiatingPaymentMethodDetails>,
     network: CreateTreasuryReceivedCreditNetwork,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTreasuryReceivedCreditBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTreasuryReceivedCreditBuilder").finish_non_exhaustive()
+    }
 }
 impl CreateTreasuryReceivedCreditBuilder {
     fn new(
@@ -290,7 +346,9 @@ impl CreateTreasuryReceivedCreditBuilder {
     }
 }
 /// Initiating payment method details for the object.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTreasuryReceivedCreditInitiatingPaymentMethodDetails {
     /// The source type.
     #[serde(rename = "type")]
@@ -299,6 +357,13 @@ pub struct CreateTreasuryReceivedCreditInitiatingPaymentMethodDetails {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub us_bank_account:
         Option<CreateTreasuryReceivedCreditInitiatingPaymentMethodDetailsUsBankAccount>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTreasuryReceivedCreditInitiatingPaymentMethodDetails {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTreasuryReceivedCreditInitiatingPaymentMethodDetails")
+            .finish_non_exhaustive()
+    }
 }
 impl CreateTreasuryReceivedCreditInitiatingPaymentMethodDetails {
     pub fn new(
@@ -348,9 +413,17 @@ impl std::fmt::Display for CreateTreasuryReceivedCreditInitiatingPaymentMethodDe
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTreasuryReceivedCreditInitiatingPaymentMethodDetailsType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTreasuryReceivedCreditInitiatingPaymentMethodDetailsType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTreasuryReceivedCreditInitiatingPaymentMethodDetailsType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTreasuryReceivedCreditInitiatingPaymentMethodDetailsType {
@@ -372,7 +445,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Optional fields for `us_bank_account`.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTreasuryReceivedCreditInitiatingPaymentMethodDetailsUsBankAccount {
     /// The bank account holder's name.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -383,6 +458,13 @@ pub struct CreateTreasuryReceivedCreditInitiatingPaymentMethodDetailsUsBankAccou
     /// The bank account's routing number.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub routing_number: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTreasuryReceivedCreditInitiatingPaymentMethodDetailsUsBankAccount {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTreasuryReceivedCreditInitiatingPaymentMethodDetailsUsBankAccount")
+            .finish_non_exhaustive()
+    }
 }
 impl CreateTreasuryReceivedCreditInitiatingPaymentMethodDetailsUsBankAccount {
     pub fn new() -> Self {
@@ -440,9 +522,16 @@ impl std::fmt::Display for CreateTreasuryReceivedCreditNetwork {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTreasuryReceivedCreditNetwork {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTreasuryReceivedCreditNetwork {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTreasuryReceivedCreditNetwork)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTreasuryReceivedCreditNetwork {
@@ -463,9 +552,17 @@ impl<'de> serde::Deserialize<'de> for CreateTreasuryReceivedCreditNetwork {
 }
 /// Use this endpoint to simulate a test mode ReceivedCredit initiated by a third party.
 /// In live mode, you can’t directly create ReceivedCredits initiated by third parties.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTreasuryReceivedCredit {
     inner: CreateTreasuryReceivedCreditBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTreasuryReceivedCredit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTreasuryReceivedCredit").finish_non_exhaustive()
+    }
 }
 impl CreateTreasuryReceivedCredit {
     /// Construct a new `CreateTreasuryReceivedCredit`.

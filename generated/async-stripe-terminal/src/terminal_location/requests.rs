@@ -3,9 +3,17 @@ use stripe_client_core::{
 };
 
 /// Deletes a `Location` object.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct DeleteTerminalLocation {
     location: stripe_terminal::TerminalLocationId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for DeleteTerminalLocation {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("DeleteTerminalLocation").finish_non_exhaustive()
+    }
 }
 impl DeleteTerminalLocation {
     /// Construct a new `DeleteTerminalLocation`.
@@ -39,7 +47,9 @@ impl StripeRequest for DeleteTerminalLocation {
         RequestBuilder::new(StripeMethod::Delete, format!("/terminal/locations/{location}"))
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ListTerminalLocationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<String>,
@@ -50,15 +60,29 @@ struct ListTerminalLocationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     starting_after: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListTerminalLocationBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListTerminalLocationBuilder").finish_non_exhaustive()
+    }
+}
 impl ListTerminalLocationBuilder {
     fn new() -> Self {
         Self { ending_before: None, expand: None, limit: None, starting_after: None }
     }
 }
 /// Returns a list of `Location` objects.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListTerminalLocation {
     inner: ListTerminalLocationBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListTerminalLocation {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListTerminalLocation").finish_non_exhaustive()
+    }
 }
 impl ListTerminalLocation {
     /// Construct a new `ListTerminalLocation`.
@@ -128,10 +152,18 @@ impl StripeRequest for ListTerminalLocation {
         RequestBuilder::new(StripeMethod::Get, "/terminal/locations").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RetrieveTerminalLocationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveTerminalLocationBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveTerminalLocationBuilder").finish_non_exhaustive()
+    }
 }
 impl RetrieveTerminalLocationBuilder {
     fn new() -> Self {
@@ -139,10 +171,18 @@ impl RetrieveTerminalLocationBuilder {
     }
 }
 /// Retrieves a `Location` object.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RetrieveTerminalLocation {
     inner: RetrieveTerminalLocationBuilder,
     location: stripe_terminal::TerminalLocationId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveTerminalLocation {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveTerminalLocation").finish_non_exhaustive()
+    }
 }
 impl RetrieveTerminalLocation {
     /// Construct a new `RetrieveTerminalLocation`.
@@ -182,7 +222,8 @@ impl StripeRequest for RetrieveTerminalLocation {
             .query(&self.inner)
     }
 }
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(untagged))]
@@ -264,7 +305,15 @@ const _: () = {
     }
 };
 
-#[derive(Clone, Debug, serde::Serialize)]
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveTerminalLocationReturned {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveTerminalLocationReturned").finish_non_exhaustive()
+    }
+}
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct CreateTerminalLocationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     address: Option<CreateTerminalLocationAddress>,
@@ -287,6 +336,12 @@ struct CreateTerminalLocationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     phone: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTerminalLocationBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTerminalLocationBuilder").finish_non_exhaustive()
+    }
+}
 impl CreateTerminalLocationBuilder {
     fn new() -> Self {
         Self {
@@ -304,7 +359,9 @@ impl CreateTerminalLocationBuilder {
     }
 }
 /// The full address of the location.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTerminalLocationAddress {
     /// City, district, suburb, town, or village.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -324,6 +381,12 @@ pub struct CreateTerminalLocationAddress {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTerminalLocationAddress {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTerminalLocationAddress").finish_non_exhaustive()
+    }
+}
 impl CreateTerminalLocationAddress {
     pub fn new(country: impl Into<String>) -> Self {
         Self {
@@ -337,7 +400,9 @@ impl CreateTerminalLocationAddress {
     }
 }
 /// The Kana variation of the full address of the location (Japan only).
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTerminalLocationAddressKana {
     /// City or ward.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -361,6 +426,12 @@ pub struct CreateTerminalLocationAddressKana {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub town: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTerminalLocationAddressKana {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTerminalLocationAddressKana").finish_non_exhaustive()
+    }
+}
 impl CreateTerminalLocationAddressKana {
     pub fn new() -> Self {
         Self {
@@ -380,7 +451,9 @@ impl Default for CreateTerminalLocationAddressKana {
     }
 }
 /// The Kanji variation of the full address of the location (Japan only).
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTerminalLocationAddressKanji {
     /// City or ward.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -404,6 +477,12 @@ pub struct CreateTerminalLocationAddressKanji {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub town: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTerminalLocationAddressKanji {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTerminalLocationAddressKanji").finish_non_exhaustive()
+    }
+}
 impl CreateTerminalLocationAddressKanji {
     pub fn new() -> Self {
         Self {
@@ -424,9 +503,17 @@ impl Default for CreateTerminalLocationAddressKanji {
 }
 /// Creates a new `Location` object.
 /// For further details, including which address fields are required in each country, see the [Manage locations](https://stripe.com/docs/terminal/fleet/locations) guide.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTerminalLocation {
     inner: CreateTerminalLocationBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTerminalLocation {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTerminalLocation").finish_non_exhaustive()
+    }
 }
 impl CreateTerminalLocation {
     /// Construct a new `CreateTerminalLocation`.
@@ -526,7 +613,9 @@ impl StripeRequest for CreateTerminalLocation {
         RequestBuilder::new(StripeMethod::Post, "/terminal/locations").form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct UpdateTerminalLocationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     address: Option<UpdateTerminalLocationAddress>,
@@ -549,6 +638,12 @@ struct UpdateTerminalLocationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     phone: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateTerminalLocationBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateTerminalLocationBuilder").finish_non_exhaustive()
+    }
+}
 impl UpdateTerminalLocationBuilder {
     fn new() -> Self {
         Self {
@@ -568,7 +663,9 @@ impl UpdateTerminalLocationBuilder {
 /// The full address of the location.
 /// You can't change the location's `country`.
 /// If you need to modify the `country` field, create a new `Location` object and re-register any existing readers to that location.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateTerminalLocationAddress {
     /// City, district, suburb, town, or village.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -589,6 +686,12 @@ pub struct UpdateTerminalLocationAddress {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateTerminalLocationAddress {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateTerminalLocationAddress").finish_non_exhaustive()
+    }
+}
 impl UpdateTerminalLocationAddress {
     pub fn new() -> Self {
         Self { city: None, country: None, line1: None, line2: None, postal_code: None, state: None }
@@ -600,7 +703,9 @@ impl Default for UpdateTerminalLocationAddress {
     }
 }
 /// The Kana variation of the full address of the location (Japan only).
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateTerminalLocationAddressKana {
     /// City or ward.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -624,6 +729,12 @@ pub struct UpdateTerminalLocationAddressKana {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub town: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateTerminalLocationAddressKana {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateTerminalLocationAddressKana").finish_non_exhaustive()
+    }
+}
 impl UpdateTerminalLocationAddressKana {
     pub fn new() -> Self {
         Self {
@@ -643,7 +754,9 @@ impl Default for UpdateTerminalLocationAddressKana {
     }
 }
 /// The Kanji variation of the full address of the location (Japan only).
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateTerminalLocationAddressKanji {
     /// City or ward.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -667,6 +780,12 @@ pub struct UpdateTerminalLocationAddressKanji {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub town: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateTerminalLocationAddressKanji {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateTerminalLocationAddressKanji").finish_non_exhaustive()
+    }
+}
 impl UpdateTerminalLocationAddressKanji {
     pub fn new() -> Self {
         Self {
@@ -687,10 +806,18 @@ impl Default for UpdateTerminalLocationAddressKanji {
 }
 /// Updates a `Location` object by setting the values of the parameters passed.
 /// Any parameters not provided will be left unchanged.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateTerminalLocation {
     inner: UpdateTerminalLocationBuilder,
     location: stripe_terminal::TerminalLocationId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateTerminalLocation {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateTerminalLocation").finish_non_exhaustive()
+    }
 }
 impl UpdateTerminalLocation {
     /// Construct a new `UpdateTerminalLocation`.
@@ -789,7 +916,8 @@ impl StripeRequest for UpdateTerminalLocation {
             .form(&self.inner)
     }
 }
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(untagged))]
@@ -870,3 +998,10 @@ const _: () = {
         type Builder = UpdateTerminalLocationReturnedBuilder;
     }
 };
+
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateTerminalLocationReturned {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateTerminalLocationReturned").finish_non_exhaustive()
+    }
+}

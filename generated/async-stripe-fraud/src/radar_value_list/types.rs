@@ -3,7 +3,8 @@
 /// Related guide: [Default Stripe lists](https://docs.stripe.com/radar/lists#managing-list-items)
 ///
 /// For more details see <<https://stripe.com/docs/api/radar/value_lists/object>>.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct RadarValueList {
     /// The name of the value list for use in rules.
@@ -27,6 +28,12 @@ pub struct RadarValueList {
     pub metadata: std::collections::HashMap<String, String>,
     /// The name of the value list.
     pub name: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RadarValueList {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RadarValueList").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct RadarValueListBuilder {
@@ -282,9 +289,16 @@ impl std::fmt::Display for RadarValueListItemType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for RadarValueListItemType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RadarValueListItemType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(RadarValueListItemType)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for RadarValueListItemType {

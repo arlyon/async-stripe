@@ -1,7 +1,8 @@
 /// Orders represent your intent to purchase a particular Climate product.
 /// When you create an order, the.
 /// payment is deducted from your merchant balance.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct ClimateOrder {
     /// Total amount of [Frontier](https://frontierclimate.com/)'s service fees in the currency's smallest unit.
@@ -48,6 +49,12 @@ pub struct ClimateOrder {
     pub product_substituted_at: Option<stripe_types::Timestamp>,
     /// The current status of this order.
     pub status: ClimateOrderStatus,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ClimateOrder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ClimateOrder").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct ClimateOrderBuilder {
@@ -373,9 +380,16 @@ impl std::fmt::Display for ClimateOrderCancellationReason {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ClimateOrderCancellationReason {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ClimateOrderCancellationReason {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ClimateOrderCancellationReason)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -459,9 +473,16 @@ impl std::fmt::Display for ClimateOrderStatus {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ClimateOrderStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ClimateOrderStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ClimateOrderStatus)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

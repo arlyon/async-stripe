@@ -30,6 +30,7 @@ async-stripe-shared = {path = "../../generated/async-stripe-shared", version = "
 [features]
 serialize = ["async-stripe-types/serialize","async-stripe-shared/serialize"]
 deserialize = ["async-stripe-types/deserialize","async-stripe-shared/deserialize", "dep:serde_json"]
+redact-generated-debug = ["async-stripe-types/redact-generated-debug","async-stripe-shared/redact-generated-debug"]
 checkout_session = []
 
 full = ["checkout_session"]

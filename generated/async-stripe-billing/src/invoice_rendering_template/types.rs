@@ -1,7 +1,8 @@
 /// Invoice Rendering Templates are used to configure how invoices are rendered on surfaces like the PDF.
 /// Invoice Rendering Templates.
 /// can be created from within the Dashboard, and they can be used over the API when creating invoices.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct InvoiceRenderingTemplate {
     /// Time at which the object was created. Measured in seconds since the Unix epoch.
@@ -20,6 +21,12 @@ pub struct InvoiceRenderingTemplate {
     pub status: stripe_billing::InvoiceRenderingTemplateStatus,
     /// Version of this template; version increases by one when an update on the template changes any field that controls invoice rendering.
     pub version: i64,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for InvoiceRenderingTemplate {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("InvoiceRenderingTemplate").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct InvoiceRenderingTemplateBuilder {
@@ -228,9 +235,16 @@ impl std::fmt::Display for InvoiceRenderingTemplateStatus {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for InvoiceRenderingTemplateStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for InvoiceRenderingTemplateStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(InvoiceRenderingTemplateStatus)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for InvoiceRenderingTemplateStatus {

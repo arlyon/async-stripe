@@ -3,9 +3,17 @@ use stripe_client_core::{
 };
 
 /// Deletes a test clock.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct DeleteTestHelpersTestClock {
     test_clock: stripe_shared::TestHelpersTestClockId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for DeleteTestHelpersTestClock {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("DeleteTestHelpersTestClock").finish_non_exhaustive()
+    }
 }
 impl DeleteTestHelpersTestClock {
     /// Construct a new `DeleteTestHelpersTestClock`.
@@ -39,7 +47,9 @@ impl StripeRequest for DeleteTestHelpersTestClock {
         RequestBuilder::new(StripeMethod::Delete, format!("/test_helpers/test_clocks/{test_clock}"))
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ListTestHelpersTestClockBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<String>,
@@ -50,15 +60,29 @@ struct ListTestHelpersTestClockBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     starting_after: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListTestHelpersTestClockBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListTestHelpersTestClockBuilder").finish_non_exhaustive()
+    }
+}
 impl ListTestHelpersTestClockBuilder {
     fn new() -> Self {
         Self { ending_before: None, expand: None, limit: None, starting_after: None }
     }
 }
 /// Returns a list of your test clocks.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListTestHelpersTestClock {
     inner: ListTestHelpersTestClockBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListTestHelpersTestClock {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListTestHelpersTestClock").finish_non_exhaustive()
+    }
 }
 impl ListTestHelpersTestClock {
     /// Construct a new `ListTestHelpersTestClock`.
@@ -128,10 +152,18 @@ impl StripeRequest for ListTestHelpersTestClock {
         RequestBuilder::new(StripeMethod::Get, "/test_helpers/test_clocks").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RetrieveTestHelpersTestClockBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveTestHelpersTestClockBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveTestHelpersTestClockBuilder").finish_non_exhaustive()
+    }
 }
 impl RetrieveTestHelpersTestClockBuilder {
     fn new() -> Self {
@@ -139,10 +171,18 @@ impl RetrieveTestHelpersTestClockBuilder {
     }
 }
 /// Retrieves a test clock.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RetrieveTestHelpersTestClock {
     inner: RetrieveTestHelpersTestClockBuilder,
     test_clock: stripe_shared::TestHelpersTestClockId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveTestHelpersTestClock {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveTestHelpersTestClock").finish_non_exhaustive()
+    }
 }
 impl RetrieveTestHelpersTestClock {
     /// Construct a new `RetrieveTestHelpersTestClock`.
@@ -182,7 +222,9 @@ impl StripeRequest for RetrieveTestHelpersTestClock {
             .query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct CreateTestHelpersTestClockBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -190,15 +232,29 @@ struct CreateTestHelpersTestClockBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     name: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTestHelpersTestClockBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTestHelpersTestClockBuilder").finish_non_exhaustive()
+    }
+}
 impl CreateTestHelpersTestClockBuilder {
     fn new(frozen_time: impl Into<stripe_types::Timestamp>) -> Self {
         Self { expand: None, frozen_time: frozen_time.into(), name: None }
     }
 }
 /// Creates a new test clock that can be attached to new customers and quotes.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTestHelpersTestClock {
     inner: CreateTestHelpersTestClockBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTestHelpersTestClock {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTestHelpersTestClock").finish_non_exhaustive()
+    }
 }
 impl CreateTestHelpersTestClock {
     /// Construct a new `CreateTestHelpersTestClock`.
@@ -241,11 +297,19 @@ impl StripeRequest for CreateTestHelpersTestClock {
         RequestBuilder::new(StripeMethod::Post, "/test_helpers/test_clocks").form(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct AdvanceTestHelpersTestClockBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
     frozen_time: stripe_types::Timestamp,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for AdvanceTestHelpersTestClockBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("AdvanceTestHelpersTestClockBuilder").finish_non_exhaustive()
+    }
 }
 impl AdvanceTestHelpersTestClockBuilder {
     fn new(frozen_time: impl Into<stripe_types::Timestamp>) -> Self {
@@ -254,10 +318,18 @@ impl AdvanceTestHelpersTestClockBuilder {
 }
 /// Starts advancing a test clock to a specified time in the future.
 /// Advancement is done when status changes to `Ready`.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct AdvanceTestHelpersTestClock {
     inner: AdvanceTestHelpersTestClockBuilder,
     test_clock: stripe_shared::TestHelpersTestClockId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for AdvanceTestHelpersTestClock {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("AdvanceTestHelpersTestClock").finish_non_exhaustive()
+    }
 }
 impl AdvanceTestHelpersTestClock {
     /// Construct a new `AdvanceTestHelpersTestClock`.

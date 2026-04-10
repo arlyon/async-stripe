@@ -1,4 +1,5 @@
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct ConnectEmbeddedPayoutsFeatures {
@@ -20,6 +21,12 @@ pub struct ConnectEmbeddedPayoutsFeatures {
     /// Whether to allow creation of standard payouts.
     /// Defaults to `true` when `controller.losses.payments` is set to `stripe` for the account, otherwise `false`.
     pub standard_payouts: bool,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConnectEmbeddedPayoutsFeatures {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConnectEmbeddedPayoutsFeatures").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct ConnectEmbeddedPayoutsFeaturesBuilder {

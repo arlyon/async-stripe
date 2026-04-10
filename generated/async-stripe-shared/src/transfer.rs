@@ -11,7 +11,8 @@
 /// Related guide: [Creating separate charges and transfers](https://docs.stripe.com/connect/separate-charges-and-transfers).
 ///
 /// For more details see <<https://stripe.com/docs/api/transfers/object>>.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct Transfer {
     /// Amount in cents (or local equivalent) to be transferred.
@@ -52,6 +53,12 @@ pub struct Transfer {
     /// A string that identifies this transaction as part of a group.
     /// See the [Connect documentation](https://docs.stripe.com/connect/separate-charges-and-transfers#transfer-options) for details.
     pub transfer_group: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for Transfer {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("Transfer").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct TransferBuilder {

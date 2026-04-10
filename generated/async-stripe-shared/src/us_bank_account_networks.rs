@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct UsBankAccountNetworks {
@@ -6,6 +7,12 @@ pub struct UsBankAccountNetworks {
     pub preferred: Option<String>,
     /// All supported networks.
     pub supported: Vec<UsBankAccountNetworksSupported>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UsBankAccountNetworks {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UsBankAccountNetworks").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct UsBankAccountNetworksBuilder {
@@ -148,9 +155,16 @@ impl std::fmt::Display for UsBankAccountNetworksSupported {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UsBankAccountNetworksSupported {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UsBankAccountNetworksSupported {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UsBankAccountNetworksSupported)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct IssuingCardGooglePay {
@@ -6,6 +7,12 @@ pub struct IssuingCardGooglePay {
     pub eligible: bool,
     /// Reason the card is ineligible for Google Pay
     pub ineligible_reason: Option<IssuingCardGooglePayIneligibleReason>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for IssuingCardGooglePay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("IssuingCardGooglePay").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct IssuingCardGooglePayBuilder {
@@ -152,9 +159,16 @@ impl std::fmt::Display for IssuingCardGooglePayIneligibleReason {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for IssuingCardGooglePayIneligibleReason {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for IssuingCardGooglePayIneligibleReason {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(IssuingCardGooglePayIneligibleReason)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

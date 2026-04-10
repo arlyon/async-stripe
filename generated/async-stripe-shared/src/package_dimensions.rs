@@ -1,4 +1,5 @@
-#[derive(Copy, Clone, Debug)]
+#[derive(Copy, Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PackageDimensions {
@@ -10,6 +11,12 @@ pub struct PackageDimensions {
     pub weight: f64,
     /// Width, in inches.
     pub width: f64,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PackageDimensions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PackageDimensions").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct PackageDimensionsBuilder {

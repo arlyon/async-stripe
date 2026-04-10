@@ -1,4 +1,5 @@
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct IssuingDisputeDuplicateEvidence {
@@ -15,6 +16,12 @@ pub struct IssuingDisputeDuplicateEvidence {
     /// Transaction (e.g., ipi_...) that the disputed transaction is a duplicate of.
     /// Of the two or more transactions that are copies of each other, this is original undisputed one.
     pub original_transaction: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for IssuingDisputeDuplicateEvidence {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("IssuingDisputeDuplicateEvidence").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct IssuingDisputeDuplicateEvidenceBuilder {

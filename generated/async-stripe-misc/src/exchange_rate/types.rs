@@ -29,7 +29,8 @@
 /// - *determine app fees to charge a connected account*
 ///
 /// *Using this Exchange Rates API beta for any purpose other than to transact on Stripe is strictly prohibited and constitutes a violation of Stripe's terms of service.*.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct ExchangeRate {
     /// Unique identifier for the object.
@@ -37,6 +38,12 @@ pub struct ExchangeRate {
     pub id: stripe_misc::ExchangeRateId,
     /// Hash where the keys are supported currencies and the values are the exchange rate at which the base id currency converts to the key currency.
     pub rates: std::collections::HashMap<String, f64>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ExchangeRate {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ExchangeRate").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct ExchangeRateBuilder {

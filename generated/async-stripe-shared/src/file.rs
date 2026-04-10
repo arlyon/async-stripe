@@ -7,7 +7,8 @@
 /// Related guide: [File upload guide](https://docs.stripe.com/file-upload)
 ///
 /// For more details see <<https://stripe.com/docs/api/files/object>>.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct File {
     /// Time at which the object was created. Measured in seconds since the Unix epoch.
@@ -31,6 +32,12 @@ pub struct File {
     pub type_: Option<String>,
     /// Use your live secret API key to download the file from this URL.
     pub url: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for File {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("File").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct FileBuilder {
@@ -321,9 +328,16 @@ impl std::fmt::Display for FilePurpose {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for FilePurpose {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for FilePurpose {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(FilePurpose)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for FilePurpose {

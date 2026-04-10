@@ -1,4 +1,5 @@
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentLinksResourceSubscriptionData {
@@ -12,6 +13,12 @@ pub struct PaymentLinksResourceSubscriptionData {
     pub trial_period_days: Option<u32>,
     /// Settings related to subscription trials.
     pub trial_settings: Option<stripe_shared::SubscriptionsTrialsResourceTrialSettings>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentLinksResourceSubscriptionData {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PaymentLinksResourceSubscriptionData").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct PaymentLinksResourceSubscriptionDataBuilder {

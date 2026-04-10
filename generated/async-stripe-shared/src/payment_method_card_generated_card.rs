@@ -1,4 +1,5 @@
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentMethodCardGeneratedCard {
@@ -8,6 +9,12 @@ pub struct PaymentMethodCardGeneratedCard {
     pub payment_method_details: Option<stripe_shared::CardGeneratedFromPaymentMethodDetails>,
     /// The ID of the SetupAttempt that generated this PaymentMethod, if any.
     pub setup_attempt: Option<stripe_types::Expandable<stripe_shared::SetupAttempt>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentMethodCardGeneratedCard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PaymentMethodCardGeneratedCard").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct PaymentMethodCardGeneratedCardBuilder {

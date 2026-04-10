@@ -12,7 +12,8 @@
 /// Related guides: [Integrate with the Invoicing API](https://docs.stripe.com/invoicing/integration), [Subscription Invoices](https://docs.stripe.com/billing/invoices/subscription#adding-upcoming-invoice-items).
 ///
 /// For more details see <<https://stripe.com/docs/api/invoiceitems/object>>.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct InvoiceItem {
     /// Amount (in the `currency` specified) of the invoice item.
@@ -68,6 +69,12 @@ pub struct InvoiceItem {
     pub tax_rates: Option<Vec<stripe_shared::TaxRate>>,
     /// ID of the test clock this invoice item belongs to.
     pub test_clock: Option<stripe_types::Expandable<stripe_shared::TestHelpersTestClock>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for InvoiceItem {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("InvoiceItem").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct InvoiceItemBuilder {

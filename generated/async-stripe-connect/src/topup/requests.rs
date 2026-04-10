@@ -2,7 +2,9 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ListTopupBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     amount: Option<stripe_types::RangeQueryTs>,
@@ -18,6 +20,12 @@ struct ListTopupBuilder {
     starting_after: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     status: Option<ListTopupStatus>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListTopupBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListTopupBuilder").finish_non_exhaustive()
+    }
 }
 impl ListTopupBuilder {
     fn new() -> Self {
@@ -79,9 +87,16 @@ impl std::fmt::Display for ListTopupStatus {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ListTopupStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListTopupStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ListTopupStatus)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ListTopupStatus {
@@ -101,9 +116,17 @@ impl<'de> serde::Deserialize<'de> for ListTopupStatus {
     }
 }
 /// Returns a list of top-ups.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListTopup {
     inner: ListTopupBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListTopup {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListTopup").finish_non_exhaustive()
+    }
 }
 impl ListTopup {
     /// Construct a new `ListTopup`.
@@ -189,10 +212,18 @@ impl StripeRequest for ListTopup {
         RequestBuilder::new(StripeMethod::Get, "/topups").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RetrieveTopupBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveTopupBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveTopupBuilder").finish_non_exhaustive()
+    }
 }
 impl RetrieveTopupBuilder {
     fn new() -> Self {
@@ -201,10 +232,18 @@ impl RetrieveTopupBuilder {
 }
 /// Retrieves the details of a top-up that has previously been created.
 /// Supply the unique top-up ID that was returned from your previous request, and Stripe will return the corresponding top-up information.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RetrieveTopup {
     inner: RetrieveTopupBuilder,
     topup: stripe_shared::TopupId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveTopup {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveTopup").finish_non_exhaustive()
+    }
 }
 impl RetrieveTopup {
     /// Construct a new `RetrieveTopup`.
@@ -243,7 +282,9 @@ impl StripeRequest for RetrieveTopup {
         RequestBuilder::new(StripeMethod::Get, format!("/topups/{topup}")).query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct CreateTopupBuilder {
     amount: i64,
     currency: stripe_types::Currency,
@@ -260,6 +301,12 @@ struct CreateTopupBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     transfer_group: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTopupBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTopupBuilder").finish_non_exhaustive()
+    }
+}
 impl CreateTopupBuilder {
     fn new(amount: impl Into<i64>, currency: impl Into<stripe_types::Currency>) -> Self {
         Self {
@@ -275,9 +322,17 @@ impl CreateTopupBuilder {
     }
 }
 /// Top up the balance of an account
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTopup {
     inner: CreateTopupBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTopup {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTopup").finish_non_exhaustive()
+    }
 }
 impl CreateTopup {
     /// Construct a new `CreateTopup`.
@@ -348,7 +403,9 @@ impl StripeRequest for CreateTopup {
         RequestBuilder::new(StripeMethod::Post, "/topups").form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct UpdateTopupBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     description: Option<String>,
@@ -357,16 +414,30 @@ struct UpdateTopupBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     metadata: Option<std::collections::HashMap<String, String>>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateTopupBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateTopupBuilder").finish_non_exhaustive()
+    }
+}
 impl UpdateTopupBuilder {
     fn new() -> Self {
         Self { description: None, expand: None, metadata: None }
     }
 }
 /// Updates the metadata of a top-up. Other top-up details are not editable by design.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateTopup {
     inner: UpdateTopupBuilder,
     topup: stripe_shared::TopupId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateTopup {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateTopup").finish_non_exhaustive()
+    }
 }
 impl UpdateTopup {
     /// Construct a new `UpdateTopup`.
@@ -421,10 +492,18 @@ impl StripeRequest for UpdateTopup {
         RequestBuilder::new(StripeMethod::Post, format!("/topups/{topup}")).form(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct CancelTopupBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CancelTopupBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CancelTopupBuilder").finish_non_exhaustive()
+    }
 }
 impl CancelTopupBuilder {
     fn new() -> Self {
@@ -432,10 +511,18 @@ impl CancelTopupBuilder {
     }
 }
 /// Cancels a top-up. Only pending top-ups can be canceled.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CancelTopup {
     inner: CancelTopupBuilder,
     topup: stripe_shared::TopupId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CancelTopup {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CancelTopup").finish_non_exhaustive()
+    }
 }
 impl CancelTopup {
     /// Construct a new `CancelTopup`.

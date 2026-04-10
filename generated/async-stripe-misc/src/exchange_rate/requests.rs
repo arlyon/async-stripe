@@ -2,7 +2,9 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ListExchangeRateBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<String>,
@@ -12,6 +14,12 @@ struct ListExchangeRateBuilder {
     limit: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
     starting_after: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListExchangeRateBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListExchangeRateBuilder").finish_non_exhaustive()
+    }
 }
 impl ListExchangeRateBuilder {
     fn new() -> Self {
@@ -23,9 +31,17 @@ impl ListExchangeRateBuilder {
 ///
 /// Returns a list of objects that contain the rates at which foreign currencies are converted to one another.
 /// Only shows the currencies for which Stripe supports.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListExchangeRate {
     inner: ListExchangeRateBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListExchangeRate {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListExchangeRate").finish_non_exhaustive()
+    }
 }
 impl ListExchangeRate {
     /// Construct a new `ListExchangeRate`.
@@ -94,10 +110,18 @@ impl StripeRequest for ListExchangeRate {
         RequestBuilder::new(StripeMethod::Get, "/exchange_rates").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RetrieveExchangeRateBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveExchangeRateBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveExchangeRateBuilder").finish_non_exhaustive()
+    }
 }
 impl RetrieveExchangeRateBuilder {
     fn new() -> Self {
@@ -108,10 +132,18 @@ impl RetrieveExchangeRateBuilder {
 /// Please use the [FX Quotes API](https://docs.stripe.com/payments/currencies/localize-prices/fx-quotes-api) instead.
 ///
 /// Retrieves the exchange rates from the given currency to every supported currency.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RetrieveExchangeRate {
     inner: RetrieveExchangeRateBuilder,
     rate_id: stripe_misc::ExchangeRateId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveExchangeRate {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveExchangeRate").finish_non_exhaustive()
+    }
 }
 impl RetrieveExchangeRate {
     /// Construct a new `RetrieveExchangeRate`.

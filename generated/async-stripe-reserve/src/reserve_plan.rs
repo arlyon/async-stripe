@@ -1,6 +1,7 @@
 /// ReservePlans are used to automatically place holds on a merchant's funds until the plan expires.
 /// It takes a portion of each incoming Charge (including those resulting from a Transfer from a platform account).
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct ReservePlan {
     /// Time at which the object was created. Measured in seconds since the Unix epoch.
@@ -30,6 +31,12 @@ pub struct ReservePlan {
     /// The type of the ReservePlan.
     #[cfg_attr(feature = "deserialize", serde(rename = "type"))]
     pub type_: ReservePlanType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ReservePlan {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ReservePlan").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct ReservePlanBuilder {
@@ -272,9 +279,16 @@ impl std::fmt::Display for ReservePlanCreatedBy {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ReservePlanCreatedBy {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ReservePlanCreatedBy {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ReservePlanCreatedBy)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -352,9 +366,16 @@ impl std::fmt::Display for ReservePlanStatus {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ReservePlanStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ReservePlanStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ReservePlanStatus)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -429,9 +450,16 @@ impl std::fmt::Display for ReservePlanType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ReservePlanType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ReservePlanType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ReservePlanType)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

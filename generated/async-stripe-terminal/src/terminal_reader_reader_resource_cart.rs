@@ -1,5 +1,6 @@
 /// Represents a cart to be displayed on the reader
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TerminalReaderReaderResourceCart {
@@ -14,6 +15,12 @@ pub struct TerminalReaderReaderResourceCart {
     /// Total amount for the entire cart, including tax.
     /// A positive integer in the [smallest currency unit](https://docs.stripe.com/currencies#zero-decimal).
     pub total: i64,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TerminalReaderReaderResourceCart {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("TerminalReaderReaderResourceCart").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct TerminalReaderReaderResourceCartBuilder {

@@ -1,5 +1,6 @@
 /// Represents a reader action to refund a payment
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TerminalReaderReaderResourceRefundPaymentAction {
@@ -27,6 +28,12 @@ pub struct TerminalReaderReaderResourceRefundPaymentAction {
     /// The transfer will be reversed proportionally to the amount being refunded (either the entire or partial amount).
     /// A transfer can be reversed only by the application that created the charge.
     pub reverse_transfer: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TerminalReaderReaderResourceRefundPaymentAction {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("TerminalReaderReaderResourceRefundPaymentAction").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct TerminalReaderReaderResourceRefundPaymentActionBuilder {
@@ -238,9 +245,17 @@ impl std::fmt::Display for TerminalReaderReaderResourceRefundPaymentActionReason
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for TerminalReaderReaderResourceRefundPaymentActionReason {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TerminalReaderReaderResourceRefundPaymentActionReason {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(TerminalReaderReaderResourceRefundPaymentActionReason))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

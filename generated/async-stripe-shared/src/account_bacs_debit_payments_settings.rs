@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct AccountBacsDebitPaymentsSettings {
@@ -13,6 +14,12 @@ pub struct AccountBacsDebitPaymentsSettings {
     /// The Bacs Direct Debit Service user number for this account.
     /// For payments made with Bacs Direct Debit, this number is a unique identifier of the account with our banking partners.
     pub service_user_number: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for AccountBacsDebitPaymentsSettings {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("AccountBacsDebitPaymentsSettings").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct AccountBacsDebitPaymentsSettingsBuilder {

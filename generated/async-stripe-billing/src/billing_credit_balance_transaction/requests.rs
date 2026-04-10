@@ -2,7 +2,9 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ListBillingCreditBalanceTransactionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     credit_grant: Option<String>,
@@ -19,6 +21,12 @@ struct ListBillingCreditBalanceTransactionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     starting_after: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListBillingCreditBalanceTransactionBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListBillingCreditBalanceTransactionBuilder").finish_non_exhaustive()
+    }
+}
 impl ListBillingCreditBalanceTransactionBuilder {
     fn new() -> Self {
         Self {
@@ -33,9 +41,17 @@ impl ListBillingCreditBalanceTransactionBuilder {
     }
 }
 /// Retrieve a list of credit balance transactions.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListBillingCreditBalanceTransaction {
     inner: ListBillingCreditBalanceTransactionBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListBillingCreditBalanceTransaction {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListBillingCreditBalanceTransaction").finish_non_exhaustive()
+    }
 }
 impl ListBillingCreditBalanceTransaction {
     /// Construct a new `ListBillingCreditBalanceTransaction`.
@@ -125,10 +141,18 @@ impl StripeRequest for ListBillingCreditBalanceTransaction {
             .query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RetrieveBillingCreditBalanceTransactionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveBillingCreditBalanceTransactionBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveBillingCreditBalanceTransactionBuilder").finish_non_exhaustive()
+    }
 }
 impl RetrieveBillingCreditBalanceTransactionBuilder {
     fn new() -> Self {
@@ -136,10 +160,18 @@ impl RetrieveBillingCreditBalanceTransactionBuilder {
     }
 }
 /// Retrieves a credit balance transaction.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RetrieveBillingCreditBalanceTransaction {
     inner: RetrieveBillingCreditBalanceTransactionBuilder,
     id: stripe_shared::BillingCreditBalanceTransactionId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveBillingCreditBalanceTransaction {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveBillingCreditBalanceTransaction").finish_non_exhaustive()
+    }
 }
 impl RetrieveBillingCreditBalanceTransaction {
     /// Construct a new `RetrieveBillingCreditBalanceTransaction`.

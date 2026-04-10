@@ -2,7 +2,9 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ListDisputeBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     charge: Option<String>,
@@ -19,6 +21,12 @@ struct ListDisputeBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     starting_after: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListDisputeBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListDisputeBuilder").finish_non_exhaustive()
+    }
+}
 impl ListDisputeBuilder {
     fn new() -> Self {
         Self {
@@ -33,9 +41,17 @@ impl ListDisputeBuilder {
     }
 }
 /// Returns a list of your disputes.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListDispute {
     inner: ListDisputeBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListDispute {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListDispute").finish_non_exhaustive()
+    }
 }
 impl ListDispute {
     /// Construct a new `ListDispute`.
@@ -119,10 +135,18 @@ impl StripeRequest for ListDispute {
         RequestBuilder::new(StripeMethod::Get, "/disputes").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RetrieveDisputeBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveDisputeBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveDisputeBuilder").finish_non_exhaustive()
+    }
 }
 impl RetrieveDisputeBuilder {
     fn new() -> Self {
@@ -130,10 +154,18 @@ impl RetrieveDisputeBuilder {
     }
 }
 /// Retrieves the dispute with the given ID.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RetrieveDispute {
     inner: RetrieveDisputeBuilder,
     dispute: stripe_shared::DisputeId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveDispute {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveDispute").finish_non_exhaustive()
+    }
 }
 impl RetrieveDispute {
     /// Construct a new `RetrieveDispute`.
@@ -172,7 +204,9 @@ impl StripeRequest for RetrieveDispute {
         RequestBuilder::new(StripeMethod::Get, format!("/disputes/{dispute}")).query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct UpdateDisputeBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     evidence: Option<UpdateDisputeEvidence>,
@@ -183,6 +217,12 @@ struct UpdateDisputeBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     submit: Option<bool>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateDisputeBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateDisputeBuilder").finish_non_exhaustive()
+    }
+}
 impl UpdateDisputeBuilder {
     fn new() -> Self {
         Self { evidence: None, expand: None, metadata: None, submit: None }
@@ -191,7 +231,9 @@ impl UpdateDisputeBuilder {
 /// Evidence to upload, to respond to a dispute.
 /// Updating any field in the hash will submit all fields in the hash for review.
 /// The combined character count of all fields is limited to 150,000.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateDisputeEvidence {
     /// Any server or activity logs showing proof that the customer accessed or downloaded the purchased digital product.
     /// This information should include IP addresses, corresponding timestamps, and any detailed recorded activity.
@@ -293,6 +335,12 @@ pub struct UpdateDisputeEvidence {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub uncategorized_text: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateDisputeEvidence {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateDisputeEvidence").finish_non_exhaustive()
+    }
+}
 impl UpdateDisputeEvidence {
     pub fn new() -> Self {
         Self {
@@ -333,7 +381,9 @@ impl Default for UpdateDisputeEvidence {
     }
 }
 /// Additional evidence for qualifying evidence programs.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateDisputeEvidenceEnhancedEvidence {
     /// Evidence provided for Visa Compelling Evidence 3.0 evidence submission.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -342,6 +392,12 @@ pub struct UpdateDisputeEvidenceEnhancedEvidence {
     /// Evidence provided for Visa compliance evidence submission.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub visa_compliance: Option<UpdateDisputeEvidenceEnhancedEvidenceVisaCompliance>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateDisputeEvidenceEnhancedEvidence {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateDisputeEvidenceEnhancedEvidence").finish_non_exhaustive()
+    }
 }
 impl UpdateDisputeEvidenceEnhancedEvidence {
     pub fn new() -> Self {
@@ -354,7 +410,9 @@ impl Default for UpdateDisputeEvidenceEnhancedEvidence {
     }
 }
 /// Evidence provided for Visa Compelling Evidence 3.0 evidence submission.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateDisputeEvidenceEnhancedEvidenceVisaCompellingEvidence3 {
     /// Disputed transaction details for Visa Compelling Evidence 3.0 evidence submission.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -368,6 +426,13 @@ pub struct UpdateDisputeEvidenceEnhancedEvidenceVisaCompellingEvidence3 {
         >,
     >,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateDisputeEvidenceEnhancedEvidenceVisaCompellingEvidence3 {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateDisputeEvidenceEnhancedEvidenceVisaCompellingEvidence3")
+            .finish_non_exhaustive()
+    }
+}
 impl UpdateDisputeEvidenceEnhancedEvidenceVisaCompellingEvidence3 {
     pub fn new() -> Self {
         Self { disputed_transaction: None, prior_undisputed_transactions: None }
@@ -379,7 +444,9 @@ impl Default for UpdateDisputeEvidenceEnhancedEvidenceVisaCompellingEvidence3 {
     }
 }
 /// Disputed transaction details for Visa Compelling Evidence 3.0 evidence submission.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateDisputeEvidenceEnhancedEvidenceVisaCompellingEvidence3DisputedTransaction {
     /// User Account ID used to log into business platform. Must be recognizable by the user.
 #[serde(skip_serializing_if = "Option::is_none")]
@@ -409,6 +476,17 @@ pub product_description: Option<String>,
 #[serde(skip_serializing_if = "Option::is_none")]
 pub shipping_address: Option<ShippingAddress>,
 
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for UpdateDisputeEvidenceEnhancedEvidenceVisaCompellingEvidence3DisputedTransaction
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(
+            "UpdateDisputeEvidenceEnhancedEvidenceVisaCompellingEvidence3DisputedTransaction",
+        )
+        .finish_non_exhaustive()
+    }
 }
 impl UpdateDisputeEvidenceEnhancedEvidenceVisaCompellingEvidence3DisputedTransaction {
     pub fn new() -> Self {
@@ -469,9 +547,16 @@ impl std::fmt::Display for UpdateDisputeEvidenceEnhancedEvidenceVisaCompellingEv
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdateDisputeEvidenceEnhancedEvidenceVisaCompellingEvidence3DisputedTransactionMerchandiseOrServices {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateDisputeEvidenceEnhancedEvidenceVisaCompellingEvidence3DisputedTransactionMerchandiseOrServices {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdateDisputeEvidenceEnhancedEvidenceVisaCompellingEvidence3DisputedTransactionMerchandiseOrServices)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdateDisputeEvidenceEnhancedEvidenceVisaCompellingEvidence3DisputedTransactionMerchandiseOrServices {
@@ -488,7 +573,9 @@ impl<'de> serde::Deserialize<'de> for UpdateDisputeEvidenceEnhancedEvidenceVisaC
     }
 }
 /// List of exactly two prior undisputed transaction objects for Visa Compelling Evidence 3.0 evidence submission.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateDisputeEvidenceEnhancedEvidenceVisaCompellingEvidence3PriorUndisputedTransactions {
     /// Stripe charge ID for the Visa Compelling Evidence 3.0 eligible prior charge.
     pub charge: String,
@@ -517,6 +604,14 @@ pub struct UpdateDisputeEvidenceEnhancedEvidenceVisaCompellingEvidence3PriorUndi
     #[serde(skip_serializing_if = "Option::is_none")]
     pub shipping_address: Option<ShippingAddress>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for UpdateDisputeEvidenceEnhancedEvidenceVisaCompellingEvidence3PriorUndisputedTransactions
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateDisputeEvidenceEnhancedEvidenceVisaCompellingEvidence3PriorUndisputedTransactions").finish_non_exhaustive()
+    }
+}
 impl UpdateDisputeEvidenceEnhancedEvidenceVisaCompellingEvidence3PriorUndisputedTransactions {
     pub fn new(charge: impl Into<String>) -> Self {
         Self {
@@ -532,7 +627,9 @@ impl UpdateDisputeEvidenceEnhancedEvidenceVisaCompellingEvidence3PriorUndisputed
     }
 }
 /// Evidence provided for Visa compliance evidence submission.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateDisputeEvidenceEnhancedEvidenceVisaCompliance {
     /// A field acknowledging the fee incurred when countering a Visa compliance dispute.
     /// If this field is set to true, evidence can be submitted for the compliance dispute.
@@ -540,6 +637,13 @@ pub struct UpdateDisputeEvidenceEnhancedEvidenceVisaCompliance {
     /// Stripe refunds the 500 USD network fee if you win the dispute.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub fee_acknowledged: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateDisputeEvidenceEnhancedEvidenceVisaCompliance {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateDisputeEvidenceEnhancedEvidenceVisaCompliance")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdateDisputeEvidenceEnhancedEvidenceVisaCompliance {
     pub fn new() -> Self {
@@ -557,10 +661,18 @@ impl Default for UpdateDisputeEvidenceEnhancedEvidenceVisaCompliance {
 ///
 /// Depending on your dispute type, different evidence fields will give you a better chance of winning your dispute.
 /// To figure out which evidence fields to provide, see our [guide to dispute types](https://stripe.com/docs/disputes/categories).
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateDispute {
     inner: UpdateDisputeBuilder,
     dispute: stripe_shared::DisputeId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateDispute {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateDispute").finish_non_exhaustive()
+    }
 }
 impl UpdateDispute {
     /// Construct a new `UpdateDispute`.
@@ -624,10 +736,18 @@ impl StripeRequest for UpdateDispute {
         RequestBuilder::new(StripeMethod::Post, format!("/disputes/{dispute}")).form(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct CloseDisputeBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CloseDisputeBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CloseDisputeBuilder").finish_non_exhaustive()
+    }
 }
 impl CloseDisputeBuilder {
     fn new() -> Self {
@@ -638,10 +758,18 @@ impl CloseDisputeBuilder {
 ///
 /// The status of the dispute will change from `needs_response` to `lost`.
 /// _Closing a dispute is irreversible_.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CloseDispute {
     inner: CloseDisputeBuilder,
     dispute: stripe_shared::DisputeId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CloseDispute {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CloseDispute").finish_non_exhaustive()
+    }
 }
 impl CloseDispute {
     /// Construct a new `CloseDispute`.
@@ -682,7 +810,9 @@ impl StripeRequest for CloseDispute {
     }
 }
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ShippingAddress {
     /// City, district, suburb, town, or village.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -702,6 +832,12 @@ pub struct ShippingAddress {
     /// State, county, province, or region ([ISO 3166-2](https://en.wikipedia.org/wiki/ISO_3166-2)).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ShippingAddress {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ShippingAddress").finish_non_exhaustive()
+    }
 }
 impl ShippingAddress {
     pub fn new() -> Self {

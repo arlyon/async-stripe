@@ -1,4 +1,5 @@
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct InvoiceSettingCustomerSetting {
@@ -10,6 +11,12 @@ pub struct InvoiceSettingCustomerSetting {
     pub footer: Option<String>,
     /// Default options for invoice PDF rendering for this customer.
     pub rendering_options: Option<stripe_shared::InvoiceSettingCustomerRenderingOptions>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for InvoiceSettingCustomerSetting {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("InvoiceSettingCustomerSetting").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct InvoiceSettingCustomerSettingBuilder {

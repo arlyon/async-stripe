@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TaxProductResourceLineItemTaxRateDetails {
@@ -9,6 +10,12 @@ pub struct TaxProductResourceLineItemTaxRateDetails {
     pub percentage_decimal: String,
     /// The tax type, such as `vat` or `sales_tax`.
     pub tax_type: TaxProductResourceLineItemTaxRateDetailsTaxType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TaxProductResourceLineItemTaxRateDetails {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("TaxProductResourceLineItemTaxRateDetails").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct TaxProductResourceLineItemTaxRateDetailsBuilder {
@@ -195,9 +202,17 @@ impl std::fmt::Display for TaxProductResourceLineItemTaxRateDetailsTaxType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for TaxProductResourceLineItemTaxRateDetailsTaxType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TaxProductResourceLineItemTaxRateDetailsTaxType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(TaxProductResourceLineItemTaxRateDetailsTaxType))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

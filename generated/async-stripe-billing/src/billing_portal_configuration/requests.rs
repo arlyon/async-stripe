@@ -2,7 +2,9 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ListBillingPortalConfigurationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     active: Option<bool>,
@@ -17,6 +19,12 @@ struct ListBillingPortalConfigurationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     starting_after: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListBillingPortalConfigurationBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListBillingPortalConfigurationBuilder").finish_non_exhaustive()
+    }
+}
 impl ListBillingPortalConfigurationBuilder {
     fn new() -> Self {
         Self {
@@ -30,9 +38,17 @@ impl ListBillingPortalConfigurationBuilder {
     }
 }
 /// Returns a list of configurations that describe the functionality of the customer portal.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListBillingPortalConfiguration {
     inner: ListBillingPortalConfigurationBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListBillingPortalConfiguration {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListBillingPortalConfiguration").finish_non_exhaustive()
+    }
 }
 impl ListBillingPortalConfiguration {
     /// Construct a new `ListBillingPortalConfiguration`.
@@ -113,10 +129,18 @@ impl StripeRequest for ListBillingPortalConfiguration {
         RequestBuilder::new(StripeMethod::Get, "/billing_portal/configurations").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RetrieveBillingPortalConfigurationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveBillingPortalConfigurationBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveBillingPortalConfigurationBuilder").finish_non_exhaustive()
+    }
 }
 impl RetrieveBillingPortalConfigurationBuilder {
     fn new() -> Self {
@@ -124,10 +148,18 @@ impl RetrieveBillingPortalConfigurationBuilder {
     }
 }
 /// Retrieves a configuration that describes the functionality of the customer portal.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RetrieveBillingPortalConfiguration {
     inner: RetrieveBillingPortalConfigurationBuilder,
     configuration: stripe_billing::BillingPortalConfigurationId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveBillingPortalConfiguration {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveBillingPortalConfiguration").finish_non_exhaustive()
+    }
 }
 impl RetrieveBillingPortalConfiguration {
     /// Construct a new `RetrieveBillingPortalConfiguration`.
@@ -173,7 +205,9 @@ impl StripeRequest for RetrieveBillingPortalConfiguration {
         .query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct CreateBillingPortalConfigurationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     business_profile: Option<CreateBillingPortalConfigurationBusinessProfile>,
@@ -189,6 +223,12 @@ struct CreateBillingPortalConfigurationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     name: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateBillingPortalConfigurationBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateBillingPortalConfigurationBuilder").finish_non_exhaustive()
+    }
+}
 impl CreateBillingPortalConfigurationBuilder {
     fn new(features: impl Into<CreateBillingPortalConfigurationFeatures>) -> Self {
         Self {
@@ -203,7 +243,9 @@ impl CreateBillingPortalConfigurationBuilder {
     }
 }
 /// The business information shown to customers in the portal.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateBillingPortalConfigurationBusinessProfile {
     /// The messaging shown to customers in the portal.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -214,6 +256,12 @@ pub struct CreateBillingPortalConfigurationBusinessProfile {
     /// A link to the business’s publicly available terms of service.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub terms_of_service_url: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateBillingPortalConfigurationBusinessProfile {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateBillingPortalConfigurationBusinessProfile").finish_non_exhaustive()
+    }
 }
 impl CreateBillingPortalConfigurationBusinessProfile {
     pub fn new() -> Self {
@@ -226,7 +274,9 @@ impl Default for CreateBillingPortalConfigurationBusinessProfile {
     }
 }
 /// Information about the features available in the portal.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateBillingPortalConfigurationFeatures {
     /// Information about updating the customer details in the portal.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -243,6 +293,12 @@ pub struct CreateBillingPortalConfigurationFeatures {
     /// Information about updating subscriptions in the portal.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub subscription_update: Option<CreateBillingPortalConfigurationFeaturesSubscriptionUpdate>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateBillingPortalConfigurationFeatures {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateBillingPortalConfigurationFeatures").finish_non_exhaustive()
+    }
 }
 impl CreateBillingPortalConfigurationFeatures {
     pub fn new() -> Self {
@@ -261,7 +317,9 @@ impl Default for CreateBillingPortalConfigurationFeatures {
     }
 }
 /// Information about updating the customer details in the portal.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateBillingPortalConfigurationFeaturesCustomerUpdate {
     /// The types of customer updates that are supported. When empty, customers are not updateable.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -269,6 +327,13 @@ pub struct CreateBillingPortalConfigurationFeaturesCustomerUpdate {
         Option<Vec<CreateBillingPortalConfigurationFeaturesCustomerUpdateAllowedUpdates>>,
     /// Whether the feature is enabled.
     pub enabled: bool,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateBillingPortalConfigurationFeaturesCustomerUpdate {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateBillingPortalConfigurationFeaturesCustomerUpdate")
+            .finish_non_exhaustive()
+    }
 }
 impl CreateBillingPortalConfigurationFeaturesCustomerUpdate {
     pub fn new(enabled: impl Into<bool>) -> Self {
@@ -331,9 +396,19 @@ impl std::fmt::Display for CreateBillingPortalConfigurationFeaturesCustomerUpdat
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateBillingPortalConfigurationFeaturesCustomerUpdateAllowedUpdates {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateBillingPortalConfigurationFeaturesCustomerUpdateAllowedUpdates {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreateBillingPortalConfigurationFeaturesCustomerUpdateAllowedUpdates
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateBillingPortalConfigurationFeaturesCustomerUpdateAllowedUpdates {
@@ -355,7 +430,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Information about canceling subscriptions in the portal.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateBillingPortalConfigurationFeaturesSubscriptionCancel {
     /// Whether the cancellation reasons will be collected in the portal and which options are exposed to the customer.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -374,6 +451,13 @@ pub struct CreateBillingPortalConfigurationFeaturesSubscriptionCancel {
     pub proration_behavior:
         Option<CreateBillingPortalConfigurationFeaturesSubscriptionCancelProrationBehavior>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateBillingPortalConfigurationFeaturesSubscriptionCancel {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateBillingPortalConfigurationFeaturesSubscriptionCancel")
+            .finish_non_exhaustive()
+    }
+}
 impl CreateBillingPortalConfigurationFeaturesSubscriptionCancel {
     pub fn new(enabled: impl Into<bool>) -> Self {
         Self {
@@ -385,13 +469,26 @@ impl CreateBillingPortalConfigurationFeaturesSubscriptionCancel {
     }
 }
 /// Whether the cancellation reasons will be collected in the portal and which options are exposed to the customer.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReason {
     /// Whether the feature is enabled.
     pub enabled: bool,
     /// Which cancellation reasons will be given as options to the customer.
     pub options:
         Vec<CreateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for CreateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReason
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(
+            "CreateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReason",
+        )
+        .finish_non_exhaustive()
+    }
 }
 impl CreateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReason {
     pub fn new(
@@ -471,11 +568,23 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for CreateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for CreateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -542,9 +651,17 @@ impl std::fmt::Display for CreateBillingPortalConfigurationFeaturesSubscriptionC
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateBillingPortalConfigurationFeaturesSubscriptionCancelMode {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateBillingPortalConfigurationFeaturesSubscriptionCancelMode {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateBillingPortalConfigurationFeaturesSubscriptionCancelMode))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateBillingPortalConfigurationFeaturesSubscriptionCancelMode {
@@ -619,11 +736,23 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for CreateBillingPortalConfigurationFeaturesSubscriptionCancelProrationBehavior
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for CreateBillingPortalConfigurationFeaturesSubscriptionCancelProrationBehavior
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreateBillingPortalConfigurationFeaturesSubscriptionCancelProrationBehavior
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -647,7 +776,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Information about updating subscriptions in the portal.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateBillingPortalConfigurationFeaturesSubscriptionUpdate {
     /// Determines the value to use for the billing cycle anchor on subscription updates.
     /// Valid values are `now` or `unchanged`, and the default value is `unchanged`.
@@ -679,6 +810,13 @@ pub struct CreateBillingPortalConfigurationFeaturesSubscriptionUpdate {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub trial_update_behavior:
         Option<CreateBillingPortalConfigurationFeaturesSubscriptionUpdateTrialUpdateBehavior>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateBillingPortalConfigurationFeaturesSubscriptionUpdate {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateBillingPortalConfigurationFeaturesSubscriptionUpdate")
+            .finish_non_exhaustive()
+    }
 }
 impl CreateBillingPortalConfigurationFeaturesSubscriptionUpdate {
     pub fn new(enabled: impl Into<bool>) -> Self {
@@ -744,11 +882,23 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for CreateBillingPortalConfigurationFeaturesSubscriptionUpdateBillingCycleAnchor
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for CreateBillingPortalConfigurationFeaturesSubscriptionUpdateBillingCycleAnchor
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreateBillingPortalConfigurationFeaturesSubscriptionUpdateBillingCycleAnchor
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -822,11 +972,23 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for CreateBillingPortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for CreateBillingPortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreateBillingPortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -901,11 +1063,23 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for CreateBillingPortalConfigurationFeaturesSubscriptionUpdateProrationBehavior
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for CreateBillingPortalConfigurationFeaturesSubscriptionUpdateProrationBehavior
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreateBillingPortalConfigurationFeaturesSubscriptionUpdateProrationBehavior
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -929,7 +1103,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Setting to control when an update should be scheduled at the end of the period instead of applying immediately.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEnd {
     /// List of conditions.
     /// When any condition is true, the update will be scheduled at the end of the current period.
@@ -939,6 +1115,17 @@ pub struct CreateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtP
             CreateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditions,
         >,
     >,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for CreateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEnd
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(
+            "CreateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEnd",
+        )
+        .finish_non_exhaustive()
+    }
 }
 impl CreateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEnd {
     pub fn new() -> Self {
@@ -952,12 +1139,22 @@ impl Default for CreateBillingPortalConfigurationFeaturesSubscriptionUpdateSched
 }
 /// List of conditions.
 /// When any condition is true, the update will be scheduled at the end of the current period.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditions {
     /// The type of condition.
     #[serde(rename = "type")]
     pub type_:
         CreateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditionsType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for CreateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditions
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditions").finish_non_exhaustive()
+    }
 }
 impl CreateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditions {
     pub fn new(
@@ -1015,11 +1212,20 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for CreateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditionsType
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for CreateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditionsType
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditionsType)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -1090,11 +1296,23 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for CreateBillingPortalConfigurationFeaturesSubscriptionUpdateTrialUpdateBehavior
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for CreateBillingPortalConfigurationFeaturesSubscriptionUpdateTrialUpdateBehavior
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreateBillingPortalConfigurationFeaturesSubscriptionUpdateTrialUpdateBehavior
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -1119,10 +1337,18 @@ impl<'de> serde::Deserialize<'de>
 }
 /// The hosted login page for this configuration.
 /// Learn more about the portal login page in our [integration docs](https://stripe.com/docs/billing/subscriptions/integrating-customer-portal#share).
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateBillingPortalConfigurationLoginPage {
     /// Set to `true` to generate a shareable URL [`login_page.url`](https://docs.stripe.com/api/customer_portal/configuration#portal_configuration_object-login_page-url) that will take your customers to a hosted login page for the customer portal.
     pub enabled: bool,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateBillingPortalConfigurationLoginPage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateBillingPortalConfigurationLoginPage").finish_non_exhaustive()
+    }
 }
 impl CreateBillingPortalConfigurationLoginPage {
     pub fn new(enabled: impl Into<bool>) -> Self {
@@ -1130,9 +1356,17 @@ impl CreateBillingPortalConfigurationLoginPage {
     }
 }
 /// Creates a configuration that describes the functionality and behavior of a PortalSession
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateBillingPortalConfiguration {
     inner: CreateBillingPortalConfigurationBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateBillingPortalConfiguration {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateBillingPortalConfiguration").finish_non_exhaustive()
+    }
 }
 impl CreateBillingPortalConfiguration {
     /// Construct a new `CreateBillingPortalConfiguration`.
@@ -1209,7 +1443,9 @@ impl StripeRequest for CreateBillingPortalConfiguration {
         RequestBuilder::new(StripeMethod::Post, "/billing_portal/configurations").form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct UpdateBillingPortalConfigurationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     active: Option<bool>,
@@ -1228,6 +1464,12 @@ struct UpdateBillingPortalConfigurationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     name: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateBillingPortalConfigurationBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateBillingPortalConfigurationBuilder").finish_non_exhaustive()
+    }
+}
 impl UpdateBillingPortalConfigurationBuilder {
     fn new() -> Self {
         Self {
@@ -1243,7 +1485,9 @@ impl UpdateBillingPortalConfigurationBuilder {
     }
 }
 /// The business information shown to customers in the portal.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateBillingPortalConfigurationBusinessProfile {
     /// The messaging shown to customers in the portal.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1254,6 +1498,12 @@ pub struct UpdateBillingPortalConfigurationBusinessProfile {
     /// A link to the business’s publicly available terms of service.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub terms_of_service_url: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateBillingPortalConfigurationBusinessProfile {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateBillingPortalConfigurationBusinessProfile").finish_non_exhaustive()
+    }
 }
 impl UpdateBillingPortalConfigurationBusinessProfile {
     pub fn new() -> Self {
@@ -1266,7 +1516,9 @@ impl Default for UpdateBillingPortalConfigurationBusinessProfile {
     }
 }
 /// Information about the features available in the portal.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateBillingPortalConfigurationFeatures {
     /// Information about updating the customer details in the portal.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1283,6 +1535,12 @@ pub struct UpdateBillingPortalConfigurationFeatures {
     /// Information about updating subscriptions in the portal.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub subscription_update: Option<UpdateBillingPortalConfigurationFeaturesSubscriptionUpdate>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateBillingPortalConfigurationFeatures {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateBillingPortalConfigurationFeatures").finish_non_exhaustive()
+    }
 }
 impl UpdateBillingPortalConfigurationFeatures {
     pub fn new() -> Self {
@@ -1301,7 +1559,9 @@ impl Default for UpdateBillingPortalConfigurationFeatures {
     }
 }
 /// Information about updating the customer details in the portal.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateBillingPortalConfigurationFeaturesCustomerUpdate {
     /// The types of customer updates that are supported. When empty, customers are not updateable.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1310,6 +1570,13 @@ pub struct UpdateBillingPortalConfigurationFeaturesCustomerUpdate {
     /// Whether the feature is enabled.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateBillingPortalConfigurationFeaturesCustomerUpdate {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateBillingPortalConfigurationFeaturesCustomerUpdate")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdateBillingPortalConfigurationFeaturesCustomerUpdate {
     pub fn new() -> Self {
@@ -1377,9 +1644,19 @@ impl std::fmt::Display for UpdateBillingPortalConfigurationFeaturesCustomerUpdat
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdateBillingPortalConfigurationFeaturesCustomerUpdateAllowedUpdates {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateBillingPortalConfigurationFeaturesCustomerUpdateAllowedUpdates {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdateBillingPortalConfigurationFeaturesCustomerUpdateAllowedUpdates
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdateBillingPortalConfigurationFeaturesCustomerUpdateAllowedUpdates {
@@ -1401,7 +1678,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Information about canceling subscriptions in the portal.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateBillingPortalConfigurationFeaturesSubscriptionCancel {
     /// Whether the cancellation reasons will be collected in the portal and which options are exposed to the customer.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1421,6 +1700,13 @@ pub struct UpdateBillingPortalConfigurationFeaturesSubscriptionCancel {
     pub proration_behavior:
         Option<UpdateBillingPortalConfigurationFeaturesSubscriptionCancelProrationBehavior>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateBillingPortalConfigurationFeaturesSubscriptionCancel {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateBillingPortalConfigurationFeaturesSubscriptionCancel")
+            .finish_non_exhaustive()
+    }
+}
 impl UpdateBillingPortalConfigurationFeaturesSubscriptionCancel {
     pub fn new() -> Self {
         Self { cancellation_reason: None, enabled: None, mode: None, proration_behavior: None }
@@ -1432,7 +1718,9 @@ impl Default for UpdateBillingPortalConfigurationFeaturesSubscriptionCancel {
     }
 }
 /// Whether the cancellation reasons will be collected in the portal and which options are exposed to the customer.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReason {
     /// Whether the feature is enabled.
     pub enabled: bool,
@@ -1441,6 +1729,17 @@ pub struct UpdateBillingPortalConfigurationFeaturesSubscriptionCancelCancellatio
     pub options: Option<
         Vec<UpdateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions>,
     >,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for UpdateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReason
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(
+            "UpdateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReason",
+        )
+        .finish_non_exhaustive()
+    }
 }
 impl UpdateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReason {
     pub fn new(enabled: impl Into<bool>) -> Self {
@@ -1513,11 +1812,23 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for UpdateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for UpdateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdateBillingPortalConfigurationFeaturesSubscriptionCancelCancellationReasonOptions
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -1584,9 +1895,17 @@ impl std::fmt::Display for UpdateBillingPortalConfigurationFeaturesSubscriptionC
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdateBillingPortalConfigurationFeaturesSubscriptionCancelMode {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateBillingPortalConfigurationFeaturesSubscriptionCancelMode {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdateBillingPortalConfigurationFeaturesSubscriptionCancelMode))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdateBillingPortalConfigurationFeaturesSubscriptionCancelMode {
@@ -1661,11 +1980,23 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for UpdateBillingPortalConfigurationFeaturesSubscriptionCancelProrationBehavior
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for UpdateBillingPortalConfigurationFeaturesSubscriptionCancelProrationBehavior
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdateBillingPortalConfigurationFeaturesSubscriptionCancelProrationBehavior
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -1689,7 +2020,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Information about updating subscriptions in the portal.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateBillingPortalConfigurationFeaturesSubscriptionUpdate {
     /// Determines the value to use for the billing cycle anchor on subscription updates.
     /// Valid values are `now` or `unchanged`, and the default value is `unchanged`.
@@ -1722,6 +2055,13 @@ pub struct UpdateBillingPortalConfigurationFeaturesSubscriptionUpdate {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub trial_update_behavior:
         Option<UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateTrialUpdateBehavior>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateBillingPortalConfigurationFeaturesSubscriptionUpdate {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateBillingPortalConfigurationFeaturesSubscriptionUpdate")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdateBillingPortalConfigurationFeaturesSubscriptionUpdate {
     pub fn new() -> Self {
@@ -1792,11 +2132,23 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateBillingCycleAnchor
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateBillingCycleAnchor
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateBillingCycleAnchor
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -1870,11 +2222,23 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateDefaultAllowedUpdates
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -1949,11 +2313,23 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateProrationBehavior
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateProrationBehavior
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateProrationBehavior
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -1977,7 +2353,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Setting to control when an update should be scheduled at the end of the period instead of applying immediately.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEnd {
     /// List of conditions.
     /// When any condition is true, the update will be scheduled at the end of the current period.
@@ -1987,6 +2365,17 @@ pub struct UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtP
             UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditions,
         >,
     >,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEnd
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(
+            "UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEnd",
+        )
+        .finish_non_exhaustive()
+    }
 }
 impl UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEnd {
     pub fn new() -> Self {
@@ -2000,12 +2389,22 @@ impl Default for UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateSched
 }
 /// List of conditions.
 /// When any condition is true, the update will be scheduled at the end of the current period.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditions {
     /// The type of condition.
     #[serde(rename = "type")]
     pub type_:
         UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditionsType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditions
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditions").finish_non_exhaustive()
+    }
 }
 impl UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditions {
     pub fn new(
@@ -2063,11 +2462,20 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditionsType
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditionsType
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateScheduleAtPeriodEndConditionsType)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -2138,11 +2546,23 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateTrialUpdateBehavior
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateTrialUpdateBehavior
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdateBillingPortalConfigurationFeaturesSubscriptionUpdateTrialUpdateBehavior
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -2167,12 +2587,20 @@ impl<'de> serde::Deserialize<'de>
 }
 /// The hosted login page for this configuration.
 /// Learn more about the portal login page in our [integration docs](https://stripe.com/docs/billing/subscriptions/integrating-customer-portal#share).
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateBillingPortalConfigurationLoginPage {
     /// Set to `true` to generate a shareable URL [`login_page.url`](https://docs.stripe.com/api/customer_portal/configuration#portal_configuration_object-login_page-url) that will take your customers to a hosted login page for the customer portal.
     ///
     /// Set to `false` to deactivate the `login_page.url`.
     pub enabled: bool,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateBillingPortalConfigurationLoginPage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateBillingPortalConfigurationLoginPage").finish_non_exhaustive()
+    }
 }
 impl UpdateBillingPortalConfigurationLoginPage {
     pub fn new(enabled: impl Into<bool>) -> Self {
@@ -2180,10 +2608,18 @@ impl UpdateBillingPortalConfigurationLoginPage {
     }
 }
 /// Updates a configuration that describes the functionality of the customer portal.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateBillingPortalConfiguration {
     inner: UpdateBillingPortalConfigurationBuilder,
     configuration: stripe_billing::BillingPortalConfigurationId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateBillingPortalConfiguration {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateBillingPortalConfiguration").finish_non_exhaustive()
+    }
 }
 impl UpdateBillingPortalConfiguration {
     /// Construct a new `UpdateBillingPortalConfiguration`.
@@ -2282,17 +2718,27 @@ impl StripeRequest for UpdateBillingPortalConfiguration {
     }
 }
 
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct InvoiceListParam {
     /// Whether the feature is enabled.
     pub enabled: bool,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for InvoiceListParam {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("InvoiceListParam").finish_non_exhaustive()
+    }
 }
 impl InvoiceListParam {
     pub fn new(enabled: impl Into<bool>) -> Self {
         Self { enabled: enabled.into() }
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct PaymentMethodUpdateParam {
     /// Whether the feature is enabled.
     pub enabled: bool,
@@ -2302,12 +2748,20 @@ pub struct PaymentMethodUpdateParam {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_method_configuration: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentMethodUpdateParam {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PaymentMethodUpdateParam").finish_non_exhaustive()
+    }
+}
 impl PaymentMethodUpdateParam {
     pub fn new(enabled: impl Into<bool>) -> Self {
         Self { enabled: enabled.into(), payment_method_configuration: None }
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct SubscriptionUpdateProductAdjustableQuantityParam {
     /// Set to true if the quantity can be adjusted to any non-negative integer.
     pub enabled: bool,
@@ -2318,12 +2772,20 @@ pub struct SubscriptionUpdateProductAdjustableQuantityParam {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub minimum: Option<i64>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for SubscriptionUpdateProductAdjustableQuantityParam {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("SubscriptionUpdateProductAdjustableQuantityParam").finish_non_exhaustive()
+    }
+}
 impl SubscriptionUpdateProductAdjustableQuantityParam {
     pub fn new(enabled: impl Into<bool>) -> Self {
         Self { enabled: enabled.into(), maximum: None, minimum: None }
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct SubscriptionUpdateProductParam {
     /// Control whether the quantity of the product can be adjusted.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2332,6 +2794,12 @@ pub struct SubscriptionUpdateProductParam {
     pub prices: Vec<String>,
     /// The product id.
     pub product: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for SubscriptionUpdateProductParam {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("SubscriptionUpdateProductParam").finish_non_exhaustive()
+    }
 }
 impl SubscriptionUpdateProductParam {
     pub fn new(prices: impl Into<Vec<String>>, product: impl Into<String>) -> Self {

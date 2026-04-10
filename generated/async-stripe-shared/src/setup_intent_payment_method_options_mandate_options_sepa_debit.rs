@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct SetupIntentPaymentMethodOptionsMandateOptionsSepaDebit {
@@ -7,6 +8,13 @@ pub struct SetupIntentPaymentMethodOptionsMandateOptionsSepaDebit {
     /// Must consist of only uppercase letters, numbers, spaces, or the following special characters: '/', '_', '-', '&', '.'.
     /// Cannot begin with 'STRIPE'.
     pub reference_prefix: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for SetupIntentPaymentMethodOptionsMandateOptionsSepaDebit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("SetupIntentPaymentMethodOptionsMandateOptionsSepaDebit")
+            .finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct SetupIntentPaymentMethodOptionsMandateOptionsSepaDebitBuilder {

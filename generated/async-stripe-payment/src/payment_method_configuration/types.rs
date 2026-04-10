@@ -18,7 +18,8 @@
 /// - [Multiple configurations for your Connect accounts](https://docs.stripe.com/connect/multiple-payment-method-configurations).
 ///
 /// For more details see <<https://stripe.com/docs/api/payment_method_configurations/object>>.
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentMethodConfiguration {
     pub acss_debit: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
@@ -94,6 +95,12 @@ pub struct PaymentMethodConfiguration {
     pub us_bank_account: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
     pub wechat_pay: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
     pub zip: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentMethodConfiguration {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PaymentMethodConfiguration").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct PaymentMethodConfigurationBuilder {

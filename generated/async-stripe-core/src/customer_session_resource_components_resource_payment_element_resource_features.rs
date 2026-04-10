@@ -1,5 +1,6 @@
 /// This hash contains the features the Payment Element supports.
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct CustomerSessionResourceComponentsResourcePaymentElementResourceFeatures {
@@ -32,6 +33,13 @@ pub payment_method_save: CustomerSessionResourceComponentsResourcePaymentElement
         /// When using SetupIntents, directly configure the [`usage`](https://docs.stripe.com/api/setup_intents/object#setup_intent_object-usage) value on SetupIntent creation.
 pub payment_method_save_usage: Option<CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodSaveUsage>,
 
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CustomerSessionResourceComponentsResourcePaymentElementResourceFeatures {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CustomerSessionResourceComponentsResourcePaymentElementResourceFeatures")
+            .finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesBuilder {
@@ -237,9 +245,16 @@ impl std::fmt::Display for CustomerSessionResourceComponentsResourcePaymentEleme
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodAllowRedisplayFilters {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodAllowRedisplayFilters {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodAllowRedisplayFilters)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -311,9 +326,16 @@ impl std::fmt::Display for CustomerSessionResourceComponentsResourcePaymentEleme
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodRedisplay {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodRedisplay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodRedisplay)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -400,11 +422,20 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodRemove
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodRemove
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodRemove)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -503,11 +534,20 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodSave
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodSave
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodSave)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -595,9 +635,16 @@ impl std::fmt::Display for CustomerSessionResourceComponentsResourcePaymentEleme
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodSaveUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodSaveUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CustomerSessionResourceComponentsResourcePaymentElementResourceFeaturesPaymentMethodSaveUsage)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

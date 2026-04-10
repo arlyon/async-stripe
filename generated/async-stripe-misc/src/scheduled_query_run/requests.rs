@@ -2,7 +2,9 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ListScheduledQueryRunBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<String>,
@@ -13,15 +15,29 @@ struct ListScheduledQueryRunBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     starting_after: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListScheduledQueryRunBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListScheduledQueryRunBuilder").finish_non_exhaustive()
+    }
+}
 impl ListScheduledQueryRunBuilder {
     fn new() -> Self {
         Self { ending_before: None, expand: None, limit: None, starting_after: None }
     }
 }
 /// Returns a list of scheduled query runs.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListScheduledQueryRun {
     inner: ListScheduledQueryRunBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListScheduledQueryRun {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListScheduledQueryRun").finish_non_exhaustive()
+    }
 }
 impl ListScheduledQueryRun {
     /// Construct a new `ListScheduledQueryRun`.
@@ -90,10 +106,18 @@ impl StripeRequest for ListScheduledQueryRun {
         RequestBuilder::new(StripeMethod::Get, "/sigma/scheduled_query_runs").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RetrieveScheduledQueryRunBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveScheduledQueryRunBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveScheduledQueryRunBuilder").finish_non_exhaustive()
+    }
 }
 impl RetrieveScheduledQueryRunBuilder {
     fn new() -> Self {
@@ -101,10 +125,18 @@ impl RetrieveScheduledQueryRunBuilder {
     }
 }
 /// Retrieves the details of an scheduled query run.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RetrieveScheduledQueryRun {
     inner: RetrieveScheduledQueryRunBuilder,
     scheduled_query_run: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveScheduledQueryRun {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveScheduledQueryRun").finish_non_exhaustive()
+    }
 }
 impl RetrieveScheduledQueryRun {
     /// Construct a new `RetrieveScheduledQueryRun`.

@@ -2,7 +2,9 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ListIssuingTransactionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     card: Option<String>,
@@ -22,6 +24,12 @@ struct ListIssuingTransactionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     type_: Option<stripe_shared::IssuingTransactionType>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListIssuingTransactionBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListIssuingTransactionBuilder").finish_non_exhaustive()
+    }
+}
 impl ListIssuingTransactionBuilder {
     fn new() -> Self {
         Self {
@@ -38,9 +46,17 @@ impl ListIssuingTransactionBuilder {
 }
 /// Returns a list of Issuing `Transaction` objects.
 /// The objects are sorted in descending order by creation date, with the most recently created object appearing first.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListIssuingTransaction {
     inner: ListIssuingTransactionBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListIssuingTransaction {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListIssuingTransaction").finish_non_exhaustive()
+    }
 }
 impl ListIssuingTransaction {
     /// Construct a new `ListIssuingTransaction`.
@@ -130,10 +146,18 @@ impl StripeRequest for ListIssuingTransaction {
         RequestBuilder::new(StripeMethod::Get, "/issuing/transactions").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RetrieveIssuingTransactionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveIssuingTransactionBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveIssuingTransactionBuilder").finish_non_exhaustive()
+    }
 }
 impl RetrieveIssuingTransactionBuilder {
     fn new() -> Self {
@@ -141,10 +165,18 @@ impl RetrieveIssuingTransactionBuilder {
     }
 }
 /// Retrieves an Issuing `Transaction` object.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RetrieveIssuingTransaction {
     inner: RetrieveIssuingTransactionBuilder,
     transaction: stripe_shared::IssuingTransactionId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveIssuingTransaction {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveIssuingTransaction").finish_non_exhaustive()
+    }
 }
 impl RetrieveIssuingTransaction {
     /// Construct a new `RetrieveIssuingTransaction`.
@@ -184,12 +216,20 @@ impl StripeRequest for RetrieveIssuingTransaction {
             .query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct UpdateIssuingTransactionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     metadata: Option<std::collections::HashMap<String, String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateIssuingTransactionBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateIssuingTransactionBuilder").finish_non_exhaustive()
+    }
 }
 impl UpdateIssuingTransactionBuilder {
     fn new() -> Self {
@@ -198,10 +238,18 @@ impl UpdateIssuingTransactionBuilder {
 }
 /// Updates the specified Issuing `Transaction` object by setting the values of the parameters passed.
 /// Any parameters not provided will be left unchanged.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateIssuingTransaction {
     inner: UpdateIssuingTransactionBuilder,
     transaction: stripe_shared::IssuingTransactionId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateIssuingTransaction {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateIssuingTransaction").finish_non_exhaustive()
+    }
 }
 impl UpdateIssuingTransaction {
     /// Construct a new `UpdateIssuingTransaction`.
@@ -252,12 +300,20 @@ impl StripeRequest for UpdateIssuingTransaction {
             .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RefundIssuingTransactionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     refund_amount: Option<i64>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RefundIssuingTransactionBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RefundIssuingTransactionBuilder").finish_non_exhaustive()
+    }
 }
 impl RefundIssuingTransactionBuilder {
     fn new() -> Self {
@@ -265,10 +321,18 @@ impl RefundIssuingTransactionBuilder {
     }
 }
 /// Refund a test-mode Transaction.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RefundIssuingTransaction {
     inner: RefundIssuingTransactionBuilder,
     transaction: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RefundIssuingTransaction {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RefundIssuingTransaction").finish_non_exhaustive()
+    }
 }
 impl RefundIssuingTransaction {
     /// Construct a new `RefundIssuingTransaction`.
@@ -317,7 +381,9 @@ impl StripeRequest for RefundIssuingTransaction {
         .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct CreateForceCaptureIssuingTransactionBuilder {
     amount: i64,
     card: String,
@@ -329,6 +395,12 @@ struct CreateForceCaptureIssuingTransactionBuilder {
     merchant_data: Option<CreateForceCaptureIssuingTransactionMerchantData>,
     #[serde(skip_serializing_if = "Option::is_none")]
     purchase_details: Option<CreateForceCaptureIssuingTransactionPurchaseDetails>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateForceCaptureIssuingTransactionBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateForceCaptureIssuingTransactionBuilder").finish_non_exhaustive()
+    }
 }
 impl CreateForceCaptureIssuingTransactionBuilder {
     fn new(amount: impl Into<i64>, card: impl Into<String>) -> Self {
@@ -343,7 +415,9 @@ impl CreateForceCaptureIssuingTransactionBuilder {
     }
 }
 /// Details about the seller (grocery store, e-commerce website, etc.) where the card authorization happened.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateForceCaptureIssuingTransactionMerchantData {
     /// A categorization of the seller's type of business.
     /// See our [merchant categories guide](https://docs.stripe.com/issuing/merchant-categories) for a list of possible values.
@@ -374,6 +448,12 @@ pub struct CreateForceCaptureIssuingTransactionMerchantData {
     /// URL provided by the merchant on a 3DS request
     #[serde(skip_serializing_if = "Option::is_none")]
     pub url: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateForceCaptureIssuingTransactionMerchantData {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateForceCaptureIssuingTransactionMerchantData").finish_non_exhaustive()
+    }
 }
 impl CreateForceCaptureIssuingTransactionMerchantData {
     pub fn new() -> Self {
@@ -1408,9 +1488,17 @@ impl std::fmt::Display for CreateForceCaptureIssuingTransactionMerchantDataCateg
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateForceCaptureIssuingTransactionMerchantDataCategory {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateForceCaptureIssuingTransactionMerchantDataCategory {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateForceCaptureIssuingTransactionMerchantDataCategory))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateForceCaptureIssuingTransactionMerchantDataCategory {
@@ -1430,7 +1518,9 @@ impl<'de> serde::Deserialize<'de> for CreateForceCaptureIssuingTransactionMercha
     }
 }
 /// Additional purchase information that is optionally provided by the merchant.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateForceCaptureIssuingTransactionPurchaseDetails {
     /// Fleet-specific information for transactions using Fleet cards.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1451,6 +1541,13 @@ pub struct CreateForceCaptureIssuingTransactionPurchaseDetails {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reference: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateForceCaptureIssuingTransactionPurchaseDetails {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateForceCaptureIssuingTransactionPurchaseDetails")
+            .finish_non_exhaustive()
+    }
+}
 impl CreateForceCaptureIssuingTransactionPurchaseDetails {
     pub fn new() -> Self {
         Self {
@@ -1469,7 +1566,9 @@ impl Default for CreateForceCaptureIssuingTransactionPurchaseDetails {
     }
 }
 /// Fleet-specific information for transactions using Fleet cards.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateForceCaptureIssuingTransactionPurchaseDetailsFleet {
     /// Answers to prompts presented to the cardholder at the point of sale.
     /// Prompted fields vary depending on the configuration of your physical fleet cards.
@@ -1486,6 +1585,13 @@ pub struct CreateForceCaptureIssuingTransactionPurchaseDetailsFleet {
     /// The type of fuel service. One of `non_fuel_transaction`, `full_service`, or `self_service`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub service_type: Option<CreateForceCaptureIssuingTransactionPurchaseDetailsFleetServiceType>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateForceCaptureIssuingTransactionPurchaseDetailsFleet {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateForceCaptureIssuingTransactionPurchaseDetailsFleet")
+            .finish_non_exhaustive()
+    }
 }
 impl CreateForceCaptureIssuingTransactionPurchaseDetailsFleet {
     pub fn new() -> Self {
@@ -1549,9 +1655,19 @@ impl std::fmt::Display for CreateForceCaptureIssuingTransactionPurchaseDetailsFl
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateForceCaptureIssuingTransactionPurchaseDetailsFleetPurchaseType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateForceCaptureIssuingTransactionPurchaseDetailsFleetPurchaseType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreateForceCaptureIssuingTransactionPurchaseDetailsFleetPurchaseType
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateForceCaptureIssuingTransactionPurchaseDetailsFleetPurchaseType {
@@ -1619,9 +1735,19 @@ impl std::fmt::Display for CreateForceCaptureIssuingTransactionPurchaseDetailsFl
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateForceCaptureIssuingTransactionPurchaseDetailsFleetServiceType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateForceCaptureIssuingTransactionPurchaseDetailsFleetServiceType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreateForceCaptureIssuingTransactionPurchaseDetailsFleetServiceType
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateForceCaptureIssuingTransactionPurchaseDetailsFleetServiceType {
@@ -1643,7 +1769,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Information about fuel that was purchased with this transaction.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateForceCaptureIssuingTransactionPurchaseDetailsFuel {
     /// [Conexxus Payment System Product Code](https://www.conexxus.org/conexxus-payment-system-product-codes) identifying the primary fuel product purchased.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1663,6 +1791,13 @@ pub struct CreateForceCaptureIssuingTransactionPurchaseDetailsFuel {
     /// The cost in cents per each unit of fuel, represented as a decimal string with at most 12 decimal places.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_cost_decimal: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateForceCaptureIssuingTransactionPurchaseDetailsFuel {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateForceCaptureIssuingTransactionPurchaseDetailsFuel")
+            .finish_non_exhaustive()
+    }
 }
 impl CreateForceCaptureIssuingTransactionPurchaseDetailsFuel {
     pub fn new() -> Self {
@@ -1734,9 +1869,17 @@ impl std::fmt::Display for CreateForceCaptureIssuingTransactionPurchaseDetailsFu
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateForceCaptureIssuingTransactionPurchaseDetailsFuelType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateForceCaptureIssuingTransactionPurchaseDetailsFuelType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateForceCaptureIssuingTransactionPurchaseDetailsFuelType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateForceCaptureIssuingTransactionPurchaseDetailsFuelType {
@@ -1818,9 +1961,17 @@ impl std::fmt::Display for CreateForceCaptureIssuingTransactionPurchaseDetailsFu
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateForceCaptureIssuingTransactionPurchaseDetailsFuelUnit {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateForceCaptureIssuingTransactionPurchaseDetailsFuelUnit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateForceCaptureIssuingTransactionPurchaseDetailsFuelUnit))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateForceCaptureIssuingTransactionPurchaseDetailsFuelUnit {
@@ -1840,9 +1991,17 @@ impl<'de> serde::Deserialize<'de> for CreateForceCaptureIssuingTransactionPurcha
     }
 }
 /// Allows the user to capture an arbitrary amount, also known as a forced capture.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateForceCaptureIssuingTransaction {
     inner: CreateForceCaptureIssuingTransactionBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateForceCaptureIssuingTransaction {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateForceCaptureIssuingTransaction").finish_non_exhaustive()
+    }
 }
 impl CreateForceCaptureIssuingTransaction {
     /// Construct a new `CreateForceCaptureIssuingTransaction`.
@@ -1908,7 +2067,9 @@ impl StripeRequest for CreateForceCaptureIssuingTransaction {
         .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct CreateUnlinkedRefundIssuingTransactionBuilder {
     amount: i64,
     card: String,
@@ -1920,6 +2081,12 @@ struct CreateUnlinkedRefundIssuingTransactionBuilder {
     merchant_data: Option<CreateUnlinkedRefundIssuingTransactionMerchantData>,
     #[serde(skip_serializing_if = "Option::is_none")]
     purchase_details: Option<CreateUnlinkedRefundIssuingTransactionPurchaseDetails>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateUnlinkedRefundIssuingTransactionBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateUnlinkedRefundIssuingTransactionBuilder").finish_non_exhaustive()
+    }
 }
 impl CreateUnlinkedRefundIssuingTransactionBuilder {
     fn new(amount: impl Into<i64>, card: impl Into<String>) -> Self {
@@ -1934,7 +2101,9 @@ impl CreateUnlinkedRefundIssuingTransactionBuilder {
     }
 }
 /// Details about the seller (grocery store, e-commerce website, etc.) where the card authorization happened.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateUnlinkedRefundIssuingTransactionMerchantData {
     /// A categorization of the seller's type of business.
     /// See our [merchant categories guide](https://docs.stripe.com/issuing/merchant-categories) for a list of possible values.
@@ -1965,6 +2134,12 @@ pub struct CreateUnlinkedRefundIssuingTransactionMerchantData {
     /// URL provided by the merchant on a 3DS request
     #[serde(skip_serializing_if = "Option::is_none")]
     pub url: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateUnlinkedRefundIssuingTransactionMerchantData {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateUnlinkedRefundIssuingTransactionMerchantData").finish_non_exhaustive()
+    }
 }
 impl CreateUnlinkedRefundIssuingTransactionMerchantData {
     pub fn new() -> Self {
@@ -2999,9 +3174,17 @@ impl std::fmt::Display for CreateUnlinkedRefundIssuingTransactionMerchantDataCat
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateUnlinkedRefundIssuingTransactionMerchantDataCategory {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateUnlinkedRefundIssuingTransactionMerchantDataCategory {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateUnlinkedRefundIssuingTransactionMerchantDataCategory))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateUnlinkedRefundIssuingTransactionMerchantDataCategory {
@@ -3021,7 +3204,9 @@ impl<'de> serde::Deserialize<'de> for CreateUnlinkedRefundIssuingTransactionMerc
     }
 }
 /// Additional purchase information that is optionally provided by the merchant.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateUnlinkedRefundIssuingTransactionPurchaseDetails {
     /// Fleet-specific information for transactions using Fleet cards.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3042,6 +3227,13 @@ pub struct CreateUnlinkedRefundIssuingTransactionPurchaseDetails {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reference: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateUnlinkedRefundIssuingTransactionPurchaseDetails {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateUnlinkedRefundIssuingTransactionPurchaseDetails")
+            .finish_non_exhaustive()
+    }
+}
 impl CreateUnlinkedRefundIssuingTransactionPurchaseDetails {
     pub fn new() -> Self {
         Self {
@@ -3060,7 +3252,9 @@ impl Default for CreateUnlinkedRefundIssuingTransactionPurchaseDetails {
     }
 }
 /// Fleet-specific information for transactions using Fleet cards.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFleet {
     /// Answers to prompts presented to the cardholder at the point of sale.
     /// Prompted fields vary depending on the configuration of your physical fleet cards.
@@ -3078,6 +3272,13 @@ pub struct CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFleet {
     /// The type of fuel service. One of `non_fuel_transaction`, `full_service`, or `self_service`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub service_type: Option<CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFleetServiceType>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFleet {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFleet")
+            .finish_non_exhaustive()
+    }
 }
 impl CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFleet {
     pub fn new() -> Self {
@@ -3141,9 +3342,19 @@ impl std::fmt::Display for CreateUnlinkedRefundIssuingTransactionPurchaseDetails
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFleetPurchaseType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFleetPurchaseType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFleetPurchaseType
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFleetPurchaseType {
@@ -3211,9 +3422,19 @@ impl std::fmt::Display for CreateUnlinkedRefundIssuingTransactionPurchaseDetails
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFleetServiceType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFleetServiceType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFleetServiceType
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFleetServiceType {
@@ -3235,7 +3456,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Information about fuel that was purchased with this transaction.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFuel {
     /// [Conexxus Payment System Product Code](https://www.conexxus.org/conexxus-payment-system-product-codes) identifying the primary fuel product purchased.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3255,6 +3478,13 @@ pub struct CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFuel {
     /// The cost in cents per each unit of fuel, represented as a decimal string with at most 12 decimal places.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_cost_decimal: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFuel {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFuel")
+            .finish_non_exhaustive()
+    }
 }
 impl CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFuel {
     pub fn new() -> Self {
@@ -3326,9 +3556,17 @@ impl std::fmt::Display for CreateUnlinkedRefundIssuingTransactionPurchaseDetails
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFuelType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFuelType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFuelType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFuelType {
@@ -3412,9 +3650,17 @@ impl std::fmt::Display for CreateUnlinkedRefundIssuingTransactionPurchaseDetails
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFuelUnit {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFuelUnit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFuelUnit))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateUnlinkedRefundIssuingTransactionPurchaseDetailsFuelUnit {
@@ -3436,9 +3682,17 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Allows the user to refund an arbitrary amount, also known as a unlinked refund.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateUnlinkedRefundIssuingTransaction {
     inner: CreateUnlinkedRefundIssuingTransactionBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateUnlinkedRefundIssuingTransaction {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateUnlinkedRefundIssuingTransaction").finish_non_exhaustive()
+    }
 }
 impl CreateUnlinkedRefundIssuingTransaction {
     /// Construct a new `CreateUnlinkedRefundIssuingTransaction`.
@@ -3507,7 +3761,9 @@ impl StripeRequest for CreateUnlinkedRefundIssuingTransaction {
     }
 }
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct FleetCardholderPromptDataSpecs {
     /// Driver ID.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3526,6 +3782,12 @@ pub struct FleetCardholderPromptDataSpecs {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub vehicle_number: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for FleetCardholderPromptDataSpecs {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("FleetCardholderPromptDataSpecs").finish_non_exhaustive()
+    }
+}
 impl FleetCardholderPromptDataSpecs {
     pub fn new() -> Self {
         Self {
@@ -3542,11 +3804,19 @@ impl Default for FleetCardholderPromptDataSpecs {
         Self::new()
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct FleetReportedBreakdownFuelSpecs {
     /// Gross fuel amount that should equal Fuel Volume multipled by Fuel Unit Cost, inclusive of taxes.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub gross_amount_decimal: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for FleetReportedBreakdownFuelSpecs {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("FleetReportedBreakdownFuelSpecs").finish_non_exhaustive()
+    }
 }
 impl FleetReportedBreakdownFuelSpecs {
     pub fn new() -> Self {
@@ -3558,11 +3828,19 @@ impl Default for FleetReportedBreakdownFuelSpecs {
         Self::new()
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct FleetReportedBreakdownNonFuelSpecs {
     /// Gross non-fuel amount that should equal the sum of the line items, inclusive of taxes.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub gross_amount_decimal: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for FleetReportedBreakdownNonFuelSpecs {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("FleetReportedBreakdownNonFuelSpecs").finish_non_exhaustive()
+    }
 }
 impl FleetReportedBreakdownNonFuelSpecs {
     pub fn new() -> Self {
@@ -3574,7 +3852,9 @@ impl Default for FleetReportedBreakdownNonFuelSpecs {
         Self::new()
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct FleetReportedBreakdownTaxSpecs {
     /// Amount of state or provincial Sales Tax included in the transaction amount.
     /// Null if not reported by merchant or not subject to tax.
@@ -3584,6 +3864,12 @@ pub struct FleetReportedBreakdownTaxSpecs {
     /// Null if not reported by merchant or not subject to tax.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub national_amount_decimal: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for FleetReportedBreakdownTaxSpecs {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("FleetReportedBreakdownTaxSpecs").finish_non_exhaustive()
+    }
 }
 impl FleetReportedBreakdownTaxSpecs {
     pub fn new() -> Self {
@@ -3595,7 +3881,9 @@ impl Default for FleetReportedBreakdownTaxSpecs {
         Self::new()
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct FlightSegmentSpecs {
     /// The three-letter IATA airport code of the flight's destination.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3616,6 +3904,12 @@ pub struct FlightSegmentSpecs {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub stopover_allowed: Option<bool>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for FlightSegmentSpecs {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("FlightSegmentSpecs").finish_non_exhaustive()
+    }
+}
 impl FlightSegmentSpecs {
     pub fn new() -> Self {
         Self {
@@ -3633,7 +3927,9 @@ impl Default for FlightSegmentSpecs {
         Self::new()
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct LodgingSpecs {
     /// The time of checking into the lodging.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3641,6 +3937,12 @@ pub struct LodgingSpecs {
     /// The number of nights stayed at the lodging.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub nights: Option<i64>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for LodgingSpecs {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("LodgingSpecs").finish_non_exhaustive()
+    }
 }
 impl LodgingSpecs {
     pub fn new() -> Self {
@@ -3652,7 +3954,9 @@ impl Default for LodgingSpecs {
         Self::new()
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ReceiptSpecs {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
@@ -3662,6 +3966,12 @@ pub struct ReceiptSpecs {
     pub total: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_cost: Option<i64>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ReceiptSpecs {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ReceiptSpecs").finish_non_exhaustive()
+    }
 }
 impl ReceiptSpecs {
     pub fn new() -> Self {
@@ -3673,7 +3983,9 @@ impl Default for ReceiptSpecs {
         Self::new()
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct FleetReportedBreakdownSpecs {
     /// Breakdown of fuel portion of the purchase.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3685,6 +3997,12 @@ pub struct FleetReportedBreakdownSpecs {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax: Option<FleetReportedBreakdownTaxSpecs>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for FleetReportedBreakdownSpecs {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("FleetReportedBreakdownSpecs").finish_non_exhaustive()
+    }
+}
 impl FleetReportedBreakdownSpecs {
     pub fn new() -> Self {
         Self { fuel: None, non_fuel: None, tax: None }
@@ -3695,7 +4013,9 @@ impl Default for FleetReportedBreakdownSpecs {
         Self::new()
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct FlightSpecs {
     /// The time that the flight departed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3712,6 +4032,12 @@ pub struct FlightSpecs {
     /// The travel agency that issued the ticket.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub travel_agency: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for FlightSpecs {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("FlightSpecs").finish_non_exhaustive()
+    }
 }
 impl FlightSpecs {
     pub fn new() -> Self {

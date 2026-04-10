@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TerminalConfigurationConfigurationResourceTipping {
@@ -44,6 +45,12 @@ pub struct TerminalConfigurationConfigurationResourceTipping {
         Option<stripe_terminal::TerminalConfigurationConfigurationResourceCurrencySpecificConfig>,
     pub usd:
         Option<stripe_terminal::TerminalConfigurationConfigurationResourceCurrencySpecificConfig>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TerminalConfigurationConfigurationResourceTipping {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("TerminalConfigurationConfigurationResourceTipping").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct TerminalConfigurationConfigurationResourceTippingBuilder {

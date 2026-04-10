@@ -1,6 +1,7 @@
 /// A Climate product represents a type of carbon removal unit available for reservation.
 /// You can retrieve it to see the current price and availability.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct ClimateProduct {
     /// Time at which the object was created. Measured in seconds since the Unix epoch.
@@ -23,6 +24,12 @@ pub struct ClimateProduct {
     pub name: String,
     /// The carbon removal suppliers that fulfill orders for this Climate product.
     pub suppliers: Vec<stripe_misc::ClimateSupplier>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ClimateProduct {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ClimateProduct").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct ClimateProductBuilder {

@@ -1,4 +1,5 @@
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentIntentNextAction {
@@ -43,6 +44,12 @@ pub struct PaymentIntentNextAction {
         Option<stripe_shared::PaymentIntentNextActionWechatPayRedirectToAndroidApp>,
     pub wechat_pay_redirect_to_ios_app:
         Option<stripe_shared::PaymentIntentNextActionWechatPayRedirectToIosApp>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentIntentNextAction {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PaymentIntentNextAction").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct PaymentIntentNextActionBuilder {

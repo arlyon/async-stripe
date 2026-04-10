@@ -1,4 +1,5 @@
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentPagesCheckoutSessionDiscount {
@@ -6,6 +7,12 @@ pub struct PaymentPagesCheckoutSessionDiscount {
     pub coupon: Option<stripe_types::Expandable<stripe_shared::Coupon>>,
     /// Promotion code attached to the Checkout Session.
     pub promotion_code: Option<stripe_types::Expandable<stripe_shared::PromotionCode>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentPagesCheckoutSessionDiscount {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PaymentPagesCheckoutSessionDiscount").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct PaymentPagesCheckoutSessionDiscountBuilder {

@@ -2,7 +2,9 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ListEntitlementsFeatureBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     archived: Option<bool>,
@@ -17,6 +19,12 @@ struct ListEntitlementsFeatureBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     starting_after: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListEntitlementsFeatureBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListEntitlementsFeatureBuilder").finish_non_exhaustive()
+    }
+}
 impl ListEntitlementsFeatureBuilder {
     fn new() -> Self {
         Self {
@@ -30,9 +38,17 @@ impl ListEntitlementsFeatureBuilder {
     }
 }
 /// Retrieve a list of features
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListEntitlementsFeature {
     inner: ListEntitlementsFeatureBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListEntitlementsFeature {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListEntitlementsFeature").finish_non_exhaustive()
+    }
 }
 impl ListEntitlementsFeature {
     /// Construct a new `ListEntitlementsFeature`.
@@ -112,10 +128,18 @@ impl StripeRequest for ListEntitlementsFeature {
         RequestBuilder::new(StripeMethod::Get, "/entitlements/features").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RetrieveEntitlementsFeatureBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveEntitlementsFeatureBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveEntitlementsFeatureBuilder").finish_non_exhaustive()
+    }
 }
 impl RetrieveEntitlementsFeatureBuilder {
     fn new() -> Self {
@@ -123,10 +147,18 @@ impl RetrieveEntitlementsFeatureBuilder {
     }
 }
 /// Retrieves a feature
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RetrieveEntitlementsFeature {
     inner: RetrieveEntitlementsFeatureBuilder,
     id: stripe_shared::EntitlementsFeatureId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveEntitlementsFeature {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveEntitlementsFeature").finish_non_exhaustive()
+    }
 }
 impl RetrieveEntitlementsFeature {
     /// Construct a new `RetrieveEntitlementsFeature`.
@@ -166,7 +198,9 @@ impl StripeRequest for RetrieveEntitlementsFeature {
             .query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct CreateEntitlementsFeatureBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -175,15 +209,29 @@ struct CreateEntitlementsFeatureBuilder {
     metadata: Option<std::collections::HashMap<String, String>>,
     name: String,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateEntitlementsFeatureBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateEntitlementsFeatureBuilder").finish_non_exhaustive()
+    }
+}
 impl CreateEntitlementsFeatureBuilder {
     fn new(lookup_key: impl Into<String>, name: impl Into<String>) -> Self {
         Self { expand: None, lookup_key: lookup_key.into(), metadata: None, name: name.into() }
     }
 }
 /// Creates a feature
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateEntitlementsFeature {
     inner: CreateEntitlementsFeatureBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateEntitlementsFeature {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateEntitlementsFeature").finish_non_exhaustive()
+    }
 }
 impl CreateEntitlementsFeature {
     /// Construct a new `CreateEntitlementsFeature`.
@@ -230,7 +278,9 @@ impl StripeRequest for CreateEntitlementsFeature {
         RequestBuilder::new(StripeMethod::Post, "/entitlements/features").form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct UpdateEntitlementsFeatureBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     active: Option<bool>,
@@ -241,16 +291,30 @@ struct UpdateEntitlementsFeatureBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     name: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateEntitlementsFeatureBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateEntitlementsFeatureBuilder").finish_non_exhaustive()
+    }
+}
 impl UpdateEntitlementsFeatureBuilder {
     fn new() -> Self {
         Self { active: None, expand: None, metadata: None, name: None }
     }
 }
 /// Update a feature’s metadata or permanently deactivate it.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateEntitlementsFeature {
     inner: UpdateEntitlementsFeatureBuilder,
     id: stripe_shared::EntitlementsFeatureId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateEntitlementsFeature {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateEntitlementsFeature").finish_non_exhaustive()
+    }
 }
 impl UpdateEntitlementsFeature {
     /// Construct a new `UpdateEntitlementsFeature`.

@@ -1,6 +1,7 @@
 /// ReceivedCredits represent funds sent to a [FinancialAccount](https://api.stripe.com#financial_accounts) (for example, via ACH or wire).
 /// These money movements are not initiated from the FinancialAccount.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TreasuryReceivedCredit {
     /// Amount (in cents) transferred.
@@ -37,6 +38,12 @@ pub status: stripe_treasury::TreasuryReceivedCreditStatus,
     /// The Transaction associated with this object.
 pub transaction: Option<stripe_types::Expandable<stripe_treasury::TreasuryTransaction>>,
 
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TreasuryReceivedCredit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("TreasuryReceivedCredit").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct TreasuryReceivedCreditBuilder {
@@ -326,9 +333,16 @@ impl std::fmt::Display for TreasuryReceivedCreditFailureCode {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for TreasuryReceivedCreditFailureCode {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TreasuryReceivedCreditFailureCode {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(TreasuryReceivedCreditFailureCode)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -413,9 +427,16 @@ impl std::fmt::Display for TreasuryReceivedCreditNetwork {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for TreasuryReceivedCreditNetwork {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TreasuryReceivedCreditNetwork {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(TreasuryReceivedCreditNetwork)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -504,9 +525,16 @@ impl std::fmt::Display for TreasuryReceivedCreditStatus {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for TreasuryReceivedCreditStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TreasuryReceivedCreditStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(TreasuryReceivedCreditStatus)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for TreasuryReceivedCreditStatus {

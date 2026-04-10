@@ -2,7 +2,9 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ListApplicationFeeBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     charge: Option<String>,
@@ -16,6 +18,12 @@ struct ListApplicationFeeBuilder {
     limit: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
     starting_after: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListApplicationFeeBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListApplicationFeeBuilder").finish_non_exhaustive()
+    }
 }
 impl ListApplicationFeeBuilder {
     fn new() -> Self {
@@ -31,9 +39,17 @@ impl ListApplicationFeeBuilder {
 }
 /// Returns a list of application fees you’ve previously collected.
 /// The application fees are returned in sorted order, with the most recent fees appearing first.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListApplicationFee {
     inner: ListApplicationFeeBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListApplicationFee {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListApplicationFee").finish_non_exhaustive()
+    }
 }
 impl ListApplicationFee {
     /// Construct a new `ListApplicationFee`.
@@ -112,10 +128,18 @@ impl StripeRequest for ListApplicationFee {
         RequestBuilder::new(StripeMethod::Get, "/application_fees").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RetrieveApplicationFeeBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveApplicationFeeBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveApplicationFeeBuilder").finish_non_exhaustive()
+    }
 }
 impl RetrieveApplicationFeeBuilder {
     fn new() -> Self {
@@ -124,10 +148,18 @@ impl RetrieveApplicationFeeBuilder {
 }
 /// Retrieves the details of an application fee that your account has collected.
 /// The same information is returned when refunding the application fee.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RetrieveApplicationFee {
     inner: RetrieveApplicationFeeBuilder,
     id: stripe_shared::ApplicationFeeId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveApplicationFee {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveApplicationFee").finish_non_exhaustive()
+    }
 }
 impl RetrieveApplicationFee {
     /// Construct a new `RetrieveApplicationFee`.

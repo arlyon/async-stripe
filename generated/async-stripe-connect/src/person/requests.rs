@@ -5,10 +5,18 @@ use stripe_client_core::{
 /// Deletes an existing person’s relationship to the account’s legal entity.
 /// Any person with a relationship for an account can be deleted through the API, except if the person is the `account_opener`.
 /// If your integration is using the `executive` parameter, you cannot delete the only verified `executive` on file.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct DeletePerson {
     account: stripe_shared::AccountId,
     person: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for DeletePerson {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("DeletePerson").finish_non_exhaustive()
+    }
 }
 impl DeletePerson {
     /// Construct a new `DeletePerson`.
@@ -43,7 +51,9 @@ impl StripeRequest for DeletePerson {
         RequestBuilder::new(StripeMethod::Delete, format!("/accounts/{account}/persons/{person}"))
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ListAccountPersonBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<String>,
@@ -55,6 +65,12 @@ struct ListAccountPersonBuilder {
     relationship: Option<ListAccountPersonRelationship>,
     #[serde(skip_serializing_if = "Option::is_none")]
     starting_after: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListAccountPersonBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListAccountPersonBuilder").finish_non_exhaustive()
+    }
 }
 impl ListAccountPersonBuilder {
     fn new() -> Self {
@@ -68,7 +84,9 @@ impl ListAccountPersonBuilder {
     }
 }
 /// Filters on the list of people returned based on the person's relationship to the account's company.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListAccountPersonRelationship {
     /// A filter on the list of people returned based on whether these people are authorizers of the account's representative.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -89,6 +107,12 @@ pub struct ListAccountPersonRelationship {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub representative: Option<bool>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListAccountPersonRelationship {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListAccountPersonRelationship").finish_non_exhaustive()
+    }
+}
 impl ListAccountPersonRelationship {
     pub fn new() -> Self {
         Self {
@@ -108,10 +132,18 @@ impl Default for ListAccountPersonRelationship {
 }
 /// Returns a list of people associated with the account’s legal entity.
 /// The people are returned sorted by creation date, with the most recent people appearing first.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListAccountPerson {
     inner: ListAccountPersonBuilder,
     account: stripe_shared::AccountId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListAccountPerson {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListAccountPerson").finish_non_exhaustive()
+    }
 }
 impl ListAccountPerson {
     /// Construct a new `ListAccountPerson`.
@@ -187,10 +219,18 @@ impl StripeRequest for ListAccountPerson {
             .query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RetrievePersonBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrievePersonBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrievePersonBuilder").finish_non_exhaustive()
+    }
 }
 impl RetrievePersonBuilder {
     fn new() -> Self {
@@ -198,11 +238,19 @@ impl RetrievePersonBuilder {
     }
 }
 /// Retrieves an existing person.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RetrievePerson {
     inner: RetrievePersonBuilder,
     account: stripe_shared::AccountId,
     person: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrievePerson {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrievePerson").finish_non_exhaustive()
+    }
 }
 impl RetrievePerson {
     /// Construct a new `RetrievePerson`.
@@ -243,7 +291,9 @@ impl StripeRequest for RetrievePerson {
             .query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct CreateAccountPersonBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     additional_tos_acceptances: Option<PersonAdditionalTosAcceptancesSpecs>,
@@ -304,6 +354,12 @@ struct CreateAccountPersonBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     verification: Option<PersonVerificationSpecs>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountPersonBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountPersonBuilder").finish_non_exhaustive()
+    }
+}
 impl CreateAccountPersonBuilder {
     fn new() -> Self {
         Self {
@@ -340,7 +396,9 @@ impl CreateAccountPersonBuilder {
     }
 }
 /// The person's address.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateAccountPersonAddress {
     /// City, district, suburb, town, or village.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -361,6 +419,12 @@ pub struct CreateAccountPersonAddress {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountPersonAddress {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountPersonAddress").finish_non_exhaustive()
+    }
+}
 impl CreateAccountPersonAddress {
     pub fn new() -> Self {
         Self { city: None, country: None, line1: None, line2: None, postal_code: None, state: None }
@@ -372,7 +436,9 @@ impl Default for CreateAccountPersonAddress {
     }
 }
 /// The Kana variation of the person's address (Japan only).
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateAccountPersonAddressKana {
     /// City or ward.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -396,6 +462,12 @@ pub struct CreateAccountPersonAddressKana {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub town: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountPersonAddressKana {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountPersonAddressKana").finish_non_exhaustive()
+    }
+}
 impl CreateAccountPersonAddressKana {
     pub fn new() -> Self {
         Self {
@@ -415,7 +487,9 @@ impl Default for CreateAccountPersonAddressKana {
     }
 }
 /// The Kanji variation of the person's address (Japan only).
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateAccountPersonAddressKanji {
     /// City or ward.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -439,6 +513,12 @@ pub struct CreateAccountPersonAddressKanji {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub town: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountPersonAddressKanji {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountPersonAddressKanji").finish_non_exhaustive()
+    }
+}
 impl CreateAccountPersonAddressKanji {
     pub fn new() -> Self {
         Self {
@@ -458,7 +538,9 @@ impl Default for CreateAccountPersonAddressKanji {
     }
 }
 /// The person's registered address.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateAccountPersonRegisteredAddress {
     /// City, district, suburb, town, or village.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -479,6 +561,12 @@ pub struct CreateAccountPersonRegisteredAddress {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountPersonRegisteredAddress {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountPersonRegisteredAddress").finish_non_exhaustive()
+    }
+}
 impl CreateAccountPersonRegisteredAddress {
     pub fn new() -> Self {
         Self { city: None, country: None, line1: None, line2: None, postal_code: None, state: None }
@@ -490,7 +578,9 @@ impl Default for CreateAccountPersonRegisteredAddress {
     }
 }
 /// Demographic data related to the person.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateAccountPersonUsCfpbData {
     /// The persons ethnicity details
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -501,6 +591,12 @@ pub struct CreateAccountPersonUsCfpbData {
     /// The persons self-identified gender
     #[serde(skip_serializing_if = "Option::is_none")]
     pub self_identified_gender: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountPersonUsCfpbData {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountPersonUsCfpbData").finish_non_exhaustive()
+    }
 }
 impl CreateAccountPersonUsCfpbData {
     pub fn new() -> Self {
@@ -513,7 +609,9 @@ impl Default for CreateAccountPersonUsCfpbData {
     }
 }
 /// The persons ethnicity details
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateAccountPersonUsCfpbDataEthnicityDetails {
     /// The persons ethnicity
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -521,6 +619,12 @@ pub struct CreateAccountPersonUsCfpbDataEthnicityDetails {
     /// Please specify your origin, when other is selected.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ethnicity_other: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountPersonUsCfpbDataEthnicityDetails {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountPersonUsCfpbDataEthnicityDetails").finish_non_exhaustive()
+    }
 }
 impl CreateAccountPersonUsCfpbDataEthnicityDetails {
     pub fn new() -> Self {
@@ -591,9 +695,17 @@ impl std::fmt::Display for CreateAccountPersonUsCfpbDataEthnicityDetailsEthnicit
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateAccountPersonUsCfpbDataEthnicityDetailsEthnicity {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountPersonUsCfpbDataEthnicityDetailsEthnicity {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateAccountPersonUsCfpbDataEthnicityDetailsEthnicity))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateAccountPersonUsCfpbDataEthnicityDetailsEthnicity {
@@ -613,7 +725,9 @@ impl<'de> serde::Deserialize<'de> for CreateAccountPersonUsCfpbDataEthnicityDeta
     }
 }
 /// The persons race details
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateAccountPersonUsCfpbDataRaceDetails {
     /// The persons race.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -621,6 +735,12 @@ pub struct CreateAccountPersonUsCfpbDataRaceDetails {
     /// Please specify your race, when other is selected.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub race_other: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountPersonUsCfpbDataRaceDetails {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountPersonUsCfpbDataRaceDetails").finish_non_exhaustive()
+    }
 }
 impl CreateAccountPersonUsCfpbDataRaceDetails {
     pub fn new() -> Self {
@@ -742,9 +862,17 @@ impl std::fmt::Display for CreateAccountPersonUsCfpbDataRaceDetailsRace {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateAccountPersonUsCfpbDataRaceDetailsRace {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountPersonUsCfpbDataRaceDetailsRace {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateAccountPersonUsCfpbDataRaceDetailsRace))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateAccountPersonUsCfpbDataRaceDetailsRace {
@@ -764,10 +892,18 @@ impl<'de> serde::Deserialize<'de> for CreateAccountPersonUsCfpbDataRaceDetailsRa
     }
 }
 /// Creates a new person.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateAccountPerson {
     inner: CreateAccountPersonBuilder,
     account: stripe_shared::AccountId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountPerson {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountPerson").finish_non_exhaustive()
+    }
 }
 impl CreateAccountPerson {
     /// Construct a new `CreateAccountPerson`.
@@ -970,7 +1106,9 @@ impl StripeRequest for CreateAccountPerson {
             .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct UpdatePersonBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     additional_tos_acceptances: Option<PersonAdditionalTosAcceptancesSpecs>,
@@ -1031,6 +1169,12 @@ struct UpdatePersonBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     verification: Option<PersonVerificationSpecs>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePersonBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePersonBuilder").finish_non_exhaustive()
+    }
+}
 impl UpdatePersonBuilder {
     fn new() -> Self {
         Self {
@@ -1067,7 +1211,9 @@ impl UpdatePersonBuilder {
     }
 }
 /// The person's address.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePersonAddress {
     /// City, district, suburb, town, or village.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1088,6 +1234,12 @@ pub struct UpdatePersonAddress {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePersonAddress {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePersonAddress").finish_non_exhaustive()
+    }
+}
 impl UpdatePersonAddress {
     pub fn new() -> Self {
         Self { city: None, country: None, line1: None, line2: None, postal_code: None, state: None }
@@ -1099,7 +1251,9 @@ impl Default for UpdatePersonAddress {
     }
 }
 /// The Kana variation of the person's address (Japan only).
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePersonAddressKana {
     /// City or ward.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1123,6 +1277,12 @@ pub struct UpdatePersonAddressKana {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub town: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePersonAddressKana {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePersonAddressKana").finish_non_exhaustive()
+    }
+}
 impl UpdatePersonAddressKana {
     pub fn new() -> Self {
         Self {
@@ -1142,7 +1302,9 @@ impl Default for UpdatePersonAddressKana {
     }
 }
 /// The Kanji variation of the person's address (Japan only).
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePersonAddressKanji {
     /// City or ward.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1166,6 +1328,12 @@ pub struct UpdatePersonAddressKanji {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub town: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePersonAddressKanji {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePersonAddressKanji").finish_non_exhaustive()
+    }
+}
 impl UpdatePersonAddressKanji {
     pub fn new() -> Self {
         Self {
@@ -1185,7 +1353,9 @@ impl Default for UpdatePersonAddressKanji {
     }
 }
 /// The person's registered address.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePersonRegisteredAddress {
     /// City, district, suburb, town, or village.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1206,6 +1376,12 @@ pub struct UpdatePersonRegisteredAddress {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePersonRegisteredAddress {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePersonRegisteredAddress").finish_non_exhaustive()
+    }
+}
 impl UpdatePersonRegisteredAddress {
     pub fn new() -> Self {
         Self { city: None, country: None, line1: None, line2: None, postal_code: None, state: None }
@@ -1217,7 +1393,9 @@ impl Default for UpdatePersonRegisteredAddress {
     }
 }
 /// Demographic data related to the person.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePersonUsCfpbData {
     /// The persons ethnicity details
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1228,6 +1406,12 @@ pub struct UpdatePersonUsCfpbData {
     /// The persons self-identified gender
     #[serde(skip_serializing_if = "Option::is_none")]
     pub self_identified_gender: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePersonUsCfpbData {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePersonUsCfpbData").finish_non_exhaustive()
+    }
 }
 impl UpdatePersonUsCfpbData {
     pub fn new() -> Self {
@@ -1240,7 +1424,9 @@ impl Default for UpdatePersonUsCfpbData {
     }
 }
 /// The persons ethnicity details
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePersonUsCfpbDataEthnicityDetails {
     /// The persons ethnicity
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1248,6 +1434,12 @@ pub struct UpdatePersonUsCfpbDataEthnicityDetails {
     /// Please specify your origin, when other is selected.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ethnicity_other: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePersonUsCfpbDataEthnicityDetails {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePersonUsCfpbDataEthnicityDetails").finish_non_exhaustive()
+    }
 }
 impl UpdatePersonUsCfpbDataEthnicityDetails {
     pub fn new() -> Self {
@@ -1318,9 +1510,17 @@ impl std::fmt::Display for UpdatePersonUsCfpbDataEthnicityDetailsEthnicity {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePersonUsCfpbDataEthnicityDetailsEthnicity {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePersonUsCfpbDataEthnicityDetailsEthnicity {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePersonUsCfpbDataEthnicityDetailsEthnicity))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePersonUsCfpbDataEthnicityDetailsEthnicity {
@@ -1340,7 +1540,9 @@ impl<'de> serde::Deserialize<'de> for UpdatePersonUsCfpbDataEthnicityDetailsEthn
     }
 }
 /// The persons race details
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePersonUsCfpbDataRaceDetails {
     /// The persons race.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1348,6 +1550,12 @@ pub struct UpdatePersonUsCfpbDataRaceDetails {
     /// Please specify your race, when other is selected.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub race_other: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePersonUsCfpbDataRaceDetails {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePersonUsCfpbDataRaceDetails").finish_non_exhaustive()
+    }
 }
 impl UpdatePersonUsCfpbDataRaceDetails {
     pub fn new() -> Self {
@@ -1469,9 +1677,16 @@ impl std::fmt::Display for UpdatePersonUsCfpbDataRaceDetailsRace {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePersonUsCfpbDataRaceDetailsRace {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePersonUsCfpbDataRaceDetailsRace {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePersonUsCfpbDataRaceDetailsRace)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePersonUsCfpbDataRaceDetailsRace {
@@ -1491,11 +1706,19 @@ impl<'de> serde::Deserialize<'de> for UpdatePersonUsCfpbDataRaceDetailsRace {
     }
 }
 /// Updates an existing person.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePerson {
     inner: UpdatePersonBuilder,
     account: stripe_shared::AccountId,
     person: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePerson {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePerson").finish_non_exhaustive()
+    }
 }
 impl UpdatePerson {
     /// Construct a new `UpdatePerson`.
@@ -1697,7 +1920,9 @@ impl StripeRequest for UpdatePerson {
     }
 }
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct SettingsTermsOfServiceSpecs {
     /// The Unix timestamp marking when the account representative accepted the service agreement.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1709,6 +1934,12 @@ pub struct SettingsTermsOfServiceSpecs {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub user_agent: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for SettingsTermsOfServiceSpecs {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("SettingsTermsOfServiceSpecs").finish_non_exhaustive()
+    }
+}
 impl SettingsTermsOfServiceSpecs {
     pub fn new() -> Self {
         Self { date: None, ip: None, user_agent: None }
@@ -1719,7 +1950,9 @@ impl Default for SettingsTermsOfServiceSpecs {
         Self::new()
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct DateOfBirthSpecs {
     /// The day of birth, between 1 and 31.
     pub day: i64,
@@ -1728,16 +1961,30 @@ pub struct DateOfBirthSpecs {
     /// The four-digit year of birth.
     pub year: i64,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for DateOfBirthSpecs {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("DateOfBirthSpecs").finish_non_exhaustive()
+    }
+}
 impl DateOfBirthSpecs {
     pub fn new(day: impl Into<i64>, month: impl Into<i64>, year: impl Into<i64>) -> Self {
         Self { day: day.into(), month: month.into(), year: year.into() }
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct DocumentsParam {
     /// One or more document ids returned by a [file upload](https://api.stripe.com#create_file) with a `purpose` value of `account_requirement`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub files: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for DocumentsParam {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("DocumentsParam").finish_non_exhaustive()
+    }
 }
 impl DocumentsParam {
     pub fn new() -> Self {
@@ -1749,7 +1996,9 @@ impl Default for DocumentsParam {
         Self::new()
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RelationshipSpecs {
     /// Whether the person is the authorizer of the account's representative.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1780,6 +2029,12 @@ pub struct RelationshipSpecs {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub title: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RelationshipSpecs {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RelationshipSpecs").finish_non_exhaustive()
+    }
+}
 impl RelationshipSpecs {
     pub fn new() -> Self {
         Self {
@@ -1799,7 +2054,9 @@ impl Default for RelationshipSpecs {
         Self::new()
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct PersonVerificationDocumentSpecs {
     /// The back of an ID returned by a [file upload](https://api.stripe.com#create_file) with a `purpose` value of `identity_document`.
     /// The uploaded file needs to be a color image (smaller than 8,000px by 8,000px), in JPG, PNG, or PDF format, and less than 10 MB in size.
@@ -1809,6 +2066,12 @@ pub struct PersonVerificationDocumentSpecs {
     /// The uploaded file needs to be a color image (smaller than 8,000px by 8,000px), in JPG, PNG, or PDF format, and less than 10 MB in size.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub front: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PersonVerificationDocumentSpecs {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PersonVerificationDocumentSpecs").finish_non_exhaustive()
+    }
 }
 impl PersonVerificationDocumentSpecs {
     pub fn new() -> Self {
@@ -1820,11 +2083,19 @@ impl Default for PersonVerificationDocumentSpecs {
         Self::new()
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct PersonAdditionalTosAcceptancesSpecs {
     /// Details on the legal guardian's acceptance of the main Stripe service agreement.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub account: Option<SettingsTermsOfServiceSpecs>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PersonAdditionalTosAcceptancesSpecs {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PersonAdditionalTosAcceptancesSpecs").finish_non_exhaustive()
+    }
 }
 impl PersonAdditionalTosAcceptancesSpecs {
     pub fn new() -> Self {
@@ -1836,7 +2107,9 @@ impl Default for PersonAdditionalTosAcceptancesSpecs {
         Self::new()
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct PersonDocumentsSpecs {
     /// One or more documents that demonstrate proof that this person is authorized to represent the company.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1848,6 +2121,12 @@ pub struct PersonDocumentsSpecs {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub visa: Option<DocumentsParam>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PersonDocumentsSpecs {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PersonDocumentsSpecs").finish_non_exhaustive()
+    }
+}
 impl PersonDocumentsSpecs {
     pub fn new() -> Self {
         Self { company_authorization: None, passport: None, visa: None }
@@ -1858,7 +2137,9 @@ impl Default for PersonDocumentsSpecs {
         Self::new()
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct PersonVerificationSpecs {
     /// A document showing address, either a passport, local ID card, or utility bill from a well-known utility company.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1866,6 +2147,12 @@ pub struct PersonVerificationSpecs {
     /// An identifying document, either a passport or local ID card.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub document: Option<PersonVerificationDocumentSpecs>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PersonVerificationSpecs {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PersonVerificationSpecs").finish_non_exhaustive()
+    }
 }
 impl PersonVerificationSpecs {
     pub fn new() -> Self {

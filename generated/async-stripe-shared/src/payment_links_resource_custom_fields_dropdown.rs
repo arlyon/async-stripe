@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentLinksResourceCustomFieldsDropdown {
@@ -6,6 +7,12 @@ pub struct PaymentLinksResourceCustomFieldsDropdown {
     pub default_value: Option<String>,
     /// The options available for the customer to select. Up to 200 options allowed.
     pub options: Vec<stripe_shared::PaymentLinksResourceCustomFieldsDropdownOption>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentLinksResourceCustomFieldsDropdown {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PaymentLinksResourceCustomFieldsDropdown").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct PaymentLinksResourceCustomFieldsDropdownBuilder {

@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct GelatoSessionMatchingOptions {
@@ -6,6 +7,12 @@ pub struct GelatoSessionMatchingOptions {
     pub dob: Option<GelatoSessionMatchingOptionsDob>,
     /// Strictness of the name matching policy to apply.
     pub name: Option<GelatoSessionMatchingOptionsName>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for GelatoSessionMatchingOptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("GelatoSessionMatchingOptions").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct GelatoSessionMatchingOptionsBuilder {
@@ -147,9 +154,16 @@ impl std::fmt::Display for GelatoSessionMatchingOptionsDob {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for GelatoSessionMatchingOptionsDob {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for GelatoSessionMatchingOptionsDob {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(GelatoSessionMatchingOptionsDob)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -228,9 +242,16 @@ impl std::fmt::Display for GelatoSessionMatchingOptionsName {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for GelatoSessionMatchingOptionsName {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for GelatoSessionMatchingOptionsName {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(GelatoSessionMatchingOptionsName)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

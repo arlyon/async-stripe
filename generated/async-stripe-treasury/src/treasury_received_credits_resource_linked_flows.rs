@@ -1,4 +1,5 @@
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TreasuryReceivedCreditsResourceLinkedFlows {
@@ -17,6 +18,12 @@ pub struct TreasuryReceivedCreditsResourceLinkedFlows {
         Option<stripe_treasury::TreasuryReceivedCreditsResourceSourceFlowsDetails>,
     /// The type of flow that originated the ReceivedCredit (for example, `outbound_payment`).
     pub source_flow_type: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TreasuryReceivedCreditsResourceLinkedFlows {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("TreasuryReceivedCreditsResourceLinkedFlows").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct TreasuryReceivedCreditsResourceLinkedFlowsBuilder {

@@ -1,4 +1,5 @@
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct AccountDeclineChargeOn {
@@ -8,6 +9,12 @@ pub struct AccountDeclineChargeOn {
     /// Whether Stripe automatically declines charges with an incorrect CVC.
     /// This setting only applies when a CVC is provided and it fails bank verification.
     pub cvc_failure: bool,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for AccountDeclineChargeOn {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("AccountDeclineChargeOn").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct AccountDeclineChargeOnBuilder {

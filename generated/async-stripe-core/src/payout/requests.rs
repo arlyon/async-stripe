@@ -2,7 +2,9 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ListPayoutBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     arrival_date: Option<stripe_types::RangeQueryTs>,
@@ -21,6 +23,12 @@ struct ListPayoutBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     status: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListPayoutBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListPayoutBuilder").finish_non_exhaustive()
+    }
+}
 impl ListPayoutBuilder {
     fn new() -> Self {
         Self {
@@ -37,9 +45,17 @@ impl ListPayoutBuilder {
 }
 /// Returns a list of existing payouts sent to third-party bank accounts or payouts that Stripe sent to you.
 /// The payouts return in sorted order, with the most recently created payouts appearing first.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListPayout {
     inner: ListPayoutBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListPayout {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListPayout").finish_non_exhaustive()
+    }
 }
 impl ListPayout {
     /// Construct a new `ListPayout`.
@@ -128,10 +144,18 @@ impl StripeRequest for ListPayout {
         RequestBuilder::new(StripeMethod::Get, "/payouts").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RetrievePayoutBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrievePayoutBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrievePayoutBuilder").finish_non_exhaustive()
+    }
 }
 impl RetrievePayoutBuilder {
     fn new() -> Self {
@@ -141,10 +165,18 @@ impl RetrievePayoutBuilder {
 /// Retrieves the details of an existing payout.
 /// Supply the unique payout ID from either a payout creation request or the payout list.
 /// Stripe returns the corresponding payout information.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RetrievePayout {
     inner: RetrievePayoutBuilder,
     payout: stripe_shared::PayoutId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrievePayout {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrievePayout").finish_non_exhaustive()
+    }
 }
 impl RetrievePayout {
     /// Construct a new `RetrievePayout`.
@@ -183,7 +215,9 @@ impl StripeRequest for RetrievePayout {
         RequestBuilder::new(StripeMethod::Get, format!("/payouts/{payout}")).query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct CreatePayoutBuilder {
     amount: i64,
     currency: stripe_types::Currency,
@@ -203,6 +237,12 @@ struct CreatePayoutBuilder {
     source_type: Option<CreatePayoutSourceType>,
     #[serde(skip_serializing_if = "Option::is_none")]
     statement_descriptor: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePayoutBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePayoutBuilder").finish_non_exhaustive()
+    }
 }
 impl CreatePayoutBuilder {
     fn new(amount: impl Into<i64>, currency: impl Into<stripe_types::Currency>) -> Self {
@@ -262,9 +302,16 @@ impl std::fmt::Display for CreatePayoutMethod {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePayoutMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePayoutMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePayoutMethod)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePayoutMethod {
@@ -329,9 +376,16 @@ impl std::fmt::Display for CreatePayoutSourceType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePayoutSourceType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePayoutSourceType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePayoutSourceType)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePayoutSourceType {
@@ -358,9 +412,17 @@ impl<'de> serde::Deserialize<'de> for CreatePayoutSourceType {
 ///
 /// If you create a manual payout on a Stripe account that uses multiple payment source types, you need to specify the source type balance that the payout draws from.
 /// The <a href="/api/balances/object">balance object</a> details available and pending amounts by source type.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePayout {
     inner: CreatePayoutBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePayout {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePayout").finish_non_exhaustive()
+    }
 }
 impl CreatePayout {
     /// Construct a new `CreatePayout`.
@@ -448,12 +510,20 @@ impl StripeRequest for CreatePayout {
         RequestBuilder::new(StripeMethod::Post, "/payouts").form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct UpdatePayoutBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     metadata: Option<std::collections::HashMap<String, String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePayoutBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePayoutBuilder").finish_non_exhaustive()
+    }
 }
 impl UpdatePayoutBuilder {
     fn new() -> Self {
@@ -463,10 +533,18 @@ impl UpdatePayoutBuilder {
 /// Updates the specified payout by setting the values of the parameters you pass.
 /// We don’t change parameters that you don’t provide.
 /// This request only accepts the metadata as arguments.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePayout {
     inner: UpdatePayoutBuilder,
     payout: stripe_shared::PayoutId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePayout {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePayout").finish_non_exhaustive()
+    }
 }
 impl UpdatePayout {
     /// Construct a new `UpdatePayout`.
@@ -516,10 +594,18 @@ impl StripeRequest for UpdatePayout {
         RequestBuilder::new(StripeMethod::Post, format!("/payouts/{payout}")).form(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct CancelPayoutBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CancelPayoutBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CancelPayoutBuilder").finish_non_exhaustive()
+    }
 }
 impl CancelPayoutBuilder {
     fn new() -> Self {
@@ -529,10 +615,18 @@ impl CancelPayoutBuilder {
 /// You can cancel a previously created payout if its status is `pending`.
 /// Stripe refunds the funds to your available balance.
 /// You can’t cancel automatic Stripe payouts.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CancelPayout {
     inner: CancelPayoutBuilder,
     payout: stripe_shared::PayoutId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CancelPayout {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CancelPayout").finish_non_exhaustive()
+    }
 }
 impl CancelPayout {
     /// Construct a new `CancelPayout`.
@@ -572,12 +666,20 @@ impl StripeRequest for CancelPayout {
             .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ReversePayoutBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     metadata: Option<std::collections::HashMap<String, String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ReversePayoutBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ReversePayoutBuilder").finish_non_exhaustive()
+    }
 }
 impl ReversePayoutBuilder {
     fn new() -> Self {
@@ -589,10 +691,18 @@ impl ReversePayoutBuilder {
 /// If the payout is manual and in the `pending` status, use `/v1/payouts/:id/cancel` instead.
 ///
 /// By requesting a reversal through `/v1/payouts/:id/reverse`, you confirm that the authorized signatory of the selected bank account authorizes the debit on the bank account and that no other authorization is required.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ReversePayout {
     inner: ReversePayoutBuilder,
     payout: stripe_shared::PayoutId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ReversePayout {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ReversePayout").finish_non_exhaustive()
+    }
 }
 impl ReversePayout {
     /// Construct a new `ReversePayout`.

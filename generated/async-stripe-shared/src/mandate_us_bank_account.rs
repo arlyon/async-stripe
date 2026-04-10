@@ -1,9 +1,16 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct MandateUsBankAccount {
     /// Mandate collection method
     pub collection_method: Option<MandateUsBankAccountCollectionMethod>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for MandateUsBankAccount {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("MandateUsBankAccount").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct MandateUsBankAccountBuilder {
@@ -139,9 +146,16 @@ impl std::fmt::Display for MandateUsBankAccountCollectionMethod {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for MandateUsBankAccountCollectionMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for MandateUsBankAccountCollectionMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(MandateUsBankAccountCollectionMethod)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

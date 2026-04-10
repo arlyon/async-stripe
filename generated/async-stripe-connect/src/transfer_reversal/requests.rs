@@ -2,7 +2,9 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ListIdTransferReversalBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<String>,
@@ -13,6 +15,12 @@ struct ListIdTransferReversalBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     starting_after: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListIdTransferReversalBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListIdTransferReversalBuilder").finish_non_exhaustive()
+    }
+}
 impl ListIdTransferReversalBuilder {
     fn new() -> Self {
         Self { ending_before: None, expand: None, limit: None, starting_after: None }
@@ -21,10 +29,18 @@ impl ListIdTransferReversalBuilder {
 /// You can see a list of the reversals belonging to a specific transfer.
 /// Note that the 10 most recent reversals are always available by default on the transfer object.
 /// If you need more than those 10, you can use this API method and the `limit` and `starting_after` parameters to page through additional reversals.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListIdTransferReversal {
     inner: ListIdTransferReversalBuilder,
     id: stripe_shared::TransferId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListIdTransferReversal {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListIdTransferReversal").finish_non_exhaustive()
+    }
 }
 impl ListIdTransferReversal {
     /// Construct a new `ListIdTransferReversal`.
@@ -96,10 +112,18 @@ impl StripeRequest for ListIdTransferReversal {
             .query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RetrieveTransferReversalBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveTransferReversalBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveTransferReversalBuilder").finish_non_exhaustive()
+    }
 }
 impl RetrieveTransferReversalBuilder {
     fn new() -> Self {
@@ -107,11 +131,19 @@ impl RetrieveTransferReversalBuilder {
     }
 }
 /// By default, you can see the 10 most recent reversals stored directly on the transfer object, but you can also retrieve details about a specific reversal stored on the transfer.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RetrieveTransferReversal {
     inner: RetrieveTransferReversalBuilder,
     id: String,
     transfer: stripe_shared::TransferId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveTransferReversal {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveTransferReversal").finish_non_exhaustive()
+    }
 }
 impl RetrieveTransferReversal {
     /// Construct a new `RetrieveTransferReversal`.
@@ -156,7 +188,9 @@ impl StripeRequest for RetrieveTransferReversal {
             .query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct CreateIdTransferReversalBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     amount: Option<i64>,
@@ -168,6 +202,12 @@ struct CreateIdTransferReversalBuilder {
     metadata: Option<std::collections::HashMap<String, String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     refund_application_fee: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateIdTransferReversalBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateIdTransferReversalBuilder").finish_non_exhaustive()
+    }
 }
 impl CreateIdTransferReversalBuilder {
     fn new() -> Self {
@@ -187,10 +227,18 @@ impl CreateIdTransferReversalBuilder {
 ///
 /// Once entirely reversed, a transfer can’t be reversed again.
 /// This method will return an error when called on an already-reversed transfer, or when trying to reverse more money than is left on a transfer.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateIdTransferReversal {
     inner: CreateIdTransferReversalBuilder,
     id: stripe_shared::TransferId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateIdTransferReversal {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateIdTransferReversal").finish_non_exhaustive()
+    }
 }
 impl CreateIdTransferReversal {
     /// Construct a new `CreateIdTransferReversal`.
@@ -262,12 +310,20 @@ impl StripeRequest for CreateIdTransferReversal {
             .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct UpdateTransferReversalBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     metadata: Option<std::collections::HashMap<String, String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateTransferReversalBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateTransferReversalBuilder").finish_non_exhaustive()
+    }
 }
 impl UpdateTransferReversalBuilder {
     fn new() -> Self {
@@ -278,11 +334,19 @@ impl UpdateTransferReversalBuilder {
 /// Any parameters not provided will be left unchanged.
 ///
 /// This request only accepts metadata and description as arguments.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateTransferReversal {
     inner: UpdateTransferReversalBuilder,
     id: String,
     transfer: stripe_shared::TransferId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateTransferReversal {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateTransferReversal").finish_non_exhaustive()
+    }
 }
 impl UpdateTransferReversal {
     /// Construct a new `UpdateTransferReversal`.

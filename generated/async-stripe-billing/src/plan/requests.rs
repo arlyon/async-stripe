@@ -3,9 +3,17 @@ use stripe_client_core::{
 };
 
 /// Deleting plans means new subscribers can’t be added. Existing subscribers aren’t affected.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct DeletePlan {
     plan: stripe_shared::PlanId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for DeletePlan {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("DeletePlan").finish_non_exhaustive()
+    }
 }
 impl DeletePlan {
     /// Construct a new `DeletePlan`.
@@ -39,7 +47,9 @@ impl StripeRequest for DeletePlan {
         RequestBuilder::new(StripeMethod::Delete, format!("/plans/{plan}"))
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ListPlanBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     active: Option<bool>,
@@ -56,6 +66,12 @@ struct ListPlanBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     starting_after: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListPlanBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListPlanBuilder").finish_non_exhaustive()
+    }
+}
 impl ListPlanBuilder {
     fn new() -> Self {
         Self {
@@ -70,9 +86,17 @@ impl ListPlanBuilder {
     }
 }
 /// Returns a list of your plans.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListPlan {
     inner: ListPlanBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListPlan {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListPlan").finish_non_exhaustive()
+    }
 }
 impl ListPlan {
     /// Construct a new `ListPlan`.
@@ -157,10 +181,18 @@ impl StripeRequest for ListPlan {
         RequestBuilder::new(StripeMethod::Get, "/plans").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RetrievePlanBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrievePlanBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrievePlanBuilder").finish_non_exhaustive()
+    }
 }
 impl RetrievePlanBuilder {
     fn new() -> Self {
@@ -168,10 +200,18 @@ impl RetrievePlanBuilder {
     }
 }
 /// Retrieves the plan with the given ID.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RetrievePlan {
     inner: RetrievePlanBuilder,
     plan: stripe_shared::PlanId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrievePlan {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrievePlan").finish_non_exhaustive()
+    }
 }
 impl RetrievePlan {
     /// Construct a new `RetrievePlan`.
@@ -210,7 +250,9 @@ impl StripeRequest for RetrievePlan {
         RequestBuilder::new(StripeMethod::Get, format!("/plans/{plan}")).query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct CreatePlanBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     active: Option<bool>,
@@ -247,6 +289,12 @@ struct CreatePlanBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     usage_type: Option<stripe_shared::PlanUsageType>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePlanBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePlanBuilder").finish_non_exhaustive()
+    }
+}
 impl CreatePlanBuilder {
     fn new(
         currency: impl Into<stripe_types::Currency>,
@@ -274,7 +322,9 @@ impl CreatePlanBuilder {
         }
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 #[serde(rename_all = "snake_case")]
 pub enum CreatePlanProduct {
     #[serde(untagged)]
@@ -282,7 +332,15 @@ pub enum CreatePlanProduct {
     #[serde(untagged)]
     Id(String),
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePlanProduct {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePlanProduct").finish_non_exhaustive()
+    }
+}
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePlanInlineProductParams {
     /// Whether the product is currently available for purchase. Defaults to `true`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -316,6 +374,12 @@ pub struct CreatePlanInlineProductParams {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_label: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePlanInlineProductParams {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePlanInlineProductParams").finish_non_exhaustive()
+    }
+}
 impl CreatePlanInlineProductParams {
     pub fn new(name: impl Into<String>) -> Self {
         Self {
@@ -332,7 +396,9 @@ impl CreatePlanInlineProductParams {
 /// Each element represents a pricing tier.
 /// This parameter requires `billing_scheme` to be set to `tiered`.
 /// See also the documentation for `billing_scheme`.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePlanTiers {
     /// The flat billing amount for an entire tier, regardless of the number of units in the tier.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -353,6 +419,12 @@ pub struct CreatePlanTiers {
     /// Use `inf` to define a fallback tier.
     pub up_to: CreatePlanTiersUpTo,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePlanTiers {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePlanTiers").finish_non_exhaustive()
+    }
+}
 impl CreatePlanTiers {
     pub fn new(up_to: impl Into<CreatePlanTiersUpTo>) -> Self {
         Self {
@@ -367,21 +439,37 @@ impl CreatePlanTiers {
 /// Specifies the upper bound of this tier.
 /// The lower bound of a tier is the upper bound of the previous tier adding one.
 /// Use `inf` to define a fallback tier.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 #[serde(rename_all = "snake_case")]
 pub enum CreatePlanTiersUpTo {
     Inf,
     #[serde(untagged)]
     I64(i64),
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePlanTiersUpTo {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePlanTiersUpTo").finish_non_exhaustive()
+    }
+}
 /// Apply a transformation to the reported usage or set quantity before computing the billed price.
 /// Cannot be combined with `tiers`.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePlanTransformUsage {
     /// Divide usage by this number.
     pub divide_by: i64,
     /// After division, either round the result `up` or `down`.
     pub round: CreatePlanTransformUsageRound,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePlanTransformUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePlanTransformUsage").finish_non_exhaustive()
+    }
 }
 impl CreatePlanTransformUsage {
     pub fn new(divide_by: impl Into<i64>, round: impl Into<CreatePlanTransformUsageRound>) -> Self {
@@ -432,9 +520,16 @@ impl std::fmt::Display for CreatePlanTransformUsageRound {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePlanTransformUsageRound {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePlanTransformUsageRound {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePlanTransformUsageRound)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePlanTransformUsageRound {
@@ -455,9 +550,17 @@ impl<'de> serde::Deserialize<'de> for CreatePlanTransformUsageRound {
 }
 /// You can now model subscriptions more flexibly using the [Prices API](https://stripe.com/docs/api#prices).
 /// It replaces the Plans API and is backwards compatible to simplify your migration.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePlan {
     inner: CreatePlanBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePlan {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePlan").finish_non_exhaustive()
+    }
 }
 impl CreatePlan {
     /// Construct a new `CreatePlan`.
@@ -598,7 +701,9 @@ impl StripeRequest for CreatePlan {
         RequestBuilder::new(StripeMethod::Post, "/plans").form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct UpdatePlanBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     active: Option<bool>,
@@ -612,6 +717,12 @@ struct UpdatePlanBuilder {
     product: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     trial_period_days: Option<u32>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePlanBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePlanBuilder").finish_non_exhaustive()
+    }
 }
 impl UpdatePlanBuilder {
     fn new() -> Self {
@@ -628,10 +739,18 @@ impl UpdatePlanBuilder {
 /// Updates the specified plan by setting the values of the parameters passed.
 /// Any parameters not provided are left unchanged.
 /// By design, you cannot change a plan’s ID, amount, currency, or billing cycle.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePlan {
     inner: UpdatePlanBuilder,
     plan: stripe_shared::PlanId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePlan {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePlan").finish_non_exhaustive()
+    }
 }
 impl UpdatePlan {
     /// Construct a new `UpdatePlan`.

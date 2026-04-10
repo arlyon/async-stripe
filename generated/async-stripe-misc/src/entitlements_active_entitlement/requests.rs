@@ -2,7 +2,9 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ListEntitlementsActiveEntitlementBuilder {
     customer: String,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -13,6 +15,12 @@ struct ListEntitlementsActiveEntitlementBuilder {
     limit: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
     starting_after: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListEntitlementsActiveEntitlementBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListEntitlementsActiveEntitlementBuilder").finish_non_exhaustive()
+    }
 }
 impl ListEntitlementsActiveEntitlementBuilder {
     fn new(customer: impl Into<String>) -> Self {
@@ -26,9 +34,17 @@ impl ListEntitlementsActiveEntitlementBuilder {
     }
 }
 /// Retrieve a list of active entitlements for a customer
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListEntitlementsActiveEntitlement {
     inner: ListEntitlementsActiveEntitlementBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListEntitlementsActiveEntitlement {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListEntitlementsActiveEntitlement").finish_non_exhaustive()
+    }
 }
 impl ListEntitlementsActiveEntitlement {
     /// Construct a new `ListEntitlementsActiveEntitlement`.
@@ -98,10 +114,18 @@ impl StripeRequest for ListEntitlementsActiveEntitlement {
             .query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RetrieveEntitlementsActiveEntitlementBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveEntitlementsActiveEntitlementBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveEntitlementsActiveEntitlementBuilder").finish_non_exhaustive()
+    }
 }
 impl RetrieveEntitlementsActiveEntitlementBuilder {
     fn new() -> Self {
@@ -109,10 +133,18 @@ impl RetrieveEntitlementsActiveEntitlementBuilder {
     }
 }
 /// Retrieve an active entitlement
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RetrieveEntitlementsActiveEntitlement {
     inner: RetrieveEntitlementsActiveEntitlementBuilder,
     id: stripe_misc::EntitlementsActiveEntitlementId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveEntitlementsActiveEntitlement {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveEntitlementsActiveEntitlement").finish_non_exhaustive()
+    }
 }
 impl RetrieveEntitlementsActiveEntitlement {
     /// Construct a new `RetrieveEntitlementsActiveEntitlement`.

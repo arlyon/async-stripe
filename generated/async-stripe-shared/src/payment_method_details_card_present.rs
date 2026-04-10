@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentMethodDetailsCardPresent {
@@ -73,6 +74,12 @@ pub struct PaymentMethodDetailsCardPresent {
     /// A collection of fields required to be displayed on receipts. Only required for EMV transactions.
     pub receipt: Option<stripe_shared::PaymentMethodDetailsCardPresentReceipt>,
     pub wallet: Option<stripe_shared::PaymentFlowsPrivatePaymentMethodsCardPresentCommonWallet>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentMethodDetailsCardPresent {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PaymentMethodDetailsCardPresent").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct PaymentMethodDetailsCardPresentBuilder {
@@ -419,9 +426,17 @@ impl std::fmt::Display for PaymentMethodDetailsCardPresentReadMethod {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for PaymentMethodDetailsCardPresentReadMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentMethodDetailsCardPresentReadMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(PaymentMethodDetailsCardPresentReadMethod))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

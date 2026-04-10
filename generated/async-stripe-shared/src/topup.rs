@@ -5,7 +5,8 @@
 /// Related guide: [Topping up your platform account](https://docs.stripe.com/connect/top-ups)
 ///
 /// For more details see <<https://stripe.com/docs/api/topups/object>>.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct Topup {
     /// Amount transferred.
@@ -46,6 +47,12 @@ pub struct Topup {
     pub status: TopupStatus,
     /// A string that identifies this top-up as part of a group.
     pub transfer_group: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for Topup {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("Topup").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct TopupBuilder {
@@ -323,9 +330,16 @@ impl std::fmt::Display for TopupStatus {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for TopupStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TopupStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(TopupStatus)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

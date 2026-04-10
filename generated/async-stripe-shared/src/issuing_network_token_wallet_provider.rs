@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct IssuingNetworkTokenWalletProvider {
@@ -22,6 +23,12 @@ pub struct IssuingNetworkTokenWalletProvider {
     pub suggested_decision: Option<IssuingNetworkTokenWalletProviderSuggestedDecision>,
     /// The version of the standard for mapping reason codes followed by the wallet provider.
     pub suggested_decision_version: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for IssuingNetworkTokenWalletProvider {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("IssuingNetworkTokenWalletProvider").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct IssuingNetworkTokenWalletProviderBuilder {
@@ -246,9 +253,17 @@ impl std::fmt::Display for IssuingNetworkTokenWalletProviderCardNumberSource {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for IssuingNetworkTokenWalletProviderCardNumberSource {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for IssuingNetworkTokenWalletProviderCardNumberSource {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(IssuingNetworkTokenWalletProviderCardNumberSource))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -415,9 +430,17 @@ impl std::fmt::Display for IssuingNetworkTokenWalletProviderReasonCodes {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for IssuingNetworkTokenWalletProviderReasonCodes {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for IssuingNetworkTokenWalletProviderReasonCodes {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(IssuingNetworkTokenWalletProviderReasonCodes))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -500,9 +523,17 @@ impl std::fmt::Display for IssuingNetworkTokenWalletProviderSuggestedDecision {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for IssuingNetworkTokenWalletProviderSuggestedDecision {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for IssuingNetworkTokenWalletProviderSuggestedDecision {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(IssuingNetworkTokenWalletProviderSuggestedDecision))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

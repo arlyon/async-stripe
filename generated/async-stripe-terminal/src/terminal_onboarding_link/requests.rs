@@ -2,7 +2,9 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct CreateTerminalOnboardingLinkBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -10,6 +12,12 @@ struct CreateTerminalOnboardingLinkBuilder {
     link_type: stripe_terminal::TerminalOnboardingLinkLinkType,
     #[serde(skip_serializing_if = "Option::is_none")]
     on_behalf_of: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTerminalOnboardingLinkBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTerminalOnboardingLinkBuilder").finish_non_exhaustive()
+    }
 }
 impl CreateTerminalOnboardingLinkBuilder {
     fn new(
@@ -25,12 +33,20 @@ impl CreateTerminalOnboardingLinkBuilder {
     }
 }
 /// Specific fields needed to generate the desired link type.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTerminalOnboardingLinkLinkOptions {
     /// The options associated with the Apple Terms and Conditions link type.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub apple_terms_and_conditions:
         Option<CreateTerminalOnboardingLinkLinkOptionsAppleTermsAndConditions>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTerminalOnboardingLinkLinkOptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTerminalOnboardingLinkLinkOptions").finish_non_exhaustive()
+    }
 }
 impl CreateTerminalOnboardingLinkLinkOptions {
     pub fn new() -> Self {
@@ -43,7 +59,9 @@ impl Default for CreateTerminalOnboardingLinkLinkOptions {
     }
 }
 /// The options associated with the Apple Terms and Conditions link type.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTerminalOnboardingLinkLinkOptionsAppleTermsAndConditions {
     /// Whether the link should also support users relinking their Apple account.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -51,15 +69,30 @@ pub struct CreateTerminalOnboardingLinkLinkOptionsAppleTermsAndConditions {
     /// The business name of the merchant accepting Apple's Terms and Conditions.
     pub merchant_display_name: String,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTerminalOnboardingLinkLinkOptionsAppleTermsAndConditions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTerminalOnboardingLinkLinkOptionsAppleTermsAndConditions")
+            .finish_non_exhaustive()
+    }
+}
 impl CreateTerminalOnboardingLinkLinkOptionsAppleTermsAndConditions {
     pub fn new(merchant_display_name: impl Into<String>) -> Self {
         Self { allow_relinking: None, merchant_display_name: merchant_display_name.into() }
     }
 }
 /// Creates a new `OnboardingLink` object that contains a redirect_url used for onboarding onto Tap to Pay on iPhone.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTerminalOnboardingLink {
     inner: CreateTerminalOnboardingLinkBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTerminalOnboardingLink {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTerminalOnboardingLink").finish_non_exhaustive()
+    }
 }
 impl CreateTerminalOnboardingLink {
     /// Construct a new `CreateTerminalOnboardingLink`.

@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct DeletedTerminalReader {
     #[allow(dead_code)]
@@ -9,6 +10,12 @@ pub struct DeletedTerminalReader {
     pub id: stripe_terminal::TerminalReaderId,
     /// Serial number of the reader.
     pub serial_number: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for DeletedTerminalReader {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("DeletedTerminalReader").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct DeletedTerminalReaderBuilder {
@@ -204,9 +211,16 @@ impl std::fmt::Display for DeletedTerminalReaderDeviceType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for DeletedTerminalReaderDeviceType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for DeletedTerminalReaderDeviceType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(DeletedTerminalReaderDeviceType)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

@@ -1,4 +1,5 @@
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct ChargeOutcome {
@@ -37,6 +38,12 @@ pub struct ChargeOutcome {
     /// See [understanding declines](https://docs.stripe.com/declines) and [Radar reviews](https://docs.stripe.com/radar/reviews) for details.
     #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "type"))]
     pub type_: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ChargeOutcome {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ChargeOutcome").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct ChargeOutcomeBuilder {
@@ -246,9 +253,16 @@ impl std::fmt::Display for ChargeOutcomeAdviceCode {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ChargeOutcomeAdviceCode {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ChargeOutcomeAdviceCode {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ChargeOutcomeAdviceCode)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

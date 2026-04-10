@@ -1,7 +1,8 @@
 /// The amount of the tax rate when the `rate_type`` is `flat_amount`.
 /// Tax rates with `rate_type` `percentage` can vary based on the transaction, resulting in this field being `null`.
 /// This field exposes the amount and currency of the flat tax rate.
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TaxRateFlatAmount {
@@ -11,6 +12,12 @@ pub struct TaxRateFlatAmount {
     pub amount: i64,
     /// Three-letter ISO currency code, in lowercase.
     pub currency: stripe_types::Currency,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TaxRateFlatAmount {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("TaxRateFlatAmount").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct TaxRateFlatAmountBuilder {

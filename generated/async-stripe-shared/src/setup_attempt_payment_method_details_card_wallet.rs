@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct SetupAttemptPaymentMethodDetailsCardWallet {
@@ -9,6 +10,12 @@ pub struct SetupAttemptPaymentMethodDetailsCardWallet {
     /// It contains additional information specific to the card wallet type.
     #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "type"))]
     pub type_: SetupAttemptPaymentMethodDetailsCardWalletType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for SetupAttemptPaymentMethodDetailsCardWallet {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("SetupAttemptPaymentMethodDetailsCardWallet").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct SetupAttemptPaymentMethodDetailsCardWalletBuilder {
@@ -164,9 +171,17 @@ impl std::fmt::Display for SetupAttemptPaymentMethodDetailsCardWalletType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for SetupAttemptPaymentMethodDetailsCardWalletType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for SetupAttemptPaymentMethodDetailsCardWalletType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(SetupAttemptPaymentMethodDetailsCardWalletType))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

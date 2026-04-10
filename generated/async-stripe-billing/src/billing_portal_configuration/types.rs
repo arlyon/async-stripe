@@ -1,6 +1,7 @@
 /// A portal configuration describes the functionality and behavior you embed in a portal session.
 /// Related guide: [Configure the customer portal](/customer-management/configure-portal).
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct BillingPortalConfiguration {
     /// Whether the configuration is active and can be used to create portal sessions.
@@ -30,6 +31,12 @@ pub struct BillingPortalConfiguration {
     pub name: Option<String>,
     /// Time at which the object was last updated. Measured in seconds since the Unix epoch.
     pub updated: stripe_types::Timestamp,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for BillingPortalConfiguration {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("BillingPortalConfiguration").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct BillingPortalConfigurationBuilder {

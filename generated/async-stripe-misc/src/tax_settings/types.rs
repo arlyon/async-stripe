@@ -3,7 +3,8 @@
 /// Related guide: [Using the Settings API](https://docs.stripe.com/tax/settings-api)
 ///
 /// For more details see <<https://stripe.com/docs/api/tax/settings/object>>.
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TaxSettings {
     pub defaults: stripe_misc::TaxProductResourceTaxSettingsDefaults,
@@ -15,6 +16,12 @@ pub struct TaxSettings {
     /// The status of the Tax `Settings`.
     pub status: TaxSettingsStatus,
     pub status_details: stripe_misc::TaxProductResourceTaxSettingsStatusDetails,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TaxSettings {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("TaxSettings").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct TaxSettingsBuilder {
@@ -195,9 +202,16 @@ impl std::fmt::Display for TaxSettingsStatus {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for TaxSettingsStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TaxSettingsStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(TaxSettingsStatus)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

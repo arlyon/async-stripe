@@ -1,4 +1,5 @@
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct ReservesReservePlansResourcesRollingRelease {
@@ -6,6 +7,12 @@ pub struct ReservesReservePlansResourcesRollingRelease {
     pub days_after_charge: u32,
     /// The time at which the ReservePlan expires.
     pub expires_on: Option<i64>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ReservesReservePlansResourcesRollingRelease {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ReservesReservePlansResourcesRollingRelease").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct ReservesReservePlansResourcesRollingReleaseBuilder {

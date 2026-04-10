@@ -1,4 +1,5 @@
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct BankConnectionsResourceBalanceApiResourceCreditBalance {
@@ -10,6 +11,13 @@ pub struct BankConnectionsResourceBalanceApiResourceCreditBalance {
     /// A positive amount indicates money owed to the account holder.
     /// A negative amount indicates money owed by the account holder.
     pub used: Option<std::collections::HashMap<String, i64>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for BankConnectionsResourceBalanceApiResourceCreditBalance {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("BankConnectionsResourceBalanceApiResourceCreditBalance")
+            .finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct BankConnectionsResourceBalanceApiResourceCreditBalanceBuilder {

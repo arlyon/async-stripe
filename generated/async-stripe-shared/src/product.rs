@@ -8,7 +8,8 @@
 /// and more about [Products and Prices](https://docs.stripe.com/products-prices/overview)
 ///
 /// For more details see <<https://stripe.com/docs/api/products/object>>.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct Product {
     /// Whether the product is currently available for purchase.
@@ -56,6 +57,12 @@ pub struct Product {
     pub updated: stripe_types::Timestamp,
     /// A URL of a publicly-accessible webpage for this product.
     pub url: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for Product {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("Product").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct ProductBuilder {
@@ -353,9 +360,16 @@ impl std::fmt::Display for ProductType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ProductType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ProductType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ProductType)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ProductType {

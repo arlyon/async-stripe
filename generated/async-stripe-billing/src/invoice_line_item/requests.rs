@@ -2,7 +2,9 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ListInvoiceInvoiceLineItemBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<String>,
@@ -13,6 +15,12 @@ struct ListInvoiceInvoiceLineItemBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     starting_after: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListInvoiceInvoiceLineItemBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListInvoiceInvoiceLineItemBuilder").finish_non_exhaustive()
+    }
+}
 impl ListInvoiceInvoiceLineItemBuilder {
     fn new() -> Self {
         Self { ending_before: None, expand: None, limit: None, starting_after: None }
@@ -20,10 +28,18 @@ impl ListInvoiceInvoiceLineItemBuilder {
 }
 /// When retrieving an invoice, you’ll get a **lines** property containing the total count of line items and the first handful of those items.
 /// There is also a URL where you can retrieve the full (paginated) list of line items.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListInvoiceInvoiceLineItem {
     inner: ListInvoiceInvoiceLineItemBuilder,
     invoice: stripe_shared::InvoiceId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListInvoiceInvoiceLineItem {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListInvoiceInvoiceLineItem").finish_non_exhaustive()
+    }
 }
 impl ListInvoiceInvoiceLineItem {
     /// Construct a new `ListInvoiceInvoiceLineItem`.
@@ -94,7 +110,9 @@ impl StripeRequest for ListInvoiceInvoiceLineItem {
             .query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct UpdateInvoiceLineItemBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     amount: Option<i64>,
@@ -123,6 +141,12 @@ struct UpdateInvoiceLineItemBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     tax_rates: Option<Vec<String>>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateInvoiceLineItemBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateInvoiceLineItemBuilder").finish_non_exhaustive()
+    }
+}
 impl UpdateInvoiceLineItemBuilder {
     fn new() -> Self {
         Self {
@@ -145,7 +169,9 @@ impl UpdateInvoiceLineItemBuilder {
 /// The coupons, promotion codes & existing discounts which apply to the line item.
 /// Item discounts are applied before invoice discounts.
 /// Pass an empty string to remove previously-defined discounts.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateInvoiceLineItemDiscounts {
     /// ID of the coupon to create a new discount for.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -156,6 +182,12 @@ pub struct UpdateInvoiceLineItemDiscounts {
     /// ID of the promotion code to create a new discount for.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub promotion_code: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateInvoiceLineItemDiscounts {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateInvoiceLineItemDiscounts").finish_non_exhaustive()
+    }
 }
 impl UpdateInvoiceLineItemDiscounts {
     pub fn new() -> Self {
@@ -171,12 +203,20 @@ impl Default for UpdateInvoiceLineItemDiscounts {
 /// When set to different values, the period will be rendered on the invoice.
 /// If you have [Stripe Revenue Recognition](https://docs.stripe.com/revenue-recognition) enabled, the period will be used to recognize and defer revenue.
 /// See the [Revenue Recognition documentation](https://docs.stripe.com/revenue-recognition/methodology/subscriptions-and-invoicing) for details.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateInvoiceLineItemPeriod {
     /// The end of the period, which must be greater than or equal to the start. This value is inclusive.
     pub end: stripe_types::Timestamp,
     /// The start of the period. This value is inclusive.
     pub start: stripe_types::Timestamp,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateInvoiceLineItemPeriod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateInvoiceLineItemPeriod").finish_non_exhaustive()
+    }
 }
 impl UpdateInvoiceLineItemPeriod {
     pub fn new(
@@ -187,7 +227,9 @@ impl UpdateInvoiceLineItemPeriod {
     }
 }
 /// Data used to generate a new [Price](https://docs.stripe.com/api/prices) object inline.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateInvoiceLineItemPriceData {
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
@@ -215,6 +257,12 @@ pub struct UpdateInvoiceLineItemPriceData {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_amount_decimal: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateInvoiceLineItemPriceData {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateInvoiceLineItemPriceData").finish_non_exhaustive()
+    }
+}
 impl UpdateInvoiceLineItemPriceData {
     pub fn new(currency: impl Into<stripe_types::Currency>) -> Self {
         Self {
@@ -229,7 +277,9 @@ impl UpdateInvoiceLineItemPriceData {
 }
 /// Data used to generate a new [Product](https://docs.stripe.com/api/products) object inline.
 /// One of `product` or `product_data` is required.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateInvoiceLineItemPriceDataProductData {
     /// The product's description, meant to be displayable to the customer.
     /// Use this field to optionally store a long form explanation of the product being sold for your own rendering purposes.
@@ -253,6 +303,12 @@ pub struct UpdateInvoiceLineItemPriceDataProductData {
     /// When set, this will be included in customers' receipts, invoices, Checkout, and the customer portal.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_label: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateInvoiceLineItemPriceDataProductData {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateInvoiceLineItemPriceDataProductData").finish_non_exhaustive()
+    }
 }
 impl UpdateInvoiceLineItemPriceDataProductData {
     pub fn new(name: impl Into<String>) -> Self {
@@ -316,9 +372,17 @@ impl std::fmt::Display for UpdateInvoiceLineItemPriceDataTaxBehavior {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdateInvoiceLineItemPriceDataTaxBehavior {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateInvoiceLineItemPriceDataTaxBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdateInvoiceLineItemPriceDataTaxBehavior))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdateInvoiceLineItemPriceDataTaxBehavior {
@@ -338,11 +402,19 @@ impl<'de> serde::Deserialize<'de> for UpdateInvoiceLineItemPriceDataTaxBehavior 
     }
 }
 /// The pricing information for the invoice item.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateInvoiceLineItemPricing {
     /// The ID of the price object.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub price: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateInvoiceLineItemPricing {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateInvoiceLineItemPricing").finish_non_exhaustive()
+    }
 }
 impl UpdateInvoiceLineItemPricing {
     pub fn new() -> Self {
@@ -358,7 +430,9 @@ impl Default for UpdateInvoiceLineItemPricing {
 /// This can be useful if you calculate taxes on your own or use a third-party to calculate them.
 /// You cannot set tax amounts if any line item has [tax_rates](https://docs.stripe.com/api/invoices/line_item#invoice_line_item_object-tax_rates) or if the invoice has [default_tax_rates](https://docs.stripe.com/api/invoices/object#invoice_object-default_tax_rates) or uses [automatic tax](https://docs.stripe.com/tax/invoicing).
 /// Pass an empty string to remove previously defined tax amounts.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateInvoiceLineItemTaxAmounts {
     /// The amount, in cents (or local equivalent), of the tax.
     pub amount: i64,
@@ -373,6 +447,12 @@ pub struct UpdateInvoiceLineItemTaxAmounts {
     pub taxability_reason: Option<UpdateInvoiceLineItemTaxAmountsTaxabilityReason>,
     /// The amount on which tax is calculated, in cents (or local equivalent).
     pub taxable_amount: i64,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateInvoiceLineItemTaxAmounts {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateInvoiceLineItemTaxAmounts").finish_non_exhaustive()
+    }
 }
 impl UpdateInvoiceLineItemTaxAmounts {
     pub fn new(
@@ -393,7 +473,9 @@ impl UpdateInvoiceLineItemTaxAmounts {
 /// Stripe automatically creates or reuses a TaxRate object for each tax amount.
 /// If the `tax_rate_data` exactly matches a previous value, Stripe will reuse the TaxRate object.
 /// TaxRate objects created automatically by Stripe are immediately archived, do not appear in the line item’s `tax_rates`, and cannot be directly added to invoices, payments, or line items.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateInvoiceLineItemTaxAmountsTaxRateData {
     /// Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -426,6 +508,12 @@ pub struct UpdateInvoiceLineItemTaxAmountsTaxRateData {
     /// The high-level tax type, such as `vat` or `sales_tax`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_type: Option<UpdateInvoiceLineItemTaxAmountsTaxRateDataTaxType>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateInvoiceLineItemTaxAmountsTaxRateData {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateInvoiceLineItemTaxAmountsTaxRateData").finish_non_exhaustive()
+    }
 }
 impl UpdateInvoiceLineItemTaxAmountsTaxRateData {
     pub fn new(
@@ -502,9 +590,17 @@ impl std::fmt::Display for UpdateInvoiceLineItemTaxAmountsTaxRateDataJurisdictio
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdateInvoiceLineItemTaxAmountsTaxRateDataJurisdictionLevel {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateInvoiceLineItemTaxAmountsTaxRateDataJurisdictionLevel {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdateInvoiceLineItemTaxAmountsTaxRateDataJurisdictionLevel))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdateInvoiceLineItemTaxAmountsTaxRateDataJurisdictionLevel {
@@ -603,9 +699,17 @@ impl std::fmt::Display for UpdateInvoiceLineItemTaxAmountsTaxRateDataTaxType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdateInvoiceLineItemTaxAmountsTaxRateDataTaxType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateInvoiceLineItemTaxAmountsTaxRateDataTaxType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdateInvoiceLineItemTaxAmountsTaxRateDataTaxType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdateInvoiceLineItemTaxAmountsTaxRateDataTaxType {
@@ -707,9 +811,17 @@ impl std::fmt::Display for UpdateInvoiceLineItemTaxAmountsTaxabilityReason {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdateInvoiceLineItemTaxAmountsTaxabilityReason {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateInvoiceLineItemTaxAmountsTaxabilityReason {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdateInvoiceLineItemTaxAmountsTaxabilityReason))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdateInvoiceLineItemTaxAmountsTaxabilityReason {
@@ -734,11 +846,19 @@ impl<'de> serde::Deserialize<'de> for UpdateInvoiceLineItemTaxAmountsTaxabilityR
 /// Other fields, such as `amount`, live on both the invoice.
 /// item and the invoice line item, so updates on this endpoint will propagate to the invoice item as well.
 /// Updating an invoice’s line item is only possible before the invoice is finalized.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateInvoiceLineItem {
     inner: UpdateInvoiceLineItemBuilder,
     invoice: stripe_shared::InvoiceId,
     line_item_id: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateInvoiceLineItem {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateInvoiceLineItem").finish_non_exhaustive()
+    }
 }
 impl UpdateInvoiceLineItem {
     /// Construct a new `UpdateInvoiceLineItem`.

@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct ApplePayDomain {
     /// Time at which the object was created. Measured in seconds since the Unix epoch.
@@ -9,6 +10,12 @@ pub struct ApplePayDomain {
     /// If the object exists in live mode, the value is `true`.
     /// If the object exists in test mode, the value is `false`.
     pub livemode: bool,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ApplePayDomain {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ApplePayDomain").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct ApplePayDomainBuilder {

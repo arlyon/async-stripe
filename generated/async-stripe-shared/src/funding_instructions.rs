@@ -3,7 +3,8 @@
 /// Customers can fund this balance by initiating a bank transfer to any account in the
 /// `financial_addresses` field.
 /// Related guide: [Customer balance funding instructions](https://docs.stripe.com/payments/customer-balance/funding-instructions).
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct FundingInstructions {
     pub bank_transfer: stripe_shared::FundingInstructionsBankTransfer,
@@ -15,6 +16,12 @@ pub struct FundingInstructions {
     /// If the object exists in live mode, the value is `true`.
     /// If the object exists in test mode, the value is `false`.
     pub livemode: bool,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for FundingInstructions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("FundingInstructions").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct FundingInstructionsBuilder {
@@ -183,9 +190,16 @@ impl std::fmt::Display for FundingInstructionsFundingType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for FundingInstructionsFundingType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for FundingInstructionsFundingType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(FundingInstructionsFundingType)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

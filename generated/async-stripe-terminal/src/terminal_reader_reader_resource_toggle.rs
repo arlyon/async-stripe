@@ -1,5 +1,6 @@
 /// Information about an input's toggle
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TerminalReaderReaderResourceToggle {
@@ -11,6 +12,12 @@ pub struct TerminalReaderReaderResourceToggle {
     pub title: Option<String>,
     /// The toggle's collected value. Can be `enabled` or `disabled`.
     pub value: Option<TerminalReaderReaderResourceToggleValue>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TerminalReaderReaderResourceToggle {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("TerminalReaderReaderResourceToggle").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct TerminalReaderReaderResourceToggleBuilder {
@@ -168,9 +175,17 @@ impl std::fmt::Display for TerminalReaderReaderResourceToggleDefaultValue {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for TerminalReaderReaderResourceToggleDefaultValue {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TerminalReaderReaderResourceToggleDefaultValue {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(TerminalReaderReaderResourceToggleDefaultValue))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -250,9 +265,16 @@ impl std::fmt::Display for TerminalReaderReaderResourceToggleValue {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for TerminalReaderReaderResourceToggleValue {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TerminalReaderReaderResourceToggleValue {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(TerminalReaderReaderResourceToggleValue)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct AccountPaymentsSettings {
@@ -17,6 +18,12 @@ pub struct AccountPaymentsSettings {
     /// The Kanji variation of `statement_descriptor_prefix` used for card charges in Japan.
     /// Japanese statement descriptors have [special requirements](https://docs.stripe.com/get-started/account/statement-descriptors#set-japanese-statement-descriptors).
     pub statement_descriptor_prefix_kanji: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for AccountPaymentsSettings {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("AccountPaymentsSettings").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct AccountPaymentsSettingsBuilder {

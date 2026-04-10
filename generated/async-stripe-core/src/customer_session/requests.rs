@@ -2,7 +2,9 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct CreateCustomerSessionBuilder {
     components: CreateCustomerSessionComponents,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -12,13 +14,21 @@ struct CreateCustomerSessionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCustomerSessionBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCustomerSessionBuilder").finish_non_exhaustive()
+    }
+}
 impl CreateCustomerSessionBuilder {
     fn new(components: impl Into<CreateCustomerSessionComponents>) -> Self {
         Self { components: components.into(), customer: None, customer_account: None, expand: None }
     }
 }
 /// Configuration for each component. At least 1 component must be enabled.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCustomerSessionComponents {
     /// Configuration for buy button.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -35,6 +45,12 @@ pub struct CreateCustomerSessionComponents {
     /// Configuration for the pricing table.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub pricing_table: Option<CreateCustomerSessionComponentsPricingTable>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCustomerSessionComponents {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCustomerSessionComponents").finish_non_exhaustive()
+    }
 }
 impl CreateCustomerSessionComponents {
     pub fn new() -> Self {
@@ -53,10 +69,18 @@ impl Default for CreateCustomerSessionComponents {
     }
 }
 /// Configuration for buy button.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCustomerSessionComponentsBuyButton {
     /// Whether the buy button is enabled.
     pub enabled: bool,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCustomerSessionComponentsBuyButton {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCustomerSessionComponentsBuyButton").finish_non_exhaustive()
+    }
 }
 impl CreateCustomerSessionComponentsBuyButton {
     pub fn new(enabled: impl Into<bool>) -> Self {
@@ -64,7 +88,9 @@ impl CreateCustomerSessionComponentsBuyButton {
     }
 }
 /// Configuration for the customer sheet.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCustomerSessionComponentsCustomerSheet {
     /// Whether the customer sheet is enabled.
     pub enabled: bool,
@@ -72,13 +98,21 @@ pub struct CreateCustomerSessionComponentsCustomerSheet {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub features: Option<CreateCustomerSessionComponentsCustomerSheetFeatures>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCustomerSessionComponentsCustomerSheet {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCustomerSessionComponentsCustomerSheet").finish_non_exhaustive()
+    }
+}
 impl CreateCustomerSessionComponentsCustomerSheet {
     pub fn new(enabled: impl Into<bool>) -> Self {
         Self { enabled: enabled.into(), features: None }
     }
 }
 /// This hash defines whether the customer sheet supports certain features.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCustomerSessionComponentsCustomerSheetFeatures {
     /// A list of [`allow_redisplay`](https://docs.stripe.com/api/payment_methods/object#payment_method_object-allow_redisplay) values that controls which saved payment methods the customer sheet displays by filtering to only show payment methods with an `allow_redisplay` value that is present in this list.
     ///
@@ -95,6 +129,13 @@ pub struct CreateCustomerSessionComponentsCustomerSheetFeatures {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_method_remove:
         Option<CreateCustomerSessionComponentsCustomerSheetFeaturesPaymentMethodRemove>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCustomerSessionComponentsCustomerSheetFeatures {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCustomerSessionComponentsCustomerSheetFeatures")
+            .finish_non_exhaustive()
+    }
 }
 impl CreateCustomerSessionComponentsCustomerSheetFeatures {
     pub fn new() -> Self {
@@ -160,11 +201,23 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for CreateCustomerSessionComponentsCustomerSheetFeaturesPaymentMethodAllowRedisplayFilters
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for CreateCustomerSessionComponentsCustomerSheetFeaturesPaymentMethodAllowRedisplayFilters
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreateCustomerSessionComponentsCustomerSheetFeaturesPaymentMethodAllowRedisplayFilters
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -234,9 +287,19 @@ impl std::fmt::Display for CreateCustomerSessionComponentsCustomerSheetFeaturesP
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCustomerSessionComponentsCustomerSheetFeaturesPaymentMethodRemove {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCustomerSessionComponentsCustomerSheetFeaturesPaymentMethodRemove {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreateCustomerSessionComponentsCustomerSheetFeaturesPaymentMethodRemove
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCustomerSessionComponentsCustomerSheetFeaturesPaymentMethodRemove {
@@ -258,7 +321,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Configuration for the mobile payment element.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCustomerSessionComponentsMobilePaymentElement {
     /// Whether the mobile payment element is enabled.
     pub enabled: bool,
@@ -266,13 +331,22 @@ pub struct CreateCustomerSessionComponentsMobilePaymentElement {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub features: Option<CreateCustomerSessionComponentsMobilePaymentElementFeatures>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCustomerSessionComponentsMobilePaymentElement {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCustomerSessionComponentsMobilePaymentElement")
+            .finish_non_exhaustive()
+    }
+}
 impl CreateCustomerSessionComponentsMobilePaymentElement {
     pub fn new(enabled: impl Into<bool>) -> Self {
         Self { enabled: enabled.into(), features: None }
     }
 }
 /// This hash defines whether the mobile payment element supports certain features.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCustomerSessionComponentsMobilePaymentElementFeatures {
         /// A list of [`allow_redisplay`](https://docs.stripe.com/api/payment_methods/object#payment_method_object-allow_redisplay) values that controls which saved payment methods the mobile payment element displays by filtering to only show payment methods with an `allow_redisplay` value that is present in this list.
     ///
@@ -302,6 +376,13 @@ pub payment_method_save: Option<CreateCustomerSessionComponentsMobilePaymentElem
 #[serde(skip_serializing_if = "Option::is_none")]
 pub payment_method_save_allow_redisplay_override: Option<CreateCustomerSessionComponentsMobilePaymentElementFeaturesPaymentMethodSaveAllowRedisplayOverride>,
 
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCustomerSessionComponentsMobilePaymentElementFeatures {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCustomerSessionComponentsMobilePaymentElementFeatures")
+            .finish_non_exhaustive()
+    }
 }
 impl CreateCustomerSessionComponentsMobilePaymentElementFeatures {
     pub fn new() -> Self {
@@ -364,9 +445,16 @@ impl std::fmt::Display for CreateCustomerSessionComponentsMobilePaymentElementFe
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCustomerSessionComponentsMobilePaymentElementFeaturesPaymentMethodAllowRedisplayFilters {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCustomerSessionComponentsMobilePaymentElementFeaturesPaymentMethodAllowRedisplayFilters {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCustomerSessionComponentsMobilePaymentElementFeaturesPaymentMethodAllowRedisplayFilters)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCustomerSessionComponentsMobilePaymentElementFeaturesPaymentMethodAllowRedisplayFilters {
@@ -430,11 +518,23 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for CreateCustomerSessionComponentsMobilePaymentElementFeaturesPaymentMethodRedisplay
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for CreateCustomerSessionComponentsMobilePaymentElementFeaturesPaymentMethodRedisplay
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreateCustomerSessionComponentsMobilePaymentElementFeaturesPaymentMethodRedisplay
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -508,11 +608,23 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for CreateCustomerSessionComponentsMobilePaymentElementFeaturesPaymentMethodRemove
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for CreateCustomerSessionComponentsMobilePaymentElementFeaturesPaymentMethodRemove
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreateCustomerSessionComponentsMobilePaymentElementFeaturesPaymentMethodRemove
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -586,11 +698,23 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for CreateCustomerSessionComponentsMobilePaymentElementFeaturesPaymentMethodSave
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for CreateCustomerSessionComponentsMobilePaymentElementFeaturesPaymentMethodSave
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreateCustomerSessionComponentsMobilePaymentElementFeaturesPaymentMethodSave
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -659,9 +783,16 @@ impl std::fmt::Display for CreateCustomerSessionComponentsMobilePaymentElementFe
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCustomerSessionComponentsMobilePaymentElementFeaturesPaymentMethodSaveAllowRedisplayOverride {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCustomerSessionComponentsMobilePaymentElementFeaturesPaymentMethodSaveAllowRedisplayOverride {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCustomerSessionComponentsMobilePaymentElementFeaturesPaymentMethodSaveAllowRedisplayOverride)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCustomerSessionComponentsMobilePaymentElementFeaturesPaymentMethodSaveAllowRedisplayOverride {
@@ -678,7 +809,9 @@ impl<'de> serde::Deserialize<'de> for CreateCustomerSessionComponentsMobilePayme
     }
 }
 /// Configuration for the Payment Element.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCustomerSessionComponentsPaymentElement {
     /// Whether the Payment Element is enabled.
     pub enabled: bool,
@@ -686,13 +819,21 @@ pub struct CreateCustomerSessionComponentsPaymentElement {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub features: Option<CreateCustomerSessionComponentsPaymentElementFeatures>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCustomerSessionComponentsPaymentElement {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCustomerSessionComponentsPaymentElement").finish_non_exhaustive()
+    }
+}
 impl CreateCustomerSessionComponentsPaymentElement {
     pub fn new(enabled: impl Into<bool>) -> Self {
         Self { enabled: enabled.into(), features: None }
     }
 }
 /// This hash defines whether the Payment Element supports certain features.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCustomerSessionComponentsPaymentElementFeatures {
     /// A list of [`allow_redisplay`](https://docs.stripe.com/api/payment_methods/object#payment_method_object-allow_redisplay) values that controls which saved payment methods the Payment Element displays by filtering to only show payment methods with an `allow_redisplay` value that is present in this list.
     ///
@@ -736,6 +877,13 @@ pub struct CreateCustomerSessionComponentsPaymentElementFeatures {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_method_save_usage:
         Option<CreateCustomerSessionComponentsPaymentElementFeaturesPaymentMethodSaveUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCustomerSessionComponentsPaymentElementFeatures {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCustomerSessionComponentsPaymentElementFeatures")
+            .finish_non_exhaustive()
+    }
 }
 impl CreateCustomerSessionComponentsPaymentElementFeatures {
     pub fn new() -> Self {
@@ -808,11 +956,23 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for CreateCustomerSessionComponentsPaymentElementFeaturesPaymentMethodAllowRedisplayFilters
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for CreateCustomerSessionComponentsPaymentElementFeaturesPaymentMethodAllowRedisplayFilters
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreateCustomerSessionComponentsPaymentElementFeaturesPaymentMethodAllowRedisplayFilters
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -884,11 +1044,23 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for CreateCustomerSessionComponentsPaymentElementFeaturesPaymentMethodRedisplay
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for CreateCustomerSessionComponentsPaymentElementFeaturesPaymentMethodRedisplay
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreateCustomerSessionComponentsPaymentElementFeaturesPaymentMethodRedisplay
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -963,9 +1135,19 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCustomerSessionComponentsPaymentElementFeaturesPaymentMethodRemove {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCustomerSessionComponentsPaymentElementFeaturesPaymentMethodRemove {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreateCustomerSessionComponentsPaymentElementFeaturesPaymentMethodRemove
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCustomerSessionComponentsPaymentElementFeaturesPaymentMethodRemove {
@@ -1034,9 +1216,19 @@ impl std::fmt::Display for CreateCustomerSessionComponentsPaymentElementFeatures
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCustomerSessionComponentsPaymentElementFeaturesPaymentMethodSave {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCustomerSessionComponentsPaymentElementFeaturesPaymentMethodSave {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreateCustomerSessionComponentsPaymentElementFeaturesPaymentMethodSave
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCustomerSessionComponentsPaymentElementFeaturesPaymentMethodSave {
@@ -1107,11 +1299,23 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for CreateCustomerSessionComponentsPaymentElementFeaturesPaymentMethodSaveUsage
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for CreateCustomerSessionComponentsPaymentElementFeaturesPaymentMethodSaveUsage
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreateCustomerSessionComponentsPaymentElementFeaturesPaymentMethodSaveUsage
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -1135,10 +1339,18 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Configuration for the pricing table.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCustomerSessionComponentsPricingTable {
     /// Whether the pricing table is enabled.
     pub enabled: bool,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCustomerSessionComponentsPricingTable {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCustomerSessionComponentsPricingTable").finish_non_exhaustive()
+    }
 }
 impl CreateCustomerSessionComponentsPricingTable {
     pub fn new(enabled: impl Into<bool>) -> Self {
@@ -1146,9 +1358,17 @@ impl CreateCustomerSessionComponentsPricingTable {
     }
 }
 /// Creates a Customer Session object that includes a single-use client secret that you can use on your front-end to grant client-side API access for certain customer resources.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCustomerSession {
     inner: CreateCustomerSessionBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCustomerSession {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCustomerSession").finish_non_exhaustive()
+    }
 }
 impl CreateCustomerSession {
     /// Construct a new `CreateCustomerSession`.

@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct EmailSent {
@@ -6,6 +7,12 @@ pub struct EmailSent {
     pub email_sent_at: stripe_types::Timestamp,
     /// The recipient's email address.
     pub email_sent_to: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for EmailSent {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("EmailSent").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct EmailSentBuilder {

@@ -11,7 +11,8 @@
 /// Related guide: [Accessing verification results](https://docs.stripe.com/identity/verification-sessions#results).
 ///
 /// For more details see <<https://stripe.com/docs/api/identity/verification_reports/object>>.
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct IdentityVerificationReport {
     /// A string to reference this user.
@@ -37,6 +38,12 @@ pub struct IdentityVerificationReport {
     pub verification_flow: Option<String>,
     /// ID of the VerificationSession that created this report.
     pub verification_session: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for IdentityVerificationReport {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("IdentityVerificationReport").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct IdentityVerificationReportBuilder {
@@ -294,9 +301,16 @@ impl std::fmt::Display for IdentityVerificationReportType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for IdentityVerificationReportType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for IdentityVerificationReportType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(IdentityVerificationReportType)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

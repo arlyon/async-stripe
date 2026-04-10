@@ -1,7 +1,8 @@
 /// Meter events represent actions that customers take in your system.
 /// You can use meter events to bill a customer based on their usage.
 /// Meter events are associated with billing meters, which define both the contents of the event’s payload and how to aggregate those events.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct BillingMeterEvent {
     /// Time at which the object was created. Measured in seconds since the Unix epoch.
@@ -19,6 +20,12 @@ pub struct BillingMeterEvent {
     pub payload: std::collections::HashMap<String, String>,
     /// The timestamp passed in when creating the event. Measured in seconds since the Unix epoch.
     pub timestamp: stripe_types::Timestamp,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for BillingMeterEvent {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("BillingMeterEvent").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct BillingMeterEventBuilder {

@@ -2,7 +2,9 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ListTreasuryFinancialAccountBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     created: Option<stripe_types::RangeQueryTs>,
@@ -17,6 +19,12 @@ struct ListTreasuryFinancialAccountBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     status: Option<stripe_treasury::TreasuryFinancialAccountStatus>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListTreasuryFinancialAccountBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListTreasuryFinancialAccountBuilder").finish_non_exhaustive()
+    }
+}
 impl ListTreasuryFinancialAccountBuilder {
     fn new() -> Self {
         Self {
@@ -30,9 +38,17 @@ impl ListTreasuryFinancialAccountBuilder {
     }
 }
 /// Returns a list of FinancialAccounts.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListTreasuryFinancialAccount {
     inner: ListTreasuryFinancialAccountBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListTreasuryFinancialAccount {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListTreasuryFinancialAccount").finish_non_exhaustive()
+    }
 }
 impl ListTreasuryFinancialAccount {
     /// Construct a new `ListTreasuryFinancialAccount`.
@@ -111,10 +127,18 @@ impl StripeRequest for ListTreasuryFinancialAccount {
         RequestBuilder::new(StripeMethod::Get, "/treasury/financial_accounts").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RetrieveTreasuryFinancialAccountBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveTreasuryFinancialAccountBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveTreasuryFinancialAccountBuilder").finish_non_exhaustive()
+    }
 }
 impl RetrieveTreasuryFinancialAccountBuilder {
     fn new() -> Self {
@@ -122,10 +146,18 @@ impl RetrieveTreasuryFinancialAccountBuilder {
     }
 }
 /// Retrieves the details of a FinancialAccount.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RetrieveTreasuryFinancialAccount {
     inner: RetrieveTreasuryFinancialAccountBuilder,
     financial_account: stripe_treasury::TreasuryFinancialAccountId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveTreasuryFinancialAccount {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveTreasuryFinancialAccount").finish_non_exhaustive()
+    }
 }
 impl RetrieveTreasuryFinancialAccount {
     /// Construct a new `RetrieveTreasuryFinancialAccount`.
@@ -171,10 +203,18 @@ impl StripeRequest for RetrieveTreasuryFinancialAccount {
         .query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RetrieveFeaturesTreasuryFinancialAccountBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveFeaturesTreasuryFinancialAccountBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveFeaturesTreasuryFinancialAccountBuilder").finish_non_exhaustive()
+    }
 }
 impl RetrieveFeaturesTreasuryFinancialAccountBuilder {
     fn new() -> Self {
@@ -182,10 +222,18 @@ impl RetrieveFeaturesTreasuryFinancialAccountBuilder {
     }
 }
 /// Retrieves Features information associated with the FinancialAccount.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RetrieveFeaturesTreasuryFinancialAccount {
     inner: RetrieveFeaturesTreasuryFinancialAccountBuilder,
     financial_account: stripe_treasury::TreasuryFinancialAccountId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveFeaturesTreasuryFinancialAccount {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveFeaturesTreasuryFinancialAccount").finish_non_exhaustive()
+    }
 }
 impl RetrieveFeaturesTreasuryFinancialAccount {
     /// Construct a new `RetrieveFeaturesTreasuryFinancialAccount`.
@@ -231,7 +279,9 @@ impl StripeRequest for RetrieveFeaturesTreasuryFinancialAccount {
         .query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct CreateTreasuryFinancialAccountBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -244,6 +294,12 @@ struct CreateTreasuryFinancialAccountBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     platform_restrictions: Option<CreateTreasuryFinancialAccountPlatformRestrictions>,
     supported_currencies: Vec<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTreasuryFinancialAccountBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTreasuryFinancialAccountBuilder").finish_non_exhaustive()
+    }
 }
 impl CreateTreasuryFinancialAccountBuilder {
     fn new(supported_currencies: impl Into<Vec<String>>) -> Self {
@@ -259,7 +315,9 @@ impl CreateTreasuryFinancialAccountBuilder {
 }
 /// Encodes whether a FinancialAccount has access to a particular feature.
 /// Stripe or the platform can control features via the requested field.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTreasuryFinancialAccountFeatures {
     /// Encodes the FinancialAccount's ability to be used with the Issuing product, including attaching cards to and drawing funds from the FinancialAccount.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -284,6 +342,12 @@ pub struct CreateTreasuryFinancialAccountFeatures {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub outbound_transfers: Option<CreateTreasuryFinancialAccountFeaturesOutboundTransfers>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTreasuryFinancialAccountFeatures {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTreasuryFinancialAccountFeatures").finish_non_exhaustive()
+    }
+}
 impl CreateTreasuryFinancialAccountFeatures {
     pub fn new() -> Self {
         Self {
@@ -303,10 +367,18 @@ impl Default for CreateTreasuryFinancialAccountFeatures {
     }
 }
 /// Encodes the FinancialAccount's ability to be used with the Issuing product, including attaching cards to and drawing funds from the FinancialAccount.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTreasuryFinancialAccountFeaturesCardIssuing {
     /// Whether the FinancialAccount should have the Feature.
     pub requested: bool,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTreasuryFinancialAccountFeaturesCardIssuing {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTreasuryFinancialAccountFeaturesCardIssuing").finish_non_exhaustive()
+    }
 }
 impl CreateTreasuryFinancialAccountFeaturesCardIssuing {
     pub fn new(requested: impl Into<bool>) -> Self {
@@ -315,10 +387,19 @@ impl CreateTreasuryFinancialAccountFeaturesCardIssuing {
 }
 /// Represents whether this FinancialAccount is eligible for deposit insurance.
 /// Various factors determine the insurance amount.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTreasuryFinancialAccountFeaturesDepositInsurance {
     /// Whether the FinancialAccount should have the Feature.
     pub requested: bool,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTreasuryFinancialAccountFeaturesDepositInsurance {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTreasuryFinancialAccountFeaturesDepositInsurance")
+            .finish_non_exhaustive()
+    }
 }
 impl CreateTreasuryFinancialAccountFeaturesDepositInsurance {
     pub fn new(requested: impl Into<bool>) -> Self {
@@ -326,11 +407,20 @@ impl CreateTreasuryFinancialAccountFeaturesDepositInsurance {
     }
 }
 /// Contains Features that add FinancialAddresses to the FinancialAccount.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTreasuryFinancialAccountFeaturesFinancialAddresses {
     /// Adds an ABA FinancialAddress to the FinancialAccount.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub aba: Option<CreateTreasuryFinancialAccountFeaturesFinancialAddressesAba>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTreasuryFinancialAccountFeaturesFinancialAddresses {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTreasuryFinancialAccountFeaturesFinancialAddresses")
+            .finish_non_exhaustive()
+    }
 }
 impl CreateTreasuryFinancialAccountFeaturesFinancialAddresses {
     pub fn new() -> Self {
@@ -343,10 +433,19 @@ impl Default for CreateTreasuryFinancialAccountFeaturesFinancialAddresses {
     }
 }
 /// Adds an ABA FinancialAddress to the FinancialAccount.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTreasuryFinancialAccountFeaturesFinancialAddressesAba {
     /// Whether the FinancialAccount should have the Feature.
     pub requested: bool,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTreasuryFinancialAccountFeaturesFinancialAddressesAba {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTreasuryFinancialAccountFeaturesFinancialAddressesAba")
+            .finish_non_exhaustive()
+    }
 }
 impl CreateTreasuryFinancialAccountFeaturesFinancialAddressesAba {
     pub fn new(requested: impl Into<bool>) -> Self {
@@ -354,11 +453,20 @@ impl CreateTreasuryFinancialAccountFeaturesFinancialAddressesAba {
     }
 }
 /// Contains settings related to adding funds to a FinancialAccount from another Account with the same owner.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTreasuryFinancialAccountFeaturesInboundTransfers {
     /// Enables ACH Debits via the InboundTransfers API.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ach: Option<CreateTreasuryFinancialAccountFeaturesInboundTransfersAch>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTreasuryFinancialAccountFeaturesInboundTransfers {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTreasuryFinancialAccountFeaturesInboundTransfers")
+            .finish_non_exhaustive()
+    }
 }
 impl CreateTreasuryFinancialAccountFeaturesInboundTransfers {
     pub fn new() -> Self {
@@ -371,10 +479,19 @@ impl Default for CreateTreasuryFinancialAccountFeaturesInboundTransfers {
     }
 }
 /// Enables ACH Debits via the InboundTransfers API.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTreasuryFinancialAccountFeaturesInboundTransfersAch {
     /// Whether the FinancialAccount should have the Feature.
     pub requested: bool,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTreasuryFinancialAccountFeaturesInboundTransfersAch {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTreasuryFinancialAccountFeaturesInboundTransfersAch")
+            .finish_non_exhaustive()
+    }
 }
 impl CreateTreasuryFinancialAccountFeaturesInboundTransfersAch {
     pub fn new(requested: impl Into<bool>) -> Self {
@@ -382,10 +499,19 @@ impl CreateTreasuryFinancialAccountFeaturesInboundTransfersAch {
     }
 }
 /// Represents the ability for the FinancialAccount to send money to, or receive money from other FinancialAccounts (for example, via OutboundPayment).
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTreasuryFinancialAccountFeaturesIntraStripeFlows {
     /// Whether the FinancialAccount should have the Feature.
     pub requested: bool,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTreasuryFinancialAccountFeaturesIntraStripeFlows {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTreasuryFinancialAccountFeaturesIntraStripeFlows")
+            .finish_non_exhaustive()
+    }
 }
 impl CreateTreasuryFinancialAccountFeaturesIntraStripeFlows {
     pub fn new(requested: impl Into<bool>) -> Self {
@@ -393,7 +519,9 @@ impl CreateTreasuryFinancialAccountFeaturesIntraStripeFlows {
     }
 }
 /// Includes Features related to initiating money movement out of the FinancialAccount to someone else's bucket of money.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTreasuryFinancialAccountFeaturesOutboundPayments {
     /// Enables ACH transfers via the OutboundPayments API.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -402,6 +530,13 @@ pub struct CreateTreasuryFinancialAccountFeaturesOutboundPayments {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub us_domestic_wire:
         Option<CreateTreasuryFinancialAccountFeaturesOutboundPaymentsUsDomesticWire>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTreasuryFinancialAccountFeaturesOutboundPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTreasuryFinancialAccountFeaturesOutboundPayments")
+            .finish_non_exhaustive()
+    }
 }
 impl CreateTreasuryFinancialAccountFeaturesOutboundPayments {
     pub fn new() -> Self {
@@ -414,10 +549,19 @@ impl Default for CreateTreasuryFinancialAccountFeaturesOutboundPayments {
     }
 }
 /// Enables ACH transfers via the OutboundPayments API.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTreasuryFinancialAccountFeaturesOutboundPaymentsAch {
     /// Whether the FinancialAccount should have the Feature.
     pub requested: bool,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTreasuryFinancialAccountFeaturesOutboundPaymentsAch {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTreasuryFinancialAccountFeaturesOutboundPaymentsAch")
+            .finish_non_exhaustive()
+    }
 }
 impl CreateTreasuryFinancialAccountFeaturesOutboundPaymentsAch {
     pub fn new(requested: impl Into<bool>) -> Self {
@@ -425,10 +569,19 @@ impl CreateTreasuryFinancialAccountFeaturesOutboundPaymentsAch {
     }
 }
 /// Enables US domestic wire transfers via the OutboundPayments API.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTreasuryFinancialAccountFeaturesOutboundPaymentsUsDomesticWire {
     /// Whether the FinancialAccount should have the Feature.
     pub requested: bool,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTreasuryFinancialAccountFeaturesOutboundPaymentsUsDomesticWire {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTreasuryFinancialAccountFeaturesOutboundPaymentsUsDomesticWire")
+            .finish_non_exhaustive()
+    }
 }
 impl CreateTreasuryFinancialAccountFeaturesOutboundPaymentsUsDomesticWire {
     pub fn new(requested: impl Into<bool>) -> Self {
@@ -436,7 +589,9 @@ impl CreateTreasuryFinancialAccountFeaturesOutboundPaymentsUsDomesticWire {
     }
 }
 /// Contains a Feature and settings related to moving money out of the FinancialAccount into another Account with the same owner.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTreasuryFinancialAccountFeaturesOutboundTransfers {
     /// Enables ACH transfers via the OutboundTransfers API.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -445,6 +600,13 @@ pub struct CreateTreasuryFinancialAccountFeaturesOutboundTransfers {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub us_domestic_wire:
         Option<CreateTreasuryFinancialAccountFeaturesOutboundTransfersUsDomesticWire>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTreasuryFinancialAccountFeaturesOutboundTransfers {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTreasuryFinancialAccountFeaturesOutboundTransfers")
+            .finish_non_exhaustive()
+    }
 }
 impl CreateTreasuryFinancialAccountFeaturesOutboundTransfers {
     pub fn new() -> Self {
@@ -457,10 +619,19 @@ impl Default for CreateTreasuryFinancialAccountFeaturesOutboundTransfers {
     }
 }
 /// Enables ACH transfers via the OutboundTransfers API.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTreasuryFinancialAccountFeaturesOutboundTransfersAch {
     /// Whether the FinancialAccount should have the Feature.
     pub requested: bool,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTreasuryFinancialAccountFeaturesOutboundTransfersAch {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTreasuryFinancialAccountFeaturesOutboundTransfersAch")
+            .finish_non_exhaustive()
+    }
 }
 impl CreateTreasuryFinancialAccountFeaturesOutboundTransfersAch {
     pub fn new(requested: impl Into<bool>) -> Self {
@@ -468,10 +639,19 @@ impl CreateTreasuryFinancialAccountFeaturesOutboundTransfersAch {
     }
 }
 /// Enables US domestic wire transfers via the OutboundTransfers API.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTreasuryFinancialAccountFeaturesOutboundTransfersUsDomesticWire {
     /// Whether the FinancialAccount should have the Feature.
     pub requested: bool,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTreasuryFinancialAccountFeaturesOutboundTransfersUsDomesticWire {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTreasuryFinancialAccountFeaturesOutboundTransfersUsDomesticWire")
+            .finish_non_exhaustive()
+    }
 }
 impl CreateTreasuryFinancialAccountFeaturesOutboundTransfersUsDomesticWire {
     pub fn new(requested: impl Into<bool>) -> Self {
@@ -479,7 +659,9 @@ impl CreateTreasuryFinancialAccountFeaturesOutboundTransfersUsDomesticWire {
     }
 }
 /// The set of functionalities that the platform can restrict on the FinancialAccount.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTreasuryFinancialAccountPlatformRestrictions {
     /// Restricts all inbound money movement.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -487,6 +669,12 @@ pub struct CreateTreasuryFinancialAccountPlatformRestrictions {
     /// Restricts all outbound money movement.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub outbound_flows: Option<CreateTreasuryFinancialAccountPlatformRestrictionsOutboundFlows>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTreasuryFinancialAccountPlatformRestrictions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTreasuryFinancialAccountPlatformRestrictions").finish_non_exhaustive()
+    }
 }
 impl CreateTreasuryFinancialAccountPlatformRestrictions {
     pub fn new() -> Self {
@@ -542,9 +730,17 @@ impl std::fmt::Display for CreateTreasuryFinancialAccountPlatformRestrictionsInb
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTreasuryFinancialAccountPlatformRestrictionsInboundFlows {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTreasuryFinancialAccountPlatformRestrictionsInboundFlows {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTreasuryFinancialAccountPlatformRestrictionsInboundFlows))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTreasuryFinancialAccountPlatformRestrictionsInboundFlows {
@@ -609,9 +805,17 @@ impl std::fmt::Display for CreateTreasuryFinancialAccountPlatformRestrictionsOut
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTreasuryFinancialAccountPlatformRestrictionsOutboundFlows {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTreasuryFinancialAccountPlatformRestrictionsOutboundFlows {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTreasuryFinancialAccountPlatformRestrictionsOutboundFlows))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTreasuryFinancialAccountPlatformRestrictionsOutboundFlows {
@@ -634,9 +838,17 @@ impl<'de> serde::Deserialize<'de>
 }
 /// Creates a new FinancialAccount.
 /// Each connected account can have up to three FinancialAccounts by default.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTreasuryFinancialAccount {
     inner: CreateTreasuryFinancialAccountBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTreasuryFinancialAccount {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTreasuryFinancialAccount").finish_non_exhaustive()
+    }
 }
 impl CreateTreasuryFinancialAccount {
     /// Construct a new `CreateTreasuryFinancialAccount`.
@@ -704,7 +916,9 @@ impl StripeRequest for CreateTreasuryFinancialAccount {
         RequestBuilder::new(StripeMethod::Post, "/treasury/financial_accounts").form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct UpdateTreasuryFinancialAccountBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -718,6 +932,12 @@ struct UpdateTreasuryFinancialAccountBuilder {
     nickname: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     platform_restrictions: Option<UpdateTreasuryFinancialAccountPlatformRestrictions>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateTreasuryFinancialAccountBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateTreasuryFinancialAccountBuilder").finish_non_exhaustive()
+    }
 }
 impl UpdateTreasuryFinancialAccountBuilder {
     fn new() -> Self {
@@ -733,7 +953,9 @@ impl UpdateTreasuryFinancialAccountBuilder {
 }
 /// Encodes whether a FinancialAccount has access to a particular feature, with a status enum and associated `status_details`.
 /// Stripe or the platform may control features via the requested field.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateTreasuryFinancialAccountFeatures {
     /// Encodes the FinancialAccount's ability to be used with the Issuing product, including attaching cards to and drawing funds from the FinancialAccount.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -758,6 +980,12 @@ pub struct UpdateTreasuryFinancialAccountFeatures {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub outbound_transfers: Option<UpdateTreasuryFinancialAccountFeaturesOutboundTransfers>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateTreasuryFinancialAccountFeatures {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateTreasuryFinancialAccountFeatures").finish_non_exhaustive()
+    }
+}
 impl UpdateTreasuryFinancialAccountFeatures {
     pub fn new() -> Self {
         Self {
@@ -777,10 +1005,18 @@ impl Default for UpdateTreasuryFinancialAccountFeatures {
     }
 }
 /// Encodes the FinancialAccount's ability to be used with the Issuing product, including attaching cards to and drawing funds from the FinancialAccount.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateTreasuryFinancialAccountFeaturesCardIssuing {
     /// Whether the FinancialAccount should have the Feature.
     pub requested: bool,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateTreasuryFinancialAccountFeaturesCardIssuing {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateTreasuryFinancialAccountFeaturesCardIssuing").finish_non_exhaustive()
+    }
 }
 impl UpdateTreasuryFinancialAccountFeaturesCardIssuing {
     pub fn new(requested: impl Into<bool>) -> Self {
@@ -789,10 +1025,19 @@ impl UpdateTreasuryFinancialAccountFeaturesCardIssuing {
 }
 /// Represents whether this FinancialAccount is eligible for deposit insurance.
 /// Various factors determine the insurance amount.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateTreasuryFinancialAccountFeaturesDepositInsurance {
     /// Whether the FinancialAccount should have the Feature.
     pub requested: bool,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateTreasuryFinancialAccountFeaturesDepositInsurance {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateTreasuryFinancialAccountFeaturesDepositInsurance")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdateTreasuryFinancialAccountFeaturesDepositInsurance {
     pub fn new(requested: impl Into<bool>) -> Self {
@@ -800,11 +1045,20 @@ impl UpdateTreasuryFinancialAccountFeaturesDepositInsurance {
     }
 }
 /// Contains Features that add FinancialAddresses to the FinancialAccount.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateTreasuryFinancialAccountFeaturesFinancialAddresses {
     /// Adds an ABA FinancialAddress to the FinancialAccount.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub aba: Option<UpdateTreasuryFinancialAccountFeaturesFinancialAddressesAba>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateTreasuryFinancialAccountFeaturesFinancialAddresses {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateTreasuryFinancialAccountFeaturesFinancialAddresses")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdateTreasuryFinancialAccountFeaturesFinancialAddresses {
     pub fn new() -> Self {
@@ -817,10 +1071,19 @@ impl Default for UpdateTreasuryFinancialAccountFeaturesFinancialAddresses {
     }
 }
 /// Adds an ABA FinancialAddress to the FinancialAccount.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateTreasuryFinancialAccountFeaturesFinancialAddressesAba {
     /// Whether the FinancialAccount should have the Feature.
     pub requested: bool,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateTreasuryFinancialAccountFeaturesFinancialAddressesAba {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateTreasuryFinancialAccountFeaturesFinancialAddressesAba")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdateTreasuryFinancialAccountFeaturesFinancialAddressesAba {
     pub fn new(requested: impl Into<bool>) -> Self {
@@ -828,11 +1091,20 @@ impl UpdateTreasuryFinancialAccountFeaturesFinancialAddressesAba {
     }
 }
 /// Contains settings related to adding funds to a FinancialAccount from another Account with the same owner.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateTreasuryFinancialAccountFeaturesInboundTransfers {
     /// Enables ACH Debits via the InboundTransfers API.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ach: Option<UpdateTreasuryFinancialAccountFeaturesInboundTransfersAch>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateTreasuryFinancialAccountFeaturesInboundTransfers {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateTreasuryFinancialAccountFeaturesInboundTransfers")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdateTreasuryFinancialAccountFeaturesInboundTransfers {
     pub fn new() -> Self {
@@ -845,10 +1117,19 @@ impl Default for UpdateTreasuryFinancialAccountFeaturesInboundTransfers {
     }
 }
 /// Enables ACH Debits via the InboundTransfers API.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateTreasuryFinancialAccountFeaturesInboundTransfersAch {
     /// Whether the FinancialAccount should have the Feature.
     pub requested: bool,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateTreasuryFinancialAccountFeaturesInboundTransfersAch {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateTreasuryFinancialAccountFeaturesInboundTransfersAch")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdateTreasuryFinancialAccountFeaturesInboundTransfersAch {
     pub fn new(requested: impl Into<bool>) -> Self {
@@ -856,10 +1137,19 @@ impl UpdateTreasuryFinancialAccountFeaturesInboundTransfersAch {
     }
 }
 /// Represents the ability for the FinancialAccount to send money to, or receive money from other FinancialAccounts (for example, via OutboundPayment).
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateTreasuryFinancialAccountFeaturesIntraStripeFlows {
     /// Whether the FinancialAccount should have the Feature.
     pub requested: bool,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateTreasuryFinancialAccountFeaturesIntraStripeFlows {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateTreasuryFinancialAccountFeaturesIntraStripeFlows")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdateTreasuryFinancialAccountFeaturesIntraStripeFlows {
     pub fn new(requested: impl Into<bool>) -> Self {
@@ -867,7 +1157,9 @@ impl UpdateTreasuryFinancialAccountFeaturesIntraStripeFlows {
     }
 }
 /// Includes Features related to initiating money movement out of the FinancialAccount to someone else's bucket of money.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateTreasuryFinancialAccountFeaturesOutboundPayments {
     /// Enables ACH transfers via the OutboundPayments API.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -876,6 +1168,13 @@ pub struct UpdateTreasuryFinancialAccountFeaturesOutboundPayments {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub us_domestic_wire:
         Option<UpdateTreasuryFinancialAccountFeaturesOutboundPaymentsUsDomesticWire>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateTreasuryFinancialAccountFeaturesOutboundPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateTreasuryFinancialAccountFeaturesOutboundPayments")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdateTreasuryFinancialAccountFeaturesOutboundPayments {
     pub fn new() -> Self {
@@ -888,10 +1187,19 @@ impl Default for UpdateTreasuryFinancialAccountFeaturesOutboundPayments {
     }
 }
 /// Enables ACH transfers via the OutboundPayments API.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateTreasuryFinancialAccountFeaturesOutboundPaymentsAch {
     /// Whether the FinancialAccount should have the Feature.
     pub requested: bool,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateTreasuryFinancialAccountFeaturesOutboundPaymentsAch {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateTreasuryFinancialAccountFeaturesOutboundPaymentsAch")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdateTreasuryFinancialAccountFeaturesOutboundPaymentsAch {
     pub fn new(requested: impl Into<bool>) -> Self {
@@ -899,10 +1207,19 @@ impl UpdateTreasuryFinancialAccountFeaturesOutboundPaymentsAch {
     }
 }
 /// Enables US domestic wire transfers via the OutboundPayments API.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateTreasuryFinancialAccountFeaturesOutboundPaymentsUsDomesticWire {
     /// Whether the FinancialAccount should have the Feature.
     pub requested: bool,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateTreasuryFinancialAccountFeaturesOutboundPaymentsUsDomesticWire {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateTreasuryFinancialAccountFeaturesOutboundPaymentsUsDomesticWire")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdateTreasuryFinancialAccountFeaturesOutboundPaymentsUsDomesticWire {
     pub fn new(requested: impl Into<bool>) -> Self {
@@ -910,7 +1227,9 @@ impl UpdateTreasuryFinancialAccountFeaturesOutboundPaymentsUsDomesticWire {
     }
 }
 /// Contains a Feature and settings related to moving money out of the FinancialAccount into another Account with the same owner.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateTreasuryFinancialAccountFeaturesOutboundTransfers {
     /// Enables ACH transfers via the OutboundTransfers API.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -919,6 +1238,13 @@ pub struct UpdateTreasuryFinancialAccountFeaturesOutboundTransfers {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub us_domestic_wire:
         Option<UpdateTreasuryFinancialAccountFeaturesOutboundTransfersUsDomesticWire>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateTreasuryFinancialAccountFeaturesOutboundTransfers {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateTreasuryFinancialAccountFeaturesOutboundTransfers")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdateTreasuryFinancialAccountFeaturesOutboundTransfers {
     pub fn new() -> Self {
@@ -931,10 +1257,19 @@ impl Default for UpdateTreasuryFinancialAccountFeaturesOutboundTransfers {
     }
 }
 /// Enables ACH transfers via the OutboundTransfers API.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateTreasuryFinancialAccountFeaturesOutboundTransfersAch {
     /// Whether the FinancialAccount should have the Feature.
     pub requested: bool,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateTreasuryFinancialAccountFeaturesOutboundTransfersAch {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateTreasuryFinancialAccountFeaturesOutboundTransfersAch")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdateTreasuryFinancialAccountFeaturesOutboundTransfersAch {
     pub fn new(requested: impl Into<bool>) -> Self {
@@ -942,10 +1277,19 @@ impl UpdateTreasuryFinancialAccountFeaturesOutboundTransfersAch {
     }
 }
 /// Enables US domestic wire transfers via the OutboundTransfers API.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateTreasuryFinancialAccountFeaturesOutboundTransfersUsDomesticWire {
     /// Whether the FinancialAccount should have the Feature.
     pub requested: bool,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateTreasuryFinancialAccountFeaturesOutboundTransfersUsDomesticWire {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateTreasuryFinancialAccountFeaturesOutboundTransfersUsDomesticWire")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdateTreasuryFinancialAccountFeaturesOutboundTransfersUsDomesticWire {
     pub fn new(requested: impl Into<bool>) -> Self {
@@ -953,7 +1297,9 @@ impl UpdateTreasuryFinancialAccountFeaturesOutboundTransfersUsDomesticWire {
     }
 }
 /// A different bank account where funds can be deposited/debited in order to get the closing FA's balance to $0.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateTreasuryFinancialAccountForwardingSettings {
     /// The financial_account id
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -964,6 +1310,12 @@ pub struct UpdateTreasuryFinancialAccountForwardingSettings {
     /// The type of the bank account provided. This can be either "financial_account" or "payment_method"
     #[serde(rename = "type")]
     pub type_: UpdateTreasuryFinancialAccountForwardingSettingsType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateTreasuryFinancialAccountForwardingSettings {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateTreasuryFinancialAccountForwardingSettings").finish_non_exhaustive()
+    }
 }
 impl UpdateTreasuryFinancialAccountForwardingSettings {
     pub fn new(type_: impl Into<UpdateTreasuryFinancialAccountForwardingSettingsType>) -> Self {
@@ -1014,9 +1366,17 @@ impl std::fmt::Display for UpdateTreasuryFinancialAccountForwardingSettingsType 
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdateTreasuryFinancialAccountForwardingSettingsType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateTreasuryFinancialAccountForwardingSettingsType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdateTreasuryFinancialAccountForwardingSettingsType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdateTreasuryFinancialAccountForwardingSettingsType {
@@ -1036,7 +1396,9 @@ impl<'de> serde::Deserialize<'de> for UpdateTreasuryFinancialAccountForwardingSe
     }
 }
 /// The set of functionalities that the platform can restrict on the FinancialAccount.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateTreasuryFinancialAccountPlatformRestrictions {
     /// Restricts all inbound money movement.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1044,6 +1406,12 @@ pub struct UpdateTreasuryFinancialAccountPlatformRestrictions {
     /// Restricts all outbound money movement.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub outbound_flows: Option<UpdateTreasuryFinancialAccountPlatformRestrictionsOutboundFlows>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateTreasuryFinancialAccountPlatformRestrictions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateTreasuryFinancialAccountPlatformRestrictions").finish_non_exhaustive()
+    }
 }
 impl UpdateTreasuryFinancialAccountPlatformRestrictions {
     pub fn new() -> Self {
@@ -1099,9 +1467,17 @@ impl std::fmt::Display for UpdateTreasuryFinancialAccountPlatformRestrictionsInb
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdateTreasuryFinancialAccountPlatformRestrictionsInboundFlows {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateTreasuryFinancialAccountPlatformRestrictionsInboundFlows {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdateTreasuryFinancialAccountPlatformRestrictionsInboundFlows))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdateTreasuryFinancialAccountPlatformRestrictionsInboundFlows {
@@ -1166,9 +1542,17 @@ impl std::fmt::Display for UpdateTreasuryFinancialAccountPlatformRestrictionsOut
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdateTreasuryFinancialAccountPlatformRestrictionsOutboundFlows {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateTreasuryFinancialAccountPlatformRestrictionsOutboundFlows {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdateTreasuryFinancialAccountPlatformRestrictionsOutboundFlows))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdateTreasuryFinancialAccountPlatformRestrictionsOutboundFlows {
@@ -1190,10 +1574,18 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Updates the details of a FinancialAccount.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateTreasuryFinancialAccount {
     inner: UpdateTreasuryFinancialAccountBuilder,
     financial_account: stripe_treasury::TreasuryFinancialAccountId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateTreasuryFinancialAccount {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateTreasuryFinancialAccount").finish_non_exhaustive()
+    }
 }
 impl UpdateTreasuryFinancialAccount {
     /// Construct a new `UpdateTreasuryFinancialAccount`.
@@ -1277,12 +1669,20 @@ impl StripeRequest for UpdateTreasuryFinancialAccount {
         .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct CloseTreasuryFinancialAccountBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     forwarding_settings: Option<CloseTreasuryFinancialAccountForwardingSettings>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CloseTreasuryFinancialAccountBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CloseTreasuryFinancialAccountBuilder").finish_non_exhaustive()
+    }
 }
 impl CloseTreasuryFinancialAccountBuilder {
     fn new() -> Self {
@@ -1290,7 +1690,9 @@ impl CloseTreasuryFinancialAccountBuilder {
     }
 }
 /// A different bank account where funds can be deposited/debited in order to get the closing FA's balance to $0.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CloseTreasuryFinancialAccountForwardingSettings {
     /// The financial_account id
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1301,6 +1703,12 @@ pub struct CloseTreasuryFinancialAccountForwardingSettings {
     /// The type of the bank account provided. This can be either "financial_account" or "payment_method"
     #[serde(rename = "type")]
     pub type_: CloseTreasuryFinancialAccountForwardingSettingsType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CloseTreasuryFinancialAccountForwardingSettings {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CloseTreasuryFinancialAccountForwardingSettings").finish_non_exhaustive()
+    }
 }
 impl CloseTreasuryFinancialAccountForwardingSettings {
     pub fn new(type_: impl Into<CloseTreasuryFinancialAccountForwardingSettingsType>) -> Self {
@@ -1351,9 +1759,17 @@ impl std::fmt::Display for CloseTreasuryFinancialAccountForwardingSettingsType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CloseTreasuryFinancialAccountForwardingSettingsType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CloseTreasuryFinancialAccountForwardingSettingsType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CloseTreasuryFinancialAccountForwardingSettingsType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CloseTreasuryFinancialAccountForwardingSettingsType {
@@ -1374,10 +1790,18 @@ impl<'de> serde::Deserialize<'de> for CloseTreasuryFinancialAccountForwardingSet
 }
 /// Closes a FinancialAccount.
 /// A FinancialAccount can only be closed if it has a zero balance, has no pending InboundTransfers, and has canceled all attached Issuing cards.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CloseTreasuryFinancialAccount {
     inner: CloseTreasuryFinancialAccountBuilder,
     financial_account: stripe_treasury::TreasuryFinancialAccountId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CloseTreasuryFinancialAccount {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CloseTreasuryFinancialAccount").finish_non_exhaustive()
+    }
 }
 impl CloseTreasuryFinancialAccount {
     /// Construct a new `CloseTreasuryFinancialAccount`.
@@ -1431,7 +1855,9 @@ impl StripeRequest for CloseTreasuryFinancialAccount {
         .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct UpdateFeaturesTreasuryFinancialAccountBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     card_issuing: Option<UpdateFeaturesTreasuryFinancialAccountCardIssuing>,
@@ -1450,6 +1876,12 @@ struct UpdateFeaturesTreasuryFinancialAccountBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     outbound_transfers: Option<UpdateFeaturesTreasuryFinancialAccountOutboundTransfers>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateFeaturesTreasuryFinancialAccountBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateFeaturesTreasuryFinancialAccountBuilder").finish_non_exhaustive()
+    }
+}
 impl UpdateFeaturesTreasuryFinancialAccountBuilder {
     fn new() -> Self {
         Self {
@@ -1465,10 +1897,18 @@ impl UpdateFeaturesTreasuryFinancialAccountBuilder {
     }
 }
 /// Encodes the FinancialAccount's ability to be used with the Issuing product, including attaching cards to and drawing funds from the FinancialAccount.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateFeaturesTreasuryFinancialAccountCardIssuing {
     /// Whether the FinancialAccount should have the Feature.
     pub requested: bool,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateFeaturesTreasuryFinancialAccountCardIssuing {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateFeaturesTreasuryFinancialAccountCardIssuing").finish_non_exhaustive()
+    }
 }
 impl UpdateFeaturesTreasuryFinancialAccountCardIssuing {
     pub fn new(requested: impl Into<bool>) -> Self {
@@ -1477,10 +1917,19 @@ impl UpdateFeaturesTreasuryFinancialAccountCardIssuing {
 }
 /// Represents whether this FinancialAccount is eligible for deposit insurance.
 /// Various factors determine the insurance amount.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateFeaturesTreasuryFinancialAccountDepositInsurance {
     /// Whether the FinancialAccount should have the Feature.
     pub requested: bool,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateFeaturesTreasuryFinancialAccountDepositInsurance {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateFeaturesTreasuryFinancialAccountDepositInsurance")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdateFeaturesTreasuryFinancialAccountDepositInsurance {
     pub fn new(requested: impl Into<bool>) -> Self {
@@ -1488,11 +1937,20 @@ impl UpdateFeaturesTreasuryFinancialAccountDepositInsurance {
     }
 }
 /// Contains Features that add FinancialAddresses to the FinancialAccount.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateFeaturesTreasuryFinancialAccountFinancialAddresses {
     /// Adds an ABA FinancialAddress to the FinancialAccount.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub aba: Option<UpdateFeaturesTreasuryFinancialAccountFinancialAddressesAba>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateFeaturesTreasuryFinancialAccountFinancialAddresses {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateFeaturesTreasuryFinancialAccountFinancialAddresses")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdateFeaturesTreasuryFinancialAccountFinancialAddresses {
     pub fn new() -> Self {
@@ -1505,10 +1963,19 @@ impl Default for UpdateFeaturesTreasuryFinancialAccountFinancialAddresses {
     }
 }
 /// Adds an ABA FinancialAddress to the FinancialAccount.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateFeaturesTreasuryFinancialAccountFinancialAddressesAba {
     /// Whether the FinancialAccount should have the Feature.
     pub requested: bool,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateFeaturesTreasuryFinancialAccountFinancialAddressesAba {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateFeaturesTreasuryFinancialAccountFinancialAddressesAba")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdateFeaturesTreasuryFinancialAccountFinancialAddressesAba {
     pub fn new(requested: impl Into<bool>) -> Self {
@@ -1516,11 +1983,20 @@ impl UpdateFeaturesTreasuryFinancialAccountFinancialAddressesAba {
     }
 }
 /// Contains settings related to adding funds to a FinancialAccount from another Account with the same owner.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateFeaturesTreasuryFinancialAccountInboundTransfers {
     /// Enables ACH Debits via the InboundTransfers API.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ach: Option<UpdateFeaturesTreasuryFinancialAccountInboundTransfersAch>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateFeaturesTreasuryFinancialAccountInboundTransfers {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateFeaturesTreasuryFinancialAccountInboundTransfers")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdateFeaturesTreasuryFinancialAccountInboundTransfers {
     pub fn new() -> Self {
@@ -1533,10 +2009,19 @@ impl Default for UpdateFeaturesTreasuryFinancialAccountInboundTransfers {
     }
 }
 /// Enables ACH Debits via the InboundTransfers API.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateFeaturesTreasuryFinancialAccountInboundTransfersAch {
     /// Whether the FinancialAccount should have the Feature.
     pub requested: bool,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateFeaturesTreasuryFinancialAccountInboundTransfersAch {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateFeaturesTreasuryFinancialAccountInboundTransfersAch")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdateFeaturesTreasuryFinancialAccountInboundTransfersAch {
     pub fn new(requested: impl Into<bool>) -> Self {
@@ -1544,10 +2029,19 @@ impl UpdateFeaturesTreasuryFinancialAccountInboundTransfersAch {
     }
 }
 /// Represents the ability for the FinancialAccount to send money to, or receive money from other FinancialAccounts (for example, via OutboundPayment).
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateFeaturesTreasuryFinancialAccountIntraStripeFlows {
     /// Whether the FinancialAccount should have the Feature.
     pub requested: bool,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateFeaturesTreasuryFinancialAccountIntraStripeFlows {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateFeaturesTreasuryFinancialAccountIntraStripeFlows")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdateFeaturesTreasuryFinancialAccountIntraStripeFlows {
     pub fn new(requested: impl Into<bool>) -> Self {
@@ -1555,7 +2049,9 @@ impl UpdateFeaturesTreasuryFinancialAccountIntraStripeFlows {
     }
 }
 /// Includes Features related to initiating money movement out of the FinancialAccount to someone else's bucket of money.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateFeaturesTreasuryFinancialAccountOutboundPayments {
     /// Enables ACH transfers via the OutboundPayments API.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1564,6 +2060,13 @@ pub struct UpdateFeaturesTreasuryFinancialAccountOutboundPayments {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub us_domestic_wire:
         Option<UpdateFeaturesTreasuryFinancialAccountOutboundPaymentsUsDomesticWire>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateFeaturesTreasuryFinancialAccountOutboundPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateFeaturesTreasuryFinancialAccountOutboundPayments")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdateFeaturesTreasuryFinancialAccountOutboundPayments {
     pub fn new() -> Self {
@@ -1576,10 +2079,19 @@ impl Default for UpdateFeaturesTreasuryFinancialAccountOutboundPayments {
     }
 }
 /// Enables ACH transfers via the OutboundPayments API.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateFeaturesTreasuryFinancialAccountOutboundPaymentsAch {
     /// Whether the FinancialAccount should have the Feature.
     pub requested: bool,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateFeaturesTreasuryFinancialAccountOutboundPaymentsAch {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateFeaturesTreasuryFinancialAccountOutboundPaymentsAch")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdateFeaturesTreasuryFinancialAccountOutboundPaymentsAch {
     pub fn new(requested: impl Into<bool>) -> Self {
@@ -1587,10 +2099,19 @@ impl UpdateFeaturesTreasuryFinancialAccountOutboundPaymentsAch {
     }
 }
 /// Enables US domestic wire transfers via the OutboundPayments API.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateFeaturesTreasuryFinancialAccountOutboundPaymentsUsDomesticWire {
     /// Whether the FinancialAccount should have the Feature.
     pub requested: bool,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateFeaturesTreasuryFinancialAccountOutboundPaymentsUsDomesticWire {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateFeaturesTreasuryFinancialAccountOutboundPaymentsUsDomesticWire")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdateFeaturesTreasuryFinancialAccountOutboundPaymentsUsDomesticWire {
     pub fn new(requested: impl Into<bool>) -> Self {
@@ -1598,7 +2119,9 @@ impl UpdateFeaturesTreasuryFinancialAccountOutboundPaymentsUsDomesticWire {
     }
 }
 /// Contains a Feature and settings related to moving money out of the FinancialAccount into another Account with the same owner.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateFeaturesTreasuryFinancialAccountOutboundTransfers {
     /// Enables ACH transfers via the OutboundTransfers API.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1607,6 +2130,13 @@ pub struct UpdateFeaturesTreasuryFinancialAccountOutboundTransfers {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub us_domestic_wire:
         Option<UpdateFeaturesTreasuryFinancialAccountOutboundTransfersUsDomesticWire>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateFeaturesTreasuryFinancialAccountOutboundTransfers {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateFeaturesTreasuryFinancialAccountOutboundTransfers")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdateFeaturesTreasuryFinancialAccountOutboundTransfers {
     pub fn new() -> Self {
@@ -1619,10 +2149,19 @@ impl Default for UpdateFeaturesTreasuryFinancialAccountOutboundTransfers {
     }
 }
 /// Enables ACH transfers via the OutboundTransfers API.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateFeaturesTreasuryFinancialAccountOutboundTransfersAch {
     /// Whether the FinancialAccount should have the Feature.
     pub requested: bool,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateFeaturesTreasuryFinancialAccountOutboundTransfersAch {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateFeaturesTreasuryFinancialAccountOutboundTransfersAch")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdateFeaturesTreasuryFinancialAccountOutboundTransfersAch {
     pub fn new(requested: impl Into<bool>) -> Self {
@@ -1630,10 +2169,19 @@ impl UpdateFeaturesTreasuryFinancialAccountOutboundTransfersAch {
     }
 }
 /// Enables US domestic wire transfers via the OutboundTransfers API.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateFeaturesTreasuryFinancialAccountOutboundTransfersUsDomesticWire {
     /// Whether the FinancialAccount should have the Feature.
     pub requested: bool,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateFeaturesTreasuryFinancialAccountOutboundTransfersUsDomesticWire {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateFeaturesTreasuryFinancialAccountOutboundTransfersUsDomesticWire")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdateFeaturesTreasuryFinancialAccountOutboundTransfersUsDomesticWire {
     pub fn new(requested: impl Into<bool>) -> Self {
@@ -1641,10 +2189,18 @@ impl UpdateFeaturesTreasuryFinancialAccountOutboundTransfersUsDomesticWire {
     }
 }
 /// Updates the Features associated with a FinancialAccount.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateFeaturesTreasuryFinancialAccount {
     inner: UpdateFeaturesTreasuryFinancialAccountBuilder,
     financial_account: stripe_treasury::TreasuryFinancialAccountId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateFeaturesTreasuryFinancialAccount {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateFeaturesTreasuryFinancialAccount").finish_non_exhaustive()
+    }
 }
 impl UpdateFeaturesTreasuryFinancialAccount {
     /// Construct a new `UpdateFeaturesTreasuryFinancialAccount`.
