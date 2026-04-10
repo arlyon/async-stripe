@@ -3,10 +3,18 @@ use stripe_client_core::{
 };
 
 /// Delete a specified external account for a given account.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct DeleteAccountCard {
     account: stripe_shared::AccountId,
     id: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for DeleteAccountCard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("DeleteAccountCard").finish_non_exhaustive()
+    }
 }
 impl DeleteAccountCard {
     /// Construct a new `DeleteAccountCard`.
@@ -44,10 +52,18 @@ impl StripeRequest for DeleteAccountCard {
         )
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct DeleteCustomerCardBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for DeleteCustomerCardBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("DeleteCustomerCardBuilder").finish_non_exhaustive()
+    }
 }
 impl DeleteCustomerCardBuilder {
     fn new() -> Self {
@@ -55,11 +71,19 @@ impl DeleteCustomerCardBuilder {
     }
 }
 /// Delete a specified source for a given customer.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct DeleteCustomerCard {
     inner: DeleteCustomerCardBuilder,
     customer: stripe_shared::CustomerId,
     id: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for DeleteCustomerCard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("DeleteCustomerCard").finish_non_exhaustive()
+    }
 }
 impl DeleteCustomerCard {
     /// Construct a new `DeleteCustomerCard`.
@@ -100,7 +124,8 @@ impl StripeRequest for DeleteCustomerCard {
             .form(&self.inner)
     }
 }
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(untagged))]
@@ -182,7 +207,15 @@ const _: () = {
     }
 };
 
-#[derive(Clone, Debug, serde::Serialize)]
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for DeleteCustomerCardReturned {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("DeleteCustomerCardReturned").finish_non_exhaustive()
+    }
+}
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct UpdateAccountCardBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     account_holder_name: Option<String>,
@@ -216,6 +249,12 @@ struct UpdateAccountCardBuilder {
     metadata: Option<std::collections::HashMap<String, String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     name: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateAccountCardBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateAccountCardBuilder").finish_non_exhaustive()
+    }
 }
 impl UpdateAccountCardBuilder {
     fn new() -> Self {
@@ -283,9 +322,16 @@ impl std::fmt::Display for UpdateAccountCardAccountHolderType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdateAccountCardAccountHolderType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateAccountCardAccountHolderType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdateAccountCardAccountHolderType)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdateAccountCardAccountHolderType {
@@ -356,9 +402,16 @@ impl std::fmt::Display for UpdateAccountCardAccountType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdateAccountCardAccountType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateAccountCardAccountType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdateAccountCardAccountType)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdateAccountCardAccountType {
@@ -378,13 +431,21 @@ impl<'de> serde::Deserialize<'de> for UpdateAccountCardAccountType {
     }
 }
 /// Documents that may be submitted to satisfy various informational requests.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateAccountCardDocuments {
     /// One or more documents that support the [Bank account ownership verification](https://support.stripe.com/questions/bank-account-ownership-verification) requirement.
     /// Must be a document associated with the bank account that displays the last 4 digits of the account number, either a statement or a check.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bank_account_ownership_verification:
         Option<UpdateAccountCardDocumentsBankAccountOwnershipVerification>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateAccountCardDocuments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateAccountCardDocuments").finish_non_exhaustive()
+    }
 }
 impl UpdateAccountCardDocuments {
     pub fn new() -> Self {
@@ -398,11 +459,20 @@ impl Default for UpdateAccountCardDocuments {
 }
 /// One or more documents that support the [Bank account ownership verification](https://support.stripe.com/questions/bank-account-ownership-verification) requirement.
 /// Must be a document associated with the bank account that displays the last 4 digits of the account number, either a statement or a check.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateAccountCardDocumentsBankAccountOwnershipVerification {
     /// One or more document ids returned by a [file upload](https://api.stripe.com#create_file) with a `purpose` value of `account_requirement`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub files: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateAccountCardDocumentsBankAccountOwnershipVerification {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateAccountCardDocumentsBankAccountOwnershipVerification")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdateAccountCardDocumentsBankAccountOwnershipVerification {
     pub fn new() -> Self {
@@ -422,11 +492,19 @@ impl Default for UpdateAccountCardDocumentsBankAccountOwnershipVerification {
 ///
 /// You can re-enable a disabled bank account by performing an update call without providing any
 /// arguments or changes.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateAccountCard {
     inner: UpdateAccountCardBuilder,
     account: stripe_shared::AccountId,
     id: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateAccountCard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateAccountCard").finish_non_exhaustive()
+    }
 }
 impl UpdateAccountCard {
     /// Construct a new `UpdateAccountCard`.
@@ -556,7 +634,9 @@ impl StripeRequest for UpdateAccountCard {
         .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct UpdateCustomerCardBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     account_holder_name: Option<String>,
@@ -586,6 +666,12 @@ struct UpdateCustomerCardBuilder {
     name: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     owner: Option<UpdateCustomerCardOwner>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateCustomerCardBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateCustomerCardBuilder").finish_non_exhaustive()
+    }
 }
 impl UpdateCustomerCardBuilder {
     fn new() -> Self {
@@ -651,9 +737,16 @@ impl std::fmt::Display for UpdateCustomerCardAccountHolderType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdateCustomerCardAccountHolderType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateCustomerCardAccountHolderType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdateCustomerCardAccountHolderType)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdateCustomerCardAccountHolderType {
@@ -672,7 +765,9 @@ impl<'de> serde::Deserialize<'de> for UpdateCustomerCardAccountHolderType {
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateCustomerCardOwner {
     /// Owner's address.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -687,6 +782,12 @@ pub struct UpdateCustomerCardOwner {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub phone: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateCustomerCardOwner {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateCustomerCardOwner").finish_non_exhaustive()
+    }
+}
 impl UpdateCustomerCardOwner {
     pub fn new() -> Self {
         Self { address: None, email: None, name: None, phone: None }
@@ -698,7 +799,9 @@ impl Default for UpdateCustomerCardOwner {
     }
 }
 /// Owner's address.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateCustomerCardOwnerAddress {
     /// City, district, suburb, town, or village.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -719,6 +822,12 @@ pub struct UpdateCustomerCardOwnerAddress {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateCustomerCardOwnerAddress {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateCustomerCardOwnerAddress").finish_non_exhaustive()
+    }
+}
 impl UpdateCustomerCardOwnerAddress {
     pub fn new() -> Self {
         Self { city: None, country: None, line1: None, line2: None, postal_code: None, state: None }
@@ -730,11 +839,19 @@ impl Default for UpdateCustomerCardOwnerAddress {
     }
 }
 /// Update a specified source for a given customer.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateCustomerCard {
     inner: UpdateCustomerCardBuilder,
     customer: stripe_shared::CustomerId,
     id: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateCustomerCard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateCustomerCard").finish_non_exhaustive()
+    }
 }
 impl UpdateCustomerCard {
     /// Construct a new `UpdateCustomerCard`.
@@ -848,7 +965,8 @@ impl StripeRequest for UpdateCustomerCard {
             .form(&self.inner)
     }
 }
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(tag = "object"))]
@@ -950,3 +1068,10 @@ const _: () = {
         }
     }
 };
+
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateCustomerCardReturned {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateCustomerCardReturned").finish_non_exhaustive()
+    }
+}

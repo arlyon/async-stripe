@@ -2,10 +2,18 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RetrievePaymentRecordBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrievePaymentRecordBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrievePaymentRecordBuilder").finish_non_exhaustive()
+    }
 }
 impl RetrievePaymentRecordBuilder {
     fn new() -> Self {
@@ -13,10 +21,18 @@ impl RetrievePaymentRecordBuilder {
     }
 }
 /// Retrieves a Payment Record with the given ID
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RetrievePaymentRecord {
     inner: RetrievePaymentRecordBuilder,
     id: stripe_shared::PaymentRecordId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrievePaymentRecord {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrievePaymentRecord").finish_non_exhaustive()
+    }
 }
 impl RetrievePaymentRecord {
     /// Construct a new `RetrievePaymentRecord`.
@@ -55,7 +71,9 @@ impl StripeRequest for RetrievePaymentRecord {
         RequestBuilder::new(StripeMethod::Get, format!("/payment_records/{id}")).query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ReportPaymentAttemptPaymentRecordBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     description: Option<String>,
@@ -74,6 +92,12 @@ struct ReportPaymentAttemptPaymentRecordBuilder {
     payment_method_details: Option<ReportPaymentAttemptPaymentRecordPaymentMethodDetails>,
     #[serde(skip_serializing_if = "Option::is_none")]
     shipping_details: Option<ShippingDetails>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ReportPaymentAttemptPaymentRecordBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ReportPaymentAttemptPaymentRecordBuilder").finish_non_exhaustive()
+    }
 }
 impl ReportPaymentAttemptPaymentRecordBuilder {
     fn new(initiated_at: impl Into<stripe_types::Timestamp>) -> Self {
@@ -134,9 +158,16 @@ impl std::fmt::Display for ReportPaymentAttemptPaymentRecordOutcome {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ReportPaymentAttemptPaymentRecordOutcome {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ReportPaymentAttemptPaymentRecordOutcome {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ReportPaymentAttemptPaymentRecordOutcome)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ReportPaymentAttemptPaymentRecordOutcome {
@@ -156,7 +187,9 @@ impl<'de> serde::Deserialize<'de> for ReportPaymentAttemptPaymentRecordOutcome {
     }
 }
 /// Information about the Payment Method debited for this payment.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ReportPaymentAttemptPaymentRecordPaymentMethodDetails {
     /// The billing details associated with the method of payment.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -173,6 +206,13 @@ pub struct ReportPaymentAttemptPaymentRecordPaymentMethodDetails {
     #[serde(rename = "type")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub type_: Option<ReportPaymentAttemptPaymentRecordPaymentMethodDetailsType>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ReportPaymentAttemptPaymentRecordPaymentMethodDetails {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ReportPaymentAttemptPaymentRecordPaymentMethodDetails")
+            .finish_non_exhaustive()
+    }
 }
 impl ReportPaymentAttemptPaymentRecordPaymentMethodDetails {
     pub fn new() -> Self {
@@ -227,9 +267,17 @@ impl std::fmt::Display for ReportPaymentAttemptPaymentRecordPaymentMethodDetails
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ReportPaymentAttemptPaymentRecordPaymentMethodDetailsType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ReportPaymentAttemptPaymentRecordPaymentMethodDetailsType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ReportPaymentAttemptPaymentRecordPaymentMethodDetailsType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ReportPaymentAttemptPaymentRecordPaymentMethodDetailsType {
@@ -250,10 +298,18 @@ impl<'de> serde::Deserialize<'de> for ReportPaymentAttemptPaymentRecordPaymentMe
 }
 /// Report a new payment attempt on the specified Payment Record. A new payment
 ///  attempt can only be specified if all other payment attempts are canceled or failed.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ReportPaymentAttemptPaymentRecord {
     inner: ReportPaymentAttemptPaymentRecordBuilder,
     id: stripe_shared::PaymentRecordId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ReportPaymentAttemptPaymentRecord {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ReportPaymentAttemptPaymentRecord").finish_non_exhaustive()
+    }
 }
 impl ReportPaymentAttemptPaymentRecord {
     /// Construct a new `ReportPaymentAttemptPaymentRecord`.
@@ -346,13 +402,21 @@ impl StripeRequest for ReportPaymentAttemptPaymentRecord {
         .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ReportPaymentAttemptCanceledPaymentRecordBuilder {
     canceled_at: stripe_types::Timestamp,
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     metadata: Option<std::collections::HashMap<String, String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ReportPaymentAttemptCanceledPaymentRecordBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ReportPaymentAttemptCanceledPaymentRecordBuilder").finish_non_exhaustive()
+    }
 }
 impl ReportPaymentAttemptCanceledPaymentRecordBuilder {
     fn new(canceled_at: impl Into<stripe_types::Timestamp>) -> Self {
@@ -361,10 +425,18 @@ impl ReportPaymentAttemptCanceledPaymentRecordBuilder {
 }
 /// Report that the most recent payment attempt on the specified Payment Record
 ///  was canceled.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ReportPaymentAttemptCanceledPaymentRecord {
     inner: ReportPaymentAttemptCanceledPaymentRecordBuilder,
     id: stripe_shared::PaymentRecordId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ReportPaymentAttemptCanceledPaymentRecord {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ReportPaymentAttemptCanceledPaymentRecord").finish_non_exhaustive()
+    }
 }
 impl ReportPaymentAttemptCanceledPaymentRecord {
     /// Construct a new `ReportPaymentAttemptCanceledPaymentRecord`.
@@ -424,13 +496,21 @@ impl StripeRequest for ReportPaymentAttemptCanceledPaymentRecord {
         .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ReportPaymentAttemptFailedPaymentRecordBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
     failed_at: stripe_types::Timestamp,
     #[serde(skip_serializing_if = "Option::is_none")]
     metadata: Option<std::collections::HashMap<String, String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ReportPaymentAttemptFailedPaymentRecordBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ReportPaymentAttemptFailedPaymentRecordBuilder").finish_non_exhaustive()
+    }
 }
 impl ReportPaymentAttemptFailedPaymentRecordBuilder {
     fn new(failed_at: impl Into<stripe_types::Timestamp>) -> Self {
@@ -439,10 +519,18 @@ impl ReportPaymentAttemptFailedPaymentRecordBuilder {
 }
 /// Report that the most recent payment attempt on the specified Payment Record
 ///  failed or errored.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ReportPaymentAttemptFailedPaymentRecord {
     inner: ReportPaymentAttemptFailedPaymentRecordBuilder,
     id: stripe_shared::PaymentRecordId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ReportPaymentAttemptFailedPaymentRecord {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ReportPaymentAttemptFailedPaymentRecord").finish_non_exhaustive()
+    }
 }
 impl ReportPaymentAttemptFailedPaymentRecord {
     /// Construct a new `ReportPaymentAttemptFailedPaymentRecord`.
@@ -502,13 +590,21 @@ impl StripeRequest for ReportPaymentAttemptFailedPaymentRecord {
         .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ReportPaymentAttemptGuaranteedPaymentRecordBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
     guaranteed_at: stripe_types::Timestamp,
     #[serde(skip_serializing_if = "Option::is_none")]
     metadata: Option<std::collections::HashMap<String, String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ReportPaymentAttemptGuaranteedPaymentRecordBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ReportPaymentAttemptGuaranteedPaymentRecordBuilder").finish_non_exhaustive()
+    }
 }
 impl ReportPaymentAttemptGuaranteedPaymentRecordBuilder {
     fn new(guaranteed_at: impl Into<stripe_types::Timestamp>) -> Self {
@@ -517,10 +613,18 @@ impl ReportPaymentAttemptGuaranteedPaymentRecordBuilder {
 }
 /// Report that the most recent payment attempt on the specified Payment Record
 ///  was guaranteed.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ReportPaymentAttemptGuaranteedPaymentRecord {
     inner: ReportPaymentAttemptGuaranteedPaymentRecordBuilder,
     id: stripe_shared::PaymentRecordId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ReportPaymentAttemptGuaranteedPaymentRecord {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ReportPaymentAttemptGuaranteedPaymentRecord").finish_non_exhaustive()
+    }
 }
 impl ReportPaymentAttemptGuaranteedPaymentRecord {
     /// Construct a new `ReportPaymentAttemptGuaranteedPaymentRecord`.
@@ -580,7 +684,9 @@ impl StripeRequest for ReportPaymentAttemptGuaranteedPaymentRecord {
         .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ReportPaymentAttemptInformationalPaymentRecordBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     customer_details: Option<CustomerDetails>,
@@ -592,6 +698,13 @@ struct ReportPaymentAttemptInformationalPaymentRecordBuilder {
     metadata: Option<std::collections::HashMap<String, String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     shipping_details: Option<ShippingDetails>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ReportPaymentAttemptInformationalPaymentRecordBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ReportPaymentAttemptInformationalPaymentRecordBuilder")
+            .finish_non_exhaustive()
+    }
 }
 impl ReportPaymentAttemptInformationalPaymentRecordBuilder {
     fn new() -> Self {
@@ -605,10 +718,18 @@ impl ReportPaymentAttemptInformationalPaymentRecordBuilder {
     }
 }
 /// Report informational updates on the specified Payment Record.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ReportPaymentAttemptInformationalPaymentRecord {
     inner: ReportPaymentAttemptInformationalPaymentRecordBuilder,
     id: stripe_shared::PaymentRecordId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ReportPaymentAttemptInformationalPaymentRecord {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ReportPaymentAttemptInformationalPaymentRecord").finish_non_exhaustive()
+    }
 }
 impl ReportPaymentAttemptInformationalPaymentRecord {
     /// Construct a new `ReportPaymentAttemptInformationalPaymentRecord`.
@@ -677,7 +798,9 @@ impl StripeRequest for ReportPaymentAttemptInformationalPaymentRecord {
         .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ReportRefundPaymentRecordBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     amount: Option<Amount>,
@@ -690,6 +813,12 @@ struct ReportRefundPaymentRecordBuilder {
     outcome: ReportRefundPaymentRecordOutcome,
     processor_details: ReportRefundPaymentRecordProcessorDetails,
     refunded: ReportRefundPaymentRecordRefunded,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ReportRefundPaymentRecordBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ReportRefundPaymentRecordBuilder").finish_non_exhaustive()
+    }
 }
 impl ReportRefundPaymentRecordBuilder {
     fn new(
@@ -749,9 +878,16 @@ impl std::fmt::Display for ReportRefundPaymentRecordOutcome {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ReportRefundPaymentRecordOutcome {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ReportRefundPaymentRecordOutcome {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ReportRefundPaymentRecordOutcome)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ReportRefundPaymentRecordOutcome {
@@ -771,7 +907,9 @@ impl<'de> serde::Deserialize<'de> for ReportRefundPaymentRecordOutcome {
     }
 }
 /// Processor information for this refund.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ReportRefundPaymentRecordProcessorDetails {
     /// Information about the custom processor used to make this refund.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -782,16 +920,30 @@ pub struct ReportRefundPaymentRecordProcessorDetails {
     #[serde(rename = "type")]
     pub type_: ReportRefundPaymentRecordProcessorDetailsType,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ReportRefundPaymentRecordProcessorDetails {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ReportRefundPaymentRecordProcessorDetails").finish_non_exhaustive()
+    }
+}
 impl ReportRefundPaymentRecordProcessorDetails {
     pub fn new(type_: impl Into<ReportRefundPaymentRecordProcessorDetailsType>) -> Self {
         Self { custom: None, type_: type_.into() }
     }
 }
 /// Information about the custom processor used to make this refund.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ReportRefundPaymentRecordProcessorDetailsCustom {
     /// A reference to the external refund. This field must be unique across all refunds.
     pub refund_reference: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ReportRefundPaymentRecordProcessorDetailsCustom {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ReportRefundPaymentRecordProcessorDetailsCustom").finish_non_exhaustive()
+    }
 }
 impl ReportRefundPaymentRecordProcessorDetailsCustom {
     pub fn new(refund_reference: impl Into<String>) -> Self {
@@ -841,9 +993,17 @@ impl std::fmt::Display for ReportRefundPaymentRecordProcessorDetailsType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ReportRefundPaymentRecordProcessorDetailsType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ReportRefundPaymentRecordProcessorDetailsType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ReportRefundPaymentRecordProcessorDetailsType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ReportRefundPaymentRecordProcessorDetailsType {
@@ -863,10 +1023,18 @@ impl<'de> serde::Deserialize<'de> for ReportRefundPaymentRecordProcessorDetailsT
     }
 }
 /// Information about the payment attempt refund.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ReportRefundPaymentRecordRefunded {
     /// When the reported refund completed. Measured in seconds since the Unix epoch.
     pub refunded_at: stripe_types::Timestamp,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ReportRefundPaymentRecordRefunded {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ReportRefundPaymentRecordRefunded").finish_non_exhaustive()
+    }
 }
 impl ReportRefundPaymentRecordRefunded {
     pub fn new(refunded_at: impl Into<stripe_types::Timestamp>) -> Self {
@@ -875,10 +1043,18 @@ impl ReportRefundPaymentRecordRefunded {
 }
 /// Report that the most recent payment attempt on the specified Payment Record
 ///  was refunded.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ReportRefundPaymentRecord {
     inner: ReportRefundPaymentRecordBuilder,
     id: stripe_shared::PaymentRecordId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ReportRefundPaymentRecord {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ReportRefundPaymentRecord").finish_non_exhaustive()
+    }
 }
 impl ReportRefundPaymentRecord {
     /// Construct a new `ReportRefundPaymentRecord`.
@@ -952,7 +1128,9 @@ impl StripeRequest for ReportRefundPaymentRecord {
             .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ReportPaymentPaymentRecordBuilder {
     amount_requested: Amount,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -977,6 +1155,12 @@ struct ReportPaymentPaymentRecordBuilder {
     processor_details: Option<ReportPaymentPaymentRecordProcessorDetails>,
     #[serde(skip_serializing_if = "Option::is_none")]
     shipping_details: Option<ShippingDetails>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ReportPaymentPaymentRecordBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ReportPaymentPaymentRecordBuilder").finish_non_exhaustive()
+    }
 }
 impl ReportPaymentPaymentRecordBuilder {
     fn new(
@@ -1045,9 +1229,16 @@ impl std::fmt::Display for ReportPaymentPaymentRecordOutcome {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ReportPaymentPaymentRecordOutcome {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ReportPaymentPaymentRecordOutcome {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ReportPaymentPaymentRecordOutcome)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ReportPaymentPaymentRecordOutcome {
@@ -1067,7 +1258,9 @@ impl<'de> serde::Deserialize<'de> for ReportPaymentPaymentRecordOutcome {
     }
 }
 /// Information about the Payment Method debited for this payment.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ReportPaymentPaymentRecordPaymentMethodDetails {
     /// The billing details associated with the method of payment.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1084,6 +1277,12 @@ pub struct ReportPaymentPaymentRecordPaymentMethodDetails {
     #[serde(rename = "type")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub type_: Option<ReportPaymentPaymentRecordPaymentMethodDetailsType>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ReportPaymentPaymentRecordPaymentMethodDetails {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ReportPaymentPaymentRecordPaymentMethodDetails").finish_non_exhaustive()
+    }
 }
 impl ReportPaymentPaymentRecordPaymentMethodDetails {
     pub fn new() -> Self {
@@ -1138,9 +1337,17 @@ impl std::fmt::Display for ReportPaymentPaymentRecordPaymentMethodDetailsType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ReportPaymentPaymentRecordPaymentMethodDetailsType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ReportPaymentPaymentRecordPaymentMethodDetailsType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ReportPaymentPaymentRecordPaymentMethodDetailsType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ReportPaymentPaymentRecordPaymentMethodDetailsType {
@@ -1160,7 +1367,9 @@ impl<'de> serde::Deserialize<'de> for ReportPaymentPaymentRecordPaymentMethodDet
     }
 }
 /// Processor information for this payment.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ReportPaymentPaymentRecordProcessorDetails {
     /// Information about the custom processor used to make this payment.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1171,16 +1380,30 @@ pub struct ReportPaymentPaymentRecordProcessorDetails {
     #[serde(rename = "type")]
     pub type_: ReportPaymentPaymentRecordProcessorDetailsType,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ReportPaymentPaymentRecordProcessorDetails {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ReportPaymentPaymentRecordProcessorDetails").finish_non_exhaustive()
+    }
+}
 impl ReportPaymentPaymentRecordProcessorDetails {
     pub fn new(type_: impl Into<ReportPaymentPaymentRecordProcessorDetailsType>) -> Self {
         Self { custom: None, type_: type_.into() }
     }
 }
 /// Information about the custom processor used to make this payment.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ReportPaymentPaymentRecordProcessorDetailsCustom {
     /// An opaque string for manual reconciliation of this payment, for example a check number or a payment processor ID.
     pub payment_reference: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ReportPaymentPaymentRecordProcessorDetailsCustom {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ReportPaymentPaymentRecordProcessorDetailsCustom").finish_non_exhaustive()
+    }
 }
 impl ReportPaymentPaymentRecordProcessorDetailsCustom {
     pub fn new(payment_reference: impl Into<String>) -> Self {
@@ -1230,9 +1453,17 @@ impl std::fmt::Display for ReportPaymentPaymentRecordProcessorDetailsType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ReportPaymentPaymentRecordProcessorDetailsType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ReportPaymentPaymentRecordProcessorDetailsType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ReportPaymentPaymentRecordProcessorDetailsType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ReportPaymentPaymentRecordProcessorDetailsType {
@@ -1254,9 +1485,17 @@ impl<'de> serde::Deserialize<'de> for ReportPaymentPaymentRecordProcessorDetails
 /// Report a new Payment Record. You may report a Payment Record as it is
 ///  initialized and later report updates through the other report_* methods, or report Payment
 ///  Records in a terminal state directly, through this method.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ReportPaymentPaymentRecord {
     inner: ReportPaymentPaymentRecordBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ReportPaymentPaymentRecord {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ReportPaymentPaymentRecord").finish_non_exhaustive()
+    }
 }
 impl ReportPaymentPaymentRecord {
     /// Construct a new `ReportPaymentPaymentRecord`.
@@ -1362,27 +1601,45 @@ impl StripeRequest for ReportPaymentPaymentRecord {
     }
 }
 
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct Failed {
     /// When the reported payment failed. Measured in seconds since the Unix epoch.
     pub failed_at: stripe_types::Timestamp,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for Failed {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("Failed").finish_non_exhaustive()
+    }
 }
 impl Failed {
     pub fn new(failed_at: impl Into<stripe_types::Timestamp>) -> Self {
         Self { failed_at: failed_at.into() }
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct Guaranteed {
     /// When the reported payment was guaranteed. Measured in seconds since the Unix epoch.
     pub guaranteed_at: stripe_types::Timestamp,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for Guaranteed {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("Guaranteed").finish_non_exhaustive()
+    }
 }
 impl Guaranteed {
     pub fn new(guaranteed_at: impl Into<stripe_types::Timestamp>) -> Self {
         Self { guaranteed_at: guaranteed_at.into() }
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct Address {
     /// City, district, suburb, town, or village.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1403,6 +1660,12 @@ pub struct Address {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for Address {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("Address").finish_non_exhaustive()
+    }
+}
 impl Address {
     pub fn new() -> Self {
         Self { city: None, country: None, line1: None, line2: None, postal_code: None, state: None }
@@ -1413,7 +1676,9 @@ impl Default for Address {
         Self::new()
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct Custom {
     /// Display name for the custom (user-defined) payment method type used to make this payment.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1422,6 +1687,12 @@ pub struct Custom {
     #[serde(rename = "type")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub type_: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for Custom {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("Custom").finish_non_exhaustive()
+    }
 }
 impl Custom {
     pub fn new() -> Self {
@@ -1433,7 +1704,9 @@ impl Default for Custom {
         Self::new()
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CustomerDetails {
     /// The customer who made the payment.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1448,6 +1721,12 @@ pub struct CustomerDetails {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub phone: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CustomerDetails {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CustomerDetails").finish_non_exhaustive()
+    }
+}
 impl CustomerDetails {
     pub fn new() -> Self {
         Self { customer: None, email: None, name: None, phone: None }
@@ -1458,7 +1737,9 @@ impl Default for CustomerDetails {
         Self::new()
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct Amount {
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
@@ -1467,12 +1748,20 @@ pub struct Amount {
     /// For example, `100` can represent 1 USD or 100 JPY.
     pub value: i64,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for Amount {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("Amount").finish_non_exhaustive()
+    }
+}
 impl Amount {
     pub fn new(currency: impl Into<stripe_types::Currency>, value: impl Into<i64>) -> Self {
         Self { currency: currency.into(), value: value.into() }
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct BillingDetails {
     /// The billing address associated with the method of payment.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1487,6 +1776,12 @@ pub struct BillingDetails {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub phone: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for BillingDetails {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("BillingDetails").finish_non_exhaustive()
+    }
+}
 impl BillingDetails {
     pub fn new() -> Self {
         Self { address: None, email: None, name: None, phone: None }
@@ -1497,7 +1792,9 @@ impl Default for BillingDetails {
         Self::new()
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ShippingDetails {
     /// The physical shipping address.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1508,6 +1805,12 @@ pub struct ShippingDetails {
     /// The shipping recipient's phone number.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub phone: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ShippingDetails {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ShippingDetails").finish_non_exhaustive()
+    }
 }
 impl ShippingDetails {
     pub fn new() -> Self {

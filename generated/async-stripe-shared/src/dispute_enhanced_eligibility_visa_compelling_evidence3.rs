@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct DisputeEnhancedEligibilityVisaCompellingEvidence3 {
@@ -6,6 +7,12 @@ pub struct DisputeEnhancedEligibilityVisaCompellingEvidence3 {
     pub required_actions: Vec<DisputeEnhancedEligibilityVisaCompellingEvidence3RequiredActions>,
     /// Visa Compelling Evidence 3.0 eligibility status.
     pub status: DisputeEnhancedEligibilityVisaCompellingEvidence3Status,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for DisputeEnhancedEligibilityVisaCompellingEvidence3 {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("DisputeEnhancedEligibilityVisaCompellingEvidence3").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct DisputeEnhancedEligibilityVisaCompellingEvidence3Builder {
@@ -162,9 +169,17 @@ impl std::fmt::Display for DisputeEnhancedEligibilityVisaCompellingEvidence3Requ
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for DisputeEnhancedEligibilityVisaCompellingEvidence3RequiredActions {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for DisputeEnhancedEligibilityVisaCompellingEvidence3RequiredActions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(DisputeEnhancedEligibilityVisaCompellingEvidence3RequiredActions))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -255,9 +270,17 @@ impl std::fmt::Display for DisputeEnhancedEligibilityVisaCompellingEvidence3Stat
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for DisputeEnhancedEligibilityVisaCompellingEvidence3Status {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for DisputeEnhancedEligibilityVisaCompellingEvidence3Status {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(DisputeEnhancedEligibilityVisaCompellingEvidence3Status))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

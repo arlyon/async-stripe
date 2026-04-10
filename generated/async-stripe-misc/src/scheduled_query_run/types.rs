@@ -4,7 +4,8 @@
 /// retrieve the query results.
 ///
 /// For more details see <<https://stripe.com/docs/api/sigma/scheduled_queries/object>>.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct ScheduledQueryRun {
     /// Time at which the object was created. Measured in seconds since the Unix epoch.
@@ -27,6 +28,12 @@ pub struct ScheduledQueryRun {
     pub status: String,
     /// Title of the query.
     pub title: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ScheduledQueryRun {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ScheduledQueryRun").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct ScheduledQueryRunBuilder {

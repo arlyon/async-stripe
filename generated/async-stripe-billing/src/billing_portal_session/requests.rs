@@ -2,7 +2,9 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct CreateBillingPortalSessionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     configuration: Option<String>,
@@ -21,6 +23,12 @@ struct CreateBillingPortalSessionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     return_url: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateBillingPortalSessionBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateBillingPortalSessionBuilder").finish_non_exhaustive()
+    }
+}
 impl CreateBillingPortalSessionBuilder {
     fn new() -> Self {
         Self {
@@ -37,7 +45,9 @@ impl CreateBillingPortalSessionBuilder {
 }
 /// Information about a specific flow for the customer to go through.
 /// See the [docs](https://docs.stripe.com/customer-management/portal-deep-links) to learn more about using customer portal deep links and flows.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateBillingPortalSessionFlowData {
     /// Behavior after the flow is completed.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -56,6 +66,12 @@ pub struct CreateBillingPortalSessionFlowData {
     #[serde(rename = "type")]
     pub type_: CreateBillingPortalSessionFlowDataType,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateBillingPortalSessionFlowData {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateBillingPortalSessionFlowData").finish_non_exhaustive()
+    }
+}
 impl CreateBillingPortalSessionFlowData {
     pub fn new(type_: impl Into<CreateBillingPortalSessionFlowDataType>) -> Self {
         Self {
@@ -68,7 +84,9 @@ impl CreateBillingPortalSessionFlowData {
     }
 }
 /// Behavior after the flow is completed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateBillingPortalSessionFlowDataAfterCompletion {
     /// Configuration when `after_completion.type=hosted_confirmation`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -81,17 +99,32 @@ pub struct CreateBillingPortalSessionFlowDataAfterCompletion {
     #[serde(rename = "type")]
     pub type_: CreateBillingPortalSessionFlowDataAfterCompletionType,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateBillingPortalSessionFlowDataAfterCompletion {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateBillingPortalSessionFlowDataAfterCompletion").finish_non_exhaustive()
+    }
+}
 impl CreateBillingPortalSessionFlowDataAfterCompletion {
     pub fn new(type_: impl Into<CreateBillingPortalSessionFlowDataAfterCompletionType>) -> Self {
         Self { hosted_confirmation: None, redirect: None, type_: type_.into() }
     }
 }
 /// Configuration when `after_completion.type=hosted_confirmation`.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateBillingPortalSessionFlowDataAfterCompletionHostedConfirmation {
     /// A custom message to display to the customer after the flow is completed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub custom_message: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateBillingPortalSessionFlowDataAfterCompletionHostedConfirmation {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateBillingPortalSessionFlowDataAfterCompletionHostedConfirmation")
+            .finish_non_exhaustive()
+    }
 }
 impl CreateBillingPortalSessionFlowDataAfterCompletionHostedConfirmation {
     pub fn new() -> Self {
@@ -104,10 +137,19 @@ impl Default for CreateBillingPortalSessionFlowDataAfterCompletionHostedConfirma
     }
 }
 /// Configuration when `after_completion.type=redirect`.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateBillingPortalSessionFlowDataAfterCompletionRedirect {
     /// The URL the customer will be redirected to after the flow is completed.
     pub return_url: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateBillingPortalSessionFlowDataAfterCompletionRedirect {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateBillingPortalSessionFlowDataAfterCompletionRedirect")
+            .finish_non_exhaustive()
+    }
 }
 impl CreateBillingPortalSessionFlowDataAfterCompletionRedirect {
     pub fn new(return_url: impl Into<String>) -> Self {
@@ -161,9 +203,17 @@ impl std::fmt::Display for CreateBillingPortalSessionFlowDataAfterCompletionType
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateBillingPortalSessionFlowDataAfterCompletionType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateBillingPortalSessionFlowDataAfterCompletionType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateBillingPortalSessionFlowDataAfterCompletionType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateBillingPortalSessionFlowDataAfterCompletionType {
@@ -183,7 +233,9 @@ impl<'de> serde::Deserialize<'de> for CreateBillingPortalSessionFlowDataAfterCom
     }
 }
 /// Configuration when `flow_data.type=subscription_cancel`.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateBillingPortalSessionFlowDataSubscriptionCancel {
     /// Specify a retention strategy to be used in the cancellation flow.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -191,19 +243,35 @@ pub struct CreateBillingPortalSessionFlowDataSubscriptionCancel {
     /// The ID of the subscription to be canceled.
     pub subscription: String,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateBillingPortalSessionFlowDataSubscriptionCancel {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateBillingPortalSessionFlowDataSubscriptionCancel")
+            .finish_non_exhaustive()
+    }
+}
 impl CreateBillingPortalSessionFlowDataSubscriptionCancel {
     pub fn new(subscription: impl Into<String>) -> Self {
         Self { retention: None, subscription: subscription.into() }
     }
 }
 /// Specify a retention strategy to be used in the cancellation flow.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateBillingPortalSessionFlowDataSubscriptionCancelRetention {
     /// Configuration when `retention.type=coupon_offer`.
     pub coupon_offer: CreateBillingPortalSessionFlowDataSubscriptionCancelRetentionCouponOffer,
     /// Type of retention strategy to use with the customer.
     #[serde(rename = "type")]
     pub type_: CreateBillingPortalSessionFlowDataSubscriptionCancelRetentionType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateBillingPortalSessionFlowDataSubscriptionCancelRetention {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateBillingPortalSessionFlowDataSubscriptionCancelRetention")
+            .finish_non_exhaustive()
+    }
 }
 impl CreateBillingPortalSessionFlowDataSubscriptionCancelRetention {
     pub fn new(
@@ -216,10 +284,19 @@ impl CreateBillingPortalSessionFlowDataSubscriptionCancelRetention {
     }
 }
 /// Configuration when `retention.type=coupon_offer`.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateBillingPortalSessionFlowDataSubscriptionCancelRetentionCouponOffer {
     /// The ID of the coupon to be offered.
     pub coupon: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateBillingPortalSessionFlowDataSubscriptionCancelRetentionCouponOffer {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateBillingPortalSessionFlowDataSubscriptionCancelRetentionCouponOffer")
+            .finish_non_exhaustive()
+    }
 }
 impl CreateBillingPortalSessionFlowDataSubscriptionCancelRetentionCouponOffer {
     pub fn new(coupon: impl Into<String>) -> Self {
@@ -267,9 +344,19 @@ impl std::fmt::Display for CreateBillingPortalSessionFlowDataSubscriptionCancelR
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateBillingPortalSessionFlowDataSubscriptionCancelRetentionType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateBillingPortalSessionFlowDataSubscriptionCancelRetentionType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreateBillingPortalSessionFlowDataSubscriptionCancelRetentionType
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateBillingPortalSessionFlowDataSubscriptionCancelRetentionType {
@@ -291,10 +378,19 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Configuration when `flow_data.type=subscription_update`.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateBillingPortalSessionFlowDataSubscriptionUpdate {
     /// The ID of the subscription to be updated.
     pub subscription: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateBillingPortalSessionFlowDataSubscriptionUpdate {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateBillingPortalSessionFlowDataSubscriptionUpdate")
+            .finish_non_exhaustive()
+    }
 }
 impl CreateBillingPortalSessionFlowDataSubscriptionUpdate {
     pub fn new(subscription: impl Into<String>) -> Self {
@@ -302,7 +398,9 @@ impl CreateBillingPortalSessionFlowDataSubscriptionUpdate {
     }
 }
 /// Configuration when `flow_data.type=subscription_update_confirm`.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateBillingPortalSessionFlowDataSubscriptionUpdateConfirm {
     /// The coupon or promotion code to apply to this subscription update.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -314,6 +412,13 @@ pub struct CreateBillingPortalSessionFlowDataSubscriptionUpdateConfirm {
     /// The ID of the subscription to be updated.
     pub subscription: String,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateBillingPortalSessionFlowDataSubscriptionUpdateConfirm {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateBillingPortalSessionFlowDataSubscriptionUpdateConfirm")
+            .finish_non_exhaustive()
+    }
+}
 impl CreateBillingPortalSessionFlowDataSubscriptionUpdateConfirm {
     pub fn new(
         items: impl Into<Vec<CreateBillingPortalSessionFlowDataSubscriptionUpdateConfirmItems>>,
@@ -323,7 +428,9 @@ impl CreateBillingPortalSessionFlowDataSubscriptionUpdateConfirm {
     }
 }
 /// The coupon or promotion code to apply to this subscription update.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateBillingPortalSessionFlowDataSubscriptionUpdateConfirmDiscounts {
     /// The ID of the coupon to apply to this subscription update.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -331,6 +438,13 @@ pub struct CreateBillingPortalSessionFlowDataSubscriptionUpdateConfirmDiscounts 
     /// The ID of a promotion code to apply to this subscription update.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub promotion_code: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateBillingPortalSessionFlowDataSubscriptionUpdateConfirmDiscounts {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateBillingPortalSessionFlowDataSubscriptionUpdateConfirmDiscounts")
+            .finish_non_exhaustive()
+    }
 }
 impl CreateBillingPortalSessionFlowDataSubscriptionUpdateConfirmDiscounts {
     pub fn new() -> Self {
@@ -344,7 +458,9 @@ impl Default for CreateBillingPortalSessionFlowDataSubscriptionUpdateConfirmDisc
 }
 /// The [subscription item](https://docs.stripe.com/api/subscription_items) to be updated through this flow.
 /// Currently, only up to one may be specified and subscriptions with multiple items are not updatable.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateBillingPortalSessionFlowDataSubscriptionUpdateConfirmItems {
     /// The ID of the [subscription item](https://docs.stripe.com/api/subscriptions/object#subscription_object-items-data-id) to be updated.
     pub id: String,
@@ -355,6 +471,13 @@ pub struct CreateBillingPortalSessionFlowDataSubscriptionUpdateConfirmItems {
     /// [Quantity](https://docs.stripe.com/subscriptions/quantities) for this item that the customer should subscribe to through this flow.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub quantity: Option<u64>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateBillingPortalSessionFlowDataSubscriptionUpdateConfirmItems {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateBillingPortalSessionFlowDataSubscriptionUpdateConfirmItems")
+            .finish_non_exhaustive()
+    }
 }
 impl CreateBillingPortalSessionFlowDataSubscriptionUpdateConfirmItems {
     pub fn new(id: impl Into<String>) -> Self {
@@ -411,9 +534,16 @@ impl std::fmt::Display for CreateBillingPortalSessionFlowDataType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateBillingPortalSessionFlowDataType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateBillingPortalSessionFlowDataType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateBillingPortalSessionFlowDataType)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateBillingPortalSessionFlowDataType {
@@ -433,9 +563,17 @@ impl<'de> serde::Deserialize<'de> for CreateBillingPortalSessionFlowDataType {
     }
 }
 /// Creates a session of the customer portal.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateBillingPortalSession {
     inner: CreateBillingPortalSessionBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateBillingPortalSession {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateBillingPortalSession").finish_non_exhaustive()
+    }
 }
 impl CreateBillingPortalSession {
     /// Construct a new `CreateBillingPortalSession`.

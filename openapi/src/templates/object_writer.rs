@@ -81,7 +81,8 @@ pub fn write_derives_line(out: &mut String, derives: Derives) {
     }
     let _ = out.write_str(")]");
     if derives.debug {
-        let _ = out.write_str(r#"#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]"#);
+        let _ =
+            out.write_str(r#"#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]"#);
     }
 }
 

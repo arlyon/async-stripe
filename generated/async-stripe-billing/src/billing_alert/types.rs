@@ -1,6 +1,7 @@
 /// A billing alert is a resource that notifies you when a certain usage threshold on a meter is crossed.
 /// For example, you might create a billing alert to notify you when a certain user made 100 API requests.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct BillingAlert {
     /// Defines the type of the alert.
@@ -16,6 +17,12 @@ pub struct BillingAlert {
     pub title: String,
     /// Encapsulates configuration of the alert to monitor usage on a specific [Billing Meter](https://docs.stripe.com/api/billing/meter).
     pub usage_threshold: Option<stripe_billing::ThresholdsResourceUsageThresholdConfig>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for BillingAlert {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("BillingAlert").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct BillingAlertBuilder {
@@ -206,9 +213,16 @@ impl std::fmt::Display for BillingAlertStatus {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for BillingAlertStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for BillingAlertStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(BillingAlertStatus)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -290,9 +304,16 @@ impl std::fmt::Display for BillingAlertAlertType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for BillingAlertAlertType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for BillingAlertAlertType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(BillingAlertAlertType)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for BillingAlertAlertType {

@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentMethodUsBankAccount {
@@ -21,6 +22,12 @@ pub struct PaymentMethodUsBankAccount {
     pub routing_number: Option<String>,
     /// Contains information about the future reusability of this PaymentMethod.
     pub status_details: Option<stripe_shared::PaymentMethodUsBankAccountStatusDetails>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentMethodUsBankAccount {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PaymentMethodUsBankAccount").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct PaymentMethodUsBankAccountBuilder {
@@ -228,9 +235,17 @@ impl std::fmt::Display for PaymentMethodUsBankAccountAccountHolderType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for PaymentMethodUsBankAccountAccountHolderType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentMethodUsBankAccountAccountHolderType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(PaymentMethodUsBankAccountAccountHolderType))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -310,9 +325,16 @@ impl std::fmt::Display for PaymentMethodUsBankAccountAccountType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for PaymentMethodUsBankAccountAccountType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentMethodUsBankAccountAccountType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(PaymentMethodUsBankAccountAccountType)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

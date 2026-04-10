@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TreasuryOutboundTransfersResourceUsDomesticWireTrackingDetails {
@@ -8,6 +9,13 @@ pub struct TreasuryOutboundTransfersResourceUsDomesticWireTrackingDetails {
     pub imad: Option<String>,
     /// OMAD of the OutboundTransfer for transfers sent over the `us_domestic_wire` network.
     pub omad: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TreasuryOutboundTransfersResourceUsDomesticWireTrackingDetails {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("TreasuryOutboundTransfersResourceUsDomesticWireTrackingDetails")
+            .finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct TreasuryOutboundTransfersResourceUsDomesticWireTrackingDetailsBuilder {

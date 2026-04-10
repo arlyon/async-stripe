@@ -32,7 +32,8 @@
 /// Related guide: [Send invoices to customers](https://docs.stripe.com/billing/invoices/sending)
 ///
 /// For more details see <<https://stripe.com/docs/api/invoices/object>>.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct Invoice {
     /// The country of the business associated with this invoice, most often the business creating the invoice.
@@ -260,6 +261,12 @@ pub struct Invoice {
     /// This field tracks the time when webhooks for this invoice were successfully delivered.
     /// If the invoice had no webhooks to deliver, this will be set while the invoice is being created.
     pub webhooks_delivered_at: Option<stripe_types::Timestamp>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for Invoice {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("Invoice").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct InvoiceBuilder {
@@ -1082,9 +1089,16 @@ impl std::fmt::Display for InvoiceBillingReason {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for InvoiceBillingReason {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for InvoiceBillingReason {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(InvoiceBillingReason)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -1164,9 +1178,16 @@ impl std::fmt::Display for InvoiceCustomerTaxExempt {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for InvoiceCustomerTaxExempt {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for InvoiceCustomerTaxExempt {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(InvoiceCustomerTaxExempt)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -1251,9 +1272,16 @@ impl std::fmt::Display for InvoiceCollectionMethod {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for InvoiceCollectionMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for InvoiceCollectionMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(InvoiceCollectionMethod)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for InvoiceCollectionMethod {
@@ -1335,9 +1363,16 @@ impl std::fmt::Display for InvoiceStatus {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for InvoiceStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for InvoiceStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(InvoiceStatus)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for InvoiceStatus {

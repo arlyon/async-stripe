@@ -1,4 +1,5 @@
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct QuotesResourceTotalDetails {
@@ -9,6 +10,12 @@ pub struct QuotesResourceTotalDetails {
     /// This is the sum of all the tax amounts.
     pub amount_tax: i64,
     pub breakdown: Option<stripe_billing::QuotesResourceTotalDetailsResourceBreakdown>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for QuotesResourceTotalDetails {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("QuotesResourceTotalDetails").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct QuotesResourceTotalDetailsBuilder {

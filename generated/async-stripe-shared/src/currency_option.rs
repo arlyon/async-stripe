@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct CurrencyOption {
@@ -19,6 +20,12 @@ pub struct CurrencyOption {
     /// The unit amount in cents (or local equivalent) to be charged, represented as a decimal string with at most 12 decimal places.
     /// Only set if `billing_scheme=per_unit`.
     pub unit_amount_decimal: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CurrencyOption {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CurrencyOption").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct CurrencyOptionBuilder {
@@ -196,9 +203,16 @@ impl std::fmt::Display for CurrencyOptionTaxBehavior {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CurrencyOptionTaxBehavior {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CurrencyOptionTaxBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CurrencyOptionTaxBehavior)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

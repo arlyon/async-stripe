@@ -5,7 +5,8 @@
 /// Coupons do not work with conventional one-off [charges](/api/charges/create) or [payment intents](https://docs.stripe.com/api/payment_intents).
 ///
 /// For more details see <<https://stripe.com/docs/api/coupons/object>>.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct Coupon {
     /// Amount (in the `currency` specified) that will be taken off the subtotal of any invoices for this customer.
@@ -47,6 +48,12 @@ pub struct Coupon {
     pub times_redeemed: i64,
     /// Taking account of the above properties, whether this coupon can still be applied to a customer.
     pub valid: bool,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for Coupon {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("Coupon").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct CouponBuilder {
@@ -335,9 +342,16 @@ impl std::fmt::Display for CouponDuration {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CouponDuration {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CouponDuration {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CouponDuration)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CouponDuration {

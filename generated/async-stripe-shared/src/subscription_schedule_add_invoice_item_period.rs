@@ -1,9 +1,16 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct SubscriptionScheduleAddInvoiceItemPeriod {
     pub end: stripe_shared::SubscriptionSchedulesResourceInvoiceItemPeriodResourcePeriodEnd,
     pub start: stripe_shared::SubscriptionSchedulesResourceInvoiceItemPeriodResourcePeriodStart,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for SubscriptionScheduleAddInvoiceItemPeriod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("SubscriptionScheduleAddInvoiceItemPeriod").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct SubscriptionScheduleAddInvoiceItemPeriodBuilder {

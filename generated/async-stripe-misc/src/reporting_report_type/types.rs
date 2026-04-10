@@ -8,7 +8,8 @@
 /// data), and will error when queried without a [live-mode API key](https://docs.stripe.com/keys#test-live-modes).
 ///
 /// For more details see <<https://stripe.com/docs/api/reporting/report_type/object>>.
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct ReportingReportType {
     /// Most recent time for which this Report Type is available. Measured in seconds since the Unix epoch.
@@ -30,6 +31,12 @@ pub struct ReportingReportType {
     /// Version of the Report Type.
     /// Different versions report with the same ID will have the same purpose, but may take different run parameters or have different result schemas.
     pub version: i64,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ReportingReportType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ReportingReportType").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct ReportingReportTypeBuilder {

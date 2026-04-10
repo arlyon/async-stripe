@@ -1,4 +1,5 @@
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct BillingCreditGrantsResourceBalanceDebit {
@@ -9,6 +10,12 @@ pub struct BillingCreditGrantsResourceBalanceDebit {
     /// The type of debit transaction.
     #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "type"))]
     pub type_: BillingCreditGrantsResourceBalanceDebitType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for BillingCreditGrantsResourceBalanceDebit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("BillingCreditGrantsResourceBalanceDebit").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct BillingCreditGrantsResourceBalanceDebitBuilder {
@@ -163,9 +170,17 @@ impl std::fmt::Display for BillingCreditGrantsResourceBalanceDebitType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for BillingCreditGrantsResourceBalanceDebitType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for BillingCreditGrantsResourceBalanceDebitType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(BillingCreditGrantsResourceBalanceDebitType))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

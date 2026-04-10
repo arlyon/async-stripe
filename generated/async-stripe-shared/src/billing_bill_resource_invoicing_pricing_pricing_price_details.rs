@@ -1,4 +1,5 @@
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct BillingBillResourceInvoicingPricingPricingPriceDetails {
@@ -6,6 +7,13 @@ pub struct BillingBillResourceInvoicingPricingPricingPriceDetails {
     pub price: stripe_types::Expandable<stripe_shared::Price>,
     /// The ID of the product this item is associated with.
     pub product: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for BillingBillResourceInvoicingPricingPricingPriceDetails {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("BillingBillResourceInvoicingPricingPricingPriceDetails")
+            .finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct BillingBillResourceInvoicingPricingPricingPriceDetailsBuilder {

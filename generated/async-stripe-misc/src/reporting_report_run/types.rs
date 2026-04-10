@@ -8,7 +8,8 @@
 /// data), and will error when queried without a [live-mode API key](https://docs.stripe.com/keys#test-live-modes).
 ///
 /// For more details see <<https://stripe.com/docs/api/reporting/report_run/object>>.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct ReportingReportRun {
     /// Time at which the object was created. Measured in seconds since the Unix epoch.
@@ -33,6 +34,12 @@ pub struct ReportingReportRun {
     /// Timestamp at which this run successfully finished (populated when
     ///  `status=succeeded`). Measured in seconds since the Unix epoch.
     pub succeeded_at: Option<stripe_types::Timestamp>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ReportingReportRun {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ReportingReportRun").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct ReportingReportRunBuilder {

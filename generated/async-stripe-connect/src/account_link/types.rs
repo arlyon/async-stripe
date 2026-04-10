@@ -4,7 +4,8 @@
 /// Related guide: [Connect Onboarding](https://docs.stripe.com/connect/custom/hosted-onboarding)
 ///
 /// For more details see <<https://stripe.com/docs/api/account_links/object>>.
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct AccountLink {
     /// Time at which the object was created. Measured in seconds since the Unix epoch.
@@ -13,6 +14,12 @@ pub struct AccountLink {
     pub expires_at: stripe_types::Timestamp,
     /// The URL for the account link.
     pub url: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for AccountLink {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("AccountLink").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct AccountLinkBuilder {

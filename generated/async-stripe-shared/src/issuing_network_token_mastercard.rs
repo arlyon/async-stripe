@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct IssuingNetworkTokenMastercard {
@@ -11,6 +12,12 @@ pub struct IssuingNetworkTokenMastercard {
     /// The name of the entity requesting tokenization, if known.
     /// This is directly provided from MasterCard.
     pub token_requestor_name: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for IssuingNetworkTokenMastercard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("IssuingNetworkTokenMastercard").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct IssuingNetworkTokenMastercardBuilder {

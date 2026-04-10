@@ -3,7 +3,8 @@
 /// For more information, see [Charge for shipping](https://docs.stripe.com/payments/during-payment/charge-shipping).
 ///
 /// For more details see <<https://stripe.com/docs/api/shipping_rates/object>>.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct ShippingRate {
     /// Whether the shipping rate can be used for new purchases. Defaults to `true`.
@@ -34,6 +35,12 @@ pub struct ShippingRate {
     /// The type of calculation to use on the shipping rate.
     #[cfg_attr(feature = "deserialize", serde(rename = "type"))]
     pub type_: stripe_shared::ShippingRateType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ShippingRate {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ShippingRate").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct ShippingRateBuilder {
@@ -281,9 +288,16 @@ impl std::fmt::Display for ShippingRateTaxBehavior {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ShippingRateTaxBehavior {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ShippingRateTaxBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ShippingRateTaxBehavior)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ShippingRateTaxBehavior {
@@ -353,9 +367,16 @@ impl std::fmt::Display for ShippingRateType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ShippingRateType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ShippingRateType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ShippingRateType)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ShippingRateType {

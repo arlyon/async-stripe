@@ -1,9 +1,16 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PersonAdditionalTosAcceptances {
     /// Details on the legal guardian's acceptance of the main Stripe service agreement.
     pub account: Option<stripe_shared::PersonAdditionalTosAcceptance>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PersonAdditionalTosAcceptances {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PersonAdditionalTosAcceptances").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct PersonAdditionalTosAcceptancesBuilder {

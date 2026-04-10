@@ -2,7 +2,9 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ListPriceBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     active: Option<bool>,
@@ -28,6 +30,12 @@ struct ListPriceBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     type_: Option<stripe_shared::PriceType>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListPriceBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListPriceBuilder").finish_non_exhaustive()
+    }
+}
 impl ListPriceBuilder {
     fn new() -> Self {
         Self {
@@ -46,7 +54,9 @@ impl ListPriceBuilder {
     }
 }
 /// Only return prices with these recurring fields.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListPriceRecurring {
     /// Filter by billing frequency. Either `day`, `week`, `month` or `year`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -57,6 +67,12 @@ pub struct ListPriceRecurring {
     /// Filter by the usage type for this price. Can be either `metered` or `licensed`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub usage_type: Option<ListPriceRecurringUsageType>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListPriceRecurring {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListPriceRecurring").finish_non_exhaustive()
+    }
 }
 impl ListPriceRecurring {
     pub fn new() -> Self {
@@ -114,9 +130,16 @@ impl std::fmt::Display for ListPriceRecurringInterval {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ListPriceRecurringInterval {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListPriceRecurringInterval {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ListPriceRecurringInterval)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ListPriceRecurringInterval {
@@ -179,9 +202,16 @@ impl std::fmt::Display for ListPriceRecurringUsageType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ListPriceRecurringUsageType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListPriceRecurringUsageType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ListPriceRecurringUsageType)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ListPriceRecurringUsageType {
@@ -202,9 +232,17 @@ impl<'de> serde::Deserialize<'de> for ListPriceRecurringUsageType {
 }
 /// Returns a list of your active prices, excluding [inline prices](https://stripe.com/docs/products-prices/pricing-models#inline-pricing).
 /// For the list of inactive prices, set `active` to false.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListPrice {
     inner: ListPriceBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListPrice {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListPrice").finish_non_exhaustive()
+    }
 }
 impl ListPrice {
     /// Construct a new `ListPrice`.
@@ -309,10 +347,18 @@ impl StripeRequest for ListPrice {
         RequestBuilder::new(StripeMethod::Get, "/prices").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RetrievePriceBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrievePriceBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrievePriceBuilder").finish_non_exhaustive()
+    }
 }
 impl RetrievePriceBuilder {
     fn new() -> Self {
@@ -320,10 +366,18 @@ impl RetrievePriceBuilder {
     }
 }
 /// Retrieves the price with the given ID.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RetrievePrice {
     inner: RetrievePriceBuilder,
     price: stripe_shared::PriceId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrievePrice {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrievePrice").finish_non_exhaustive()
+    }
 }
 impl RetrievePrice {
     /// Construct a new `RetrievePrice`.
@@ -362,7 +416,9 @@ impl StripeRequest for RetrievePrice {
         RequestBuilder::new(StripeMethod::Get, format!("/prices/{price}")).query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct SearchPriceBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -371,6 +427,12 @@ struct SearchPriceBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     page: Option<String>,
     query: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for SearchPriceBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("SearchPriceBuilder").finish_non_exhaustive()
+    }
 }
 impl SearchPriceBuilder {
     fn new(query: impl Into<String>) -> Self {
@@ -383,9 +445,17 @@ impl SearchPriceBuilder {
 /// conditions, data is searchable in less than a minute.
 /// Occasionally, propagation of new or updated data can be up.
 /// to an hour behind during outages. Search functionality is not available to merchants in India.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct SearchPrice {
     inner: SearchPriceBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for SearchPrice {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("SearchPrice").finish_non_exhaustive()
+    }
 }
 impl SearchPrice {
     /// Construct a new `SearchPrice`.
@@ -442,7 +512,9 @@ impl StripeRequest for SearchPrice {
         RequestBuilder::new(StripeMethod::Get, "/prices/search").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct CreatePriceBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     active: Option<bool>,
@@ -483,6 +555,12 @@ struct CreatePriceBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     unit_amount_decimal: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePriceBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePriceBuilder").finish_non_exhaustive()
+    }
+}
 impl CreatePriceBuilder {
     fn new(currency: impl Into<stripe_types::Currency>) -> Self {
         Self {
@@ -510,7 +588,9 @@ impl CreatePriceBuilder {
 }
 /// Prices defined in each available currency option.
 /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePriceCurrencyOptions {
     /// When set, provides configuration for the amount to be adjusted by the customer during Checkout Sessions and Payment Links.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -534,6 +614,12 @@ pub struct CreatePriceCurrencyOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_amount_decimal: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePriceCurrencyOptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePriceCurrencyOptions").finish_non_exhaustive()
+    }
+}
 impl CreatePriceCurrencyOptions {
     pub fn new() -> Self {
         Self {
@@ -553,7 +639,9 @@ impl Default for CreatePriceCurrencyOptions {
 /// Each element represents a pricing tier.
 /// This parameter requires `billing_scheme` to be set to `tiered`.
 /// See also the documentation for `billing_scheme`.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePriceCurrencyOptionsTiers {
     /// The flat billing amount for an entire tier, regardless of the number of units in the tier.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -574,6 +662,12 @@ pub struct CreatePriceCurrencyOptionsTiers {
     /// Use `inf` to define a fallback tier.
     pub up_to: CreatePriceCurrencyOptionsTiersUpTo,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePriceCurrencyOptionsTiers {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePriceCurrencyOptionsTiers").finish_non_exhaustive()
+    }
+}
 impl CreatePriceCurrencyOptionsTiers {
     pub fn new(up_to: impl Into<CreatePriceCurrencyOptionsTiersUpTo>) -> Self {
         Self {
@@ -588,15 +682,25 @@ impl CreatePriceCurrencyOptionsTiers {
 /// Specifies the upper bound of this tier.
 /// The lower bound of a tier is the upper bound of the previous tier adding one.
 /// Use `inf` to define a fallback tier.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 #[serde(rename_all = "snake_case")]
 pub enum CreatePriceCurrencyOptionsTiersUpTo {
     Inf,
     #[serde(untagged)]
     I64(i64),
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePriceCurrencyOptionsTiersUpTo {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePriceCurrencyOptionsTiersUpTo").finish_non_exhaustive()
+    }
+}
 /// These fields can be used to create a new product that this price will belong to.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePriceProductData {
     /// Whether the product is currently available for purchase. Defaults to `true`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -630,6 +734,12 @@ pub struct CreatePriceProductData {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_label: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePriceProductData {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePriceProductData").finish_non_exhaustive()
+    }
+}
 impl CreatePriceProductData {
     pub fn new(name: impl Into<String>) -> Self {
         Self {
@@ -644,7 +754,9 @@ impl CreatePriceProductData {
     }
 }
 /// The recurring components of a price such as `interval` and `usage_type`.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePriceRecurring {
     /// Specifies billing frequency. Either `day`, `week`, `month` or `year`.
     pub interval: CreatePriceRecurringInterval,
@@ -666,6 +778,12 @@ pub struct CreatePriceRecurring {
     /// Defaults to `licensed`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub usage_type: Option<CreatePriceRecurringUsageType>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePriceRecurring {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePriceRecurring").finish_non_exhaustive()
+    }
 }
 impl CreatePriceRecurring {
     pub fn new(interval: impl Into<CreatePriceRecurringInterval>) -> Self {
@@ -728,9 +846,16 @@ impl std::fmt::Display for CreatePriceRecurringInterval {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePriceRecurringInterval {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePriceRecurringInterval {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePriceRecurringInterval)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePriceRecurringInterval {
@@ -797,9 +922,16 @@ impl std::fmt::Display for CreatePriceRecurringUsageType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePriceRecurringUsageType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePriceRecurringUsageType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePriceRecurringUsageType)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePriceRecurringUsageType {
@@ -821,7 +953,9 @@ impl<'de> serde::Deserialize<'de> for CreatePriceRecurringUsageType {
 /// Each element represents a pricing tier.
 /// This parameter requires `billing_scheme` to be set to `tiered`.
 /// See also the documentation for `billing_scheme`.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePriceTiers {
     /// The flat billing amount for an entire tier, regardless of the number of units in the tier.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -842,6 +976,12 @@ pub struct CreatePriceTiers {
     /// Use `inf` to define a fallback tier.
     pub up_to: CreatePriceTiersUpTo,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePriceTiers {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePriceTiers").finish_non_exhaustive()
+    }
+}
 impl CreatePriceTiers {
     pub fn new(up_to: impl Into<CreatePriceTiersUpTo>) -> Self {
         Self {
@@ -856,21 +996,37 @@ impl CreatePriceTiers {
 /// Specifies the upper bound of this tier.
 /// The lower bound of a tier is the upper bound of the previous tier adding one.
 /// Use `inf` to define a fallback tier.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 #[serde(rename_all = "snake_case")]
 pub enum CreatePriceTiersUpTo {
     Inf,
     #[serde(untagged)]
     I64(i64),
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePriceTiersUpTo {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePriceTiersUpTo").finish_non_exhaustive()
+    }
+}
 /// Apply a transformation to the reported usage or set quantity before computing the billed price.
 /// Cannot be combined with `tiers`.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePriceTransformQuantity {
     /// Divide usage by this number.
     pub divide_by: i64,
     /// After division, either round the result `up` or `down`.
     pub round: CreatePriceTransformQuantityRound,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePriceTransformQuantity {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePriceTransformQuantity").finish_non_exhaustive()
+    }
 }
 impl CreatePriceTransformQuantity {
     pub fn new(
@@ -924,9 +1080,16 @@ impl std::fmt::Display for CreatePriceTransformQuantityRound {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePriceTransformQuantityRound {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePriceTransformQuantityRound {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePriceTransformQuantityRound)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePriceTransformQuantityRound {
@@ -947,9 +1110,17 @@ impl<'de> serde::Deserialize<'de> for CreatePriceTransformQuantityRound {
 }
 /// Creates a new [Price](https://docs.stripe.com/api/prices) for an existing [Product](https://docs.stripe.com/api/products).
 /// The Price can be recurring or one-time.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePrice {
     inner: CreatePriceBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePrice {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePrice").finish_non_exhaustive()
+    }
 }
 impl CreatePrice {
     /// Construct a new `CreatePrice`.
@@ -1106,7 +1277,9 @@ impl StripeRequest for CreatePrice {
         RequestBuilder::new(StripeMethod::Post, "/prices").form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct UpdatePriceBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     active: Option<bool>,
@@ -1126,6 +1299,12 @@ struct UpdatePriceBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     transfer_lookup_key: Option<bool>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePriceBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePriceBuilder").finish_non_exhaustive()
+    }
+}
 impl UpdatePriceBuilder {
     fn new() -> Self {
         Self {
@@ -1142,7 +1321,9 @@ impl UpdatePriceBuilder {
 }
 /// Prices defined in each available currency option.
 /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePriceCurrencyOptions {
     /// When set, provides configuration for the amount to be adjusted by the customer during Checkout Sessions and Payment Links.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1166,6 +1347,12 @@ pub struct UpdatePriceCurrencyOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_amount_decimal: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePriceCurrencyOptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePriceCurrencyOptions").finish_non_exhaustive()
+    }
+}
 impl UpdatePriceCurrencyOptions {
     pub fn new() -> Self {
         Self {
@@ -1185,7 +1372,9 @@ impl Default for UpdatePriceCurrencyOptions {
 /// Each element represents a pricing tier.
 /// This parameter requires `billing_scheme` to be set to `tiered`.
 /// See also the documentation for `billing_scheme`.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePriceCurrencyOptionsTiers {
     /// The flat billing amount for an entire tier, regardless of the number of units in the tier.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1206,6 +1395,12 @@ pub struct UpdatePriceCurrencyOptionsTiers {
     /// Use `inf` to define a fallback tier.
     pub up_to: UpdatePriceCurrencyOptionsTiersUpTo,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePriceCurrencyOptionsTiers {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePriceCurrencyOptionsTiers").finish_non_exhaustive()
+    }
+}
 impl UpdatePriceCurrencyOptionsTiers {
     pub fn new(up_to: impl Into<UpdatePriceCurrencyOptionsTiersUpTo>) -> Self {
         Self {
@@ -1220,19 +1415,35 @@ impl UpdatePriceCurrencyOptionsTiers {
 /// Specifies the upper bound of this tier.
 /// The lower bound of a tier is the upper bound of the previous tier adding one.
 /// Use `inf` to define a fallback tier.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 #[serde(rename_all = "snake_case")]
 pub enum UpdatePriceCurrencyOptionsTiersUpTo {
     Inf,
     #[serde(untagged)]
     I64(i64),
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePriceCurrencyOptionsTiersUpTo {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePriceCurrencyOptionsTiersUpTo").finish_non_exhaustive()
+    }
+}
 /// Updates the specified price by setting the values of the parameters passed.
 /// Any parameters not provided are left unchanged.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePrice {
     inner: UpdatePriceBuilder,
     price: stripe_shared::PriceId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePrice {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePrice").finish_non_exhaustive()
+    }
 }
 impl UpdatePrice {
     /// Construct a new `UpdatePrice`.
@@ -1326,7 +1537,9 @@ impl StripeRequest for UpdatePrice {
     }
 }
 
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CustomUnitAmount {
     /// Pass in `true` to enable `custom_unit_amount`, otherwise omit `custom_unit_amount`.
     pub enabled: bool,
@@ -1340,6 +1553,12 @@ pub struct CustomUnitAmount {
     /// The starting unit amount which can be updated by the customer.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preset: Option<i64>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CustomUnitAmount {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CustomUnitAmount").finish_non_exhaustive()
+    }
 }
 impl CustomUnitAmount {
     pub fn new(enabled: impl Into<bool>) -> Self {

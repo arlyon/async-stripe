@@ -1,5 +1,6 @@
 /// A phase describes the plans, coupon, and trialing status of a subscription for a predefined time period.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct SubscriptionSchedulePhaseConfiguration {
@@ -57,6 +58,12 @@ pub struct SubscriptionSchedulePhaseConfiguration {
     pub transfer_data: Option<stripe_shared::SubscriptionTransferData>,
     /// When the trial ends within the phase.
     pub trial_end: Option<stripe_types::Timestamp>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for SubscriptionSchedulePhaseConfiguration {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("SubscriptionSchedulePhaseConfiguration").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct SubscriptionSchedulePhaseConfigurationBuilder {
@@ -344,9 +351,17 @@ impl std::fmt::Display for SubscriptionSchedulePhaseConfigurationBillingCycleAnc
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for SubscriptionSchedulePhaseConfigurationBillingCycleAnchor {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for SubscriptionSchedulePhaseConfigurationBillingCycleAnchor {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(SubscriptionSchedulePhaseConfigurationBillingCycleAnchor))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -434,9 +449,17 @@ impl std::fmt::Display for SubscriptionSchedulePhaseConfigurationCollectionMetho
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for SubscriptionSchedulePhaseConfigurationCollectionMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for SubscriptionSchedulePhaseConfigurationCollectionMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(SubscriptionSchedulePhaseConfigurationCollectionMethod))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -524,9 +547,17 @@ impl std::fmt::Display for SubscriptionSchedulePhaseConfigurationProrationBehavi
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for SubscriptionSchedulePhaseConfigurationProrationBehavior {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for SubscriptionSchedulePhaseConfigurationProrationBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(SubscriptionSchedulePhaseConfigurationProrationBehavior))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

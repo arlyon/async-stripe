@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebit {
@@ -13,6 +14,13 @@ pub struct PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebit {
     /// Transaction type of the mandate.
     pub transaction_type:
         Option<PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitTransactionType>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebit")
+            .finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitBuilder {
@@ -188,9 +196,19 @@ impl std::fmt::Display for PaymentIntentPaymentMethodOptionsMandateOptionsAcssDe
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitPaymentSchedule {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitPaymentSchedule {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitPaymentSchedule
+        ))
+        .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -280,9 +298,19 @@ impl std::fmt::Display for PaymentIntentPaymentMethodOptionsMandateOptionsAcssDe
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitTransactionType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitTransactionType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            PaymentIntentPaymentMethodOptionsMandateOptionsAcssDebitTransactionType
+        ))
+        .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

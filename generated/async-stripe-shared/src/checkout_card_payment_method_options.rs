@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct CheckoutCardPaymentMethodOptions {
@@ -41,6 +42,12 @@ pub struct CheckoutCardPaymentMethodOptions {
     /// Maximum 17 characters.
     /// On card statements, the *concatenation* of both prefix and suffix (including separators) will appear truncated to 17 characters.
     pub statement_descriptor_suffix_kanji: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CheckoutCardPaymentMethodOptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CheckoutCardPaymentMethodOptions").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct CheckoutCardPaymentMethodOptionsBuilder {
@@ -277,9 +284,17 @@ impl std::fmt::Display for CheckoutCardPaymentMethodOptionsCaptureMethod {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CheckoutCardPaymentMethodOptionsCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CheckoutCardPaymentMethodOptionsCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CheckoutCardPaymentMethodOptionsCaptureMethod))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -359,9 +374,17 @@ impl std::fmt::Display for CheckoutCardPaymentMethodOptionsRequestExtendedAuthor
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CheckoutCardPaymentMethodOptionsRequestExtendedAuthorization {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CheckoutCardPaymentMethodOptionsRequestExtendedAuthorization {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CheckoutCardPaymentMethodOptionsRequestExtendedAuthorization))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -447,9 +470,17 @@ impl std::fmt::Display for CheckoutCardPaymentMethodOptionsRequestIncrementalAut
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CheckoutCardPaymentMethodOptionsRequestIncrementalAuthorization {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CheckoutCardPaymentMethodOptionsRequestIncrementalAuthorization {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CheckoutCardPaymentMethodOptionsRequestIncrementalAuthorization))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -537,9 +568,17 @@ impl std::fmt::Display for CheckoutCardPaymentMethodOptionsRequestMulticapture {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CheckoutCardPaymentMethodOptionsRequestMulticapture {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CheckoutCardPaymentMethodOptionsRequestMulticapture {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CheckoutCardPaymentMethodOptionsRequestMulticapture))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -620,9 +659,17 @@ impl std::fmt::Display for CheckoutCardPaymentMethodOptionsRequestOvercapture {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CheckoutCardPaymentMethodOptionsRequestOvercapture {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CheckoutCardPaymentMethodOptionsRequestOvercapture {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CheckoutCardPaymentMethodOptionsRequestOvercapture))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -709,9 +756,17 @@ impl std::fmt::Display for CheckoutCardPaymentMethodOptionsRequestThreeDSecure {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CheckoutCardPaymentMethodOptionsRequestThreeDSecure {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CheckoutCardPaymentMethodOptionsRequestThreeDSecure {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CheckoutCardPaymentMethodOptionsRequestThreeDSecure))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -802,9 +857,17 @@ impl std::fmt::Display for CheckoutCardPaymentMethodOptionsSetupFutureUsage {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CheckoutCardPaymentMethodOptionsSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CheckoutCardPaymentMethodOptionsSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CheckoutCardPaymentMethodOptionsSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

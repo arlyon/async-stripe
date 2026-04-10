@@ -3,9 +3,17 @@ use stripe_client_core::{
 };
 
 /// Delete an apple pay domain.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct DeleteApplePayDomain {
     domain: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for DeleteApplePayDomain {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("DeleteApplePayDomain").finish_non_exhaustive()
+    }
 }
 impl DeleteApplePayDomain {
     /// Construct a new `DeleteApplePayDomain`.
@@ -39,7 +47,9 @@ impl StripeRequest for DeleteApplePayDomain {
         RequestBuilder::new(StripeMethod::Delete, format!("/apple_pay/domains/{domain}"))
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ListApplePayDomainBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     domain_name: Option<String>,
@@ -51,6 +61,12 @@ struct ListApplePayDomainBuilder {
     limit: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
     starting_after: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListApplePayDomainBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListApplePayDomainBuilder").finish_non_exhaustive()
+    }
 }
 impl ListApplePayDomainBuilder {
     fn new() -> Self {
@@ -64,9 +80,17 @@ impl ListApplePayDomainBuilder {
     }
 }
 /// List apple pay domains.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListApplePayDomain {
     inner: ListApplePayDomainBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListApplePayDomain {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListApplePayDomain").finish_non_exhaustive()
+    }
 }
 impl ListApplePayDomain {
     /// Construct a new `ListApplePayDomain`.
@@ -139,10 +163,18 @@ impl StripeRequest for ListApplePayDomain {
         RequestBuilder::new(StripeMethod::Get, "/apple_pay/domains").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RetrieveApplePayDomainBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveApplePayDomainBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveApplePayDomainBuilder").finish_non_exhaustive()
+    }
 }
 impl RetrieveApplePayDomainBuilder {
     fn new() -> Self {
@@ -150,10 +182,18 @@ impl RetrieveApplePayDomainBuilder {
     }
 }
 /// Retrieve an apple pay domain.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RetrieveApplePayDomain {
     inner: RetrieveApplePayDomainBuilder,
     domain: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveApplePayDomain {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveApplePayDomain").finish_non_exhaustive()
+    }
 }
 impl RetrieveApplePayDomain {
     /// Construct a new `RetrieveApplePayDomain`.
@@ -193,11 +233,19 @@ impl StripeRequest for RetrieveApplePayDomain {
             .query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct CreateApplePayDomainBuilder {
     domain_name: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateApplePayDomainBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateApplePayDomainBuilder").finish_non_exhaustive()
+    }
 }
 impl CreateApplePayDomainBuilder {
     fn new(domain_name: impl Into<String>) -> Self {
@@ -205,9 +253,17 @@ impl CreateApplePayDomainBuilder {
     }
 }
 /// Create an apple pay domain.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateApplePayDomain {
     inner: CreateApplePayDomainBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateApplePayDomain {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateApplePayDomain").finish_non_exhaustive()
+    }
 }
 impl CreateApplePayDomain {
     /// Construct a new `CreateApplePayDomain`.

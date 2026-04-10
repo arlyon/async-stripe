@@ -1,5 +1,6 @@
 /// Result from an id_number check
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct GelatoIdNumberReport {
@@ -17,6 +18,12 @@ pub struct GelatoIdNumberReport {
     pub last_name: Option<String>,
     /// Status of this `id_number` check.
     pub status: GelatoIdNumberReportStatus,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for GelatoIdNumberReport {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("GelatoIdNumberReport").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct GelatoIdNumberReportBuilder {
@@ -201,9 +208,16 @@ impl std::fmt::Display for GelatoIdNumberReportIdNumberType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for GelatoIdNumberReportIdNumberType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for GelatoIdNumberReportIdNumberType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(GelatoIdNumberReportIdNumberType)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -278,9 +292,16 @@ impl std::fmt::Display for GelatoIdNumberReportStatus {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for GelatoIdNumberReportStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for GelatoIdNumberReportStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(GelatoIdNumberReportStatus)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

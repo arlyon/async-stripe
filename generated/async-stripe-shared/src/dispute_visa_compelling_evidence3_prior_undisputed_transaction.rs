@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct DisputeVisaCompellingEvidence3PriorUndisputedTransaction {
@@ -21,6 +22,13 @@ pub struct DisputeVisaCompellingEvidence3PriorUndisputedTransaction {
     /// The address to which a physical product was shipped.
     /// All fields are required for Visa Compelling Evidence 3.0 evidence submission.
     pub shipping_address: Option<stripe_shared::DisputeTransactionShippingAddress>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for DisputeVisaCompellingEvidence3PriorUndisputedTransaction {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("DisputeVisaCompellingEvidence3PriorUndisputedTransaction")
+            .finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct DisputeVisaCompellingEvidence3PriorUndisputedTransactionBuilder {

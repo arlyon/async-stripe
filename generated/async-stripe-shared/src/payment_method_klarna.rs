@@ -1,9 +1,16 @@
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentMethodKlarna {
     /// The customer's date of birth, if provided.
     pub dob: Option<stripe_shared::PaymentFlowsPrivatePaymentMethodsKlarnaDob>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentMethodKlarna {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PaymentMethodKlarna").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct PaymentMethodKlarnaBuilder {

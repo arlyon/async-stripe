@@ -1,5 +1,6 @@
 /// Money Movement card details attached to this payment.
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct InsightsResourcesPaymentEvaluationMoneyMovementCard {
@@ -8,6 +9,13 @@ pub struct InsightsResourcesPaymentEvaluationMoneyMovementCard {
         Option<InsightsResourcesPaymentEvaluationMoneyMovementCardCustomerPresence>,
     /// Describes the type of payment.
     pub payment_type: Option<InsightsResourcesPaymentEvaluationMoneyMovementCardPaymentType>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for InsightsResourcesPaymentEvaluationMoneyMovementCard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("InsightsResourcesPaymentEvaluationMoneyMovementCard")
+            .finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct InsightsResourcesPaymentEvaluationMoneyMovementCardBuilder {
@@ -153,9 +161,19 @@ impl std::fmt::Display for InsightsResourcesPaymentEvaluationMoneyMovementCardCu
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for InsightsResourcesPaymentEvaluationMoneyMovementCardCustomerPresence {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for InsightsResourcesPaymentEvaluationMoneyMovementCardCustomerPresence {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            InsightsResourcesPaymentEvaluationMoneyMovementCardCustomerPresence
+        ))
+        .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -251,9 +269,17 @@ impl std::fmt::Display for InsightsResourcesPaymentEvaluationMoneyMovementCardPa
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for InsightsResourcesPaymentEvaluationMoneyMovementCardPaymentType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for InsightsResourcesPaymentEvaluationMoneyMovementCardPaymentType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(InsightsResourcesPaymentEvaluationMoneyMovementCardPaymentType))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct SourceOwner {
@@ -26,6 +27,12 @@ pub struct SourceOwner {
     /// Verified values are verified or provided by the payment method directly (and if supported) at the time of authorization or settlement.
     /// They cannot be set or mutated.
     pub verified_phone: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for SourceOwner {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("SourceOwner").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct SourceOwnerBuilder {

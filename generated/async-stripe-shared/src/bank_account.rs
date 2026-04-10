@@ -5,7 +5,8 @@
 /// They can be bank accounts or debit cards as well, and are documented in the links above.
 ///
 /// Related guide: [Bank debits and transfers](/payments/bank-debits-transfers)
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct BankAccount {
     /// The account this bank account belongs to.
@@ -64,6 +65,12 @@ pub struct BankAccount {
     /// Other validations aren't run against external accounts because they're only used for payouts.
     /// This means the other statuses don't apply.
     pub status: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for BankAccount {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("BankAccount").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct BankAccountBuilder {
@@ -363,9 +370,16 @@ impl std::fmt::Display for BankAccountAvailablePayoutMethods {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for BankAccountAvailablePayoutMethods {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for BankAccountAvailablePayoutMethods {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(BankAccountAvailablePayoutMethods)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

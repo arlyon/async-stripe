@@ -6,7 +6,8 @@
 /// guide](/docs/connect/required-verification-information).
 ///
 /// For more details see <<https://stripe.com/docs/api/country_specs/object>>.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct CountrySpec {
     /// The default currency for this country. This applies to both payment methods and bank accounts.
@@ -24,6 +25,12 @@ pub struct CountrySpec {
     /// Countries that can accept transfers from the specified country.
     pub supported_transfer_countries: Vec<String>,
     pub verification_fields: stripe_connect::CountrySpecVerificationFields,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CountrySpec {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CountrySpec").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct CountrySpecBuilder {

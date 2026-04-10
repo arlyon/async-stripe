@@ -3,7 +3,8 @@
 /// Some legacy payment flows create Charges directly, which is not recommended for new integrations.
 ///
 /// For more details see <<https://stripe.com/docs/api/charges/object>>.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct Charge {
     /// Amount intended to be collected by this payment.
@@ -125,6 +126,12 @@ pub struct Charge {
     /// A string that identifies this transaction as part of a group.
     /// See the [Connect documentation](https://docs.stripe.com/connect/separate-charges-and-transfers#transfer-options) for details.
     pub transfer_group: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for Charge {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("Charge").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct ChargeBuilder {
@@ -668,9 +675,16 @@ impl std::fmt::Display for ChargeStatus {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ChargeStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ChargeStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ChargeStatus)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

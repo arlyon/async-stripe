@@ -1,7 +1,8 @@
 /// A credit grant is an API resource that documents the allocation of some billing credits to a customer.
 ///
 /// Related guide: [Billing credits](https://docs.stripe.com/billing/subscriptions/usage-based/billing-credits).
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct BillingCreditGrant {
     pub amount: stripe_shared::BillingCreditGrantsResourceAmount,
@@ -37,6 +38,12 @@ pub struct BillingCreditGrant {
     pub updated: stripe_types::Timestamp,
     /// The time when this credit grant was voided. If not present, the credit grant hasn't been voided.
     pub voided_at: Option<stripe_types::Timestamp>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for BillingCreditGrant {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("BillingCreditGrant").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct BillingCreditGrantBuilder {
@@ -321,9 +328,16 @@ impl std::fmt::Display for BillingCreditGrantCategory {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for BillingCreditGrantCategory {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for BillingCreditGrantCategory {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(BillingCreditGrantCategory)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for BillingCreditGrantCategory {

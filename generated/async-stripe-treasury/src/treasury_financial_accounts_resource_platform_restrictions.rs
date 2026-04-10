@@ -1,5 +1,6 @@
 /// Restrictions that a Connect Platform has placed on this FinancialAccount.
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TreasuryFinancialAccountsResourcePlatformRestrictions {
@@ -7,6 +8,13 @@ pub struct TreasuryFinancialAccountsResourcePlatformRestrictions {
     pub inbound_flows: Option<TreasuryFinancialAccountsResourcePlatformRestrictionsInboundFlows>,
     /// Restricts all outbound money movement.
     pub outbound_flows: Option<TreasuryFinancialAccountsResourcePlatformRestrictionsOutboundFlows>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TreasuryFinancialAccountsResourcePlatformRestrictions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("TreasuryFinancialAccountsResourcePlatformRestrictions")
+            .finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct TreasuryFinancialAccountsResourcePlatformRestrictionsBuilder {
@@ -154,9 +162,19 @@ impl std::fmt::Display for TreasuryFinancialAccountsResourcePlatformRestrictions
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for TreasuryFinancialAccountsResourcePlatformRestrictionsInboundFlows {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TreasuryFinancialAccountsResourcePlatformRestrictionsInboundFlows {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            TreasuryFinancialAccountsResourcePlatformRestrictionsInboundFlows
+        ))
+        .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -244,9 +262,19 @@ impl std::fmt::Display for TreasuryFinancialAccountsResourcePlatformRestrictions
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for TreasuryFinancialAccountsResourcePlatformRestrictionsOutboundFlows {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TreasuryFinancialAccountsResourcePlatformRestrictionsOutboundFlows {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            TreasuryFinancialAccountsResourcePlatformRestrictionsOutboundFlows
+        ))
+        .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

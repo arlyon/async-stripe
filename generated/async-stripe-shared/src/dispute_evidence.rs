@@ -1,5 +1,6 @@
 /// For more details see <<https://stripe.com/docs/api/disputes/evidence_object>>.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct DisputeEvidence {
@@ -67,6 +68,12 @@ pub struct DisputeEvidence {
     pub uncategorized_file: Option<stripe_types::Expandable<stripe_shared::File>>,
     /// Any additional evidence or statements.
     pub uncategorized_text: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for DisputeEvidence {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("DisputeEvidence").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct DisputeEvidenceBuilder {

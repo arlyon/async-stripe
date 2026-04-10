@@ -5,7 +5,8 @@
 /// Related guide: [Issued card transactions](https://docs.stripe.com/issuing/purchases/transactions)
 ///
 /// For more details see <<https://stripe.com/docs/api/issuing/transactions/object>>.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct IssuingTransaction {
     /// The transaction amount, which will be reflected in your balance.
@@ -57,6 +58,12 @@ pub struct IssuingTransaction {
     pub type_: stripe_shared::IssuingTransactionType,
     /// The digital wallet used for this transaction. One of `apple_pay`, `google_pay`, or `samsung_pay`.
     pub wallet: Option<IssuingTransactionWallet>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for IssuingTransaction {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("IssuingTransaction").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct IssuingTransactionBuilder {
@@ -375,9 +382,16 @@ impl std::fmt::Display for IssuingTransactionWallet {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for IssuingTransactionWallet {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for IssuingTransactionWallet {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(IssuingTransactionWallet)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -462,9 +476,16 @@ impl std::fmt::Display for IssuingTransactionType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for IssuingTransactionType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for IssuingTransactionType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(IssuingTransactionType)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for IssuingTransactionType {

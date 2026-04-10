@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentLinksResourceCustomText {
@@ -10,6 +11,12 @@ pub struct PaymentLinksResourceCustomText {
     pub submit: Option<stripe_shared::PaymentLinksResourceCustomTextPosition>,
     /// Custom text that should be displayed in place of the default terms of service agreement text.
     pub terms_of_service_acceptance: Option<stripe_shared::PaymentLinksResourceCustomTextPosition>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentLinksResourceCustomText {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PaymentLinksResourceCustomText").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct PaymentLinksResourceCustomTextBuilder {

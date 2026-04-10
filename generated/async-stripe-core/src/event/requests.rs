@@ -2,7 +2,9 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ListEventBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     created: Option<stripe_types::RangeQueryTs>,
@@ -22,6 +24,12 @@ struct ListEventBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     types: Option<Vec<String>>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListEventBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListEventBuilder").finish_non_exhaustive()
+    }
+}
 impl ListEventBuilder {
     fn new() -> Self {
         Self {
@@ -38,9 +46,17 @@ impl ListEventBuilder {
 }
 /// List events, going back up to 30 days.
 /// Each event data is rendered according to Stripe API version at its creation time, specified in [event object](https://docs.stripe.com/api/events/object) `api_version` attribute (not according to your current Stripe API version or `Stripe-Version` header).
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListEvent {
     inner: ListEventBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListEvent {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListEvent").finish_non_exhaustive()
+    }
 }
 impl ListEvent {
     /// Construct a new `ListEvent`.
@@ -133,10 +149,18 @@ impl StripeRequest for ListEvent {
         RequestBuilder::new(StripeMethod::Get, "/events").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RetrieveEventBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveEventBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveEventBuilder").finish_non_exhaustive()
+    }
 }
 impl RetrieveEventBuilder {
     fn new() -> Self {
@@ -145,10 +169,18 @@ impl RetrieveEventBuilder {
 }
 /// Retrieves the details of an event if it was created in the last 30 days.
 /// Supply the unique identifier of the event, which you might have received in a webhook.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RetrieveEvent {
     inner: RetrieveEventBuilder,
     id: stripe_shared::EventId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveEvent {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveEvent").finish_non_exhaustive()
+    }
 }
 impl RetrieveEvent {
     /// Construct a new `RetrieveEvent`.

@@ -5,7 +5,8 @@
 /// Related guide: [Refunds](https://docs.stripe.com/refunds)
 ///
 /// For more details see <<https://stripe.com/docs/api/refunds/object>>.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct Refund {
     /// Amount, in cents (or local equivalent).
@@ -57,6 +58,12 @@ pub struct Refund {
     /// This refers to the transfer reversal object if the accompanying transfer reverses.
     /// This is only applicable if the charge was created using the destination parameter.
     pub transfer_reversal: Option<stripe_types::Expandable<stripe_shared::TransferReversal>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for Refund {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("Refund").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct RefundBuilder {
@@ -383,9 +390,16 @@ impl std::fmt::Display for RefundPendingReason {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for RefundPendingReason {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RefundPendingReason {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(RefundPendingReason)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -466,9 +480,16 @@ impl std::fmt::Display for RefundReason {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for RefundReason {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RefundReason {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(RefundReason)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

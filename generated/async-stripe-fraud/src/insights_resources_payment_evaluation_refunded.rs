@@ -1,5 +1,6 @@
 /// Refunded Event details attached to this payment evaluation.
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct InsightsResourcesPaymentEvaluationRefunded {
@@ -11,6 +12,12 @@ pub struct InsightsResourcesPaymentEvaluationRefunded {
     pub currency: stripe_types::Currency,
     /// Indicates the reason for the refund.
     pub reason: InsightsResourcesPaymentEvaluationRefundedReason,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for InsightsResourcesPaymentEvaluationRefunded {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("InsightsResourcesPaymentEvaluationRefunded").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct InsightsResourcesPaymentEvaluationRefundedBuilder {
@@ -167,9 +174,17 @@ impl std::fmt::Display for InsightsResourcesPaymentEvaluationRefundedReason {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for InsightsResourcesPaymentEvaluationRefundedReason {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for InsightsResourcesPaymentEvaluationRefundedReason {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(InsightsResourcesPaymentEvaluationRefundedReason))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

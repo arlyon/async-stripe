@@ -1,10 +1,17 @@
 /// Details of a merchant_blocked outcome attached to this payment evaluation.
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct InsightsResourcesPaymentEvaluationMerchantBlocked {
     /// The reason the payment was blocked by the merchant.
     pub reason: InsightsResourcesPaymentEvaluationMerchantBlockedReason,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for InsightsResourcesPaymentEvaluationMerchantBlocked {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("InsightsResourcesPaymentEvaluationMerchantBlocked").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct InsightsResourcesPaymentEvaluationMerchantBlockedBuilder {
@@ -149,9 +156,17 @@ impl std::fmt::Display for InsightsResourcesPaymentEvaluationMerchantBlockedReas
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for InsightsResourcesPaymentEvaluationMerchantBlockedReason {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for InsightsResourcesPaymentEvaluationMerchantBlockedReason {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(InsightsResourcesPaymentEvaluationMerchantBlockedReason))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

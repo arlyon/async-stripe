@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct AccountCapabilities {
@@ -126,6 +127,12 @@ pub struct AccountCapabilities {
     pub us_bank_transfer_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
     /// The status of the Zip capability of the account, or whether the account can directly process Zip charges.
     pub zip_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for AccountCapabilities {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("AccountCapabilities").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct AccountCapabilitiesBuilder {
@@ -748,9 +755,16 @@ impl std::fmt::Display for AccountCapabilitiesStatus {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for AccountCapabilitiesStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for AccountCapabilitiesStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(AccountCapabilitiesStatus)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

@@ -1,4 +1,5 @@
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentIntentProcessingCustomerNotification {
@@ -7,6 +8,12 @@ pub struct PaymentIntentProcessingCustomerNotification {
     pub approval_requested: Option<bool>,
     /// If customer approval is required, they need to provide approval before this time.
     pub completes_at: Option<stripe_types::Timestamp>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentIntentProcessingCustomerNotification {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PaymentIntentProcessingCustomerNotification").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct PaymentIntentProcessingCustomerNotificationBuilder {

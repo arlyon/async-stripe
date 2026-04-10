@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct FinancialReportingFinanceReportRunRunParameters {
@@ -23,6 +24,12 @@ pub struct FinancialReportingFinanceReportRunRunParameters {
     /// A list of possible time zone values is maintained at the [IANA Time Zone Database](http://www.iana.org/time-zones).
     /// Has no effect on `interval_start` or `interval_end`.
     pub timezone: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for FinancialReportingFinanceReportRunRunParameters {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("FinancialReportingFinanceReportRunRunParameters").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct FinancialReportingFinanceReportRunRunParametersBuilder {

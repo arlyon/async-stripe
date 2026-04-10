@@ -3,10 +3,18 @@ use stripe_client_core::{
 };
 
 /// Deletes an existing `tax_id` object.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct DeleteCustomerTaxId {
     customer: stripe_shared::CustomerId,
     id: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for DeleteCustomerTaxId {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("DeleteCustomerTaxId").finish_non_exhaustive()
+    }
 }
 impl DeleteCustomerTaxId {
     /// Construct a new `DeleteCustomerTaxId`.
@@ -42,9 +50,17 @@ impl StripeRequest for DeleteCustomerTaxId {
     }
 }
 /// Deletes an existing account or customer `tax_id` object.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct DeleteIdTaxId {
     id: stripe_shared::TaxIdId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for DeleteIdTaxId {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("DeleteIdTaxId").finish_non_exhaustive()
+    }
 }
 impl DeleteIdTaxId {
     /// Construct a new `DeleteIdTaxId`.
@@ -78,7 +94,9 @@ impl StripeRequest for DeleteIdTaxId {
         RequestBuilder::new(StripeMethod::Delete, format!("/tax_ids/{id}"))
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ListCustomerTaxIdBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<String>,
@@ -89,16 +107,30 @@ struct ListCustomerTaxIdBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     starting_after: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListCustomerTaxIdBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListCustomerTaxIdBuilder").finish_non_exhaustive()
+    }
+}
 impl ListCustomerTaxIdBuilder {
     fn new() -> Self {
         Self { ending_before: None, expand: None, limit: None, starting_after: None }
     }
 }
 /// Returns a list of tax IDs for a customer.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListCustomerTaxId {
     inner: ListCustomerTaxIdBuilder,
     customer: stripe_shared::CustomerId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListCustomerTaxId {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListCustomerTaxId").finish_non_exhaustive()
+    }
 }
 impl ListCustomerTaxId {
     /// Construct a new `ListCustomerTaxId`.
@@ -169,10 +201,18 @@ impl StripeRequest for ListCustomerTaxId {
             .query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RetrieveCustomerTaxIdBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveCustomerTaxIdBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveCustomerTaxIdBuilder").finish_non_exhaustive()
+    }
 }
 impl RetrieveCustomerTaxIdBuilder {
     fn new() -> Self {
@@ -180,11 +220,19 @@ impl RetrieveCustomerTaxIdBuilder {
     }
 }
 /// Retrieves the `tax_id` object with the given identifier.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RetrieveCustomerTaxId {
     inner: RetrieveCustomerTaxIdBuilder,
     customer: stripe_shared::CustomerId,
     id: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveCustomerTaxId {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveCustomerTaxId").finish_non_exhaustive()
+    }
 }
 impl RetrieveCustomerTaxId {
     /// Construct a new `RetrieveCustomerTaxId`.
@@ -229,7 +277,9 @@ impl StripeRequest for RetrieveCustomerTaxId {
             .query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ListTaxIdBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<String>,
@@ -242,13 +292,21 @@ struct ListTaxIdBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     starting_after: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListTaxIdBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListTaxIdBuilder").finish_non_exhaustive()
+    }
+}
 impl ListTaxIdBuilder {
     fn new() -> Self {
         Self { ending_before: None, expand: None, limit: None, owner: None, starting_after: None }
     }
 }
 /// The account or customer the tax ID belongs to. Defaults to `owner[type]=self`.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListTaxIdOwner {
     /// Connected Account the tax ID belongs to. Required when `type=account`
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -263,6 +321,12 @@ pub struct ListTaxIdOwner {
     /// Type of owner referenced.
     #[serde(rename = "type")]
     pub type_: ListTaxIdOwnerType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListTaxIdOwner {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListTaxIdOwner").finish_non_exhaustive()
+    }
 }
 impl ListTaxIdOwner {
     pub fn new(type_: impl Into<ListTaxIdOwnerType>) -> Self {
@@ -315,9 +379,16 @@ impl std::fmt::Display for ListTaxIdOwnerType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ListTaxIdOwnerType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListTaxIdOwnerType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ListTaxIdOwnerType)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ListTaxIdOwnerType {
@@ -337,9 +408,17 @@ impl<'de> serde::Deserialize<'de> for ListTaxIdOwnerType {
     }
 }
 /// Returns a list of tax IDs.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListTaxId {
     inner: ListTaxIdBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListTaxId {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListTaxId").finish_non_exhaustive()
+    }
 }
 impl ListTaxId {
     /// Construct a new `ListTaxId`.
@@ -413,10 +492,18 @@ impl StripeRequest for ListTaxId {
         RequestBuilder::new(StripeMethod::Get, "/tax_ids").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RetrieveIdTaxIdBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveIdTaxIdBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveIdTaxIdBuilder").finish_non_exhaustive()
+    }
 }
 impl RetrieveIdTaxIdBuilder {
     fn new() -> Self {
@@ -424,10 +511,18 @@ impl RetrieveIdTaxIdBuilder {
     }
 }
 /// Retrieves an account or customer `tax_id` object.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RetrieveIdTaxId {
     inner: RetrieveIdTaxIdBuilder,
     id: stripe_shared::TaxIdId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveIdTaxId {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveIdTaxId").finish_non_exhaustive()
+    }
 }
 impl RetrieveIdTaxId {
     /// Construct a new `RetrieveIdTaxId`.
@@ -466,13 +561,21 @@ impl StripeRequest for RetrieveIdTaxId {
         RequestBuilder::new(StripeMethod::Get, format!("/tax_ids/{id}")).query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct CreateCustomerTaxIdBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
     #[serde(rename = "type")]
     type_: CreateCustomerTaxIdType,
     value: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCustomerTaxIdBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCustomerTaxIdBuilder").finish_non_exhaustive()
+    }
 }
 impl CreateCustomerTaxIdBuilder {
     fn new(type_: impl Into<CreateCustomerTaxIdType>, value: impl Into<String>) -> Self {
@@ -849,9 +952,16 @@ impl std::fmt::Display for CreateCustomerTaxIdType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCustomerTaxIdType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCustomerTaxIdType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCustomerTaxIdType)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCustomerTaxIdType {
@@ -871,10 +981,18 @@ impl<'de> serde::Deserialize<'de> for CreateCustomerTaxIdType {
     }
 }
 /// Creates a new `tax_id` object for a customer.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCustomerTaxId {
     inner: CreateCustomerTaxIdBuilder,
     customer: stripe_shared::CustomerId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCustomerTaxId {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCustomerTaxId").finish_non_exhaustive()
+    }
 }
 impl CreateCustomerTaxId {
     /// Construct a new `CreateCustomerTaxId`.
@@ -921,7 +1039,9 @@ impl StripeRequest for CreateCustomerTaxId {
             .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct CreateTaxIdBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -931,13 +1051,21 @@ struct CreateTaxIdBuilder {
     type_: CreateTaxIdType,
     value: String,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxIdBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxIdBuilder").finish_non_exhaustive()
+    }
+}
 impl CreateTaxIdBuilder {
     fn new(type_: impl Into<CreateTaxIdType>, value: impl Into<String>) -> Self {
         Self { expand: None, owner: None, type_: type_.into(), value: value.into() }
     }
 }
 /// The account or customer the tax ID belongs to. Defaults to `owner[type]=self`.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxIdOwner {
     /// Connected Account the tax ID belongs to. Required when `type=account`
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -952,6 +1080,12 @@ pub struct CreateTaxIdOwner {
     /// Type of owner referenced.
     #[serde(rename = "type")]
     pub type_: CreateTaxIdOwnerType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxIdOwner {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxIdOwner").finish_non_exhaustive()
+    }
 }
 impl CreateTaxIdOwner {
     pub fn new(type_: impl Into<CreateTaxIdOwnerType>) -> Self {
@@ -1004,9 +1138,16 @@ impl std::fmt::Display for CreateTaxIdOwnerType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxIdOwnerType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxIdOwnerType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxIdOwnerType)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxIdOwnerType {
@@ -1395,9 +1536,16 @@ impl std::fmt::Display for CreateTaxIdType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxIdType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxIdType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxIdType)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxIdType {
@@ -1417,9 +1565,17 @@ impl<'de> serde::Deserialize<'de> for CreateTaxIdType {
     }
 }
 /// Creates a new account or customer `tax_id` object.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxId {
     inner: CreateTaxIdBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxId {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxId").finish_non_exhaustive()
+    }
 }
 impl CreateTaxId {
     /// Construct a new `CreateTaxId`.

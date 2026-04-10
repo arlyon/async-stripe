@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentPagesCheckoutSessionSavedPaymentMethodOptions {
@@ -13,6 +14,13 @@ pub struct PaymentPagesCheckoutSessionSavedPaymentMethodOptions {
     /// Disabled by default.
     pub payment_method_save:
         Option<PaymentPagesCheckoutSessionSavedPaymentMethodOptionsPaymentMethodSave>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentPagesCheckoutSessionSavedPaymentMethodOptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PaymentPagesCheckoutSessionSavedPaymentMethodOptions")
+            .finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct PaymentPagesCheckoutSessionSavedPaymentMethodOptionsBuilder {
@@ -188,9 +196,19 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for PaymentPagesCheckoutSessionSavedPaymentMethodOptionsAllowRedisplayFilters {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentPagesCheckoutSessionSavedPaymentMethodOptionsAllowRedisplayFilters {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            PaymentPagesCheckoutSessionSavedPaymentMethodOptionsAllowRedisplayFilters
+        ))
+        .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -282,9 +300,19 @@ impl std::fmt::Display for PaymentPagesCheckoutSessionSavedPaymentMethodOptionsP
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for PaymentPagesCheckoutSessionSavedPaymentMethodOptionsPaymentMethodRemove {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentPagesCheckoutSessionSavedPaymentMethodOptionsPaymentMethodRemove {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            PaymentPagesCheckoutSessionSavedPaymentMethodOptionsPaymentMethodRemove
+        ))
+        .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -375,9 +403,19 @@ impl std::fmt::Display for PaymentPagesCheckoutSessionSavedPaymentMethodOptionsP
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for PaymentPagesCheckoutSessionSavedPaymentMethodOptionsPaymentMethodSave {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentPagesCheckoutSessionSavedPaymentMethodOptionsPaymentMethodSave {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            PaymentPagesCheckoutSessionSavedPaymentMethodOptionsPaymentMethodSave
+        ))
+        .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

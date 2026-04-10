@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct RevolutPayUnderlyingPaymentMethodFundingDetails {
@@ -6,6 +7,12 @@ pub struct RevolutPayUnderlyingPaymentMethodFundingDetails {
     /// funding type of the underlying payment method.
     #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "type"))]
     pub type_: Option<RevolutPayUnderlyingPaymentMethodFundingDetailsType>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RevolutPayUnderlyingPaymentMethodFundingDetails {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RevolutPayUnderlyingPaymentMethodFundingDetails").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct RevolutPayUnderlyingPaymentMethodFundingDetailsBuilder {
@@ -144,9 +151,17 @@ impl std::fmt::Display for RevolutPayUnderlyingPaymentMethodFundingDetailsType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for RevolutPayUnderlyingPaymentMethodFundingDetailsType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RevolutPayUnderlyingPaymentMethodFundingDetailsType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(RevolutPayUnderlyingPaymentMethodFundingDetailsType))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

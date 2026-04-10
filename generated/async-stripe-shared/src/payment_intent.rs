@@ -11,7 +11,8 @@
 /// Related guide: [Payment Intents API](https://docs.stripe.com/payments/payment-intents)
 ///
 /// For more details see <<https://stripe.com/docs/api/payment_intents/object>>.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentIntent {
     /// Amount intended to be collected by this PaymentIntent.
@@ -149,6 +150,12 @@ pub struct PaymentIntent {
     /// A string that identifies the resulting payment as part of a group.
     /// Learn more about the [use case for connected accounts](https://docs.stripe.com/connect/separate-charges-and-transfers).
     pub transfer_group: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentIntent {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PaymentIntent").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct PaymentIntentBuilder {
@@ -687,9 +694,16 @@ impl std::fmt::Display for PaymentIntentCancellationReason {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for PaymentIntentCancellationReason {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentIntentCancellationReason {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(PaymentIntentCancellationReason)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -780,9 +794,16 @@ impl std::fmt::Display for PaymentIntentStatus {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for PaymentIntentStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentIntentStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(PaymentIntentStatus)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -870,9 +891,16 @@ impl std::fmt::Display for PaymentIntentCaptureMethod {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for PaymentIntentCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentIntentCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(PaymentIntentCaptureMethod)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for PaymentIntentCaptureMethod {
@@ -949,9 +977,16 @@ impl std::fmt::Display for PaymentIntentConfirmationMethod {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for PaymentIntentConfirmationMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentIntentConfirmationMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(PaymentIntentConfirmationMethod)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for PaymentIntentConfirmationMethod {
@@ -1172,9 +1207,16 @@ impl std::fmt::Display for PaymentIntentExcludedPaymentMethodTypes {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for PaymentIntentExcludedPaymentMethodTypes {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentIntentExcludedPaymentMethodTypes {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(PaymentIntentExcludedPaymentMethodTypes)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for PaymentIntentExcludedPaymentMethodTypes {
@@ -1251,9 +1293,16 @@ impl std::fmt::Display for PaymentIntentSetupFutureUsage {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for PaymentIntentSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentIntentSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(PaymentIntentSetupFutureUsage)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for PaymentIntentSetupFutureUsage {

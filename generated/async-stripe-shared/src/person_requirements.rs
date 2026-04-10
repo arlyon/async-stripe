@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PersonRequirements {
@@ -21,6 +22,12 @@ pub struct PersonRequirements {
     /// If the review fails, these fields can move to `eventually_due`, `currently_due`, `past_due` or `alternatives`.
     /// Fields might appear in `eventually_due`, `currently_due`, `past_due` or `alternatives` and in `pending_verification` if one verification fails but another is still pending.
     pub pending_verification: Vec<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PersonRequirements {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PersonRequirements").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct PersonRequirementsBuilder {

@@ -2,7 +2,9 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ListRefundBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     charge: Option<String>,
@@ -18,6 +20,12 @@ struct ListRefundBuilder {
     payment_intent: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     starting_after: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListRefundBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListRefundBuilder").finish_non_exhaustive()
+    }
 }
 impl ListRefundBuilder {
     fn new() -> Self {
@@ -35,9 +43,17 @@ impl ListRefundBuilder {
 /// Returns a list of all refunds you created.
 /// We return the refunds in sorted order, with the most recent refunds appearing first.
 /// The 10 most recent refunds are always available by default on the Charge object.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListRefund {
     inner: ListRefundBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListRefund {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListRefund").finish_non_exhaustive()
+    }
 }
 impl ListRefund {
     /// Construct a new `ListRefund`.
@@ -121,10 +137,18 @@ impl StripeRequest for ListRefund {
         RequestBuilder::new(StripeMethod::Get, "/refunds").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RetrieveRefundBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveRefundBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveRefundBuilder").finish_non_exhaustive()
+    }
 }
 impl RetrieveRefundBuilder {
     fn new() -> Self {
@@ -132,10 +156,18 @@ impl RetrieveRefundBuilder {
     }
 }
 /// Retrieves the details of an existing refund.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RetrieveRefund {
     inner: RetrieveRefundBuilder,
     refund: stripe_shared::RefundId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveRefund {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveRefund").finish_non_exhaustive()
+    }
 }
 impl RetrieveRefund {
     /// Construct a new `RetrieveRefund`.
@@ -174,7 +206,9 @@ impl StripeRequest for RetrieveRefund {
         RequestBuilder::new(StripeMethod::Get, format!("/refunds/{refund}")).query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct CreateRefundBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     amount: Option<i64>,
@@ -200,6 +234,12 @@ struct CreateRefundBuilder {
     refund_application_fee: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     reverse_transfer: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateRefundBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateRefundBuilder").finish_non_exhaustive()
+    }
 }
 impl CreateRefundBuilder {
     fn new() -> Self {
@@ -256,9 +296,16 @@ impl std::fmt::Display for CreateRefundOrigin {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateRefundOrigin {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateRefundOrigin {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateRefundOrigin)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateRefundOrigin {
@@ -322,9 +369,16 @@ impl std::fmt::Display for CreateRefundReason {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateRefundReason {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateRefundReason {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateRefundReason)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateRefundReason {
@@ -354,9 +408,17 @@ impl<'de> serde::Deserialize<'de> for CreateRefundReason {
 /// Once entirely refunded, a charge can’t be refunded again.
 /// This method will raise an error when called on an already-refunded charge,
 /// or when trying to refund more money than is left on a charge.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateRefund {
     inner: CreateRefundBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateRefund {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateRefund").finish_non_exhaustive()
+    }
 }
 impl CreateRefund {
     /// Construct a new `CreateRefund`.
@@ -468,12 +530,20 @@ impl StripeRequest for CreateRefund {
         RequestBuilder::new(StripeMethod::Post, "/refunds").form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct UpdateRefundBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     metadata: Option<std::collections::HashMap<String, String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateRefundBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateRefundBuilder").finish_non_exhaustive()
+    }
 }
 impl UpdateRefundBuilder {
     fn new() -> Self {
@@ -484,10 +554,18 @@ impl UpdateRefundBuilder {
 /// Any parameters that you don’t provide remain unchanged.
 ///
 /// This request only accepts `metadata` as an argument.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateRefund {
     inner: UpdateRefundBuilder,
     refund: stripe_shared::RefundId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateRefund {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateRefund").finish_non_exhaustive()
+    }
 }
 impl UpdateRefund {
     /// Construct a new `UpdateRefund`.
@@ -537,10 +615,18 @@ impl StripeRequest for UpdateRefund {
         RequestBuilder::new(StripeMethod::Post, format!("/refunds/{refund}")).form(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct CancelRefundBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CancelRefundBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CancelRefundBuilder").finish_non_exhaustive()
+    }
 }
 impl CancelRefundBuilder {
     fn new() -> Self {
@@ -551,10 +637,18 @@ impl CancelRefundBuilder {
 ///
 /// You can’t cancel refunds in other states.
 /// Only refunds for payment methods that require customer action can enter the `requires_action` state.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CancelRefund {
     inner: CancelRefundBuilder,
     refund: stripe_shared::RefundId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CancelRefund {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CancelRefund").finish_non_exhaustive()
+    }
 }
 impl CancelRefund {
     /// Construct a new `CancelRefund`.
@@ -594,10 +688,18 @@ impl StripeRequest for CancelRefund {
             .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ExpireRefundBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ExpireRefundBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ExpireRefundBuilder").finish_non_exhaustive()
+    }
 }
 impl ExpireRefundBuilder {
     fn new() -> Self {
@@ -605,10 +707,18 @@ impl ExpireRefundBuilder {
     }
 }
 /// Expire a refund with a status of `requires_action`.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ExpireRefund {
     inner: ExpireRefundBuilder,
     refund: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ExpireRefund {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ExpireRefund").finish_non_exhaustive()
+    }
 }
 impl ExpireRefund {
     /// Construct a new `ExpireRefund`.

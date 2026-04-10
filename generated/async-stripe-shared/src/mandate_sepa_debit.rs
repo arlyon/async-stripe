@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct MandateSepaDebit {
@@ -7,6 +8,12 @@ pub struct MandateSepaDebit {
     /// The URL of the mandate.
     /// This URL generally contains sensitive information about the customer and should be shared with them exclusively.
     pub url: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for MandateSepaDebit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("MandateSepaDebit").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct MandateSepaDebitBuilder {

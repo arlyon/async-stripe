@@ -1,5 +1,6 @@
 /// Represents custom text to be displayed when collecting the input using a reader
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TerminalReaderReaderResourceCustomText {
@@ -11,6 +12,12 @@ pub struct TerminalReaderReaderResourceCustomText {
     pub submit_button: Option<String>,
     /// Customize the default title for this input
     pub title: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TerminalReaderReaderResourceCustomText {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("TerminalReaderReaderResourceCustomText").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct TerminalReaderReaderResourceCustomTextBuilder {

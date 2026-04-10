@@ -4,7 +4,8 @@
 /// Payment Attempt Records are attached to Payment Records.
 /// Only one attempt per Payment Record.
 /// can have guaranteed funds.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentAttemptRecord {
     pub amount: stripe_shared::PaymentsPrimitivesPaymentRecordsResourceAmount,
@@ -44,6 +45,12 @@ pub struct PaymentAttemptRecord {
     /// Shipping information for this payment.
     pub shipping_details:
         Option<stripe_shared::PaymentsPrimitivesPaymentRecordsResourceShippingDetails>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentAttemptRecord {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PaymentAttemptRecord").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct PaymentAttemptRecordBuilder {
@@ -360,9 +367,16 @@ impl std::fmt::Display for PaymentAttemptRecordCustomerPresence {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for PaymentAttemptRecordCustomerPresence {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentAttemptRecordCustomerPresence {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(PaymentAttemptRecordCustomerPresence)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -441,9 +455,16 @@ impl std::fmt::Display for PaymentAttemptRecordReportedBy {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for PaymentAttemptRecordReportedBy {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentAttemptRecordReportedBy {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(PaymentAttemptRecordReportedBy)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

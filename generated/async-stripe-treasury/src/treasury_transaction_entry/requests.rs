@@ -2,7 +2,9 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ListTreasuryTransactionEntryBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     created: Option<stripe_types::RangeQueryTs>,
@@ -21,6 +23,12 @@ struct ListTreasuryTransactionEntryBuilder {
     starting_after: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     transaction: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListTreasuryTransactionEntryBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListTreasuryTransactionEntryBuilder").finish_non_exhaustive()
+    }
 }
 impl ListTreasuryTransactionEntryBuilder {
     fn new(financial_account: impl Into<String>) -> Self {
@@ -82,9 +90,16 @@ impl std::fmt::Display for ListTreasuryTransactionEntryOrderBy {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ListTreasuryTransactionEntryOrderBy {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListTreasuryTransactionEntryOrderBy {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ListTreasuryTransactionEntryOrderBy)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ListTreasuryTransactionEntryOrderBy {
@@ -104,9 +119,17 @@ impl<'de> serde::Deserialize<'de> for ListTreasuryTransactionEntryOrderBy {
     }
 }
 /// Retrieves a list of TransactionEntry objects.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListTreasuryTransactionEntry {
     inner: ListTreasuryTransactionEntryBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListTreasuryTransactionEntry {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListTreasuryTransactionEntry").finish_non_exhaustive()
+    }
 }
 impl ListTreasuryTransactionEntry {
     /// Construct a new `ListTreasuryTransactionEntry`.
@@ -192,10 +215,18 @@ impl StripeRequest for ListTreasuryTransactionEntry {
         RequestBuilder::new(StripeMethod::Get, "/treasury/transaction_entries").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RetrieveTreasuryTransactionEntryBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveTreasuryTransactionEntryBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveTreasuryTransactionEntryBuilder").finish_non_exhaustive()
+    }
 }
 impl RetrieveTreasuryTransactionEntryBuilder {
     fn new() -> Self {
@@ -203,10 +234,18 @@ impl RetrieveTreasuryTransactionEntryBuilder {
     }
 }
 /// Retrieves a TransactionEntry object.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RetrieveTreasuryTransactionEntry {
     inner: RetrieveTreasuryTransactionEntryBuilder,
     id: stripe_treasury::TreasuryTransactionEntryId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveTreasuryTransactionEntry {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveTreasuryTransactionEntry").finish_non_exhaustive()
+    }
 }
 impl RetrieveTreasuryTransactionEntry {
     /// Construct a new `RetrieveTreasuryTransactionEntry`.

@@ -2,7 +2,9 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ListPaymentMethodConfigurationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     application: Option<String>,
@@ -14,6 +16,12 @@ struct ListPaymentMethodConfigurationBuilder {
     limit: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
     starting_after: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListPaymentMethodConfigurationBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListPaymentMethodConfigurationBuilder").finish_non_exhaustive()
+    }
 }
 impl ListPaymentMethodConfigurationBuilder {
     fn new() -> Self {
@@ -27,9 +35,17 @@ impl ListPaymentMethodConfigurationBuilder {
     }
 }
 /// List payment method configurations
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListPaymentMethodConfiguration {
     inner: ListPaymentMethodConfigurationBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListPaymentMethodConfiguration {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListPaymentMethodConfiguration").finish_non_exhaustive()
+    }
 }
 impl ListPaymentMethodConfiguration {
     /// Construct a new `ListPaymentMethodConfiguration`.
@@ -105,10 +121,18 @@ impl StripeRequest for ListPaymentMethodConfiguration {
         RequestBuilder::new(StripeMethod::Get, "/payment_method_configurations").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RetrievePaymentMethodConfigurationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrievePaymentMethodConfigurationBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrievePaymentMethodConfigurationBuilder").finish_non_exhaustive()
+    }
 }
 impl RetrievePaymentMethodConfigurationBuilder {
     fn new() -> Self {
@@ -116,10 +140,18 @@ impl RetrievePaymentMethodConfigurationBuilder {
     }
 }
 /// Retrieve payment method configuration
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RetrievePaymentMethodConfiguration {
     inner: RetrievePaymentMethodConfigurationBuilder,
     configuration: stripe_payment::PaymentMethodConfigurationId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrievePaymentMethodConfiguration {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrievePaymentMethodConfiguration").finish_non_exhaustive()
+    }
 }
 impl RetrievePaymentMethodConfiguration {
     /// Construct a new `RetrievePaymentMethodConfiguration`.
@@ -165,7 +197,9 @@ impl StripeRequest for RetrievePaymentMethodConfiguration {
         .query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct CreatePaymentMethodConfigurationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     acss_debit: Option<CreatePaymentMethodConfigurationAcssDebit>,
@@ -288,6 +322,12 @@ struct CreatePaymentMethodConfigurationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     zip: Option<CreatePaymentMethodConfigurationZip>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationBuilder").finish_non_exhaustive()
+    }
+}
 impl CreatePaymentMethodConfigurationBuilder {
     fn new() -> Self {
         Self {
@@ -355,11 +395,19 @@ impl CreatePaymentMethodConfigurationBuilder {
     }
 }
 /// Canadian pre-authorized debit payments, check this [page](https://docs.stripe.com/payments/acss-debit) for more details like country availability.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationAcssDebit {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<CreatePaymentMethodConfigurationAcssDebitDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationAcssDebit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationAcssDebit").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationAcssDebit {
     pub fn new() -> Self {
@@ -372,11 +420,20 @@ impl Default for CreatePaymentMethodConfigurationAcssDebit {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationAcssDebitDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<CreatePaymentMethodConfigurationAcssDebitDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationAcssDebitDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationAcssDebitDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationAcssDebitDisplayPreference {
     pub fn new() -> Self {
@@ -435,9 +492,19 @@ impl std::fmt::Display for CreatePaymentMethodConfigurationAcssDebitDisplayPrefe
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentMethodConfigurationAcssDebitDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationAcssDebitDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePaymentMethodConfigurationAcssDebitDisplayPreferencePreference
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentMethodConfigurationAcssDebitDisplayPreferencePreference {
@@ -461,11 +528,19 @@ impl<'de> serde::Deserialize<'de>
 /// [Affirm](https://www.affirm.com/) gives your customers a way to split purchases over a series of payments.
 /// Depending on the purchase, they can pay with four interest-free payments (Split Pay) or pay over a longer term (Installments), which might include interest.
 /// Check this [page](https://docs.stripe.com/payments/affirm) for more details like country availability.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationAffirm {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<CreatePaymentMethodConfigurationAffirmDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationAffirm {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationAffirm").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationAffirm {
     pub fn new() -> Self {
@@ -478,11 +553,20 @@ impl Default for CreatePaymentMethodConfigurationAffirm {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationAffirmDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<CreatePaymentMethodConfigurationAffirmDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationAffirmDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationAffirmDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationAffirmDisplayPreference {
     pub fn new() -> Self {
@@ -541,9 +625,19 @@ impl std::fmt::Display for CreatePaymentMethodConfigurationAffirmDisplayPreferen
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentMethodConfigurationAffirmDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationAffirmDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePaymentMethodConfigurationAffirmDisplayPreferencePreference
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentMethodConfigurationAffirmDisplayPreferencePreference {
@@ -566,12 +660,20 @@ impl<'de> serde::Deserialize<'de>
 }
 /// Afterpay gives your customers a way to pay for purchases in installments, check this [page](https://docs.stripe.com/payments/afterpay-clearpay) for more details like country availability.
 /// Afterpay is particularly popular among businesses selling fashion, beauty, and sports products.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationAfterpayClearpay {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference:
         Option<CreatePaymentMethodConfigurationAfterpayClearpayDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationAfterpayClearpay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationAfterpayClearpay").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationAfterpayClearpay {
     pub fn new() -> Self {
@@ -584,12 +686,21 @@ impl Default for CreatePaymentMethodConfigurationAfterpayClearpay {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationAfterpayClearpayDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference:
         Option<CreatePaymentMethodConfigurationAfterpayClearpayDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationAfterpayClearpayDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationAfterpayClearpayDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationAfterpayClearpayDisplayPreference {
     pub fn new() -> Self {
@@ -652,11 +763,23 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for CreatePaymentMethodConfigurationAfterpayClearpayDisplayPreferencePreference
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for CreatePaymentMethodConfigurationAfterpayClearpayDisplayPreferencePreference
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePaymentMethodConfigurationAfterpayClearpayDisplayPreferencePreference
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -683,11 +806,19 @@ impl<'de> serde::Deserialize<'de>
 /// Alipay users can pay on the web or on a mobile device using login credentials or their Alipay app.
 /// Alipay has a low dispute rate and reduces fraud by authenticating payments using the customer's login credentials.
 /// Check this [page](https://docs.stripe.com/payments/alipay) for more details.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationAlipay {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<CreatePaymentMethodConfigurationAlipayDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationAlipay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationAlipay").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationAlipay {
     pub fn new() -> Self {
@@ -700,11 +831,20 @@ impl Default for CreatePaymentMethodConfigurationAlipay {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationAlipayDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<CreatePaymentMethodConfigurationAlipayDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationAlipayDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationAlipayDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationAlipayDisplayPreference {
     pub fn new() -> Self {
@@ -763,9 +903,19 @@ impl std::fmt::Display for CreatePaymentMethodConfigurationAlipayDisplayPreferen
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentMethodConfigurationAlipayDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationAlipayDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePaymentMethodConfigurationAlipayDisplayPreferencePreference
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentMethodConfigurationAlipayDisplayPreferencePreference {
@@ -787,11 +937,19 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Alma is a Buy Now, Pay Later payment method that offers customers the ability to pay in 2, 3, or 4 installments.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationAlma {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<CreatePaymentMethodConfigurationAlmaDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationAlma {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationAlma").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationAlma {
     pub fn new() -> Self {
@@ -804,11 +962,20 @@ impl Default for CreatePaymentMethodConfigurationAlma {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationAlmaDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<CreatePaymentMethodConfigurationAlmaDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationAlmaDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationAlmaDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationAlmaDisplayPreference {
     pub fn new() -> Self {
@@ -867,9 +1034,17 @@ impl std::fmt::Display for CreatePaymentMethodConfigurationAlmaDisplayPreference
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentMethodConfigurationAlmaDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationAlmaDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentMethodConfigurationAlmaDisplayPreferencePreference))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentMethodConfigurationAlmaDisplayPreferencePreference {
@@ -891,11 +1066,19 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Amazon Pay is a wallet payment method that lets your customers check out the same way as on Amazon.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationAmazonPay {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<CreatePaymentMethodConfigurationAmazonPayDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationAmazonPay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationAmazonPay").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationAmazonPay {
     pub fn new() -> Self {
@@ -908,11 +1091,20 @@ impl Default for CreatePaymentMethodConfigurationAmazonPay {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationAmazonPayDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<CreatePaymentMethodConfigurationAmazonPayDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationAmazonPayDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationAmazonPayDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationAmazonPayDisplayPreference {
     pub fn new() -> Self {
@@ -971,9 +1163,19 @@ impl std::fmt::Display for CreatePaymentMethodConfigurationAmazonPayDisplayPrefe
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentMethodConfigurationAmazonPayDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationAmazonPayDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePaymentMethodConfigurationAmazonPayDisplayPreferencePreference
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentMethodConfigurationAmazonPayDisplayPreferencePreference {
@@ -997,11 +1199,19 @@ impl<'de> serde::Deserialize<'de>
 /// Stripe users can accept [Apple Pay](https://stripe.com/payments/apple-pay) in iOS applications in iOS 9 and later, and on the web in Safari starting with iOS 10 or macOS Sierra.
 /// There are no additional fees to process Apple Pay payments, and the [pricing](https://stripe.com/pricing) is the same as other card transactions.
 /// Check this [page](https://docs.stripe.com/apple-pay) for more details.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationApplePay {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<CreatePaymentMethodConfigurationApplePayDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationApplePay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationApplePay").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationApplePay {
     pub fn new() -> Self {
@@ -1014,11 +1224,20 @@ impl Default for CreatePaymentMethodConfigurationApplePay {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationApplePayDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<CreatePaymentMethodConfigurationApplePayDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationApplePayDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationApplePayDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationApplePayDisplayPreference {
     pub fn new() -> Self {
@@ -1077,9 +1296,19 @@ impl std::fmt::Display for CreatePaymentMethodConfigurationApplePayDisplayPrefer
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentMethodConfigurationApplePayDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationApplePayDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePaymentMethodConfigurationApplePayDisplayPreferencePreference
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentMethodConfigurationApplePayDisplayPreferencePreference {
@@ -1101,11 +1330,19 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Apple Pay Later, a payment method for customers to buy now and pay later, gives your customers a way to split purchases into four installments across six weeks.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationApplePayLater {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<CreatePaymentMethodConfigurationApplePayLaterDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationApplePayLater {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationApplePayLater").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationApplePayLater {
     pub fn new() -> Self {
@@ -1118,12 +1355,21 @@ impl Default for CreatePaymentMethodConfigurationApplePayLater {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationApplePayLaterDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference:
         Option<CreatePaymentMethodConfigurationApplePayLaterDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationApplePayLaterDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationApplePayLaterDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationApplePayLaterDisplayPreference {
     pub fn new() -> Self {
@@ -1186,9 +1432,19 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentMethodConfigurationApplePayLaterDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationApplePayLaterDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePaymentMethodConfigurationApplePayLaterDisplayPreferencePreference
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentMethodConfigurationApplePayLaterDisplayPreferencePreference {
@@ -1211,11 +1467,19 @@ impl<'de> serde::Deserialize<'de>
 }
 /// Stripe users in Australia can accept Bulk Electronic Clearing System (BECS) direct debit payments from customers with an Australian bank account.
 /// Check this [page](https://docs.stripe.com/payments/au-becs-debit) for more details.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationAuBecsDebit {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<CreatePaymentMethodConfigurationAuBecsDebitDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationAuBecsDebit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationAuBecsDebit").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationAuBecsDebit {
     pub fn new() -> Self {
@@ -1228,11 +1492,20 @@ impl Default for CreatePaymentMethodConfigurationAuBecsDebit {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationAuBecsDebitDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<CreatePaymentMethodConfigurationAuBecsDebitDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationAuBecsDebitDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationAuBecsDebitDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationAuBecsDebitDisplayPreference {
     pub fn new() -> Self {
@@ -1291,9 +1564,19 @@ impl std::fmt::Display for CreatePaymentMethodConfigurationAuBecsDebitDisplayPre
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentMethodConfigurationAuBecsDebitDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationAuBecsDebitDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePaymentMethodConfigurationAuBecsDebitDisplayPreferencePreference
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentMethodConfigurationAuBecsDebitDisplayPreferencePreference {
@@ -1315,11 +1598,19 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Stripe users in the UK can accept Bacs Direct Debit payments from customers with a UK bank account, check this [page](https://docs.stripe.com/payments/payment-methods/bacs-debit) for more details.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationBacsDebit {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<CreatePaymentMethodConfigurationBacsDebitDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationBacsDebit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationBacsDebit").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationBacsDebit {
     pub fn new() -> Self {
@@ -1332,11 +1623,20 @@ impl Default for CreatePaymentMethodConfigurationBacsDebit {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationBacsDebitDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<CreatePaymentMethodConfigurationBacsDebitDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationBacsDebitDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationBacsDebitDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationBacsDebitDisplayPreference {
     pub fn new() -> Self {
@@ -1395,9 +1695,19 @@ impl std::fmt::Display for CreatePaymentMethodConfigurationBacsDebitDisplayPrefe
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentMethodConfigurationBacsDebitDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationBacsDebitDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePaymentMethodConfigurationBacsDebitDisplayPreferencePreference
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentMethodConfigurationBacsDebitDisplayPreferencePreference {
@@ -1421,11 +1731,19 @@ impl<'de> serde::Deserialize<'de>
 /// Bancontact is the most popular online payment method in Belgium, with over 15 million cards in circulation.
 /// [Customers](https://docs.stripe.com/api/customers) use a Bancontact card or mobile app linked to a Belgian bank account to make online payments that are secure, guaranteed, and confirmed immediately.
 /// Check this [page](https://docs.stripe.com/payments/bancontact) for more details.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationBancontact {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<CreatePaymentMethodConfigurationBancontactDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationBancontact {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationBancontact").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationBancontact {
     pub fn new() -> Self {
@@ -1438,11 +1756,20 @@ impl Default for CreatePaymentMethodConfigurationBancontact {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationBancontactDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<CreatePaymentMethodConfigurationBancontactDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationBancontactDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationBancontactDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationBancontactDisplayPreference {
     pub fn new() -> Self {
@@ -1501,9 +1828,19 @@ impl std::fmt::Display for CreatePaymentMethodConfigurationBancontactDisplayPref
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentMethodConfigurationBancontactDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationBancontactDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePaymentMethodConfigurationBancontactDisplayPreferencePreference
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentMethodConfigurationBancontactDisplayPreferencePreference {
@@ -1527,11 +1864,19 @@ impl<'de> serde::Deserialize<'de>
 /// Billie is a [single-use](https://docs.stripe.com/payments/payment-methods#usage) payment method that offers businesses Pay by Invoice where they offer payment terms ranging from 7-120 days.
 /// Customers are redirected from your website or app, authorize the payment with Billie, then return to your website or app.
 /// You get [immediate notification](/payments/payment-methods#payment-notification) of whether the payment succeeded or failed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationBillie {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<CreatePaymentMethodConfigurationBillieDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationBillie {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationBillie").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationBillie {
     pub fn new() -> Self {
@@ -1544,11 +1889,20 @@ impl Default for CreatePaymentMethodConfigurationBillie {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationBillieDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<CreatePaymentMethodConfigurationBillieDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationBillieDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationBillieDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationBillieDisplayPreference {
     pub fn new() -> Self {
@@ -1607,9 +1961,19 @@ impl std::fmt::Display for CreatePaymentMethodConfigurationBillieDisplayPreferen
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentMethodConfigurationBillieDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationBillieDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePaymentMethodConfigurationBillieDisplayPreferencePreference
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentMethodConfigurationBillieDisplayPreferencePreference {
@@ -1633,11 +1997,19 @@ impl<'de> serde::Deserialize<'de>
 /// BLIK is a [single use](https://docs.stripe.com/payments/payment-methods#usage) payment method that requires customers to authenticate their payments.
 /// When customers want to pay online using BLIK, they request a six-digit code from their banking application and enter it into the payment collection form.
 /// Check this [page](https://docs.stripe.com/payments/blik) for more details.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationBlik {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<CreatePaymentMethodConfigurationBlikDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationBlik {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationBlik").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationBlik {
     pub fn new() -> Self {
@@ -1650,11 +2022,20 @@ impl Default for CreatePaymentMethodConfigurationBlik {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationBlikDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<CreatePaymentMethodConfigurationBlikDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationBlikDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationBlikDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationBlikDisplayPreference {
     pub fn new() -> Self {
@@ -1713,9 +2094,17 @@ impl std::fmt::Display for CreatePaymentMethodConfigurationBlikDisplayPreference
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentMethodConfigurationBlikDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationBlikDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentMethodConfigurationBlikDisplayPreferencePreference))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentMethodConfigurationBlikDisplayPreferencePreference {
@@ -1738,11 +2127,19 @@ impl<'de> serde::Deserialize<'de>
 }
 /// Boleto is an official (regulated by the Central Bank of Brazil) payment method in Brazil.
 /// Check this [page](https://docs.stripe.com/payments/boleto) for more details.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationBoleto {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<CreatePaymentMethodConfigurationBoletoDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationBoleto {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationBoleto").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationBoleto {
     pub fn new() -> Self {
@@ -1755,11 +2152,20 @@ impl Default for CreatePaymentMethodConfigurationBoleto {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationBoletoDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<CreatePaymentMethodConfigurationBoletoDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationBoletoDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationBoletoDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationBoletoDisplayPreference {
     pub fn new() -> Self {
@@ -1818,9 +2224,19 @@ impl std::fmt::Display for CreatePaymentMethodConfigurationBoletoDisplayPreferen
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentMethodConfigurationBoletoDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationBoletoDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePaymentMethodConfigurationBoletoDisplayPreferencePreference
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentMethodConfigurationBoletoDisplayPreferencePreference {
@@ -1843,11 +2259,19 @@ impl<'de> serde::Deserialize<'de>
 }
 /// Cards are a popular way for consumers and businesses to pay online or in person.
 /// Stripe supports global and local card networks.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationCard {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<CreatePaymentMethodConfigurationCardDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationCard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationCard").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationCard {
     pub fn new() -> Self {
@@ -1860,11 +2284,20 @@ impl Default for CreatePaymentMethodConfigurationCard {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationCardDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<CreatePaymentMethodConfigurationCardDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationCardDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationCardDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationCardDisplayPreference {
     pub fn new() -> Self {
@@ -1923,9 +2356,17 @@ impl std::fmt::Display for CreatePaymentMethodConfigurationCardDisplayPreference
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentMethodConfigurationCardDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationCardDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentMethodConfigurationCardDisplayPreferencePreference))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentMethodConfigurationCardDisplayPreferencePreference {
@@ -1949,12 +2390,20 @@ impl<'de> serde::Deserialize<'de>
 /// Cartes Bancaires is France's local card network.
 /// More than 95% of these cards are co-branded with either Visa or Mastercard, meaning you can process these cards over either Cartes Bancaires or the Visa or Mastercard networks.
 /// Check this [page](https://docs.stripe.com/payments/cartes-bancaires) for more details.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationCartesBancaires {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference:
         Option<CreatePaymentMethodConfigurationCartesBancairesDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationCartesBancaires {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationCartesBancaires").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationCartesBancaires {
     pub fn new() -> Self {
@@ -1967,12 +2416,21 @@ impl Default for CreatePaymentMethodConfigurationCartesBancaires {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationCartesBancairesDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference:
         Option<CreatePaymentMethodConfigurationCartesBancairesDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationCartesBancairesDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationCartesBancairesDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationCartesBancairesDisplayPreference {
     pub fn new() -> Self {
@@ -2035,11 +2493,23 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for CreatePaymentMethodConfigurationCartesBancairesDisplayPreferencePreference
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for CreatePaymentMethodConfigurationCartesBancairesDisplayPreferencePreference
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePaymentMethodConfigurationCartesBancairesDisplayPreferencePreference
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -2064,11 +2534,19 @@ impl<'de> serde::Deserialize<'de>
 }
 /// Cash App is a popular consumer app in the US that allows customers to bank, invest, send, and receive money using their digital wallet.
 /// Check this [page](https://docs.stripe.com/payments/cash-app-pay) for more details.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationCashapp {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<CreatePaymentMethodConfigurationCashappDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationCashapp {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationCashapp").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationCashapp {
     pub fn new() -> Self {
@@ -2081,11 +2559,20 @@ impl Default for CreatePaymentMethodConfigurationCashapp {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationCashappDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<CreatePaymentMethodConfigurationCashappDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationCashappDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationCashappDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationCashappDisplayPreference {
     pub fn new() -> Self {
@@ -2144,9 +2631,19 @@ impl std::fmt::Display for CreatePaymentMethodConfigurationCashappDisplayPrefere
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentMethodConfigurationCashappDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationCashappDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePaymentMethodConfigurationCashappDisplayPreferencePreference
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentMethodConfigurationCashappDisplayPreferencePreference {
@@ -2168,11 +2665,19 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// [Stablecoin payments](https://docs.stripe.com/payments/stablecoin-payments) enable customers to pay in stablecoins like USDC from 100s of wallets including Phantom and Metamask.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationCrypto {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<CreatePaymentMethodConfigurationCryptoDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationCrypto {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationCrypto").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationCrypto {
     pub fn new() -> Self {
@@ -2185,11 +2690,20 @@ impl Default for CreatePaymentMethodConfigurationCrypto {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationCryptoDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<CreatePaymentMethodConfigurationCryptoDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationCryptoDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationCryptoDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationCryptoDisplayPreference {
     pub fn new() -> Self {
@@ -2248,9 +2762,19 @@ impl std::fmt::Display for CreatePaymentMethodConfigurationCryptoDisplayPreferen
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentMethodConfigurationCryptoDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationCryptoDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePaymentMethodConfigurationCryptoDisplayPreferencePreference
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentMethodConfigurationCryptoDisplayPreferencePreference {
@@ -2274,12 +2798,20 @@ impl<'de> serde::Deserialize<'de>
 /// Uses a customer’s [cash balance](https://docs.stripe.com/payments/customer-balance) for the payment.
 /// The cash balance can be funded via a bank transfer.
 /// Check this [page](https://docs.stripe.com/payments/bank-transfers) for more details.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationCustomerBalance {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference:
         Option<CreatePaymentMethodConfigurationCustomerBalanceDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationCustomerBalance {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationCustomerBalance").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationCustomerBalance {
     pub fn new() -> Self {
@@ -2292,12 +2824,21 @@ impl Default for CreatePaymentMethodConfigurationCustomerBalance {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationCustomerBalanceDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference:
         Option<CreatePaymentMethodConfigurationCustomerBalanceDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationCustomerBalanceDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationCustomerBalanceDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationCustomerBalanceDisplayPreference {
     pub fn new() -> Self {
@@ -2360,11 +2901,23 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for CreatePaymentMethodConfigurationCustomerBalanceDisplayPreferencePreference
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for CreatePaymentMethodConfigurationCustomerBalanceDisplayPreferencePreference
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePaymentMethodConfigurationCustomerBalanceDisplayPreferencePreference
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -2390,11 +2943,19 @@ impl<'de> serde::Deserialize<'de>
 /// EPS is an Austria-based payment method that allows customers to complete transactions online using their bank credentials.
 /// EPS is supported by all Austrian banks and is accepted by over 80% of Austrian online retailers.
 /// Check this [page](https://docs.stripe.com/payments/eps) for more details.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationEps {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<CreatePaymentMethodConfigurationEpsDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationEps {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationEps").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationEps {
     pub fn new() -> Self {
@@ -2407,11 +2968,20 @@ impl Default for CreatePaymentMethodConfigurationEps {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationEpsDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<CreatePaymentMethodConfigurationEpsDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationEpsDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationEpsDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationEpsDisplayPreference {
     pub fn new() -> Self {
@@ -2470,9 +3040,17 @@ impl std::fmt::Display for CreatePaymentMethodConfigurationEpsDisplayPreferenceP
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentMethodConfigurationEpsDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationEpsDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentMethodConfigurationEpsDisplayPreferencePreference))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentMethodConfigurationEpsDisplayPreferencePreference {
@@ -2497,11 +3075,19 @@ impl<'de> serde::Deserialize<'de>
 /// Bank Negara Malaysia (BNM), the Central Bank of Malaysia, and eleven other major Malaysian financial institutions are members of the PayNet Group, which owns and operates FPX.
 /// It is one of the most popular online payment methods in Malaysia, with nearly 90 million transactions in 2018 according to BNM.
 /// Check this [page](https://docs.stripe.com/payments/fpx) for more details.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationFpx {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<CreatePaymentMethodConfigurationFpxDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationFpx {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationFpx").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationFpx {
     pub fn new() -> Self {
@@ -2514,11 +3100,20 @@ impl Default for CreatePaymentMethodConfigurationFpx {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationFpxDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<CreatePaymentMethodConfigurationFpxDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationFpxDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationFpxDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationFpxDisplayPreference {
     pub fn new() -> Self {
@@ -2577,9 +3172,17 @@ impl std::fmt::Display for CreatePaymentMethodConfigurationFpxDisplayPreferenceP
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentMethodConfigurationFpxDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationFpxDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentMethodConfigurationFpxDisplayPreferencePreference))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentMethodConfigurationFpxDisplayPreferencePreference {
@@ -2602,12 +3205,21 @@ impl<'de> serde::Deserialize<'de>
 }
 /// Meal vouchers in France, or “titres-restaurant”, is a local benefits program commonly offered by employers for their employees to purchase prepared food and beverages on working days.
 /// Check this [page](https://docs.stripe.com/payments/meal-vouchers/fr-meal-vouchers) for more details.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationFrMealVoucherConecs {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference:
         Option<CreatePaymentMethodConfigurationFrMealVoucherConecsDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationFrMealVoucherConecs {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationFrMealVoucherConecs")
+            .finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationFrMealVoucherConecs {
     pub fn new() -> Self {
@@ -2620,12 +3232,21 @@ impl Default for CreatePaymentMethodConfigurationFrMealVoucherConecs {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationFrMealVoucherConecsDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference:
         Option<CreatePaymentMethodConfigurationFrMealVoucherConecsDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationFrMealVoucherConecsDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationFrMealVoucherConecsDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationFrMealVoucherConecsDisplayPreference {
     pub fn new() -> Self {
@@ -2688,11 +3309,23 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for CreatePaymentMethodConfigurationFrMealVoucherConecsDisplayPreferencePreference
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for CreatePaymentMethodConfigurationFrMealVoucherConecsDisplayPreferencePreference
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePaymentMethodConfigurationFrMealVoucherConecsDisplayPreferencePreference
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -2720,11 +3353,19 @@ impl<'de> serde::Deserialize<'de>
 /// Depending on their bank, customers confirm payments on giropay using a second factor of authentication or a PIN.
 /// giropay accounts for 10% of online checkouts in Germany.
 /// Check this [page](https://docs.stripe.com/payments/giropay) for more details.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationGiropay {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<CreatePaymentMethodConfigurationGiropayDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationGiropay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationGiropay").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationGiropay {
     pub fn new() -> Self {
@@ -2737,11 +3378,20 @@ impl Default for CreatePaymentMethodConfigurationGiropay {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationGiropayDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<CreatePaymentMethodConfigurationGiropayDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationGiropayDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationGiropayDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationGiropayDisplayPreference {
     pub fn new() -> Self {
@@ -2800,9 +3450,19 @@ impl std::fmt::Display for CreatePaymentMethodConfigurationGiropayDisplayPrefere
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentMethodConfigurationGiropayDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationGiropayDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePaymentMethodConfigurationGiropayDisplayPreferencePreference
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentMethodConfigurationGiropayDisplayPreferencePreference {
@@ -2826,11 +3486,19 @@ impl<'de> serde::Deserialize<'de>
 /// Google Pay allows customers to make payments in your app or website using any credit or debit card saved to their Google Account, including those from Google Play, YouTube, Chrome, or an Android device.
 /// Use the Google Pay API to request any credit or debit card stored in your customer's Google account.
 /// Check this [page](https://docs.stripe.com/google-pay) for more details.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationGooglePay {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<CreatePaymentMethodConfigurationGooglePayDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationGooglePay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationGooglePay").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationGooglePay {
     pub fn new() -> Self {
@@ -2843,11 +3511,20 @@ impl Default for CreatePaymentMethodConfigurationGooglePay {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationGooglePayDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<CreatePaymentMethodConfigurationGooglePayDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationGooglePayDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationGooglePayDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationGooglePayDisplayPreference {
     pub fn new() -> Self {
@@ -2906,9 +3583,19 @@ impl std::fmt::Display for CreatePaymentMethodConfigurationGooglePayDisplayPrefe
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentMethodConfigurationGooglePayDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationGooglePayDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePaymentMethodConfigurationGooglePayDisplayPreferencePreference
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentMethodConfigurationGooglePayDisplayPreferencePreference {
@@ -2932,11 +3619,19 @@ impl<'de> serde::Deserialize<'de>
 /// GrabPay is a payment method developed by [Grab](https://www.grab.com/sg/consumer/finance/pay/).
 /// GrabPay is a digital wallet - customers maintain a balance in their wallets that they pay out with.
 /// Check this [page](https://docs.stripe.com/payments/grabpay) for more details.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationGrabpay {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<CreatePaymentMethodConfigurationGrabpayDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationGrabpay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationGrabpay").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationGrabpay {
     pub fn new() -> Self {
@@ -2949,11 +3644,20 @@ impl Default for CreatePaymentMethodConfigurationGrabpay {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationGrabpayDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<CreatePaymentMethodConfigurationGrabpayDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationGrabpayDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationGrabpayDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationGrabpayDisplayPreference {
     pub fn new() -> Self {
@@ -3012,9 +3716,19 @@ impl std::fmt::Display for CreatePaymentMethodConfigurationGrabpayDisplayPrefere
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentMethodConfigurationGrabpayDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationGrabpayDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePaymentMethodConfigurationGrabpayDisplayPreferencePreference
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentMethodConfigurationGrabpayDisplayPreferencePreference {
@@ -3038,11 +3752,19 @@ impl<'de> serde::Deserialize<'de>
 /// iDEAL is a Netherlands-based payment method that allows customers to complete transactions online using their bank credentials.
 /// All major Dutch banks are members of Currence, the scheme that operates iDEAL, making it the most popular online payment method in the Netherlands with a share of online transactions close to 55%.
 /// Check this [page](https://docs.stripe.com/payments/ideal) for more details.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationIdeal {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<CreatePaymentMethodConfigurationIdealDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationIdeal {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationIdeal").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationIdeal {
     pub fn new() -> Self {
@@ -3055,11 +3777,20 @@ impl Default for CreatePaymentMethodConfigurationIdeal {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationIdealDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<CreatePaymentMethodConfigurationIdealDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationIdealDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationIdealDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationIdealDisplayPreference {
     pub fn new() -> Self {
@@ -3118,9 +3849,17 @@ impl std::fmt::Display for CreatePaymentMethodConfigurationIdealDisplayPreferenc
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentMethodConfigurationIdealDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationIdealDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentMethodConfigurationIdealDisplayPreferencePreference))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentMethodConfigurationIdealDisplayPreferencePreference {
@@ -3144,11 +3883,19 @@ impl<'de> serde::Deserialize<'de>
 /// JCB is a credit card company based in Japan.
 /// JCB is currently available in Japan to businesses approved by JCB, and available to all businesses in Australia, Canada, Hong Kong, Japan, New Zealand, Singapore, Switzerland, United Kingdom, United States, and all countries in the European Economic Area except Iceland.
 /// Check this [page](https://support.stripe.com/questions/accepting-japan-credit-bureau-%28jcb%29-payments) for more details.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationJcb {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<CreatePaymentMethodConfigurationJcbDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationJcb {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationJcb").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationJcb {
     pub fn new() -> Self {
@@ -3161,11 +3908,20 @@ impl Default for CreatePaymentMethodConfigurationJcb {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationJcbDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<CreatePaymentMethodConfigurationJcbDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationJcbDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationJcbDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationJcbDisplayPreference {
     pub fn new() -> Self {
@@ -3224,9 +3980,17 @@ impl std::fmt::Display for CreatePaymentMethodConfigurationJcbDisplayPreferenceP
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentMethodConfigurationJcbDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationJcbDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentMethodConfigurationJcbDisplayPreferencePreference))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentMethodConfigurationJcbDisplayPreferencePreference {
@@ -3248,11 +4012,19 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Kakao Pay is a popular local wallet available in South Korea.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationKakaoPay {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<CreatePaymentMethodConfigurationKakaoPayDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationKakaoPay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationKakaoPay").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationKakaoPay {
     pub fn new() -> Self {
@@ -3265,11 +4037,20 @@ impl Default for CreatePaymentMethodConfigurationKakaoPay {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationKakaoPayDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<CreatePaymentMethodConfigurationKakaoPayDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationKakaoPayDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationKakaoPayDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationKakaoPayDisplayPreference {
     pub fn new() -> Self {
@@ -3328,9 +4109,19 @@ impl std::fmt::Display for CreatePaymentMethodConfigurationKakaoPayDisplayPrefer
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentMethodConfigurationKakaoPayDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationKakaoPayDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePaymentMethodConfigurationKakaoPayDisplayPreferencePreference
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentMethodConfigurationKakaoPayDisplayPreferencePreference {
@@ -3355,11 +4146,19 @@ impl<'de> serde::Deserialize<'de>
 /// Available payment options vary depending on the customer's billing address and the transaction amount.
 /// These payment options make it convenient for customers to purchase items in all price ranges.
 /// Check this [page](https://docs.stripe.com/payments/klarna) for more details.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationKlarna {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<CreatePaymentMethodConfigurationKlarnaDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationKlarna {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationKlarna").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationKlarna {
     pub fn new() -> Self {
@@ -3372,11 +4171,20 @@ impl Default for CreatePaymentMethodConfigurationKlarna {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationKlarnaDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<CreatePaymentMethodConfigurationKlarnaDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationKlarnaDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationKlarnaDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationKlarnaDisplayPreference {
     pub fn new() -> Self {
@@ -3435,9 +4243,19 @@ impl std::fmt::Display for CreatePaymentMethodConfigurationKlarnaDisplayPreferen
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentMethodConfigurationKlarnaDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationKlarnaDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePaymentMethodConfigurationKlarnaDisplayPreferencePreference
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentMethodConfigurationKlarnaDisplayPreferencePreference {
@@ -3460,11 +4278,19 @@ impl<'de> serde::Deserialize<'de>
 }
 /// Konbini allows customers in Japan to pay for bills and online purchases at convenience stores with cash.
 /// Check this [page](https://docs.stripe.com/payments/konbini) for more details.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationKonbini {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<CreatePaymentMethodConfigurationKonbiniDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationKonbini {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationKonbini").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationKonbini {
     pub fn new() -> Self {
@@ -3477,11 +4303,20 @@ impl Default for CreatePaymentMethodConfigurationKonbini {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationKonbiniDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<CreatePaymentMethodConfigurationKonbiniDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationKonbiniDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationKonbiniDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationKonbiniDisplayPreference {
     pub fn new() -> Self {
@@ -3540,9 +4375,19 @@ impl std::fmt::Display for CreatePaymentMethodConfigurationKonbiniDisplayPrefere
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentMethodConfigurationKonbiniDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationKonbiniDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePaymentMethodConfigurationKonbiniDisplayPreferencePreference
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentMethodConfigurationKonbiniDisplayPreferencePreference {
@@ -3564,11 +4409,19 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Korean cards let users pay using locally issued cards from South Korea.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationKrCard {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<CreatePaymentMethodConfigurationKrCardDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationKrCard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationKrCard").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationKrCard {
     pub fn new() -> Self {
@@ -3581,11 +4434,20 @@ impl Default for CreatePaymentMethodConfigurationKrCard {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationKrCardDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<CreatePaymentMethodConfigurationKrCardDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationKrCardDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationKrCardDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationKrCardDisplayPreference {
     pub fn new() -> Self {
@@ -3644,9 +4506,19 @@ impl std::fmt::Display for CreatePaymentMethodConfigurationKrCardDisplayPreferen
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentMethodConfigurationKrCardDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationKrCardDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePaymentMethodConfigurationKrCardDisplayPreferencePreference
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentMethodConfigurationKrCardDisplayPreferencePreference {
@@ -3669,11 +4541,19 @@ impl<'de> serde::Deserialize<'de>
 }
 /// [Link](https://docs.stripe.com/payments/link) is a payment method network.
 /// With Link, users save their payment details once, then reuse that information to pay with one click for any business on the network.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationLink {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<CreatePaymentMethodConfigurationLinkDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationLink {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationLink").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationLink {
     pub fn new() -> Self {
@@ -3686,11 +4566,20 @@ impl Default for CreatePaymentMethodConfigurationLink {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationLinkDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<CreatePaymentMethodConfigurationLinkDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationLinkDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationLinkDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationLinkDisplayPreference {
     pub fn new() -> Self {
@@ -3749,9 +4638,17 @@ impl std::fmt::Display for CreatePaymentMethodConfigurationLinkDisplayPreference
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentMethodConfigurationLinkDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationLinkDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentMethodConfigurationLinkDisplayPreferencePreference))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentMethodConfigurationLinkDisplayPreferencePreference {
@@ -3775,11 +4672,19 @@ impl<'de> serde::Deserialize<'de>
 /// MB WAY is the most popular wallet in Portugal.
 /// After entering their phone number in your checkout, customers approve the payment directly in their MB WAY app.
 /// Check this [page](https://docs.stripe.com/payments/mb-way) for more details.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationMbWay {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<CreatePaymentMethodConfigurationMbWayDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationMbWay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationMbWay").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationMbWay {
     pub fn new() -> Self {
@@ -3792,11 +4697,20 @@ impl Default for CreatePaymentMethodConfigurationMbWay {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationMbWayDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<CreatePaymentMethodConfigurationMbWayDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationMbWayDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationMbWayDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationMbWayDisplayPreference {
     pub fn new() -> Self {
@@ -3855,9 +4769,17 @@ impl std::fmt::Display for CreatePaymentMethodConfigurationMbWayDisplayPreferenc
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentMethodConfigurationMbWayDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationMbWayDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentMethodConfigurationMbWayDisplayPreferencePreference))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentMethodConfigurationMbWayDisplayPreferencePreference {
@@ -3881,11 +4803,19 @@ impl<'de> serde::Deserialize<'de>
 /// MobilePay is a [single-use](https://docs.stripe.com/payments/payment-methods#usage) card wallet payment method used in Denmark and Finland.
 /// It allows customers to [authenticate and approve](https://docs.stripe.com/payments/payment-methods#customer-actions) payments using the MobilePay app.
 /// Check this [page](https://docs.stripe.com/payments/mobilepay) for more details.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationMobilepay {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<CreatePaymentMethodConfigurationMobilepayDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationMobilepay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationMobilepay").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationMobilepay {
     pub fn new() -> Self {
@@ -3898,11 +4828,20 @@ impl Default for CreatePaymentMethodConfigurationMobilepay {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationMobilepayDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<CreatePaymentMethodConfigurationMobilepayDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationMobilepayDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationMobilepayDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationMobilepayDisplayPreference {
     pub fn new() -> Self {
@@ -3961,9 +4900,19 @@ impl std::fmt::Display for CreatePaymentMethodConfigurationMobilepayDisplayPrefe
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentMethodConfigurationMobilepayDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationMobilepayDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePaymentMethodConfigurationMobilepayDisplayPreferencePreference
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentMethodConfigurationMobilepayDisplayPreferencePreference {
@@ -3985,11 +4934,19 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Stripe users in Europe and the United States can accept Multibanco payments from customers in Portugal using [Sources](https://stripe.com/docs/sources)—a single integration path for creating payments using any supported method.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationMultibanco {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<CreatePaymentMethodConfigurationMultibancoDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationMultibanco {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationMultibanco").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationMultibanco {
     pub fn new() -> Self {
@@ -4002,11 +4959,20 @@ impl Default for CreatePaymentMethodConfigurationMultibanco {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationMultibancoDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<CreatePaymentMethodConfigurationMultibancoDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationMultibancoDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationMultibancoDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationMultibancoDisplayPreference {
     pub fn new() -> Self {
@@ -4065,9 +5031,19 @@ impl std::fmt::Display for CreatePaymentMethodConfigurationMultibancoDisplayPref
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentMethodConfigurationMultibancoDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationMultibancoDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePaymentMethodConfigurationMultibancoDisplayPreferencePreference
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentMethodConfigurationMultibancoDisplayPreferencePreference {
@@ -4089,11 +5065,19 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Naver Pay is a popular local wallet available in South Korea.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationNaverPay {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<CreatePaymentMethodConfigurationNaverPayDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationNaverPay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationNaverPay").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationNaverPay {
     pub fn new() -> Self {
@@ -4106,11 +5090,20 @@ impl Default for CreatePaymentMethodConfigurationNaverPay {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationNaverPayDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<CreatePaymentMethodConfigurationNaverPayDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationNaverPayDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationNaverPayDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationNaverPayDisplayPreference {
     pub fn new() -> Self {
@@ -4169,9 +5162,19 @@ impl std::fmt::Display for CreatePaymentMethodConfigurationNaverPayDisplayPrefer
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentMethodConfigurationNaverPayDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationNaverPayDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePaymentMethodConfigurationNaverPayDisplayPreferencePreference
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentMethodConfigurationNaverPayDisplayPreferencePreference {
@@ -4194,11 +5197,19 @@ impl<'de> serde::Deserialize<'de>
 }
 /// Stripe users in New Zealand can accept Bulk Electronic Clearing System (BECS) direct debit payments from customers with a New Zeland bank account.
 /// Check this [page](https://docs.stripe.com/payments/nz-bank-account) for more details.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationNzBankAccount {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<CreatePaymentMethodConfigurationNzBankAccountDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationNzBankAccount {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationNzBankAccount").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationNzBankAccount {
     pub fn new() -> Self {
@@ -4211,12 +5222,21 @@ impl Default for CreatePaymentMethodConfigurationNzBankAccount {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationNzBankAccountDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference:
         Option<CreatePaymentMethodConfigurationNzBankAccountDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationNzBankAccountDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationNzBankAccountDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationNzBankAccountDisplayPreference {
     pub fn new() -> Self {
@@ -4279,9 +5299,19 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentMethodConfigurationNzBankAccountDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationNzBankAccountDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePaymentMethodConfigurationNzBankAccountDisplayPreferencePreference
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentMethodConfigurationNzBankAccountDisplayPreferencePreference {
@@ -4305,11 +5335,19 @@ impl<'de> serde::Deserialize<'de>
 /// OXXO is a Mexican chain of convenience stores with thousands of locations across Latin America and represents nearly 20% of online transactions in Mexico.
 /// OXXO allows customers to pay bills and online purchases in-store with cash.
 /// Check this [page](https://docs.stripe.com/payments/oxxo) for more details.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationOxxo {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<CreatePaymentMethodConfigurationOxxoDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationOxxo {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationOxxo").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationOxxo {
     pub fn new() -> Self {
@@ -4322,11 +5360,20 @@ impl Default for CreatePaymentMethodConfigurationOxxo {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationOxxoDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<CreatePaymentMethodConfigurationOxxoDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationOxxoDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationOxxoDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationOxxoDisplayPreference {
     pub fn new() -> Self {
@@ -4385,9 +5432,17 @@ impl std::fmt::Display for CreatePaymentMethodConfigurationOxxoDisplayPreference
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentMethodConfigurationOxxoDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationOxxoDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentMethodConfigurationOxxoDisplayPreferencePreference))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentMethodConfigurationOxxoDisplayPreferencePreference {
@@ -4411,11 +5466,19 @@ impl<'de> serde::Deserialize<'de>
 /// Przelewy24 is a Poland-based payment method aggregator that allows customers to complete transactions online using bank transfers and other methods.
 /// Bank transfers account for 30% of online payments in Poland and Przelewy24 provides a way for customers to pay with over 165 banks.
 /// Check this [page](https://docs.stripe.com/payments/p24) for more details.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationP24 {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<CreatePaymentMethodConfigurationP24DisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationP24 {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationP24").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationP24 {
     pub fn new() -> Self {
@@ -4428,11 +5491,20 @@ impl Default for CreatePaymentMethodConfigurationP24 {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationP24DisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<CreatePaymentMethodConfigurationP24DisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationP24DisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationP24DisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationP24DisplayPreference {
     pub fn new() -> Self {
@@ -4491,9 +5563,17 @@ impl std::fmt::Display for CreatePaymentMethodConfigurationP24DisplayPreferenceP
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentMethodConfigurationP24DisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationP24DisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentMethodConfigurationP24DisplayPreferencePreference))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentMethodConfigurationP24DisplayPreferencePreference {
@@ -4517,11 +5597,19 @@ impl<'de> serde::Deserialize<'de>
 /// Pay by bank is a redirect payment method backed by bank transfers.
 /// A customer is redirected to their bank to authorize a bank transfer for a given amount.
 /// This removes a lot of the error risks inherent in waiting for the customer to initiate a transfer themselves, and is less expensive than card payments.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationPayByBank {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<CreatePaymentMethodConfigurationPayByBankDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationPayByBank {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationPayByBank").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationPayByBank {
     pub fn new() -> Self {
@@ -4534,11 +5622,20 @@ impl Default for CreatePaymentMethodConfigurationPayByBank {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationPayByBankDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<CreatePaymentMethodConfigurationPayByBankDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationPayByBankDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationPayByBankDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationPayByBankDisplayPreference {
     pub fn new() -> Self {
@@ -4597,9 +5694,19 @@ impl std::fmt::Display for CreatePaymentMethodConfigurationPayByBankDisplayPrefe
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentMethodConfigurationPayByBankDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationPayByBankDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePaymentMethodConfigurationPayByBankDisplayPreferencePreference
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentMethodConfigurationPayByBankDisplayPreferencePreference {
@@ -4621,11 +5728,19 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// PAYCO is a [single-use](https://docs.stripe.com/payments/payment-methods#usage local wallet available in South Korea.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationPayco {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<CreatePaymentMethodConfigurationPaycoDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationPayco {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationPayco").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationPayco {
     pub fn new() -> Self {
@@ -4638,11 +5753,20 @@ impl Default for CreatePaymentMethodConfigurationPayco {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationPaycoDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<CreatePaymentMethodConfigurationPaycoDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationPaycoDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationPaycoDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationPaycoDisplayPreference {
     pub fn new() -> Self {
@@ -4701,9 +5825,17 @@ impl std::fmt::Display for CreatePaymentMethodConfigurationPaycoDisplayPreferenc
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentMethodConfigurationPaycoDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationPaycoDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentMethodConfigurationPaycoDisplayPreferencePreference))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentMethodConfigurationPaycoDisplayPreferencePreference {
@@ -4726,11 +5858,19 @@ impl<'de> serde::Deserialize<'de>
 }
 /// PayNow is a Singapore-based payment method that allows customers to make a payment using their preferred app from participating banks and participating non-bank financial institutions.
 /// Check this [page](https://docs.stripe.com/payments/paynow) for more details.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationPaynow {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<CreatePaymentMethodConfigurationPaynowDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationPaynow {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationPaynow").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationPaynow {
     pub fn new() -> Self {
@@ -4743,11 +5883,20 @@ impl Default for CreatePaymentMethodConfigurationPaynow {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationPaynowDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<CreatePaymentMethodConfigurationPaynowDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationPaynowDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationPaynowDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationPaynowDisplayPreference {
     pub fn new() -> Self {
@@ -4806,9 +5955,19 @@ impl std::fmt::Display for CreatePaymentMethodConfigurationPaynowDisplayPreferen
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentMethodConfigurationPaynowDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationPaynowDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePaymentMethodConfigurationPaynowDisplayPreferencePreference
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentMethodConfigurationPaynowDisplayPreferencePreference {
@@ -4831,11 +5990,19 @@ impl<'de> serde::Deserialize<'de>
 }
 /// PayPal, a digital wallet popular with customers in Europe, allows your customers worldwide to pay using their PayPal account.
 /// Check this [page](https://docs.stripe.com/payments/paypal) for more details.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationPaypal {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<CreatePaymentMethodConfigurationPaypalDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationPaypal {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationPaypal").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationPaypal {
     pub fn new() -> Self {
@@ -4848,11 +6015,20 @@ impl Default for CreatePaymentMethodConfigurationPaypal {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationPaypalDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<CreatePaymentMethodConfigurationPaypalDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationPaypalDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationPaypalDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationPaypalDisplayPreference {
     pub fn new() -> Self {
@@ -4911,9 +6087,19 @@ impl std::fmt::Display for CreatePaymentMethodConfigurationPaypalDisplayPreferen
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentMethodConfigurationPaypalDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationPaypalDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePaymentMethodConfigurationPaypalDisplayPreferencePreference
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentMethodConfigurationPaypalDisplayPreferencePreference {
@@ -4937,11 +6123,19 @@ impl<'de> serde::Deserialize<'de>
 /// PayTo is a [real-time](https://docs.stripe.com/payments/real-time) payment method that enables customers in Australia to pay by providing their bank account details.
 /// Customers must accept a mandate authorizing you to debit their account.
 /// Check this [page](https://docs.stripe.com/payments/payto) for more details.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationPayto {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<CreatePaymentMethodConfigurationPaytoDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationPayto {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationPayto").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationPayto {
     pub fn new() -> Self {
@@ -4954,11 +6148,20 @@ impl Default for CreatePaymentMethodConfigurationPayto {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationPaytoDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<CreatePaymentMethodConfigurationPaytoDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationPaytoDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationPaytoDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationPaytoDisplayPreference {
     pub fn new() -> Self {
@@ -5017,9 +6220,17 @@ impl std::fmt::Display for CreatePaymentMethodConfigurationPaytoDisplayPreferenc
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentMethodConfigurationPaytoDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationPaytoDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentMethodConfigurationPaytoDisplayPreferencePreference))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentMethodConfigurationPaytoDisplayPreferencePreference {
@@ -5043,11 +6254,19 @@ impl<'de> serde::Deserialize<'de>
 /// Pix is a payment method popular in Brazil.
 /// When paying with Pix, customers authenticate and approve payments by scanning a QR code in their preferred banking app.
 /// Check this [page](https://docs.stripe.com/payments/pix) for more details.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationPix {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<CreatePaymentMethodConfigurationPixDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationPix {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationPix").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationPix {
     pub fn new() -> Self {
@@ -5060,11 +6279,20 @@ impl Default for CreatePaymentMethodConfigurationPix {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationPixDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<CreatePaymentMethodConfigurationPixDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationPixDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationPixDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationPixDisplayPreference {
     pub fn new() -> Self {
@@ -5123,9 +6351,17 @@ impl std::fmt::Display for CreatePaymentMethodConfigurationPixDisplayPreferenceP
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentMethodConfigurationPixDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationPixDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentMethodConfigurationPixDisplayPreferencePreference))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentMethodConfigurationPixDisplayPreferencePreference {
@@ -5148,11 +6384,19 @@ impl<'de> serde::Deserialize<'de>
 }
 /// PromptPay is a Thailand-based payment method that allows customers to make a payment using their preferred app from participating banks.
 /// Check this [page](https://docs.stripe.com/payments/promptpay) for more details.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationPromptpay {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<CreatePaymentMethodConfigurationPromptpayDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationPromptpay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationPromptpay").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationPromptpay {
     pub fn new() -> Self {
@@ -5165,11 +6409,20 @@ impl Default for CreatePaymentMethodConfigurationPromptpay {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationPromptpayDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<CreatePaymentMethodConfigurationPromptpayDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationPromptpayDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationPromptpayDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationPromptpayDisplayPreference {
     pub fn new() -> Self {
@@ -5228,9 +6481,19 @@ impl std::fmt::Display for CreatePaymentMethodConfigurationPromptpayDisplayPrefe
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentMethodConfigurationPromptpayDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationPromptpayDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePaymentMethodConfigurationPromptpayDisplayPreferencePreference
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentMethodConfigurationPromptpayDisplayPreferencePreference {
@@ -5253,11 +6516,19 @@ impl<'de> serde::Deserialize<'de>
 }
 /// Revolut Pay, developed by Revolut, a global finance app, is a digital wallet payment method.
 /// Revolut Pay uses the customer’s stored balance or cards to fund the payment, and offers the option for non-Revolut customers to save their details after their first purchase.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationRevolutPay {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<CreatePaymentMethodConfigurationRevolutPayDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationRevolutPay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationRevolutPay").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationRevolutPay {
     pub fn new() -> Self {
@@ -5270,11 +6541,20 @@ impl Default for CreatePaymentMethodConfigurationRevolutPay {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationRevolutPayDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<CreatePaymentMethodConfigurationRevolutPayDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationRevolutPayDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationRevolutPayDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationRevolutPayDisplayPreference {
     pub fn new() -> Self {
@@ -5333,9 +6613,19 @@ impl std::fmt::Display for CreatePaymentMethodConfigurationRevolutPayDisplayPref
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentMethodConfigurationRevolutPayDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationRevolutPayDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePaymentMethodConfigurationRevolutPayDisplayPreferencePreference
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentMethodConfigurationRevolutPayDisplayPreferencePreference {
@@ -5357,11 +6647,19 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Samsung Pay is a [single-use](https://docs.stripe.com/payments/payment-methods#usage local wallet available in South Korea.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationSamsungPay {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<CreatePaymentMethodConfigurationSamsungPayDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationSamsungPay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationSamsungPay").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationSamsungPay {
     pub fn new() -> Self {
@@ -5374,11 +6672,20 @@ impl Default for CreatePaymentMethodConfigurationSamsungPay {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationSamsungPayDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<CreatePaymentMethodConfigurationSamsungPayDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationSamsungPayDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationSamsungPayDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationSamsungPayDisplayPreference {
     pub fn new() -> Self {
@@ -5437,9 +6744,19 @@ impl std::fmt::Display for CreatePaymentMethodConfigurationSamsungPayDisplayPref
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentMethodConfigurationSamsungPayDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationSamsungPayDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePaymentMethodConfigurationSamsungPayDisplayPreferencePreference
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentMethodConfigurationSamsungPayDisplayPreferencePreference {
@@ -5463,11 +6780,19 @@ impl<'de> serde::Deserialize<'de>
 /// Satispay is a [single-use](https://docs.stripe.com/payments/payment-methods#usage) payment method where customers are required to [authenticate](/payments/payment-methods#customer-actions) their payment.
 /// Customers pay by being redirected from your website or app, authorizing the payment with Satispay, then returning to your website or app.
 /// You get [immediate notification](/payments/payment-methods#payment-notification) of whether the payment succeeded or failed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationSatispay {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<CreatePaymentMethodConfigurationSatispayDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationSatispay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationSatispay").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationSatispay {
     pub fn new() -> Self {
@@ -5480,11 +6805,20 @@ impl Default for CreatePaymentMethodConfigurationSatispay {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationSatispayDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<CreatePaymentMethodConfigurationSatispayDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationSatispayDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationSatispayDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationSatispayDisplayPreference {
     pub fn new() -> Self {
@@ -5543,9 +6877,19 @@ impl std::fmt::Display for CreatePaymentMethodConfigurationSatispayDisplayPrefer
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentMethodConfigurationSatispayDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationSatispayDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePaymentMethodConfigurationSatispayDisplayPreferencePreference
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentMethodConfigurationSatispayDisplayPreferencePreference {
@@ -5568,11 +6912,19 @@ impl<'de> serde::Deserialize<'de>
 }
 /// The [Single Euro Payments Area (SEPA)](https://en.wikipedia.org/wiki/Single_Euro_Payments_Area) is an initiative of the European Union to simplify payments within and across member countries.
 /// SEPA established and enforced banking standards to allow for the direct debiting of every EUR-denominated bank account within the SEPA region, check this [page](https://docs.stripe.com/payments/sepa-debit) for more details.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationSepaDebit {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<CreatePaymentMethodConfigurationSepaDebitDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationSepaDebit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationSepaDebit").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationSepaDebit {
     pub fn new() -> Self {
@@ -5585,11 +6937,20 @@ impl Default for CreatePaymentMethodConfigurationSepaDebit {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationSepaDebitDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<CreatePaymentMethodConfigurationSepaDebitDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationSepaDebitDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationSepaDebitDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationSepaDebitDisplayPreference {
     pub fn new() -> Self {
@@ -5648,9 +7009,19 @@ impl std::fmt::Display for CreatePaymentMethodConfigurationSepaDebitDisplayPrefe
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentMethodConfigurationSepaDebitDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationSepaDebitDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePaymentMethodConfigurationSepaDebitDisplayPreferencePreference
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentMethodConfigurationSepaDebitDisplayPreferencePreference {
@@ -5673,11 +7044,19 @@ impl<'de> serde::Deserialize<'de>
 }
 /// Stripe users in Europe and the United States can use the [Payment Intents API](https://stripe.com/docs/payments/payment-intents)—a single integration path for creating payments using any supported method—to accept [Sofort](https://www.sofort.com/) payments from customers.
 /// Check this [page](https://docs.stripe.com/payments/sofort) for more details.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationSofort {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<CreatePaymentMethodConfigurationSofortDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationSofort {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationSofort").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationSofort {
     pub fn new() -> Self {
@@ -5690,11 +7069,20 @@ impl Default for CreatePaymentMethodConfigurationSofort {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationSofortDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<CreatePaymentMethodConfigurationSofortDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationSofortDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationSofortDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationSofortDisplayPreference {
     pub fn new() -> Self {
@@ -5753,9 +7141,19 @@ impl std::fmt::Display for CreatePaymentMethodConfigurationSofortDisplayPreferen
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentMethodConfigurationSofortDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationSofortDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePaymentMethodConfigurationSofortDisplayPreferencePreference
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentMethodConfigurationSofortDisplayPreferencePreference {
@@ -5779,11 +7177,19 @@ impl<'de> serde::Deserialize<'de>
 /// Swish is a [real-time](https://docs.stripe.com/payments/real-time) payment method popular in Sweden.
 /// It allows customers to [authenticate and approve](https://docs.stripe.com/payments/payment-methods#customer-actions) payments using the Swish mobile app and the Swedish BankID mobile app.
 /// Check this [page](https://docs.stripe.com/payments/swish) for more details.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationSwish {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<CreatePaymentMethodConfigurationSwishDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationSwish {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationSwish").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationSwish {
     pub fn new() -> Self {
@@ -5796,11 +7202,20 @@ impl Default for CreatePaymentMethodConfigurationSwish {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationSwishDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<CreatePaymentMethodConfigurationSwishDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationSwishDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationSwishDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationSwishDisplayPreference {
     pub fn new() -> Self {
@@ -5859,9 +7274,17 @@ impl std::fmt::Display for CreatePaymentMethodConfigurationSwishDisplayPreferenc
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentMethodConfigurationSwishDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationSwishDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentMethodConfigurationSwishDisplayPreferencePreference))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentMethodConfigurationSwishDisplayPreferencePreference {
@@ -5885,11 +7308,19 @@ impl<'de> serde::Deserialize<'de>
 /// Twint is a payment method popular in Switzerland.
 /// It allows customers to pay using their mobile phone.
 /// Check this [page](https://docs.stripe.com/payments/twint) for more details.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationTwint {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<CreatePaymentMethodConfigurationTwintDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationTwint {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationTwint").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationTwint {
     pub fn new() -> Self {
@@ -5902,11 +7333,20 @@ impl Default for CreatePaymentMethodConfigurationTwint {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationTwintDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<CreatePaymentMethodConfigurationTwintDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationTwintDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationTwintDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationTwintDisplayPreference {
     pub fn new() -> Self {
@@ -5965,9 +7405,17 @@ impl std::fmt::Display for CreatePaymentMethodConfigurationTwintDisplayPreferenc
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentMethodConfigurationTwintDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationTwintDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentMethodConfigurationTwintDisplayPreferencePreference))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentMethodConfigurationTwintDisplayPreferencePreference {
@@ -5989,11 +7437,19 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Unified Payment Interface (UPI) is India's leading payment method with exponential growth since it launched in 2016.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationUpi {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<CreatePaymentMethodConfigurationUpiDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationUpi {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationUpi").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationUpi {
     pub fn new() -> Self {
@@ -6006,11 +7462,20 @@ impl Default for CreatePaymentMethodConfigurationUpi {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationUpiDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<CreatePaymentMethodConfigurationUpiDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationUpiDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationUpiDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationUpiDisplayPreference {
     pub fn new() -> Self {
@@ -6069,9 +7534,17 @@ impl std::fmt::Display for CreatePaymentMethodConfigurationUpiDisplayPreferenceP
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentMethodConfigurationUpiDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationUpiDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentMethodConfigurationUpiDisplayPreferencePreference))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentMethodConfigurationUpiDisplayPreferencePreference {
@@ -6094,11 +7567,19 @@ impl<'de> serde::Deserialize<'de>
 }
 /// Stripe users in the United States can accept ACH direct debit payments from customers with a US bank account using the Automated Clearing House (ACH) payments system operated by Nacha.
 /// Check this [page](https://docs.stripe.com/payments/ach-direct-debit) for more details.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationUsBankAccount {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<CreatePaymentMethodConfigurationUsBankAccountDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationUsBankAccount {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationUsBankAccount").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationUsBankAccount {
     pub fn new() -> Self {
@@ -6111,12 +7592,21 @@ impl Default for CreatePaymentMethodConfigurationUsBankAccount {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationUsBankAccountDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference:
         Option<CreatePaymentMethodConfigurationUsBankAccountDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationUsBankAccountDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationUsBankAccountDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationUsBankAccountDisplayPreference {
     pub fn new() -> Self {
@@ -6179,9 +7669,19 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentMethodConfigurationUsBankAccountDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationUsBankAccountDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePaymentMethodConfigurationUsBankAccountDisplayPreferencePreference
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentMethodConfigurationUsBankAccountDisplayPreferencePreference {
@@ -6206,11 +7706,19 @@ impl<'de> serde::Deserialize<'de>
 /// Chinese consumers can use WeChat Pay to pay for goods and services inside of businesses' apps and websites.
 /// WeChat Pay users buy most frequently in gaming, e-commerce, travel, online education, and food/nutrition.
 /// Check this [page](https://docs.stripe.com/payments/wechat-pay) for more details.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationWechatPay {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<CreatePaymentMethodConfigurationWechatPayDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationWechatPay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationWechatPay").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationWechatPay {
     pub fn new() -> Self {
@@ -6223,11 +7731,20 @@ impl Default for CreatePaymentMethodConfigurationWechatPay {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationWechatPayDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<CreatePaymentMethodConfigurationWechatPayDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationWechatPayDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationWechatPayDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationWechatPayDisplayPreference {
     pub fn new() -> Self {
@@ -6286,9 +7803,19 @@ impl std::fmt::Display for CreatePaymentMethodConfigurationWechatPayDisplayPrefe
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentMethodConfigurationWechatPayDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationWechatPayDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePaymentMethodConfigurationWechatPayDisplayPreferencePreference
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentMethodConfigurationWechatPayDisplayPreferencePreference {
@@ -6311,11 +7838,19 @@ impl<'de> serde::Deserialize<'de>
 }
 /// Zip gives your customers a way to split purchases over a series of payments.
 /// Check this [page](https://docs.stripe.com/payments/zip) for more details like country availability.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationZip {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<CreatePaymentMethodConfigurationZipDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationZip {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationZip").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationZip {
     pub fn new() -> Self {
@@ -6328,11 +7863,20 @@ impl Default for CreatePaymentMethodConfigurationZip {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfigurationZipDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<CreatePaymentMethodConfigurationZipDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationZipDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationZipDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfigurationZipDisplayPreference {
     pub fn new() -> Self {
@@ -6391,9 +7935,17 @@ impl std::fmt::Display for CreatePaymentMethodConfigurationZipDisplayPreferenceP
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentMethodConfigurationZipDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationZipDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentMethodConfigurationZipDisplayPreferencePreference))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentMethodConfigurationZipDisplayPreferencePreference {
@@ -6415,9 +7967,17 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Creates a payment method configuration
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodConfiguration {
     inner: CreatePaymentMethodConfigurationBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfiguration {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfiguration").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodConfiguration {
     /// Construct a new `CreatePaymentMethodConfiguration`.
@@ -6907,7 +8467,9 @@ impl StripeRequest for CreatePaymentMethodConfiguration {
         RequestBuilder::new(StripeMethod::Post, "/payment_method_configurations").form(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct UpdatePaymentMethodConfigurationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     acss_debit: Option<UpdatePaymentMethodConfigurationAcssDebit>,
@@ -7030,6 +8592,12 @@ struct UpdatePaymentMethodConfigurationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     zip: Option<UpdatePaymentMethodConfigurationZip>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationBuilder").finish_non_exhaustive()
+    }
+}
 impl UpdatePaymentMethodConfigurationBuilder {
     fn new() -> Self {
         Self {
@@ -7097,11 +8665,19 @@ impl UpdatePaymentMethodConfigurationBuilder {
     }
 }
 /// Canadian pre-authorized debit payments, check this [page](https://docs.stripe.com/payments/acss-debit) for more details like country availability.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationAcssDebit {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<UpdatePaymentMethodConfigurationAcssDebitDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationAcssDebit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationAcssDebit").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationAcssDebit {
     pub fn new() -> Self {
@@ -7114,11 +8690,20 @@ impl Default for UpdatePaymentMethodConfigurationAcssDebit {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationAcssDebitDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<UpdatePaymentMethodConfigurationAcssDebitDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationAcssDebitDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationAcssDebitDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationAcssDebitDisplayPreference {
     pub fn new() -> Self {
@@ -7177,9 +8762,19 @@ impl std::fmt::Display for UpdatePaymentMethodConfigurationAcssDebitDisplayPrefe
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentMethodConfigurationAcssDebitDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationAcssDebitDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdatePaymentMethodConfigurationAcssDebitDisplayPreferencePreference
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentMethodConfigurationAcssDebitDisplayPreferencePreference {
@@ -7203,11 +8798,19 @@ impl<'de> serde::Deserialize<'de>
 /// [Affirm](https://www.affirm.com/) gives your customers a way to split purchases over a series of payments.
 /// Depending on the purchase, they can pay with four interest-free payments (Split Pay) or pay over a longer term (Installments), which might include interest.
 /// Check this [page](https://docs.stripe.com/payments/affirm) for more details like country availability.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationAffirm {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<UpdatePaymentMethodConfigurationAffirmDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationAffirm {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationAffirm").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationAffirm {
     pub fn new() -> Self {
@@ -7220,11 +8823,20 @@ impl Default for UpdatePaymentMethodConfigurationAffirm {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationAffirmDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<UpdatePaymentMethodConfigurationAffirmDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationAffirmDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationAffirmDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationAffirmDisplayPreference {
     pub fn new() -> Self {
@@ -7283,9 +8895,19 @@ impl std::fmt::Display for UpdatePaymentMethodConfigurationAffirmDisplayPreferen
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentMethodConfigurationAffirmDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationAffirmDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdatePaymentMethodConfigurationAffirmDisplayPreferencePreference
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentMethodConfigurationAffirmDisplayPreferencePreference {
@@ -7308,12 +8930,20 @@ impl<'de> serde::Deserialize<'de>
 }
 /// Afterpay gives your customers a way to pay for purchases in installments, check this [page](https://docs.stripe.com/payments/afterpay-clearpay) for more details like country availability.
 /// Afterpay is particularly popular among businesses selling fashion, beauty, and sports products.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationAfterpayClearpay {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference:
         Option<UpdatePaymentMethodConfigurationAfterpayClearpayDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationAfterpayClearpay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationAfterpayClearpay").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationAfterpayClearpay {
     pub fn new() -> Self {
@@ -7326,12 +8956,21 @@ impl Default for UpdatePaymentMethodConfigurationAfterpayClearpay {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationAfterpayClearpayDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference:
         Option<UpdatePaymentMethodConfigurationAfterpayClearpayDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationAfterpayClearpayDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationAfterpayClearpayDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationAfterpayClearpayDisplayPreference {
     pub fn new() -> Self {
@@ -7394,11 +9033,23 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for UpdatePaymentMethodConfigurationAfterpayClearpayDisplayPreferencePreference
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for UpdatePaymentMethodConfigurationAfterpayClearpayDisplayPreferencePreference
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdatePaymentMethodConfigurationAfterpayClearpayDisplayPreferencePreference
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -7425,11 +9076,19 @@ impl<'de> serde::Deserialize<'de>
 /// Alipay users can pay on the web or on a mobile device using login credentials or their Alipay app.
 /// Alipay has a low dispute rate and reduces fraud by authenticating payments using the customer's login credentials.
 /// Check this [page](https://docs.stripe.com/payments/alipay) for more details.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationAlipay {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<UpdatePaymentMethodConfigurationAlipayDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationAlipay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationAlipay").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationAlipay {
     pub fn new() -> Self {
@@ -7442,11 +9101,20 @@ impl Default for UpdatePaymentMethodConfigurationAlipay {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationAlipayDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<UpdatePaymentMethodConfigurationAlipayDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationAlipayDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationAlipayDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationAlipayDisplayPreference {
     pub fn new() -> Self {
@@ -7505,9 +9173,19 @@ impl std::fmt::Display for UpdatePaymentMethodConfigurationAlipayDisplayPreferen
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentMethodConfigurationAlipayDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationAlipayDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdatePaymentMethodConfigurationAlipayDisplayPreferencePreference
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentMethodConfigurationAlipayDisplayPreferencePreference {
@@ -7529,11 +9207,19 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Alma is a Buy Now, Pay Later payment method that offers customers the ability to pay in 2, 3, or 4 installments.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationAlma {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<UpdatePaymentMethodConfigurationAlmaDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationAlma {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationAlma").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationAlma {
     pub fn new() -> Self {
@@ -7546,11 +9232,20 @@ impl Default for UpdatePaymentMethodConfigurationAlma {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationAlmaDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<UpdatePaymentMethodConfigurationAlmaDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationAlmaDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationAlmaDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationAlmaDisplayPreference {
     pub fn new() -> Self {
@@ -7609,9 +9304,17 @@ impl std::fmt::Display for UpdatePaymentMethodConfigurationAlmaDisplayPreference
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentMethodConfigurationAlmaDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationAlmaDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentMethodConfigurationAlmaDisplayPreferencePreference))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentMethodConfigurationAlmaDisplayPreferencePreference {
@@ -7633,11 +9336,19 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Amazon Pay is a wallet payment method that lets your customers check out the same way as on Amazon.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationAmazonPay {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<UpdatePaymentMethodConfigurationAmazonPayDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationAmazonPay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationAmazonPay").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationAmazonPay {
     pub fn new() -> Self {
@@ -7650,11 +9361,20 @@ impl Default for UpdatePaymentMethodConfigurationAmazonPay {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationAmazonPayDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<UpdatePaymentMethodConfigurationAmazonPayDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationAmazonPayDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationAmazonPayDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationAmazonPayDisplayPreference {
     pub fn new() -> Self {
@@ -7713,9 +9433,19 @@ impl std::fmt::Display for UpdatePaymentMethodConfigurationAmazonPayDisplayPrefe
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentMethodConfigurationAmazonPayDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationAmazonPayDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdatePaymentMethodConfigurationAmazonPayDisplayPreferencePreference
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentMethodConfigurationAmazonPayDisplayPreferencePreference {
@@ -7739,11 +9469,19 @@ impl<'de> serde::Deserialize<'de>
 /// Stripe users can accept [Apple Pay](https://stripe.com/payments/apple-pay) in iOS applications in iOS 9 and later, and on the web in Safari starting with iOS 10 or macOS Sierra.
 /// There are no additional fees to process Apple Pay payments, and the [pricing](https://stripe.com/pricing) is the same as other card transactions.
 /// Check this [page](https://docs.stripe.com/apple-pay) for more details.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationApplePay {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<UpdatePaymentMethodConfigurationApplePayDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationApplePay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationApplePay").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationApplePay {
     pub fn new() -> Self {
@@ -7756,11 +9494,20 @@ impl Default for UpdatePaymentMethodConfigurationApplePay {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationApplePayDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<UpdatePaymentMethodConfigurationApplePayDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationApplePayDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationApplePayDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationApplePayDisplayPreference {
     pub fn new() -> Self {
@@ -7819,9 +9566,19 @@ impl std::fmt::Display for UpdatePaymentMethodConfigurationApplePayDisplayPrefer
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentMethodConfigurationApplePayDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationApplePayDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdatePaymentMethodConfigurationApplePayDisplayPreferencePreference
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentMethodConfigurationApplePayDisplayPreferencePreference {
@@ -7843,11 +9600,19 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Apple Pay Later, a payment method for customers to buy now and pay later, gives your customers a way to split purchases into four installments across six weeks.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationApplePayLater {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<UpdatePaymentMethodConfigurationApplePayLaterDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationApplePayLater {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationApplePayLater").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationApplePayLater {
     pub fn new() -> Self {
@@ -7860,12 +9625,21 @@ impl Default for UpdatePaymentMethodConfigurationApplePayLater {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationApplePayLaterDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference:
         Option<UpdatePaymentMethodConfigurationApplePayLaterDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationApplePayLaterDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationApplePayLaterDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationApplePayLaterDisplayPreference {
     pub fn new() -> Self {
@@ -7928,9 +9702,19 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentMethodConfigurationApplePayLaterDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationApplePayLaterDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdatePaymentMethodConfigurationApplePayLaterDisplayPreferencePreference
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentMethodConfigurationApplePayLaterDisplayPreferencePreference {
@@ -7953,11 +9737,19 @@ impl<'de> serde::Deserialize<'de>
 }
 /// Stripe users in Australia can accept Bulk Electronic Clearing System (BECS) direct debit payments from customers with an Australian bank account.
 /// Check this [page](https://docs.stripe.com/payments/au-becs-debit) for more details.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationAuBecsDebit {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<UpdatePaymentMethodConfigurationAuBecsDebitDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationAuBecsDebit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationAuBecsDebit").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationAuBecsDebit {
     pub fn new() -> Self {
@@ -7970,11 +9762,20 @@ impl Default for UpdatePaymentMethodConfigurationAuBecsDebit {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationAuBecsDebitDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<UpdatePaymentMethodConfigurationAuBecsDebitDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationAuBecsDebitDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationAuBecsDebitDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationAuBecsDebitDisplayPreference {
     pub fn new() -> Self {
@@ -8033,9 +9834,19 @@ impl std::fmt::Display for UpdatePaymentMethodConfigurationAuBecsDebitDisplayPre
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentMethodConfigurationAuBecsDebitDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationAuBecsDebitDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdatePaymentMethodConfigurationAuBecsDebitDisplayPreferencePreference
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentMethodConfigurationAuBecsDebitDisplayPreferencePreference {
@@ -8057,11 +9868,19 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Stripe users in the UK can accept Bacs Direct Debit payments from customers with a UK bank account, check this [page](https://docs.stripe.com/payments/payment-methods/bacs-debit) for more details.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationBacsDebit {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<UpdatePaymentMethodConfigurationBacsDebitDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationBacsDebit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationBacsDebit").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationBacsDebit {
     pub fn new() -> Self {
@@ -8074,11 +9893,20 @@ impl Default for UpdatePaymentMethodConfigurationBacsDebit {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationBacsDebitDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<UpdatePaymentMethodConfigurationBacsDebitDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationBacsDebitDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationBacsDebitDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationBacsDebitDisplayPreference {
     pub fn new() -> Self {
@@ -8137,9 +9965,19 @@ impl std::fmt::Display for UpdatePaymentMethodConfigurationBacsDebitDisplayPrefe
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentMethodConfigurationBacsDebitDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationBacsDebitDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdatePaymentMethodConfigurationBacsDebitDisplayPreferencePreference
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentMethodConfigurationBacsDebitDisplayPreferencePreference {
@@ -8163,11 +10001,19 @@ impl<'de> serde::Deserialize<'de>
 /// Bancontact is the most popular online payment method in Belgium, with over 15 million cards in circulation.
 /// [Customers](https://docs.stripe.com/api/customers) use a Bancontact card or mobile app linked to a Belgian bank account to make online payments that are secure, guaranteed, and confirmed immediately.
 /// Check this [page](https://docs.stripe.com/payments/bancontact) for more details.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationBancontact {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<UpdatePaymentMethodConfigurationBancontactDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationBancontact {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationBancontact").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationBancontact {
     pub fn new() -> Self {
@@ -8180,11 +10026,20 @@ impl Default for UpdatePaymentMethodConfigurationBancontact {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationBancontactDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<UpdatePaymentMethodConfigurationBancontactDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationBancontactDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationBancontactDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationBancontactDisplayPreference {
     pub fn new() -> Self {
@@ -8243,9 +10098,19 @@ impl std::fmt::Display for UpdatePaymentMethodConfigurationBancontactDisplayPref
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentMethodConfigurationBancontactDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationBancontactDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdatePaymentMethodConfigurationBancontactDisplayPreferencePreference
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentMethodConfigurationBancontactDisplayPreferencePreference {
@@ -8269,11 +10134,19 @@ impl<'de> serde::Deserialize<'de>
 /// Billie is a [single-use](https://docs.stripe.com/payments/payment-methods#usage) payment method that offers businesses Pay by Invoice where they offer payment terms ranging from 7-120 days.
 /// Customers are redirected from your website or app, authorize the payment with Billie, then return to your website or app.
 /// You get [immediate notification](/payments/payment-methods#payment-notification) of whether the payment succeeded or failed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationBillie {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<UpdatePaymentMethodConfigurationBillieDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationBillie {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationBillie").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationBillie {
     pub fn new() -> Self {
@@ -8286,11 +10159,20 @@ impl Default for UpdatePaymentMethodConfigurationBillie {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationBillieDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<UpdatePaymentMethodConfigurationBillieDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationBillieDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationBillieDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationBillieDisplayPreference {
     pub fn new() -> Self {
@@ -8349,9 +10231,19 @@ impl std::fmt::Display for UpdatePaymentMethodConfigurationBillieDisplayPreferen
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentMethodConfigurationBillieDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationBillieDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdatePaymentMethodConfigurationBillieDisplayPreferencePreference
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentMethodConfigurationBillieDisplayPreferencePreference {
@@ -8375,11 +10267,19 @@ impl<'de> serde::Deserialize<'de>
 /// BLIK is a [single use](https://docs.stripe.com/payments/payment-methods#usage) payment method that requires customers to authenticate their payments.
 /// When customers want to pay online using BLIK, they request a six-digit code from their banking application and enter it into the payment collection form.
 /// Check this [page](https://docs.stripe.com/payments/blik) for more details.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationBlik {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<UpdatePaymentMethodConfigurationBlikDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationBlik {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationBlik").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationBlik {
     pub fn new() -> Self {
@@ -8392,11 +10292,20 @@ impl Default for UpdatePaymentMethodConfigurationBlik {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationBlikDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<UpdatePaymentMethodConfigurationBlikDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationBlikDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationBlikDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationBlikDisplayPreference {
     pub fn new() -> Self {
@@ -8455,9 +10364,17 @@ impl std::fmt::Display for UpdatePaymentMethodConfigurationBlikDisplayPreference
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentMethodConfigurationBlikDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationBlikDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentMethodConfigurationBlikDisplayPreferencePreference))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentMethodConfigurationBlikDisplayPreferencePreference {
@@ -8480,11 +10397,19 @@ impl<'de> serde::Deserialize<'de>
 }
 /// Boleto is an official (regulated by the Central Bank of Brazil) payment method in Brazil.
 /// Check this [page](https://docs.stripe.com/payments/boleto) for more details.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationBoleto {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<UpdatePaymentMethodConfigurationBoletoDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationBoleto {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationBoleto").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationBoleto {
     pub fn new() -> Self {
@@ -8497,11 +10422,20 @@ impl Default for UpdatePaymentMethodConfigurationBoleto {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationBoletoDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<UpdatePaymentMethodConfigurationBoletoDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationBoletoDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationBoletoDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationBoletoDisplayPreference {
     pub fn new() -> Self {
@@ -8560,9 +10494,19 @@ impl std::fmt::Display for UpdatePaymentMethodConfigurationBoletoDisplayPreferen
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentMethodConfigurationBoletoDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationBoletoDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdatePaymentMethodConfigurationBoletoDisplayPreferencePreference
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentMethodConfigurationBoletoDisplayPreferencePreference {
@@ -8585,11 +10529,19 @@ impl<'de> serde::Deserialize<'de>
 }
 /// Cards are a popular way for consumers and businesses to pay online or in person.
 /// Stripe supports global and local card networks.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationCard {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<UpdatePaymentMethodConfigurationCardDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationCard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationCard").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationCard {
     pub fn new() -> Self {
@@ -8602,11 +10554,20 @@ impl Default for UpdatePaymentMethodConfigurationCard {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationCardDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<UpdatePaymentMethodConfigurationCardDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationCardDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationCardDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationCardDisplayPreference {
     pub fn new() -> Self {
@@ -8665,9 +10626,17 @@ impl std::fmt::Display for UpdatePaymentMethodConfigurationCardDisplayPreference
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentMethodConfigurationCardDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationCardDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentMethodConfigurationCardDisplayPreferencePreference))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentMethodConfigurationCardDisplayPreferencePreference {
@@ -8691,12 +10660,20 @@ impl<'de> serde::Deserialize<'de>
 /// Cartes Bancaires is France's local card network.
 /// More than 95% of these cards are co-branded with either Visa or Mastercard, meaning you can process these cards over either Cartes Bancaires or the Visa or Mastercard networks.
 /// Check this [page](https://docs.stripe.com/payments/cartes-bancaires) for more details.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationCartesBancaires {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference:
         Option<UpdatePaymentMethodConfigurationCartesBancairesDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationCartesBancaires {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationCartesBancaires").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationCartesBancaires {
     pub fn new() -> Self {
@@ -8709,12 +10686,21 @@ impl Default for UpdatePaymentMethodConfigurationCartesBancaires {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationCartesBancairesDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference:
         Option<UpdatePaymentMethodConfigurationCartesBancairesDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationCartesBancairesDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationCartesBancairesDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationCartesBancairesDisplayPreference {
     pub fn new() -> Self {
@@ -8777,11 +10763,23 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for UpdatePaymentMethodConfigurationCartesBancairesDisplayPreferencePreference
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for UpdatePaymentMethodConfigurationCartesBancairesDisplayPreferencePreference
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdatePaymentMethodConfigurationCartesBancairesDisplayPreferencePreference
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -8806,11 +10804,19 @@ impl<'de> serde::Deserialize<'de>
 }
 /// Cash App is a popular consumer app in the US that allows customers to bank, invest, send, and receive money using their digital wallet.
 /// Check this [page](https://docs.stripe.com/payments/cash-app-pay) for more details.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationCashapp {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<UpdatePaymentMethodConfigurationCashappDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationCashapp {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationCashapp").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationCashapp {
     pub fn new() -> Self {
@@ -8823,11 +10829,20 @@ impl Default for UpdatePaymentMethodConfigurationCashapp {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationCashappDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<UpdatePaymentMethodConfigurationCashappDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationCashappDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationCashappDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationCashappDisplayPreference {
     pub fn new() -> Self {
@@ -8886,9 +10901,19 @@ impl std::fmt::Display for UpdatePaymentMethodConfigurationCashappDisplayPrefere
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentMethodConfigurationCashappDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationCashappDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdatePaymentMethodConfigurationCashappDisplayPreferencePreference
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentMethodConfigurationCashappDisplayPreferencePreference {
@@ -8910,11 +10935,19 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// [Stablecoin payments](https://docs.stripe.com/payments/stablecoin-payments) enable customers to pay in stablecoins like USDC from 100s of wallets including Phantom and Metamask.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationCrypto {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<UpdatePaymentMethodConfigurationCryptoDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationCrypto {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationCrypto").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationCrypto {
     pub fn new() -> Self {
@@ -8927,11 +10960,20 @@ impl Default for UpdatePaymentMethodConfigurationCrypto {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationCryptoDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<UpdatePaymentMethodConfigurationCryptoDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationCryptoDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationCryptoDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationCryptoDisplayPreference {
     pub fn new() -> Self {
@@ -8990,9 +11032,19 @@ impl std::fmt::Display for UpdatePaymentMethodConfigurationCryptoDisplayPreferen
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentMethodConfigurationCryptoDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationCryptoDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdatePaymentMethodConfigurationCryptoDisplayPreferencePreference
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentMethodConfigurationCryptoDisplayPreferencePreference {
@@ -9016,12 +11068,20 @@ impl<'de> serde::Deserialize<'de>
 /// Uses a customer’s [cash balance](https://docs.stripe.com/payments/customer-balance) for the payment.
 /// The cash balance can be funded via a bank transfer.
 /// Check this [page](https://docs.stripe.com/payments/bank-transfers) for more details.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationCustomerBalance {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference:
         Option<UpdatePaymentMethodConfigurationCustomerBalanceDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationCustomerBalance {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationCustomerBalance").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationCustomerBalance {
     pub fn new() -> Self {
@@ -9034,12 +11094,21 @@ impl Default for UpdatePaymentMethodConfigurationCustomerBalance {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationCustomerBalanceDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference:
         Option<UpdatePaymentMethodConfigurationCustomerBalanceDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationCustomerBalanceDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationCustomerBalanceDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationCustomerBalanceDisplayPreference {
     pub fn new() -> Self {
@@ -9102,11 +11171,23 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for UpdatePaymentMethodConfigurationCustomerBalanceDisplayPreferencePreference
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for UpdatePaymentMethodConfigurationCustomerBalanceDisplayPreferencePreference
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdatePaymentMethodConfigurationCustomerBalanceDisplayPreferencePreference
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -9132,11 +11213,19 @@ impl<'de> serde::Deserialize<'de>
 /// EPS is an Austria-based payment method that allows customers to complete transactions online using their bank credentials.
 /// EPS is supported by all Austrian banks and is accepted by over 80% of Austrian online retailers.
 /// Check this [page](https://docs.stripe.com/payments/eps) for more details.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationEps {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<UpdatePaymentMethodConfigurationEpsDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationEps {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationEps").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationEps {
     pub fn new() -> Self {
@@ -9149,11 +11238,20 @@ impl Default for UpdatePaymentMethodConfigurationEps {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationEpsDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<UpdatePaymentMethodConfigurationEpsDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationEpsDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationEpsDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationEpsDisplayPreference {
     pub fn new() -> Self {
@@ -9212,9 +11310,17 @@ impl std::fmt::Display for UpdatePaymentMethodConfigurationEpsDisplayPreferenceP
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentMethodConfigurationEpsDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationEpsDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentMethodConfigurationEpsDisplayPreferencePreference))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentMethodConfigurationEpsDisplayPreferencePreference {
@@ -9239,11 +11345,19 @@ impl<'de> serde::Deserialize<'de>
 /// Bank Negara Malaysia (BNM), the Central Bank of Malaysia, and eleven other major Malaysian financial institutions are members of the PayNet Group, which owns and operates FPX.
 /// It is one of the most popular online payment methods in Malaysia, with nearly 90 million transactions in 2018 according to BNM.
 /// Check this [page](https://docs.stripe.com/payments/fpx) for more details.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationFpx {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<UpdatePaymentMethodConfigurationFpxDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationFpx {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationFpx").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationFpx {
     pub fn new() -> Self {
@@ -9256,11 +11370,20 @@ impl Default for UpdatePaymentMethodConfigurationFpx {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationFpxDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<UpdatePaymentMethodConfigurationFpxDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationFpxDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationFpxDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationFpxDisplayPreference {
     pub fn new() -> Self {
@@ -9319,9 +11442,17 @@ impl std::fmt::Display for UpdatePaymentMethodConfigurationFpxDisplayPreferenceP
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentMethodConfigurationFpxDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationFpxDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentMethodConfigurationFpxDisplayPreferencePreference))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentMethodConfigurationFpxDisplayPreferencePreference {
@@ -9344,12 +11475,21 @@ impl<'de> serde::Deserialize<'de>
 }
 /// Meal vouchers in France, or “titres-restaurant”, is a local benefits program commonly offered by employers for their employees to purchase prepared food and beverages on working days.
 /// Check this [page](https://docs.stripe.com/payments/meal-vouchers/fr-meal-vouchers) for more details.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationFrMealVoucherConecs {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference:
         Option<UpdatePaymentMethodConfigurationFrMealVoucherConecsDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationFrMealVoucherConecs {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationFrMealVoucherConecs")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationFrMealVoucherConecs {
     pub fn new() -> Self {
@@ -9362,12 +11502,21 @@ impl Default for UpdatePaymentMethodConfigurationFrMealVoucherConecs {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationFrMealVoucherConecsDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference:
         Option<UpdatePaymentMethodConfigurationFrMealVoucherConecsDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationFrMealVoucherConecsDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationFrMealVoucherConecsDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationFrMealVoucherConecsDisplayPreference {
     pub fn new() -> Self {
@@ -9430,11 +11579,23 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for UpdatePaymentMethodConfigurationFrMealVoucherConecsDisplayPreferencePreference
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for UpdatePaymentMethodConfigurationFrMealVoucherConecsDisplayPreferencePreference
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdatePaymentMethodConfigurationFrMealVoucherConecsDisplayPreferencePreference
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -9462,11 +11623,19 @@ impl<'de> serde::Deserialize<'de>
 /// Depending on their bank, customers confirm payments on giropay using a second factor of authentication or a PIN.
 /// giropay accounts for 10% of online checkouts in Germany.
 /// Check this [page](https://docs.stripe.com/payments/giropay) for more details.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationGiropay {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<UpdatePaymentMethodConfigurationGiropayDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationGiropay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationGiropay").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationGiropay {
     pub fn new() -> Self {
@@ -9479,11 +11648,20 @@ impl Default for UpdatePaymentMethodConfigurationGiropay {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationGiropayDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<UpdatePaymentMethodConfigurationGiropayDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationGiropayDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationGiropayDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationGiropayDisplayPreference {
     pub fn new() -> Self {
@@ -9542,9 +11720,19 @@ impl std::fmt::Display for UpdatePaymentMethodConfigurationGiropayDisplayPrefere
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentMethodConfigurationGiropayDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationGiropayDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdatePaymentMethodConfigurationGiropayDisplayPreferencePreference
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentMethodConfigurationGiropayDisplayPreferencePreference {
@@ -9568,11 +11756,19 @@ impl<'de> serde::Deserialize<'de>
 /// Google Pay allows customers to make payments in your app or website using any credit or debit card saved to their Google Account, including those from Google Play, YouTube, Chrome, or an Android device.
 /// Use the Google Pay API to request any credit or debit card stored in your customer's Google account.
 /// Check this [page](https://docs.stripe.com/google-pay) for more details.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationGooglePay {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<UpdatePaymentMethodConfigurationGooglePayDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationGooglePay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationGooglePay").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationGooglePay {
     pub fn new() -> Self {
@@ -9585,11 +11781,20 @@ impl Default for UpdatePaymentMethodConfigurationGooglePay {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationGooglePayDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<UpdatePaymentMethodConfigurationGooglePayDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationGooglePayDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationGooglePayDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationGooglePayDisplayPreference {
     pub fn new() -> Self {
@@ -9648,9 +11853,19 @@ impl std::fmt::Display for UpdatePaymentMethodConfigurationGooglePayDisplayPrefe
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentMethodConfigurationGooglePayDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationGooglePayDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdatePaymentMethodConfigurationGooglePayDisplayPreferencePreference
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentMethodConfigurationGooglePayDisplayPreferencePreference {
@@ -9674,11 +11889,19 @@ impl<'de> serde::Deserialize<'de>
 /// GrabPay is a payment method developed by [Grab](https://www.grab.com/sg/consumer/finance/pay/).
 /// GrabPay is a digital wallet - customers maintain a balance in their wallets that they pay out with.
 /// Check this [page](https://docs.stripe.com/payments/grabpay) for more details.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationGrabpay {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<UpdatePaymentMethodConfigurationGrabpayDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationGrabpay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationGrabpay").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationGrabpay {
     pub fn new() -> Self {
@@ -9691,11 +11914,20 @@ impl Default for UpdatePaymentMethodConfigurationGrabpay {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationGrabpayDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<UpdatePaymentMethodConfigurationGrabpayDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationGrabpayDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationGrabpayDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationGrabpayDisplayPreference {
     pub fn new() -> Self {
@@ -9754,9 +11986,19 @@ impl std::fmt::Display for UpdatePaymentMethodConfigurationGrabpayDisplayPrefere
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentMethodConfigurationGrabpayDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationGrabpayDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdatePaymentMethodConfigurationGrabpayDisplayPreferencePreference
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentMethodConfigurationGrabpayDisplayPreferencePreference {
@@ -9780,11 +12022,19 @@ impl<'de> serde::Deserialize<'de>
 /// iDEAL is a Netherlands-based payment method that allows customers to complete transactions online using their bank credentials.
 /// All major Dutch banks are members of Currence, the scheme that operates iDEAL, making it the most popular online payment method in the Netherlands with a share of online transactions close to 55%.
 /// Check this [page](https://docs.stripe.com/payments/ideal) for more details.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationIdeal {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<UpdatePaymentMethodConfigurationIdealDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationIdeal {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationIdeal").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationIdeal {
     pub fn new() -> Self {
@@ -9797,11 +12047,20 @@ impl Default for UpdatePaymentMethodConfigurationIdeal {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationIdealDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<UpdatePaymentMethodConfigurationIdealDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationIdealDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationIdealDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationIdealDisplayPreference {
     pub fn new() -> Self {
@@ -9860,9 +12119,17 @@ impl std::fmt::Display for UpdatePaymentMethodConfigurationIdealDisplayPreferenc
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentMethodConfigurationIdealDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationIdealDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentMethodConfigurationIdealDisplayPreferencePreference))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentMethodConfigurationIdealDisplayPreferencePreference {
@@ -9886,11 +12153,19 @@ impl<'de> serde::Deserialize<'de>
 /// JCB is a credit card company based in Japan.
 /// JCB is currently available in Japan to businesses approved by JCB, and available to all businesses in Australia, Canada, Hong Kong, Japan, New Zealand, Singapore, Switzerland, United Kingdom, United States, and all countries in the European Economic Area except Iceland.
 /// Check this [page](https://support.stripe.com/questions/accepting-japan-credit-bureau-%28jcb%29-payments) for more details.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationJcb {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<UpdatePaymentMethodConfigurationJcbDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationJcb {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationJcb").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationJcb {
     pub fn new() -> Self {
@@ -9903,11 +12178,20 @@ impl Default for UpdatePaymentMethodConfigurationJcb {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationJcbDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<UpdatePaymentMethodConfigurationJcbDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationJcbDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationJcbDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationJcbDisplayPreference {
     pub fn new() -> Self {
@@ -9966,9 +12250,17 @@ impl std::fmt::Display for UpdatePaymentMethodConfigurationJcbDisplayPreferenceP
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentMethodConfigurationJcbDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationJcbDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentMethodConfigurationJcbDisplayPreferencePreference))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentMethodConfigurationJcbDisplayPreferencePreference {
@@ -9990,11 +12282,19 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Kakao Pay is a popular local wallet available in South Korea.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationKakaoPay {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<UpdatePaymentMethodConfigurationKakaoPayDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationKakaoPay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationKakaoPay").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationKakaoPay {
     pub fn new() -> Self {
@@ -10007,11 +12307,20 @@ impl Default for UpdatePaymentMethodConfigurationKakaoPay {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationKakaoPayDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<UpdatePaymentMethodConfigurationKakaoPayDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationKakaoPayDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationKakaoPayDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationKakaoPayDisplayPreference {
     pub fn new() -> Self {
@@ -10070,9 +12379,19 @@ impl std::fmt::Display for UpdatePaymentMethodConfigurationKakaoPayDisplayPrefer
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentMethodConfigurationKakaoPayDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationKakaoPayDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdatePaymentMethodConfigurationKakaoPayDisplayPreferencePreference
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentMethodConfigurationKakaoPayDisplayPreferencePreference {
@@ -10097,11 +12416,19 @@ impl<'de> serde::Deserialize<'de>
 /// Available payment options vary depending on the customer's billing address and the transaction amount.
 /// These payment options make it convenient for customers to purchase items in all price ranges.
 /// Check this [page](https://docs.stripe.com/payments/klarna) for more details.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationKlarna {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<UpdatePaymentMethodConfigurationKlarnaDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationKlarna {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationKlarna").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationKlarna {
     pub fn new() -> Self {
@@ -10114,11 +12441,20 @@ impl Default for UpdatePaymentMethodConfigurationKlarna {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationKlarnaDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<UpdatePaymentMethodConfigurationKlarnaDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationKlarnaDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationKlarnaDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationKlarnaDisplayPreference {
     pub fn new() -> Self {
@@ -10177,9 +12513,19 @@ impl std::fmt::Display for UpdatePaymentMethodConfigurationKlarnaDisplayPreferen
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentMethodConfigurationKlarnaDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationKlarnaDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdatePaymentMethodConfigurationKlarnaDisplayPreferencePreference
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentMethodConfigurationKlarnaDisplayPreferencePreference {
@@ -10202,11 +12548,19 @@ impl<'de> serde::Deserialize<'de>
 }
 /// Konbini allows customers in Japan to pay for bills and online purchases at convenience stores with cash.
 /// Check this [page](https://docs.stripe.com/payments/konbini) for more details.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationKonbini {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<UpdatePaymentMethodConfigurationKonbiniDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationKonbini {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationKonbini").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationKonbini {
     pub fn new() -> Self {
@@ -10219,11 +12573,20 @@ impl Default for UpdatePaymentMethodConfigurationKonbini {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationKonbiniDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<UpdatePaymentMethodConfigurationKonbiniDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationKonbiniDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationKonbiniDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationKonbiniDisplayPreference {
     pub fn new() -> Self {
@@ -10282,9 +12645,19 @@ impl std::fmt::Display for UpdatePaymentMethodConfigurationKonbiniDisplayPrefere
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentMethodConfigurationKonbiniDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationKonbiniDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdatePaymentMethodConfigurationKonbiniDisplayPreferencePreference
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentMethodConfigurationKonbiniDisplayPreferencePreference {
@@ -10306,11 +12679,19 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Korean cards let users pay using locally issued cards from South Korea.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationKrCard {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<UpdatePaymentMethodConfigurationKrCardDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationKrCard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationKrCard").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationKrCard {
     pub fn new() -> Self {
@@ -10323,11 +12704,20 @@ impl Default for UpdatePaymentMethodConfigurationKrCard {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationKrCardDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<UpdatePaymentMethodConfigurationKrCardDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationKrCardDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationKrCardDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationKrCardDisplayPreference {
     pub fn new() -> Self {
@@ -10386,9 +12776,19 @@ impl std::fmt::Display for UpdatePaymentMethodConfigurationKrCardDisplayPreferen
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentMethodConfigurationKrCardDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationKrCardDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdatePaymentMethodConfigurationKrCardDisplayPreferencePreference
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentMethodConfigurationKrCardDisplayPreferencePreference {
@@ -10411,11 +12811,19 @@ impl<'de> serde::Deserialize<'de>
 }
 /// [Link](https://docs.stripe.com/payments/link) is a payment method network.
 /// With Link, users save their payment details once, then reuse that information to pay with one click for any business on the network.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationLink {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<UpdatePaymentMethodConfigurationLinkDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationLink {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationLink").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationLink {
     pub fn new() -> Self {
@@ -10428,11 +12836,20 @@ impl Default for UpdatePaymentMethodConfigurationLink {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationLinkDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<UpdatePaymentMethodConfigurationLinkDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationLinkDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationLinkDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationLinkDisplayPreference {
     pub fn new() -> Self {
@@ -10491,9 +12908,17 @@ impl std::fmt::Display for UpdatePaymentMethodConfigurationLinkDisplayPreference
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentMethodConfigurationLinkDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationLinkDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentMethodConfigurationLinkDisplayPreferencePreference))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentMethodConfigurationLinkDisplayPreferencePreference {
@@ -10517,11 +12942,19 @@ impl<'de> serde::Deserialize<'de>
 /// MB WAY is the most popular wallet in Portugal.
 /// After entering their phone number in your checkout, customers approve the payment directly in their MB WAY app.
 /// Check this [page](https://docs.stripe.com/payments/mb-way) for more details.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationMbWay {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<UpdatePaymentMethodConfigurationMbWayDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationMbWay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationMbWay").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationMbWay {
     pub fn new() -> Self {
@@ -10534,11 +12967,20 @@ impl Default for UpdatePaymentMethodConfigurationMbWay {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationMbWayDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<UpdatePaymentMethodConfigurationMbWayDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationMbWayDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationMbWayDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationMbWayDisplayPreference {
     pub fn new() -> Self {
@@ -10597,9 +13039,17 @@ impl std::fmt::Display for UpdatePaymentMethodConfigurationMbWayDisplayPreferenc
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentMethodConfigurationMbWayDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationMbWayDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentMethodConfigurationMbWayDisplayPreferencePreference))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentMethodConfigurationMbWayDisplayPreferencePreference {
@@ -10623,11 +13073,19 @@ impl<'de> serde::Deserialize<'de>
 /// MobilePay is a [single-use](https://docs.stripe.com/payments/payment-methods#usage) card wallet payment method used in Denmark and Finland.
 /// It allows customers to [authenticate and approve](https://docs.stripe.com/payments/payment-methods#customer-actions) payments using the MobilePay app.
 /// Check this [page](https://docs.stripe.com/payments/mobilepay) for more details.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationMobilepay {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<UpdatePaymentMethodConfigurationMobilepayDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationMobilepay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationMobilepay").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationMobilepay {
     pub fn new() -> Self {
@@ -10640,11 +13098,20 @@ impl Default for UpdatePaymentMethodConfigurationMobilepay {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationMobilepayDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<UpdatePaymentMethodConfigurationMobilepayDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationMobilepayDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationMobilepayDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationMobilepayDisplayPreference {
     pub fn new() -> Self {
@@ -10703,9 +13170,19 @@ impl std::fmt::Display for UpdatePaymentMethodConfigurationMobilepayDisplayPrefe
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentMethodConfigurationMobilepayDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationMobilepayDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdatePaymentMethodConfigurationMobilepayDisplayPreferencePreference
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentMethodConfigurationMobilepayDisplayPreferencePreference {
@@ -10727,11 +13204,19 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Stripe users in Europe and the United States can accept Multibanco payments from customers in Portugal using [Sources](https://stripe.com/docs/sources)—a single integration path for creating payments using any supported method.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationMultibanco {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<UpdatePaymentMethodConfigurationMultibancoDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationMultibanco {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationMultibanco").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationMultibanco {
     pub fn new() -> Self {
@@ -10744,11 +13229,20 @@ impl Default for UpdatePaymentMethodConfigurationMultibanco {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationMultibancoDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<UpdatePaymentMethodConfigurationMultibancoDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationMultibancoDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationMultibancoDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationMultibancoDisplayPreference {
     pub fn new() -> Self {
@@ -10807,9 +13301,19 @@ impl std::fmt::Display for UpdatePaymentMethodConfigurationMultibancoDisplayPref
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentMethodConfigurationMultibancoDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationMultibancoDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdatePaymentMethodConfigurationMultibancoDisplayPreferencePreference
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentMethodConfigurationMultibancoDisplayPreferencePreference {
@@ -10831,11 +13335,19 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Naver Pay is a popular local wallet available in South Korea.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationNaverPay {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<UpdatePaymentMethodConfigurationNaverPayDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationNaverPay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationNaverPay").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationNaverPay {
     pub fn new() -> Self {
@@ -10848,11 +13360,20 @@ impl Default for UpdatePaymentMethodConfigurationNaverPay {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationNaverPayDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<UpdatePaymentMethodConfigurationNaverPayDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationNaverPayDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationNaverPayDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationNaverPayDisplayPreference {
     pub fn new() -> Self {
@@ -10911,9 +13432,19 @@ impl std::fmt::Display for UpdatePaymentMethodConfigurationNaverPayDisplayPrefer
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentMethodConfigurationNaverPayDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationNaverPayDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdatePaymentMethodConfigurationNaverPayDisplayPreferencePreference
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentMethodConfigurationNaverPayDisplayPreferencePreference {
@@ -10936,11 +13467,19 @@ impl<'de> serde::Deserialize<'de>
 }
 /// Stripe users in New Zealand can accept Bulk Electronic Clearing System (BECS) direct debit payments from customers with a New Zeland bank account.
 /// Check this [page](https://docs.stripe.com/payments/nz-bank-account) for more details.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationNzBankAccount {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<UpdatePaymentMethodConfigurationNzBankAccountDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationNzBankAccount {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationNzBankAccount").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationNzBankAccount {
     pub fn new() -> Self {
@@ -10953,12 +13492,21 @@ impl Default for UpdatePaymentMethodConfigurationNzBankAccount {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationNzBankAccountDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference:
         Option<UpdatePaymentMethodConfigurationNzBankAccountDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationNzBankAccountDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationNzBankAccountDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationNzBankAccountDisplayPreference {
     pub fn new() -> Self {
@@ -11021,9 +13569,19 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentMethodConfigurationNzBankAccountDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationNzBankAccountDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdatePaymentMethodConfigurationNzBankAccountDisplayPreferencePreference
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentMethodConfigurationNzBankAccountDisplayPreferencePreference {
@@ -11047,11 +13605,19 @@ impl<'de> serde::Deserialize<'de>
 /// OXXO is a Mexican chain of convenience stores with thousands of locations across Latin America and represents nearly 20% of online transactions in Mexico.
 /// OXXO allows customers to pay bills and online purchases in-store with cash.
 /// Check this [page](https://docs.stripe.com/payments/oxxo) for more details.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationOxxo {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<UpdatePaymentMethodConfigurationOxxoDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationOxxo {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationOxxo").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationOxxo {
     pub fn new() -> Self {
@@ -11064,11 +13630,20 @@ impl Default for UpdatePaymentMethodConfigurationOxxo {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationOxxoDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<UpdatePaymentMethodConfigurationOxxoDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationOxxoDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationOxxoDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationOxxoDisplayPreference {
     pub fn new() -> Self {
@@ -11127,9 +13702,17 @@ impl std::fmt::Display for UpdatePaymentMethodConfigurationOxxoDisplayPreference
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentMethodConfigurationOxxoDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationOxxoDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentMethodConfigurationOxxoDisplayPreferencePreference))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentMethodConfigurationOxxoDisplayPreferencePreference {
@@ -11153,11 +13736,19 @@ impl<'de> serde::Deserialize<'de>
 /// Przelewy24 is a Poland-based payment method aggregator that allows customers to complete transactions online using bank transfers and other methods.
 /// Bank transfers account for 30% of online payments in Poland and Przelewy24 provides a way for customers to pay with over 165 banks.
 /// Check this [page](https://docs.stripe.com/payments/p24) for more details.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationP24 {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<UpdatePaymentMethodConfigurationP24DisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationP24 {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationP24").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationP24 {
     pub fn new() -> Self {
@@ -11170,11 +13761,20 @@ impl Default for UpdatePaymentMethodConfigurationP24 {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationP24DisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<UpdatePaymentMethodConfigurationP24DisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationP24DisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationP24DisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationP24DisplayPreference {
     pub fn new() -> Self {
@@ -11233,9 +13833,17 @@ impl std::fmt::Display for UpdatePaymentMethodConfigurationP24DisplayPreferenceP
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentMethodConfigurationP24DisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationP24DisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentMethodConfigurationP24DisplayPreferencePreference))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentMethodConfigurationP24DisplayPreferencePreference {
@@ -11259,11 +13867,19 @@ impl<'de> serde::Deserialize<'de>
 /// Pay by bank is a redirect payment method backed by bank transfers.
 /// A customer is redirected to their bank to authorize a bank transfer for a given amount.
 /// This removes a lot of the error risks inherent in waiting for the customer to initiate a transfer themselves, and is less expensive than card payments.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationPayByBank {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<UpdatePaymentMethodConfigurationPayByBankDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationPayByBank {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationPayByBank").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationPayByBank {
     pub fn new() -> Self {
@@ -11276,11 +13892,20 @@ impl Default for UpdatePaymentMethodConfigurationPayByBank {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationPayByBankDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<UpdatePaymentMethodConfigurationPayByBankDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationPayByBankDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationPayByBankDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationPayByBankDisplayPreference {
     pub fn new() -> Self {
@@ -11339,9 +13964,19 @@ impl std::fmt::Display for UpdatePaymentMethodConfigurationPayByBankDisplayPrefe
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentMethodConfigurationPayByBankDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationPayByBankDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdatePaymentMethodConfigurationPayByBankDisplayPreferencePreference
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentMethodConfigurationPayByBankDisplayPreferencePreference {
@@ -11363,11 +13998,19 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// PAYCO is a [single-use](https://docs.stripe.com/payments/payment-methods#usage local wallet available in South Korea.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationPayco {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<UpdatePaymentMethodConfigurationPaycoDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationPayco {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationPayco").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationPayco {
     pub fn new() -> Self {
@@ -11380,11 +14023,20 @@ impl Default for UpdatePaymentMethodConfigurationPayco {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationPaycoDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<UpdatePaymentMethodConfigurationPaycoDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationPaycoDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationPaycoDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationPaycoDisplayPreference {
     pub fn new() -> Self {
@@ -11443,9 +14095,17 @@ impl std::fmt::Display for UpdatePaymentMethodConfigurationPaycoDisplayPreferenc
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentMethodConfigurationPaycoDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationPaycoDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentMethodConfigurationPaycoDisplayPreferencePreference))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentMethodConfigurationPaycoDisplayPreferencePreference {
@@ -11468,11 +14128,19 @@ impl<'de> serde::Deserialize<'de>
 }
 /// PayNow is a Singapore-based payment method that allows customers to make a payment using their preferred app from participating banks and participating non-bank financial institutions.
 /// Check this [page](https://docs.stripe.com/payments/paynow) for more details.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationPaynow {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<UpdatePaymentMethodConfigurationPaynowDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationPaynow {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationPaynow").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationPaynow {
     pub fn new() -> Self {
@@ -11485,11 +14153,20 @@ impl Default for UpdatePaymentMethodConfigurationPaynow {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationPaynowDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<UpdatePaymentMethodConfigurationPaynowDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationPaynowDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationPaynowDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationPaynowDisplayPreference {
     pub fn new() -> Self {
@@ -11548,9 +14225,19 @@ impl std::fmt::Display for UpdatePaymentMethodConfigurationPaynowDisplayPreferen
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentMethodConfigurationPaynowDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationPaynowDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdatePaymentMethodConfigurationPaynowDisplayPreferencePreference
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentMethodConfigurationPaynowDisplayPreferencePreference {
@@ -11573,11 +14260,19 @@ impl<'de> serde::Deserialize<'de>
 }
 /// PayPal, a digital wallet popular with customers in Europe, allows your customers worldwide to pay using their PayPal account.
 /// Check this [page](https://docs.stripe.com/payments/paypal) for more details.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationPaypal {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<UpdatePaymentMethodConfigurationPaypalDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationPaypal {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationPaypal").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationPaypal {
     pub fn new() -> Self {
@@ -11590,11 +14285,20 @@ impl Default for UpdatePaymentMethodConfigurationPaypal {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationPaypalDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<UpdatePaymentMethodConfigurationPaypalDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationPaypalDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationPaypalDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationPaypalDisplayPreference {
     pub fn new() -> Self {
@@ -11653,9 +14357,19 @@ impl std::fmt::Display for UpdatePaymentMethodConfigurationPaypalDisplayPreferen
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentMethodConfigurationPaypalDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationPaypalDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdatePaymentMethodConfigurationPaypalDisplayPreferencePreference
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentMethodConfigurationPaypalDisplayPreferencePreference {
@@ -11679,11 +14393,19 @@ impl<'de> serde::Deserialize<'de>
 /// PayTo is a [real-time](https://docs.stripe.com/payments/real-time) payment method that enables customers in Australia to pay by providing their bank account details.
 /// Customers must accept a mandate authorizing you to debit their account.
 /// Check this [page](https://docs.stripe.com/payments/payto) for more details.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationPayto {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<UpdatePaymentMethodConfigurationPaytoDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationPayto {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationPayto").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationPayto {
     pub fn new() -> Self {
@@ -11696,11 +14418,20 @@ impl Default for UpdatePaymentMethodConfigurationPayto {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationPaytoDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<UpdatePaymentMethodConfigurationPaytoDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationPaytoDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationPaytoDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationPaytoDisplayPreference {
     pub fn new() -> Self {
@@ -11759,9 +14490,17 @@ impl std::fmt::Display for UpdatePaymentMethodConfigurationPaytoDisplayPreferenc
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentMethodConfigurationPaytoDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationPaytoDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentMethodConfigurationPaytoDisplayPreferencePreference))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentMethodConfigurationPaytoDisplayPreferencePreference {
@@ -11785,11 +14524,19 @@ impl<'de> serde::Deserialize<'de>
 /// Pix is a payment method popular in Brazil.
 /// When paying with Pix, customers authenticate and approve payments by scanning a QR code in their preferred banking app.
 /// Check this [page](https://docs.stripe.com/payments/pix) for more details.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationPix {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<UpdatePaymentMethodConfigurationPixDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationPix {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationPix").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationPix {
     pub fn new() -> Self {
@@ -11802,11 +14549,20 @@ impl Default for UpdatePaymentMethodConfigurationPix {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationPixDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<UpdatePaymentMethodConfigurationPixDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationPixDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationPixDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationPixDisplayPreference {
     pub fn new() -> Self {
@@ -11865,9 +14621,17 @@ impl std::fmt::Display for UpdatePaymentMethodConfigurationPixDisplayPreferenceP
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentMethodConfigurationPixDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationPixDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentMethodConfigurationPixDisplayPreferencePreference))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentMethodConfigurationPixDisplayPreferencePreference {
@@ -11890,11 +14654,19 @@ impl<'de> serde::Deserialize<'de>
 }
 /// PromptPay is a Thailand-based payment method that allows customers to make a payment using their preferred app from participating banks.
 /// Check this [page](https://docs.stripe.com/payments/promptpay) for more details.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationPromptpay {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<UpdatePaymentMethodConfigurationPromptpayDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationPromptpay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationPromptpay").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationPromptpay {
     pub fn new() -> Self {
@@ -11907,11 +14679,20 @@ impl Default for UpdatePaymentMethodConfigurationPromptpay {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationPromptpayDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<UpdatePaymentMethodConfigurationPromptpayDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationPromptpayDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationPromptpayDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationPromptpayDisplayPreference {
     pub fn new() -> Self {
@@ -11970,9 +14751,19 @@ impl std::fmt::Display for UpdatePaymentMethodConfigurationPromptpayDisplayPrefe
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentMethodConfigurationPromptpayDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationPromptpayDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdatePaymentMethodConfigurationPromptpayDisplayPreferencePreference
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentMethodConfigurationPromptpayDisplayPreferencePreference {
@@ -11995,11 +14786,19 @@ impl<'de> serde::Deserialize<'de>
 }
 /// Revolut Pay, developed by Revolut, a global finance app, is a digital wallet payment method.
 /// Revolut Pay uses the customer’s stored balance or cards to fund the payment, and offers the option for non-Revolut customers to save their details after their first purchase.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationRevolutPay {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<UpdatePaymentMethodConfigurationRevolutPayDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationRevolutPay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationRevolutPay").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationRevolutPay {
     pub fn new() -> Self {
@@ -12012,11 +14811,20 @@ impl Default for UpdatePaymentMethodConfigurationRevolutPay {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationRevolutPayDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<UpdatePaymentMethodConfigurationRevolutPayDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationRevolutPayDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationRevolutPayDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationRevolutPayDisplayPreference {
     pub fn new() -> Self {
@@ -12075,9 +14883,19 @@ impl std::fmt::Display for UpdatePaymentMethodConfigurationRevolutPayDisplayPref
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentMethodConfigurationRevolutPayDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationRevolutPayDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdatePaymentMethodConfigurationRevolutPayDisplayPreferencePreference
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentMethodConfigurationRevolutPayDisplayPreferencePreference {
@@ -12099,11 +14917,19 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Samsung Pay is a [single-use](https://docs.stripe.com/payments/payment-methods#usage local wallet available in South Korea.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationSamsungPay {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<UpdatePaymentMethodConfigurationSamsungPayDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationSamsungPay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationSamsungPay").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationSamsungPay {
     pub fn new() -> Self {
@@ -12116,11 +14942,20 @@ impl Default for UpdatePaymentMethodConfigurationSamsungPay {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationSamsungPayDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<UpdatePaymentMethodConfigurationSamsungPayDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationSamsungPayDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationSamsungPayDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationSamsungPayDisplayPreference {
     pub fn new() -> Self {
@@ -12179,9 +15014,19 @@ impl std::fmt::Display for UpdatePaymentMethodConfigurationSamsungPayDisplayPref
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentMethodConfigurationSamsungPayDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationSamsungPayDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdatePaymentMethodConfigurationSamsungPayDisplayPreferencePreference
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentMethodConfigurationSamsungPayDisplayPreferencePreference {
@@ -12205,11 +15050,19 @@ impl<'de> serde::Deserialize<'de>
 /// Satispay is a [single-use](https://docs.stripe.com/payments/payment-methods#usage) payment method where customers are required to [authenticate](/payments/payment-methods#customer-actions) their payment.
 /// Customers pay by being redirected from your website or app, authorizing the payment with Satispay, then returning to your website or app.
 /// You get [immediate notification](/payments/payment-methods#payment-notification) of whether the payment succeeded or failed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationSatispay {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<UpdatePaymentMethodConfigurationSatispayDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationSatispay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationSatispay").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationSatispay {
     pub fn new() -> Self {
@@ -12222,11 +15075,20 @@ impl Default for UpdatePaymentMethodConfigurationSatispay {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationSatispayDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<UpdatePaymentMethodConfigurationSatispayDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationSatispayDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationSatispayDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationSatispayDisplayPreference {
     pub fn new() -> Self {
@@ -12285,9 +15147,19 @@ impl std::fmt::Display for UpdatePaymentMethodConfigurationSatispayDisplayPrefer
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentMethodConfigurationSatispayDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationSatispayDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdatePaymentMethodConfigurationSatispayDisplayPreferencePreference
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentMethodConfigurationSatispayDisplayPreferencePreference {
@@ -12310,11 +15182,19 @@ impl<'de> serde::Deserialize<'de>
 }
 /// The [Single Euro Payments Area (SEPA)](https://en.wikipedia.org/wiki/Single_Euro_Payments_Area) is an initiative of the European Union to simplify payments within and across member countries.
 /// SEPA established and enforced banking standards to allow for the direct debiting of every EUR-denominated bank account within the SEPA region, check this [page](https://docs.stripe.com/payments/sepa-debit) for more details.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationSepaDebit {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<UpdatePaymentMethodConfigurationSepaDebitDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationSepaDebit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationSepaDebit").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationSepaDebit {
     pub fn new() -> Self {
@@ -12327,11 +15207,20 @@ impl Default for UpdatePaymentMethodConfigurationSepaDebit {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationSepaDebitDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<UpdatePaymentMethodConfigurationSepaDebitDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationSepaDebitDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationSepaDebitDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationSepaDebitDisplayPreference {
     pub fn new() -> Self {
@@ -12390,9 +15279,19 @@ impl std::fmt::Display for UpdatePaymentMethodConfigurationSepaDebitDisplayPrefe
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentMethodConfigurationSepaDebitDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationSepaDebitDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdatePaymentMethodConfigurationSepaDebitDisplayPreferencePreference
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentMethodConfigurationSepaDebitDisplayPreferencePreference {
@@ -12415,11 +15314,19 @@ impl<'de> serde::Deserialize<'de>
 }
 /// Stripe users in Europe and the United States can use the [Payment Intents API](https://stripe.com/docs/payments/payment-intents)—a single integration path for creating payments using any supported method—to accept [Sofort](https://www.sofort.com/) payments from customers.
 /// Check this [page](https://docs.stripe.com/payments/sofort) for more details.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationSofort {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<UpdatePaymentMethodConfigurationSofortDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationSofort {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationSofort").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationSofort {
     pub fn new() -> Self {
@@ -12432,11 +15339,20 @@ impl Default for UpdatePaymentMethodConfigurationSofort {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationSofortDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<UpdatePaymentMethodConfigurationSofortDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationSofortDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationSofortDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationSofortDisplayPreference {
     pub fn new() -> Self {
@@ -12495,9 +15411,19 @@ impl std::fmt::Display for UpdatePaymentMethodConfigurationSofortDisplayPreferen
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentMethodConfigurationSofortDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationSofortDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdatePaymentMethodConfigurationSofortDisplayPreferencePreference
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentMethodConfigurationSofortDisplayPreferencePreference {
@@ -12521,11 +15447,19 @@ impl<'de> serde::Deserialize<'de>
 /// Swish is a [real-time](https://docs.stripe.com/payments/real-time) payment method popular in Sweden.
 /// It allows customers to [authenticate and approve](https://docs.stripe.com/payments/payment-methods#customer-actions) payments using the Swish mobile app and the Swedish BankID mobile app.
 /// Check this [page](https://docs.stripe.com/payments/swish) for more details.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationSwish {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<UpdatePaymentMethodConfigurationSwishDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationSwish {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationSwish").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationSwish {
     pub fn new() -> Self {
@@ -12538,11 +15472,20 @@ impl Default for UpdatePaymentMethodConfigurationSwish {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationSwishDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<UpdatePaymentMethodConfigurationSwishDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationSwishDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationSwishDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationSwishDisplayPreference {
     pub fn new() -> Self {
@@ -12601,9 +15544,17 @@ impl std::fmt::Display for UpdatePaymentMethodConfigurationSwishDisplayPreferenc
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentMethodConfigurationSwishDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationSwishDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentMethodConfigurationSwishDisplayPreferencePreference))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentMethodConfigurationSwishDisplayPreferencePreference {
@@ -12627,11 +15578,19 @@ impl<'de> serde::Deserialize<'de>
 /// Twint is a payment method popular in Switzerland.
 /// It allows customers to pay using their mobile phone.
 /// Check this [page](https://docs.stripe.com/payments/twint) for more details.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationTwint {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<UpdatePaymentMethodConfigurationTwintDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationTwint {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationTwint").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationTwint {
     pub fn new() -> Self {
@@ -12644,11 +15603,20 @@ impl Default for UpdatePaymentMethodConfigurationTwint {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationTwintDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<UpdatePaymentMethodConfigurationTwintDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationTwintDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationTwintDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationTwintDisplayPreference {
     pub fn new() -> Self {
@@ -12707,9 +15675,17 @@ impl std::fmt::Display for UpdatePaymentMethodConfigurationTwintDisplayPreferenc
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentMethodConfigurationTwintDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationTwintDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentMethodConfigurationTwintDisplayPreferencePreference))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentMethodConfigurationTwintDisplayPreferencePreference {
@@ -12731,11 +15707,19 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Unified Payment Interface (UPI) is India's leading payment method with exponential growth since it launched in 2016.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationUpi {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<UpdatePaymentMethodConfigurationUpiDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationUpi {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationUpi").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationUpi {
     pub fn new() -> Self {
@@ -12748,11 +15732,20 @@ impl Default for UpdatePaymentMethodConfigurationUpi {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationUpiDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<UpdatePaymentMethodConfigurationUpiDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationUpiDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationUpiDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationUpiDisplayPreference {
     pub fn new() -> Self {
@@ -12811,9 +15804,17 @@ impl std::fmt::Display for UpdatePaymentMethodConfigurationUpiDisplayPreferenceP
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentMethodConfigurationUpiDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationUpiDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentMethodConfigurationUpiDisplayPreferencePreference))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentMethodConfigurationUpiDisplayPreferencePreference {
@@ -12836,11 +15837,19 @@ impl<'de> serde::Deserialize<'de>
 }
 /// Stripe users in the United States can accept ACH direct debit payments from customers with a US bank account using the Automated Clearing House (ACH) payments system operated by Nacha.
 /// Check this [page](https://docs.stripe.com/payments/ach-direct-debit) for more details.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationUsBankAccount {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<UpdatePaymentMethodConfigurationUsBankAccountDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationUsBankAccount {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationUsBankAccount").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationUsBankAccount {
     pub fn new() -> Self {
@@ -12853,12 +15862,21 @@ impl Default for UpdatePaymentMethodConfigurationUsBankAccount {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationUsBankAccountDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference:
         Option<UpdatePaymentMethodConfigurationUsBankAccountDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationUsBankAccountDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationUsBankAccountDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationUsBankAccountDisplayPreference {
     pub fn new() -> Self {
@@ -12921,9 +15939,19 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentMethodConfigurationUsBankAccountDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationUsBankAccountDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdatePaymentMethodConfigurationUsBankAccountDisplayPreferencePreference
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentMethodConfigurationUsBankAccountDisplayPreferencePreference {
@@ -12948,11 +15976,19 @@ impl<'de> serde::Deserialize<'de>
 /// Chinese consumers can use WeChat Pay to pay for goods and services inside of businesses' apps and websites.
 /// WeChat Pay users buy most frequently in gaming, e-commerce, travel, online education, and food/nutrition.
 /// Check this [page](https://docs.stripe.com/payments/wechat-pay) for more details.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationWechatPay {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<UpdatePaymentMethodConfigurationWechatPayDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationWechatPay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationWechatPay").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationWechatPay {
     pub fn new() -> Self {
@@ -12965,11 +16001,20 @@ impl Default for UpdatePaymentMethodConfigurationWechatPay {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationWechatPayDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<UpdatePaymentMethodConfigurationWechatPayDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationWechatPayDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationWechatPayDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationWechatPayDisplayPreference {
     pub fn new() -> Self {
@@ -13028,9 +16073,19 @@ impl std::fmt::Display for UpdatePaymentMethodConfigurationWechatPayDisplayPrefe
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentMethodConfigurationWechatPayDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationWechatPayDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdatePaymentMethodConfigurationWechatPayDisplayPreferencePreference
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentMethodConfigurationWechatPayDisplayPreferencePreference {
@@ -13053,11 +16108,19 @@ impl<'de> serde::Deserialize<'de>
 }
 /// Zip gives your customers a way to split purchases over a series of payments.
 /// Check this [page](https://docs.stripe.com/payments/zip) for more details like country availability.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationZip {
     /// Whether or not the payment method should be displayed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_preference: Option<UpdatePaymentMethodConfigurationZipDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationZip {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationZip").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationZip {
     pub fn new() -> Self {
@@ -13070,11 +16133,20 @@ impl Default for UpdatePaymentMethodConfigurationZip {
     }
 }
 /// Whether or not the payment method should be displayed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfigurationZipDisplayPreference {
     /// The account's preference for whether or not to display this payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preference: Option<UpdatePaymentMethodConfigurationZipDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationZipDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationZipDisplayPreference")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfigurationZipDisplayPreference {
     pub fn new() -> Self {
@@ -13133,9 +16205,17 @@ impl std::fmt::Display for UpdatePaymentMethodConfigurationZipDisplayPreferenceP
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentMethodConfigurationZipDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationZipDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentMethodConfigurationZipDisplayPreferencePreference))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentMethodConfigurationZipDisplayPreferencePreference {
@@ -13157,10 +16237,18 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Update payment method configuration
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodConfiguration {
     inner: UpdatePaymentMethodConfigurationBuilder,
     configuration: stripe_payment::PaymentMethodConfigurationId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfiguration {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfiguration").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodConfiguration {
     /// Construct a new `UpdatePaymentMethodConfiguration`.

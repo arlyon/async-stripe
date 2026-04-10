@@ -2,7 +2,9 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ListBillingCreditGrantBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     customer: Option<String>,
@@ -17,6 +19,12 @@ struct ListBillingCreditGrantBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     starting_after: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListBillingCreditGrantBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListBillingCreditGrantBuilder").finish_non_exhaustive()
+    }
+}
 impl ListBillingCreditGrantBuilder {
     fn new() -> Self {
         Self {
@@ -30,9 +38,17 @@ impl ListBillingCreditGrantBuilder {
     }
 }
 /// Retrieve a list of credit grants.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListBillingCreditGrant {
     inner: ListBillingCreditGrantBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListBillingCreditGrant {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListBillingCreditGrant").finish_non_exhaustive()
+    }
 }
 impl ListBillingCreditGrant {
     /// Construct a new `ListBillingCreditGrant`.
@@ -112,10 +128,18 @@ impl StripeRequest for ListBillingCreditGrant {
         RequestBuilder::new(StripeMethod::Get, "/billing/credit_grants").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RetrieveBillingCreditGrantBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveBillingCreditGrantBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveBillingCreditGrantBuilder").finish_non_exhaustive()
+    }
 }
 impl RetrieveBillingCreditGrantBuilder {
     fn new() -> Self {
@@ -123,10 +147,18 @@ impl RetrieveBillingCreditGrantBuilder {
     }
 }
 /// Retrieves a credit grant.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RetrieveBillingCreditGrant {
     inner: RetrieveBillingCreditGrantBuilder,
     id: stripe_shared::BillingCreditGrantId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveBillingCreditGrant {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveBillingCreditGrant").finish_non_exhaustive()
+    }
 }
 impl RetrieveBillingCreditGrant {
     /// Construct a new `RetrieveBillingCreditGrant`.
@@ -166,7 +198,9 @@ impl StripeRequest for RetrieveBillingCreditGrant {
             .query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct CreateBillingCreditGrantBuilder {
     amount: CreateBillingCreditGrantAmount,
     applicability_config: CreateBillingCreditGrantApplicabilityConfig,
@@ -189,6 +223,12 @@ struct CreateBillingCreditGrantBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     priority: Option<i64>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateBillingCreditGrantBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateBillingCreditGrantBuilder").finish_non_exhaustive()
+    }
+}
 impl CreateBillingCreditGrantBuilder {
     fn new(
         amount: impl Into<CreateBillingCreditGrantAmount>,
@@ -210,7 +250,9 @@ impl CreateBillingCreditGrantBuilder {
     }
 }
 /// Amount of this credit grant.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateBillingCreditGrantAmount {
     /// The monetary amount.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -219,18 +261,32 @@ pub struct CreateBillingCreditGrantAmount {
     #[serde(rename = "type")]
     pub type_: CreateBillingCreditGrantAmountType,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateBillingCreditGrantAmount {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateBillingCreditGrantAmount").finish_non_exhaustive()
+    }
+}
 impl CreateBillingCreditGrantAmount {
     pub fn new(type_: impl Into<CreateBillingCreditGrantAmountType>) -> Self {
         Self { monetary: None, type_: type_.into() }
     }
 }
 /// The monetary amount.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateBillingCreditGrantAmountMonetary {
     /// Three-letter [ISO code for the currency](https://stripe.com/docs/currencies) of the `value` parameter.
     pub currency: stripe_types::Currency,
     /// A positive integer representing the amount of the credit grant.
     pub value: i64,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateBillingCreditGrantAmountMonetary {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateBillingCreditGrantAmountMonetary").finish_non_exhaustive()
+    }
 }
 impl CreateBillingCreditGrantAmountMonetary {
     pub fn new(currency: impl Into<stripe_types::Currency>, value: impl Into<i64>) -> Self {
@@ -278,9 +334,16 @@ impl std::fmt::Display for CreateBillingCreditGrantAmountType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateBillingCreditGrantAmountType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateBillingCreditGrantAmountType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateBillingCreditGrantAmountType)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateBillingCreditGrantAmountType {
@@ -301,10 +364,18 @@ impl<'de> serde::Deserialize<'de> for CreateBillingCreditGrantAmountType {
 }
 /// Configuration specifying what this credit grant applies to.
 /// We currently only support `metered` prices that have a [Billing Meter](https://docs.stripe.com/api/billing/meter) attached to them.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateBillingCreditGrantApplicabilityConfig {
     /// Specify the scope of this applicability config.
     pub scope: CreateBillingCreditGrantApplicabilityConfigScope,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateBillingCreditGrantApplicabilityConfig {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateBillingCreditGrantApplicabilityConfig").finish_non_exhaustive()
+    }
 }
 impl CreateBillingCreditGrantApplicabilityConfig {
     pub fn new(scope: impl Into<CreateBillingCreditGrantApplicabilityConfigScope>) -> Self {
@@ -312,7 +383,9 @@ impl CreateBillingCreditGrantApplicabilityConfig {
     }
 }
 /// Specify the scope of this applicability config.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateBillingCreditGrantApplicabilityConfigScope {
     /// The price type that credit grants can apply to.
     /// We currently only support the `metered` price type.
@@ -324,6 +397,12 @@ pub struct CreateBillingCreditGrantApplicabilityConfigScope {
     /// Cannot be used in combination with `price_type`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub prices: Option<Vec<CreateBillingCreditGrantApplicabilityConfigScopePrices>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateBillingCreditGrantApplicabilityConfigScope {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateBillingCreditGrantApplicabilityConfigScope").finish_non_exhaustive()
+    }
 }
 impl CreateBillingCreditGrantApplicabilityConfigScope {
     pub fn new() -> Self {
@@ -378,9 +457,17 @@ impl std::fmt::Display for CreateBillingCreditGrantApplicabilityConfigScopePrice
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateBillingCreditGrantApplicabilityConfigScopePriceType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateBillingCreditGrantApplicabilityConfigScopePriceType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateBillingCreditGrantApplicabilityConfigScopePriceType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateBillingCreditGrantApplicabilityConfigScopePriceType {
@@ -402,10 +489,19 @@ impl<'de> serde::Deserialize<'de> for CreateBillingCreditGrantApplicabilityConfi
 /// A list of prices that the credit grant can apply to.
 /// We currently only support the `metered` prices.
 /// Cannot be used in combination with `price_type`.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateBillingCreditGrantApplicabilityConfigScopePrices {
     /// The price ID this credit grant should apply to.
     pub id: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateBillingCreditGrantApplicabilityConfigScopePrices {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateBillingCreditGrantApplicabilityConfigScopePrices")
+            .finish_non_exhaustive()
+    }
 }
 impl CreateBillingCreditGrantApplicabilityConfigScopePrices {
     pub fn new(id: impl Into<String>) -> Self {
@@ -413,9 +509,17 @@ impl CreateBillingCreditGrantApplicabilityConfigScopePrices {
     }
 }
 /// Creates a credit grant.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateBillingCreditGrant {
     inner: CreateBillingCreditGrantBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateBillingCreditGrant {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateBillingCreditGrant").finish_non_exhaustive()
+    }
 }
 impl CreateBillingCreditGrant {
     /// Construct a new `CreateBillingCreditGrant`.
@@ -508,7 +612,9 @@ impl StripeRequest for CreateBillingCreditGrant {
         RequestBuilder::new(StripeMethod::Post, "/billing/credit_grants").form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct UpdateBillingCreditGrantBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -517,16 +623,30 @@ struct UpdateBillingCreditGrantBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     metadata: Option<std::collections::HashMap<String, String>>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateBillingCreditGrantBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateBillingCreditGrantBuilder").finish_non_exhaustive()
+    }
+}
 impl UpdateBillingCreditGrantBuilder {
     fn new() -> Self {
         Self { expand: None, expires_at: None, metadata: None }
     }
 }
 /// Updates a credit grant.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateBillingCreditGrant {
     inner: UpdateBillingCreditGrantBuilder,
     id: stripe_shared::BillingCreditGrantId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateBillingCreditGrant {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateBillingCreditGrant").finish_non_exhaustive()
+    }
 }
 impl UpdateBillingCreditGrant {
     /// Construct a new `UpdateBillingCreditGrant`.
@@ -581,10 +701,18 @@ impl StripeRequest for UpdateBillingCreditGrant {
             .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ExpireBillingCreditGrantBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ExpireBillingCreditGrantBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ExpireBillingCreditGrantBuilder").finish_non_exhaustive()
+    }
 }
 impl ExpireBillingCreditGrantBuilder {
     fn new() -> Self {
@@ -592,10 +720,18 @@ impl ExpireBillingCreditGrantBuilder {
     }
 }
 /// Expires a credit grant.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ExpireBillingCreditGrant {
     inner: ExpireBillingCreditGrantBuilder,
     id: stripe_shared::BillingCreditGrantId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ExpireBillingCreditGrant {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ExpireBillingCreditGrant").finish_non_exhaustive()
+    }
 }
 impl ExpireBillingCreditGrant {
     /// Construct a new `ExpireBillingCreditGrant`.
@@ -635,10 +771,18 @@ impl StripeRequest for ExpireBillingCreditGrant {
             .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct VoidGrantBillingCreditGrantBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for VoidGrantBillingCreditGrantBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("VoidGrantBillingCreditGrantBuilder").finish_non_exhaustive()
+    }
 }
 impl VoidGrantBillingCreditGrantBuilder {
     fn new() -> Self {
@@ -646,10 +790,18 @@ impl VoidGrantBillingCreditGrantBuilder {
     }
 }
 /// Voids a credit grant.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct VoidGrantBillingCreditGrant {
     inner: VoidGrantBillingCreditGrantBuilder,
     id: stripe_shared::BillingCreditGrantId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for VoidGrantBillingCreditGrant {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("VoidGrantBillingCreditGrant").finish_non_exhaustive()
+    }
 }
 impl VoidGrantBillingCreditGrant {
     /// Construct a new `VoidGrantBillingCreditGrant`.

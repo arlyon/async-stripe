@@ -1,9 +1,16 @@
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct CouponCurrencyOption {
     /// Amount (in the `currency` specified) that will be taken off the subtotal of any invoices for this customer.
     pub amount_off: i64,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CouponCurrencyOption {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CouponCurrencyOption").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct CouponCurrencyOptionBuilder {

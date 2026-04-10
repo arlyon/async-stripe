@@ -2,7 +2,9 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct CreateAccountLinkBuilder {
     account: String,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -17,6 +19,12 @@ struct CreateAccountLinkBuilder {
     return_url: Option<String>,
     #[serde(rename = "type")]
     type_: CreateAccountLinkType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountLinkBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountLinkBuilder").finish_non_exhaustive()
+    }
 }
 impl CreateAccountLinkBuilder {
     fn new(account: impl Into<String>, type_: impl Into<CreateAccountLinkType>) -> Self {
@@ -71,9 +79,16 @@ impl std::fmt::Display for CreateAccountLinkCollect {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateAccountLinkCollect {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountLinkCollect {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateAccountLinkCollect)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateAccountLinkCollect {
@@ -93,7 +108,9 @@ impl<'de> serde::Deserialize<'de> for CreateAccountLinkCollect {
     }
 }
 /// Specifies the requirements that Stripe collects from connected accounts in the Connect Onboarding flow.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateAccountLinkCollectionOptions {
     /// Specifies whether the platform collects only currently_due requirements (`currently_due`) or both currently_due and eventually_due requirements (`eventually_due`).
     /// If you don't specify `collection_options`, the default value is `currently_due`.
@@ -103,6 +120,12 @@ pub struct CreateAccountLinkCollectionOptions {
     /// The default value is `omit`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub future_requirements: Option<CreateAccountLinkCollectionOptionsFutureRequirements>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountLinkCollectionOptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountLinkCollectionOptions").finish_non_exhaustive()
+    }
 }
 impl CreateAccountLinkCollectionOptions {
     pub fn new() -> Self {
@@ -159,9 +182,16 @@ impl std::fmt::Display for CreateAccountLinkCollectionOptionsFields {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateAccountLinkCollectionOptionsFields {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountLinkCollectionOptionsFields {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateAccountLinkCollectionOptionsFields)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateAccountLinkCollectionOptionsFields {
@@ -225,9 +255,17 @@ impl std::fmt::Display for CreateAccountLinkCollectionOptionsFutureRequirements 
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateAccountLinkCollectionOptionsFutureRequirements {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountLinkCollectionOptionsFutureRequirements {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateAccountLinkCollectionOptionsFutureRequirements))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateAccountLinkCollectionOptionsFutureRequirements {
@@ -291,9 +329,16 @@ impl std::fmt::Display for CreateAccountLinkType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateAccountLinkType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountLinkType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateAccountLinkType)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateAccountLinkType {
@@ -313,9 +358,17 @@ impl<'de> serde::Deserialize<'de> for CreateAccountLinkType {
     }
 }
 /// Creates an AccountLink object that includes a single-use Stripe URL that the platform can redirect their user to in order to take them through the Connect Onboarding flow.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateAccountLink {
     inner: CreateAccountLinkBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountLink {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountLink").finish_non_exhaustive()
+    }
 }
 impl CreateAccountLink {
     /// Construct a new `CreateAccountLink`.

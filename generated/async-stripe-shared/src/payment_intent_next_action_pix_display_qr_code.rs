@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentIntentNextActionPixDisplayQrCode {
@@ -12,6 +13,12 @@ pub struct PaymentIntentNextActionPixDisplayQrCode {
     pub image_url_png: Option<String>,
     /// The image_url_svg string used to render svg QR code
     pub image_url_svg: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentIntentNextActionPixDisplayQrCode {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PaymentIntentNextActionPixDisplayQrCode").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct PaymentIntentNextActionPixDisplayQrCodeBuilder {

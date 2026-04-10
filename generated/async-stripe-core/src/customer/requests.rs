@@ -5,9 +5,17 @@ use stripe_client_core::{
 /// Permanently deletes a customer.
 /// It cannot be undone.
 /// Also immediately cancels any active subscriptions on the customer.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct DeleteCustomer {
     customer: stripe_shared::CustomerId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for DeleteCustomer {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("DeleteCustomer").finish_non_exhaustive()
+    }
 }
 impl DeleteCustomer {
     /// Construct a new `DeleteCustomer`.
@@ -42,9 +50,17 @@ impl StripeRequest for DeleteCustomer {
     }
 }
 /// Removes the currently applied discount on a customer.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct DeleteDiscountCustomer {
     customer: stripe_shared::CustomerId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for DeleteDiscountCustomer {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("DeleteDiscountCustomer").finish_non_exhaustive()
+    }
 }
 impl DeleteDiscountCustomer {
     /// Construct a new `DeleteDiscountCustomer`.
@@ -78,7 +94,9 @@ impl StripeRequest for DeleteDiscountCustomer {
         RequestBuilder::new(StripeMethod::Delete, format!("/customers/{customer}/discount"))
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ListCustomerBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     created: Option<stripe_types::RangeQueryTs>,
@@ -95,6 +113,12 @@ struct ListCustomerBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     test_clock: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListCustomerBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListCustomerBuilder").finish_non_exhaustive()
+    }
+}
 impl ListCustomerBuilder {
     fn new() -> Self {
         Self {
@@ -110,9 +134,17 @@ impl ListCustomerBuilder {
 }
 /// Returns a list of your customers.
 /// The customers are returned sorted by creation date, with the most recent customers appearing first.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListCustomer {
     inner: ListCustomerBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListCustomer {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListCustomer").finish_non_exhaustive()
+    }
 }
 impl ListCustomer {
     /// Construct a new `ListCustomer`.
@@ -198,10 +230,18 @@ impl StripeRequest for ListCustomer {
         RequestBuilder::new(StripeMethod::Get, "/customers").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RetrieveCustomerBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveCustomerBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveCustomerBuilder").finish_non_exhaustive()
+    }
 }
 impl RetrieveCustomerBuilder {
     fn new() -> Self {
@@ -209,10 +249,18 @@ impl RetrieveCustomerBuilder {
     }
 }
 /// Retrieves a Customer object.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RetrieveCustomer {
     inner: RetrieveCustomerBuilder,
     customer: stripe_shared::CustomerId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveCustomer {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveCustomer").finish_non_exhaustive()
+    }
 }
 impl RetrieveCustomer {
     /// Construct a new `RetrieveCustomer`.
@@ -251,7 +299,8 @@ impl StripeRequest for RetrieveCustomer {
         RequestBuilder::new(StripeMethod::Get, format!("/customers/{customer}")).query(&self.inner)
     }
 }
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(untagged))]
@@ -331,7 +380,15 @@ const _: () = {
     }
 };
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveCustomerReturned {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveCustomerReturned").finish_non_exhaustive()
+    }
+}
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct BalanceTransactionsCustomerBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     created: Option<stripe_types::RangeQueryTs>,
@@ -346,6 +403,12 @@ struct BalanceTransactionsCustomerBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     starting_after: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for BalanceTransactionsCustomerBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("BalanceTransactionsCustomerBuilder").finish_non_exhaustive()
+    }
+}
 impl BalanceTransactionsCustomerBuilder {
     fn new() -> Self {
         Self {
@@ -359,10 +422,18 @@ impl BalanceTransactionsCustomerBuilder {
     }
 }
 /// Returns a list of transactions that updated the customer’s [balances](https://stripe.com/docs/billing/customer/balance).
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct BalanceTransactionsCustomer {
     inner: BalanceTransactionsCustomerBuilder,
     customer: stripe_shared::CustomerId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for BalanceTransactionsCustomer {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("BalanceTransactionsCustomer").finish_non_exhaustive()
+    }
 }
 impl BalanceTransactionsCustomer {
     /// Construct a new `BalanceTransactionsCustomer`.
@@ -448,7 +519,9 @@ impl StripeRequest for BalanceTransactionsCustomer {
         .query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ListPaymentMethodsCustomerBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     allow_redisplay: Option<ListPaymentMethodsCustomerAllowRedisplay>,
@@ -463,6 +536,12 @@ struct ListPaymentMethodsCustomerBuilder {
     #[serde(rename = "type")]
     #[serde(skip_serializing_if = "Option::is_none")]
     type_: Option<ListPaymentMethodsCustomerType>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListPaymentMethodsCustomerBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListPaymentMethodsCustomerBuilder").finish_non_exhaustive()
+    }
 }
 impl ListPaymentMethodsCustomerBuilder {
     fn new() -> Self {
@@ -524,9 +603,16 @@ impl std::fmt::Display for ListPaymentMethodsCustomerAllowRedisplay {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ListPaymentMethodsCustomerAllowRedisplay {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListPaymentMethodsCustomerAllowRedisplay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ListPaymentMethodsCustomerAllowRedisplay)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ListPaymentMethodsCustomerAllowRedisplay {
@@ -741,9 +827,16 @@ impl std::fmt::Display for ListPaymentMethodsCustomerType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ListPaymentMethodsCustomerType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListPaymentMethodsCustomerType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ListPaymentMethodsCustomerType)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ListPaymentMethodsCustomerType {
@@ -763,10 +856,18 @@ impl<'de> serde::Deserialize<'de> for ListPaymentMethodsCustomerType {
     }
 }
 /// Returns a list of PaymentMethods for a given Customer
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListPaymentMethodsCustomer {
     inner: ListPaymentMethodsCustomerBuilder,
     customer: stripe_shared::CustomerId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListPaymentMethodsCustomer {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListPaymentMethodsCustomer").finish_non_exhaustive()
+    }
 }
 impl ListPaymentMethodsCustomer {
     /// Construct a new `ListPaymentMethodsCustomer`.
@@ -853,10 +954,18 @@ impl StripeRequest for ListPaymentMethodsCustomer {
             .query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RetrievePaymentMethodCustomerBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrievePaymentMethodCustomerBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrievePaymentMethodCustomerBuilder").finish_non_exhaustive()
+    }
 }
 impl RetrievePaymentMethodCustomerBuilder {
     fn new() -> Self {
@@ -864,11 +973,19 @@ impl RetrievePaymentMethodCustomerBuilder {
     }
 }
 /// Retrieves a PaymentMethod object for a given Customer.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RetrievePaymentMethodCustomer {
     inner: RetrievePaymentMethodCustomerBuilder,
     customer: stripe_shared::CustomerId,
     payment_method: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrievePaymentMethodCustomer {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrievePaymentMethodCustomer").finish_non_exhaustive()
+    }
 }
 impl RetrievePaymentMethodCustomer {
     /// Construct a new `RetrievePaymentMethodCustomer`.
@@ -919,7 +1036,9 @@ impl StripeRequest for RetrievePaymentMethodCustomer {
         .query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct SearchCustomerBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -928,6 +1047,12 @@ struct SearchCustomerBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     page: Option<String>,
     query: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for SearchCustomerBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("SearchCustomerBuilder").finish_non_exhaustive()
+    }
 }
 impl SearchCustomerBuilder {
     fn new(query: impl Into<String>) -> Self {
@@ -940,9 +1065,17 @@ impl SearchCustomerBuilder {
 /// conditions, data is searchable in less than a minute.
 /// Occasionally, propagation of new or updated data can be up.
 /// to an hour behind during outages. Search functionality is not available to merchants in India.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct SearchCustomer {
     inner: SearchCustomerBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for SearchCustomer {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("SearchCustomer").finish_non_exhaustive()
+    }
 }
 impl SearchCustomer {
     /// Construct a new `SearchCustomer`.
@@ -999,7 +1132,9 @@ impl StripeRequest for SearchCustomer {
         RequestBuilder::new(StripeMethod::Get, "/customers/search").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct CreateCustomerBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     address: Option<OptionalFieldsCustomerAddress>,
@@ -1048,6 +1183,12 @@ struct CreateCustomerBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     validate: Option<bool>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCustomerBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCustomerBuilder").finish_non_exhaustive()
+    }
+}
 impl CreateCustomerBuilder {
     fn new() -> Self {
         Self {
@@ -1078,12 +1219,20 @@ impl CreateCustomerBuilder {
     }
 }
 /// Balance information and default balance settings for this customer.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCustomerCashBalance {
     /// Settings controlling the behavior of the customer's cash balance,
     /// such as reconciliation of funds received.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub settings: Option<CreateCustomerCashBalanceSettings>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCustomerCashBalance {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCustomerCashBalance").finish_non_exhaustive()
+    }
 }
 impl CreateCustomerCashBalance {
     pub fn new() -> Self {
@@ -1097,13 +1246,21 @@ impl Default for CreateCustomerCashBalance {
 }
 /// Settings controlling the behavior of the customer's cash balance,
 /// such as reconciliation of funds received.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCustomerCashBalanceSettings {
     /// Controls how funds transferred by the customer are applied to payment intents and invoices.
     /// Valid options are `automatic`, `manual`, or `merchant_default`.
     /// For more information about these reconciliation modes, see [Reconciliation](https://docs.stripe.com/payments/customer-balance/reconciliation).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reconciliation_mode: Option<CreateCustomerCashBalanceSettingsReconciliationMode>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCustomerCashBalanceSettings {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCustomerCashBalanceSettings").finish_non_exhaustive()
+    }
 }
 impl CreateCustomerCashBalanceSettings {
     pub fn new() -> Self {
@@ -1164,9 +1321,17 @@ impl std::fmt::Display for CreateCustomerCashBalanceSettingsReconciliationMode {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCustomerCashBalanceSettingsReconciliationMode {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCustomerCashBalanceSettingsReconciliationMode {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCustomerCashBalanceSettingsReconciliationMode))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCustomerCashBalanceSettingsReconciliationMode {
@@ -1186,7 +1351,9 @@ impl<'de> serde::Deserialize<'de> for CreateCustomerCashBalanceSettingsReconcili
     }
 }
 /// Default invoice settings for this customer.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCustomerInvoiceSettings {
     /// The list of up to 4 default custom fields to be displayed on invoices for this customer.
     /// When updating, pass an empty string to remove previously-defined fields.
@@ -1201,6 +1368,12 @@ pub struct CreateCustomerInvoiceSettings {
     /// Default options for invoice PDF rendering for this customer.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub rendering_options: Option<CreateCustomerInvoiceSettingsRenderingOptions>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCustomerInvoiceSettings {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCustomerInvoiceSettings").finish_non_exhaustive()
+    }
 }
 impl CreateCustomerInvoiceSettings {
     pub fn new() -> Self {
@@ -1218,7 +1391,9 @@ impl Default for CreateCustomerInvoiceSettings {
     }
 }
 /// Default options for invoice PDF rendering for this customer.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCustomerInvoiceSettingsRenderingOptions {
     /// How line-item prices and amounts will be displayed with respect to tax on invoice PDFs.
     /// One of `exclude_tax` or `include_inclusive_tax`.
@@ -1229,6 +1404,12 @@ pub struct CreateCustomerInvoiceSettingsRenderingOptions {
     /// ID of the invoice rendering template to use for future invoices.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub template: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCustomerInvoiceSettingsRenderingOptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCustomerInvoiceSettingsRenderingOptions").finish_non_exhaustive()
+    }
 }
 impl CreateCustomerInvoiceSettingsRenderingOptions {
     pub fn new() -> Self {
@@ -1287,9 +1468,17 @@ impl std::fmt::Display for CreateCustomerInvoiceSettingsRenderingOptionsAmountTa
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCustomerInvoiceSettingsRenderingOptionsAmountTaxDisplay {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCustomerInvoiceSettingsRenderingOptionsAmountTaxDisplay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCustomerInvoiceSettingsRenderingOptionsAmountTaxDisplay))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCustomerInvoiceSettingsRenderingOptionsAmountTaxDisplay {
@@ -1311,7 +1500,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Tax details about the customer.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCustomerTax {
     /// A recent IP address of the customer used for tax reporting and tax location inference.
     /// Stripe recommends updating the IP address when a new PaymentMethod is attached or the address field on the customer is updated.
@@ -1322,6 +1513,12 @@ pub struct CreateCustomerTax {
     /// Defaults to `deferred`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub validate_location: Option<CreateCustomerTaxValidateLocation>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCustomerTax {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCustomerTax").finish_non_exhaustive()
+    }
 }
 impl CreateCustomerTax {
     pub fn new() -> Self {
@@ -1378,9 +1575,16 @@ impl std::fmt::Display for CreateCustomerTaxValidateLocation {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCustomerTaxValidateLocation {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCustomerTaxValidateLocation {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCustomerTaxValidateLocation)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCustomerTaxValidateLocation {
@@ -1400,13 +1604,21 @@ impl<'de> serde::Deserialize<'de> for CreateCustomerTaxValidateLocation {
     }
 }
 /// The customer's tax IDs.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCustomerTaxIdData {
     /// Type of the tax ID, one of `ad_nrt`, `ae_trn`, `al_tin`, `am_tin`, `ao_tin`, `ar_cuit`, `au_abn`, `au_arn`, `aw_tin`, `az_tin`, `ba_tin`, `bb_tin`, `bd_bin`, `bf_ifu`, `bg_uic`, `bh_vat`, `bj_ifu`, `bo_tin`, `br_cnpj`, `br_cpf`, `bs_tin`, `by_tin`, `ca_bn`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `ca_qst`, `cd_nif`, `ch_uid`, `ch_vat`, `cl_tin`, `cm_niu`, `cn_tin`, `co_nit`, `cr_tin`, `cv_nif`, `de_stn`, `do_rcn`, `ec_ruc`, `eg_tin`, `es_cif`, `et_tin`, `eu_oss_vat`, `eu_vat`, `gb_vat`, `ge_vat`, `gn_nif`, `hk_br`, `hr_oib`, `hu_tin`, `id_npwp`, `il_vat`, `in_gst`, `is_vat`, `jp_cn`, `jp_rn`, `jp_trn`, `ke_pin`, `kg_tin`, `kh_tin`, `kr_brn`, `kz_bin`, `la_tin`, `li_uid`, `li_vat`, `lk_vat`, `ma_vat`, `md_vat`, `me_pib`, `mk_vat`, `mr_nif`, `mx_rfc`, `my_frp`, `my_itn`, `my_sst`, `ng_tin`, `no_vat`, `no_voec`, `np_pan`, `nz_gst`, `om_vat`, `pe_ruc`, `ph_tin`, `pl_nip`, `ro_tin`, `rs_pib`, `ru_inn`, `ru_kpp`, `sa_vat`, `sg_gst`, `sg_uen`, `si_tin`, `sn_ninea`, `sr_fin`, `sv_nit`, `th_vat`, `tj_tin`, `tr_tin`, `tw_vat`, `tz_vat`, `ua_vat`, `ug_tin`, `us_ein`, `uy_ruc`, `uz_tin`, `uz_vat`, `ve_rif`, `vn_tin`, `za_vat`, `zm_tin`, or `zw_tin`.
     #[serde(rename = "type")]
     pub type_: CreateCustomerTaxIdDataType,
     /// Value of the tax ID.
     pub value: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCustomerTaxIdData {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCustomerTaxIdData").finish_non_exhaustive()
+    }
 }
 impl CreateCustomerTaxIdData {
     pub fn new(type_: impl Into<CreateCustomerTaxIdDataType>, value: impl Into<String>) -> Self {
@@ -1787,9 +1999,16 @@ impl std::fmt::Display for CreateCustomerTaxIdDataType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCustomerTaxIdDataType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCustomerTaxIdDataType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCustomerTaxIdDataType)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCustomerTaxIdDataType {
@@ -1809,9 +2028,17 @@ impl<'de> serde::Deserialize<'de> for CreateCustomerTaxIdDataType {
     }
 }
 /// Creates a new customer object.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCustomer {
     inner: CreateCustomerBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCustomer {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCustomer").finish_non_exhaustive()
+    }
 }
 impl CreateCustomer {
     /// Construct a new `CreateCustomer`.
@@ -1976,7 +2203,9 @@ impl StripeRequest for CreateCustomer {
         RequestBuilder::new(StripeMethod::Post, "/customers").form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct UpdateCustomerBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     address: Option<OptionalFieldsCustomerAddress>,
@@ -2021,6 +2250,12 @@ struct UpdateCustomerBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     validate: Option<bool>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateCustomerBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateCustomerBuilder").finish_non_exhaustive()
+    }
+}
 impl UpdateCustomerBuilder {
     fn new() -> Self {
         Self {
@@ -2049,12 +2284,20 @@ impl UpdateCustomerBuilder {
     }
 }
 /// Balance information and default balance settings for this customer.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateCustomerCashBalance {
     /// Settings controlling the behavior of the customer's cash balance,
     /// such as reconciliation of funds received.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub settings: Option<UpdateCustomerCashBalanceSettings>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateCustomerCashBalance {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateCustomerCashBalance").finish_non_exhaustive()
+    }
 }
 impl UpdateCustomerCashBalance {
     pub fn new() -> Self {
@@ -2068,13 +2311,21 @@ impl Default for UpdateCustomerCashBalance {
 }
 /// Settings controlling the behavior of the customer's cash balance,
 /// such as reconciliation of funds received.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateCustomerCashBalanceSettings {
     /// Controls how funds transferred by the customer are applied to payment intents and invoices.
     /// Valid options are `automatic`, `manual`, or `merchant_default`.
     /// For more information about these reconciliation modes, see [Reconciliation](https://docs.stripe.com/payments/customer-balance/reconciliation).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reconciliation_mode: Option<UpdateCustomerCashBalanceSettingsReconciliationMode>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateCustomerCashBalanceSettings {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateCustomerCashBalanceSettings").finish_non_exhaustive()
+    }
 }
 impl UpdateCustomerCashBalanceSettings {
     pub fn new() -> Self {
@@ -2135,9 +2386,17 @@ impl std::fmt::Display for UpdateCustomerCashBalanceSettingsReconciliationMode {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdateCustomerCashBalanceSettingsReconciliationMode {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateCustomerCashBalanceSettingsReconciliationMode {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdateCustomerCashBalanceSettingsReconciliationMode))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdateCustomerCashBalanceSettingsReconciliationMode {
@@ -2157,7 +2416,9 @@ impl<'de> serde::Deserialize<'de> for UpdateCustomerCashBalanceSettingsReconcili
     }
 }
 /// Default invoice settings for this customer.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateCustomerInvoiceSettings {
     /// The list of up to 4 default custom fields to be displayed on invoices for this customer.
     /// When updating, pass an empty string to remove previously-defined fields.
@@ -2172,6 +2433,12 @@ pub struct UpdateCustomerInvoiceSettings {
     /// Default options for invoice PDF rendering for this customer.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub rendering_options: Option<UpdateCustomerInvoiceSettingsRenderingOptions>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateCustomerInvoiceSettings {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateCustomerInvoiceSettings").finish_non_exhaustive()
+    }
 }
 impl UpdateCustomerInvoiceSettings {
     pub fn new() -> Self {
@@ -2189,7 +2456,9 @@ impl Default for UpdateCustomerInvoiceSettings {
     }
 }
 /// Default options for invoice PDF rendering for this customer.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateCustomerInvoiceSettingsRenderingOptions {
     /// How line-item prices and amounts will be displayed with respect to tax on invoice PDFs.
     /// One of `exclude_tax` or `include_inclusive_tax`.
@@ -2200,6 +2469,12 @@ pub struct UpdateCustomerInvoiceSettingsRenderingOptions {
     /// ID of the invoice rendering template to use for future invoices.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub template: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateCustomerInvoiceSettingsRenderingOptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateCustomerInvoiceSettingsRenderingOptions").finish_non_exhaustive()
+    }
 }
 impl UpdateCustomerInvoiceSettingsRenderingOptions {
     pub fn new() -> Self {
@@ -2258,9 +2533,17 @@ impl std::fmt::Display for UpdateCustomerInvoiceSettingsRenderingOptionsAmountTa
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdateCustomerInvoiceSettingsRenderingOptionsAmountTaxDisplay {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateCustomerInvoiceSettingsRenderingOptionsAmountTaxDisplay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdateCustomerInvoiceSettingsRenderingOptionsAmountTaxDisplay))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdateCustomerInvoiceSettingsRenderingOptionsAmountTaxDisplay {
@@ -2282,7 +2565,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Tax details about the customer.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateCustomerTax {
     /// A recent IP address of the customer used for tax reporting and tax location inference.
     /// Stripe recommends updating the IP address when a new PaymentMethod is attached or the address field on the customer is updated.
@@ -2292,6 +2577,12 @@ pub struct UpdateCustomerTax {
     /// A flag that indicates when Stripe should validate the customer tax location. Defaults to `auto`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub validate_location: Option<UpdateCustomerTaxValidateLocation>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateCustomerTax {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateCustomerTax").finish_non_exhaustive()
+    }
 }
 impl UpdateCustomerTax {
     pub fn new() -> Self {
@@ -2350,9 +2641,16 @@ impl std::fmt::Display for UpdateCustomerTaxValidateLocation {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdateCustomerTaxValidateLocation {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateCustomerTaxValidateLocation {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdateCustomerTaxValidateLocation)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdateCustomerTaxValidateLocation {
@@ -2379,10 +2677,18 @@ impl<'de> serde::Deserialize<'de> for UpdateCustomerTaxValidateLocation {
 /// Changing the **default_source** for a customer doesn’t trigger this behavior.
 ///
 /// This request accepts mostly the same arguments as the customer creation call.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateCustomer {
     inner: UpdateCustomerBuilder,
     customer: stripe_shared::CustomerId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateCustomer {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateCustomer").finish_non_exhaustive()
+    }
 }
 impl UpdateCustomer {
     /// Construct a new `UpdateCustomer`.
@@ -2538,13 +2844,21 @@ impl StripeRequest for UpdateCustomer {
         RequestBuilder::new(StripeMethod::Post, format!("/customers/{customer}")).form(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct CreateFundingInstructionsCustomerBuilder {
     bank_transfer: CreateFundingInstructionsCustomerBankTransfer,
     currency: stripe_types::Currency,
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
     funding_type: CreateFundingInstructionsCustomerFundingType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateFundingInstructionsCustomerBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateFundingInstructionsCustomerBuilder").finish_non_exhaustive()
+    }
 }
 impl CreateFundingInstructionsCustomerBuilder {
     fn new(
@@ -2561,7 +2875,9 @@ impl CreateFundingInstructionsCustomerBuilder {
     }
 }
 /// Additional parameters for `bank_transfer` funding types
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateFundingInstructionsCustomerBankTransfer {
     /// Configuration for eu_bank_transfer funding type.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2577,17 +2893,32 @@ pub struct CreateFundingInstructionsCustomerBankTransfer {
     #[serde(rename = "type")]
     pub type_: CreateFundingInstructionsCustomerBankTransferType,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateFundingInstructionsCustomerBankTransfer {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateFundingInstructionsCustomerBankTransfer").finish_non_exhaustive()
+    }
+}
 impl CreateFundingInstructionsCustomerBankTransfer {
     pub fn new(type_: impl Into<CreateFundingInstructionsCustomerBankTransferType>) -> Self {
         Self { eu_bank_transfer: None, requested_address_types: None, type_: type_.into() }
     }
 }
 /// Configuration for eu_bank_transfer funding type.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateFundingInstructionsCustomerBankTransferEuBankTransfer {
     /// The desired country code of the bank account information.
     /// Permitted values include: `DE`, `FR`, `IE`, or `NL`.
     pub country: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateFundingInstructionsCustomerBankTransferEuBankTransfer {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateFundingInstructionsCustomerBankTransferEuBankTransfer")
+            .finish_non_exhaustive()
+    }
 }
 impl CreateFundingInstructionsCustomerBankTransferEuBankTransfer {
     pub fn new(country: impl Into<String>) -> Self {
@@ -2647,9 +2978,19 @@ impl std::fmt::Display for CreateFundingInstructionsCustomerBankTransferRequeste
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateFundingInstructionsCustomerBankTransferRequestedAddressTypes {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateFundingInstructionsCustomerBankTransferRequestedAddressTypes {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreateFundingInstructionsCustomerBankTransferRequestedAddressTypes
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateFundingInstructionsCustomerBankTransferRequestedAddressTypes {
@@ -2723,9 +3064,17 @@ impl std::fmt::Display for CreateFundingInstructionsCustomerBankTransferType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateFundingInstructionsCustomerBankTransferType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateFundingInstructionsCustomerBankTransferType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateFundingInstructionsCustomerBankTransferType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateFundingInstructionsCustomerBankTransferType {
@@ -2785,9 +3134,17 @@ impl std::fmt::Display for CreateFundingInstructionsCustomerFundingType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateFundingInstructionsCustomerFundingType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateFundingInstructionsCustomerFundingType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateFundingInstructionsCustomerFundingType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateFundingInstructionsCustomerFundingType {
@@ -2812,10 +3169,18 @@ impl<'de> serde::Deserialize<'de> for CreateFundingInstructionsCustomerFundingTy
 /// If funding instructions have already been created for a given customer, the same.
 /// funding instructions will be retrieved.
 /// In other words, we will return the same funding instructions each time.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateFundingInstructionsCustomer {
     inner: CreateFundingInstructionsCustomerBuilder,
     customer: stripe_shared::CustomerId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateFundingInstructionsCustomer {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateFundingInstructionsCustomer").finish_non_exhaustive()
+    }
 }
 impl CreateFundingInstructionsCustomer {
     /// Construct a new `CreateFundingInstructionsCustomer`.
@@ -2870,7 +3235,9 @@ impl StripeRequest for CreateFundingInstructionsCustomer {
         .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct FundCashBalanceCustomerBuilder {
     amount: i64,
     currency: stripe_types::Currency,
@@ -2879,16 +3246,30 @@ struct FundCashBalanceCustomerBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     reference: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for FundCashBalanceCustomerBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("FundCashBalanceCustomerBuilder").finish_non_exhaustive()
+    }
+}
 impl FundCashBalanceCustomerBuilder {
     fn new(amount: impl Into<i64>, currency: impl Into<stripe_types::Currency>) -> Self {
         Self { amount: amount.into(), currency: currency.into(), expand: None, reference: None }
     }
 }
 /// Create an incoming testmode bank transfer
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct FundCashBalanceCustomer {
     inner: FundCashBalanceCustomerBuilder,
     customer: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for FundCashBalanceCustomer {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("FundCashBalanceCustomer").finish_non_exhaustive()
+    }
 }
 impl FundCashBalanceCustomer {
     /// Construct a new `FundCashBalanceCustomer`.
@@ -2946,7 +3327,9 @@ impl StripeRequest for FundCashBalanceCustomer {
     }
 }
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct OptionalFieldsCustomerAddress {
     /// City, district, suburb, town, or village.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2968,6 +3351,12 @@ pub struct OptionalFieldsCustomerAddress {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for OptionalFieldsCustomerAddress {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("OptionalFieldsCustomerAddress").finish_non_exhaustive()
+    }
+}
 impl OptionalFieldsCustomerAddress {
     pub fn new() -> Self {
         Self { city: None, country: None, line1: None, line2: None, postal_code: None, state: None }
@@ -2978,19 +3367,29 @@ impl Default for OptionalFieldsCustomerAddress {
         Self::new()
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CustomFieldParams {
     /// The name of the custom field. This may be up to 40 characters.
     pub name: String,
     /// The value of the custom field. This may be up to 140 characters.
     pub value: String,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CustomFieldParams {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CustomFieldParams").finish_non_exhaustive()
+    }
+}
 impl CustomFieldParams {
     pub fn new(name: impl Into<String>, value: impl Into<String>) -> Self {
         Self { name: name.into(), value: value.into() }
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CustomerShipping {
     /// Customer shipping address.
     pub address: OptionalFieldsCustomerAddress,
@@ -2999,6 +3398,12 @@ pub struct CustomerShipping {
     /// Customer phone (including extension).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub phone: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CustomerShipping {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CustomerShipping").finish_non_exhaustive()
+    }
 }
 impl CustomerShipping {
     pub fn new(address: impl Into<OptionalFieldsCustomerAddress>, name: impl Into<String>) -> Self {

@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentMethodOptionsCardPresent {
@@ -10,6 +11,12 @@ pub struct PaymentMethodOptionsCardPresent {
     /// Check [incremental_authorization_supported](https://docs.stripe.com/api/charges/object#charge_object-payment_method_details-card_present-incremental_authorization_supported) in the [Confirm](https://docs.stripe.com/api/payment_intents/confirm) response to verify support.
     pub request_incremental_authorization_support: Option<bool>,
     pub routing: Option<stripe_shared::PaymentMethodOptionsCardPresentRouting>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentMethodOptionsCardPresent {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PaymentMethodOptionsCardPresent").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct PaymentMethodOptionsCardPresentBuilder {
@@ -186,9 +193,17 @@ impl std::fmt::Display for PaymentMethodOptionsCardPresentCaptureMethod {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for PaymentMethodOptionsCardPresentCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentMethodOptionsCardPresentCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(PaymentMethodOptionsCardPresentCaptureMethod))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

@@ -1,7 +1,8 @@
 /// Payment Evaluations represent the risk lifecycle of an externally processed payment.
 /// It includes the Radar risk score from Stripe, payment outcome taken by the merchant or processor, and any post transaction events, such as refunds or disputes.
 /// See the [Radar API guide](/radar/multiprocessor) for integration steps.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct RadarPaymentEvaluation {
     pub client_device_metadata_details:
@@ -26,6 +27,12 @@ pub struct RadarPaymentEvaluation {
     /// Possible values are `block` and `continue`.
     pub recommended_action: RadarPaymentEvaluationRecommendedAction,
     pub signals: stripe_fraud::InsightsResourcesPaymentEvaluationSignals,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RadarPaymentEvaluation {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RadarPaymentEvaluation").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct RadarPaymentEvaluationBuilder {
@@ -271,9 +278,16 @@ impl std::fmt::Display for RadarPaymentEvaluationRecommendedAction {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for RadarPaymentEvaluationRecommendedAction {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RadarPaymentEvaluationRecommendedAction {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(RadarPaymentEvaluationRecommendedAction)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

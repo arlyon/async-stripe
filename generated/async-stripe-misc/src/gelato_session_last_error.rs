@@ -1,5 +1,6 @@
 /// Shows last VerificationSession error
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct GelatoSessionLastError {
@@ -7,6 +8,12 @@ pub struct GelatoSessionLastError {
     pub code: Option<GelatoSessionLastErrorCode>,
     /// A message that explains the reason for verification or user-session failure.
     pub reason: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for GelatoSessionLastError {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("GelatoSessionLastError").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct GelatoSessionLastErrorBuilder {
@@ -195,9 +202,16 @@ impl std::fmt::Display for GelatoSessionLastErrorCode {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for GelatoSessionLastErrorCode {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for GelatoSessionLastErrorCode {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(GelatoSessionLastErrorCode)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

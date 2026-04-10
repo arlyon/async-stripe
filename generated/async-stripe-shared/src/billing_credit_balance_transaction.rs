@@ -1,5 +1,6 @@
 /// A credit balance transaction is a resource representing a transaction (either a credit or a debit) against an existing credit grant.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct BillingCreditBalanceTransaction {
     /// Time at which the object was created. Measured in seconds since the Unix epoch.
@@ -22,6 +23,12 @@ pub struct BillingCreditBalanceTransaction {
     /// The type of credit balance transaction (credit or debit).
     #[cfg_attr(feature = "deserialize", serde(rename = "type"))]
     pub type_: Option<BillingCreditBalanceTransactionType>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for BillingCreditBalanceTransaction {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("BillingCreditBalanceTransaction").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct BillingCreditBalanceTransactionBuilder {
@@ -244,9 +251,16 @@ impl std::fmt::Display for BillingCreditBalanceTransactionType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for BillingCreditBalanceTransactionType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for BillingCreditBalanceTransactionType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(BillingCreditBalanceTransactionType)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

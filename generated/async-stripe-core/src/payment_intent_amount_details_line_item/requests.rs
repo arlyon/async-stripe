@@ -2,7 +2,9 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ListIntentPaymentIntentAmountDetailsLineItemBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<String>,
@@ -13,16 +15,31 @@ struct ListIntentPaymentIntentAmountDetailsLineItemBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     starting_after: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListIntentPaymentIntentAmountDetailsLineItemBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListIntentPaymentIntentAmountDetailsLineItemBuilder")
+            .finish_non_exhaustive()
+    }
+}
 impl ListIntentPaymentIntentAmountDetailsLineItemBuilder {
     fn new() -> Self {
         Self { ending_before: None, expand: None, limit: None, starting_after: None }
     }
 }
 /// Lists all LineItems of a given PaymentIntent.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListIntentPaymentIntentAmountDetailsLineItem {
     inner: ListIntentPaymentIntentAmountDetailsLineItemBuilder,
     intent: stripe_shared::PaymentIntentId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListIntentPaymentIntentAmountDetailsLineItem {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListIntentPaymentIntentAmountDetailsLineItem").finish_non_exhaustive()
+    }
 }
 impl ListIntentPaymentIntentAmountDetailsLineItem {
     /// Construct a new `ListIntentPaymentIntentAmountDetailsLineItem`.

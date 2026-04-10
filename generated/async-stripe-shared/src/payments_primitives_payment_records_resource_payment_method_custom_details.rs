@@ -1,7 +1,8 @@
 /// Custom Payment Methods represent Payment Method types not modeled directly in
 /// the Stripe API. This resource consists of details about the custom payment method
 /// used for this payment attempt.
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCustomDetails {
@@ -10,6 +11,13 @@ pub struct PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCustomDetails {
     /// The custom payment method type associated with this payment.
     #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "type"))]
     pub type_: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCustomDetails {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCustomDetails")
+            .finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCustomDetailsBuilder {

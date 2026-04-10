@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct MandateAcssDebit {
@@ -11,6 +12,12 @@ pub struct MandateAcssDebit {
     pub payment_schedule: MandateAcssDebitPaymentSchedule,
     /// Transaction type of the mandate.
     pub transaction_type: MandateAcssDebitTransactionType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for MandateAcssDebit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("MandateAcssDebit").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct MandateAcssDebitBuilder {
@@ -175,9 +182,16 @@ impl std::fmt::Display for MandateAcssDebitDefaultFor {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for MandateAcssDebitDefaultFor {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for MandateAcssDebitDefaultFor {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(MandateAcssDebitDefaultFor)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -259,9 +273,16 @@ impl std::fmt::Display for MandateAcssDebitPaymentSchedule {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for MandateAcssDebitPaymentSchedule {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for MandateAcssDebitPaymentSchedule {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(MandateAcssDebitPaymentSchedule)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -340,9 +361,16 @@ impl std::fmt::Display for MandateAcssDebitTransactionType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for MandateAcssDebitTransactionType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for MandateAcssDebitTransactionType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(MandateAcssDebitTransactionType)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

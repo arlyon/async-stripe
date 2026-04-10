@@ -1,4 +1,5 @@
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PersonRelationship {
@@ -22,6 +23,12 @@ pub struct PersonRelationship {
     pub representative: Option<bool>,
     /// The person's title (e.g., CEO, Support Engineer).
     pub title: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PersonRelationship {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PersonRelationship").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct PersonRelationshipBuilder {

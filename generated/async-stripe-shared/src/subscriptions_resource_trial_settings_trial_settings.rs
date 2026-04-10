@@ -1,9 +1,16 @@
 /// Configures how this subscription behaves during the trial period.
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct SubscriptionsResourceTrialSettingsTrialSettings {
     pub end_behavior: stripe_shared::SubscriptionsResourceTrialSettingsEndBehavior,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for SubscriptionsResourceTrialSettingsTrialSettings {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("SubscriptionsResourceTrialSettingsTrialSettings").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct SubscriptionsResourceTrialSettingsTrialSettingsBuilder {

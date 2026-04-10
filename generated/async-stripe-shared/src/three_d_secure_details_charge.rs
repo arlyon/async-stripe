@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct ThreeDSecureDetailsCharge {
@@ -23,6 +24,12 @@ pub struct ThreeDSecureDetailsCharge {
     pub transaction_id: Option<String>,
     /// The version of 3D Secure that was used.
     pub version: Option<ThreeDSecureDetailsChargeVersion>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ThreeDSecureDetailsCharge {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ThreeDSecureDetailsCharge").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct ThreeDSecureDetailsChargeBuilder {
@@ -229,9 +236,17 @@ impl std::fmt::Display for ThreeDSecureDetailsChargeAuthenticationFlow {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ThreeDSecureDetailsChargeAuthenticationFlow {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ThreeDSecureDetailsChargeAuthenticationFlow {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ThreeDSecureDetailsChargeAuthenticationFlow))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -321,9 +336,17 @@ impl std::fmt::Display for ThreeDSecureDetailsChargeElectronicCommerceIndicator 
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ThreeDSecureDetailsChargeElectronicCommerceIndicator {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ThreeDSecureDetailsChargeElectronicCommerceIndicator {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ThreeDSecureDetailsChargeElectronicCommerceIndicator))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -404,9 +427,17 @@ impl std::fmt::Display for ThreeDSecureDetailsChargeExemptionIndicator {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ThreeDSecureDetailsChargeExemptionIndicator {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ThreeDSecureDetailsChargeExemptionIndicator {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ThreeDSecureDetailsChargeExemptionIndicator))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -498,9 +529,16 @@ impl std::fmt::Display for ThreeDSecureDetailsChargeResult {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ThreeDSecureDetailsChargeResult {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ThreeDSecureDetailsChargeResult {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ThreeDSecureDetailsChargeResult)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -595,9 +633,16 @@ impl std::fmt::Display for ThreeDSecureDetailsChargeResultReason {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ThreeDSecureDetailsChargeResultReason {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ThreeDSecureDetailsChargeResultReason {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ThreeDSecureDetailsChargeResultReason)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -685,9 +730,16 @@ impl std::fmt::Display for ThreeDSecureDetailsChargeVersion {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ThreeDSecureDetailsChargeVersion {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ThreeDSecureDetailsChargeVersion {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ThreeDSecureDetailsChargeVersion)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

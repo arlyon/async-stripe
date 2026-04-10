@@ -1,5 +1,6 @@
 /// Represents a reader action to collect customer inputs
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TerminalReaderReaderResourceCollectInputsAction {
@@ -8,6 +9,12 @@ pub struct TerminalReaderReaderResourceCollectInputsAction {
     /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: Option<std::collections::HashMap<String, String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TerminalReaderReaderResourceCollectInputsAction {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("TerminalReaderReaderResourceCollectInputsAction").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct TerminalReaderReaderResourceCollectInputsActionBuilder {

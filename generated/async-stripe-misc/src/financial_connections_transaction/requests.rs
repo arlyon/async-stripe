@@ -2,7 +2,9 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ListFinancialConnectionsTransactionBuilder {
     account: String,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -17,6 +19,12 @@ struct ListFinancialConnectionsTransactionBuilder {
     transacted_at: Option<stripe_types::RangeQueryTs>,
     #[serde(skip_serializing_if = "Option::is_none")]
     transaction_refresh: Option<ListFinancialConnectionsTransactionTransactionRefresh>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListFinancialConnectionsTransactionBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListFinancialConnectionsTransactionBuilder").finish_non_exhaustive()
+    }
 }
 impl ListFinancialConnectionsTransactionBuilder {
     fn new(account: impl Into<String>) -> Self {
@@ -33,10 +41,19 @@ impl ListFinancialConnectionsTransactionBuilder {
 }
 /// A filter on the list based on the object `transaction_refresh` field.
 /// The value can be a dictionary with the following options:.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListFinancialConnectionsTransactionTransactionRefresh {
     /// Return results where the transactions were created or updated by a refresh that took place after this refresh (non-inclusive).
     pub after: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListFinancialConnectionsTransactionTransactionRefresh {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListFinancialConnectionsTransactionTransactionRefresh")
+            .finish_non_exhaustive()
+    }
 }
 impl ListFinancialConnectionsTransactionTransactionRefresh {
     pub fn new(after: impl Into<String>) -> Self {
@@ -44,9 +61,17 @@ impl ListFinancialConnectionsTransactionTransactionRefresh {
     }
 }
 /// Returns a list of Financial Connections `Transaction` objects.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListFinancialConnectionsTransaction {
     inner: ListFinancialConnectionsTransactionBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListFinancialConnectionsTransaction {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListFinancialConnectionsTransaction").finish_non_exhaustive()
+    }
 }
 impl ListFinancialConnectionsTransaction {
     /// Construct a new `ListFinancialConnectionsTransaction`.
@@ -131,10 +156,18 @@ impl StripeRequest for ListFinancialConnectionsTransaction {
             .query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RetrieveFinancialConnectionsTransactionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveFinancialConnectionsTransactionBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveFinancialConnectionsTransactionBuilder").finish_non_exhaustive()
+    }
 }
 impl RetrieveFinancialConnectionsTransactionBuilder {
     fn new() -> Self {
@@ -142,10 +175,18 @@ impl RetrieveFinancialConnectionsTransactionBuilder {
     }
 }
 /// Retrieves the details of a Financial Connections `Transaction`
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RetrieveFinancialConnectionsTransaction {
     inner: RetrieveFinancialConnectionsTransactionBuilder,
     transaction: stripe_misc::FinancialConnectionsTransactionId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveFinancialConnectionsTransaction {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveFinancialConnectionsTransaction").finish_non_exhaustive()
+    }
 }
 impl RetrieveFinancialConnectionsTransaction {
     /// Construct a new `RetrieveFinancialConnectionsTransaction`.

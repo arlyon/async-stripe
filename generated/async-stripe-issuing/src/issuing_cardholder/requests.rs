@@ -2,7 +2,9 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ListIssuingCardholderBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     created: Option<stripe_types::RangeQueryTs>,
@@ -24,6 +26,12 @@ struct ListIssuingCardholderBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     type_: Option<stripe_shared::IssuingCardholderType>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListIssuingCardholderBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListIssuingCardholderBuilder").finish_non_exhaustive()
+    }
+}
 impl ListIssuingCardholderBuilder {
     fn new() -> Self {
         Self {
@@ -41,9 +49,17 @@ impl ListIssuingCardholderBuilder {
 }
 /// Returns a list of Issuing `Cardholder` objects.
 /// The objects are sorted in descending order by creation date, with the most recently created object appearing first.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListIssuingCardholder {
     inner: ListIssuingCardholderBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListIssuingCardholder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListIssuingCardholder").finish_non_exhaustive()
+    }
 }
 impl ListIssuingCardholder {
     /// Construct a new `ListIssuingCardholder`.
@@ -138,10 +154,18 @@ impl StripeRequest for ListIssuingCardholder {
         RequestBuilder::new(StripeMethod::Get, "/issuing/cardholders").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RetrieveIssuingCardholderBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveIssuingCardholderBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveIssuingCardholderBuilder").finish_non_exhaustive()
+    }
 }
 impl RetrieveIssuingCardholderBuilder {
     fn new() -> Self {
@@ -149,10 +173,18 @@ impl RetrieveIssuingCardholderBuilder {
     }
 }
 /// Retrieves an Issuing `Cardholder` object.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RetrieveIssuingCardholder {
     inner: RetrieveIssuingCardholderBuilder,
     cardholder: stripe_shared::IssuingCardholderId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveIssuingCardholder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveIssuingCardholder").finish_non_exhaustive()
+    }
 }
 impl RetrieveIssuingCardholder {
     /// Construct a new `RetrieveIssuingCardholder`.
@@ -192,7 +224,9 @@ impl StripeRequest for RetrieveIssuingCardholder {
             .query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct CreateIssuingCardholderBuilder {
     billing: BillingSpecs,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -218,6 +252,12 @@ struct CreateIssuingCardholderBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     type_: Option<stripe_shared::IssuingCardholderType>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateIssuingCardholderBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateIssuingCardholderBuilder").finish_non_exhaustive()
+    }
+}
 impl CreateIssuingCardholderBuilder {
     fn new(billing: impl Into<BillingSpecs>, name: impl Into<String>) -> Self {
         Self {
@@ -238,7 +278,9 @@ impl CreateIssuingCardholderBuilder {
 }
 /// Rules that control spending across this cardholder's cards.
 /// Refer to our [documentation](https://docs.stripe.com/issuing/controls/spending-controls) for more details.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateIssuingCardholderSpendingControls {
     /// Array of strings containing [categories](https://docs.stripe.com/api#issuing_authorization_object-merchant_data-category) of authorizations to allow.
     /// All other categories will be blocked.
@@ -271,6 +313,12 @@ pub struct CreateIssuingCardholderSpendingControls {
     /// Currency of amounts within `spending_limits`. Defaults to your merchant country's currency.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub spending_limits_currency: Option<stripe_types::Currency>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateIssuingCardholderSpendingControls {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateIssuingCardholderSpendingControls").finish_non_exhaustive()
+    }
 }
 impl CreateIssuingCardholderSpendingControls {
     pub fn new() -> Self {
@@ -1306,9 +1354,17 @@ impl std::fmt::Display for CreateIssuingCardholderSpendingControlsAllowedCategor
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateIssuingCardholderSpendingControlsAllowedCategories {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateIssuingCardholderSpendingControlsAllowedCategories {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateIssuingCardholderSpendingControlsAllowedCategories))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateIssuingCardholderSpendingControlsAllowedCategories {
@@ -2344,9 +2400,17 @@ impl std::fmt::Display for CreateIssuingCardholderSpendingControlsBlockedCategor
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateIssuingCardholderSpendingControlsBlockedCategories {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateIssuingCardholderSpendingControlsBlockedCategories {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateIssuingCardholderSpendingControlsBlockedCategories))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateIssuingCardholderSpendingControlsBlockedCategories {
@@ -2366,7 +2430,9 @@ impl<'de> serde::Deserialize<'de> for CreateIssuingCardholderSpendingControlsBlo
     }
 }
 /// Limit spending with amount-based rules that apply across this cardholder's cards.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateIssuingCardholderSpendingControlsSpendingLimits {
     /// Maximum amount allowed to spend per interval.
     pub amount: i64,
@@ -2376,6 +2442,13 @@ pub struct CreateIssuingCardholderSpendingControlsSpendingLimits {
     pub categories: Option<Vec<CreateIssuingCardholderSpendingControlsSpendingLimitsCategories>>,
     /// Interval (or event) to which the amount applies.
     pub interval: CreateIssuingCardholderSpendingControlsSpendingLimitsInterval,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateIssuingCardholderSpendingControlsSpendingLimits {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateIssuingCardholderSpendingControlsSpendingLimits")
+            .finish_non_exhaustive()
+    }
 }
 impl CreateIssuingCardholderSpendingControlsSpendingLimits {
     pub fn new(
@@ -3401,9 +3474,17 @@ impl std::fmt::Display for CreateIssuingCardholderSpendingControlsSpendingLimits
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateIssuingCardholderSpendingControlsSpendingLimitsCategories {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateIssuingCardholderSpendingControlsSpendingLimitsCategories {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateIssuingCardholderSpendingControlsSpendingLimitsCategories))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateIssuingCardholderSpendingControlsSpendingLimitsCategories {
@@ -3480,9 +3561,17 @@ impl std::fmt::Display for CreateIssuingCardholderSpendingControlsSpendingLimits
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateIssuingCardholderSpendingControlsSpendingLimitsInterval {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateIssuingCardholderSpendingControlsSpendingLimitsInterval {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateIssuingCardholderSpendingControlsSpendingLimitsInterval))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateIssuingCardholderSpendingControlsSpendingLimitsInterval {
@@ -3547,9 +3636,16 @@ impl std::fmt::Display for CreateIssuingCardholderStatus {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateIssuingCardholderStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateIssuingCardholderStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateIssuingCardholderStatus)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateIssuingCardholderStatus {
@@ -3569,9 +3665,17 @@ impl<'de> serde::Deserialize<'de> for CreateIssuingCardholderStatus {
     }
 }
 /// Creates a new Issuing `Cardholder` object that can be issued cards.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateIssuingCardholder {
     inner: CreateIssuingCardholderBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateIssuingCardholder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateIssuingCardholder").finish_non_exhaustive()
+    }
 }
 impl CreateIssuingCardholder {
     /// Construct a new `CreateIssuingCardholder`.
@@ -3673,7 +3777,9 @@ impl StripeRequest for CreateIssuingCardholder {
         RequestBuilder::new(StripeMethod::Post, "/issuing/cardholders").form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct UpdateIssuingCardholderBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     billing: Option<BillingSpecs>,
@@ -3696,6 +3802,12 @@ struct UpdateIssuingCardholderBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     status: Option<UpdateIssuingCardholderStatus>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateIssuingCardholderBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateIssuingCardholderBuilder").finish_non_exhaustive()
+    }
+}
 impl UpdateIssuingCardholderBuilder {
     fn new() -> Self {
         Self {
@@ -3714,7 +3826,9 @@ impl UpdateIssuingCardholderBuilder {
 }
 /// Rules that control spending across this cardholder's cards.
 /// Refer to our [documentation](https://docs.stripe.com/issuing/controls/spending-controls) for more details.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateIssuingCardholderSpendingControls {
     /// Array of strings containing [categories](https://docs.stripe.com/api#issuing_authorization_object-merchant_data-category) of authorizations to allow.
     /// All other categories will be blocked.
@@ -3747,6 +3861,12 @@ pub struct UpdateIssuingCardholderSpendingControls {
     /// Currency of amounts within `spending_limits`. Defaults to your merchant country's currency.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub spending_limits_currency: Option<stripe_types::Currency>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateIssuingCardholderSpendingControls {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateIssuingCardholderSpendingControls").finish_non_exhaustive()
+    }
 }
 impl UpdateIssuingCardholderSpendingControls {
     pub fn new() -> Self {
@@ -4782,9 +4902,17 @@ impl std::fmt::Display for UpdateIssuingCardholderSpendingControlsAllowedCategor
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdateIssuingCardholderSpendingControlsAllowedCategories {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateIssuingCardholderSpendingControlsAllowedCategories {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdateIssuingCardholderSpendingControlsAllowedCategories))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdateIssuingCardholderSpendingControlsAllowedCategories {
@@ -5820,9 +5948,17 @@ impl std::fmt::Display for UpdateIssuingCardholderSpendingControlsBlockedCategor
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdateIssuingCardholderSpendingControlsBlockedCategories {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateIssuingCardholderSpendingControlsBlockedCategories {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdateIssuingCardholderSpendingControlsBlockedCategories))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdateIssuingCardholderSpendingControlsBlockedCategories {
@@ -5842,7 +5978,9 @@ impl<'de> serde::Deserialize<'de> for UpdateIssuingCardholderSpendingControlsBlo
     }
 }
 /// Limit spending with amount-based rules that apply across this cardholder's cards.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateIssuingCardholderSpendingControlsSpendingLimits {
     /// Maximum amount allowed to spend per interval.
     pub amount: i64,
@@ -5852,6 +5990,13 @@ pub struct UpdateIssuingCardholderSpendingControlsSpendingLimits {
     pub categories: Option<Vec<UpdateIssuingCardholderSpendingControlsSpendingLimitsCategories>>,
     /// Interval (or event) to which the amount applies.
     pub interval: UpdateIssuingCardholderSpendingControlsSpendingLimitsInterval,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateIssuingCardholderSpendingControlsSpendingLimits {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateIssuingCardholderSpendingControlsSpendingLimits")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdateIssuingCardholderSpendingControlsSpendingLimits {
     pub fn new(
@@ -6877,9 +7022,17 @@ impl std::fmt::Display for UpdateIssuingCardholderSpendingControlsSpendingLimits
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdateIssuingCardholderSpendingControlsSpendingLimitsCategories {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateIssuingCardholderSpendingControlsSpendingLimitsCategories {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdateIssuingCardholderSpendingControlsSpendingLimitsCategories))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdateIssuingCardholderSpendingControlsSpendingLimitsCategories {
@@ -6956,9 +7109,17 @@ impl std::fmt::Display for UpdateIssuingCardholderSpendingControlsSpendingLimits
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdateIssuingCardholderSpendingControlsSpendingLimitsInterval {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateIssuingCardholderSpendingControlsSpendingLimitsInterval {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdateIssuingCardholderSpendingControlsSpendingLimitsInterval))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdateIssuingCardholderSpendingControlsSpendingLimitsInterval {
@@ -7023,9 +7184,16 @@ impl std::fmt::Display for UpdateIssuingCardholderStatus {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdateIssuingCardholderStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateIssuingCardholderStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdateIssuingCardholderStatus)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdateIssuingCardholderStatus {
@@ -7046,10 +7214,18 @@ impl<'de> serde::Deserialize<'de> for UpdateIssuingCardholderStatus {
 }
 /// Updates the specified Issuing `Cardholder` object by setting the values of the parameters passed.
 /// Any parameters not provided will be left unchanged.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateIssuingCardholder {
     inner: UpdateIssuingCardholderBuilder,
     cardholder: stripe_shared::IssuingCardholderId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateIssuingCardholder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateIssuingCardholder").finish_non_exhaustive()
+    }
 }
 impl UpdateIssuingCardholder {
     /// Construct a new `UpdateIssuingCardholder`.
@@ -7152,7 +7328,9 @@ impl StripeRequest for UpdateIssuingCardholder {
     }
 }
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RequiredAddress {
     /// City, district, suburb, town, or village.
     pub city: String,
@@ -7168,6 +7346,12 @@ pub struct RequiredAddress {
     /// State, county, province, or region ([ISO 3166-2](https://en.wikipedia.org/wiki/ISO_3166-2)).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RequiredAddress {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RequiredAddress").finish_non_exhaustive()
+    }
 }
 impl RequiredAddress {
     pub fn new(
@@ -7186,11 +7370,19 @@ impl RequiredAddress {
         }
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CompanyParam {
     /// The entity's business ID number.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_id: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CompanyParam {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CompanyParam").finish_non_exhaustive()
+    }
 }
 impl CompanyParam {
     pub fn new() -> Self {
@@ -7202,7 +7394,9 @@ impl Default for CompanyParam {
         Self::new()
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct TermsAcceptanceParam {
     /// The Unix timestamp marking when the cardholder accepted the Authorized User Terms.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -7214,6 +7408,12 @@ pub struct TermsAcceptanceParam {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub user_agent: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TermsAcceptanceParam {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("TermsAcceptanceParam").finish_non_exhaustive()
+    }
+}
 impl TermsAcceptanceParam {
     pub fn new() -> Self {
         Self { date: None, ip: None, user_agent: None }
@@ -7224,7 +7424,9 @@ impl Default for TermsAcceptanceParam {
         Self::new()
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct DateOfBirthSpecs {
     /// The day of birth, between 1 and 31.
     pub day: i64,
@@ -7233,12 +7435,20 @@ pub struct DateOfBirthSpecs {
     /// The four-digit year of birth.
     pub year: i64,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for DateOfBirthSpecs {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("DateOfBirthSpecs").finish_non_exhaustive()
+    }
+}
 impl DateOfBirthSpecs {
     pub fn new(day: impl Into<i64>, month: impl Into<i64>, year: impl Into<i64>) -> Self {
         Self { day: day.into(), month: month.into(), year: year.into() }
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct PersonVerificationDocumentParam {
     /// The back of an ID returned by a [file upload](https://api.stripe.com#create_file) with a `purpose` value of `identity_document`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -7246,6 +7456,12 @@ pub struct PersonVerificationDocumentParam {
     /// The front of an ID returned by a [file upload](https://api.stripe.com#create_file) with a `purpose` value of `identity_document`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub front: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PersonVerificationDocumentParam {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PersonVerificationDocumentParam").finish_non_exhaustive()
+    }
 }
 impl PersonVerificationDocumentParam {
     pub fn new() -> Self {
@@ -7257,22 +7473,38 @@ impl Default for PersonVerificationDocumentParam {
         Self::new()
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct BillingSpecs {
     /// The cardholder’s billing address.
     pub address: RequiredAddress,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for BillingSpecs {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("BillingSpecs").finish_non_exhaustive()
+    }
 }
 impl BillingSpecs {
     pub fn new(address: impl Into<RequiredAddress>) -> Self {
         Self { address: address.into() }
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CardIssuingParam {
     /// Information about cardholder acceptance of Celtic [Authorized User Terms](https://stripe.com/docs/issuing/cards#accept-authorized-user-terms).
     /// Required for cards backed by a Celtic program.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub user_terms_acceptance: Option<TermsAcceptanceParam>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CardIssuingParam {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CardIssuingParam").finish_non_exhaustive()
+    }
 }
 impl CardIssuingParam {
     pub fn new() -> Self {
@@ -7284,11 +7516,19 @@ impl Default for CardIssuingParam {
         Self::new()
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct PersonVerificationParam {
     /// An identifying document, either a passport or local ID card.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub document: Option<PersonVerificationDocumentParam>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PersonVerificationParam {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PersonVerificationParam").finish_non_exhaustive()
+    }
 }
 impl PersonVerificationParam {
     pub fn new() -> Self {
@@ -7300,7 +7540,9 @@ impl Default for PersonVerificationParam {
         Self::new()
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct IndividualParam {
     /// Information related to the card_issuing program for this cardholder.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -7321,6 +7563,12 @@ pub struct IndividualParam {
     /// Government-issued ID document for this cardholder.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub verification: Option<PersonVerificationParam>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for IndividualParam {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("IndividualParam").finish_non_exhaustive()
+    }
 }
 impl IndividualParam {
     pub fn new() -> Self {

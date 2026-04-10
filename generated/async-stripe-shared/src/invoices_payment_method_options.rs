@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct InvoicesPaymentMethodOptions {
@@ -18,6 +19,12 @@ pub struct InvoicesPaymentMethodOptions {
     pub sepa_debit: Option<stripe_shared::InvoicePaymentMethodOptionsSepaDebit>,
     /// If paying by `us_bank_account`, this sub-hash contains details about the ACH direct debit payment method options to pass to the invoice’s PaymentIntent.
     pub us_bank_account: Option<stripe_shared::InvoicePaymentMethodOptionsUsBankAccount>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for InvoicesPaymentMethodOptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("InvoicesPaymentMethodOptions").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct InvoicesPaymentMethodOptionsBuilder {

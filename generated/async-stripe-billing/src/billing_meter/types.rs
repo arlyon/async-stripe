@@ -3,7 +3,8 @@
 /// Meters attach to prices and form the basis of the bill.
 ///
 /// Related guide: [Usage based billing](https://docs.stripe.com/billing/subscriptions/usage-based)
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct BillingMeter {
     /// Time at which the object was created. Measured in seconds since the Unix epoch.
@@ -28,6 +29,12 @@ pub struct BillingMeter {
     /// Time at which the object was last updated. Measured in seconds since the Unix epoch.
     pub updated: stripe_types::Timestamp,
     pub value_settings: stripe_billing::BillingMeterResourceBillingMeterValue,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for BillingMeter {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("BillingMeter").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct BillingMeterBuilder {
@@ -284,9 +291,16 @@ impl std::fmt::Display for BillingMeterEventTimeWindow {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for BillingMeterEventTimeWindow {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for BillingMeterEventTimeWindow {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(BillingMeterEventTimeWindow)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for BillingMeterEventTimeWindow {
@@ -359,9 +373,16 @@ impl std::fmt::Display for BillingMeterStatus {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for BillingMeterStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for BillingMeterStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(BillingMeterStatus)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for BillingMeterStatus {

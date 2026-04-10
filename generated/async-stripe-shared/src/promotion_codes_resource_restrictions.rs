@@ -1,4 +1,5 @@
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PromotionCodesResourceRestrictions {
@@ -16,6 +17,12 @@ pub struct PromotionCodesResourceRestrictions {
     pub minimum_amount: Option<i64>,
     /// Three-letter [ISO code](https://stripe.com/docs/currencies) for minimum_amount
     pub minimum_amount_currency: Option<stripe_types::Currency>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PromotionCodesResourceRestrictions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PromotionCodesResourceRestrictions").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct PromotionCodesResourceRestrictionsBuilder {

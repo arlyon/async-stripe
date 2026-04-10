@@ -1,4 +1,5 @@
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct BankConnectionsResourceTransactionResourceStatusTransitions {
@@ -6,6 +7,13 @@ pub struct BankConnectionsResourceTransactionResourceStatusTransitions {
     pub posted_at: Option<stripe_types::Timestamp>,
     /// Time at which this transaction was voided. Measured in seconds since the Unix epoch.
     pub void_at: Option<stripe_types::Timestamp>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for BankConnectionsResourceTransactionResourceStatusTransitions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("BankConnectionsResourceTransactionResourceStatusTransitions")
+            .finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct BankConnectionsResourceTransactionResourceStatusTransitionsBuilder {

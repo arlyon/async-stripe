@@ -3,7 +3,8 @@
 /// retrieve the contents of the file without authentication.
 ///
 /// For more details see <<https://stripe.com/docs/api/file_links/object>>.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct FileLink {
     /// Time at which the object was created. Measured in seconds since the Unix epoch.
@@ -24,6 +25,12 @@ pub struct FileLink {
     pub metadata: std::collections::HashMap<String, String>,
     /// The publicly accessible URL to download the file.
     pub url: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for FileLink {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("FileLink").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct FileLinkBuilder {

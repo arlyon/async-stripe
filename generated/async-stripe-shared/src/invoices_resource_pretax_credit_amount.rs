@@ -1,4 +1,5 @@
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct InvoicesResourcePretaxCreditAmount {
@@ -12,6 +13,12 @@ pub struct InvoicesResourcePretaxCreditAmount {
     /// Type of the pretax credit amount referenced.
     #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "type"))]
     pub type_: InvoicesResourcePretaxCreditAmountType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for InvoicesResourcePretaxCreditAmount {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("InvoicesResourcePretaxCreditAmount").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct InvoicesResourcePretaxCreditAmountBuilder {
@@ -174,9 +181,16 @@ impl std::fmt::Display for InvoicesResourcePretaxCreditAmountType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for InvoicesResourcePretaxCreditAmountType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for InvoicesResourcePretaxCreditAmountType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(InvoicesResourcePretaxCreditAmountType)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

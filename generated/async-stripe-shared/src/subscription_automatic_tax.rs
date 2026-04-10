@@ -1,4 +1,5 @@
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct SubscriptionAutomaticTax {
@@ -10,6 +11,12 @@ pub struct SubscriptionAutomaticTax {
     /// If set, the business address and tax registrations required to perform the tax calculation are loaded from this account.
     /// The tax transaction is returned in the report of the connected account.
     pub liability: Option<stripe_shared::ConnectAccountReference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for SubscriptionAutomaticTax {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("SubscriptionAutomaticTax").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct SubscriptionAutomaticTaxBuilder {
@@ -157,9 +164,16 @@ impl std::fmt::Display for SubscriptionAutomaticTaxDisabledReason {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for SubscriptionAutomaticTaxDisabledReason {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for SubscriptionAutomaticTaxDisabledReason {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(SubscriptionAutomaticTaxDisabledReason)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

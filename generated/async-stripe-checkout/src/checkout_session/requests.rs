@@ -2,7 +2,9 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ListCheckoutSessionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     created: Option<stripe_types::RangeQueryTs>,
@@ -29,6 +31,12 @@ struct ListCheckoutSessionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     subscription: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListCheckoutSessionBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListCheckoutSessionBuilder").finish_non_exhaustive()
+    }
+}
 impl ListCheckoutSessionBuilder {
     fn new() -> Self {
         Self {
@@ -48,10 +56,18 @@ impl ListCheckoutSessionBuilder {
     }
 }
 /// Only return the Checkout Sessions for the Customer details specified.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListCheckoutSessionCustomerDetails {
     /// Customer's email address.
     pub email: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListCheckoutSessionCustomerDetails {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListCheckoutSessionCustomerDetails").finish_non_exhaustive()
+    }
 }
 impl ListCheckoutSessionCustomerDetails {
     pub fn new(email: impl Into<String>) -> Self {
@@ -59,9 +75,17 @@ impl ListCheckoutSessionCustomerDetails {
     }
 }
 /// Returns a list of Checkout Sessions.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListCheckoutSession {
     inner: ListCheckoutSessionBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListCheckoutSession {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListCheckoutSession").finish_non_exhaustive()
+    }
 }
 impl ListCheckoutSession {
     /// Construct a new `ListCheckoutSession`.
@@ -173,10 +197,18 @@ impl StripeRequest for ListCheckoutSession {
         RequestBuilder::new(StripeMethod::Get, "/checkout/sessions").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RetrieveCheckoutSessionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveCheckoutSessionBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveCheckoutSessionBuilder").finish_non_exhaustive()
+    }
 }
 impl RetrieveCheckoutSessionBuilder {
     fn new() -> Self {
@@ -184,10 +216,18 @@ impl RetrieveCheckoutSessionBuilder {
     }
 }
 /// Retrieves a Checkout Session object.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RetrieveCheckoutSession {
     inner: RetrieveCheckoutSessionBuilder,
     session: stripe_shared::CheckoutSessionId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveCheckoutSession {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveCheckoutSession").finish_non_exhaustive()
+    }
 }
 impl RetrieveCheckoutSession {
     /// Construct a new `RetrieveCheckoutSession`.
@@ -227,7 +267,9 @@ impl StripeRequest for RetrieveCheckoutSession {
             .query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ListLineItemsCheckoutSessionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<String>,
@@ -238,6 +280,12 @@ struct ListLineItemsCheckoutSessionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     starting_after: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListLineItemsCheckoutSessionBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListLineItemsCheckoutSessionBuilder").finish_non_exhaustive()
+    }
+}
 impl ListLineItemsCheckoutSessionBuilder {
     fn new() -> Self {
         Self { ending_before: None, expand: None, limit: None, starting_after: None }
@@ -245,10 +293,18 @@ impl ListLineItemsCheckoutSessionBuilder {
 }
 /// When retrieving a Checkout Session, there is an includable **line_items** property containing the first handful of those items.
 /// There is also a URL where you can retrieve the full (paginated) list of line items.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListLineItemsCheckoutSession {
     inner: ListLineItemsCheckoutSessionBuilder,
     session: stripe_shared::CheckoutSessionId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListLineItemsCheckoutSession {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListLineItemsCheckoutSession").finish_non_exhaustive()
+    }
 }
 impl ListLineItemsCheckoutSession {
     /// Construct a new `ListLineItemsCheckoutSession`.
@@ -320,7 +376,9 @@ impl StripeRequest for ListLineItemsCheckoutSession {
             .query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct CreateCheckoutSessionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     adaptive_pricing: Option<CreateCheckoutSessionAdaptivePricing>,
@@ -423,6 +481,12 @@ struct CreateCheckoutSessionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     wallet_options: Option<CreateCheckoutSessionWalletOptions>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionBuilder").finish_non_exhaustive()
+    }
+}
 impl CreateCheckoutSessionBuilder {
     fn new() -> Self {
         Self {
@@ -480,12 +544,20 @@ impl CreateCheckoutSessionBuilder {
     }
 }
 /// Settings for price localization with [Adaptive Pricing](https://docs.stripe.com/payments/checkout/adaptive-pricing).
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionAdaptivePricing {
     /// If set to `true`, Adaptive Pricing is available on [eligible sessions](https://docs.stripe.com/payments/currencies/localize-prices/adaptive-pricing?payment-ui=stripe-hosted#restrictions).
     /// Defaults to your [dashboard setting](https://dashboard.stripe.com/settings/adaptive-pricing).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionAdaptivePricing {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionAdaptivePricing").finish_non_exhaustive()
+    }
 }
 impl CreateCheckoutSessionAdaptivePricing {
     pub fn new() -> Self {
@@ -499,11 +571,19 @@ impl Default for CreateCheckoutSessionAdaptivePricing {
 }
 /// Configure actions after a Checkout Session has expired.
 /// You can't set this parameter if `ui_mode` is `custom`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionAfterExpiration {
     /// Configure a Checkout Session that can be used to recover an expired session.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub recovery: Option<CreateCheckoutSessionAfterExpirationRecovery>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionAfterExpiration {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionAfterExpiration").finish_non_exhaustive()
+    }
 }
 impl CreateCheckoutSessionAfterExpiration {
     pub fn new() -> Self {
@@ -516,7 +596,9 @@ impl Default for CreateCheckoutSessionAfterExpiration {
     }
 }
 /// Configure a Checkout Session that can be used to recover an expired session.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionAfterExpirationRecovery {
     /// Enables user redeemable promotion codes on the recovered Checkout Sessions. Defaults to `false`
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -526,13 +608,21 @@ pub struct CreateCheckoutSessionAfterExpirationRecovery {
     /// Checkout Session object upon expiration.
     pub enabled: bool,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionAfterExpirationRecovery {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionAfterExpirationRecovery").finish_non_exhaustive()
+    }
+}
 impl CreateCheckoutSessionAfterExpirationRecovery {
     pub fn new(enabled: impl Into<bool>) -> Self {
         Self { allow_promotion_codes: None, enabled: enabled.into() }
     }
 }
 /// Settings for automatic tax lookup for this session and resulting payments, invoices, and subscriptions.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionAutomaticTax {
     /// Set to `true` to [calculate tax automatically](https://docs.stripe.com/tax) using the customer's location.
     ///
@@ -544,6 +634,12 @@ pub struct CreateCheckoutSessionAutomaticTax {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub liability: Option<CreateCheckoutSessionAutomaticTaxLiability>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionAutomaticTax {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionAutomaticTax").finish_non_exhaustive()
+    }
+}
 impl CreateCheckoutSessionAutomaticTax {
     pub fn new(enabled: impl Into<bool>) -> Self {
         Self { enabled: enabled.into(), liability: None }
@@ -552,7 +648,9 @@ impl CreateCheckoutSessionAutomaticTax {
 /// The account that's liable for tax.
 /// If set, the business address and tax registrations required to perform the tax calculation are loaded from this account.
 /// The tax transaction is returned in the report of the connected account.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionAutomaticTaxLiability {
     /// The connected account being referenced when `type` is `account`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -560,6 +658,12 @@ pub struct CreateCheckoutSessionAutomaticTaxLiability {
     /// Type of the account referenced in the request.
     #[serde(rename = "type")]
     pub type_: CreateCheckoutSessionAutomaticTaxLiabilityType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionAutomaticTaxLiability {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionAutomaticTaxLiability").finish_non_exhaustive()
+    }
 }
 impl CreateCheckoutSessionAutomaticTaxLiability {
     pub fn new(type_: impl Into<CreateCheckoutSessionAutomaticTaxLiabilityType>) -> Self {
@@ -610,9 +714,17 @@ impl std::fmt::Display for CreateCheckoutSessionAutomaticTaxLiabilityType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionAutomaticTaxLiabilityType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionAutomaticTaxLiabilityType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCheckoutSessionAutomaticTaxLiabilityType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionAutomaticTaxLiabilityType {
@@ -633,7 +745,9 @@ impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionAutomaticTaxLiability
 }
 /// The branding settings for the Checkout Session.
 /// This parameter is not allowed if ui_mode is `custom`.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionBrandingSettings {
     /// A hex color value starting with `#` representing the background color for the Checkout Session.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -657,6 +771,12 @@ pub struct CreateCheckoutSessionBrandingSettings {
     /// The logo for the Checkout Session.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub logo: Option<CreateCheckoutSessionBrandingSettingsLogo>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionBrandingSettings {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionBrandingSettings").finish_non_exhaustive()
+    }
 }
 impl CreateCheckoutSessionBrandingSettings {
     pub fn new() -> Self {
@@ -723,9 +843,17 @@ impl std::fmt::Display for CreateCheckoutSessionBrandingSettingsBorderStyle {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionBrandingSettingsBorderStyle {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionBrandingSettingsBorderStyle {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCheckoutSessionBrandingSettingsBorderStyle))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionBrandingSettingsBorderStyle {
@@ -860,9 +988,17 @@ impl std::fmt::Display for CreateCheckoutSessionBrandingSettingsFontFamily {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionBrandingSettingsFontFamily {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionBrandingSettingsFontFamily {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCheckoutSessionBrandingSettingsFontFamily))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionBrandingSettingsFontFamily {
@@ -882,7 +1018,9 @@ impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionBrandingSettingsFontF
     }
 }
 /// The icon for the Checkout Session. For best results, use a square image.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionBrandingSettingsIcon {
     /// The ID of a [File upload](https://stripe.com/docs/api/files) representing the icon.
     /// Purpose must be `business_icon`.
@@ -895,6 +1033,12 @@ pub struct CreateCheckoutSessionBrandingSettingsIcon {
     /// The URL of the image. Required if `type` is `url` and disallowed otherwise.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub url: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionBrandingSettingsIcon {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionBrandingSettingsIcon").finish_non_exhaustive()
+    }
 }
 impl CreateCheckoutSessionBrandingSettingsIcon {
     pub fn new(type_: impl Into<CreateCheckoutSessionBrandingSettingsIconType>) -> Self {
@@ -945,9 +1089,17 @@ impl std::fmt::Display for CreateCheckoutSessionBrandingSettingsIconType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionBrandingSettingsIconType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionBrandingSettingsIconType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCheckoutSessionBrandingSettingsIconType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionBrandingSettingsIconType {
@@ -967,7 +1119,9 @@ impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionBrandingSettingsIconT
     }
 }
 /// The logo for the Checkout Session.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionBrandingSettingsLogo {
     /// The ID of a [File upload](https://stripe.com/docs/api/files) representing the logo.
     /// Purpose must be `business_logo`.
@@ -980,6 +1134,12 @@ pub struct CreateCheckoutSessionBrandingSettingsLogo {
     /// The URL of the image. Required if `type` is `url` and disallowed otherwise.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub url: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionBrandingSettingsLogo {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionBrandingSettingsLogo").finish_non_exhaustive()
+    }
 }
 impl CreateCheckoutSessionBrandingSettingsLogo {
     pub fn new(type_: impl Into<CreateCheckoutSessionBrandingSettingsLogoType>) -> Self {
@@ -1030,9 +1190,17 @@ impl std::fmt::Display for CreateCheckoutSessionBrandingSettingsLogoType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionBrandingSettingsLogoType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionBrandingSettingsLogoType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCheckoutSessionBrandingSettingsLogoType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionBrandingSettingsLogoType {
@@ -1052,7 +1220,9 @@ impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionBrandingSettingsLogoT
     }
 }
 /// Configure fields for the Checkout Session to gather active consent from customers.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionConsentCollection {
     /// Determines the display of payment method reuse agreement text in the UI.
     /// If set to `hidden`, it will hide legal text related to the reuse of a payment method.
@@ -1070,6 +1240,12 @@ pub struct CreateCheckoutSessionConsentCollection {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub terms_of_service: Option<CreateCheckoutSessionConsentCollectionTermsOfService>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionConsentCollection {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionConsentCollection").finish_non_exhaustive()
+    }
+}
 impl CreateCheckoutSessionConsentCollection {
     pub fn new() -> Self {
         Self { payment_method_reuse_agreement: None, promotions: None, terms_of_service: None }
@@ -1082,13 +1258,22 @@ impl Default for CreateCheckoutSessionConsentCollection {
 }
 /// Determines the display of payment method reuse agreement text in the UI.
 /// If set to `hidden`, it will hide legal text related to the reuse of a payment method.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionConsentCollectionPaymentMethodReuseAgreement {
     /// Determines the position and visibility of the payment method reuse agreement in the UI.
     /// When set to `auto`, Stripe's.
     /// defaults will be used.
     /// When set to `hidden`, the payment method reuse agreement text will always be hidden in the UI.
     pub position: CreateCheckoutSessionConsentCollectionPaymentMethodReuseAgreementPosition,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionConsentCollectionPaymentMethodReuseAgreement {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionConsentCollectionPaymentMethodReuseAgreement")
+            .finish_non_exhaustive()
+    }
 }
 impl CreateCheckoutSessionConsentCollectionPaymentMethodReuseAgreement {
     pub fn new(
@@ -1148,9 +1333,19 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionConsentCollectionPaymentMethodReuseAgreementPosition {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionConsentCollectionPaymentMethodReuseAgreementPosition {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreateCheckoutSessionConsentCollectionPaymentMethodReuseAgreementPosition
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -1220,9 +1415,17 @@ impl std::fmt::Display for CreateCheckoutSessionConsentCollectionPromotions {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionConsentCollectionPromotions {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionConsentCollectionPromotions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCheckoutSessionConsentCollectionPromotions))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionConsentCollectionPromotions {
@@ -1286,9 +1489,17 @@ impl std::fmt::Display for CreateCheckoutSessionConsentCollectionTermsOfService 
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionConsentCollectionTermsOfService {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionConsentCollectionTermsOfService {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCheckoutSessionConsentCollectionTermsOfService))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionConsentCollectionTermsOfService {
@@ -1310,7 +1521,9 @@ impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionConsentCollectionTerm
 /// Collect additional information from your customer using custom fields.
 /// Up to 3 fields are supported.
 /// You can't set this parameter if `ui_mode` is `custom`.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionCustomFields {
     /// Configuration for `type=dropdown` fields.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1334,6 +1547,12 @@ pub struct CreateCheckoutSessionCustomFields {
     #[serde(rename = "type")]
     pub type_: CreateCheckoutSessionCustomFieldsType,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionCustomFields {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionCustomFields").finish_non_exhaustive()
+    }
+}
 impl CreateCheckoutSessionCustomFields {
     pub fn new(
         key: impl Into<String>,
@@ -1352,7 +1571,9 @@ impl CreateCheckoutSessionCustomFields {
     }
 }
 /// Configuration for `type=dropdown` fields.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionCustomFieldsDropdown {
     /// The value that pre-fills the field on the payment page.Must match a `value` in the `options` array.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1360,13 +1581,21 @@ pub struct CreateCheckoutSessionCustomFieldsDropdown {
     /// The options available for the customer to select. Up to 200 options allowed.
     pub options: Vec<CreateCheckoutSessionCustomFieldsDropdownOptions>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionCustomFieldsDropdown {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionCustomFieldsDropdown").finish_non_exhaustive()
+    }
+}
 impl CreateCheckoutSessionCustomFieldsDropdown {
     pub fn new(options: impl Into<Vec<CreateCheckoutSessionCustomFieldsDropdownOptions>>) -> Self {
         Self { default_value: None, options: options.into() }
     }
 }
 /// The options available for the customer to select. Up to 200 options allowed.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionCustomFieldsDropdownOptions {
     /// The label for the option, displayed to the customer. Up to 100 characters.
     pub label: String,
@@ -1374,19 +1603,33 @@ pub struct CreateCheckoutSessionCustomFieldsDropdownOptions {
     /// Must be unique to this option, alphanumeric, and up to 100 characters.
     pub value: String,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionCustomFieldsDropdownOptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionCustomFieldsDropdownOptions").finish_non_exhaustive()
+    }
+}
 impl CreateCheckoutSessionCustomFieldsDropdownOptions {
     pub fn new(label: impl Into<String>, value: impl Into<String>) -> Self {
         Self { label: label.into(), value: value.into() }
     }
 }
 /// The label for the field, displayed to the customer.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionCustomFieldsLabel {
     /// Custom text for the label, displayed to the customer. Up to 50 characters.
     pub custom: String,
     /// The type of the label.
     #[serde(rename = "type")]
     pub type_: CreateCheckoutSessionCustomFieldsLabelType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionCustomFieldsLabel {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionCustomFieldsLabel").finish_non_exhaustive()
+    }
 }
 impl CreateCheckoutSessionCustomFieldsLabel {
     pub fn new(
@@ -1437,9 +1680,17 @@ impl std::fmt::Display for CreateCheckoutSessionCustomFieldsLabelType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionCustomFieldsLabelType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionCustomFieldsLabelType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCheckoutSessionCustomFieldsLabelType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionCustomFieldsLabelType {
@@ -1459,7 +1710,9 @@ impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionCustomFieldsLabelType
     }
 }
 /// Configuration for `type=numeric` fields.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionCustomFieldsNumeric {
     /// The value that pre-fills the field on the payment page.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1470,6 +1723,12 @@ pub struct CreateCheckoutSessionCustomFieldsNumeric {
     /// The minimum character length requirement for the customer's input.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub minimum_length: Option<i64>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionCustomFieldsNumeric {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionCustomFieldsNumeric").finish_non_exhaustive()
+    }
 }
 impl CreateCheckoutSessionCustomFieldsNumeric {
     pub fn new() -> Self {
@@ -1482,7 +1741,9 @@ impl Default for CreateCheckoutSessionCustomFieldsNumeric {
     }
 }
 /// Configuration for `type=text` fields.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionCustomFieldsText {
     /// The value that pre-fills the field on the payment page.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1493,6 +1754,12 @@ pub struct CreateCheckoutSessionCustomFieldsText {
     /// The minimum character length requirement for the customer's input.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub minimum_length: Option<i64>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionCustomFieldsText {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionCustomFieldsText").finish_non_exhaustive()
+    }
 }
 impl CreateCheckoutSessionCustomFieldsText {
     pub fn new() -> Self {
@@ -1551,9 +1818,16 @@ impl std::fmt::Display for CreateCheckoutSessionCustomFieldsType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionCustomFieldsType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionCustomFieldsType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCheckoutSessionCustomFieldsType)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionCustomFieldsType {
@@ -1574,7 +1848,9 @@ impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionCustomFieldsType {
 }
 /// Display additional text for your customers using custom text.
 /// You can't set this parameter if `ui_mode` is `custom`.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionCustomText {
     /// Custom text that should be displayed after the payment confirmation button.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1588,6 +1864,12 @@ pub struct CreateCheckoutSessionCustomText {
     /// Custom text that should be displayed in place of the default terms of service agreement text.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub terms_of_service_acceptance: Option<CustomTextPositionParam>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionCustomText {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionCustomText").finish_non_exhaustive()
+    }
 }
 impl CreateCheckoutSessionCustomText {
     pub fn new() -> Self {
@@ -1657,9 +1939,16 @@ impl std::fmt::Display for CreateCheckoutSessionCustomerCreation {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionCustomerCreation {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionCustomerCreation {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCheckoutSessionCustomerCreation)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionCustomerCreation {
@@ -1680,7 +1969,9 @@ impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionCustomerCreation {
 }
 /// Controls what fields on Customer can be updated by the Checkout Session.
 /// Can only be provided when `customer` is provided.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionCustomerUpdate {
     /// Describes whether Checkout saves the billing address onto `customer.address`.
     /// To always collect a full billing address, use `billing_address_collection`. Defaults to `never`.
@@ -1693,6 +1984,12 @@ pub struct CreateCheckoutSessionCustomerUpdate {
     /// To collect shipping information, use `shipping_address_collection`. Defaults to `never`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub shipping: Option<CreateCheckoutSessionCustomerUpdateShipping>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionCustomerUpdate {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionCustomerUpdate").finish_non_exhaustive()
+    }
 }
 impl CreateCheckoutSessionCustomerUpdate {
     pub fn new() -> Self {
@@ -1749,9 +2046,17 @@ impl std::fmt::Display for CreateCheckoutSessionCustomerUpdateAddress {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionCustomerUpdateAddress {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionCustomerUpdateAddress {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCheckoutSessionCustomerUpdateAddress))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionCustomerUpdateAddress {
@@ -1814,9 +2119,16 @@ impl std::fmt::Display for CreateCheckoutSessionCustomerUpdateName {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionCustomerUpdateName {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionCustomerUpdateName {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCheckoutSessionCustomerUpdateName)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionCustomerUpdateName {
@@ -1880,9 +2192,17 @@ impl std::fmt::Display for CreateCheckoutSessionCustomerUpdateShipping {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionCustomerUpdateShipping {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionCustomerUpdateShipping {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCheckoutSessionCustomerUpdateShipping))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionCustomerUpdateShipping {
@@ -1902,7 +2222,9 @@ impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionCustomerUpdateShippin
     }
 }
 /// The coupon or promotion code to apply to this Session. Currently, only up to one may be specified.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionDiscounts {
     /// The ID of the coupon to apply to this Session.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1910,6 +2232,12 @@ pub struct CreateCheckoutSessionDiscounts {
     /// The ID of a promotion code to apply to this Session.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub promotion_code: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionDiscounts {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionDiscounts").finish_non_exhaustive()
+    }
 }
 impl CreateCheckoutSessionDiscounts {
     pub fn new() -> Self {
@@ -2110,9 +2438,17 @@ impl std::fmt::Display for CreateCheckoutSessionExcludedPaymentMethodTypes {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionExcludedPaymentMethodTypes {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionExcludedPaymentMethodTypes {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCheckoutSessionExcludedPaymentMethodTypes))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionExcludedPaymentMethodTypes {
@@ -2132,7 +2468,9 @@ impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionExcludedPaymentMethod
     }
 }
 /// Generate a post-purchase Invoice for one-time payments.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionInvoiceCreation {
     /// Set to `true` to enable invoice creation.
     pub enabled: bool,
@@ -2140,13 +2478,21 @@ pub struct CreateCheckoutSessionInvoiceCreation {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub invoice_data: Option<CreateCheckoutSessionInvoiceCreationInvoiceData>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionInvoiceCreation {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionInvoiceCreation").finish_non_exhaustive()
+    }
+}
 impl CreateCheckoutSessionInvoiceCreation {
     pub fn new(enabled: impl Into<bool>) -> Self {
         Self { enabled: enabled.into(), invoice_data: None }
     }
 }
 /// Parameters passed when creating invoices for payment-mode Checkout Sessions.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionInvoiceCreationInvoiceData {
     /// The account tax IDs associated with the invoice.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2174,6 +2520,12 @@ pub struct CreateCheckoutSessionInvoiceCreationInvoiceData {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub rendering_options: Option<CreateCheckoutSessionInvoiceCreationInvoiceDataRenderingOptions>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionInvoiceCreationInvoiceData {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionInvoiceCreationInvoiceData").finish_non_exhaustive()
+    }
+}
 impl CreateCheckoutSessionInvoiceCreationInvoiceData {
     pub fn new() -> Self {
         Self {
@@ -2193,12 +2545,21 @@ impl Default for CreateCheckoutSessionInvoiceCreationInvoiceData {
     }
 }
 /// Default custom fields to be displayed on invoices for this customer.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionInvoiceCreationInvoiceDataCustomFields {
     /// The name of the custom field. This may be up to 40 characters.
     pub name: String,
     /// The value of the custom field. This may be up to 140 characters.
     pub value: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionInvoiceCreationInvoiceDataCustomFields {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionInvoiceCreationInvoiceDataCustomFields")
+            .finish_non_exhaustive()
+    }
 }
 impl CreateCheckoutSessionInvoiceCreationInvoiceDataCustomFields {
     pub fn new(name: impl Into<String>, value: impl Into<String>) -> Self {
@@ -2207,7 +2568,9 @@ impl CreateCheckoutSessionInvoiceCreationInvoiceDataCustomFields {
 }
 /// The connected account that issues the invoice.
 /// The invoice is presented with the branding and support information of the specified account.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionInvoiceCreationInvoiceDataIssuer {
     /// The connected account being referenced when `type` is `account`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2215,6 +2578,13 @@ pub struct CreateCheckoutSessionInvoiceCreationInvoiceDataIssuer {
     /// Type of the account referenced in the request.
     #[serde(rename = "type")]
     pub type_: CreateCheckoutSessionInvoiceCreationInvoiceDataIssuerType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionInvoiceCreationInvoiceDataIssuer {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionInvoiceCreationInvoiceDataIssuer")
+            .finish_non_exhaustive()
+    }
 }
 impl CreateCheckoutSessionInvoiceCreationInvoiceDataIssuer {
     pub fn new(
@@ -2267,9 +2637,17 @@ impl std::fmt::Display for CreateCheckoutSessionInvoiceCreationInvoiceDataIssuer
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionInvoiceCreationInvoiceDataIssuerType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionInvoiceCreationInvoiceDataIssuerType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCheckoutSessionInvoiceCreationInvoiceDataIssuerType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionInvoiceCreationInvoiceDataIssuerType {
@@ -2289,7 +2667,9 @@ impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionInvoiceCreationInvoic
     }
 }
 /// Default options for invoice PDF rendering for this customer.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionInvoiceCreationInvoiceDataRenderingOptions {
     /// How line-item prices and amounts will be displayed with respect to tax on invoice PDFs.
     /// One of `exclude_tax` or `include_inclusive_tax`.
@@ -2301,6 +2681,13 @@ pub struct CreateCheckoutSessionInvoiceCreationInvoiceDataRenderingOptions {
     /// ID of the invoice rendering template to use for this invoice.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub template: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionInvoiceCreationInvoiceDataRenderingOptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionInvoiceCreationInvoiceDataRenderingOptions")
+            .finish_non_exhaustive()
+    }
 }
 impl CreateCheckoutSessionInvoiceCreationInvoiceDataRenderingOptions {
     pub fn new() -> Self {
@@ -2363,11 +2750,23 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for CreateCheckoutSessionInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for CreateCheckoutSessionInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreateCheckoutSessionInvoiceCreationInvoiceDataRenderingOptionsAmountTaxDisplay
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -2398,7 +2797,9 @@ impl<'de> serde::Deserialize<'de>
 ///
 /// For `subscription` mode, there is a maximum of 20 line items with recurring Prices and 20 line items with one-time Prices.
 /// Line items with one-time Prices will be on the initial invoice only.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionLineItems {
     /// When set, provides configuration for this item’s quantity to be adjusted by the customer during Checkout.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2430,6 +2831,12 @@ pub struct CreateCheckoutSessionLineItems {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_rates: Option<Vec<String>>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionLineItems {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionLineItems").finish_non_exhaustive()
+    }
+}
 impl CreateCheckoutSessionLineItems {
     pub fn new() -> Self {
         Self {
@@ -2449,7 +2856,9 @@ impl Default for CreateCheckoutSessionLineItems {
     }
 }
 /// When set, provides configuration for this item’s quantity to be adjusted by the customer during Checkout.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionLineItemsAdjustableQuantity {
     /// Set to true if the quantity can be adjusted to any non-negative integer.
     pub enabled: bool,
@@ -2463,6 +2872,12 @@ pub struct CreateCheckoutSessionLineItemsAdjustableQuantity {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub minimum: Option<i64>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionLineItemsAdjustableQuantity {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionLineItemsAdjustableQuantity").finish_non_exhaustive()
+    }
+}
 impl CreateCheckoutSessionLineItemsAdjustableQuantity {
     pub fn new(enabled: impl Into<bool>) -> Self {
         Self { enabled: enabled.into(), maximum: None, minimum: None }
@@ -2470,7 +2885,9 @@ impl CreateCheckoutSessionLineItemsAdjustableQuantity {
 }
 /// Data used to generate a new [Price](https://docs.stripe.com/api/prices) object inline.
 /// One of `price` or `price_data` is required.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionLineItemsPriceData {
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
@@ -2501,6 +2918,12 @@ pub struct CreateCheckoutSessionLineItemsPriceData {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_amount_decimal: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionLineItemsPriceData {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionLineItemsPriceData").finish_non_exhaustive()
+    }
+}
 impl CreateCheckoutSessionLineItemsPriceData {
     pub fn new(currency: impl Into<stripe_types::Currency>) -> Self {
         Self {
@@ -2515,7 +2938,9 @@ impl CreateCheckoutSessionLineItemsPriceData {
     }
 }
 /// The recurring components of a price such as `interval` and `interval_count`.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionLineItemsPriceDataRecurring {
     /// Specifies billing frequency. Either `day`, `week`, `month` or `year`.
     pub interval: CreateCheckoutSessionLineItemsPriceDataRecurringInterval,
@@ -2524,6 +2949,12 @@ pub struct CreateCheckoutSessionLineItemsPriceDataRecurring {
     /// Maximum of three years interval allowed (3 years, 36 months, or 156 weeks).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub interval_count: Option<u64>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionLineItemsPriceDataRecurring {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionLineItemsPriceDataRecurring").finish_non_exhaustive()
+    }
 }
 impl CreateCheckoutSessionLineItemsPriceDataRecurring {
     pub fn new(
@@ -2582,9 +3013,17 @@ impl std::fmt::Display for CreateCheckoutSessionLineItemsPriceDataRecurringInter
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionLineItemsPriceDataRecurringInterval {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionLineItemsPriceDataRecurringInterval {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCheckoutSessionLineItemsPriceDataRecurringInterval))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionLineItemsPriceDataRecurringInterval {
@@ -2653,9 +3092,17 @@ impl std::fmt::Display for CreateCheckoutSessionLineItemsPriceDataTaxBehavior {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionLineItemsPriceDataTaxBehavior {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionLineItemsPriceDataTaxBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCheckoutSessionLineItemsPriceDataTaxBehavior))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionLineItemsPriceDataTaxBehavior {
@@ -2682,7 +3129,9 @@ impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionLineItemsPriceDataTax
 /// If a [Customer](https://docs.stripe.com/api/customers) is created or provided, the names can be saved to the Customer object as well.
 ///
 /// You can't set this parameter if `ui_mode` is `custom`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionNameCollection {
     /// Controls settings applied for collecting the customer's business name on the session.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2690,6 +3139,12 @@ pub struct CreateCheckoutSessionNameCollection {
     /// Controls settings applied for collecting the customer's individual name on the session.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub individual: Option<CreateCheckoutSessionNameCollectionIndividual>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionNameCollection {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionNameCollection").finish_non_exhaustive()
+    }
 }
 impl CreateCheckoutSessionNameCollection {
     pub fn new() -> Self {
@@ -2702,7 +3157,9 @@ impl Default for CreateCheckoutSessionNameCollection {
     }
 }
 /// Controls settings applied for collecting the customer's business name on the session.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionNameCollectionBusiness {
     /// Enable business name collection on the Checkout Session. Defaults to `false`.
     pub enabled: bool,
@@ -2711,13 +3168,21 @@ pub struct CreateCheckoutSessionNameCollectionBusiness {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionNameCollectionBusiness {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionNameCollectionBusiness").finish_non_exhaustive()
+    }
+}
 impl CreateCheckoutSessionNameCollectionBusiness {
     pub fn new(enabled: impl Into<bool>) -> Self {
         Self { enabled: enabled.into(), optional: None }
     }
 }
 /// Controls settings applied for collecting the customer's individual name on the session.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionNameCollectionIndividual {
     /// Enable individual name collection on the Checkout Session. Defaults to `false`.
     pub enabled: bool,
@@ -2725,6 +3190,12 @@ pub struct CreateCheckoutSessionNameCollectionIndividual {
     /// Defaults to `false`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionNameCollectionIndividual {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionNameCollectionIndividual").finish_non_exhaustive()
+    }
 }
 impl CreateCheckoutSessionNameCollectionIndividual {
     pub fn new(enabled: impl Into<bool>) -> Self {
@@ -2741,7 +3212,9 @@ impl CreateCheckoutSessionNameCollectionIndividual {
 /// For `subscription` mode, there is a maximum of 20 line items and optional items with recurring Prices and 20 line items and optional items with one-time Prices.
 ///
 /// You can't set this parameter if `ui_mode` is `custom`.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionOptionalItems {
     /// When set, provides configuration for the customer to adjust the quantity of the line item created when a customer chooses to add this optional item to their order.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2751,13 +3224,21 @@ pub struct CreateCheckoutSessionOptionalItems {
     /// The initial quantity of the line item created when a customer chooses to add this optional item to their order.
     pub quantity: u64,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionOptionalItems {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionOptionalItems").finish_non_exhaustive()
+    }
+}
 impl CreateCheckoutSessionOptionalItems {
     pub fn new(price: impl Into<String>, quantity: impl Into<u64>) -> Self {
         Self { adjustable_quantity: None, price: price.into(), quantity: quantity.into() }
     }
 }
 /// When set, provides configuration for the customer to adjust the quantity of the line item created when a customer chooses to add this optional item to their order.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionOptionalItemsAdjustableQuantity {
     /// Set to true if the quantity can be adjusted to any non-negative integer.
     pub enabled: bool,
@@ -2772,13 +3253,22 @@ pub struct CreateCheckoutSessionOptionalItemsAdjustableQuantity {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub minimum: Option<i64>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionOptionalItemsAdjustableQuantity {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionOptionalItemsAdjustableQuantity")
+            .finish_non_exhaustive()
+    }
+}
 impl CreateCheckoutSessionOptionalItemsAdjustableQuantity {
     pub fn new(enabled: impl Into<bool>) -> Self {
         Self { enabled: enabled.into(), maximum: None, minimum: None }
     }
 }
 /// A subset of parameters to be passed to PaymentIntent creation for Checkout Sessions in `payment` mode.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentIntentData {
     /// The amount of the application fee (if any) that will be requested to be applied to the payment and transferred to the application owner's Stripe account.
     /// The amount of the application fee collected will be capped at the total amount captured.
@@ -2852,6 +3342,12 @@ pub struct CreateCheckoutSessionPaymentIntentData {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub transfer_group: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentIntentData {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionPaymentIntentData").finish_non_exhaustive()
+    }
+}
 impl CreateCheckoutSessionPaymentIntentData {
     pub fn new() -> Self {
         Self {
@@ -2922,9 +3418,17 @@ impl std::fmt::Display for CreateCheckoutSessionPaymentIntentDataCaptureMethod {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionPaymentIntentDataCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentIntentDataCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCheckoutSessionPaymentIntentDataCaptureMethod))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionPaymentIntentDataCaptureMethod {
@@ -3006,9 +3510,17 @@ impl std::fmt::Display for CreateCheckoutSessionPaymentIntentDataSetupFutureUsag
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionPaymentIntentDataSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentIntentDataSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCheckoutSessionPaymentIntentDataSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionPaymentIntentDataSetupFutureUsage {
@@ -3028,7 +3540,9 @@ impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionPaymentIntentDataSetu
     }
 }
 /// Shipping information for this payment.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentIntentDataShipping {
     /// Shipping address.
     pub address: CreateCheckoutSessionPaymentIntentDataShippingAddress,
@@ -3045,6 +3559,12 @@ pub struct CreateCheckoutSessionPaymentIntentDataShipping {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tracking_number: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentIntentDataShipping {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionPaymentIntentDataShipping").finish_non_exhaustive()
+    }
+}
 impl CreateCheckoutSessionPaymentIntentDataShipping {
     pub fn new(
         address: impl Into<CreateCheckoutSessionPaymentIntentDataShippingAddress>,
@@ -3060,7 +3580,9 @@ impl CreateCheckoutSessionPaymentIntentDataShipping {
     }
 }
 /// Shipping address.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentIntentDataShippingAddress {
     /// City, district, suburb, town, or village.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3080,6 +3602,13 @@ pub struct CreateCheckoutSessionPaymentIntentDataShippingAddress {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentIntentDataShippingAddress {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionPaymentIntentDataShippingAddress")
+            .finish_non_exhaustive()
+    }
+}
 impl CreateCheckoutSessionPaymentIntentDataShippingAddress {
     pub fn new(line1: impl Into<String>) -> Self {
         Self {
@@ -3094,7 +3623,9 @@ impl CreateCheckoutSessionPaymentIntentDataShippingAddress {
 }
 /// The parameters used to automatically create a Transfer when the payment succeeds.
 /// For more information, see the PaymentIntents [use case for connected accounts](https://docs.stripe.com/payments/connected-accounts).
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentIntentDataTransferData {
     /// The amount that will be transferred automatically when a charge succeeds.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3104,6 +3635,12 @@ pub struct CreateCheckoutSessionPaymentIntentDataTransferData {
     /// to the destination account. The ID of the resulting transfer will be
     /// returned on the successful charge's `transfer` field.
     pub destination: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentIntentDataTransferData {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionPaymentIntentDataTransferData").finish_non_exhaustive()
+    }
 }
 impl CreateCheckoutSessionPaymentIntentDataTransferData {
     pub fn new(destination: impl Into<String>) -> Self {
@@ -3160,9 +3697,17 @@ impl std::fmt::Display for CreateCheckoutSessionPaymentMethodCollection {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodCollection {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodCollection {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCheckoutSessionPaymentMethodCollection))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionPaymentMethodCollection {
@@ -3182,12 +3727,20 @@ impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionPaymentMethodCollecti
     }
 }
 /// This parameter allows you to set some attributes on the payment method created during a Checkout session.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodData {
     /// Allow redisplay will be set on the payment method on confirmation and indicates whether this payment method can be shown again to the customer in a checkout flow.
     /// Only set this field if you wish to override the allow_redisplay value determined by Checkout.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub allow_redisplay: Option<CreateCheckoutSessionPaymentMethodDataAllowRedisplay>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodData {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionPaymentMethodData").finish_non_exhaustive()
+    }
 }
 impl CreateCheckoutSessionPaymentMethodData {
     pub fn new() -> Self {
@@ -3247,9 +3800,17 @@ impl std::fmt::Display for CreateCheckoutSessionPaymentMethodDataAllowRedisplay 
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodDataAllowRedisplay {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodDataAllowRedisplay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCheckoutSessionPaymentMethodDataAllowRedisplay))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionPaymentMethodDataAllowRedisplay {
@@ -3269,7 +3830,9 @@ impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionPaymentMethodDataAllo
     }
 }
 /// Payment-method-specific configuration.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptions {
     /// contains details about the ACSS Debit payment method options.
     /// You can't set this parameter if `ui_mode` is `custom`.
@@ -3415,6 +3978,12 @@ pub struct CreateCheckoutSessionPaymentMethodOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub wechat_pay: Option<CreateCheckoutSessionPaymentMethodOptionsWechatPay>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionPaymentMethodOptions").finish_non_exhaustive()
+    }
+}
 impl CreateCheckoutSessionPaymentMethodOptions {
     pub fn new() -> Self {
         Self {
@@ -3475,7 +4044,9 @@ impl Default for CreateCheckoutSessionPaymentMethodOptions {
 }
 /// contains details about the ACSS Debit payment method options.
 /// You can't set this parameter if `ui_mode` is `custom`.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsAcssDebit {
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
@@ -3505,6 +4076,12 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsAcssDebit {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub verification_method:
         Option<CreateCheckoutSessionPaymentMethodOptionsAcssDebitVerificationMethod>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsAcssDebit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionPaymentMethodOptionsAcssDebit").finish_non_exhaustive()
+    }
 }
 impl CreateCheckoutSessionPaymentMethodOptionsAcssDebit {
     pub fn new() -> Self {
@@ -3568,9 +4145,17 @@ impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsAcssDebitCur
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsAcssDebitCurrency {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsAcssDebitCurrency {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCheckoutSessionPaymentMethodOptionsAcssDebitCurrency))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsAcssDebitCurrency {
@@ -3590,7 +4175,9 @@ impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionPaymentMethodOptionsA
     }
 }
 /// Additional fields for Mandate creation
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptions {
     /// A URL for custom mandate text to render during confirmation step.
     /// The URL will be rendered with additional GET parameters `payment_intent` and `payment_intent_client_secret` when confirming a Payment Intent,.
@@ -3614,6 +4201,13 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub transaction_type:
         Option<CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsTransactionType>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptions")
+            .finish_non_exhaustive()
+    }
 }
 impl CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptions {
     pub fn new() -> Self {
@@ -3680,11 +4274,23 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsDefaultFor
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsDefaultFor
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsDefaultFor
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -3758,11 +4364,23 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -3833,11 +4451,23 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsTransactionType
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsTransactionType
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreateCheckoutSessionPaymentMethodOptionsAcssDebitMandateOptionsTransactionType
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -3914,9 +4544,19 @@ impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsAcssDebitSet
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsAcssDebitSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsAcssDebitSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreateCheckoutSessionPaymentMethodOptionsAcssDebitSetupFutureUsage
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsAcssDebitSetupFutureUsage {
@@ -3984,9 +4624,19 @@ impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsAcssDebitVer
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsAcssDebitVerificationMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsAcssDebitVerificationMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreateCheckoutSessionPaymentMethodOptionsAcssDebitVerificationMethod
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsAcssDebitVerificationMethod {
@@ -4008,7 +4658,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// contains details about the Affirm payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsAffirm {
     /// Controls when the funds will be captured from the customer's account.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4023,6 +4675,12 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsAffirm {
     /// When processing card payments, Stripe uses `setup_future_usage` to help you comply with regional legislation and network rules, such as [SCA](/strong-customer-authentication).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<CreateCheckoutSessionPaymentMethodOptionsAffirmSetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsAffirm {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionPaymentMethodOptionsAffirm").finish_non_exhaustive()
+    }
 }
 impl CreateCheckoutSessionPaymentMethodOptionsAffirm {
     pub fn new() -> Self {
@@ -4075,9 +4733,17 @@ impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsAffirmCaptur
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsAffirmCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsAffirmCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCheckoutSessionPaymentMethodOptionsAffirmCaptureMethod))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsAffirmCaptureMethod {
@@ -4144,9 +4810,17 @@ impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsAffirmSetupF
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsAffirmSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsAffirmSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCheckoutSessionPaymentMethodOptionsAffirmSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsAffirmSetupFutureUsage {
@@ -4168,7 +4842,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// contains details about the Afterpay Clearpay payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsAfterpayClearpay {
     /// Controls when the funds will be captured from the customer's account.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4185,6 +4861,13 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsAfterpayClearpay {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage:
         Option<CreateCheckoutSessionPaymentMethodOptionsAfterpayClearpaySetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsAfterpayClearpay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionPaymentMethodOptionsAfterpayClearpay")
+            .finish_non_exhaustive()
+    }
 }
 impl CreateCheckoutSessionPaymentMethodOptionsAfterpayClearpay {
     pub fn new() -> Self {
@@ -4237,9 +4920,19 @@ impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsAfterpayClea
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsAfterpayClearpayCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsAfterpayClearpayCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreateCheckoutSessionPaymentMethodOptionsAfterpayClearpayCaptureMethod
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsAfterpayClearpayCaptureMethod {
@@ -4312,9 +5005,19 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsAfterpayClearpaySetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsAfterpayClearpaySetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreateCheckoutSessionPaymentMethodOptionsAfterpayClearpaySetupFutureUsage
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -4338,7 +5041,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// contains details about the Alipay payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsAlipay {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -4350,6 +5055,12 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsAlipay {
     /// When processing card payments, Stripe uses `setup_future_usage` to help you comply with regional legislation and network rules, such as [SCA](/strong-customer-authentication).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<CreateCheckoutSessionPaymentMethodOptionsAlipaySetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsAlipay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionPaymentMethodOptionsAlipay").finish_non_exhaustive()
+    }
 }
 impl CreateCheckoutSessionPaymentMethodOptionsAlipay {
     pub fn new() -> Self {
@@ -4409,9 +5120,17 @@ impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsAlipaySetupF
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsAlipaySetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsAlipaySetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCheckoutSessionPaymentMethodOptionsAlipaySetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsAlipaySetupFutureUsage {
@@ -4433,11 +5152,19 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// contains details about the Alma payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsAlma {
     /// Controls when the funds will be captured from the customer's account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub capture_method: Option<CreateCheckoutSessionPaymentMethodOptionsAlmaCaptureMethod>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsAlma {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionPaymentMethodOptionsAlma").finish_non_exhaustive()
+    }
 }
 impl CreateCheckoutSessionPaymentMethodOptionsAlma {
     pub fn new() -> Self {
@@ -4490,9 +5217,17 @@ impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsAlmaCaptureM
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsAlmaCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsAlmaCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCheckoutSessionPaymentMethodOptionsAlmaCaptureMethod))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsAlmaCaptureMethod {
@@ -4512,7 +5247,9 @@ impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionPaymentMethodOptionsA
     }
 }
 /// contains details about the AmazonPay payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsAmazonPay {
     /// Controls when the funds will be captured from the customer's account.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4528,6 +5265,12 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsAmazonPay {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage:
         Option<CreateCheckoutSessionPaymentMethodOptionsAmazonPaySetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsAmazonPay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionPaymentMethodOptionsAmazonPay").finish_non_exhaustive()
+    }
 }
 impl CreateCheckoutSessionPaymentMethodOptionsAmazonPay {
     pub fn new() -> Self {
@@ -4580,9 +5323,17 @@ impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsAmazonPayCap
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsAmazonPayCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsAmazonPayCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCheckoutSessionPaymentMethodOptionsAmazonPayCaptureMethod))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsAmazonPayCaptureMethod {
@@ -4654,9 +5405,19 @@ impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsAmazonPaySet
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsAmazonPaySetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsAmazonPaySetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreateCheckoutSessionPaymentMethodOptionsAmazonPaySetupFutureUsage
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsAmazonPaySetupFutureUsage {
@@ -4678,7 +5439,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// contains details about the AU Becs Debit payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsAuBecsDebit {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -4696,6 +5459,13 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsAuBecsDebit {
     /// The date must be in the future and between 3 and 15 calendar days from now.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub target_date: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsAuBecsDebit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionPaymentMethodOptionsAuBecsDebit")
+            .finish_non_exhaustive()
+    }
 }
 impl CreateCheckoutSessionPaymentMethodOptionsAuBecsDebit {
     pub fn new() -> Self {
@@ -4755,9 +5525,19 @@ impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsAuBecsDebitS
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsAuBecsDebitSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsAuBecsDebitSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreateCheckoutSessionPaymentMethodOptionsAuBecsDebitSetupFutureUsage
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsAuBecsDebitSetupFutureUsage {
@@ -4779,7 +5559,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// contains details about the Bacs Debit payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsBacsDebit {
     /// Additional fields for Mandate creation
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4801,6 +5583,12 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsBacsDebit {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub target_date: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsBacsDebit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionPaymentMethodOptionsBacsDebit").finish_non_exhaustive()
+    }
+}
 impl CreateCheckoutSessionPaymentMethodOptionsBacsDebit {
     pub fn new() -> Self {
         Self { mandate_options: None, setup_future_usage: None, target_date: None }
@@ -4812,7 +5600,9 @@ impl Default for CreateCheckoutSessionPaymentMethodOptionsBacsDebit {
     }
 }
 /// Additional fields for Mandate creation
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsBacsDebitMandateOptions {
     /// Prefix used to generate the Mandate reference.
     /// Must be at most 12 characters long.
@@ -4820,6 +5610,13 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsBacsDebitMandateOptions {
     /// Cannot begin with 'DDIC' or 'STRIPE'.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reference_prefix: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsBacsDebitMandateOptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionPaymentMethodOptionsBacsDebitMandateOptions")
+            .finish_non_exhaustive()
+    }
 }
 impl CreateCheckoutSessionPaymentMethodOptionsBacsDebitMandateOptions {
     pub fn new() -> Self {
@@ -4885,9 +5682,19 @@ impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsBacsDebitSet
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsBacsDebitSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsBacsDebitSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreateCheckoutSessionPaymentMethodOptionsBacsDebitSetupFutureUsage
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsBacsDebitSetupFutureUsage {
@@ -4909,7 +5716,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// contains details about the Bancontact payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsBancontact {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -4922,6 +5731,13 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsBancontact {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage:
         Option<CreateCheckoutSessionPaymentMethodOptionsBancontactSetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsBancontact {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionPaymentMethodOptionsBancontact")
+            .finish_non_exhaustive()
+    }
 }
 impl CreateCheckoutSessionPaymentMethodOptionsBancontact {
     pub fn new() -> Self {
@@ -4981,9 +5797,19 @@ impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsBancontactSe
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsBancontactSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsBancontactSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreateCheckoutSessionPaymentMethodOptionsBancontactSetupFutureUsage
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsBancontactSetupFutureUsage {
@@ -5005,11 +5831,19 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// contains details about the Billie payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsBillie {
     /// Controls when the funds will be captured from the customer's account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub capture_method: Option<CreateCheckoutSessionPaymentMethodOptionsBillieCaptureMethod>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsBillie {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionPaymentMethodOptionsBillie").finish_non_exhaustive()
+    }
 }
 impl CreateCheckoutSessionPaymentMethodOptionsBillie {
     pub fn new() -> Self {
@@ -5062,9 +5896,17 @@ impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsBillieCaptur
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsBillieCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsBillieCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCheckoutSessionPaymentMethodOptionsBillieCaptureMethod))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsBillieCaptureMethod {
@@ -5084,7 +5926,9 @@ impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionPaymentMethodOptionsB
     }
 }
 /// contains details about the Boleto payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsBoleto {
     /// The number of calendar days before a Boleto voucher expires.
     /// For example, if you create a Boleto voucher on Monday and you set expires_after_days to 2, the Boleto invoice will expire on Wednesday at 23:59 America/Sao_Paulo time.
@@ -5100,6 +5944,12 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsBoleto {
     /// When processing card payments, Stripe uses `setup_future_usage` to help you comply with regional legislation and network rules, such as [SCA](/strong-customer-authentication).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<CreateCheckoutSessionPaymentMethodOptionsBoletoSetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsBoleto {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionPaymentMethodOptionsBoleto").finish_non_exhaustive()
+    }
 }
 impl CreateCheckoutSessionPaymentMethodOptionsBoleto {
     pub fn new() -> Self {
@@ -5165,9 +6015,17 @@ impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsBoletoSetupF
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsBoletoSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsBoletoSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCheckoutSessionPaymentMethodOptionsBoletoSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsBoletoSetupFutureUsage {
@@ -5189,7 +6047,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// contains details about the Card payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsCard {
     /// Controls when the funds will be captured from the customer's account.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5247,6 +6107,12 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsCard {
     /// On card statements, the *concatenation* of both prefix and suffix (including separators) will appear truncated to 17 characters.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub statement_descriptor_suffix_kanji: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsCard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionPaymentMethodOptionsCard").finish_non_exhaustive()
+    }
 }
 impl CreateCheckoutSessionPaymentMethodOptionsCard {
     pub fn new() -> Self {
@@ -5311,9 +6177,17 @@ impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsCardCaptureM
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsCardCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsCardCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCheckoutSessionPaymentMethodOptionsCardCaptureMethod))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsCardCaptureMethod {
@@ -5333,12 +6207,21 @@ impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionPaymentMethodOptionsC
     }
 }
 /// Installment options for card payments
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsCardInstallments {
     /// Setting to true enables installments for this Checkout Session.
     /// Setting to false will prevent any installment plan from applying to a payment.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsCardInstallments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionPaymentMethodOptionsCardInstallments")
+            .finish_non_exhaustive()
+    }
 }
 impl CreateCheckoutSessionPaymentMethodOptionsCardInstallments {
     pub fn new() -> Self {
@@ -5398,9 +6281,19 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsCardRequestExtendedAuthorization {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsCardRequestExtendedAuthorization {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreateCheckoutSessionPaymentMethodOptionsCardRequestExtendedAuthorization
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -5471,11 +6364,23 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for CreateCheckoutSessionPaymentMethodOptionsCardRequestIncrementalAuthorization
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for CreateCheckoutSessionPaymentMethodOptionsCardRequestIncrementalAuthorization
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreateCheckoutSessionPaymentMethodOptionsCardRequestIncrementalAuthorization
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -5542,9 +6447,17 @@ impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsCardRequestM
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsCardRequestMulticapture {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsCardRequestMulticapture {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCheckoutSessionPaymentMethodOptionsCardRequestMulticapture))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsCardRequestMulticapture {
@@ -5609,9 +6522,17 @@ impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsCardRequestO
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsCardRequestOvercapture {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsCardRequestOvercapture {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCheckoutSessionPaymentMethodOptionsCardRequestOvercapture))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsCardRequestOvercapture {
@@ -5682,9 +6603,17 @@ impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsCardRequestT
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsCardRequestThreeDSecure {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsCardRequestThreeDSecure {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCheckoutSessionPaymentMethodOptionsCardRequestThreeDSecure))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsCardRequestThreeDSecure {
@@ -5708,13 +6637,22 @@ impl<'de> serde::Deserialize<'de>
 /// Restrictions to apply to the card payment method.
 /// For example, you can block specific card brands.
 /// You can't set this parameter if `ui_mode` is `custom`.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsCardRestrictions {
     /// Specify the card brands to block in the Checkout Session.
     /// If a customer enters or selects a card belonging to a blocked brand, they can't complete the Session.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub brands_blocked:
         Option<Vec<CreateCheckoutSessionPaymentMethodOptionsCardRestrictionsBrandsBlocked>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsCardRestrictions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionPaymentMethodOptionsCardRestrictions")
+            .finish_non_exhaustive()
+    }
 }
 impl CreateCheckoutSessionPaymentMethodOptionsCardRestrictions {
     pub fn new() -> Self {
@@ -5777,9 +6715,19 @@ impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsCardRestrict
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsCardRestrictionsBrandsBlocked {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsCardRestrictionsBrandsBlocked {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreateCheckoutSessionPaymentMethodOptionsCardRestrictionsBrandsBlocked
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsCardRestrictionsBrandsBlocked {
@@ -5851,9 +6799,17 @@ impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsCardSetupFut
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsCardSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsCardSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCheckoutSessionPaymentMethodOptionsCardSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsCardSetupFutureUsage {
@@ -5875,7 +6831,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// contains details about the Cashapp Pay payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsCashapp {
     /// Controls when the funds will be captured from the customer's account.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5891,6 +6849,12 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsCashapp {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage:
         Option<CreateCheckoutSessionPaymentMethodOptionsCashappSetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsCashapp {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionPaymentMethodOptionsCashapp").finish_non_exhaustive()
+    }
 }
 impl CreateCheckoutSessionPaymentMethodOptionsCashapp {
     pub fn new() -> Self {
@@ -5943,9 +6907,17 @@ impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsCashappCaptu
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsCashappCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsCashappCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCheckoutSessionPaymentMethodOptionsCashappCaptureMethod))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsCashappCaptureMethod {
@@ -6020,9 +6992,17 @@ impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsCashappSetup
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsCashappSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsCashappSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCheckoutSessionPaymentMethodOptionsCashappSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsCashappSetupFutureUsage {
@@ -6044,7 +7024,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// contains details about the Crypto payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsCrypto {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -6056,6 +7038,12 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsCrypto {
     /// When processing card payments, Stripe uses `setup_future_usage` to help you comply with regional legislation and network rules, such as [SCA](/strong-customer-authentication).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<CreateCheckoutSessionPaymentMethodOptionsCryptoSetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsCrypto {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionPaymentMethodOptionsCrypto").finish_non_exhaustive()
+    }
 }
 impl CreateCheckoutSessionPaymentMethodOptionsCrypto {
     pub fn new() -> Self {
@@ -6115,9 +7103,17 @@ impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsCryptoSetupF
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsCryptoSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsCryptoSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCheckoutSessionPaymentMethodOptionsCryptoSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsCryptoSetupFutureUsage {
@@ -6139,7 +7135,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// contains details about the Customer Balance payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsCustomerBalance {
     /// Configuration for the bank transfer funding type, if the `funding_type` is set to `bank_transfer`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -6160,6 +7158,13 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsCustomerBalance {
     pub setup_future_usage:
         Option<CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceSetupFutureUsage>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsCustomerBalance {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionPaymentMethodOptionsCustomerBalance")
+            .finish_non_exhaustive()
+    }
+}
 impl CreateCheckoutSessionPaymentMethodOptionsCustomerBalance {
     pub fn new() -> Self {
         Self { bank_transfer: None, funding_type: None, setup_future_usage: None }
@@ -6171,7 +7176,9 @@ impl Default for CreateCheckoutSessionPaymentMethodOptionsCustomerBalance {
     }
 }
 /// Configuration for the bank transfer funding type, if the `funding_type` is set to `bank_transfer`.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransfer {
     /// Configuration for eu_bank_transfer funding type.
 #[serde(skip_serializing_if = "Option::is_none")]
@@ -6187,6 +7194,13 @@ pub requested_address_types: Option<Vec<CreateCheckoutSessionPaymentMethodOption
 pub type_: CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransferType,
 
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransfer {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransfer")
+            .finish_non_exhaustive()
+    }
+}
 impl CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransfer {
     pub fn new(
         type_: impl Into<CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransferType>,
@@ -6195,11 +7209,24 @@ impl CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransfer {
     }
 }
 /// Configuration for eu_bank_transfer funding type.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransferEuBankTransfer {
     /// The desired country code of the bank account information.
     /// Permitted values include: `DE`, `FR`, `IE`, or `NL`.
     pub country: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransferEuBankTransfer
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(
+            "CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransferEuBankTransfer",
+        )
+        .finish_non_exhaustive()
+    }
 }
 impl CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransferEuBankTransfer {
     pub fn new(country: impl Into<String>) -> Self {
@@ -6272,11 +7299,20 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -6356,9 +7392,19 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransferType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransferType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransferType
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceBankTransferType {
@@ -6421,9 +7467,19 @@ impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsCustomerBala
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceFundingType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceFundingType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceFundingType
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceFundingType {
@@ -6496,9 +7552,19 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceSetupFutureUsage
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsCustomerBalanceSetupFutureUsage {
@@ -6520,7 +7586,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// contains details about the DemoPay payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsDemoPay {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -6533,6 +7601,12 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsDemoPay {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage:
         Option<CreateCheckoutSessionPaymentMethodOptionsDemoPaySetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsDemoPay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionPaymentMethodOptionsDemoPay").finish_non_exhaustive()
+    }
 }
 impl CreateCheckoutSessionPaymentMethodOptionsDemoPay {
     pub fn new() -> Self {
@@ -6595,9 +7669,17 @@ impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsDemoPaySetup
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsDemoPaySetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsDemoPaySetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCheckoutSessionPaymentMethodOptionsDemoPaySetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsDemoPaySetupFutureUsage {
@@ -6619,7 +7701,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// contains details about the EPS payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsEps {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -6631,6 +7715,12 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsEps {
     /// When processing card payments, Stripe uses `setup_future_usage` to help you comply with regional legislation and network rules, such as [SCA](/strong-customer-authentication).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<CreateCheckoutSessionPaymentMethodOptionsEpsSetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsEps {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionPaymentMethodOptionsEps").finish_non_exhaustive()
+    }
 }
 impl CreateCheckoutSessionPaymentMethodOptionsEps {
     pub fn new() -> Self {
@@ -6690,9 +7780,17 @@ impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsEpsSetupFutu
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsEpsSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsEpsSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCheckoutSessionPaymentMethodOptionsEpsSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsEpsSetupFutureUsage {
@@ -6712,7 +7810,9 @@ impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionPaymentMethodOptionsE
     }
 }
 /// contains details about the FPX payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsFpx {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -6724,6 +7824,12 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsFpx {
     /// When processing card payments, Stripe uses `setup_future_usage` to help you comply with regional legislation and network rules, such as [SCA](/strong-customer-authentication).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<CreateCheckoutSessionPaymentMethodOptionsFpxSetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsFpx {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionPaymentMethodOptionsFpx").finish_non_exhaustive()
+    }
 }
 impl CreateCheckoutSessionPaymentMethodOptionsFpx {
     pub fn new() -> Self {
@@ -6783,9 +7889,17 @@ impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsFpxSetupFutu
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsFpxSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsFpxSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCheckoutSessionPaymentMethodOptionsFpxSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsFpxSetupFutureUsage {
@@ -6805,7 +7919,9 @@ impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionPaymentMethodOptionsF
     }
 }
 /// contains details about the Giropay payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsGiropay {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -6818,6 +7934,12 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsGiropay {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage:
         Option<CreateCheckoutSessionPaymentMethodOptionsGiropaySetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsGiropay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionPaymentMethodOptionsGiropay").finish_non_exhaustive()
+    }
 }
 impl CreateCheckoutSessionPaymentMethodOptionsGiropay {
     pub fn new() -> Self {
@@ -6877,9 +7999,17 @@ impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsGiropaySetup
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsGiropaySetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsGiropaySetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCheckoutSessionPaymentMethodOptionsGiropaySetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsGiropaySetupFutureUsage {
@@ -6901,7 +8031,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// contains details about the Grabpay payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsGrabpay {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -6914,6 +8046,12 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsGrabpay {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage:
         Option<CreateCheckoutSessionPaymentMethodOptionsGrabpaySetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsGrabpay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionPaymentMethodOptionsGrabpay").finish_non_exhaustive()
+    }
 }
 impl CreateCheckoutSessionPaymentMethodOptionsGrabpay {
     pub fn new() -> Self {
@@ -6973,9 +8111,17 @@ impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsGrabpaySetup
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsGrabpaySetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsGrabpaySetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCheckoutSessionPaymentMethodOptionsGrabpaySetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsGrabpaySetupFutureUsage {
@@ -6997,7 +8143,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// contains details about the Ideal payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsIdeal {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -7009,6 +8157,12 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsIdeal {
     /// When processing card payments, Stripe uses `setup_future_usage` to help you comply with regional legislation and network rules, such as [SCA](/strong-customer-authentication).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<CreateCheckoutSessionPaymentMethodOptionsIdealSetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsIdeal {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionPaymentMethodOptionsIdeal").finish_non_exhaustive()
+    }
 }
 impl CreateCheckoutSessionPaymentMethodOptionsIdeal {
     pub fn new() -> Self {
@@ -7068,9 +8222,17 @@ impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsIdealSetupFu
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsIdealSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsIdealSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCheckoutSessionPaymentMethodOptionsIdealSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsIdealSetupFutureUsage {
@@ -7092,7 +8254,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// contains details about the Kakao Pay payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsKakaoPay {
     /// Controls when the funds will be captured from the customer's account.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -7108,6 +8272,12 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsKakaoPay {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage:
         Option<CreateCheckoutSessionPaymentMethodOptionsKakaoPaySetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsKakaoPay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionPaymentMethodOptionsKakaoPay").finish_non_exhaustive()
+    }
 }
 impl CreateCheckoutSessionPaymentMethodOptionsKakaoPay {
     pub fn new() -> Self {
@@ -7160,9 +8330,17 @@ impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsKakaoPayCapt
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsKakaoPayCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsKakaoPayCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCheckoutSessionPaymentMethodOptionsKakaoPayCaptureMethod))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsKakaoPayCaptureMethod {
@@ -7234,9 +8412,19 @@ impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsKakaoPaySetu
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsKakaoPaySetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsKakaoPaySetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreateCheckoutSessionPaymentMethodOptionsKakaoPaySetupFutureUsage
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsKakaoPaySetupFutureUsage {
@@ -7258,7 +8446,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// contains details about the Klarna payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsKlarna {
     /// Controls when the funds will be captured from the customer's account.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -7276,6 +8466,12 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsKlarna {
     /// Subscription details if the Checkout Session sets up a future subscription.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub subscriptions: Option<Vec<CreateCheckoutSessionPaymentMethodOptionsKlarnaSubscriptions>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsKlarna {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionPaymentMethodOptionsKlarna").finish_non_exhaustive()
+    }
 }
 impl CreateCheckoutSessionPaymentMethodOptionsKlarna {
     pub fn new() -> Self {
@@ -7328,9 +8524,17 @@ impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsKlarnaCaptur
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsKlarnaCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsKlarnaCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCheckoutSessionPaymentMethodOptionsKlarnaCaptureMethod))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsKlarnaCaptureMethod {
@@ -7397,9 +8601,17 @@ impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsKlarnaSetupF
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsKlarnaSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsKlarnaSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCheckoutSessionPaymentMethodOptionsKlarnaSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsKlarnaSetupFutureUsage {
@@ -7421,7 +8633,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Subscription details if the Checkout Session sets up a future subscription.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsKlarnaSubscriptions {
     /// Unit of time between subscription charges.
     pub interval: CreateCheckoutSessionPaymentMethodOptionsKlarnaSubscriptionsInterval,
@@ -7437,6 +8651,13 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsKlarnaSubscriptions {
     /// A non-customer-facing reference to correlate subscription charges in the Klarna app.
     /// Use a value that persists across subscription charges.
     pub reference: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsKlarnaSubscriptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionPaymentMethodOptionsKlarnaSubscriptions")
+            .finish_non_exhaustive()
+    }
 }
 impl CreateCheckoutSessionPaymentMethodOptionsKlarnaSubscriptions {
     pub fn new(
@@ -7503,9 +8724,19 @@ impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsKlarnaSubscr
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsKlarnaSubscriptionsInterval {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsKlarnaSubscriptionsInterval {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreateCheckoutSessionPaymentMethodOptionsKlarnaSubscriptionsInterval
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsKlarnaSubscriptionsInterval {
@@ -7527,12 +8758,21 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Describes the upcoming charge for this subscription.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsKlarnaSubscriptionsNextBilling {
     /// The amount of the next charge for the subscription.
     pub amount: i64,
     /// The date of the next charge for the subscription in YYYY-MM-DD format.
     pub date: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsKlarnaSubscriptionsNextBilling {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionPaymentMethodOptionsKlarnaSubscriptionsNextBilling")
+            .finish_non_exhaustive()
+    }
 }
 impl CreateCheckoutSessionPaymentMethodOptionsKlarnaSubscriptionsNextBilling {
     pub fn new(amount: impl Into<i64>, date: impl Into<String>) -> Self {
@@ -7540,7 +8780,9 @@ impl CreateCheckoutSessionPaymentMethodOptionsKlarnaSubscriptionsNextBilling {
     }
 }
 /// contains details about the Konbini payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsKonbini {
     /// The number of calendar days (between 1 and 60) after which Konbini payment instructions will expire.
     /// For example, if a PaymentIntent is confirmed with Konbini and `expires_after_days` set to 2 on Monday JST, the instructions will expire on Wednesday 23:59:59 JST.
@@ -7558,6 +8800,12 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsKonbini {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage:
         Option<CreateCheckoutSessionPaymentMethodOptionsKonbiniSetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsKonbini {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionPaymentMethodOptionsKonbini").finish_non_exhaustive()
+    }
 }
 impl CreateCheckoutSessionPaymentMethodOptionsKonbini {
     pub fn new() -> Self {
@@ -7617,9 +8865,17 @@ impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsKonbiniSetup
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsKonbiniSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsKonbiniSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCheckoutSessionPaymentMethodOptionsKonbiniSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsKonbiniSetupFutureUsage {
@@ -7641,7 +8897,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// contains details about the Korean card payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsKrCard {
     /// Controls when the funds will be captured from the customer's account.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -7656,6 +8914,12 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsKrCard {
     /// When processing card payments, Stripe uses `setup_future_usage` to help you comply with regional legislation and network rules, such as [SCA](/strong-customer-authentication).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<CreateCheckoutSessionPaymentMethodOptionsKrCardSetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsKrCard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionPaymentMethodOptionsKrCard").finish_non_exhaustive()
+    }
 }
 impl CreateCheckoutSessionPaymentMethodOptionsKrCard {
     pub fn new() -> Self {
@@ -7708,9 +8972,17 @@ impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsKrCardCaptur
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsKrCardCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsKrCardCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCheckoutSessionPaymentMethodOptionsKrCardCaptureMethod))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsKrCardCaptureMethod {
@@ -7780,9 +9052,17 @@ impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsKrCardSetupF
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsKrCardSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsKrCardSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCheckoutSessionPaymentMethodOptionsKrCardSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsKrCardSetupFutureUsage {
@@ -7804,7 +9084,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// contains details about the Link payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsLink {
     /// Controls when the funds will be captured from the customer's account.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -7819,6 +9101,12 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsLink {
     /// When processing card payments, Stripe uses `setup_future_usage` to help you comply with regional legislation and network rules, such as [SCA](/strong-customer-authentication).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<CreateCheckoutSessionPaymentMethodOptionsLinkSetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsLink {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionPaymentMethodOptionsLink").finish_non_exhaustive()
+    }
 }
 impl CreateCheckoutSessionPaymentMethodOptionsLink {
     pub fn new() -> Self {
@@ -7871,9 +9159,17 @@ impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsLinkCaptureM
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsLinkCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsLinkCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCheckoutSessionPaymentMethodOptionsLinkCaptureMethod))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsLinkCaptureMethod {
@@ -7943,9 +9239,17 @@ impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsLinkSetupFut
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsLinkSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsLinkSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCheckoutSessionPaymentMethodOptionsLinkSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsLinkSetupFutureUsage {
@@ -7967,7 +9271,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// contains details about the Mobilepay payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsMobilepay {
     /// Controls when the funds will be captured from the customer's account.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -7983,6 +9289,12 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsMobilepay {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage:
         Option<CreateCheckoutSessionPaymentMethodOptionsMobilepaySetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsMobilepay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionPaymentMethodOptionsMobilepay").finish_non_exhaustive()
+    }
 }
 impl CreateCheckoutSessionPaymentMethodOptionsMobilepay {
     pub fn new() -> Self {
@@ -8035,9 +9347,17 @@ impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsMobilepayCap
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsMobilepayCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsMobilepayCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCheckoutSessionPaymentMethodOptionsMobilepayCaptureMethod))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsMobilepayCaptureMethod {
@@ -8106,9 +9426,19 @@ impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsMobilepaySet
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsMobilepaySetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsMobilepaySetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreateCheckoutSessionPaymentMethodOptionsMobilepaySetupFutureUsage
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsMobilepaySetupFutureUsage {
@@ -8130,7 +9460,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// contains details about the Multibanco payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsMultibanco {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -8143,6 +9475,13 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsMultibanco {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage:
         Option<CreateCheckoutSessionPaymentMethodOptionsMultibancoSetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsMultibanco {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionPaymentMethodOptionsMultibanco")
+            .finish_non_exhaustive()
+    }
 }
 impl CreateCheckoutSessionPaymentMethodOptionsMultibanco {
     pub fn new() -> Self {
@@ -8202,9 +9541,19 @@ impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsMultibancoSe
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsMultibancoSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsMultibancoSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreateCheckoutSessionPaymentMethodOptionsMultibancoSetupFutureUsage
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsMultibancoSetupFutureUsage {
@@ -8226,7 +9575,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// contains details about the Naver Pay payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsNaverPay {
     /// Controls when the funds will be captured from the customer's account.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -8242,6 +9593,12 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsNaverPay {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage:
         Option<CreateCheckoutSessionPaymentMethodOptionsNaverPaySetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsNaverPay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionPaymentMethodOptionsNaverPay").finish_non_exhaustive()
+    }
 }
 impl CreateCheckoutSessionPaymentMethodOptionsNaverPay {
     pub fn new() -> Self {
@@ -8294,9 +9651,17 @@ impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsNaverPayCapt
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsNaverPayCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsNaverPayCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCheckoutSessionPaymentMethodOptionsNaverPayCaptureMethod))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsNaverPayCaptureMethod {
@@ -8368,9 +9733,19 @@ impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsNaverPaySetu
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsNaverPaySetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsNaverPaySetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreateCheckoutSessionPaymentMethodOptionsNaverPaySetupFutureUsage
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsNaverPaySetupFutureUsage {
@@ -8392,7 +9767,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// contains details about the OXXO payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsOxxo {
     /// The number of calendar days before an OXXO voucher expires.
     /// For example, if you create an OXXO voucher on Monday and you set expires_after_days to 2, the OXXO invoice will expire on Wednesday at 23:59 America/Mexico_City time.
@@ -8408,6 +9785,12 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsOxxo {
     /// When processing card payments, Stripe uses `setup_future_usage` to help you comply with regional legislation and network rules, such as [SCA](/strong-customer-authentication).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<CreateCheckoutSessionPaymentMethodOptionsOxxoSetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsOxxo {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionPaymentMethodOptionsOxxo").finish_non_exhaustive()
+    }
 }
 impl CreateCheckoutSessionPaymentMethodOptionsOxxo {
     pub fn new() -> Self {
@@ -8467,9 +9850,17 @@ impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsOxxoSetupFut
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsOxxoSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsOxxoSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCheckoutSessionPaymentMethodOptionsOxxoSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsOxxoSetupFutureUsage {
@@ -8491,7 +9882,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// contains details about the P24 payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsP24 {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -8506,6 +9899,12 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsP24 {
     /// Confirm that the payer has accepted the P24 terms and conditions.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tos_shown_and_accepted: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsP24 {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionPaymentMethodOptionsP24").finish_non_exhaustive()
+    }
 }
 impl CreateCheckoutSessionPaymentMethodOptionsP24 {
     pub fn new() -> Self {
@@ -8565,9 +9964,17 @@ impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsP24SetupFutu
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsP24SetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsP24SetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCheckoutSessionPaymentMethodOptionsP24SetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsP24SetupFutureUsage {
@@ -8587,11 +9994,19 @@ impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionPaymentMethodOptionsP
     }
 }
 /// contains details about the PAYCO payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsPayco {
     /// Controls when the funds will be captured from the customer's account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub capture_method: Option<CreateCheckoutSessionPaymentMethodOptionsPaycoCaptureMethod>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsPayco {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionPaymentMethodOptionsPayco").finish_non_exhaustive()
+    }
 }
 impl CreateCheckoutSessionPaymentMethodOptionsPayco {
     pub fn new() -> Self {
@@ -8644,9 +10059,17 @@ impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsPaycoCapture
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsPaycoCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsPaycoCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCheckoutSessionPaymentMethodOptionsPaycoCaptureMethod))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsPaycoCaptureMethod {
@@ -8666,7 +10089,9 @@ impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionPaymentMethodOptionsP
     }
 }
 /// contains details about the PayNow payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsPaynow {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -8678,6 +10103,12 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsPaynow {
     /// When processing card payments, Stripe uses `setup_future_usage` to help you comply with regional legislation and network rules, such as [SCA](/strong-customer-authentication).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<CreateCheckoutSessionPaymentMethodOptionsPaynowSetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsPaynow {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionPaymentMethodOptionsPaynow").finish_non_exhaustive()
+    }
 }
 impl CreateCheckoutSessionPaymentMethodOptionsPaynow {
     pub fn new() -> Self {
@@ -8737,9 +10168,17 @@ impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsPaynowSetupF
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsPaynowSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsPaynowSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCheckoutSessionPaymentMethodOptionsPaynowSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsPaynowSetupFutureUsage {
@@ -8761,7 +10200,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// contains details about the PayPal payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsPaypal {
     /// Controls when the funds will be captured from the customer's account.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -8788,6 +10229,12 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsPaypal {
     /// If you've already set `setup_future_usage` and you're performing a request using a publishable key, you can only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<CreateCheckoutSessionPaymentMethodOptionsPaypalSetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsPaypal {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionPaymentMethodOptionsPaypal").finish_non_exhaustive()
+    }
 }
 impl CreateCheckoutSessionPaymentMethodOptionsPaypal {
     pub fn new() -> Self {
@@ -8846,9 +10293,17 @@ impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsPaypalCaptur
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsPaypalCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsPaypalCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCheckoutSessionPaymentMethodOptionsPaypalCaptureMethod))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsPaypalCaptureMethod {
@@ -8968,9 +10423,17 @@ impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsPaypalPrefer
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsPaypalPreferredLocale {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsPaypalPreferredLocale {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCheckoutSessionPaymentMethodOptionsPaypalPreferredLocale))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsPaypalPreferredLocale {
@@ -9044,9 +10507,17 @@ impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsPaypalSetupF
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsPaypalSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsPaypalSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCheckoutSessionPaymentMethodOptionsPaypalSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsPaypalSetupFutureUsage {
@@ -9068,7 +10539,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// contains details about the PayTo payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsPayto {
     /// Additional fields for Mandate creation
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -9084,6 +10557,12 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsPayto {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<CreateCheckoutSessionPaymentMethodOptionsPaytoSetupFutureUsage>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsPayto {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionPaymentMethodOptionsPayto").finish_non_exhaustive()
+    }
+}
 impl CreateCheckoutSessionPaymentMethodOptionsPayto {
     pub fn new() -> Self {
         Self { mandate_options: None, setup_future_usage: None }
@@ -9095,7 +10574,9 @@ impl Default for CreateCheckoutSessionPaymentMethodOptionsPayto {
     }
 }
 /// Additional fields for Mandate creation
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsPaytoMandateOptions {
     /// Amount that will be collected. It is required when `amount_type` is `fixed`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -9123,6 +10604,13 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsPaytoMandateOptions {
     /// Date, in YYYY-MM-DD format, from which payments will be collected. Defaults to confirmation time.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub start_date: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsPaytoMandateOptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionPaymentMethodOptionsPaytoMandateOptions")
+            .finish_non_exhaustive()
+    }
 }
 impl CreateCheckoutSessionPaymentMethodOptionsPaytoMandateOptions {
     pub fn new() -> Self {
@@ -9188,9 +10676,19 @@ impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsPaytoMandate
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsPaytoMandateOptionsAmountType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsPaytoMandateOptionsAmountType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreateCheckoutSessionPaymentMethodOptionsPaytoMandateOptionsAmountType
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsPaytoMandateOptionsAmountType {
@@ -9277,11 +10775,23 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for CreateCheckoutSessionPaymentMethodOptionsPaytoMandateOptionsPaymentSchedule
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for CreateCheckoutSessionPaymentMethodOptionsPaytoMandateOptionsPaymentSchedule
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreateCheckoutSessionPaymentMethodOptionsPaytoMandateOptionsPaymentSchedule
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -9375,9 +10885,19 @@ impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsPaytoMandate
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsPaytoMandateOptionsPurpose {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsPaytoMandateOptionsPurpose {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreateCheckoutSessionPaymentMethodOptionsPaytoMandateOptionsPurpose
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsPaytoMandateOptionsPurpose {
@@ -9449,9 +10969,17 @@ impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsPaytoSetupFu
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsPaytoSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsPaytoSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCheckoutSessionPaymentMethodOptionsPaytoSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsPaytoSetupFutureUsage {
@@ -9473,7 +11001,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// contains details about the Pix payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsPix {
     /// Determines if the amount includes the IOF tax. Defaults to `never`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -9492,6 +11022,12 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsPix {
     /// When processing card payments, Stripe uses `setup_future_usage` to help you comply with regional legislation and network rules, such as [SCA](/strong-customer-authentication).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<CreateCheckoutSessionPaymentMethodOptionsPixSetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsPix {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionPaymentMethodOptionsPix").finish_non_exhaustive()
+    }
 }
 impl CreateCheckoutSessionPaymentMethodOptionsPix {
     pub fn new() -> Self {
@@ -9547,9 +11083,17 @@ impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsPixAmountInc
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsPixAmountIncludesIof {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsPixAmountIncludesIof {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCheckoutSessionPaymentMethodOptionsPixAmountIncludesIof))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsPixAmountIncludesIof {
@@ -9618,9 +11162,17 @@ impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsPixSetupFutu
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsPixSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsPixSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCheckoutSessionPaymentMethodOptionsPixSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsPixSetupFutureUsage {
@@ -9640,7 +11192,9 @@ impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionPaymentMethodOptionsP
     }
 }
 /// contains details about the RevolutPay payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsRevolutPay {
     /// Controls when the funds will be captured from the customer's account.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -9656,6 +11210,13 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsRevolutPay {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage:
         Option<CreateCheckoutSessionPaymentMethodOptionsRevolutPaySetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsRevolutPay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionPaymentMethodOptionsRevolutPay")
+            .finish_non_exhaustive()
+    }
 }
 impl CreateCheckoutSessionPaymentMethodOptionsRevolutPay {
     pub fn new() -> Self {
@@ -9708,9 +11269,17 @@ impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsRevolutPayCa
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsRevolutPayCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsRevolutPayCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCheckoutSessionPaymentMethodOptionsRevolutPayCaptureMethod))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsRevolutPayCaptureMethod {
@@ -9782,9 +11351,19 @@ impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsRevolutPaySe
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsRevolutPaySetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsRevolutPaySetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreateCheckoutSessionPaymentMethodOptionsRevolutPaySetupFutureUsage
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsRevolutPaySetupFutureUsage {
@@ -9806,11 +11385,20 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// contains details about the Samsung Pay payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsSamsungPay {
     /// Controls when the funds will be captured from the customer's account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub capture_method: Option<CreateCheckoutSessionPaymentMethodOptionsSamsungPayCaptureMethod>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsSamsungPay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionPaymentMethodOptionsSamsungPay")
+            .finish_non_exhaustive()
+    }
 }
 impl CreateCheckoutSessionPaymentMethodOptionsSamsungPay {
     pub fn new() -> Self {
@@ -9863,9 +11451,17 @@ impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsSamsungPayCa
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsSamsungPayCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsSamsungPayCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCheckoutSessionPaymentMethodOptionsSamsungPayCaptureMethod))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsSamsungPayCaptureMethod {
@@ -9887,11 +11483,19 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// contains details about the Satispay payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsSatispay {
     /// Controls when the funds will be captured from the customer's account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub capture_method: Option<CreateCheckoutSessionPaymentMethodOptionsSatispayCaptureMethod>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsSatispay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionPaymentMethodOptionsSatispay").finish_non_exhaustive()
+    }
 }
 impl CreateCheckoutSessionPaymentMethodOptionsSatispay {
     pub fn new() -> Self {
@@ -9944,9 +11548,17 @@ impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsSatispayCapt
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsSatispayCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsSatispayCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCheckoutSessionPaymentMethodOptionsSatispayCaptureMethod))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsSatispayCaptureMethod {
@@ -9968,7 +11580,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// contains details about the Sepa Debit payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsSepaDebit {
     /// Additional fields for Mandate creation
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -9990,6 +11604,12 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsSepaDebit {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub target_date: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsSepaDebit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionPaymentMethodOptionsSepaDebit").finish_non_exhaustive()
+    }
+}
 impl CreateCheckoutSessionPaymentMethodOptionsSepaDebit {
     pub fn new() -> Self {
         Self { mandate_options: None, setup_future_usage: None, target_date: None }
@@ -10001,7 +11621,9 @@ impl Default for CreateCheckoutSessionPaymentMethodOptionsSepaDebit {
     }
 }
 /// Additional fields for Mandate creation
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsSepaDebitMandateOptions {
     /// Prefix used to generate the Mandate reference.
     /// Must be at most 12 characters long.
@@ -10009,6 +11631,13 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsSepaDebitMandateOptions {
     /// Cannot begin with 'STRIPE'.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reference_prefix: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsSepaDebitMandateOptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionPaymentMethodOptionsSepaDebitMandateOptions")
+            .finish_non_exhaustive()
+    }
 }
 impl CreateCheckoutSessionPaymentMethodOptionsSepaDebitMandateOptions {
     pub fn new() -> Self {
@@ -10074,9 +11703,19 @@ impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsSepaDebitSet
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsSepaDebitSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsSepaDebitSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreateCheckoutSessionPaymentMethodOptionsSepaDebitSetupFutureUsage
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsSepaDebitSetupFutureUsage {
@@ -10098,7 +11737,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// contains details about the Sofort payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsSofort {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -10110,6 +11751,12 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsSofort {
     /// When processing card payments, Stripe uses `setup_future_usage` to help you comply with regional legislation and network rules, such as [SCA](/strong-customer-authentication).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<CreateCheckoutSessionPaymentMethodOptionsSofortSetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsSofort {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionPaymentMethodOptionsSofort").finish_non_exhaustive()
+    }
 }
 impl CreateCheckoutSessionPaymentMethodOptionsSofort {
     pub fn new() -> Self {
@@ -10169,9 +11816,17 @@ impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsSofortSetupF
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsSofortSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsSofortSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCheckoutSessionPaymentMethodOptionsSofortSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsSofortSetupFutureUsage {
@@ -10193,12 +11848,20 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// contains details about the Swish payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsSwish {
     /// The order reference that will be displayed to customers in the Swish application.
     /// Defaults to the `id` of the Payment Intent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reference: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsSwish {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionPaymentMethodOptionsSwish").finish_non_exhaustive()
+    }
 }
 impl CreateCheckoutSessionPaymentMethodOptionsSwish {
     pub fn new() -> Self {
@@ -10211,7 +11874,9 @@ impl Default for CreateCheckoutSessionPaymentMethodOptionsSwish {
     }
 }
 /// contains details about the TWINT payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsTwint {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -10223,6 +11888,12 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsTwint {
     /// When processing card payments, Stripe uses `setup_future_usage` to help you comply with regional legislation and network rules, such as [SCA](/strong-customer-authentication).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<CreateCheckoutSessionPaymentMethodOptionsTwintSetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsTwint {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionPaymentMethodOptionsTwint").finish_non_exhaustive()
+    }
 }
 impl CreateCheckoutSessionPaymentMethodOptionsTwint {
     pub fn new() -> Self {
@@ -10282,9 +11953,17 @@ impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsTwintSetupFu
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsTwintSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsTwintSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCheckoutSessionPaymentMethodOptionsTwintSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsTwintSetupFutureUsage {
@@ -10306,13 +11985,21 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// contains details about the UPI payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsUpi {
     /// Additional fields for Mandate creation
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mandate_options: Option<CreateCheckoutSessionPaymentMethodOptionsUpiMandateOptions>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<CreateCheckoutSessionPaymentMethodOptionsUpiSetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsUpi {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionPaymentMethodOptionsUpi").finish_non_exhaustive()
+    }
 }
 impl CreateCheckoutSessionPaymentMethodOptionsUpi {
     pub fn new() -> Self {
@@ -10325,7 +12012,9 @@ impl Default for CreateCheckoutSessionPaymentMethodOptionsUpi {
     }
 }
 /// Additional fields for Mandate creation
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsUpiMandateOptions {
     /// Amount to be charged for future payments.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -10341,6 +12030,13 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsUpiMandateOptions {
     /// End date of the mandate or subscription.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub end_date: Option<stripe_types::Timestamp>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsUpiMandateOptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionPaymentMethodOptionsUpiMandateOptions")
+            .finish_non_exhaustive()
+    }
 }
 impl CreateCheckoutSessionPaymentMethodOptionsUpiMandateOptions {
     pub fn new() -> Self {
@@ -10398,9 +12094,19 @@ impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsUpiMandateOp
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsUpiMandateOptionsAmountType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsUpiMandateOptionsAmountType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreateCheckoutSessionPaymentMethodOptionsUpiMandateOptionsAmountType
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsUpiMandateOptionsAmountType {
@@ -10467,9 +12173,17 @@ impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsUpiSetupFutu
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsUpiSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsUpiSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCheckoutSessionPaymentMethodOptionsUpiSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsUpiSetupFutureUsage {
@@ -10489,7 +12203,9 @@ impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionPaymentMethodOptionsU
     }
 }
 /// contains details about the Us Bank Account payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsUsBankAccount {
     /// Additional fields for Financial Connections Session creation
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -10516,6 +12232,13 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsUsBankAccount {
     pub verification_method:
         Option<CreateCheckoutSessionPaymentMethodOptionsUsBankAccountVerificationMethod>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsUsBankAccount {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionPaymentMethodOptionsUsBankAccount")
+            .finish_non_exhaustive()
+    }
+}
 impl CreateCheckoutSessionPaymentMethodOptionsUsBankAccount {
     pub fn new() -> Self {
         Self {
@@ -10532,7 +12255,9 @@ impl Default for CreateCheckoutSessionPaymentMethodOptionsUsBankAccount {
     }
 }
 /// Additional fields for Financial Connections Session creation
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsUsBankAccountFinancialConnections {
     /// The list of permissions to request.
     /// If this parameter is passed, the `payment_method` permission must be included.
@@ -10546,6 +12271,15 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsUsBankAccountFinancialConnec
     pub prefetch: Option<
         Vec<CreateCheckoutSessionPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch>,
     >,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for CreateCheckoutSessionPaymentMethodOptionsUsBankAccountFinancialConnections
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionPaymentMethodOptionsUsBankAccountFinancialConnections")
+            .finish_non_exhaustive()
+    }
 }
 impl CreateCheckoutSessionPaymentMethodOptionsUsBankAccountFinancialConnections {
     pub fn new() -> Self {
@@ -10613,11 +12347,23 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for CreateCheckoutSessionPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for CreateCheckoutSessionPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreateCheckoutSessionPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -10691,11 +12437,23 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for CreateCheckoutSessionPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for CreateCheckoutSessionPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreateCheckoutSessionPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -10772,9 +12530,19 @@ impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsUsBankAccoun
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsUsBankAccountSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsUsBankAccountSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreateCheckoutSessionPaymentMethodOptionsUsBankAccountSetupFutureUsage
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsUsBankAccountSetupFutureUsage {
@@ -10843,9 +12611,19 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsUsBankAccountVerificationMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsUsBankAccountVerificationMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreateCheckoutSessionPaymentMethodOptionsUsBankAccountVerificationMethod
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsUsBankAccountVerificationMethod {
@@ -10867,7 +12645,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// contains details about the WeChat Pay payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsWechatPay {
     /// The app ID registered with WeChat Pay. Only required when client is ios or android.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -10885,6 +12665,12 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsWechatPay {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage:
         Option<CreateCheckoutSessionPaymentMethodOptionsWechatPaySetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsWechatPay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionPaymentMethodOptionsWechatPay").finish_non_exhaustive()
+    }
 }
 impl CreateCheckoutSessionPaymentMethodOptionsWechatPay {
     pub fn new(
@@ -10940,9 +12726,17 @@ impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsWechatPayCli
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsWechatPayClient {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsWechatPayClient {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCheckoutSessionPaymentMethodOptionsWechatPayClient))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsWechatPayClient {
@@ -11009,9 +12803,19 @@ impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsWechatPaySet
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsWechatPaySetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsWechatPaySetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreateCheckoutSessionPaymentMethodOptionsWechatPaySetupFutureUsage
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsWechatPaySetupFutureUsage {
@@ -11233,9 +13037,16 @@ impl std::fmt::Display for CreateCheckoutSessionPaymentMethodTypes {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodTypes {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodTypes {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCheckoutSessionPaymentMethodTypes)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionPaymentMethodTypes {
@@ -11258,7 +13069,9 @@ impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionPaymentMethodTypes {
 /// Can only be set when creating `embedded` or `custom` sessions.
 ///
 /// For specific permissions, please refer to their dedicated subsections, such as `permissions.update_shipping_details`.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionPermissions {
     /// Determines which entity is allowed to update the shipping details.
     ///
@@ -11269,6 +13082,12 @@ pub struct CreateCheckoutSessionPermissions {
     /// When set to `server_only`, you must add the onShippingDetailsChange event handler when initializing the Stripe Checkout client and manually update the shipping details from your server using the Stripe API.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub update_shipping_details: Option<CreateCheckoutSessionPermissionsUpdateShippingDetails>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPermissions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionPermissions").finish_non_exhaustive()
+    }
 }
 impl CreateCheckoutSessionPermissions {
     pub fn new() -> Self {
@@ -11330,9 +13149,17 @@ impl std::fmt::Display for CreateCheckoutSessionPermissionsUpdateShippingDetails
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionPermissionsUpdateShippingDetails {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPermissionsUpdateShippingDetails {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCheckoutSessionPermissionsUpdateShippingDetails))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionPermissionsUpdateShippingDetails {
@@ -11356,12 +13183,20 @@ impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionPermissionsUpdateShip
 /// We recommend that you review your privacy policy and check with your legal contacts
 /// before using this feature.
 /// Learn more about [collecting phone numbers with Checkout](https://docs.stripe.com/payments/checkout/phone-numbers).
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionPhoneNumberCollection {
     /// Set to `true` to enable phone number collection.
     ///
     /// Can only be set in `payment` and `subscription` mode.
     pub enabled: bool,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPhoneNumberCollection {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionPhoneNumberCollection").finish_non_exhaustive()
+    }
 }
 impl CreateCheckoutSessionPhoneNumberCollection {
     pub fn new(enabled: impl Into<bool>) -> Self {
@@ -11370,7 +13205,9 @@ impl CreateCheckoutSessionPhoneNumberCollection {
 }
 /// Controls saved payment method settings for the session.
 /// Only available in `payment` and `subscription` mode.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionSavedPaymentMethodOptions {
     /// Uses the `allow_redisplay` value of each saved payment method to filter the set presented to a returning customer.
     /// By default, only saved payment methods with ’allow_redisplay: ‘always’ are shown in Checkout.
@@ -11386,6 +13223,12 @@ pub struct CreateCheckoutSessionSavedPaymentMethodOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_method_save:
         Option<CreateCheckoutSessionSavedPaymentMethodOptionsPaymentMethodSave>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionSavedPaymentMethodOptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionSavedPaymentMethodOptions").finish_non_exhaustive()
+    }
 }
 impl CreateCheckoutSessionSavedPaymentMethodOptions {
     pub fn new() -> Self {
@@ -11449,9 +13292,19 @@ impl std::fmt::Display for CreateCheckoutSessionSavedPaymentMethodOptionsAllowRe
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionSavedPaymentMethodOptionsAllowRedisplayFilters {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionSavedPaymentMethodOptionsAllowRedisplayFilters {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreateCheckoutSessionSavedPaymentMethodOptionsAllowRedisplayFilters
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionSavedPaymentMethodOptionsAllowRedisplayFilters {
@@ -11516,9 +13369,19 @@ impl std::fmt::Display for CreateCheckoutSessionSavedPaymentMethodOptionsPayment
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionSavedPaymentMethodOptionsPaymentMethodRemove {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionSavedPaymentMethodOptionsPaymentMethodRemove {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreateCheckoutSessionSavedPaymentMethodOptionsPaymentMethodRemove
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionSavedPaymentMethodOptionsPaymentMethodRemove {
@@ -11584,9 +13447,17 @@ impl std::fmt::Display for CreateCheckoutSessionSavedPaymentMethodOptionsPayment
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionSavedPaymentMethodOptionsPaymentMethodSave {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionSavedPaymentMethodOptionsPaymentMethodSave {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCheckoutSessionSavedPaymentMethodOptionsPaymentMethodSave))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionSavedPaymentMethodOptionsPaymentMethodSave {
@@ -11608,7 +13479,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// A subset of parameters to be passed to SetupIntent creation for Checkout Sessions in `setup` mode.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionSetupIntentData {
     /// An arbitrary string attached to the object. Often useful for displaying to users.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -11623,6 +13496,12 @@ pub struct CreateCheckoutSessionSetupIntentData {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub on_behalf_of: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionSetupIntentData {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionSetupIntentData").finish_non_exhaustive()
+    }
+}
 impl CreateCheckoutSessionSetupIntentData {
     pub fn new() -> Self {
         Self { description: None, metadata: None, on_behalf_of: None }
@@ -11634,11 +13513,19 @@ impl Default for CreateCheckoutSessionSetupIntentData {
     }
 }
 /// When set, provides configuration for Checkout to collect a shipping address from a customer.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionShippingAddressCollection {
     /// An array of two-letter ISO country codes representing which countries Checkout should provide as options for.
     /// shipping locations.
     pub allowed_countries: Vec<CreateCheckoutSessionShippingAddressCollectionAllowedCountries>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionShippingAddressCollection {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionShippingAddressCollection").finish_non_exhaustive()
+    }
 }
 impl CreateCheckoutSessionShippingAddressCollection {
     pub fn new(
@@ -12402,9 +14289,17 @@ impl std::fmt::Display for CreateCheckoutSessionShippingAddressCollectionAllowed
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionShippingAddressCollectionAllowedCountries {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionShippingAddressCollectionAllowedCountries {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCheckoutSessionShippingAddressCollectionAllowedCountries))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionShippingAddressCollectionAllowedCountries {
@@ -12426,7 +14321,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// The shipping rate options to apply to this Session. Up to a maximum of 5.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionShippingOptions {
     /// The ID of the Shipping Rate to use for this shipping option.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -12434,6 +14331,12 @@ pub struct CreateCheckoutSessionShippingOptions {
     /// Parameters to be passed to Shipping Rate creation for this shipping option.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub shipping_rate_data: Option<CreateCheckoutSessionShippingOptionsShippingRateData>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionShippingOptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionShippingOptions").finish_non_exhaustive()
+    }
 }
 impl CreateCheckoutSessionShippingOptions {
     pub fn new() -> Self {
@@ -12446,7 +14349,9 @@ impl Default for CreateCheckoutSessionShippingOptions {
     }
 }
 /// Parameters to be passed to Shipping Rate creation for this shipping option.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionShippingOptionsShippingRateData {
     /// The estimated range for how long shipping will take, meant to be displayable to the customer.
     /// This will appear on CheckoutSessions.
@@ -12478,6 +14383,13 @@ pub struct CreateCheckoutSessionShippingOptionsShippingRateData {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub type_: Option<CreateCheckoutSessionShippingOptionsShippingRateDataType>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionShippingOptionsShippingRateData {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionShippingOptionsShippingRateData")
+            .finish_non_exhaustive()
+    }
+}
 impl CreateCheckoutSessionShippingOptionsShippingRateData {
     pub fn new(display_name: impl Into<String>) -> Self {
         Self {
@@ -12493,7 +14405,9 @@ impl CreateCheckoutSessionShippingOptionsShippingRateData {
 }
 /// The estimated range for how long shipping will take, meant to be displayable to the customer.
 /// This will appear on CheckoutSessions.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimate {
     /// The upper bound of the estimated range. If empty, represents no upper bound i.e., infinite.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -12503,6 +14417,13 @@ pub struct CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimate 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub minimum:
         Option<CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMinimum>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimate {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimate")
+            .finish_non_exhaustive()
+    }
 }
 impl CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimate {
     pub fn new() -> Self {
@@ -12515,12 +14436,25 @@ impl Default for CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEst
     }
 }
 /// The upper bound of the estimated range. If empty, represents no upper bound i.e., infinite.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMaximum {
     /// A unit of time.
     pub unit: CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMaximumUnit,
     /// Must be greater than 0.
     pub value: i64,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMaximum
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(
+            "CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMaximum",
+        )
+        .finish_non_exhaustive()
+    }
 }
 impl CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMaximum {
     pub fn new(
@@ -12587,11 +14521,23 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMaximumUnit
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMaximumUnit
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMaximumUnit
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -12615,12 +14561,25 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// The lower bound of the estimated range. If empty, represents no lower bound.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMinimum {
     /// A unit of time.
     pub unit: CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMinimumUnit,
     /// Must be greater than 0.
     pub value: i64,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMinimum
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(
+            "CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMinimum",
+        )
+        .finish_non_exhaustive()
+    }
 }
 impl CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMinimum {
     pub fn new(
@@ -12687,11 +14646,23 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMinimumUnit
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMinimumUnit
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMinimumUnit
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -12715,7 +14686,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Describes a fixed amount to charge for shipping. Must be present if type is `fixed_amount`.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionShippingOptionsShippingRateDataFixedAmount {
     /// A non-negative integer in cents representing how much to charge.
     pub amount: i64,
@@ -12732,6 +14705,13 @@ pub struct CreateCheckoutSessionShippingOptionsShippingRateDataFixedAmount {
         >,
     >,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionShippingOptionsShippingRateDataFixedAmount {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionShippingOptionsShippingRateDataFixedAmount")
+            .finish_non_exhaustive()
+    }
+}
 impl CreateCheckoutSessionShippingOptionsShippingRateDataFixedAmount {
     pub fn new(amount: impl Into<i64>, currency: impl Into<stripe_types::Currency>) -> Self {
         Self { amount: amount.into(), currency: currency.into(), currency_options: None }
@@ -12739,7 +14719,9 @@ impl CreateCheckoutSessionShippingOptionsShippingRateDataFixedAmount {
 }
 /// Shipping rates defined in each available currency option.
 /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionShippingOptionsShippingRateDataFixedAmountCurrencyOptions {
     /// A non-negative integer in cents representing how much to charge.
     pub amount: i64,
@@ -12749,6 +14731,17 @@ pub struct CreateCheckoutSessionShippingOptionsShippingRateDataFixedAmountCurren
     pub tax_behavior: Option<
         CreateCheckoutSessionShippingOptionsShippingRateDataFixedAmountCurrencyOptionsTaxBehavior,
     >,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for CreateCheckoutSessionShippingOptionsShippingRateDataFixedAmountCurrencyOptions
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(
+            "CreateCheckoutSessionShippingOptionsShippingRateDataFixedAmountCurrencyOptions",
+        )
+        .finish_non_exhaustive()
+    }
 }
 impl CreateCheckoutSessionShippingOptionsShippingRateDataFixedAmountCurrencyOptions {
     pub fn new(amount: impl Into<i64>) -> Self {
@@ -12807,11 +14800,20 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for CreateCheckoutSessionShippingOptionsShippingRateDataFixedAmountCurrencyOptionsTaxBehavior
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for CreateCheckoutSessionShippingOptionsShippingRateDataFixedAmountCurrencyOptionsTaxBehavior
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCheckoutSessionShippingOptionsShippingRateDataFixedAmountCurrencyOptionsTaxBehavior)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -12882,9 +14884,17 @@ impl std::fmt::Display for CreateCheckoutSessionShippingOptionsShippingRateDataT
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionShippingOptionsShippingRateDataTaxBehavior {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionShippingOptionsShippingRateDataTaxBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCheckoutSessionShippingOptionsShippingRateDataTaxBehavior))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionShippingOptionsShippingRateDataTaxBehavior {
@@ -12946,9 +14956,17 @@ impl std::fmt::Display for CreateCheckoutSessionShippingOptionsShippingRateDataT
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionShippingOptionsShippingRateDataType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionShippingOptionsShippingRateDataType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCheckoutSessionShippingOptionsShippingRateDataType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionShippingOptionsShippingRateDataType {
@@ -12968,7 +14986,9 @@ impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionShippingOptionsShippi
     }
 }
 /// A subset of parameters to be passed to subscription creation for Checkout Sessions in `subscription` mode.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionSubscriptionData {
     /// A non-negative decimal between 0 and 100, with at most two decimal places.
     /// This represents the percentage of the subscription invoice total that will be transferred to the application owner's Stripe account.
@@ -13029,6 +15049,12 @@ pub struct CreateCheckoutSessionSubscriptionData {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub trial_settings: Option<CreateCheckoutSessionSubscriptionDataTrialSettings>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionSubscriptionData {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionSubscriptionData").finish_non_exhaustive()
+    }
+}
 impl CreateCheckoutSessionSubscriptionData {
     pub fn new() -> Self {
         Self {
@@ -13055,7 +15081,9 @@ impl Default for CreateCheckoutSessionSubscriptionData {
     }
 }
 /// Controls how prorations and invoices for subscriptions are calculated and orchestrated.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionSubscriptionDataBillingMode {
     /// Configure behavior for flexible billing mode.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -13065,18 +15093,33 @@ pub struct CreateCheckoutSessionSubscriptionDataBillingMode {
     #[serde(rename = "type")]
     pub type_: CreateCheckoutSessionSubscriptionDataBillingModeType,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionSubscriptionDataBillingMode {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionSubscriptionDataBillingMode").finish_non_exhaustive()
+    }
+}
 impl CreateCheckoutSessionSubscriptionDataBillingMode {
     pub fn new(type_: impl Into<CreateCheckoutSessionSubscriptionDataBillingModeType>) -> Self {
         Self { flexible: None, type_: type_.into() }
     }
 }
 /// Configure behavior for flexible billing mode.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionSubscriptionDataBillingModeFlexible {
     /// Controls how invoices and invoice items display proration amounts and discount amounts.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub proration_discounts:
         Option<CreateCheckoutSessionSubscriptionDataBillingModeFlexibleProrationDiscounts>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionSubscriptionDataBillingModeFlexible {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionSubscriptionDataBillingModeFlexible")
+            .finish_non_exhaustive()
+    }
 }
 impl CreateCheckoutSessionSubscriptionDataBillingModeFlexible {
     pub fn new() -> Self {
@@ -13136,11 +15179,23 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for CreateCheckoutSessionSubscriptionDataBillingModeFlexibleProrationDiscounts
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for CreateCheckoutSessionSubscriptionDataBillingModeFlexibleProrationDiscounts
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreateCheckoutSessionSubscriptionDataBillingModeFlexibleProrationDiscounts
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -13208,9 +15263,17 @@ impl std::fmt::Display for CreateCheckoutSessionSubscriptionDataBillingModeType 
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionSubscriptionDataBillingModeType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionSubscriptionDataBillingModeType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCheckoutSessionSubscriptionDataBillingModeType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionSubscriptionDataBillingModeType {
@@ -13230,12 +15293,21 @@ impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionSubscriptionDataBilli
     }
 }
 /// All invoices will be billed using the specified settings.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionSubscriptionDataInvoiceSettings {
     /// The connected account that issues the invoice.
     /// The invoice is presented with the branding and support information of the specified account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub issuer: Option<CreateCheckoutSessionSubscriptionDataInvoiceSettingsIssuer>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionSubscriptionDataInvoiceSettings {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionSubscriptionDataInvoiceSettings")
+            .finish_non_exhaustive()
+    }
 }
 impl CreateCheckoutSessionSubscriptionDataInvoiceSettings {
     pub fn new() -> Self {
@@ -13249,7 +15321,9 @@ impl Default for CreateCheckoutSessionSubscriptionDataInvoiceSettings {
 }
 /// The connected account that issues the invoice.
 /// The invoice is presented with the branding and support information of the specified account.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionSubscriptionDataInvoiceSettingsIssuer {
     /// The connected account being referenced when `type` is `account`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -13257,6 +15331,13 @@ pub struct CreateCheckoutSessionSubscriptionDataInvoiceSettingsIssuer {
     /// Type of the account referenced in the request.
     #[serde(rename = "type")]
     pub type_: CreateCheckoutSessionSubscriptionDataInvoiceSettingsIssuerType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionSubscriptionDataInvoiceSettingsIssuer {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionSubscriptionDataInvoiceSettingsIssuer")
+            .finish_non_exhaustive()
+    }
 }
 impl CreateCheckoutSessionSubscriptionDataInvoiceSettingsIssuer {
     pub fn new(
@@ -13309,9 +15390,17 @@ impl std::fmt::Display for CreateCheckoutSessionSubscriptionDataInvoiceSettingsI
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionSubscriptionDataInvoiceSettingsIssuerType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionSubscriptionDataInvoiceSettingsIssuerType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCheckoutSessionSubscriptionDataInvoiceSettingsIssuerType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionSubscriptionDataInvoiceSettingsIssuerType {
@@ -13334,7 +15423,9 @@ impl<'de> serde::Deserialize<'de>
 }
 /// Specifies an interval for how often to bill for any pending invoice items.
 /// It is analogous to calling [Create an invoice](https://docs.stripe.com/api#create_invoice) for the given subscription at the specified interval.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionSubscriptionDataPendingInvoiceItemInterval {
     /// Specifies invoicing frequency. Either `day`, `week`, `month` or `year`.
     pub interval: CreateCheckoutSessionSubscriptionDataPendingInvoiceItemIntervalInterval,
@@ -13343,6 +15434,13 @@ pub struct CreateCheckoutSessionSubscriptionDataPendingInvoiceItemInterval {
     /// Maximum of one year interval allowed (1 year, 12 months, or 52 weeks).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub interval_count: Option<u64>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionSubscriptionDataPendingInvoiceItemInterval {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionSubscriptionDataPendingInvoiceItemInterval")
+            .finish_non_exhaustive()
+    }
 }
 impl CreateCheckoutSessionSubscriptionDataPendingInvoiceItemInterval {
     pub fn new(
@@ -13401,9 +15499,19 @@ impl std::fmt::Display for CreateCheckoutSessionSubscriptionDataPendingInvoiceIt
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionSubscriptionDataPendingInvoiceItemIntervalInterval {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionSubscriptionDataPendingInvoiceItemIntervalInterval {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreateCheckoutSessionSubscriptionDataPendingInvoiceItemIntervalInterval
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionSubscriptionDataPendingInvoiceItemIntervalInterval {
@@ -13469,9 +15577,17 @@ impl std::fmt::Display for CreateCheckoutSessionSubscriptionDataProrationBehavio
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionSubscriptionDataProrationBehavior {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionSubscriptionDataProrationBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCheckoutSessionSubscriptionDataProrationBehavior))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionSubscriptionDataProrationBehavior {
@@ -13491,7 +15607,9 @@ impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionSubscriptionDataProra
     }
 }
 /// If specified, the funds from the subscription's invoices will be transferred to the destination and the ID of the resulting transfers will be found on the resulting charges.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionSubscriptionDataTransferData {
     /// A non-negative decimal between 0 and 100, with at most two decimal places.
     /// This represents the percentage of the subscription invoice total that will be transferred to the destination account.
@@ -13501,16 +15619,30 @@ pub struct CreateCheckoutSessionSubscriptionDataTransferData {
     /// ID of an existing, connected Stripe account.
     pub destination: String,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionSubscriptionDataTransferData {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionSubscriptionDataTransferData").finish_non_exhaustive()
+    }
+}
 impl CreateCheckoutSessionSubscriptionDataTransferData {
     pub fn new(destination: impl Into<String>) -> Self {
         Self { amount_percent: None, destination: destination.into() }
     }
 }
 /// Settings related to subscription trials.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionSubscriptionDataTrialSettings {
     /// Defines how the subscription should behave when the user's free trial ends.
     pub end_behavior: CreateCheckoutSessionSubscriptionDataTrialSettingsEndBehavior,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionSubscriptionDataTrialSettings {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionSubscriptionDataTrialSettings").finish_non_exhaustive()
+    }
 }
 impl CreateCheckoutSessionSubscriptionDataTrialSettings {
     pub fn new(
@@ -13520,11 +15652,20 @@ impl CreateCheckoutSessionSubscriptionDataTrialSettings {
     }
 }
 /// Defines how the subscription should behave when the user's free trial ends.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionSubscriptionDataTrialSettingsEndBehavior {
     /// Indicates how the subscription should change when the trial ends if the user did not provide a payment method.
     pub missing_payment_method:
         CreateCheckoutSessionSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionSubscriptionDataTrialSettingsEndBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionSubscriptionDataTrialSettingsEndBehavior")
+            .finish_non_exhaustive()
+    }
 }
 impl CreateCheckoutSessionSubscriptionDataTrialSettingsEndBehavior {
     pub fn new(
@@ -13586,11 +15727,23 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for CreateCheckoutSessionSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for CreateCheckoutSessionSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreateCheckoutSessionSubscriptionDataTrialSettingsEndBehaviorMissingPaymentMethod
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -13614,7 +15767,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Controls tax ID collection during checkout.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionTaxIdCollection {
     /// Enable tax ID collection during checkout. Defaults to `false`.
     pub enabled: bool,
@@ -13623,6 +15778,12 @@ pub struct CreateCheckoutSessionTaxIdCollection {
     /// You can't set this parameter if `ui_mode` is `custom`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub required: Option<CreateCheckoutSessionTaxIdCollectionRequired>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionTaxIdCollection {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionTaxIdCollection").finish_non_exhaustive()
+    }
 }
 impl CreateCheckoutSessionTaxIdCollection {
     pub fn new(enabled: impl Into<bool>) -> Self {
@@ -13675,9 +15836,17 @@ impl std::fmt::Display for CreateCheckoutSessionTaxIdCollectionRequired {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionTaxIdCollectionRequired {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionTaxIdCollectionRequired {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCheckoutSessionTaxIdCollectionRequired))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionTaxIdCollectionRequired {
@@ -13697,11 +15866,19 @@ impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionTaxIdCollectionRequir
     }
 }
 /// Wallet-specific configuration.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionWalletOptions {
     /// contains details about the Link wallet options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub link: Option<CreateCheckoutSessionWalletOptionsLink>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionWalletOptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionWalletOptions").finish_non_exhaustive()
+    }
 }
 impl CreateCheckoutSessionWalletOptions {
     pub fn new() -> Self {
@@ -13714,13 +15891,21 @@ impl Default for CreateCheckoutSessionWalletOptions {
     }
 }
 /// contains details about the Link wallet options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionWalletOptionsLink {
     /// Specifies whether Checkout should display Link as a payment option.
     /// By default, Checkout will display all the supported wallets that the Checkout Session was created with.
     /// This is the `auto` behavior, and it is the default choice.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display: Option<CreateCheckoutSessionWalletOptionsLinkDisplay>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionWalletOptionsLink {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionWalletOptionsLink").finish_non_exhaustive()
+    }
 }
 impl CreateCheckoutSessionWalletOptionsLink {
     pub fn new() -> Self {
@@ -13778,9 +15963,17 @@ impl std::fmt::Display for CreateCheckoutSessionWalletOptionsLinkDisplay {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateCheckoutSessionWalletOptionsLinkDisplay {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionWalletOptionsLinkDisplay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCheckoutSessionWalletOptionsLinkDisplay))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateCheckoutSessionWalletOptionsLinkDisplay {
@@ -13800,9 +15993,17 @@ impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionWalletOptionsLinkDisp
     }
 }
 /// Creates a Checkout Session object.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCheckoutSession {
     inner: CreateCheckoutSessionBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSession {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSession").finish_non_exhaustive()
+    }
 }
 impl CreateCheckoutSession {
     /// Construct a new `CreateCheckoutSession`.
@@ -14293,7 +16494,9 @@ impl StripeRequest for CreateCheckoutSession {
         RequestBuilder::new(StripeMethod::Post, "/checkout/sessions").form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct UpdateCheckoutSessionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     collected_information: Option<UpdateCheckoutSessionCollectedInformation>,
@@ -14305,6 +16508,12 @@ struct UpdateCheckoutSessionBuilder {
     metadata: Option<std::collections::HashMap<String, String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     shipping_options: Option<Vec<UpdateCheckoutSessionShippingOptions>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateCheckoutSessionBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateCheckoutSessionBuilder").finish_non_exhaustive()
+    }
 }
 impl UpdateCheckoutSessionBuilder {
     fn new() -> Self {
@@ -14319,11 +16528,19 @@ impl UpdateCheckoutSessionBuilder {
 }
 /// Information about the customer collected within the Checkout Session.
 /// Can only be set when updating `embedded` or `custom` sessions.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateCheckoutSessionCollectedInformation {
     /// The shipping details to apply to this Session.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub shipping_details: Option<UpdateCheckoutSessionCollectedInformationShippingDetails>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateCheckoutSessionCollectedInformation {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateCheckoutSessionCollectedInformation").finish_non_exhaustive()
+    }
 }
 impl UpdateCheckoutSessionCollectedInformation {
     pub fn new() -> Self {
@@ -14336,12 +16553,21 @@ impl Default for UpdateCheckoutSessionCollectedInformation {
     }
 }
 /// The shipping details to apply to this Session.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateCheckoutSessionCollectedInformationShippingDetails {
     /// The address of the customer
     pub address: UpdateCheckoutSessionCollectedInformationShippingDetailsAddress,
     /// The name of customer
     pub name: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateCheckoutSessionCollectedInformationShippingDetails {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateCheckoutSessionCollectedInformationShippingDetails")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdateCheckoutSessionCollectedInformationShippingDetails {
     pub fn new(
@@ -14352,7 +16578,9 @@ impl UpdateCheckoutSessionCollectedInformationShippingDetails {
     }
 }
 /// The address of the customer
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateCheckoutSessionCollectedInformationShippingDetailsAddress {
     /// City, district, suburb, town, or village.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -14370,6 +16598,13 @@ pub struct UpdateCheckoutSessionCollectedInformationShippingDetailsAddress {
     /// State, county, province, or region ([ISO 3166-2](https://en.wikipedia.org/wiki/ISO_3166-2)).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateCheckoutSessionCollectedInformationShippingDetailsAddress {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateCheckoutSessionCollectedInformationShippingDetailsAddress")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdateCheckoutSessionCollectedInformationShippingDetailsAddress {
     pub fn new(country: impl Into<String>, line1: impl Into<String>) -> Self {
@@ -14396,7 +16631,9 @@ impl UpdateCheckoutSessionCollectedInformationShippingDetailsAddress {
 /// To remove an existing line item, omit the line item's ID from the retransmitted array.
 ///
 /// To reorder a line item, specify it at the desired position in the retransmitted array.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateCheckoutSessionLineItems {
     /// When set, provides configuration for this item’s quantity to be adjusted by the customer during Checkout.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -14426,6 +16663,12 @@ pub struct UpdateCheckoutSessionLineItems {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_rates: Option<Vec<String>>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateCheckoutSessionLineItems {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateCheckoutSessionLineItems").finish_non_exhaustive()
+    }
+}
 impl UpdateCheckoutSessionLineItems {
     pub fn new() -> Self {
         Self {
@@ -14445,7 +16688,9 @@ impl Default for UpdateCheckoutSessionLineItems {
     }
 }
 /// When set, provides configuration for this item’s quantity to be adjusted by the customer during Checkout.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateCheckoutSessionLineItemsAdjustableQuantity {
     /// Set to true if the quantity can be adjusted to any positive integer.
     /// Setting to false will remove any previously specified constraints on quantity.
@@ -14460,6 +16705,12 @@ pub struct UpdateCheckoutSessionLineItemsAdjustableQuantity {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub minimum: Option<i64>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateCheckoutSessionLineItemsAdjustableQuantity {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateCheckoutSessionLineItemsAdjustableQuantity").finish_non_exhaustive()
+    }
+}
 impl UpdateCheckoutSessionLineItemsAdjustableQuantity {
     pub fn new(enabled: impl Into<bool>) -> Self {
         Self { enabled: enabled.into(), maximum: None, minimum: None }
@@ -14467,7 +16718,9 @@ impl UpdateCheckoutSessionLineItemsAdjustableQuantity {
 }
 /// Data used to generate a new [Price](https://docs.stripe.com/api/prices) object inline.
 /// One of `price` or `price_data` is required when creating a new line item.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateCheckoutSessionLineItemsPriceData {
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
@@ -14498,6 +16751,12 @@ pub struct UpdateCheckoutSessionLineItemsPriceData {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_amount_decimal: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateCheckoutSessionLineItemsPriceData {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateCheckoutSessionLineItemsPriceData").finish_non_exhaustive()
+    }
+}
 impl UpdateCheckoutSessionLineItemsPriceData {
     pub fn new(currency: impl Into<stripe_types::Currency>) -> Self {
         Self {
@@ -14512,7 +16771,9 @@ impl UpdateCheckoutSessionLineItemsPriceData {
     }
 }
 /// The recurring components of a price such as `interval` and `interval_count`.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateCheckoutSessionLineItemsPriceDataRecurring {
     /// Specifies billing frequency. Either `day`, `week`, `month` or `year`.
     pub interval: UpdateCheckoutSessionLineItemsPriceDataRecurringInterval,
@@ -14521,6 +16782,12 @@ pub struct UpdateCheckoutSessionLineItemsPriceDataRecurring {
     /// Maximum of three years interval allowed (3 years, 36 months, or 156 weeks).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub interval_count: Option<u64>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateCheckoutSessionLineItemsPriceDataRecurring {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateCheckoutSessionLineItemsPriceDataRecurring").finish_non_exhaustive()
+    }
 }
 impl UpdateCheckoutSessionLineItemsPriceDataRecurring {
     pub fn new(
@@ -14579,9 +16846,17 @@ impl std::fmt::Display for UpdateCheckoutSessionLineItemsPriceDataRecurringInter
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdateCheckoutSessionLineItemsPriceDataRecurringInterval {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateCheckoutSessionLineItemsPriceDataRecurringInterval {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdateCheckoutSessionLineItemsPriceDataRecurringInterval))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdateCheckoutSessionLineItemsPriceDataRecurringInterval {
@@ -14650,9 +16925,17 @@ impl std::fmt::Display for UpdateCheckoutSessionLineItemsPriceDataTaxBehavior {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdateCheckoutSessionLineItemsPriceDataTaxBehavior {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateCheckoutSessionLineItemsPriceDataTaxBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdateCheckoutSessionLineItemsPriceDataTaxBehavior))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdateCheckoutSessionLineItemsPriceDataTaxBehavior {
@@ -14672,7 +16955,9 @@ impl<'de> serde::Deserialize<'de> for UpdateCheckoutSessionLineItemsPriceDataTax
     }
 }
 /// The shipping rate options to apply to this Session. Up to a maximum of 5.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateCheckoutSessionShippingOptions {
     /// The ID of the Shipping Rate to use for this shipping option.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -14680,6 +16965,12 @@ pub struct UpdateCheckoutSessionShippingOptions {
     /// Parameters to be passed to Shipping Rate creation for this shipping option.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub shipping_rate_data: Option<UpdateCheckoutSessionShippingOptionsShippingRateData>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateCheckoutSessionShippingOptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateCheckoutSessionShippingOptions").finish_non_exhaustive()
+    }
 }
 impl UpdateCheckoutSessionShippingOptions {
     pub fn new() -> Self {
@@ -14692,7 +16983,9 @@ impl Default for UpdateCheckoutSessionShippingOptions {
     }
 }
 /// Parameters to be passed to Shipping Rate creation for this shipping option.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateCheckoutSessionShippingOptionsShippingRateData {
     /// The estimated range for how long shipping will take, meant to be displayable to the customer.
     /// This will appear on CheckoutSessions.
@@ -14724,6 +17017,13 @@ pub struct UpdateCheckoutSessionShippingOptionsShippingRateData {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub type_: Option<UpdateCheckoutSessionShippingOptionsShippingRateDataType>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateCheckoutSessionShippingOptionsShippingRateData {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateCheckoutSessionShippingOptionsShippingRateData")
+            .finish_non_exhaustive()
+    }
+}
 impl UpdateCheckoutSessionShippingOptionsShippingRateData {
     pub fn new(display_name: impl Into<String>) -> Self {
         Self {
@@ -14739,7 +17039,9 @@ impl UpdateCheckoutSessionShippingOptionsShippingRateData {
 }
 /// The estimated range for how long shipping will take, meant to be displayable to the customer.
 /// This will appear on CheckoutSessions.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimate {
     /// The upper bound of the estimated range. If empty, represents no upper bound i.e., infinite.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -14749,6 +17051,13 @@ pub struct UpdateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimate 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub minimum:
         Option<UpdateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMinimum>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimate {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimate")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimate {
     pub fn new() -> Self {
@@ -14761,12 +17070,25 @@ impl Default for UpdateCheckoutSessionShippingOptionsShippingRateDataDeliveryEst
     }
 }
 /// The upper bound of the estimated range. If empty, represents no upper bound i.e., infinite.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMaximum {
     /// A unit of time.
     pub unit: UpdateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMaximumUnit,
     /// Must be greater than 0.
     pub value: i64,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for UpdateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMaximum
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(
+            "UpdateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMaximum",
+        )
+        .finish_non_exhaustive()
+    }
 }
 impl UpdateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMaximum {
     pub fn new(
@@ -14833,11 +17155,23 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for UpdateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMaximumUnit
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for UpdateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMaximumUnit
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMaximumUnit
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -14861,12 +17195,25 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// The lower bound of the estimated range. If empty, represents no lower bound.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMinimum {
     /// A unit of time.
     pub unit: UpdateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMinimumUnit,
     /// Must be greater than 0.
     pub value: i64,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for UpdateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMinimum
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(
+            "UpdateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMinimum",
+        )
+        .finish_non_exhaustive()
+    }
 }
 impl UpdateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMinimum {
     pub fn new(
@@ -14933,11 +17280,23 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for UpdateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMinimumUnit
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for UpdateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMinimumUnit
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdateCheckoutSessionShippingOptionsShippingRateDataDeliveryEstimateMinimumUnit
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -14961,7 +17320,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Describes a fixed amount to charge for shipping. Must be present if type is `fixed_amount`.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateCheckoutSessionShippingOptionsShippingRateDataFixedAmount {
     /// A non-negative integer in cents representing how much to charge.
     pub amount: i64,
@@ -14978,6 +17339,13 @@ pub struct UpdateCheckoutSessionShippingOptionsShippingRateDataFixedAmount {
         >,
     >,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateCheckoutSessionShippingOptionsShippingRateDataFixedAmount {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateCheckoutSessionShippingOptionsShippingRateDataFixedAmount")
+            .finish_non_exhaustive()
+    }
+}
 impl UpdateCheckoutSessionShippingOptionsShippingRateDataFixedAmount {
     pub fn new(amount: impl Into<i64>, currency: impl Into<stripe_types::Currency>) -> Self {
         Self { amount: amount.into(), currency: currency.into(), currency_options: None }
@@ -14985,7 +17353,9 @@ impl UpdateCheckoutSessionShippingOptionsShippingRateDataFixedAmount {
 }
 /// Shipping rates defined in each available currency option.
 /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateCheckoutSessionShippingOptionsShippingRateDataFixedAmountCurrencyOptions {
     /// A non-negative integer in cents representing how much to charge.
     pub amount: i64,
@@ -14995,6 +17365,17 @@ pub struct UpdateCheckoutSessionShippingOptionsShippingRateDataFixedAmountCurren
     pub tax_behavior: Option<
         UpdateCheckoutSessionShippingOptionsShippingRateDataFixedAmountCurrencyOptionsTaxBehavior,
     >,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for UpdateCheckoutSessionShippingOptionsShippingRateDataFixedAmountCurrencyOptions
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(
+            "UpdateCheckoutSessionShippingOptionsShippingRateDataFixedAmountCurrencyOptions",
+        )
+        .finish_non_exhaustive()
+    }
 }
 impl UpdateCheckoutSessionShippingOptionsShippingRateDataFixedAmountCurrencyOptions {
     pub fn new(amount: impl Into<i64>) -> Self {
@@ -15053,11 +17434,20 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for UpdateCheckoutSessionShippingOptionsShippingRateDataFixedAmountCurrencyOptionsTaxBehavior
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for UpdateCheckoutSessionShippingOptionsShippingRateDataFixedAmountCurrencyOptionsTaxBehavior
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdateCheckoutSessionShippingOptionsShippingRateDataFixedAmountCurrencyOptionsTaxBehavior)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -15128,9 +17518,17 @@ impl std::fmt::Display for UpdateCheckoutSessionShippingOptionsShippingRateDataT
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdateCheckoutSessionShippingOptionsShippingRateDataTaxBehavior {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateCheckoutSessionShippingOptionsShippingRateDataTaxBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdateCheckoutSessionShippingOptionsShippingRateDataTaxBehavior))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdateCheckoutSessionShippingOptionsShippingRateDataTaxBehavior {
@@ -15192,9 +17590,17 @@ impl std::fmt::Display for UpdateCheckoutSessionShippingOptionsShippingRateDataT
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdateCheckoutSessionShippingOptionsShippingRateDataType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateCheckoutSessionShippingOptionsShippingRateDataType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdateCheckoutSessionShippingOptionsShippingRateDataType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdateCheckoutSessionShippingOptionsShippingRateDataType {
@@ -15216,10 +17622,18 @@ impl<'de> serde::Deserialize<'de> for UpdateCheckoutSessionShippingOptionsShippi
 /// Updates a Checkout Session object.
 ///
 /// Related guide: <a href="/payments/advanced/dynamic-updates">Dynamically update a Checkout Session</a>.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateCheckoutSession {
     inner: UpdateCheckoutSessionBuilder,
     session: stripe_shared::CheckoutSessionId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateCheckoutSession {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateCheckoutSession").finish_non_exhaustive()
+    }
 }
 impl UpdateCheckoutSession {
     /// Construct a new `UpdateCheckoutSession`.
@@ -15307,10 +17721,18 @@ impl StripeRequest for UpdateCheckoutSession {
             .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ExpireCheckoutSessionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ExpireCheckoutSessionBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ExpireCheckoutSessionBuilder").finish_non_exhaustive()
+    }
 }
 impl ExpireCheckoutSessionBuilder {
     fn new() -> Self {
@@ -15320,10 +17742,18 @@ impl ExpireCheckoutSessionBuilder {
 /// A Checkout Session can be expired when it is in one of these statuses: `open`
 ///
 /// After it expires, a customer can’t complete a Checkout Session and customers loading the Checkout Session see a message saying the Checkout Session is expired.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ExpireCheckoutSession {
     inner: ExpireCheckoutSessionBuilder,
     session: stripe_shared::CheckoutSessionId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ExpireCheckoutSession {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ExpireCheckoutSession").finish_non_exhaustive()
+    }
 }
 impl ExpireCheckoutSession {
     /// Construct a new `ExpireCheckoutSession`.
@@ -15364,17 +17794,27 @@ impl StripeRequest for ExpireCheckoutSession {
     }
 }
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CustomTextPositionParam {
     /// Text can be up to 1200 characters in length.
     pub message: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CustomTextPositionParam {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CustomTextPositionParam").finish_non_exhaustive()
+    }
 }
 impl CustomTextPositionParam {
     pub fn new(message: impl Into<String>) -> Self {
         Self { message: message.into() }
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ProductData {
     /// The product's description, meant to be displayable to the customer.
     /// Use this field to optionally store a long form explanation of the product being sold for your own rendering purposes.
@@ -15398,6 +17838,12 @@ pub struct ProductData {
     /// When set, this will be included in customers' receipts, invoices, Checkout, and the customer portal.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_label: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ProductData {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ProductData").finish_non_exhaustive()
+    }
 }
 impl ProductData {
     pub fn new(name: impl Into<String>) -> Self {

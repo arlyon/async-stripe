@@ -2,7 +2,9 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ListPromotionCodeBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     active: Option<bool>,
@@ -25,6 +27,12 @@ struct ListPromotionCodeBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     starting_after: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListPromotionCodeBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListPromotionCodeBuilder").finish_non_exhaustive()
+    }
+}
 impl ListPromotionCodeBuilder {
     fn new() -> Self {
         Self {
@@ -42,9 +50,17 @@ impl ListPromotionCodeBuilder {
     }
 }
 /// Returns a list of your promotion codes.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListPromotionCode {
     inner: ListPromotionCodeBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListPromotionCode {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListPromotionCode").finish_non_exhaustive()
+    }
 }
 impl ListPromotionCode {
     /// Construct a new `ListPromotionCode`.
@@ -144,10 +160,18 @@ impl StripeRequest for ListPromotionCode {
         RequestBuilder::new(StripeMethod::Get, "/promotion_codes").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RetrievePromotionCodeBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrievePromotionCodeBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrievePromotionCodeBuilder").finish_non_exhaustive()
+    }
 }
 impl RetrievePromotionCodeBuilder {
     fn new() -> Self {
@@ -156,10 +180,18 @@ impl RetrievePromotionCodeBuilder {
 }
 /// Retrieves the promotion code with the given ID.
 /// In order to retrieve a promotion code by the customer-facing `code` use [list](https://stripe.com/docs/api/promotion_codes/list) with the desired `code`.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RetrievePromotionCode {
     inner: RetrievePromotionCodeBuilder,
     promotion_code: stripe_shared::PromotionCodeId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrievePromotionCode {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrievePromotionCode").finish_non_exhaustive()
+    }
 }
 impl RetrievePromotionCode {
     /// Construct a new `RetrievePromotionCode`.
@@ -199,7 +231,9 @@ impl StripeRequest for RetrievePromotionCode {
             .query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct CreatePromotionCodeBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     active: Option<bool>,
@@ -221,6 +255,12 @@ struct CreatePromotionCodeBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     restrictions: Option<CreatePromotionCodeRestrictions>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePromotionCodeBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePromotionCodeBuilder").finish_non_exhaustive()
+    }
+}
 impl CreatePromotionCodeBuilder {
     fn new(promotion: impl Into<CreatePromotionCodePromotion>) -> Self {
         Self {
@@ -238,7 +278,9 @@ impl CreatePromotionCodeBuilder {
     }
 }
 /// The promotion referenced by this promotion code.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePromotionCodePromotion {
     /// If promotion `type` is `coupon`, the coupon for this promotion code.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -246,6 +288,12 @@ pub struct CreatePromotionCodePromotion {
     /// Specifies the type of promotion.
     #[serde(rename = "type")]
     pub type_: CreatePromotionCodePromotionType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePromotionCodePromotion {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePromotionCodePromotion").finish_non_exhaustive()
+    }
 }
 impl CreatePromotionCodePromotion {
     pub fn new(type_: impl Into<CreatePromotionCodePromotionType>) -> Self {
@@ -293,9 +341,16 @@ impl std::fmt::Display for CreatePromotionCodePromotionType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePromotionCodePromotionType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePromotionCodePromotionType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePromotionCodePromotionType)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePromotionCodePromotionType {
@@ -315,7 +370,9 @@ impl<'de> serde::Deserialize<'de> for CreatePromotionCodePromotionType {
     }
 }
 /// Settings that restrict the redemption of the promotion code.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePromotionCodeRestrictions {
     /// Promotion codes defined in each available currency option.
     /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
@@ -330,6 +387,12 @@ pub struct CreatePromotionCodeRestrictions {
     /// Three-letter [ISO code](https://stripe.com/docs/currencies) for minimum_amount
     #[serde(skip_serializing_if = "Option::is_none")]
     pub minimum_amount_currency: Option<stripe_types::Currency>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePromotionCodeRestrictions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePromotionCodeRestrictions").finish_non_exhaustive()
+    }
 }
 impl CreatePromotionCodeRestrictions {
     pub fn new() -> Self {
@@ -348,9 +411,17 @@ impl Default for CreatePromotionCodeRestrictions {
 }
 /// A promotion code points to an underlying promotion.
 /// You can optionally restrict the code to a specific customer, redemption limit, and expiration date.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePromotionCode {
     inner: CreatePromotionCodeBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePromotionCode {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePromotionCode").finish_non_exhaustive()
+    }
 }
 impl CreatePromotionCode {
     /// Construct a new `CreatePromotionCode`.
@@ -444,7 +515,9 @@ impl StripeRequest for CreatePromotionCode {
         RequestBuilder::new(StripeMethod::Post, "/promotion_codes").form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct UpdatePromotionCodeBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     active: Option<bool>,
@@ -455,18 +528,32 @@ struct UpdatePromotionCodeBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     restrictions: Option<UpdatePromotionCodeRestrictions>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePromotionCodeBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePromotionCodeBuilder").finish_non_exhaustive()
+    }
+}
 impl UpdatePromotionCodeBuilder {
     fn new() -> Self {
         Self { active: None, expand: None, metadata: None, restrictions: None }
     }
 }
 /// Settings that restrict the redemption of the promotion code.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePromotionCodeRestrictions {
     /// Promotion codes defined in each available currency option.
     /// Each key must be a three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html) and a [supported currency](https://stripe.com/docs/currencies).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub currency_options: Option<std::collections::HashMap<stripe_types::Currency, CurrencyOption>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePromotionCodeRestrictions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePromotionCodeRestrictions").finish_non_exhaustive()
+    }
 }
 impl UpdatePromotionCodeRestrictions {
     pub fn new() -> Self {
@@ -480,10 +567,18 @@ impl Default for UpdatePromotionCodeRestrictions {
 }
 /// Updates the specified promotion code by setting the values of the parameters passed.
 /// Most fields are, by design, not editable.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePromotionCode {
     inner: UpdatePromotionCodeBuilder,
     promotion_code: stripe_shared::PromotionCodeId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePromotionCode {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePromotionCode").finish_non_exhaustive()
+    }
 }
 impl UpdatePromotionCode {
     /// Construct a new `UpdatePromotionCode`.
@@ -549,11 +644,19 @@ impl StripeRequest for UpdatePromotionCode {
     }
 }
 
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CurrencyOption {
     /// Minimum amount required to redeem this Promotion Code into a Coupon (e.g., a purchase must be $100 or more to work).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub minimum_amount: Option<i64>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CurrencyOption {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CurrencyOption").finish_non_exhaustive()
+    }
 }
 impl CurrencyOption {
     pub fn new() -> Self {

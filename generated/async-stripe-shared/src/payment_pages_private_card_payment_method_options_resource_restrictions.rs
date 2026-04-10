@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentPagesPrivateCardPaymentMethodOptionsResourceRestrictions {
@@ -6,6 +7,13 @@ pub struct PaymentPagesPrivateCardPaymentMethodOptionsResourceRestrictions {
     /// If a customer enters or selects a card belonging to a blocked brand, they can't complete the Session.
     pub brands_blocked:
         Option<Vec<PaymentPagesPrivateCardPaymentMethodOptionsResourceRestrictionsBrandsBlocked>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentPagesPrivateCardPaymentMethodOptionsResourceRestrictions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PaymentPagesPrivateCardPaymentMethodOptionsResourceRestrictions")
+            .finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct PaymentPagesPrivateCardPaymentMethodOptionsResourceRestrictionsBuilder {
@@ -157,11 +165,23 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for PaymentPagesPrivateCardPaymentMethodOptionsResourceRestrictionsBrandsBlocked
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for PaymentPagesPrivateCardPaymentMethodOptionsResourceRestrictionsBrandsBlocked
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            PaymentPagesPrivateCardPaymentMethodOptionsResourceRestrictionsBrandsBlocked
+        ))
+        .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

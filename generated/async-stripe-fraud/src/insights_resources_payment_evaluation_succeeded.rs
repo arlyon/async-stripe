@@ -1,9 +1,16 @@
 /// Details of a succeeded outcome attached to this payment evaluation.
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct InsightsResourcesPaymentEvaluationSucceeded {
     pub card: Option<stripe_fraud::InsightsResourcesPaymentEvaluationSucceededCard>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for InsightsResourcesPaymentEvaluationSucceeded {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("InsightsResourcesPaymentEvaluationSucceeded").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct InsightsResourcesPaymentEvaluationSucceededBuilder {

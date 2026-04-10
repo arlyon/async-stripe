@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TreasuryReceivedDebitsResourceReversalDetails {
@@ -6,6 +7,12 @@ pub struct TreasuryReceivedDebitsResourceReversalDetails {
     pub deadline: Option<stripe_types::Timestamp>,
     /// Set if a ReceivedDebit can't be reversed.
     pub restricted_reason: Option<TreasuryReceivedDebitsResourceReversalDetailsRestrictedReason>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TreasuryReceivedDebitsResourceReversalDetails {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("TreasuryReceivedDebitsResourceReversalDetails").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct TreasuryReceivedDebitsResourceReversalDetailsBuilder {
@@ -159,9 +166,17 @@ impl std::fmt::Display for TreasuryReceivedDebitsResourceReversalDetailsRestrict
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for TreasuryReceivedDebitsResourceReversalDetailsRestrictedReason {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TreasuryReceivedDebitsResourceReversalDetailsRestrictedReason {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(TreasuryReceivedDebitsResourceReversalDetailsRestrictedReason))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

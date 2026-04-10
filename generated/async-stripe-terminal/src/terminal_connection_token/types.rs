@@ -3,7 +3,8 @@
 /// Related guide: [Fleet management](https://docs.stripe.com/terminal/fleet/locations)
 ///
 /// For more details see <<https://stripe.com/docs/api/terminal/connection_tokens/object>>.
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TerminalConnectionToken {
     /// The id of the location that this connection token is scoped to.
@@ -12,6 +13,12 @@ pub struct TerminalConnectionToken {
     pub location: Option<String>,
     /// Your application should pass this token to the Stripe Terminal SDK.
     pub secret: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TerminalConnectionToken {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("TerminalConnectionToken").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct TerminalConnectionTokenBuilder {

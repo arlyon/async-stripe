@@ -2,7 +2,9 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct CreateRadarPaymentEvaluationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     client_device_metadata_details: Option<CreateRadarPaymentEvaluationClientDeviceMetadataDetails>,
@@ -12,6 +14,12 @@ struct CreateRadarPaymentEvaluationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     metadata: Option<std::collections::HashMap<String, String>>,
     payment_details: CreateRadarPaymentEvaluationPaymentDetails,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateRadarPaymentEvaluationBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateRadarPaymentEvaluationBuilder").finish_non_exhaustive()
+    }
 }
 impl CreateRadarPaymentEvaluationBuilder {
     fn new(
@@ -28,11 +36,20 @@ impl CreateRadarPaymentEvaluationBuilder {
     }
 }
 /// Details about the Client Device Metadata to associate with the payment evaluation.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateRadarPaymentEvaluationClientDeviceMetadataDetails {
     /// ID for the Radar Session to associate with the payment evaluation.
     /// A [Radar Session](https://docs.stripe.com/radar/radar-session) is a snapshot of the browser metadata and device details that help Radar make more accurate predictions on your payments.
     pub radar_session: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateRadarPaymentEvaluationClientDeviceMetadataDetails {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateRadarPaymentEvaluationClientDeviceMetadataDetails")
+            .finish_non_exhaustive()
+    }
 }
 impl CreateRadarPaymentEvaluationClientDeviceMetadataDetails {
     pub fn new(radar_session: impl Into<String>) -> Self {
@@ -40,7 +57,9 @@ impl CreateRadarPaymentEvaluationClientDeviceMetadataDetails {
     }
 }
 /// Details about the customer associated with the payment evaluation.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateRadarPaymentEvaluationCustomerDetails {
     /// The ID of the customer associated with the payment evaluation.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -58,6 +77,12 @@ pub struct CreateRadarPaymentEvaluationCustomerDetails {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub phone: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateRadarPaymentEvaluationCustomerDetails {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateRadarPaymentEvaluationCustomerDetails").finish_non_exhaustive()
+    }
+}
 impl CreateRadarPaymentEvaluationCustomerDetails {
     pub fn new() -> Self {
         Self { customer: None, customer_account: None, email: None, name: None, phone: None }
@@ -69,7 +94,9 @@ impl Default for CreateRadarPaymentEvaluationCustomerDetails {
     }
 }
 /// Details about the payment.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateRadarPaymentEvaluationPaymentDetails {
     /// The intended amount to collect with this payment.
     /// A positive integer representing how much to charge in the [smallest currency unit](https://docs.stripe.com/currencies#zero-decimal) (for example, 100 cents to charge 1.00 USD or 100 to charge 100 Yen, a zero-decimal currency).
@@ -93,6 +120,12 @@ pub struct CreateRadarPaymentEvaluationPaymentDetails {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub statement_descriptor: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateRadarPaymentEvaluationPaymentDetails {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateRadarPaymentEvaluationPaymentDetails").finish_non_exhaustive()
+    }
+}
 impl CreateRadarPaymentEvaluationPaymentDetails {
     pub fn new(
         amount: impl Into<i64>,
@@ -113,7 +146,9 @@ impl CreateRadarPaymentEvaluationPaymentDetails {
     }
 }
 /// Details about the payment's customer presence and type.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateRadarPaymentEvaluationPaymentDetailsMoneyMovementDetails {
     /// Describes card money movement details for the payment evaluation.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -121,6 +156,13 @@ pub struct CreateRadarPaymentEvaluationPaymentDetailsMoneyMovementDetails {
     /// Describes the type of money movement. Currently only `card` is supported.
     pub money_movement_type:
         CreateRadarPaymentEvaluationPaymentDetailsMoneyMovementDetailsMoneyMovementType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateRadarPaymentEvaluationPaymentDetailsMoneyMovementDetails {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateRadarPaymentEvaluationPaymentDetailsMoneyMovementDetails")
+            .finish_non_exhaustive()
+    }
 }
 impl CreateRadarPaymentEvaluationPaymentDetailsMoneyMovementDetails {
     pub fn new(
@@ -132,7 +174,9 @@ impl CreateRadarPaymentEvaluationPaymentDetailsMoneyMovementDetails {
     }
 }
 /// Describes card money movement details for the payment evaluation.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateRadarPaymentEvaluationPaymentDetailsMoneyMovementDetailsCard {
     /// Describes the presence of the customer during the payment.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -142,6 +186,13 @@ pub struct CreateRadarPaymentEvaluationPaymentDetailsMoneyMovementDetailsCard {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payment_type:
         Option<CreateRadarPaymentEvaluationPaymentDetailsMoneyMovementDetailsCardPaymentType>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateRadarPaymentEvaluationPaymentDetailsMoneyMovementDetailsCard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateRadarPaymentEvaluationPaymentDetailsMoneyMovementDetailsCard")
+            .finish_non_exhaustive()
+    }
 }
 impl CreateRadarPaymentEvaluationPaymentDetailsMoneyMovementDetailsCard {
     pub fn new() -> Self {
@@ -201,11 +252,23 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for CreateRadarPaymentEvaluationPaymentDetailsMoneyMovementDetailsCardCustomerPresence
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for CreateRadarPaymentEvaluationPaymentDetailsMoneyMovementDetailsCardCustomerPresence
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreateRadarPaymentEvaluationPaymentDetailsMoneyMovementDetailsCardCustomerPresence
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -282,11 +345,23 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for CreateRadarPaymentEvaluationPaymentDetailsMoneyMovementDetailsCardPaymentType
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for CreateRadarPaymentEvaluationPaymentDetailsMoneyMovementDetailsCardPaymentType
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreateRadarPaymentEvaluationPaymentDetailsMoneyMovementDetailsCardPaymentType
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -354,11 +429,23 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for CreateRadarPaymentEvaluationPaymentDetailsMoneyMovementDetailsMoneyMovementType
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for CreateRadarPaymentEvaluationPaymentDetailsMoneyMovementDetailsMoneyMovementType
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreateRadarPaymentEvaluationPaymentDetailsMoneyMovementDetailsMoneyMovementType
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -382,7 +469,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Details about the payment method to use for the payment.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateRadarPaymentEvaluationPaymentDetailsPaymentMethodDetails {
     /// Billing information associated with the payment evaluation.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -391,13 +480,22 @@ pub struct CreateRadarPaymentEvaluationPaymentDetailsPaymentMethodDetails {
     /// ID of the payment method used in this payment evaluation.
     pub payment_method: String,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateRadarPaymentEvaluationPaymentDetailsPaymentMethodDetails {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateRadarPaymentEvaluationPaymentDetailsPaymentMethodDetails")
+            .finish_non_exhaustive()
+    }
+}
 impl CreateRadarPaymentEvaluationPaymentDetailsPaymentMethodDetails {
     pub fn new(payment_method: impl Into<String>) -> Self {
         Self { billing_details: None, payment_method: payment_method.into() }
     }
 }
 /// Billing information associated with the payment evaluation.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateRadarPaymentEvaluationPaymentDetailsPaymentMethodDetailsBillingDetails {
     /// Billing address.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -412,6 +510,17 @@ pub struct CreateRadarPaymentEvaluationPaymentDetailsPaymentMethodDetailsBilling
     #[serde(skip_serializing_if = "Option::is_none")]
     pub phone: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for CreateRadarPaymentEvaluationPaymentDetailsPaymentMethodDetailsBillingDetails
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(
+            "CreateRadarPaymentEvaluationPaymentDetailsPaymentMethodDetailsBillingDetails",
+        )
+        .finish_non_exhaustive()
+    }
+}
 impl CreateRadarPaymentEvaluationPaymentDetailsPaymentMethodDetailsBillingDetails {
     pub fn new() -> Self {
         Self { address: None, email: None, name: None, phone: None }
@@ -423,7 +532,9 @@ impl Default for CreateRadarPaymentEvaluationPaymentDetailsPaymentMethodDetailsB
     }
 }
 /// Shipping details for the payment evaluation.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateRadarPaymentEvaluationPaymentDetailsShippingDetails {
     /// Shipping address.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -434,6 +545,13 @@ pub struct CreateRadarPaymentEvaluationPaymentDetailsShippingDetails {
     /// Shipping phone number.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub phone: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateRadarPaymentEvaluationPaymentDetailsShippingDetails {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateRadarPaymentEvaluationPaymentDetailsShippingDetails")
+            .finish_non_exhaustive()
+    }
 }
 impl CreateRadarPaymentEvaluationPaymentDetailsShippingDetails {
     pub fn new() -> Self {
@@ -446,9 +564,17 @@ impl Default for CreateRadarPaymentEvaluationPaymentDetailsShippingDetails {
     }
 }
 /// Request a Radar API fraud risk score from Stripe for a payment before sending it for external processor authorization.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateRadarPaymentEvaluation {
     inner: CreateRadarPaymentEvaluationBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateRadarPaymentEvaluation {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateRadarPaymentEvaluation").finish_non_exhaustive()
+    }
 }
 impl CreateRadarPaymentEvaluation {
     /// Construct a new `CreateRadarPaymentEvaluation`.
@@ -516,7 +642,9 @@ impl StripeRequest for CreateRadarPaymentEvaluation {
     }
 }
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct Address {
     /// City, district, suburb, town, or village.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -536,6 +664,12 @@ pub struct Address {
     /// State, county, province, or region ([ISO 3166-2](https://en.wikipedia.org/wiki/ISO_3166-2)).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for Address {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("Address").finish_non_exhaustive()
+    }
 }
 impl Address {
     pub fn new() -> Self {

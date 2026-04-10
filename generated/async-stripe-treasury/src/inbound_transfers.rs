@@ -1,5 +1,6 @@
 /// For more details see <<https://stripe.com/docs/api/treasury/inbound_transfers>>.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct InboundTransfers {
@@ -8,6 +9,12 @@ pub struct InboundTransfers {
     #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "type"))]
     pub type_: InboundTransfersType,
     pub us_bank_account: Option<stripe_treasury::InboundTransfersPaymentMethodDetailsUsBankAccount>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for InboundTransfers {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("InboundTransfers").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct InboundTransfersBuilder {
@@ -152,9 +159,16 @@ impl std::fmt::Display for InboundTransfersType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for InboundTransfersType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for InboundTransfersType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(InboundTransfersType)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

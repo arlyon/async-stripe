@@ -1,5 +1,6 @@
 /// Choice to be selected on a Reader
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TerminalReaderReaderResourceChoice {
@@ -9,6 +10,12 @@ pub struct TerminalReaderReaderResourceChoice {
     pub style: Option<TerminalReaderReaderResourceChoiceStyle>,
     /// The text to be selected. Maximum 30 characters.
     pub text: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TerminalReaderReaderResourceChoice {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("TerminalReaderReaderResourceChoice").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct TerminalReaderReaderResourceChoiceBuilder {
@@ -159,9 +166,16 @@ impl std::fmt::Display for TerminalReaderReaderResourceChoiceStyle {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for TerminalReaderReaderResourceChoiceStyle {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TerminalReaderReaderResourceChoiceStyle {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(TerminalReaderReaderResourceChoiceStyle)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

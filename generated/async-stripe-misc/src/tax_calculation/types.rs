@@ -3,7 +3,8 @@
 /// Related guide: [Calculate tax in your custom payment flow](https://docs.stripe.com/tax/custom)
 ///
 /// For more details see <<https://stripe.com/docs/api/tax/calculations/object>>.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TaxCalculation {
     /// Total amount after taxes in the [smallest currency unit](https://docs.stripe.com/currencies#minor-units).
@@ -35,6 +36,12 @@ pub struct TaxCalculation {
     pub tax_breakdown: Vec<stripe_misc::TaxProductResourceTaxBreakdown>,
     /// Timestamp of date at which the tax rules and rates in effect applies for the calculation.
     pub tax_date: stripe_types::Timestamp,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TaxCalculation {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("TaxCalculation").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct TaxCalculationBuilder {

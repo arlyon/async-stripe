@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TaxProductResourceTaxSettingsStatusDetailsResourcePending {
@@ -7,6 +8,13 @@ pub struct TaxProductResourceTaxSettingsStatusDetailsResourcePending {
     /// It is recommended to set the optional values even if they aren't listed as required for calculating taxes.
     /// Calculations can fail if missing fields aren't explicitly provided on every call.
     pub missing_fields: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TaxProductResourceTaxSettingsStatusDetailsResourcePending {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("TaxProductResourceTaxSettingsStatusDetailsResourcePending")
+            .finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct TaxProductResourceTaxSettingsStatusDetailsResourcePendingBuilder {

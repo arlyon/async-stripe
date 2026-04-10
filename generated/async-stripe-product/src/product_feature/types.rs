@@ -1,6 +1,7 @@
 /// A product_feature represents an attachment between a feature and a product.
 /// When a product is purchased that has a feature attached, Stripe will create an entitlement to the feature for the purchasing customer.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct ProductFeature {
     pub entitlement_feature: stripe_shared::EntitlementsFeature,
@@ -9,6 +10,12 @@ pub struct ProductFeature {
     /// If the object exists in live mode, the value is `true`.
     /// If the object exists in test mode, the value is `false`.
     pub livemode: bool,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ProductFeature {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ProductFeature").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct ProductFeatureBuilder {

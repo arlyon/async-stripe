@@ -1,6 +1,7 @@
 /// Encodes whether a FinancialAccount has access to a particular Feature, with a `status` enum and associated `status_details`.
 /// Stripe or the platform can control Features via the requested field.
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TreasuryFinancialAccountFeatures {
     pub card_issuing: Option<stripe_treasury::TreasuryFinancialAccountsResourceToggleSettings>,
@@ -15,6 +16,12 @@ pub struct TreasuryFinancialAccountFeatures {
         Option<stripe_treasury::TreasuryFinancialAccountsResourceOutboundPayments>,
     pub outbound_transfers:
         Option<stripe_treasury::TreasuryFinancialAccountsResourceOutboundTransfers>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TreasuryFinancialAccountFeatures {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("TreasuryFinancialAccountFeatures").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct TreasuryFinancialAccountFeaturesBuilder {

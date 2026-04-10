@@ -2,7 +2,9 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ListClimateSupplierBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<String>,
@@ -13,15 +15,29 @@ struct ListClimateSupplierBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     starting_after: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListClimateSupplierBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListClimateSupplierBuilder").finish_non_exhaustive()
+    }
+}
 impl ListClimateSupplierBuilder {
     fn new() -> Self {
         Self { ending_before: None, expand: None, limit: None, starting_after: None }
     }
 }
 /// Lists all available Climate supplier objects.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListClimateSupplier {
     inner: ListClimateSupplierBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListClimateSupplier {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListClimateSupplier").finish_non_exhaustive()
+    }
 }
 impl ListClimateSupplier {
     /// Construct a new `ListClimateSupplier`.
@@ -90,10 +106,18 @@ impl StripeRequest for ListClimateSupplier {
         RequestBuilder::new(StripeMethod::Get, "/climate/suppliers").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RetrieveClimateSupplierBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveClimateSupplierBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveClimateSupplierBuilder").finish_non_exhaustive()
+    }
 }
 impl RetrieveClimateSupplierBuilder {
     fn new() -> Self {
@@ -101,10 +125,18 @@ impl RetrieveClimateSupplierBuilder {
     }
 }
 /// Retrieves a Climate supplier object.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RetrieveClimateSupplier {
     inner: RetrieveClimateSupplierBuilder,
     supplier: stripe_misc::ClimateSupplierId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveClimateSupplier {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveClimateSupplier").finish_non_exhaustive()
+    }
 }
 impl RetrieveClimateSupplier {
     /// Construct a new `RetrieveClimateSupplier`.

@@ -3,9 +3,17 @@ use stripe_client_core::{
 };
 
 /// You can also delete webhook endpoints via the [webhook endpoint management](https://dashboard.stripe.com/account/webhooks) page of the Stripe dashboard.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct DeleteWebhookEndpoint {
     webhook_endpoint: stripe_misc::WebhookEndpointId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for DeleteWebhookEndpoint {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("DeleteWebhookEndpoint").finish_non_exhaustive()
+    }
 }
 impl DeleteWebhookEndpoint {
     /// Construct a new `DeleteWebhookEndpoint`.
@@ -39,7 +47,9 @@ impl StripeRequest for DeleteWebhookEndpoint {
         RequestBuilder::new(StripeMethod::Delete, format!("/webhook_endpoints/{webhook_endpoint}"))
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ListWebhookEndpointBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<String>,
@@ -50,15 +60,29 @@ struct ListWebhookEndpointBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     starting_after: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListWebhookEndpointBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListWebhookEndpointBuilder").finish_non_exhaustive()
+    }
+}
 impl ListWebhookEndpointBuilder {
     fn new() -> Self {
         Self { ending_before: None, expand: None, limit: None, starting_after: None }
     }
 }
 /// Returns a list of your webhook endpoints.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListWebhookEndpoint {
     inner: ListWebhookEndpointBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListWebhookEndpoint {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListWebhookEndpoint").finish_non_exhaustive()
+    }
 }
 impl ListWebhookEndpoint {
     /// Construct a new `ListWebhookEndpoint`.
@@ -127,10 +151,18 @@ impl StripeRequest for ListWebhookEndpoint {
         RequestBuilder::new(StripeMethod::Get, "/webhook_endpoints").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RetrieveWebhookEndpointBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveWebhookEndpointBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveWebhookEndpointBuilder").finish_non_exhaustive()
+    }
 }
 impl RetrieveWebhookEndpointBuilder {
     fn new() -> Self {
@@ -138,10 +170,18 @@ impl RetrieveWebhookEndpointBuilder {
     }
 }
 /// Retrieves the webhook endpoint with the given ID.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RetrieveWebhookEndpoint {
     inner: RetrieveWebhookEndpointBuilder,
     webhook_endpoint: stripe_misc::WebhookEndpointId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveWebhookEndpoint {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveWebhookEndpoint").finish_non_exhaustive()
+    }
 }
 impl RetrieveWebhookEndpoint {
     /// Construct a new `RetrieveWebhookEndpoint`.
@@ -184,7 +224,9 @@ impl StripeRequest for RetrieveWebhookEndpoint {
             .query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct CreateWebhookEndpointBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     api_version: Option<stripe_shared::ApiVersion>,
@@ -198,6 +240,12 @@ struct CreateWebhookEndpointBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     metadata: Option<std::collections::HashMap<String, String>>,
     url: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateWebhookEndpointBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateWebhookEndpointBuilder").finish_non_exhaustive()
+    }
 }
 impl CreateWebhookEndpointBuilder {
     fn new(
@@ -1093,9 +1141,16 @@ impl std::fmt::Display for CreateWebhookEndpointEnabledEvents {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateWebhookEndpointEnabledEvents {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateWebhookEndpointEnabledEvents {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateWebhookEndpointEnabledEvents)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateWebhookEndpointEnabledEvents {
@@ -1118,9 +1173,17 @@ impl<'de> serde::Deserialize<'de> for CreateWebhookEndpointEnabledEvents {
 /// You may optionally specify the Boolean `connect` parameter.
 /// If set to true, then a Connect webhook endpoint that notifies the specified `url` about events from all connected accounts is created; otherwise an account webhook endpoint that notifies the specified `url` only about events from your account is created.
 /// You can also create webhook endpoints in the [webhooks settings](https://dashboard.stripe.com/account/webhooks) section of the Dashboard.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateWebhookEndpoint {
     inner: CreateWebhookEndpointBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateWebhookEndpoint {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateWebhookEndpoint").finish_non_exhaustive()
+    }
 }
 impl CreateWebhookEndpoint {
     /// Construct a new `CreateWebhookEndpoint`.
@@ -1188,7 +1251,9 @@ impl StripeRequest for CreateWebhookEndpoint {
         RequestBuilder::new(StripeMethod::Post, "/webhook_endpoints").form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct UpdateWebhookEndpointBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     description: Option<String>,
@@ -1202,6 +1267,12 @@ struct UpdateWebhookEndpointBuilder {
     metadata: Option<std::collections::HashMap<String, String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     url: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateWebhookEndpointBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateWebhookEndpointBuilder").finish_non_exhaustive()
+    }
 }
 impl UpdateWebhookEndpointBuilder {
     fn new() -> Self {
@@ -2093,9 +2164,16 @@ impl std::fmt::Display for UpdateWebhookEndpointEnabledEvents {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdateWebhookEndpointEnabledEvents {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateWebhookEndpointEnabledEvents {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdateWebhookEndpointEnabledEvents)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdateWebhookEndpointEnabledEvents {
@@ -2116,10 +2194,18 @@ impl<'de> serde::Deserialize<'de> for UpdateWebhookEndpointEnabledEvents {
 }
 /// Updates the webhook endpoint.
 /// You may edit the `url`, the list of `enabled_events`, and the status of your endpoint.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateWebhookEndpoint {
     inner: UpdateWebhookEndpointBuilder,
     webhook_endpoint: stripe_misc::WebhookEndpointId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateWebhookEndpoint {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateWebhookEndpoint").finish_non_exhaustive()
+    }
 }
 impl UpdateWebhookEndpoint {
     /// Construct a new `UpdateWebhookEndpoint`.

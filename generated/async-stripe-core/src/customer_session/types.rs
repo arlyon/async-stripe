@@ -4,7 +4,8 @@
 /// Related guides: [Customer Session with the Payment Element](/payments/accept-a-payment-deferred?platform=web&type=payment#save-payment-methods),.
 /// [Customer Session with the Pricing Table](/payments/checkout/pricing-table#customer-session),
 /// [Customer Session with the Buy Button](/payment-links/buy-button#pass-an-existing-customer).
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct CustomerSession {
     /// The client secret of this Customer Session.
@@ -26,6 +27,12 @@ pub struct CustomerSession {
     /// If the object exists in live mode, the value is `true`.
     /// If the object exists in test mode, the value is `false`.
     pub livemode: bool,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CustomerSession {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CustomerSession").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct CustomerSessionBuilder {

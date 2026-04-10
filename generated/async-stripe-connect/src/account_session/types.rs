@@ -7,7 +7,8 @@
 /// Related guide: [Connect embedded components](https://docs.stripe.com/connect/get-started-connect-embedded-components).
 ///
 /// For more details see <<https://stripe.com/docs/api/account_sessions/object>>.
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct AccountSession {
     /// The ID of the account the AccountSession was created for
@@ -27,6 +28,12 @@ pub struct AccountSession {
     /// If the object exists in live mode, the value is `true`.
     /// If the object exists in test mode, the value is `false`.
     pub livemode: bool,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for AccountSession {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("AccountSession").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct AccountSessionBuilder {

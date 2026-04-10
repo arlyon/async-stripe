@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentPagesCheckoutSessionShippingAddressCollection {
@@ -7,6 +8,13 @@ pub struct PaymentPagesCheckoutSessionShippingAddressCollection {
     /// Unsupported country codes: `AS, CX, CC, CU, HM, IR, KP, MH, FM, NF, MP, PW, SY, UM, VI`.
     pub allowed_countries:
         Vec<PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentPagesCheckoutSessionShippingAddressCollection {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PaymentPagesCheckoutSessionShippingAddressCollection")
+            .finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct PaymentPagesCheckoutSessionShippingAddressCollectionBuilder {
@@ -858,9 +866,19 @@ impl std::fmt::Display for PaymentPagesCheckoutSessionShippingAddressCollectionA
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            PaymentPagesCheckoutSessionShippingAddressCollectionAllowedCountries
+        ))
+        .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

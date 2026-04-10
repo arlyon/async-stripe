@@ -1,5 +1,6 @@
 /// A Physical Bundle represents the bundle of physical items - card stock, carrier letter, and envelope - that is shipped to a cardholder when you create a physical card.
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct IssuingPhysicalBundle {
     pub features: stripe_shared::IssuingPhysicalBundleFeatures,
@@ -15,6 +16,12 @@ pub struct IssuingPhysicalBundle {
     /// Whether this physical bundle is a standard Stripe offering or custom-made for you.
     #[cfg_attr(feature = "deserialize", serde(rename = "type"))]
     pub type_: stripe_shared::IssuingPhysicalBundleType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for IssuingPhysicalBundle {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("IssuingPhysicalBundle").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct IssuingPhysicalBundleBuilder {
@@ -211,9 +218,16 @@ impl std::fmt::Display for IssuingPhysicalBundleStatus {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for IssuingPhysicalBundleStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for IssuingPhysicalBundleStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(IssuingPhysicalBundleStatus)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for IssuingPhysicalBundleStatus {
@@ -286,9 +300,16 @@ impl std::fmt::Display for IssuingPhysicalBundleType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for IssuingPhysicalBundleType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for IssuingPhysicalBundleType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(IssuingPhysicalBundleType)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for IssuingPhysicalBundleType {

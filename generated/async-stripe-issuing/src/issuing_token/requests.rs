@@ -2,7 +2,9 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ListIssuingTokenBuilder {
     card: String,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -18,6 +20,12 @@ struct ListIssuingTokenBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     status: Option<stripe_shared::IssuingTokenStatus>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListIssuingTokenBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListIssuingTokenBuilder").finish_non_exhaustive()
+    }
+}
 impl ListIssuingTokenBuilder {
     fn new(card: impl Into<String>) -> Self {
         Self {
@@ -32,9 +40,17 @@ impl ListIssuingTokenBuilder {
     }
 }
 /// Lists all Issuing `Token` objects for a given card.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListIssuingToken {
     inner: ListIssuingTokenBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListIssuingToken {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListIssuingToken").finish_non_exhaustive()
+    }
 }
 impl ListIssuingToken {
     /// Construct a new `ListIssuingToken`.
@@ -108,10 +124,18 @@ impl StripeRequest for ListIssuingToken {
         RequestBuilder::new(StripeMethod::Get, "/issuing/tokens").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RetrieveIssuingTokenBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveIssuingTokenBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveIssuingTokenBuilder").finish_non_exhaustive()
+    }
 }
 impl RetrieveIssuingTokenBuilder {
     fn new() -> Self {
@@ -119,10 +143,18 @@ impl RetrieveIssuingTokenBuilder {
     }
 }
 /// Retrieves an Issuing `Token` object.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RetrieveIssuingToken {
     inner: RetrieveIssuingTokenBuilder,
     token: stripe_shared::IssuingTokenId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveIssuingToken {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveIssuingToken").finish_non_exhaustive()
+    }
 }
 impl RetrieveIssuingToken {
     /// Construct a new `RetrieveIssuingToken`.
@@ -162,11 +194,19 @@ impl StripeRequest for RetrieveIssuingToken {
             .query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct UpdateIssuingTokenBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
     status: UpdateIssuingTokenStatus,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateIssuingTokenBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateIssuingTokenBuilder").finish_non_exhaustive()
+    }
 }
 impl UpdateIssuingTokenBuilder {
     fn new(status: impl Into<UpdateIssuingTokenStatus>) -> Self {
@@ -216,9 +256,16 @@ impl std::fmt::Display for UpdateIssuingTokenStatus {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdateIssuingTokenStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateIssuingTokenStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdateIssuingTokenStatus)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdateIssuingTokenStatus {
@@ -238,10 +285,18 @@ impl<'de> serde::Deserialize<'de> for UpdateIssuingTokenStatus {
     }
 }
 /// Attempts to update the specified Issuing `Token` object to the status specified.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateIssuingToken {
     inner: UpdateIssuingTokenBuilder,
     token: stripe_shared::IssuingTokenId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateIssuingToken {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateIssuingToken").finish_non_exhaustive()
+    }
 }
 impl UpdateIssuingToken {
     /// Construct a new `UpdateIssuingToken`.

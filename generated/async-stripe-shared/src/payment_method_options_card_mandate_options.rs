@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentMethodOptionsCardMandateOptions {
@@ -27,6 +28,12 @@ pub struct PaymentMethodOptionsCardMandateOptions {
     pub start_date: stripe_types::Timestamp,
     /// Specifies the type of mandates supported. Possible values are `india`.
     pub supported_types: Option<Vec<PaymentMethodOptionsCardMandateOptionsSupportedTypes>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentMethodOptionsCardMandateOptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PaymentMethodOptionsCardMandateOptions").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct PaymentMethodOptionsCardMandateOptionsBuilder {
@@ -232,9 +239,17 @@ impl std::fmt::Display for PaymentMethodOptionsCardMandateOptionsAmountType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for PaymentMethodOptionsCardMandateOptionsAmountType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentMethodOptionsCardMandateOptionsAmountType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(PaymentMethodOptionsCardMandateOptionsAmountType))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -324,9 +339,17 @@ impl std::fmt::Display for PaymentMethodOptionsCardMandateOptionsInterval {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for PaymentMethodOptionsCardMandateOptionsInterval {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentMethodOptionsCardMandateOptionsInterval {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(PaymentMethodOptionsCardMandateOptionsInterval))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -403,9 +426,17 @@ impl std::fmt::Display for PaymentMethodOptionsCardMandateOptionsSupportedTypes 
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for PaymentMethodOptionsCardMandateOptionsSupportedTypes {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentMethodOptionsCardMandateOptionsSupportedTypes {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(PaymentMethodOptionsCardMandateOptionsSupportedTypes))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

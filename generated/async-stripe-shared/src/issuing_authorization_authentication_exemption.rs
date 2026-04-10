@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct IssuingAuthorizationAuthenticationExemption {
@@ -7,6 +8,12 @@ pub struct IssuingAuthorizationAuthenticationExemption {
     /// The specific exemption claimed for this authorization.
     #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "type"))]
     pub type_: IssuingAuthorizationAuthenticationExemptionType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for IssuingAuthorizationAuthenticationExemption {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("IssuingAuthorizationAuthenticationExemption").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct IssuingAuthorizationAuthenticationExemptionBuilder {
@@ -149,9 +156,17 @@ impl std::fmt::Display for IssuingAuthorizationAuthenticationExemptionClaimedBy 
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for IssuingAuthorizationAuthenticationExemptionClaimedBy {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for IssuingAuthorizationAuthenticationExemptionClaimedBy {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(IssuingAuthorizationAuthenticationExemptionClaimedBy))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -236,9 +251,17 @@ impl std::fmt::Display for IssuingAuthorizationAuthenticationExemptionType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for IssuingAuthorizationAuthenticationExemptionType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for IssuingAuthorizationAuthenticationExemptionType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(IssuingAuthorizationAuthenticationExemptionType))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

@@ -2,7 +2,9 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ListIssuingDisputeBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     created: Option<stripe_types::RangeQueryTs>,
@@ -19,6 +21,12 @@ struct ListIssuingDisputeBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     transaction: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListIssuingDisputeBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListIssuingDisputeBuilder").finish_non_exhaustive()
+    }
+}
 impl ListIssuingDisputeBuilder {
     fn new() -> Self {
         Self {
@@ -34,9 +42,17 @@ impl ListIssuingDisputeBuilder {
 }
 /// Returns a list of Issuing `Dispute` objects.
 /// The objects are sorted in descending order by creation date, with the most recently created object appearing first.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListIssuingDispute {
     inner: ListIssuingDisputeBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListIssuingDispute {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListIssuingDispute").finish_non_exhaustive()
+    }
 }
 impl ListIssuingDispute {
     /// Construct a new `ListIssuingDispute`.
@@ -120,10 +136,18 @@ impl StripeRequest for ListIssuingDispute {
         RequestBuilder::new(StripeMethod::Get, "/issuing/disputes").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RetrieveIssuingDisputeBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveIssuingDisputeBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveIssuingDisputeBuilder").finish_non_exhaustive()
+    }
 }
 impl RetrieveIssuingDisputeBuilder {
     fn new() -> Self {
@@ -131,10 +155,18 @@ impl RetrieveIssuingDisputeBuilder {
     }
 }
 /// Retrieves an Issuing `Dispute` object.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RetrieveIssuingDispute {
     inner: RetrieveIssuingDisputeBuilder,
     dispute: stripe_shared::IssuingDisputeId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveIssuingDispute {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveIssuingDispute").finish_non_exhaustive()
+    }
 }
 impl RetrieveIssuingDispute {
     /// Construct a new `RetrieveIssuingDispute`.
@@ -174,7 +206,9 @@ impl StripeRequest for RetrieveIssuingDispute {
             .query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct CreateIssuingDisputeBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     amount: Option<i64>,
@@ -189,6 +223,12 @@ struct CreateIssuingDisputeBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     treasury: Option<CreateIssuingDisputeTreasury>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateIssuingDisputeBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateIssuingDisputeBuilder").finish_non_exhaustive()
+    }
+}
 impl CreateIssuingDisputeBuilder {
     fn new() -> Self {
         Self {
@@ -202,7 +242,9 @@ impl CreateIssuingDisputeBuilder {
     }
 }
 /// Evidence provided for the dispute.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateIssuingDisputeEvidence {
     /// Evidence provided when `reason` is 'canceled'.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -232,6 +274,12 @@ pub struct CreateIssuingDisputeEvidence {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub service_not_as_described: Option<ServiceNotAsDescribed>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateIssuingDisputeEvidence {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateIssuingDisputeEvidence").finish_non_exhaustive()
+    }
+}
 impl CreateIssuingDisputeEvidence {
     pub fn new() -> Self {
         Self {
@@ -253,7 +301,9 @@ impl Default for CreateIssuingDisputeEvidence {
     }
 }
 /// Evidence provided when `reason` is 'canceled'.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateIssuingDisputeEvidenceCanceled {
     /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -285,6 +335,12 @@ pub struct CreateIssuingDisputeEvidenceCanceled {
     /// Date when the product was returned or attempted to be returned.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub returned_at: Option<stripe_types::Timestamp>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateIssuingDisputeEvidenceCanceled {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateIssuingDisputeEvidenceCanceled").finish_non_exhaustive()
+    }
 }
 impl CreateIssuingDisputeEvidenceCanceled {
     pub fn new() -> Self {
@@ -351,9 +407,17 @@ impl std::fmt::Display for CreateIssuingDisputeEvidenceCanceledProductType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateIssuingDisputeEvidenceCanceledProductType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateIssuingDisputeEvidenceCanceledProductType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateIssuingDisputeEvidenceCanceledProductType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateIssuingDisputeEvidenceCanceledProductType {
@@ -416,9 +480,17 @@ impl std::fmt::Display for CreateIssuingDisputeEvidenceCanceledReturnStatus {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateIssuingDisputeEvidenceCanceledReturnStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateIssuingDisputeEvidenceCanceledReturnStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateIssuingDisputeEvidenceCanceledReturnStatus))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateIssuingDisputeEvidenceCanceledReturnStatus {
@@ -438,7 +510,9 @@ impl<'de> serde::Deserialize<'de> for CreateIssuingDisputeEvidenceCanceledReturn
     }
 }
 /// Evidence provided when `reason` is 'fraudulent'.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateIssuingDisputeEvidenceFraudulent {
     /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -446,6 +520,12 @@ pub struct CreateIssuingDisputeEvidenceFraudulent {
     /// Explanation of why the cardholder is disputing this transaction.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub explanation: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateIssuingDisputeEvidenceFraudulent {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateIssuingDisputeEvidenceFraudulent").finish_non_exhaustive()
+    }
 }
 impl CreateIssuingDisputeEvidenceFraudulent {
     pub fn new() -> Self {
@@ -458,7 +538,9 @@ impl Default for CreateIssuingDisputeEvidenceFraudulent {
     }
 }
 /// Evidence provided when `reason` is 'merchandise_not_as_described'.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateIssuingDisputeEvidenceMerchandiseNotAsDescribed {
     /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -478,6 +560,13 @@ pub struct CreateIssuingDisputeEvidenceMerchandiseNotAsDescribed {
     /// Date when the product was returned or attempted to be returned.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub returned_at: Option<stripe_types::Timestamp>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateIssuingDisputeEvidenceMerchandiseNotAsDescribed {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateIssuingDisputeEvidenceMerchandiseNotAsDescribed")
+            .finish_non_exhaustive()
+    }
 }
 impl CreateIssuingDisputeEvidenceMerchandiseNotAsDescribed {
     pub fn new() -> Self {
@@ -540,9 +629,19 @@ impl std::fmt::Display for CreateIssuingDisputeEvidenceMerchandiseNotAsDescribed
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateIssuingDisputeEvidenceMerchandiseNotAsDescribedReturnStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateIssuingDisputeEvidenceMerchandiseNotAsDescribedReturnStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreateIssuingDisputeEvidenceMerchandiseNotAsDescribedReturnStatus
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateIssuingDisputeEvidenceMerchandiseNotAsDescribedReturnStatus {
@@ -564,7 +663,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Evidence provided when `reason` is 'no_valid_authorization'.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateIssuingDisputeEvidenceNoValidAuthorization {
     /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -572,6 +673,12 @@ pub struct CreateIssuingDisputeEvidenceNoValidAuthorization {
     /// Explanation of why the cardholder is disputing this transaction.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub explanation: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateIssuingDisputeEvidenceNoValidAuthorization {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateIssuingDisputeEvidenceNoValidAuthorization").finish_non_exhaustive()
+    }
 }
 impl CreateIssuingDisputeEvidenceNoValidAuthorization {
     pub fn new() -> Self {
@@ -584,7 +691,9 @@ impl Default for CreateIssuingDisputeEvidenceNoValidAuthorization {
     }
 }
 /// Evidence provided when `reason` is 'not_received'.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateIssuingDisputeEvidenceNotReceived {
     /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -601,6 +710,12 @@ pub struct CreateIssuingDisputeEvidenceNotReceived {
     /// Whether the product was a merchandise or service.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub product_type: Option<CreateIssuingDisputeEvidenceNotReceivedProductType>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateIssuingDisputeEvidenceNotReceived {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateIssuingDisputeEvidenceNotReceived").finish_non_exhaustive()
+    }
 }
 impl CreateIssuingDisputeEvidenceNotReceived {
     pub fn new() -> Self {
@@ -662,9 +777,17 @@ impl std::fmt::Display for CreateIssuingDisputeEvidenceNotReceivedProductType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateIssuingDisputeEvidenceNotReceivedProductType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateIssuingDisputeEvidenceNotReceivedProductType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateIssuingDisputeEvidenceNotReceivedProductType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateIssuingDisputeEvidenceNotReceivedProductType {
@@ -684,7 +807,9 @@ impl<'de> serde::Deserialize<'de> for CreateIssuingDisputeEvidenceNotReceivedPro
     }
 }
 /// Evidence provided when `reason` is 'other'.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateIssuingDisputeEvidenceOther {
     /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -698,6 +823,12 @@ pub struct CreateIssuingDisputeEvidenceOther {
     /// Whether the product was a merchandise or service.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub product_type: Option<CreateIssuingDisputeEvidenceOtherProductType>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateIssuingDisputeEvidenceOther {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateIssuingDisputeEvidenceOther").finish_non_exhaustive()
+    }
 }
 impl CreateIssuingDisputeEvidenceOther {
     pub fn new() -> Self {
@@ -758,9 +889,17 @@ impl std::fmt::Display for CreateIssuingDisputeEvidenceOtherProductType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateIssuingDisputeEvidenceOtherProductType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateIssuingDisputeEvidenceOtherProductType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateIssuingDisputeEvidenceOtherProductType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateIssuingDisputeEvidenceOtherProductType {
@@ -841,9 +980,16 @@ impl std::fmt::Display for CreateIssuingDisputeEvidenceReason {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateIssuingDisputeEvidenceReason {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateIssuingDisputeEvidenceReason {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateIssuingDisputeEvidenceReason)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateIssuingDisputeEvidenceReason {
@@ -863,10 +1009,18 @@ impl<'de> serde::Deserialize<'de> for CreateIssuingDisputeEvidenceReason {
     }
 }
 /// Params for disputes related to Treasury FinancialAccounts
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateIssuingDisputeTreasury {
     /// The ID of the ReceivedDebit to initiate an Issuings dispute for.
     pub received_debit: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateIssuingDisputeTreasury {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateIssuingDisputeTreasury").finish_non_exhaustive()
+    }
 }
 impl CreateIssuingDisputeTreasury {
     pub fn new(received_debit: impl Into<String>) -> Self {
@@ -877,9 +1031,17 @@ impl CreateIssuingDisputeTreasury {
 /// Individual pieces of evidence within the `evidence` object are optional at this point.
 /// Stripe only validates that required evidence is present during submission.
 /// Refer to [Dispute reasons and evidence](https://stripe.com/docs/issuing/purchases/disputes#dispute-reasons-and-evidence) for more details about evidence requirements.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateIssuingDispute {
     inner: CreateIssuingDisputeBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateIssuingDispute {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateIssuingDispute").finish_non_exhaustive()
+    }
 }
 impl CreateIssuingDispute {
     /// Construct a new `CreateIssuingDispute`.
@@ -955,7 +1117,9 @@ impl StripeRequest for CreateIssuingDispute {
         RequestBuilder::new(StripeMethod::Post, "/issuing/disputes").form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct UpdateIssuingDisputeBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     amount: Option<i64>,
@@ -966,13 +1130,21 @@ struct UpdateIssuingDisputeBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     metadata: Option<std::collections::HashMap<String, String>>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateIssuingDisputeBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateIssuingDisputeBuilder").finish_non_exhaustive()
+    }
+}
 impl UpdateIssuingDisputeBuilder {
     fn new() -> Self {
         Self { amount: None, evidence: None, expand: None, metadata: None }
     }
 }
 /// Evidence provided for the dispute.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateIssuingDisputeEvidence {
     /// Evidence provided when `reason` is 'canceled'.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1002,6 +1174,12 @@ pub struct UpdateIssuingDisputeEvidence {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub service_not_as_described: Option<ServiceNotAsDescribed>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateIssuingDisputeEvidence {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateIssuingDisputeEvidence").finish_non_exhaustive()
+    }
+}
 impl UpdateIssuingDisputeEvidence {
     pub fn new() -> Self {
         Self {
@@ -1023,7 +1201,9 @@ impl Default for UpdateIssuingDisputeEvidence {
     }
 }
 /// Evidence provided when `reason` is 'canceled'.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateIssuingDisputeEvidenceCanceled {
     /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1055,6 +1235,12 @@ pub struct UpdateIssuingDisputeEvidenceCanceled {
     /// Date when the product was returned or attempted to be returned.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub returned_at: Option<stripe_types::Timestamp>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateIssuingDisputeEvidenceCanceled {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateIssuingDisputeEvidenceCanceled").finish_non_exhaustive()
+    }
 }
 impl UpdateIssuingDisputeEvidenceCanceled {
     pub fn new() -> Self {
@@ -1121,9 +1307,17 @@ impl std::fmt::Display for UpdateIssuingDisputeEvidenceCanceledProductType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdateIssuingDisputeEvidenceCanceledProductType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateIssuingDisputeEvidenceCanceledProductType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdateIssuingDisputeEvidenceCanceledProductType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdateIssuingDisputeEvidenceCanceledProductType {
@@ -1186,9 +1380,17 @@ impl std::fmt::Display for UpdateIssuingDisputeEvidenceCanceledReturnStatus {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdateIssuingDisputeEvidenceCanceledReturnStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateIssuingDisputeEvidenceCanceledReturnStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdateIssuingDisputeEvidenceCanceledReturnStatus))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdateIssuingDisputeEvidenceCanceledReturnStatus {
@@ -1208,7 +1410,9 @@ impl<'de> serde::Deserialize<'de> for UpdateIssuingDisputeEvidenceCanceledReturn
     }
 }
 /// Evidence provided when `reason` is 'fraudulent'.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateIssuingDisputeEvidenceFraudulent {
     /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1216,6 +1420,12 @@ pub struct UpdateIssuingDisputeEvidenceFraudulent {
     /// Explanation of why the cardholder is disputing this transaction.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub explanation: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateIssuingDisputeEvidenceFraudulent {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateIssuingDisputeEvidenceFraudulent").finish_non_exhaustive()
+    }
 }
 impl UpdateIssuingDisputeEvidenceFraudulent {
     pub fn new() -> Self {
@@ -1228,7 +1438,9 @@ impl Default for UpdateIssuingDisputeEvidenceFraudulent {
     }
 }
 /// Evidence provided when `reason` is 'merchandise_not_as_described'.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateIssuingDisputeEvidenceMerchandiseNotAsDescribed {
     /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1248,6 +1460,13 @@ pub struct UpdateIssuingDisputeEvidenceMerchandiseNotAsDescribed {
     /// Date when the product was returned or attempted to be returned.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub returned_at: Option<stripe_types::Timestamp>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateIssuingDisputeEvidenceMerchandiseNotAsDescribed {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateIssuingDisputeEvidenceMerchandiseNotAsDescribed")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdateIssuingDisputeEvidenceMerchandiseNotAsDescribed {
     pub fn new() -> Self {
@@ -1310,9 +1529,19 @@ impl std::fmt::Display for UpdateIssuingDisputeEvidenceMerchandiseNotAsDescribed
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdateIssuingDisputeEvidenceMerchandiseNotAsDescribedReturnStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateIssuingDisputeEvidenceMerchandiseNotAsDescribedReturnStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdateIssuingDisputeEvidenceMerchandiseNotAsDescribedReturnStatus
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdateIssuingDisputeEvidenceMerchandiseNotAsDescribedReturnStatus {
@@ -1334,7 +1563,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Evidence provided when `reason` is 'no_valid_authorization'.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateIssuingDisputeEvidenceNoValidAuthorization {
     /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1342,6 +1573,12 @@ pub struct UpdateIssuingDisputeEvidenceNoValidAuthorization {
     /// Explanation of why the cardholder is disputing this transaction.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub explanation: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateIssuingDisputeEvidenceNoValidAuthorization {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateIssuingDisputeEvidenceNoValidAuthorization").finish_non_exhaustive()
+    }
 }
 impl UpdateIssuingDisputeEvidenceNoValidAuthorization {
     pub fn new() -> Self {
@@ -1354,7 +1591,9 @@ impl Default for UpdateIssuingDisputeEvidenceNoValidAuthorization {
     }
 }
 /// Evidence provided when `reason` is 'not_received'.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateIssuingDisputeEvidenceNotReceived {
     /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1371,6 +1610,12 @@ pub struct UpdateIssuingDisputeEvidenceNotReceived {
     /// Whether the product was a merchandise or service.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub product_type: Option<UpdateIssuingDisputeEvidenceNotReceivedProductType>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateIssuingDisputeEvidenceNotReceived {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateIssuingDisputeEvidenceNotReceived").finish_non_exhaustive()
+    }
 }
 impl UpdateIssuingDisputeEvidenceNotReceived {
     pub fn new() -> Self {
@@ -1432,9 +1677,17 @@ impl std::fmt::Display for UpdateIssuingDisputeEvidenceNotReceivedProductType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdateIssuingDisputeEvidenceNotReceivedProductType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateIssuingDisputeEvidenceNotReceivedProductType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdateIssuingDisputeEvidenceNotReceivedProductType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdateIssuingDisputeEvidenceNotReceivedProductType {
@@ -1454,7 +1707,9 @@ impl<'de> serde::Deserialize<'de> for UpdateIssuingDisputeEvidenceNotReceivedPro
     }
 }
 /// Evidence provided when `reason` is 'other'.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateIssuingDisputeEvidenceOther {
     /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1468,6 +1723,12 @@ pub struct UpdateIssuingDisputeEvidenceOther {
     /// Whether the product was a merchandise or service.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub product_type: Option<UpdateIssuingDisputeEvidenceOtherProductType>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateIssuingDisputeEvidenceOther {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateIssuingDisputeEvidenceOther").finish_non_exhaustive()
+    }
 }
 impl UpdateIssuingDisputeEvidenceOther {
     pub fn new() -> Self {
@@ -1528,9 +1789,17 @@ impl std::fmt::Display for UpdateIssuingDisputeEvidenceOtherProductType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdateIssuingDisputeEvidenceOtherProductType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateIssuingDisputeEvidenceOtherProductType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdateIssuingDisputeEvidenceOtherProductType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdateIssuingDisputeEvidenceOtherProductType {
@@ -1611,9 +1880,16 @@ impl std::fmt::Display for UpdateIssuingDisputeEvidenceReason {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdateIssuingDisputeEvidenceReason {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateIssuingDisputeEvidenceReason {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdateIssuingDisputeEvidenceReason)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdateIssuingDisputeEvidenceReason {
@@ -1635,10 +1911,18 @@ impl<'de> serde::Deserialize<'de> for UpdateIssuingDisputeEvidenceReason {
 /// Updates the specified Issuing `Dispute` object by setting the values of the parameters passed.
 /// Any parameters not provided will be left unchanged.
 /// Properties on the `evidence` object can be unset by passing in an empty string.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateIssuingDispute {
     inner: UpdateIssuingDisputeBuilder,
     dispute: stripe_shared::IssuingDisputeId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateIssuingDispute {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateIssuingDispute").finish_non_exhaustive()
+    }
 }
 impl UpdateIssuingDispute {
     /// Construct a new `UpdateIssuingDispute`.
@@ -1699,12 +1983,20 @@ impl StripeRequest for UpdateIssuingDispute {
             .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct SubmitIssuingDisputeBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     metadata: Option<std::collections::HashMap<String, String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for SubmitIssuingDisputeBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("SubmitIssuingDisputeBuilder").finish_non_exhaustive()
+    }
 }
 impl SubmitIssuingDisputeBuilder {
     fn new() -> Self {
@@ -1714,10 +2006,18 @@ impl SubmitIssuingDisputeBuilder {
 /// Submits an Issuing `Dispute` to the card network.
 /// Stripe validates that all evidence fields required for the dispute’s reason are present.
 /// For more details, see [Dispute reasons and evidence](https://stripe.com/docs/issuing/purchases/disputes#dispute-reasons-and-evidence).
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct SubmitIssuingDispute {
     inner: SubmitIssuingDisputeBuilder,
     dispute: stripe_shared::IssuingDisputeId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for SubmitIssuingDispute {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("SubmitIssuingDispute").finish_non_exhaustive()
+    }
 }
 impl SubmitIssuingDispute {
     /// Construct a new `SubmitIssuingDispute`.
@@ -1769,7 +2069,9 @@ impl StripeRequest for SubmitIssuingDispute {
     }
 }
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct Duplicate {
     /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1791,6 +2093,12 @@ pub struct Duplicate {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub original_transaction: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for Duplicate {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("Duplicate").finish_non_exhaustive()
+    }
+}
 impl Duplicate {
     pub fn new() -> Self {
         Self {
@@ -1808,7 +2116,9 @@ impl Default for Duplicate {
         Self::new()
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ServiceNotAsDescribed {
     /// (ID of a [file upload](https://stripe.com/docs/guides/file-upload)) Additional documentation supporting the dispute.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1825,6 +2135,12 @@ pub struct ServiceNotAsDescribed {
     /// Date when the product was received.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub received_at: Option<stripe_types::Timestamp>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ServiceNotAsDescribed {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ServiceNotAsDescribed").finish_non_exhaustive()
+    }
 }
 impl ServiceNotAsDescribed {
     pub fn new() -> Self {

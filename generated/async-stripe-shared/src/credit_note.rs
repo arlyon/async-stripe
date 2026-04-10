@@ -3,7 +3,8 @@
 /// Related guide: [Credit notes](https://docs.stripe.com/billing/invoices/credit-notes)
 ///
 /// For more details see <<https://stripe.com/docs/api/credit_notes/object>>.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct CreditNote {
     /// The integer amount in cents (or local equivalent) representing the total amount of the credit note, including tax.
@@ -82,6 +83,12 @@ pub struct CreditNote {
     pub type_: CreditNoteType,
     /// The time that the credit note was voided.
     pub voided_at: Option<stripe_types::Timestamp>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreditNote {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreditNote").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct CreditNoteBuilder {
@@ -502,9 +509,16 @@ impl std::fmt::Display for CreditNoteStatus {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreditNoteStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreditNoteStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreditNoteStatus)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -584,9 +598,16 @@ impl std::fmt::Display for CreditNoteType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreditNoteType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreditNoteType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreditNoteType)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -677,9 +698,16 @@ impl std::fmt::Display for CreditNoteReason {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreditNoteReason {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreditNoteReason {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreditNoteReason)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreditNoteReason {

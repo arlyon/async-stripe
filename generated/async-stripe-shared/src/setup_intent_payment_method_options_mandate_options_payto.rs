@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct SetupIntentPaymentMethodOptionsMandateOptionsPayto {
@@ -20,6 +21,12 @@ pub struct SetupIntentPaymentMethodOptionsMandateOptionsPayto {
     pub purpose: Option<SetupIntentPaymentMethodOptionsMandateOptionsPaytoPurpose>,
     /// Date, in YYYY-MM-DD format, from which payments will be collected. Defaults to confirmation time.
     pub start_date: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for SetupIntentPaymentMethodOptionsMandateOptionsPayto {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("SetupIntentPaymentMethodOptionsMandateOptionsPayto").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct SetupIntentPaymentMethodOptionsMandateOptionsPaytoBuilder {
@@ -212,9 +219,17 @@ impl std::fmt::Display for SetupIntentPaymentMethodOptionsMandateOptionsPaytoAmo
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for SetupIntentPaymentMethodOptionsMandateOptionsPaytoAmountType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for SetupIntentPaymentMethodOptionsMandateOptionsPaytoAmountType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(SetupIntentPaymentMethodOptionsMandateOptionsPaytoAmountType))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -318,9 +333,19 @@ impl std::fmt::Display for SetupIntentPaymentMethodOptionsMandateOptionsPaytoPay
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for SetupIntentPaymentMethodOptionsMandateOptionsPaytoPaymentSchedule {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for SetupIntentPaymentMethodOptionsMandateOptionsPaytoPaymentSchedule {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            SetupIntentPaymentMethodOptionsMandateOptionsPaytoPaymentSchedule
+        ))
+        .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -435,9 +460,17 @@ impl std::fmt::Display for SetupIntentPaymentMethodOptionsMandateOptionsPaytoPur
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for SetupIntentPaymentMethodOptionsMandateOptionsPaytoPurpose {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for SetupIntentPaymentMethodOptionsMandateOptionsPaytoPurpose {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(SetupIntentPaymentMethodOptionsMandateOptionsPaytoPurpose))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

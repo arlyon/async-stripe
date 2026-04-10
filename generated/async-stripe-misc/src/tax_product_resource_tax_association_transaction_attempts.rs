@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TaxProductResourceTaxAssociationTransactionAttempts {
@@ -10,6 +11,13 @@ pub struct TaxProductResourceTaxAssociationTransactionAttempts {
     pub source: String,
     /// The status of the transaction attempt. This can be `errored` or `committed`.
     pub status: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TaxProductResourceTaxAssociationTransactionAttempts {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("TaxProductResourceTaxAssociationTransactionAttempts")
+            .finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct TaxProductResourceTaxAssociationTransactionAttemptsBuilder {

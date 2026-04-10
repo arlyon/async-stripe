@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentMethodKrCard {
@@ -6,6 +7,12 @@ pub struct PaymentMethodKrCard {
     pub brand: Option<PaymentMethodKrCardBrand>,
     /// The last four digits of the card. This may not be present for American Express cards.
     pub last4: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentMethodKrCard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PaymentMethodKrCard").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct PaymentMethodKrCardBuilder {
@@ -203,9 +210,16 @@ impl std::fmt::Display for PaymentMethodKrCardBrand {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for PaymentMethodKrCardBrand {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentMethodKrCardBrand {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(PaymentMethodKrCardBrand)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

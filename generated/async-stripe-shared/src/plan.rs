@@ -11,7 +11,8 @@
 /// Related guides: [Set up a subscription](https://docs.stripe.com/billing/subscriptions/set-up-subscription) and more about [products and prices](https://docs.stripe.com/products-prices/overview).
 ///
 /// For more details see <<https://stripe.com/docs/api/plans/object>>.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct Plan {
     /// Whether the plan can be used for new purchases.
@@ -70,6 +71,12 @@ pub struct Plan {
     /// `metered` aggregates the total usage based on usage records.
     /// Defaults to `licensed`.
     pub usage_type: stripe_shared::PlanUsageType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for Plan {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("Plan").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct PlanBuilder {
@@ -375,9 +382,16 @@ impl std::fmt::Display for PlanBillingScheme {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for PlanBillingScheme {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PlanBillingScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(PlanBillingScheme)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for PlanBillingScheme {
@@ -456,9 +470,16 @@ impl std::fmt::Display for PlanInterval {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for PlanInterval {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PlanInterval {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(PlanInterval)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for PlanInterval {
@@ -531,9 +552,16 @@ impl std::fmt::Display for PlanTiersMode {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for PlanTiersMode {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PlanTiersMode {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(PlanTiersMode)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for PlanTiersMode {
@@ -606,9 +634,16 @@ impl std::fmt::Display for PlanUsageType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for PlanUsageType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PlanUsageType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(PlanUsageType)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for PlanUsageType {

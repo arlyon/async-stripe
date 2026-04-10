@@ -20,7 +20,8 @@
 /// performs best with integrations that use client-side tokenization.
 ///
 /// For more details see <<https://stripe.com/docs/api/tokens/object>>.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct Token {
     pub bank_account: Option<stripe_shared::BankAccount>,
@@ -39,6 +40,12 @@ pub struct Token {
     pub type_: String,
     /// Determines if you have already used this token (you can only use tokens once).
     pub used: bool,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for Token {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("Token").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct TokenBuilder {

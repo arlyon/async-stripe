@@ -2,7 +2,9 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ListReportingReportRunBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     created: Option<stripe_types::RangeQueryTs>,
@@ -15,15 +17,29 @@ struct ListReportingReportRunBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     starting_after: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListReportingReportRunBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListReportingReportRunBuilder").finish_non_exhaustive()
+    }
+}
 impl ListReportingReportRunBuilder {
     fn new() -> Self {
         Self { created: None, ending_before: None, expand: None, limit: None, starting_after: None }
     }
 }
 /// Returns a list of Report Runs, with the most recent appearing first.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListReportingReportRun {
     inner: ListReportingReportRunBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListReportingReportRun {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListReportingReportRun").finish_non_exhaustive()
+    }
 }
 impl ListReportingReportRun {
     /// Construct a new `ListReportingReportRun`.
@@ -98,10 +114,18 @@ impl StripeRequest for ListReportingReportRun {
         RequestBuilder::new(StripeMethod::Get, "/reporting/report_runs").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RetrieveReportingReportRunBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveReportingReportRunBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveReportingReportRunBuilder").finish_non_exhaustive()
+    }
 }
 impl RetrieveReportingReportRunBuilder {
     fn new() -> Self {
@@ -109,10 +133,18 @@ impl RetrieveReportingReportRunBuilder {
     }
 }
 /// Retrieves the details of an existing Report Run.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RetrieveReportingReportRun {
     inner: RetrieveReportingReportRunBuilder,
     report_run: stripe_misc::ReportingReportRunId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveReportingReportRun {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveReportingReportRun").finish_non_exhaustive()
+    }
 }
 impl RetrieveReportingReportRun {
     /// Construct a new `RetrieveReportingReportRun`.
@@ -152,13 +184,21 @@ impl StripeRequest for RetrieveReportingReportRun {
             .query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct CreateReportingReportRunBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     parameters: Option<CreateReportingReportRunParameters>,
     report_type: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateReportingReportRunBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateReportingReportRunBuilder").finish_non_exhaustive()
+    }
 }
 impl CreateReportingReportRunBuilder {
     fn new(report_type: impl Into<String>) -> Self {
@@ -167,7 +207,9 @@ impl CreateReportingReportRunBuilder {
 }
 /// Parameters specifying how the report should be run.
 /// Different Report Types have different required and optional parameters, listed in the [API Access to Reports](https://docs.stripe.com/reporting/statements/api) documentation.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateReportingReportRunParameters {
     /// The set of report columns to include in the report output.
     /// If omitted, the Report Type is run with its default column set.
@@ -197,6 +239,12 @@ pub struct CreateReportingReportRunParameters {
     /// Has no effect on `interval_start` or `interval_end`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub timezone: Option<CreateReportingReportRunParametersTimezone>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateReportingReportRunParameters {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateReportingReportRunParameters").finish_non_exhaustive()
+    }
 }
 impl CreateReportingReportRunParameters {
     pub fn new() -> Self {
@@ -366,9 +414,17 @@ impl std::fmt::Display for CreateReportingReportRunParametersReportingCategory {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateReportingReportRunParametersReportingCategory {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateReportingReportRunParametersReportingCategory {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateReportingReportRunParametersReportingCategory))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateReportingReportRunParametersReportingCategory {
@@ -2225,9 +2281,17 @@ impl std::fmt::Display for CreateReportingReportRunParametersTimezone {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateReportingReportRunParametersTimezone {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateReportingReportRunParametersTimezone {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateReportingReportRunParametersTimezone))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateReportingReportRunParametersTimezone {
@@ -2248,9 +2312,17 @@ impl<'de> serde::Deserialize<'de> for CreateReportingReportRunParametersTimezone
 }
 /// Creates a new object and begin running the report.
 /// (Certain report types require a [live-mode API key](https://stripe.com/docs/keys#test-live-modes).).
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateReportingReportRun {
     inner: CreateReportingReportRunBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateReportingReportRun {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateReportingReportRun").finish_non_exhaustive()
+    }
 }
 impl CreateReportingReportRun {
     /// Construct a new `CreateReportingReportRun`.

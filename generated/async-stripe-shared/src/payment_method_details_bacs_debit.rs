@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentMethodDetailsBacsDebit {
@@ -13,6 +14,12 @@ pub struct PaymentMethodDetailsBacsDebit {
     pub mandate: Option<String>,
     /// Sort code of the bank account. (e.g., `10-20-30`)
     pub sort_code: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentMethodDetailsBacsDebit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PaymentMethodDetailsBacsDebit").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct PaymentMethodDetailsBacsDebitBuilder {

@@ -1,9 +1,16 @@
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PromotionCodeCurrencyOption {
     /// Minimum amount required to redeem this Promotion Code into a Coupon (e.g., a purchase must be $100 or more to work).
     pub minimum_amount: i64,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PromotionCodeCurrencyOption {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PromotionCodeCurrencyOption").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct PromotionCodeCurrencyOptionBuilder {

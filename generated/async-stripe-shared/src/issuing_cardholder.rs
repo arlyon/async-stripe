@@ -3,7 +3,8 @@
 /// Related guide: [How to create a cardholder](https://docs.stripe.com/issuing/cards/virtual/issue-cards#create-cardholder).
 ///
 /// For more details see <<https://stripe.com/docs/api/issuing/cardholders/object>>.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct IssuingCardholder {
     pub billing: stripe_shared::IssuingCardholderAddress,
@@ -43,6 +44,12 @@ pub struct IssuingCardholder {
     /// See [Choose a cardholder type](https://docs.stripe.com/issuing/other/choose-cardholder) for more details.
     #[cfg_attr(feature = "deserialize", serde(rename = "type"))]
     pub type_: stripe_shared::IssuingCardholderType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for IssuingCardholder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("IssuingCardholder").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct IssuingCardholderBuilder {
@@ -332,9 +339,16 @@ impl std::fmt::Display for IssuingCardholderPreferredLocales {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for IssuingCardholderPreferredLocales {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for IssuingCardholderPreferredLocales {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(IssuingCardholderPreferredLocales)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for IssuingCardholderPreferredLocales {
@@ -410,9 +424,16 @@ impl std::fmt::Display for IssuingCardholderStatus {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for IssuingCardholderStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for IssuingCardholderStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(IssuingCardholderStatus)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for IssuingCardholderStatus {
@@ -485,9 +506,16 @@ impl std::fmt::Display for IssuingCardholderType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for IssuingCardholderType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for IssuingCardholderType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(IssuingCardholderType)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for IssuingCardholderType {

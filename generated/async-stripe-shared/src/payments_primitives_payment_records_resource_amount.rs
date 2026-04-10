@@ -1,5 +1,6 @@
 /// A representation of an amount of money, consisting of an amount and a currency.
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentsPrimitivesPaymentRecordsResourceAmount {
@@ -9,6 +10,12 @@ pub struct PaymentsPrimitivesPaymentRecordsResourceAmount {
     /// A positive integer representing the amount in the currency's [minor unit](https://docs.stripe.com/currencies#zero-decimal).
     /// For example, `100` can represent 1 USD or 100 JPY.
     pub value: i64,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentsPrimitivesPaymentRecordsResourceAmount {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PaymentsPrimitivesPaymentRecordsResourceAmount").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct PaymentsPrimitivesPaymentRecordsResourceAmountBuilder {

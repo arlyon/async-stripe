@@ -1,5 +1,6 @@
 /// The billing mode of the quote.
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct QuotesResourceSubscriptionDataBillingMode {
@@ -7,6 +8,12 @@ pub struct QuotesResourceSubscriptionDataBillingMode {
     /// Controls how prorations and invoices for subscriptions are calculated and orchestrated.
     #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "type"))]
     pub type_: QuotesResourceSubscriptionDataBillingModeType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for QuotesResourceSubscriptionDataBillingMode {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("QuotesResourceSubscriptionDataBillingMode").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct QuotesResourceSubscriptionDataBillingModeBuilder {
@@ -148,9 +155,17 @@ impl std::fmt::Display for QuotesResourceSubscriptionDataBillingModeType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for QuotesResourceSubscriptionDataBillingModeType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for QuotesResourceSubscriptionDataBillingModeType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(QuotesResourceSubscriptionDataBillingModeType))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

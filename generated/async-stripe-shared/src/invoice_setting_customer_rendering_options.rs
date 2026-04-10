@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct InvoiceSettingCustomerRenderingOptions {
@@ -7,6 +8,12 @@ pub struct InvoiceSettingCustomerRenderingOptions {
     /// ID of the invoice rendering template to be used for this customer's invoices.
     /// If set, the template will be used on all invoices for this customer unless a template is set directly on the invoice.
     pub template: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for InvoiceSettingCustomerRenderingOptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("InvoiceSettingCustomerRenderingOptions").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct InvoiceSettingCustomerRenderingOptionsBuilder {

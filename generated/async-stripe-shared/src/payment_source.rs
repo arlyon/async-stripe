@@ -1,5 +1,6 @@
 /// The resource representing a Stripe Polymorphic
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(tag = "object"))]
@@ -101,6 +102,12 @@ const _: () = {
     }
 };
 
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentSource {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PaymentSource").finish_non_exhaustive()
+    }
+}
 impl stripe_types::Object for PaymentSource {
     type Id = smol_str::SmolStr;
     fn id(&self) -> &Self::Id {

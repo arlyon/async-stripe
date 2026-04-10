@@ -3,7 +3,8 @@
 /// Related guide: [Connecting to a reader](https://docs.stripe.com/terminal/payments/connect-reader)
 ///
 /// For more details see <<https://stripe.com/docs/api/terminal/readers/object>>.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TerminalReader {
     /// The most recent action performed by the reader.
@@ -35,6 +36,12 @@ pub struct TerminalReader {
     /// The networking status of the reader.
     /// We do not recommend using this field in flows that may block taking payments.
     pub status: Option<stripe_terminal::TerminalReaderStatus>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TerminalReader {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("TerminalReader").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct TerminalReaderBuilder {
@@ -314,9 +321,16 @@ impl std::fmt::Display for TerminalReaderDeviceType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for TerminalReaderDeviceType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TerminalReaderDeviceType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(TerminalReaderDeviceType)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for TerminalReaderDeviceType {
@@ -389,9 +403,16 @@ impl std::fmt::Display for TerminalReaderStatus {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for TerminalReaderStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TerminalReaderStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(TerminalReaderStatus)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for TerminalReaderStatus {

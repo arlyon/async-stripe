@@ -6,7 +6,8 @@
 /// Invoice Payments include the mapping between payment objects, such as Payment Intent, and Invoices.
 /// This resource and its endpoints allows you to easily track if a payment is associated with a specific invoice and.
 /// monitor the allocation details of the payments.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct InvoicePayment {
     /// Amount that was actually paid for this invoice, in cents (or local equivalent).
@@ -34,6 +35,12 @@ pub struct InvoicePayment {
     /// The status of the payment, one of `open`, `paid`, or `canceled`.
     pub status: String,
     pub status_transitions: stripe_shared::InvoicesPaymentsInvoicePaymentStatusTransitions,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for InvoicePayment {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("InvoicePayment").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct InvoicePaymentBuilder {

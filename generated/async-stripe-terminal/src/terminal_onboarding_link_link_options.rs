@@ -1,11 +1,18 @@
 /// Link type options associated with the current onboarding link object.
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TerminalOnboardingLinkLinkOptions {
     /// The options associated with the Apple Terms and Conditions link type.
     pub apple_terms_and_conditions:
         Option<stripe_terminal::TerminalOnboardingLinkAppleTermsAndConditions>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TerminalOnboardingLinkLinkOptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("TerminalOnboardingLinkLinkOptions").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct TerminalOnboardingLinkLinkOptionsBuilder {

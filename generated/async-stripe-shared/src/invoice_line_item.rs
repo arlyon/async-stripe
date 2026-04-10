@@ -1,7 +1,8 @@
 /// Invoice Line Items represent the individual lines within an [invoice](https://docs.stripe.com/api/invoices) and only exist within the context of an invoice.
 ///
 /// Each line item is backed by either an [invoice item](https://docs.stripe.com/api/invoiceitems) or a [subscription item](https://docs.stripe.com/api/subscription_items).
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct InvoiceLineItem {
     /// The amount, in cents (or local equivalent).
@@ -50,6 +51,12 @@ pub struct InvoiceLineItem {
     pub subtotal: i64,
     /// The tax information of the line item.
     pub taxes: Option<Vec<stripe_shared::BillingBillResourceInvoicingTaxesTax>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for InvoiceLineItem {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("InvoiceLineItem").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct InvoiceLineItemBuilder {

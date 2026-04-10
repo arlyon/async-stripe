@@ -1,4 +1,5 @@
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct DeletedDiscount {
     /// The Checkout session that this coupon is applied to, if it is applied to a particular session in payment mode.
@@ -27,6 +28,12 @@ pub struct DeletedDiscount {
     pub subscription: Option<String>,
     /// The subscription item that this coupon is applied to, if it is applied to a particular subscription item.
     pub subscription_item: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for DeletedDiscount {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("DeletedDiscount").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct DeletedDiscountBuilder {

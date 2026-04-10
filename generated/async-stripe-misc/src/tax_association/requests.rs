@@ -2,11 +2,19 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct FindTaxAssociationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
     payment_intent: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for FindTaxAssociationBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("FindTaxAssociationBuilder").finish_non_exhaustive()
+    }
 }
 impl FindTaxAssociationBuilder {
     fn new(payment_intent: impl Into<String>) -> Self {
@@ -14,9 +22,17 @@ impl FindTaxAssociationBuilder {
     }
 }
 /// Finds a tax association object by PaymentIntent id.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct FindTaxAssociation {
     inner: FindTaxAssociationBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for FindTaxAssociation {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("FindTaxAssociation").finish_non_exhaustive()
+    }
 }
 impl FindTaxAssociation {
     /// Construct a new `FindTaxAssociation`.

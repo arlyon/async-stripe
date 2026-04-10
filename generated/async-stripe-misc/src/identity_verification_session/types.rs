@@ -11,7 +11,8 @@
 /// Related guide: [The Verification Sessions API](https://docs.stripe.com/identity/verification-sessions).
 ///
 /// For more details see <<https://stripe.com/docs/api/identity/verification_sessions/object>>.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct IdentityVerificationSession {
     /// A string to reference this user.
@@ -66,6 +67,12 @@ pub struct IdentityVerificationSession {
     pub verification_flow: Option<String>,
     /// The user’s verified data.
     pub verified_outputs: Option<stripe_misc::GelatoVerifiedOutputs>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for IdentityVerificationSession {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("IdentityVerificationSession").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct IdentityVerificationSessionBuilder {
@@ -380,9 +387,16 @@ impl std::fmt::Display for IdentityVerificationSessionType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for IdentityVerificationSessionType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for IdentityVerificationSessionType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(IdentityVerificationSessionType)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -477,9 +491,16 @@ impl std::fmt::Display for IdentityVerificationSessionStatus {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for IdentityVerificationSessionStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for IdentityVerificationSessionStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(IdentityVerificationSessionStatus)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for IdentityVerificationSessionStatus {

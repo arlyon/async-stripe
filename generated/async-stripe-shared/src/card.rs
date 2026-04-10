@@ -5,7 +5,8 @@
 /// Related guide: [Card payments with Sources](https://docs.stripe.com/sources/cards)
 ///
 /// For more details see <<https://stripe.com/docs/api/cards/object>>.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct Card {
     pub account: Option<stripe_types::Expandable<stripe_shared::Account>>,
@@ -96,6 +97,12 @@ pub struct Card {
     /// If the card number is tokenized, this is the method that was used.
     /// Can be `android_pay` (includes Google Pay), `apple_pay`, `masterpass`, `visa_checkout`, or null.
     pub tokenization_method: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for Card {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("Card").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct CardBuilder {
@@ -512,9 +519,16 @@ impl std::fmt::Display for CardAllowRedisplay {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CardAllowRedisplay {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CardAllowRedisplay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CardAllowRedisplay)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -590,9 +604,16 @@ impl std::fmt::Display for CardAvailablePayoutMethods {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CardAvailablePayoutMethods {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CardAvailablePayoutMethods {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CardAvailablePayoutMethods)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -667,9 +688,16 @@ impl std::fmt::Display for CardRegulatedStatus {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CardRegulatedStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CardRegulatedStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CardRegulatedStatus)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

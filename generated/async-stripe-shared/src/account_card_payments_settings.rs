@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct AccountCardPaymentsSettings {
@@ -15,6 +16,12 @@ pub struct AccountCardPaymentsSettings {
     /// This field prefixes any dynamic `statement_descriptor_suffix_kanji` specified on the charge.
     /// `statement_descriptor_prefix_kanji` is useful for maximizing descriptor space for the dynamic portion.
     pub statement_descriptor_prefix_kanji: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for AccountCardPaymentsSettings {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("AccountCardPaymentsSettings").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct AccountCardPaymentsSettingsBuilder {

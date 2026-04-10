@@ -1,5 +1,6 @@
 /// Details about the request forwarded to the destination endpoint.
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct ForwardedRequestDetails {
@@ -10,6 +11,12 @@ pub struct ForwardedRequestDetails {
     pub headers: Vec<stripe_misc::ForwardedRequestHeader>,
     /// The HTTP method used to call the destination endpoint.
     pub http_method: ForwardedRequestDetailsHttpMethod,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ForwardedRequestDetails {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ForwardedRequestDetails").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct ForwardedRequestDetailsBuilder {
@@ -157,9 +164,16 @@ impl std::fmt::Display for ForwardedRequestDetailsHttpMethod {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ForwardedRequestDetailsHttpMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ForwardedRequestDetailsHttpMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ForwardedRequestDetailsHttpMethod)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

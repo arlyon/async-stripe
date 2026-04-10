@@ -2,7 +2,9 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ListTreasuryOutboundPaymentBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     created: Option<stripe_types::RangeQueryTs>,
@@ -20,6 +22,12 @@ struct ListTreasuryOutboundPaymentBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     status: Option<stripe_treasury::TreasuryOutboundPaymentStatus>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListTreasuryOutboundPaymentBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListTreasuryOutboundPaymentBuilder").finish_non_exhaustive()
+    }
+}
 impl ListTreasuryOutboundPaymentBuilder {
     fn new(financial_account: impl Into<String>) -> Self {
         Self {
@@ -35,9 +43,17 @@ impl ListTreasuryOutboundPaymentBuilder {
     }
 }
 /// Returns a list of OutboundPayments sent from the specified FinancialAccount.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListTreasuryOutboundPayment {
     inner: ListTreasuryOutboundPaymentBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListTreasuryOutboundPayment {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListTreasuryOutboundPayment").finish_non_exhaustive()
+    }
 }
 impl ListTreasuryOutboundPayment {
     /// Construct a new `ListTreasuryOutboundPayment`.
@@ -121,10 +137,18 @@ impl StripeRequest for ListTreasuryOutboundPayment {
         RequestBuilder::new(StripeMethod::Get, "/treasury/outbound_payments").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RetrieveTreasuryOutboundPaymentBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveTreasuryOutboundPaymentBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveTreasuryOutboundPaymentBuilder").finish_non_exhaustive()
+    }
 }
 impl RetrieveTreasuryOutboundPaymentBuilder {
     fn new() -> Self {
@@ -132,10 +156,18 @@ impl RetrieveTreasuryOutboundPaymentBuilder {
     }
 }
 /// Retrieves the details of an existing OutboundPayment by passing the unique OutboundPayment ID from either the OutboundPayment creation request or OutboundPayment list.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RetrieveTreasuryOutboundPayment {
     inner: RetrieveTreasuryOutboundPaymentBuilder,
     id: stripe_treasury::TreasuryOutboundPaymentId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveTreasuryOutboundPayment {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveTreasuryOutboundPayment").finish_non_exhaustive()
+    }
 }
 impl RetrieveTreasuryOutboundPayment {
     /// Construct a new `RetrieveTreasuryOutboundPayment`.
@@ -175,11 +207,19 @@ impl StripeRequest for RetrieveTreasuryOutboundPayment {
             .query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct UpdateTreasuryOutboundPaymentBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
     tracking_details: UpdateTreasuryOutboundPaymentTrackingDetails,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateTreasuryOutboundPaymentBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateTreasuryOutboundPaymentBuilder").finish_non_exhaustive()
+    }
 }
 impl UpdateTreasuryOutboundPaymentBuilder {
     fn new(tracking_details: impl Into<UpdateTreasuryOutboundPaymentTrackingDetails>) -> Self {
@@ -187,7 +227,9 @@ impl UpdateTreasuryOutboundPaymentBuilder {
     }
 }
 /// Details about network-specific tracking information.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateTreasuryOutboundPaymentTrackingDetails {
     /// ACH network tracking details.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -199,16 +241,30 @@ pub struct UpdateTreasuryOutboundPaymentTrackingDetails {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub us_domestic_wire: Option<UpdateTreasuryOutboundPaymentTrackingDetailsUsDomesticWire>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateTreasuryOutboundPaymentTrackingDetails {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateTreasuryOutboundPaymentTrackingDetails").finish_non_exhaustive()
+    }
+}
 impl UpdateTreasuryOutboundPaymentTrackingDetails {
     pub fn new(type_: impl Into<UpdateTreasuryOutboundPaymentTrackingDetailsType>) -> Self {
         Self { ach: None, type_: type_.into(), us_domestic_wire: None }
     }
 }
 /// ACH network tracking details.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateTreasuryOutboundPaymentTrackingDetailsAch {
     /// ACH trace ID for funds sent over the `ach` network.
     pub trace_id: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateTreasuryOutboundPaymentTrackingDetailsAch {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateTreasuryOutboundPaymentTrackingDetailsAch").finish_non_exhaustive()
+    }
 }
 impl UpdateTreasuryOutboundPaymentTrackingDetailsAch {
     pub fn new(trace_id: impl Into<String>) -> Self {
@@ -259,9 +315,17 @@ impl std::fmt::Display for UpdateTreasuryOutboundPaymentTrackingDetailsType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdateTreasuryOutboundPaymentTrackingDetailsType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateTreasuryOutboundPaymentTrackingDetailsType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdateTreasuryOutboundPaymentTrackingDetailsType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdateTreasuryOutboundPaymentTrackingDetailsType {
@@ -281,7 +345,9 @@ impl<'de> serde::Deserialize<'de> for UpdateTreasuryOutboundPaymentTrackingDetai
     }
 }
 /// US domestic wire network tracking details.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateTreasuryOutboundPaymentTrackingDetailsUsDomesticWire {
     /// CHIPS System Sequence Number (SSN) for funds sent over the `us_domestic_wire` network.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -292,6 +358,13 @@ pub struct UpdateTreasuryOutboundPaymentTrackingDetailsUsDomesticWire {
     /// OMAD for funds sent over the `us_domestic_wire` network.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub omad: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateTreasuryOutboundPaymentTrackingDetailsUsDomesticWire {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateTreasuryOutboundPaymentTrackingDetailsUsDomesticWire")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdateTreasuryOutboundPaymentTrackingDetailsUsDomesticWire {
     pub fn new() -> Self {
@@ -305,10 +378,18 @@ impl Default for UpdateTreasuryOutboundPaymentTrackingDetailsUsDomesticWire {
 }
 /// Updates a test mode created OutboundPayment with tracking details.
 /// The OutboundPayment must not be cancelable, and cannot be in the `canceled` or `failed` states.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateTreasuryOutboundPayment {
     inner: UpdateTreasuryOutboundPaymentBuilder,
     id: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateTreasuryOutboundPayment {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateTreasuryOutboundPayment").finish_non_exhaustive()
+    }
 }
 impl UpdateTreasuryOutboundPayment {
     /// Construct a new `UpdateTreasuryOutboundPayment`.
@@ -357,10 +438,18 @@ impl StripeRequest for UpdateTreasuryOutboundPayment {
         .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct FailTreasuryOutboundPaymentBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for FailTreasuryOutboundPaymentBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("FailTreasuryOutboundPaymentBuilder").finish_non_exhaustive()
+    }
 }
 impl FailTreasuryOutboundPaymentBuilder {
     fn new() -> Self {
@@ -369,10 +458,18 @@ impl FailTreasuryOutboundPaymentBuilder {
 }
 /// Transitions a test mode created OutboundPayment to the `failed` status.
 /// The OutboundPayment must already be in the `processing` state.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct FailTreasuryOutboundPayment {
     inner: FailTreasuryOutboundPaymentBuilder,
     id: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for FailTreasuryOutboundPayment {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("FailTreasuryOutboundPayment").finish_non_exhaustive()
+    }
 }
 impl FailTreasuryOutboundPayment {
     /// Construct a new `FailTreasuryOutboundPayment`.
@@ -415,10 +512,18 @@ impl StripeRequest for FailTreasuryOutboundPayment {
         .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct PostTreasuryOutboundPaymentBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PostTreasuryOutboundPaymentBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PostTreasuryOutboundPaymentBuilder").finish_non_exhaustive()
+    }
 }
 impl PostTreasuryOutboundPaymentBuilder {
     fn new() -> Self {
@@ -427,10 +532,18 @@ impl PostTreasuryOutboundPaymentBuilder {
 }
 /// Transitions a test mode created OutboundPayment to the `posted` status.
 /// The OutboundPayment must already be in the `processing` state.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct PostTreasuryOutboundPayment {
     inner: PostTreasuryOutboundPaymentBuilder,
     id: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PostTreasuryOutboundPayment {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PostTreasuryOutboundPayment").finish_non_exhaustive()
+    }
 }
 impl PostTreasuryOutboundPayment {
     /// Construct a new `PostTreasuryOutboundPayment`.
@@ -473,12 +586,21 @@ impl StripeRequest for PostTreasuryOutboundPayment {
         .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ReturnOutboundPaymentTreasuryOutboundPaymentBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     returned_details: Option<ReturnOutboundPaymentTreasuryOutboundPaymentReturnedDetails>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ReturnOutboundPaymentTreasuryOutboundPaymentBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ReturnOutboundPaymentTreasuryOutboundPaymentBuilder")
+            .finish_non_exhaustive()
+    }
 }
 impl ReturnOutboundPaymentTreasuryOutboundPaymentBuilder {
     fn new() -> Self {
@@ -486,11 +608,20 @@ impl ReturnOutboundPaymentTreasuryOutboundPaymentBuilder {
     }
 }
 /// Optional hash to set the return code.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ReturnOutboundPaymentTreasuryOutboundPaymentReturnedDetails {
     /// The return code to be set on the OutboundPayment object.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub code: Option<ReturnOutboundPaymentTreasuryOutboundPaymentReturnedDetailsCode>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ReturnOutboundPaymentTreasuryOutboundPaymentReturnedDetails {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ReturnOutboundPaymentTreasuryOutboundPaymentReturnedDetails")
+            .finish_non_exhaustive()
+    }
 }
 impl ReturnOutboundPaymentTreasuryOutboundPaymentReturnedDetails {
     pub fn new() -> Self {
@@ -570,9 +701,17 @@ impl std::fmt::Display for ReturnOutboundPaymentTreasuryOutboundPaymentReturnedD
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ReturnOutboundPaymentTreasuryOutboundPaymentReturnedDetailsCode {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ReturnOutboundPaymentTreasuryOutboundPaymentReturnedDetailsCode {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ReturnOutboundPaymentTreasuryOutboundPaymentReturnedDetailsCode))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ReturnOutboundPaymentTreasuryOutboundPaymentReturnedDetailsCode {
@@ -595,10 +734,18 @@ impl<'de> serde::Deserialize<'de>
 }
 /// Transitions a test mode created OutboundPayment to the `returned` status.
 /// The OutboundPayment must already be in the `processing` state.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ReturnOutboundPaymentTreasuryOutboundPayment {
     inner: ReturnOutboundPaymentTreasuryOutboundPaymentBuilder,
     id: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ReturnOutboundPaymentTreasuryOutboundPayment {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ReturnOutboundPaymentTreasuryOutboundPayment").finish_non_exhaustive()
+    }
 }
 impl ReturnOutboundPaymentTreasuryOutboundPayment {
     /// Construct a new `ReturnOutboundPaymentTreasuryOutboundPayment`.
@@ -649,7 +796,9 @@ impl StripeRequest for ReturnOutboundPaymentTreasuryOutboundPayment {
         .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct CreateTreasuryOutboundPaymentBuilder {
     amount: i64,
     currency: stripe_types::Currency,
@@ -675,6 +824,12 @@ struct CreateTreasuryOutboundPaymentBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     statement_descriptor: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTreasuryOutboundPaymentBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTreasuryOutboundPaymentBuilder").finish_non_exhaustive()
+    }
+}
 impl CreateTreasuryOutboundPaymentBuilder {
     fn new(
         amount: impl Into<i64>,
@@ -699,7 +854,9 @@ impl CreateTreasuryOutboundPaymentBuilder {
 }
 /// Hash used to generate the PaymentMethod to be used for this OutboundPayment.
 /// Exclusive with `destination_payment_method`.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTreasuryOutboundPaymentDestinationPaymentMethodData {
     /// Billing information associated with the PaymentMethod that may be used or required by particular types of payment methods.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -724,6 +881,13 @@ pub struct CreateTreasuryOutboundPaymentDestinationPaymentMethodData {
     pub us_bank_account:
         Option<CreateTreasuryOutboundPaymentDestinationPaymentMethodDataUsBankAccount>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTreasuryOutboundPaymentDestinationPaymentMethodData {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTreasuryOutboundPaymentDestinationPaymentMethodData")
+            .finish_non_exhaustive()
+    }
+}
 impl CreateTreasuryOutboundPaymentDestinationPaymentMethodData {
     pub fn new(
         type_: impl Into<CreateTreasuryOutboundPaymentDestinationPaymentMethodDataType>,
@@ -738,7 +902,9 @@ impl CreateTreasuryOutboundPaymentDestinationPaymentMethodData {
     }
 }
 /// Billing information associated with the PaymentMethod that may be used or required by particular types of payment methods.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTreasuryOutboundPaymentDestinationPaymentMethodDataBillingDetails {
     /// Billing address.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -754,6 +920,13 @@ pub struct CreateTreasuryOutboundPaymentDestinationPaymentMethodDataBillingDetai
     #[serde(skip_serializing_if = "Option::is_none")]
     pub phone: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTreasuryOutboundPaymentDestinationPaymentMethodDataBillingDetails {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTreasuryOutboundPaymentDestinationPaymentMethodDataBillingDetails")
+            .finish_non_exhaustive()
+    }
+}
 impl CreateTreasuryOutboundPaymentDestinationPaymentMethodDataBillingDetails {
     pub fn new() -> Self {
         Self { address: None, email: None, name: None, phone: None }
@@ -765,7 +938,9 @@ impl Default for CreateTreasuryOutboundPaymentDestinationPaymentMethodDataBillin
     }
 }
 /// Billing address.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTreasuryOutboundPaymentDestinationPaymentMethodDataBillingDetailsAddress {
     /// City, district, suburb, town, or village.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -785,6 +960,17 @@ pub struct CreateTreasuryOutboundPaymentDestinationPaymentMethodDataBillingDetai
     /// State, county, province, or region ([ISO 3166-2](https://en.wikipedia.org/wiki/ISO_3166-2)).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for CreateTreasuryOutboundPaymentDestinationPaymentMethodDataBillingDetailsAddress
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(
+            "CreateTreasuryOutboundPaymentDestinationPaymentMethodDataBillingDetailsAddress",
+        )
+        .finish_non_exhaustive()
+    }
 }
 impl CreateTreasuryOutboundPaymentDestinationPaymentMethodDataBillingDetailsAddress {
     pub fn new() -> Self {
@@ -842,9 +1028,17 @@ impl std::fmt::Display for CreateTreasuryOutboundPaymentDestinationPaymentMethod
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTreasuryOutboundPaymentDestinationPaymentMethodDataType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTreasuryOutboundPaymentDestinationPaymentMethodDataType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTreasuryOutboundPaymentDestinationPaymentMethodDataType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTreasuryOutboundPaymentDestinationPaymentMethodDataType {
@@ -866,7 +1060,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Required hash if type is set to `us_bank_account`.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTreasuryOutboundPaymentDestinationPaymentMethodDataUsBankAccount {
     /// Account holder type: individual or company.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -886,6 +1082,13 @@ pub struct CreateTreasuryOutboundPaymentDestinationPaymentMethodDataUsBankAccoun
     /// Routing number of the bank account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub routing_number: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTreasuryOutboundPaymentDestinationPaymentMethodDataUsBankAccount {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTreasuryOutboundPaymentDestinationPaymentMethodDataUsBankAccount")
+            .finish_non_exhaustive()
+    }
 }
 impl CreateTreasuryOutboundPaymentDestinationPaymentMethodDataUsBankAccount {
     pub fn new() -> Self {
@@ -951,11 +1154,23 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for CreateTreasuryOutboundPaymentDestinationPaymentMethodDataUsBankAccountAccountHolderType
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for CreateTreasuryOutboundPaymentDestinationPaymentMethodDataUsBankAccountAccountHolderType
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreateTreasuryOutboundPaymentDestinationPaymentMethodDataUsBankAccountAccountHolderType
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -1026,11 +1241,23 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for CreateTreasuryOutboundPaymentDestinationPaymentMethodDataUsBankAccountAccountType
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for CreateTreasuryOutboundPaymentDestinationPaymentMethodDataUsBankAccountAccountType
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreateTreasuryOutboundPaymentDestinationPaymentMethodDataUsBankAccountAccountType
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -1054,12 +1281,21 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Payment method-specific configuration for this OutboundPayment.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTreasuryOutboundPaymentDestinationPaymentMethodOptions {
     /// Optional fields for `us_bank_account`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub us_bank_account:
         Option<CreateTreasuryOutboundPaymentDestinationPaymentMethodOptionsUsBankAccount>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTreasuryOutboundPaymentDestinationPaymentMethodOptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTreasuryOutboundPaymentDestinationPaymentMethodOptions")
+            .finish_non_exhaustive()
+    }
 }
 impl CreateTreasuryOutboundPaymentDestinationPaymentMethodOptions {
     pub fn new() -> Self {
@@ -1072,7 +1308,9 @@ impl Default for CreateTreasuryOutboundPaymentDestinationPaymentMethodOptions {
     }
 }
 /// Optional fields for `us_bank_account`.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTreasuryOutboundPaymentDestinationPaymentMethodOptionsUsBankAccount {
     /// Specifies the network rails to be used.
     /// If not set, will default to the PaymentMethod's preferred network.
@@ -1080,6 +1318,13 @@ pub struct CreateTreasuryOutboundPaymentDestinationPaymentMethodOptionsUsBankAcc
     #[serde(skip_serializing_if = "Option::is_none")]
     pub network:
         Option<CreateTreasuryOutboundPaymentDestinationPaymentMethodOptionsUsBankAccountNetwork>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTreasuryOutboundPaymentDestinationPaymentMethodOptionsUsBankAccount {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTreasuryOutboundPaymentDestinationPaymentMethodOptionsUsBankAccount")
+            .finish_non_exhaustive()
+    }
 }
 impl CreateTreasuryOutboundPaymentDestinationPaymentMethodOptionsUsBankAccount {
     pub fn new() -> Self {
@@ -1141,11 +1386,23 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for CreateTreasuryOutboundPaymentDestinationPaymentMethodOptionsUsBankAccountNetwork
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for CreateTreasuryOutboundPaymentDestinationPaymentMethodOptionsUsBankAccountNetwork
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreateTreasuryOutboundPaymentDestinationPaymentMethodOptionsUsBankAccountNetwork
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -1169,7 +1426,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// End user details.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTreasuryOutboundPaymentEndUserDetails {
     /// IP address of the user initiating the OutboundPayment.
     /// Must be supplied if `present` is set to `true`.
@@ -1179,15 +1438,29 @@ pub struct CreateTreasuryOutboundPaymentEndUserDetails {
     /// Otherwise, `false`.
     pub present: bool,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTreasuryOutboundPaymentEndUserDetails {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTreasuryOutboundPaymentEndUserDetails").finish_non_exhaustive()
+    }
+}
 impl CreateTreasuryOutboundPaymentEndUserDetails {
     pub fn new(present: impl Into<bool>) -> Self {
         Self { ip_address: None, present: present.into() }
     }
 }
 /// Creates an OutboundPayment.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTreasuryOutboundPayment {
     inner: CreateTreasuryOutboundPaymentBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTreasuryOutboundPayment {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTreasuryOutboundPayment").finish_non_exhaustive()
+    }
 }
 impl CreateTreasuryOutboundPayment {
     /// Construct a new `CreateTreasuryOutboundPayment`.
@@ -1304,10 +1577,18 @@ impl StripeRequest for CreateTreasuryOutboundPayment {
         RequestBuilder::new(StripeMethod::Post, "/treasury/outbound_payments").form(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct CancelTreasuryOutboundPaymentBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CancelTreasuryOutboundPaymentBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CancelTreasuryOutboundPaymentBuilder").finish_non_exhaustive()
+    }
 }
 impl CancelTreasuryOutboundPaymentBuilder {
     fn new() -> Self {
@@ -1315,10 +1596,18 @@ impl CancelTreasuryOutboundPaymentBuilder {
     }
 }
 /// Cancel an OutboundPayment.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CancelTreasuryOutboundPayment {
     inner: CancelTreasuryOutboundPaymentBuilder,
     id: stripe_treasury::TreasuryOutboundPaymentId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CancelTreasuryOutboundPayment {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CancelTreasuryOutboundPayment").finish_non_exhaustive()
+    }
 }
 impl CancelTreasuryOutboundPayment {
     /// Construct a new `CancelTreasuryOutboundPayment`.

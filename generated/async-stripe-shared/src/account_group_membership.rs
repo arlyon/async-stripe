@@ -1,10 +1,17 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct AccountGroupMembership {
     /// The group the account is in to determine their payments pricing, and null if the account is on customized pricing.
     /// [See the Platform pricing tool documentation](https://docs.stripe.com/connect/platform-pricing-tools) for details.
     pub payments_pricing: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for AccountGroupMembership {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("AccountGroupMembership").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct AccountGroupMembershipBuilder {

@@ -1,4 +1,5 @@
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct ClimateRemovalsProductsPrice {
@@ -8,6 +9,12 @@ pub struct ClimateRemovalsProductsPrice {
     pub amount_subtotal: i64,
     /// Total for one metric ton of carbon removal (including fees) in the currency's smallest unit.
     pub amount_total: i64,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ClimateRemovalsProductsPrice {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ClimateRemovalsProductsPrice").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct ClimateRemovalsProductsPriceBuilder {

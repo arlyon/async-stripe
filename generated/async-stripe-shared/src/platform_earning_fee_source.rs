@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PlatformEarningFeeSource {
@@ -9,6 +10,12 @@ pub struct PlatformEarningFeeSource {
     /// Type of object that created the application fee.
     #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "type"))]
     pub type_: PlatformEarningFeeSourceType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PlatformEarningFeeSource {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PlatformEarningFeeSource").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct PlatformEarningFeeSourceBuilder {
@@ -159,9 +166,16 @@ impl std::fmt::Display for PlatformEarningFeeSourceType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for PlatformEarningFeeSourceType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PlatformEarningFeeSourceType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(PlatformEarningFeeSourceType)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

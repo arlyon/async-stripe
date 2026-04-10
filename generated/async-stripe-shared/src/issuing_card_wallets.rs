@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct IssuingCardWallets {
@@ -6,6 +7,12 @@ pub struct IssuingCardWallets {
     pub google_pay: stripe_shared::IssuingCardGooglePay,
     /// Unique identifier for a card used with digital wallets
     pub primary_account_identifier: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for IssuingCardWallets {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("IssuingCardWallets").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct IssuingCardWalletsBuilder {

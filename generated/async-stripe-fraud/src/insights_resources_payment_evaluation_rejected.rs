@@ -1,9 +1,16 @@
 /// Details of an rejected outcome attached to this payment evaluation.
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct InsightsResourcesPaymentEvaluationRejected {
     pub card: Option<stripe_fraud::InsightsResourcesPaymentEvaluationRejectedCard>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for InsightsResourcesPaymentEvaluationRejected {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("InsightsResourcesPaymentEvaluationRejected").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct InsightsResourcesPaymentEvaluationRejectedBuilder {

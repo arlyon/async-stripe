@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct CountrySpecVerificationFieldDetails {
@@ -6,6 +7,12 @@ pub struct CountrySpecVerificationFieldDetails {
     pub additional: Vec<String>,
     /// Fields which every account must eventually provide.
     pub minimum: Vec<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CountrySpecVerificationFieldDetails {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CountrySpecVerificationFieldDetails").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct CountrySpecVerificationFieldDetailsBuilder {

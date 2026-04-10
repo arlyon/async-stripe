@@ -1,4 +1,5 @@
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentLinksResourcePaymentIntentData {
@@ -18,6 +19,12 @@ pub struct PaymentLinksResourcePaymentIntentData {
     /// A string that identifies the resulting payment as part of a group.
     /// See the PaymentIntents [use case for connected accounts](https://docs.stripe.com/connect/separate-charges-and-transfers) for details.
     pub transfer_group: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentLinksResourcePaymentIntentData {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PaymentLinksResourcePaymentIntentData").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct PaymentLinksResourcePaymentIntentDataBuilder {
@@ -214,9 +221,17 @@ impl std::fmt::Display for PaymentLinksResourcePaymentIntentDataCaptureMethod {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for PaymentLinksResourcePaymentIntentDataCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentLinksResourcePaymentIntentDataCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(PaymentLinksResourcePaymentIntentDataCaptureMethod))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -297,9 +312,17 @@ impl std::fmt::Display for PaymentLinksResourcePaymentIntentDataSetupFutureUsage
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for PaymentLinksResourcePaymentIntentDataSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentLinksResourcePaymentIntentDataSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(PaymentLinksResourcePaymentIntentDataSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

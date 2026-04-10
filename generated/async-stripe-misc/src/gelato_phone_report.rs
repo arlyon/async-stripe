@@ -1,5 +1,6 @@
 /// Result from a phone check
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct GelatoPhoneReport {
@@ -9,6 +10,12 @@ pub struct GelatoPhoneReport {
     pub phone: Option<String>,
     /// Status of this `phone` check.
     pub status: GelatoPhoneReportStatus,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for GelatoPhoneReport {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("GelatoPhoneReport").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct GelatoPhoneReportBuilder {
@@ -155,9 +162,16 @@ impl std::fmt::Display for GelatoPhoneReportStatus {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for GelatoPhoneReportStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for GelatoPhoneReportStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(GelatoPhoneReportStatus)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

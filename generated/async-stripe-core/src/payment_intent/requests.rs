@@ -2,7 +2,9 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ListPaymentIntentBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     created: Option<stripe_types::RangeQueryTs>,
@@ -19,6 +21,12 @@ struct ListPaymentIntentBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     starting_after: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListPaymentIntentBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListPaymentIntentBuilder").finish_non_exhaustive()
+    }
+}
 impl ListPaymentIntentBuilder {
     fn new() -> Self {
         Self {
@@ -33,9 +41,17 @@ impl ListPaymentIntentBuilder {
     }
 }
 /// Returns a list of PaymentIntents.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListPaymentIntent {
     inner: ListPaymentIntentBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListPaymentIntent {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListPaymentIntent").finish_non_exhaustive()
+    }
 }
 impl ListPaymentIntent {
     /// Construct a new `ListPaymentIntent`.
@@ -120,12 +136,20 @@ impl StripeRequest for ListPaymentIntent {
         RequestBuilder::new(StripeMethod::Get, "/payment_intents").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RetrievePaymentIntentBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     client_secret: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrievePaymentIntentBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrievePaymentIntentBuilder").finish_non_exhaustive()
+    }
 }
 impl RetrievePaymentIntentBuilder {
     fn new() -> Self {
@@ -139,10 +163,18 @@ impl RetrievePaymentIntentBuilder {
 ///
 /// If you retrieve a PaymentIntent with a publishable key, it only returns a subset of properties.
 /// Refer to the [payment intent](https://stripe.com/docs/api#payment_intent_object) object reference for more details.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RetrievePaymentIntent {
     inner: RetrievePaymentIntentBuilder,
     intent: stripe_shared::PaymentIntentId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrievePaymentIntent {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrievePaymentIntent").finish_non_exhaustive()
+    }
 }
 impl RetrievePaymentIntent {
     /// Construct a new `RetrievePaymentIntent`.
@@ -188,7 +220,9 @@ impl StripeRequest for RetrievePaymentIntent {
             .query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct SearchPaymentIntentBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -197,6 +231,12 @@ struct SearchPaymentIntentBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     page: Option<String>,
     query: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for SearchPaymentIntentBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("SearchPaymentIntentBuilder").finish_non_exhaustive()
+    }
 }
 impl SearchPaymentIntentBuilder {
     fn new(query: impl Into<String>) -> Self {
@@ -209,9 +249,17 @@ impl SearchPaymentIntentBuilder {
 /// conditions, data is searchable in less than a minute.
 /// Occasionally, propagation of new or updated data can be up.
 /// to an hour behind during outages. Search functionality is not available to merchants in India.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct SearchPaymentIntent {
     inner: SearchPaymentIntentBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for SearchPaymentIntent {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("SearchPaymentIntent").finish_non_exhaustive()
+    }
 }
 impl SearchPaymentIntent {
     /// Construct a new `SearchPaymentIntent`.
@@ -269,7 +317,9 @@ impl StripeRequest for SearchPaymentIntent {
         RequestBuilder::new(StripeMethod::Get, "/payment_intents/search").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct CreatePaymentIntentBuilder {
     amount: i64,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -345,6 +395,12 @@ struct CreatePaymentIntentBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     use_stripe_sdk: Option<bool>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentBuilder").finish_non_exhaustive()
+    }
+}
 impl CreatePaymentIntentBuilder {
     fn new(amount: impl Into<i64>, currency: impl Into<stripe_types::Currency>) -> Self {
         Self {
@@ -389,7 +445,9 @@ impl CreatePaymentIntentBuilder {
     }
 }
 /// Provides industry-specific information about the amount.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentAmountDetails {
     /// The total discount applied on the transaction represented in the [smallest currency unit](https://docs.stripe.com/currencies#zero-decimal).
     /// An integer greater than 0.
@@ -417,6 +475,12 @@ pub struct CreatePaymentIntentAmountDetails {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax: Option<AmountDetailsTaxParam>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentAmountDetails {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentAmountDetails").finish_non_exhaustive()
+    }
+}
 impl CreatePaymentIntentAmountDetails {
     pub fn new() -> Self {
         Self {
@@ -435,7 +499,9 @@ impl Default for CreatePaymentIntentAmountDetails {
 }
 /// A list of line items, each containing information about a product in the PaymentIntent.
 /// There is a maximum of 200 line items.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentAmountDetailsLineItems {
     /// The discount applied on this line item represented in the [smallest currency unit](https://docs.stripe.com/currencies#zero-decimal).
     /// An integer greater than 0.
@@ -470,6 +536,12 @@ pub struct CreatePaymentIntentAmountDetailsLineItems {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_of_measure: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentAmountDetailsLineItems {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentAmountDetailsLineItems").finish_non_exhaustive()
+    }
+}
 impl CreatePaymentIntentAmountDetailsLineItems {
     pub fn new(
         product_name: impl Into<String>,
@@ -489,7 +561,9 @@ impl CreatePaymentIntentAmountDetailsLineItems {
     }
 }
 /// Payment method-specific information for line items.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentAmountDetailsLineItemsPaymentMethodOptions {
     /// This sub-hash contains line item details that are specific to the `card` payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -505,6 +579,13 @@ pub struct CreatePaymentIntentAmountDetailsLineItemsPaymentMethodOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub paypal: Option<CreatePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypal>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentAmountDetailsLineItemsPaymentMethodOptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentAmountDetailsLineItemsPaymentMethodOptions")
+            .finish_non_exhaustive()
+    }
+}
 impl CreatePaymentIntentAmountDetailsLineItemsPaymentMethodOptions {
     pub fn new() -> Self {
         Self { card: None, card_present: None, klarna: None, paypal: None }
@@ -516,11 +597,20 @@ impl Default for CreatePaymentIntentAmountDetailsLineItemsPaymentMethodOptions {
     }
 }
 /// This sub-hash contains line item details that are specific to the `card` payment method.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsCard {
     /// Identifier that categorizes the items being purchased using a standardized commodity scheme such as (but not limited to) UNSPSC, NAICS, NAPCS, and so on.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub commodity_code: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsCard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsCard")
+            .finish_non_exhaustive()
+    }
 }
 impl CreatePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsCard {
     pub fn new() -> Self {
@@ -533,11 +623,20 @@ impl Default for CreatePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsCa
     }
 }
 /// This sub-hash contains line item details that are specific to the `card_present` payment method.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsCardPresent {
     /// Identifier that categorizes the items being purchased using a standardized commodity scheme such as (but not limited to) UNSPSC, NAICS, NAPCS, and so on.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub commodity_code: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsCardPresent {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsCardPresent")
+            .finish_non_exhaustive()
+    }
 }
 impl CreatePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsCardPresent {
     pub fn new() -> Self {
@@ -550,7 +649,9 @@ impl Default for CreatePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsCa
     }
 }
 /// This sub-hash contains line item details that are specific to the `paypal` payment method.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypal {
     /// Type of the line item.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -562,6 +663,13 @@ pub struct CreatePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypal {
     /// The Stripe account ID of the connected account that sells the item.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sold_by: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypal {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypal")
+            .finish_non_exhaustive()
+    }
 }
 impl CreatePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypal {
     pub fn new() -> Self {
@@ -624,11 +732,23 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for CreatePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypalCategory
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for CreatePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypalCategory
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypalCategory
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -652,7 +772,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// When you enable this parameter, this PaymentIntent accepts payment methods that you enable in the Dashboard and that are compatible with this PaymentIntent's other parameters.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentAutomaticPaymentMethods {
     /// Controls whether this PaymentIntent will accept redirect-based payment methods.
     ///
@@ -662,6 +784,12 @@ pub struct CreatePaymentIntentAutomaticPaymentMethods {
     pub allow_redirects: Option<CreatePaymentIntentAutomaticPaymentMethodsAllowRedirects>,
     /// Whether this feature is enabled.
     pub enabled: bool,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentAutomaticPaymentMethods {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentAutomaticPaymentMethods").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentIntentAutomaticPaymentMethods {
     pub fn new(enabled: impl Into<bool>) -> Self {
@@ -715,9 +843,17 @@ impl std::fmt::Display for CreatePaymentIntentAutomaticPaymentMethodsAllowRedire
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentAutomaticPaymentMethodsAllowRedirects {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentAutomaticPaymentMethodsAllowRedirects {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentIntentAutomaticPaymentMethodsAllowRedirects))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentAutomaticPaymentMethodsAllowRedirects {
@@ -738,10 +874,18 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentIntentAutomaticPaymentMethods
 }
 /// This hash contains details about the Mandate to create.
 /// This parameter can only be used with [`confirm=true`](https://docs.stripe.com/api/payment_intents/create#create_payment_intent-confirm).
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentMandateData {
     /// This hash contains details about the customer acceptance of the Mandate.
     pub customer_acceptance: CreatePaymentIntentMandateDataCustomerAcceptance,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentMandateData {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentMandateData").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentIntentMandateData {
     pub fn new(
@@ -751,7 +895,9 @@ impl CreatePaymentIntentMandateData {
     }
 }
 /// This hash contains details about the customer acceptance of the Mandate.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentMandateDataCustomerAcceptance {
     /// The time at which the customer accepted the Mandate.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -767,6 +913,12 @@ pub struct CreatePaymentIntentMandateDataCustomerAcceptance {
     /// One of `online` or `offline`.
     #[serde(rename = "type")]
     pub type_: CreatePaymentIntentMandateDataCustomerAcceptanceType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentMandateDataCustomerAcceptance {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentMandateDataCustomerAcceptance").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentIntentMandateDataCustomerAcceptance {
     pub fn new(type_: impl Into<CreatePaymentIntentMandateDataCustomerAcceptanceType>) -> Self {
@@ -818,9 +970,17 @@ impl std::fmt::Display for CreatePaymentIntentMandateDataCustomerAcceptanceType 
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentMandateDataCustomerAcceptanceType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentMandateDataCustomerAcceptanceType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentIntentMandateDataCustomerAcceptanceType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentMandateDataCustomerAcceptanceType {
@@ -842,7 +1002,9 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentIntentMandateDataCustomerAcce
 /// Set to `true` to indicate that the customer isn't in your checkout flow during this payment attempt and can't authenticate.
 /// Use this parameter in scenarios where you collect card details and [charge them later](https://docs.stripe.com/payments/cards/charging-saved-cards).
 /// This parameter can only be used with [`confirm=true`](https://docs.stripe.com/api/payment_intents/create#create_payment_intent-confirm).
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 #[serde(rename_all = "snake_case")]
 pub enum CreatePaymentIntentOffSession {
     OneOff,
@@ -850,8 +1012,16 @@ pub enum CreatePaymentIntentOffSession {
     #[serde(untagged)]
     Bool(bool),
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentOffSession {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentOffSession").finish_non_exhaustive()
+    }
+}
 /// Provides industry-specific information about the charge.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentPaymentDetails {
     /// A unique value to identify the customer. This field is available only for card payments.
     ///
@@ -864,6 +1034,12 @@ pub struct CreatePaymentIntentPaymentDetails {
     /// For Klarna, this field is truncated to 255 characters and is visible to customers when they view the order in the Klarna app.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub order_reference: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentDetails {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentDetails").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentIntentPaymentDetails {
     pub fn new() -> Self {
@@ -878,7 +1054,9 @@ impl Default for CreatePaymentIntentPaymentDetails {
 /// If provided, this hash will be used to create a PaymentMethod. The new PaymentMethod will appear
 /// in the [payment_method](https://docs.stripe.com/api/payment_intents/object#payment_intent_object-payment_method).
 /// property on the PaymentIntent.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodData {
     /// If this is an `acss_debit` PaymentMethod, this hash contains details about the ACSS Debit payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1092,6 +1270,12 @@ pub struct CreatePaymentIntentPaymentMethodData {
     #[serde(with = "stripe_types::with_serde_json_opt")]
     pub zip: Option<miniserde::json::Value>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodData {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentMethodData").finish_non_exhaustive()
+    }
+}
 impl CreatePaymentIntentPaymentMethodData {
     pub fn new(type_: impl Into<CreatePaymentIntentPaymentMethodDataType>) -> Self {
         Self {
@@ -1203,9 +1387,17 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodDataAllowRedisplay {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodDataAllowRedisplay {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodDataAllowRedisplay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentIntentPaymentMethodDataAllowRedisplay))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodDataAllowRedisplay {
@@ -1225,12 +1417,20 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodDataAllowR
     }
 }
 /// If this is an `au_becs_debit` PaymentMethod, this hash contains details about the bank account.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodDataAuBecsDebit {
     /// The account number for the bank account.
     pub account_number: String,
     /// Bank-State-Branch number of the bank account.
     pub bsb_number: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodDataAuBecsDebit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentMethodDataAuBecsDebit").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentIntentPaymentMethodDataAuBecsDebit {
     pub fn new(account_number: impl Into<String>, bsb_number: impl Into<String>) -> Self {
@@ -1238,7 +1438,9 @@ impl CreatePaymentIntentPaymentMethodDataAuBecsDebit {
     }
 }
 /// If this is a `bacs_debit` PaymentMethod, this hash contains details about the Bacs Direct Debit bank account.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodDataBacsDebit {
     /// Account number of the bank account that the funds will be debited from.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1246,6 +1448,12 @@ pub struct CreatePaymentIntentPaymentMethodDataBacsDebit {
     /// Sort code of the bank account. (e.g., `10-20-30`)
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sort_code: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodDataBacsDebit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentMethodDataBacsDebit").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentIntentPaymentMethodDataBacsDebit {
     pub fn new() -> Self {
@@ -1258,7 +1466,9 @@ impl Default for CreatePaymentIntentPaymentMethodDataBacsDebit {
     }
 }
 /// Billing information associated with the PaymentMethod that may be used or required by particular types of payment methods.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodDataBillingDetails {
     /// Billing address.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1277,6 +1487,12 @@ pub struct CreatePaymentIntentPaymentMethodDataBillingDetails {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_id: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodDataBillingDetails {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentMethodDataBillingDetails").finish_non_exhaustive()
+    }
+}
 impl CreatePaymentIntentPaymentMethodDataBillingDetails {
     pub fn new() -> Self {
         Self { address: None, email: None, name: None, phone: None, tax_id: None }
@@ -1288,7 +1504,9 @@ impl Default for CreatePaymentIntentPaymentMethodDataBillingDetails {
     }
 }
 /// Billing address.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodDataBillingDetailsAddress {
     /// City, district, suburb, town, or village.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1309,6 +1527,13 @@ pub struct CreatePaymentIntentPaymentMethodDataBillingDetailsAddress {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodDataBillingDetailsAddress {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentMethodDataBillingDetailsAddress")
+            .finish_non_exhaustive()
+    }
+}
 impl CreatePaymentIntentPaymentMethodDataBillingDetailsAddress {
     pub fn new() -> Self {
         Self { city: None, country: None, line1: None, line2: None, postal_code: None, state: None }
@@ -1320,10 +1545,18 @@ impl Default for CreatePaymentIntentPaymentMethodDataBillingDetailsAddress {
     }
 }
 /// If this is a `boleto` PaymentMethod, this hash contains details about the Boleto payment method.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodDataBoleto {
     /// The tax ID of the customer (CPF for individual consumers or CNPJ for businesses consumers)
     pub tax_id: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodDataBoleto {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentMethodDataBoleto").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentIntentPaymentMethodDataBoleto {
     pub fn new(tax_id: impl Into<String>) -> Self {
@@ -1331,11 +1564,19 @@ impl CreatePaymentIntentPaymentMethodDataBoleto {
     }
 }
 /// If this is an `eps` PaymentMethod, this hash contains details about the EPS payment method.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodDataEps {
     /// The customer's bank.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bank: Option<CreatePaymentIntentPaymentMethodDataEpsBank>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodDataEps {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentMethodDataEps").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentIntentPaymentMethodDataEps {
     pub fn new() -> Self {
@@ -1469,9 +1710,17 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodDataEpsBank {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodDataEpsBank {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodDataEpsBank {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentIntentPaymentMethodDataEpsBank))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodDataEpsBank {
@@ -1491,13 +1740,21 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodDataEpsBan
     }
 }
 /// If this is an `fpx` PaymentMethod, this hash contains details about the FPX payment method.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodDataFpx {
     /// Account holder type for FPX transaction
     #[serde(skip_serializing_if = "Option::is_none")]
     pub account_holder_type: Option<CreatePaymentIntentPaymentMethodDataFpxAccountHolderType>,
     /// The customer's bank.
     pub bank: CreatePaymentIntentPaymentMethodDataFpxBank,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodDataFpx {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentMethodDataFpx").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentIntentPaymentMethodDataFpx {
     pub fn new(bank: impl Into<CreatePaymentIntentPaymentMethodDataFpxBank>) -> Self {
@@ -1548,9 +1805,17 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodDataFpxAccountHolderT
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodDataFpxAccountHolderType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodDataFpxAccountHolderType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentIntentPaymentMethodDataFpxAccountHolderType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodDataFpxAccountHolderType {
@@ -1673,9 +1938,17 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodDataFpxBank {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodDataFpxBank {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodDataFpxBank {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentIntentPaymentMethodDataFpxBank))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodDataFpxBank {
@@ -1695,13 +1968,21 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodDataFpxBan
     }
 }
 /// If this is an `ideal` PaymentMethod, this hash contains details about the iDEAL payment method.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodDataIdeal {
     /// The customer's bank.
     /// Only use this parameter for existing customers.
     /// Don't use it for new customers.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bank: Option<CreatePaymentIntentPaymentMethodDataIdealBank>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodDataIdeal {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentMethodDataIdeal").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentIntentPaymentMethodDataIdeal {
     pub fn new() -> Self {
@@ -1813,9 +2094,17 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodDataIdealBank {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodDataIdealBank {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodDataIdealBank {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentIntentPaymentMethodDataIdealBank))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodDataIdealBank {
@@ -1835,11 +2124,19 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodDataIdealB
     }
 }
 /// If this is a `klarna` PaymentMethod, this hash contains details about the Klarna payment method.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodDataKlarna {
     /// Customer's date of birth
     #[serde(skip_serializing_if = "Option::is_none")]
     pub dob: Option<DateOfBirth>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodDataKlarna {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentMethodDataKlarna").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentIntentPaymentMethodDataKlarna {
     pub fn new() -> Self {
@@ -1852,12 +2149,20 @@ impl Default for CreatePaymentIntentPaymentMethodDataKlarna {
     }
 }
 /// If this is a `naver_pay` PaymentMethod, this hash contains details about the Naver Pay payment method.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodDataNaverPay {
     /// Whether to use Naver Pay points or a card to fund this transaction.
     /// If not provided, this defaults to `card`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub funding: Option<CreatePaymentIntentPaymentMethodDataNaverPayFunding>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodDataNaverPay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentMethodDataNaverPay").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentIntentPaymentMethodDataNaverPay {
     pub fn new() -> Self {
@@ -1914,9 +2219,17 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodDataNaverPayFunding {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodDataNaverPayFunding {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodDataNaverPayFunding {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentIntentPaymentMethodDataNaverPayFunding))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodDataNaverPayFunding {
@@ -1936,7 +2249,9 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodDataNaverP
     }
 }
 /// If this is an nz_bank_account PaymentMethod, this hash contains details about the nz_bank_account payment method.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodDataNzBankAccount {
     /// The name on the bank account.
     /// Only required if the account holder name is different from the name of the authorized signatory collected in the PaymentMethod’s billing details.
@@ -1952,6 +2267,12 @@ pub struct CreatePaymentIntentPaymentMethodDataNzBankAccount {
     pub reference: Option<String>,
     /// The suffix of the bank account number.
     pub suffix: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodDataNzBankAccount {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentMethodDataNzBankAccount").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentIntentPaymentMethodDataNzBankAccount {
     pub fn new(
@@ -1971,11 +2292,19 @@ impl CreatePaymentIntentPaymentMethodDataNzBankAccount {
     }
 }
 /// If this is a `p24` PaymentMethod, this hash contains details about the P24 payment method.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodDataP24 {
     /// The customer's bank.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bank: Option<CreatePaymentIntentPaymentMethodDataP24Bank>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodDataP24 {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentMethodDataP24").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentIntentPaymentMethodDataP24 {
     pub fn new() -> Self {
@@ -2103,9 +2432,17 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodDataP24Bank {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodDataP24Bank {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodDataP24Bank {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentIntentPaymentMethodDataP24Bank))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodDataP24Bank {
@@ -2125,7 +2462,9 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodDataP24Ban
     }
 }
 /// If this is a `payto` PaymentMethod, this hash contains details about the PayTo payment method.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodDataPayto {
     /// The account number for the bank account.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2136,6 +2475,12 @@ pub struct CreatePaymentIntentPaymentMethodDataPayto {
     /// The PayID alias for the bank account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub pay_id: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodDataPayto {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentMethodDataPayto").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentIntentPaymentMethodDataPayto {
     pub fn new() -> Self {
@@ -2149,11 +2494,19 @@ impl Default for CreatePaymentIntentPaymentMethodDataPayto {
 }
 /// Options to configure Radar.
 /// See [Radar Session](https://docs.stripe.com/radar/radar-session) for more information.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodDataRadarOptions {
     /// A [Radar Session](https://docs.stripe.com/radar/radar-session) is a snapshot of the browser metadata and device details that help Radar make more accurate predictions on your payments.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub session: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodDataRadarOptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentMethodDataRadarOptions").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentIntentPaymentMethodDataRadarOptions {
     pub fn new() -> Self {
@@ -2166,10 +2519,18 @@ impl Default for CreatePaymentIntentPaymentMethodDataRadarOptions {
     }
 }
 /// If this is a `sepa_debit` PaymentMethod, this hash contains details about the SEPA debit bank account.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodDataSepaDebit {
     /// IBAN of the bank account.
     pub iban: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodDataSepaDebit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentMethodDataSepaDebit").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentIntentPaymentMethodDataSepaDebit {
     pub fn new(iban: impl Into<String>) -> Self {
@@ -2177,10 +2538,18 @@ impl CreatePaymentIntentPaymentMethodDataSepaDebit {
     }
 }
 /// If this is a `sofort` PaymentMethod, this hash contains details about the SOFORT payment method.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodDataSofort {
     /// Two-letter ISO code representing the country the bank account is located in.
     pub country: CreatePaymentIntentPaymentMethodDataSofortCountry,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodDataSofort {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentMethodDataSofort").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentIntentPaymentMethodDataSofort {
     pub fn new(country: impl Into<CreatePaymentIntentPaymentMethodDataSofortCountry>) -> Self {
@@ -2243,9 +2612,17 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodDataSofortCountry {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodDataSofortCountry {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodDataSofortCountry {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentIntentPaymentMethodDataSofortCountry))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodDataSofortCountry {
@@ -2454,9 +2831,16 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodDataType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodDataType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodDataType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentIntentPaymentMethodDataType)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodDataType {
@@ -2476,11 +2860,19 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodDataType {
     }
 }
 /// If this is a `upi` PaymentMethod, this hash contains details about the UPI payment method.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodDataUpi {
     /// Configuration options for setting up an eMandate
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mandate_options: Option<CreatePaymentIntentPaymentMethodDataUpiMandateOptions>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodDataUpi {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentMethodDataUpi").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentIntentPaymentMethodDataUpi {
     pub fn new() -> Self {
@@ -2493,7 +2885,9 @@ impl Default for CreatePaymentIntentPaymentMethodDataUpi {
     }
 }
 /// Configuration options for setting up an eMandate
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodDataUpiMandateOptions {
     /// Amount to be charged for future payments.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2509,6 +2903,13 @@ pub struct CreatePaymentIntentPaymentMethodDataUpiMandateOptions {
     /// End date of the mandate or subscription.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub end_date: Option<stripe_types::Timestamp>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodDataUpiMandateOptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentMethodDataUpiMandateOptions")
+            .finish_non_exhaustive()
+    }
 }
 impl CreatePaymentIntentPaymentMethodDataUpiMandateOptions {
     pub fn new() -> Self {
@@ -2566,9 +2967,17 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodDataUpiMandateOptions
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodDataUpiMandateOptionsAmountType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodDataUpiMandateOptionsAmountType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentIntentPaymentMethodDataUpiMandateOptionsAmountType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodDataUpiMandateOptionsAmountType {
@@ -2590,7 +2999,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is an `us_bank_account` PaymentMethod, this hash contains details about the US bank account payment method.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodDataUsBankAccount {
     /// Account holder type: individual or company.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2608,6 +3019,12 @@ pub struct CreatePaymentIntentPaymentMethodDataUsBankAccount {
     /// Routing number of the bank account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub routing_number: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodDataUsBankAccount {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentMethodDataUsBankAccount").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentIntentPaymentMethodDataUsBankAccount {
     pub fn new() -> Self {
@@ -2669,9 +3086,19 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodDataUsBankAccountAcco
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodDataUsBankAccountAccountHolderType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodDataUsBankAccountAccountHolderType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePaymentIntentPaymentMethodDataUsBankAccountAccountHolderType
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodDataUsBankAccountAccountHolderType {
@@ -2736,9 +3163,17 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodDataUsBankAccountAcco
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodDataUsBankAccountAccountType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodDataUsBankAccountAccountType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentIntentPaymentMethodDataUsBankAccountAccountType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodDataUsBankAccountAccountType {
@@ -2758,7 +3193,9 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodDataUsBank
     }
 }
 /// Payment method-specific configuration for this PaymentIntent.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptions {
     /// If this is a `acss_debit` PaymentMethod, this sub-hash contains details about the ACSS Debit payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2922,6 +3359,12 @@ pub struct CreatePaymentIntentPaymentMethodOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub zip: Option<CreatePaymentIntentPaymentMethodOptionsZip>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentMethodOptions").finish_non_exhaustive()
+    }
+}
 impl CreatePaymentIntentPaymentMethodOptions {
     pub fn new() -> Self {
         Self {
@@ -2987,7 +3430,9 @@ impl Default for CreatePaymentIntentPaymentMethodOptions {
     }
 }
 /// If this is a `acss_debit` PaymentMethod, this sub-hash contains details about the ACSS Debit payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsAcssDebit {
     /// Additional fields for Mandate creation
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3015,6 +3460,12 @@ pub struct CreatePaymentIntentPaymentMethodOptionsAcssDebit {
     pub verification_method:
         Option<CreatePaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsAcssDebit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentMethodOptionsAcssDebit").finish_non_exhaustive()
+    }
+}
 impl CreatePaymentIntentPaymentMethodOptionsAcssDebit {
     pub fn new() -> Self {
         Self {
@@ -3031,7 +3482,9 @@ impl Default for CreatePaymentIntentPaymentMethodOptionsAcssDebit {
     }
 }
 /// Additional fields for Mandate creation
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptions {
     /// A URL for custom mandate text to render during confirmation step.
     /// The URL will be rendered with additional GET parameters `payment_intent` and `payment_intent_client_secret` when confirming a Payment Intent,.
@@ -3050,6 +3503,13 @@ pub struct CreatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub transaction_type:
         Option<CreatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptions")
+            .finish_non_exhaustive()
+    }
 }
 impl CreatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptions {
     pub fn new() -> Self {
@@ -3117,11 +3577,23 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for CreatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for CreatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -3192,11 +3664,23 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for CreatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for CreatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -3275,9 +3759,17 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsAcssDebitSetup
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsAcssDebitSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsAcssDebitSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentIntentPaymentMethodOptionsAcssDebitSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsAcssDebitSetupFutureUsage {
@@ -3345,9 +3837,19 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsAcssDebitVerif
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod {
@@ -3369,7 +3871,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is an `affirm` PaymentMethod, this sub-hash contains details about the Affirm payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsAffirm {
     /// Controls when the funds are captured from the customer's account.
     ///
@@ -3393,6 +3897,12 @@ pub struct CreatePaymentIntentPaymentMethodOptionsAffirm {
     /// If you've already set `setup_future_usage` and you're performing a request using a publishable key, you can only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<CreatePaymentIntentPaymentMethodOptionsAffirmSetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsAffirm {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentMethodOptionsAffirm").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentIntentPaymentMethodOptionsAffirm {
     pub fn new() -> Self {
@@ -3449,9 +3959,17 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsAffirmCaptureM
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsAffirmCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsAffirmCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentIntentPaymentMethodOptionsAffirmCaptureMethod))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsAffirmCaptureMethod {
@@ -3520,9 +4038,17 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsAffirmSetupFut
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsAffirmSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsAffirmSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentIntentPaymentMethodOptionsAffirmSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsAffirmSetupFutureUsage {
@@ -3544,7 +4070,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `afterpay_clearpay` PaymentMethod, this sub-hash contains details about the Afterpay Clearpay payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsAfterpayClearpay {
     /// Controls when the funds are captured from the customer's account.
     ///
@@ -3572,6 +4100,13 @@ pub struct CreatePaymentIntentPaymentMethodOptionsAfterpayClearpay {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage:
         Option<CreatePaymentIntentPaymentMethodOptionsAfterpayClearpaySetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsAfterpayClearpay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentMethodOptionsAfterpayClearpay")
+            .finish_non_exhaustive()
+    }
 }
 impl CreatePaymentIntentPaymentMethodOptionsAfterpayClearpay {
     pub fn new() -> Self {
@@ -3628,9 +4163,19 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsAfterpayClearp
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsAfterpayClearpayCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsAfterpayClearpayCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePaymentIntentPaymentMethodOptionsAfterpayClearpayCaptureMethod
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsAfterpayClearpayCaptureMethod {
@@ -3701,9 +4246,19 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsAfterpayClearp
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsAfterpayClearpaySetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsAfterpayClearpaySetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePaymentIntentPaymentMethodOptionsAfterpayClearpaySetupFutureUsage
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsAfterpayClearpaySetupFutureUsage {
@@ -3725,7 +4280,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `alipay` PaymentMethod, this sub-hash contains details about the Alipay payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsAlipay {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -3739,6 +4296,12 @@ pub struct CreatePaymentIntentPaymentMethodOptionsAlipay {
     /// If you've already set `setup_future_usage` and you're performing a request using a publishable key, you can only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<CreatePaymentIntentPaymentMethodOptionsAlipaySetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsAlipay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentMethodOptionsAlipay").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentIntentPaymentMethodOptionsAlipay {
     pub fn new() -> Self {
@@ -3803,9 +4366,17 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsAlipaySetupFut
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsAlipaySetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsAlipaySetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentIntentPaymentMethodOptionsAlipaySetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsAlipaySetupFutureUsage {
@@ -3827,7 +4398,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `alma` PaymentMethod, this sub-hash contains details about the Alma payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsAlma {
     /// Controls when the funds are captured from the customer's account.
     ///
@@ -3836,6 +4409,12 @@ pub struct CreatePaymentIntentPaymentMethodOptionsAlma {
     /// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter unsets the stored value for this payment method type.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub capture_method: Option<CreatePaymentIntentPaymentMethodOptionsAlmaCaptureMethod>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsAlma {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentMethodOptionsAlma").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentIntentPaymentMethodOptionsAlma {
     pub fn new() -> Self {
@@ -3892,9 +4471,17 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsAlmaCaptureMet
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsAlmaCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsAlmaCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentIntentPaymentMethodOptionsAlmaCaptureMethod))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsAlmaCaptureMethod {
@@ -3914,7 +4501,9 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodOptionsAlm
     }
 }
 /// If this is a `amazon_pay` PaymentMethod, this sub-hash contains details about the Amazon Pay payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsAmazonPay {
     /// Controls when the funds are captured from the customer's account.
     ///
@@ -3934,6 +4523,12 @@ pub struct CreatePaymentIntentPaymentMethodOptionsAmazonPay {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage:
         Option<CreatePaymentIntentPaymentMethodOptionsAmazonPaySetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsAmazonPay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentMethodOptionsAmazonPay").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentIntentPaymentMethodOptionsAmazonPay {
     pub fn new() -> Self {
@@ -3990,9 +4585,17 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsAmazonPayCaptu
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsAmazonPayCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsAmazonPayCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentIntentPaymentMethodOptionsAmazonPayCaptureMethod))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsAmazonPayCaptureMethod {
@@ -4064,9 +4667,17 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsAmazonPaySetup
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsAmazonPaySetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsAmazonPaySetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentIntentPaymentMethodOptionsAmazonPaySetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsAmazonPaySetupFutureUsage {
@@ -4088,7 +4699,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `au_becs_debit` PaymentMethod, this sub-hash contains details about the AU BECS Direct Debit payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsAuBecsDebit {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -4108,6 +4721,12 @@ pub struct CreatePaymentIntentPaymentMethodOptionsAuBecsDebit {
     /// The date must be in the future and between 3 and 15 calendar days from now.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub target_date: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsAuBecsDebit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentMethodOptionsAuBecsDebit").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentIntentPaymentMethodOptionsAuBecsDebit {
     pub fn new() -> Self {
@@ -4175,9 +4794,19 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsAuBecsDebitSet
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsAuBecsDebitSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsAuBecsDebitSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePaymentIntentPaymentMethodOptionsAuBecsDebitSetupFutureUsage
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsAuBecsDebitSetupFutureUsage {
@@ -4199,7 +4828,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `bacs_debit` PaymentMethod, this sub-hash contains details about the BACS Debit payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsBacsDebit {
     /// Additional fields for Mandate creation
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4222,6 +4853,12 @@ pub struct CreatePaymentIntentPaymentMethodOptionsBacsDebit {
     /// The date must be in the future and between 3 and 15 calendar days from now.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub target_date: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsBacsDebit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentMethodOptionsBacsDebit").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentIntentPaymentMethodOptionsBacsDebit {
     pub fn new() -> Self {
@@ -4289,9 +4926,17 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsBacsDebitSetup
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsBacsDebitSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsBacsDebitSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentIntentPaymentMethodOptionsBacsDebitSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsBacsDebitSetupFutureUsage {
@@ -4313,7 +4958,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `bancontact` PaymentMethod, this sub-hash contains details about the Bancontact payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsBancontact {
     /// Preferred language of the Bancontact authorization page that the customer is redirected to.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4332,6 +4979,12 @@ pub struct CreatePaymentIntentPaymentMethodOptionsBancontact {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage:
         Option<CreatePaymentIntentPaymentMethodOptionsBancontactSetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsBancontact {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentMethodOptionsBancontact").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentIntentPaymentMethodOptionsBancontact {
     pub fn new() -> Self {
@@ -4393,9 +5046,19 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsBancontactPref
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsBancontactPreferredLanguage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsBancontactPreferredLanguage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePaymentIntentPaymentMethodOptionsBancontactPreferredLanguage
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsBancontactPreferredLanguage {
@@ -4469,9 +5132,19 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsBancontactSetu
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsBancontactSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsBancontactSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePaymentIntentPaymentMethodOptionsBancontactSetupFutureUsage
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsBancontactSetupFutureUsage {
@@ -4493,7 +5166,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `billie` PaymentMethod, this sub-hash contains details about the Billie payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsBillie {
     /// Controls when the funds are captured from the customer's account.
     ///
@@ -4502,6 +5177,12 @@ pub struct CreatePaymentIntentPaymentMethodOptionsBillie {
     /// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter unsets the stored value for this payment method type.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub capture_method: Option<CreatePaymentIntentPaymentMethodOptionsBillieCaptureMethod>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsBillie {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentMethodOptionsBillie").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentIntentPaymentMethodOptionsBillie {
     pub fn new() -> Self {
@@ -4558,9 +5239,17 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsBillieCaptureM
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsBillieCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsBillieCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentIntentPaymentMethodOptionsBillieCaptureMethod))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsBillieCaptureMethod {
@@ -4580,7 +5269,9 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodOptionsBil
     }
 }
 /// If this is a `blik` PaymentMethod, this sub-hash contains details about the BLIK payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsBlik {
     /// The 6-digit BLIK code that a customer has generated using their banking application.
     /// Can only be set on confirmation.
@@ -4598,6 +5289,12 @@ pub struct CreatePaymentIntentPaymentMethodOptionsBlik {
     /// If you've already set `setup_future_usage` and you're performing a request using a publishable key, you can only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<CreatePaymentIntentPaymentMethodOptionsBlikSetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsBlik {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentMethodOptionsBlik").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentIntentPaymentMethodOptionsBlik {
     pub fn new() -> Self {
@@ -4659,9 +5356,17 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsBlikSetupFutur
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsBlikSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsBlikSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentIntentPaymentMethodOptionsBlikSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsBlikSetupFutureUsage {
@@ -4681,7 +5386,9 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodOptionsBli
     }
 }
 /// If this is a `boleto` PaymentMethod, this sub-hash contains details about the Boleto payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsBoleto {
     /// The number of calendar days before a Boleto voucher expires.
     /// For example, if you create a Boleto voucher on Monday and you set expires_after_days to 2, the Boleto invoice will expire on Wednesday at 23:59 America/Sao_Paulo time.
@@ -4699,6 +5406,12 @@ pub struct CreatePaymentIntentPaymentMethodOptionsBoleto {
     /// If you've already set `setup_future_usage` and you're performing a request using a publishable key, you can only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<CreatePaymentIntentPaymentMethodOptionsBoletoSetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsBoleto {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentMethodOptionsBoleto").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentIntentPaymentMethodOptionsBoleto {
     pub fn new() -> Self {
@@ -4766,9 +5479,17 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsBoletoSetupFut
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsBoletoSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsBoletoSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentIntentPaymentMethodOptionsBoletoSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsBoletoSetupFutureUsage {
@@ -4790,7 +5511,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Configuration for any card payments attempted on this PaymentIntent.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsCard {
     /// Controls when the funds are captured from the customer's account.
     ///
@@ -4877,6 +5600,12 @@ pub struct CreatePaymentIntentPaymentMethodOptionsCard {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub three_d_secure: Option<CreatePaymentIntentPaymentMethodOptionsCardThreeDSecure>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsCard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentMethodOptionsCard").finish_non_exhaustive()
+    }
+}
 impl CreatePaymentIntentPaymentMethodOptionsCard {
     pub fn new() -> Self {
         Self {
@@ -4949,9 +5678,17 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsCardCaptureMet
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsCardCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsCardCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentIntentPaymentMethodOptionsCardCaptureMethod))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsCardCaptureMethod {
@@ -4973,7 +5710,9 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodOptionsCar
 /// Installment configuration for payments attempted on this PaymentIntent.
 ///
 /// For more information, see the [installments integration guide](https://docs.stripe.com/payments/installments).
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsCardInstallments {
     /// Setting to true enables installments for this PaymentIntent.
     /// This will cause the response to contain a list of available installment plans.
@@ -4984,6 +5723,13 @@ pub struct CreatePaymentIntentPaymentMethodOptionsCardInstallments {
     /// This parameter can only be provided during confirmation.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub plan: Option<CreatePaymentIntentPaymentMethodOptionsCardInstallmentsPlan>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsCardInstallments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentMethodOptionsCardInstallments")
+            .finish_non_exhaustive()
+    }
 }
 impl CreatePaymentIntentPaymentMethodOptionsCardInstallments {
     pub fn new() -> Self {
@@ -4997,7 +5743,9 @@ impl Default for CreatePaymentIntentPaymentMethodOptionsCardInstallments {
 }
 /// The selected installment plan to use for this payment attempt.
 /// This parameter can only be provided during confirmation.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsCardInstallmentsPlan {
     /// For `fixed_count` installment plans, this is required.
     /// It represents the number of installment payments your customer will make to their credit card.
@@ -5011,6 +5759,13 @@ pub struct CreatePaymentIntentPaymentMethodOptionsCardInstallmentsPlan {
     /// Type of installment plan, one of `fixed_count`, `bonus`, or `revolving`.
     #[serde(rename = "type")]
     pub type_: CreatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsCardInstallmentsPlan {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentMethodOptionsCardInstallmentsPlan")
+            .finish_non_exhaustive()
+    }
 }
 impl CreatePaymentIntentPaymentMethodOptionsCardInstallmentsPlan {
     pub fn new(
@@ -5062,9 +5817,19 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsCardInstallmen
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanInterval {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanInterval {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanInterval
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanInterval {
@@ -5132,9 +5897,17 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsCardInstallmen
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanType {
@@ -5156,7 +5929,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Configuration options for setting up an eMandate for cards issued in India.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsCardMandateOptions {
     /// Amount to be charged for future payments, specified in the presentment currency.
     pub amount: i64,
@@ -5188,6 +5963,13 @@ pub struct CreatePaymentIntentPaymentMethodOptionsCardMandateOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub supported_types:
         Option<Vec<CreatePaymentIntentPaymentMethodOptionsCardMandateOptionsSupportedTypes>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsCardMandateOptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentMethodOptionsCardMandateOptions")
+            .finish_non_exhaustive()
+    }
 }
 impl CreatePaymentIntentPaymentMethodOptionsCardMandateOptions {
     pub fn new(
@@ -5256,9 +6038,19 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsCardMandateOpt
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsCardMandateOptionsAmountType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsCardMandateOptionsAmountType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePaymentIntentPaymentMethodOptionsCardMandateOptionsAmountType
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsCardMandateOptionsAmountType {
@@ -5332,9 +6124,19 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsCardMandateOpt
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsCardMandateOptionsInterval {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsCardMandateOptionsInterval {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePaymentIntentPaymentMethodOptionsCardMandateOptionsInterval
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsCardMandateOptionsInterval {
@@ -5396,9 +6198,19 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsCardMandateOpt
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsCardMandateOptionsSupportedTypes {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsCardMandateOptionsSupportedTypes {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePaymentIntentPaymentMethodOptionsCardMandateOptionsSupportedTypes
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsCardMandateOptionsSupportedTypes {
@@ -5499,9 +6311,17 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsCardNetwork {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsCardNetwork {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsCardNetwork {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentIntentPaymentMethodOptionsCardNetwork))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsCardNetwork {
@@ -5564,9 +6384,19 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsCardRequestExt
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsCardRequestExtendedAuthorization {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsCardRequestExtendedAuthorization {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePaymentIntentPaymentMethodOptionsCardRequestExtendedAuthorization
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsCardRequestExtendedAuthorization {
@@ -5635,11 +6465,23 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for CreatePaymentIntentPaymentMethodOptionsCardRequestIncrementalAuthorization
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for CreatePaymentIntentPaymentMethodOptionsCardRequestIncrementalAuthorization
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePaymentIntentPaymentMethodOptionsCardRequestIncrementalAuthorization
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -5706,9 +6548,17 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsCardRequestMul
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsCardRequestMulticapture {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsCardRequestMulticapture {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentIntentPaymentMethodOptionsCardRequestMulticapture))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsCardRequestMulticapture {
@@ -5773,9 +6623,17 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsCardRequestOve
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsCardRequestOvercapture {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsCardRequestOvercapture {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentIntentPaymentMethodOptionsCardRequestOvercapture))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsCardRequestOvercapture {
@@ -5846,9 +6704,17 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsCardRequestThr
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsCardRequestThreeDSecure {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsCardRequestThreeDSecure {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentIntentPaymentMethodOptionsCardRequestThreeDSecure))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsCardRequestThreeDSecure {
@@ -5925,9 +6791,17 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsCardSetupFutur
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsCardSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsCardSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentIntentPaymentMethodOptionsCardSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsCardSetupFutureUsage {
@@ -5948,7 +6822,9 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodOptionsCar
 }
 /// If 3D Secure authentication was performed with a third-party provider,
 /// the authentication details to use for this payment.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsCardThreeDSecure {
     /// The `transStatus` returned from the card Issuer’s ACS in the ARes.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5983,6 +6859,13 @@ pub struct CreatePaymentIntentPaymentMethodOptionsCardThreeDSecure {
     pub transaction_id: String,
     /// The version of 3D Secure that was performed.
     pub version: CreatePaymentIntentPaymentMethodOptionsCardThreeDSecureVersion,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsCardThreeDSecure {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentMethodOptionsCardThreeDSecure")
+            .finish_non_exhaustive()
+    }
 }
 impl CreatePaymentIntentPaymentMethodOptionsCardThreeDSecure {
     pub fn new(
@@ -6061,9 +6944,19 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsCardThreeDSecu
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsCardThreeDSecureAresTransStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsCardThreeDSecureAresTransStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePaymentIntentPaymentMethodOptionsCardThreeDSecureAresTransStatus
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsCardThreeDSecureAresTransStatus {
@@ -6142,11 +7035,23 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for CreatePaymentIntentPaymentMethodOptionsCardThreeDSecureElectronicCommerceIndicator
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for CreatePaymentIntentPaymentMethodOptionsCardThreeDSecureElectronicCommerceIndicator
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePaymentIntentPaymentMethodOptionsCardThreeDSecureElectronicCommerceIndicator
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -6217,9 +7122,19 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsCardThreeDSecureExemptionIndicator {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsCardThreeDSecureExemptionIndicator {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePaymentIntentPaymentMethodOptionsCardThreeDSecureExemptionIndicator
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -6245,13 +7160,22 @@ impl<'de> serde::Deserialize<'de>
 /// Network specific 3DS fields. Network specific arguments require an
 /// explicit card brand choice. The parameter `payment_method_options.card.network``
 /// must be populated accordingly
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsCardThreeDSecureNetworkOptions {
     /// Cartes Bancaires-specific 3DS fields.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub cartes_bancaires: Option<
         CreatePaymentIntentPaymentMethodOptionsCardThreeDSecureNetworkOptionsCartesBancaires,
     >,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsCardThreeDSecureNetworkOptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentMethodOptionsCardThreeDSecureNetworkOptions")
+            .finish_non_exhaustive()
+    }
 }
 impl CreatePaymentIntentPaymentMethodOptionsCardThreeDSecureNetworkOptions {
     pub fn new() -> Self {
@@ -6264,7 +7188,9 @@ impl Default for CreatePaymentIntentPaymentMethodOptionsCardThreeDSecureNetworkO
     }
 }
 /// Cartes Bancaires-specific 3DS fields.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsCardThreeDSecureNetworkOptionsCartesBancaires {
     /// The cryptogram calculation algorithm used by the card Issuer's ACS
     /// to calculate the Authentication cryptogram. Also known as `cavvAlgorithm`.
@@ -6281,6 +7207,17 @@ pub cb_exemption: Option<String>,
 #[serde(skip_serializing_if = "Option::is_none")]
 pub cb_score: Option<i64>,
 
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for CreatePaymentIntentPaymentMethodOptionsCardThreeDSecureNetworkOptionsCartesBancaires
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(
+            "CreatePaymentIntentPaymentMethodOptionsCardThreeDSecureNetworkOptionsCartesBancaires",
+        )
+        .finish_non_exhaustive()
+    }
 }
 impl CreatePaymentIntentPaymentMethodOptionsCardThreeDSecureNetworkOptionsCartesBancaires {
     pub fn new(
@@ -6352,11 +7289,20 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for CreatePaymentIntentPaymentMethodOptionsCardThreeDSecureNetworkOptionsCartesBancairesCbAvalgo
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for CreatePaymentIntentPaymentMethodOptionsCardThreeDSecureNetworkOptionsCartesBancairesCbAvalgo
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentIntentPaymentMethodOptionsCardThreeDSecureNetworkOptionsCartesBancairesCbAvalgo)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -6432,9 +7378,17 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsCardThreeDSecu
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsCardThreeDSecureVersion {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsCardThreeDSecureVersion {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentIntentPaymentMethodOptionsCardThreeDSecureVersion))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsCardThreeDSecureVersion {
@@ -6456,7 +7410,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `card_present` PaymentMethod, this sub-hash contains details about the Card Present payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsCardPresent {
     /// Controls when the funds are captured from the customer's account.
     ///
@@ -6475,6 +7431,12 @@ pub struct CreatePaymentIntentPaymentMethodOptionsCardPresent {
     /// Network routing priority on co-branded EMV cards supporting domestic debit and international card schemes.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub routing: Option<CreatePaymentIntentPaymentMethodOptionsCardPresentRouting>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsCardPresent {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentMethodOptionsCardPresent").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentIntentPaymentMethodOptionsCardPresent {
     pub fn new() -> Self {
@@ -6539,9 +7501,17 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsCardPresentCap
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsCardPresentCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsCardPresentCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentIntentPaymentMethodOptionsCardPresentCaptureMethod))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsCardPresentCaptureMethod {
@@ -6563,12 +7533,21 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Network routing priority on co-branded EMV cards supporting domestic debit and international card schemes.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsCardPresentRouting {
     /// Routing requested priority
     #[serde(skip_serializing_if = "Option::is_none")]
     pub requested_priority:
         Option<CreatePaymentIntentPaymentMethodOptionsCardPresentRoutingRequestedPriority>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsCardPresentRouting {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentMethodOptionsCardPresentRouting")
+            .finish_non_exhaustive()
+    }
 }
 impl CreatePaymentIntentPaymentMethodOptionsCardPresentRouting {
     pub fn new() -> Self {
@@ -6628,11 +7607,23 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for CreatePaymentIntentPaymentMethodOptionsCardPresentRoutingRequestedPriority
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for CreatePaymentIntentPaymentMethodOptionsCardPresentRoutingRequestedPriority
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePaymentIntentPaymentMethodOptionsCardPresentRoutingRequestedPriority
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -6656,7 +7647,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `cashapp` PaymentMethod, this sub-hash contains details about the Cash App Pay payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsCashapp {
     /// Controls when the funds are captured from the customer's account.
     ///
@@ -6677,6 +7670,12 @@ pub struct CreatePaymentIntentPaymentMethodOptionsCashapp {
     /// If you've already set `setup_future_usage` and you're performing a request using a publishable key, you can only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<CreatePaymentIntentPaymentMethodOptionsCashappSetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsCashapp {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentMethodOptionsCashapp").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentIntentPaymentMethodOptionsCashapp {
     pub fn new() -> Self {
@@ -6733,9 +7732,17 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsCashappCapture
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsCashappCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsCashappCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentIntentPaymentMethodOptionsCashappCaptureMethod))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsCashappCaptureMethod {
@@ -6810,9 +7817,17 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsCashappSetupFu
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsCashappSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsCashappSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentIntentPaymentMethodOptionsCashappSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsCashappSetupFutureUsage {
@@ -6834,7 +7849,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `crypto` PaymentMethod, this sub-hash contains details about the Crypto payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsCrypto {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -6848,6 +7865,12 @@ pub struct CreatePaymentIntentPaymentMethodOptionsCrypto {
     /// If you've already set `setup_future_usage` and you're performing a request using a publishable key, you can only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<CreatePaymentIntentPaymentMethodOptionsCryptoSetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsCrypto {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentMethodOptionsCrypto").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentIntentPaymentMethodOptionsCrypto {
     pub fn new() -> Self {
@@ -6909,9 +7932,17 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsCryptoSetupFut
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsCryptoSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsCryptoSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentIntentPaymentMethodOptionsCryptoSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsCryptoSetupFutureUsage {
@@ -6933,7 +7964,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `customer balance` PaymentMethod, this sub-hash contains details about the customer balance payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsCustomerBalance {
     /// Configuration for the bank transfer funding type, if the `funding_type` is set to `bank_transfer`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -6956,6 +7989,13 @@ pub struct CreatePaymentIntentPaymentMethodOptionsCustomerBalance {
     pub setup_future_usage:
         Option<CreatePaymentIntentPaymentMethodOptionsCustomerBalanceSetupFutureUsage>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsCustomerBalance {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentMethodOptionsCustomerBalance")
+            .finish_non_exhaustive()
+    }
+}
 impl CreatePaymentIntentPaymentMethodOptionsCustomerBalance {
     pub fn new() -> Self {
         Self { bank_transfer: None, funding_type: None, setup_future_usage: None }
@@ -6967,7 +8007,9 @@ impl Default for CreatePaymentIntentPaymentMethodOptionsCustomerBalance {
     }
 }
 /// Configuration for the bank transfer funding type, if the `funding_type` is set to `bank_transfer`.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransfer {
     /// Configuration for the eu_bank_transfer funding type.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -6985,6 +8027,13 @@ pub struct CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransfer {
     /// The list of bank transfer types that this PaymentIntent is allowed to use for funding Permitted values include: `eu_bank_transfer`, `gb_bank_transfer`, `jp_bank_transfer`, `mx_bank_transfer`, or `us_bank_transfer`.
     #[serde(rename = "type")]
     pub type_: CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransfer {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransfer")
+            .finish_non_exhaustive()
+    }
 }
 impl CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransfer {
     pub fn new(
@@ -7059,11 +8108,23 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -7139,9 +8200,19 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsCustomerBalanc
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType {
@@ -7204,9 +8275,19 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsCustomerBalanc
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsCustomerBalanceFundingType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsCustomerBalanceFundingType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePaymentIntentPaymentMethodOptionsCustomerBalanceFundingType
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsCustomerBalanceFundingType {
@@ -7277,9 +8358,19 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsCustomerBalanc
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsCustomerBalanceSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsCustomerBalanceSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePaymentIntentPaymentMethodOptionsCustomerBalanceSetupFutureUsage
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsCustomerBalanceSetupFutureUsage {
@@ -7301,7 +8392,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `eps` PaymentMethod, this sub-hash contains details about the EPS payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsEps {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -7315,6 +8408,12 @@ pub struct CreatePaymentIntentPaymentMethodOptionsEps {
     /// If you've already set `setup_future_usage` and you're performing a request using a publishable key, you can only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<CreatePaymentIntentPaymentMethodOptionsEpsSetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsEps {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentMethodOptionsEps").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentIntentPaymentMethodOptionsEps {
     pub fn new() -> Self {
@@ -7376,9 +8475,17 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsEpsSetupFuture
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsEpsSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsEpsSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentIntentPaymentMethodOptionsEpsSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsEpsSetupFutureUsage {
@@ -7398,7 +8505,9 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodOptionsEps
     }
 }
 /// If this is a `fpx` PaymentMethod, this sub-hash contains details about the FPX payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsFpx {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -7412,6 +8521,12 @@ pub struct CreatePaymentIntentPaymentMethodOptionsFpx {
     /// If you've already set `setup_future_usage` and you're performing a request using a publishable key, you can only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<CreatePaymentIntentPaymentMethodOptionsFpxSetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsFpx {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentMethodOptionsFpx").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentIntentPaymentMethodOptionsFpx {
     pub fn new() -> Self {
@@ -7473,9 +8588,17 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsFpxSetupFuture
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsFpxSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsFpxSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentIntentPaymentMethodOptionsFpxSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsFpxSetupFutureUsage {
@@ -7495,7 +8618,9 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodOptionsFpx
     }
 }
 /// If this is a `giropay` PaymentMethod, this sub-hash contains details about the Giropay payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsGiropay {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -7509,6 +8634,12 @@ pub struct CreatePaymentIntentPaymentMethodOptionsGiropay {
     /// If you've already set `setup_future_usage` and you're performing a request using a publishable key, you can only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<CreatePaymentIntentPaymentMethodOptionsGiropaySetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsGiropay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentMethodOptionsGiropay").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentIntentPaymentMethodOptionsGiropay {
     pub fn new() -> Self {
@@ -7570,9 +8701,17 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsGiropaySetupFu
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsGiropaySetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsGiropaySetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentIntentPaymentMethodOptionsGiropaySetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsGiropaySetupFutureUsage {
@@ -7594,7 +8733,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `grabpay` PaymentMethod, this sub-hash contains details about the Grabpay payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsGrabpay {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -7608,6 +8749,12 @@ pub struct CreatePaymentIntentPaymentMethodOptionsGrabpay {
     /// If you've already set `setup_future_usage` and you're performing a request using a publishable key, you can only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<CreatePaymentIntentPaymentMethodOptionsGrabpaySetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsGrabpay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentMethodOptionsGrabpay").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentIntentPaymentMethodOptionsGrabpay {
     pub fn new() -> Self {
@@ -7669,9 +8816,17 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsGrabpaySetupFu
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsGrabpaySetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsGrabpaySetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentIntentPaymentMethodOptionsGrabpaySetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsGrabpaySetupFutureUsage {
@@ -7693,7 +8848,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `ideal` PaymentMethod, this sub-hash contains details about the Ideal payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsIdeal {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -7707,6 +8864,12 @@ pub struct CreatePaymentIntentPaymentMethodOptionsIdeal {
     /// If you've already set `setup_future_usage` and you're performing a request using a publishable key, you can only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<CreatePaymentIntentPaymentMethodOptionsIdealSetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsIdeal {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentMethodOptionsIdeal").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentIntentPaymentMethodOptionsIdeal {
     pub fn new() -> Self {
@@ -7771,9 +8934,17 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsIdealSetupFutu
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsIdealSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsIdealSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentIntentPaymentMethodOptionsIdealSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsIdealSetupFutureUsage {
@@ -7793,7 +8964,9 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodOptionsIde
     }
 }
 /// If this is a `kakao_pay` PaymentMethod, this sub-hash contains details about the Kakao Pay payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsKakaoPay {
     /// Controls when the funds are captured from the customer's account.
     ///
@@ -7812,6 +8985,12 @@ pub struct CreatePaymentIntentPaymentMethodOptionsKakaoPay {
     /// When processing card payments, Stripe uses `setup_future_usage` to help you comply with regional legislation and network rules, such as [SCA](/strong-customer-authentication).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<CreatePaymentIntentPaymentMethodOptionsKakaoPaySetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsKakaoPay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentMethodOptionsKakaoPay").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentIntentPaymentMethodOptionsKakaoPay {
     pub fn new() -> Self {
@@ -7868,9 +9047,17 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsKakaoPayCaptur
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsKakaoPayCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsKakaoPayCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentIntentPaymentMethodOptionsKakaoPayCaptureMethod))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsKakaoPayCaptureMethod {
@@ -7940,9 +9127,17 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsKakaoPaySetupF
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsKakaoPaySetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsKakaoPaySetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentIntentPaymentMethodOptionsKakaoPaySetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsKakaoPaySetupFutureUsage {
@@ -7964,7 +9159,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `klarna` PaymentMethod, this sub-hash contains details about the Klarna payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsKlarna {
     /// Controls when the funds are captured from the customer's account.
     ///
@@ -7994,6 +9191,12 @@ pub struct CreatePaymentIntentPaymentMethodOptionsKlarna {
     /// Subscription details if setting up or charging a subscription.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub subscriptions: Option<Vec<CreatePaymentIntentPaymentMethodOptionsKlarnaSubscriptions>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsKlarna {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentMethodOptionsKlarna").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentIntentPaymentMethodOptionsKlarna {
     pub fn new() -> Self {
@@ -8056,9 +9259,17 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsKlarnaCaptureM
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsKlarnaCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsKlarnaCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentIntentPaymentMethodOptionsKlarnaCaptureMethod))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsKlarnaCaptureMethod {
@@ -8078,7 +9289,9 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodOptionsKla
     }
 }
 /// On-demand details if setting up or charging an on-demand payment.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsKlarnaOnDemand {
     /// Your average amount value.
     /// You can use a value across your customer base, or segment based on customer type, country, etc.
@@ -8099,6 +9312,13 @@ pub struct CreatePaymentIntentPaymentMethodOptionsKlarnaOnDemand {
     /// The number of `purchase_interval` between charges
     #[serde(skip_serializing_if = "Option::is_none")]
     pub purchase_interval_count: Option<u64>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsKlarnaOnDemand {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentMethodOptionsKlarnaOnDemand")
+            .finish_non_exhaustive()
+    }
 }
 impl CreatePaymentIntentPaymentMethodOptionsKlarnaOnDemand {
     pub fn new() -> Self {
@@ -8166,9 +9386,19 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsKlarnaOnDemand
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsKlarnaOnDemandPurchaseInterval {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsKlarnaOnDemandPurchaseInterval {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePaymentIntentPaymentMethodOptionsKlarnaOnDemandPurchaseInterval
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsKlarnaOnDemandPurchaseInterval {
@@ -8365,9 +9595,17 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsKlarnaPreferre
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale {
@@ -8442,9 +9680,17 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsKlarnaSetupFut
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsKlarnaSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsKlarnaSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentIntentPaymentMethodOptionsKlarnaSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsKlarnaSetupFutureUsage {
@@ -8466,7 +9712,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Subscription details if setting up or charging a subscription.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsKlarnaSubscriptions {
     /// Unit of time between subscription charges.
     pub interval: CreatePaymentIntentPaymentMethodOptionsKlarnaSubscriptionsInterval,
@@ -8483,6 +9731,13 @@ pub struct CreatePaymentIntentPaymentMethodOptionsKlarnaSubscriptions {
     /// A non-customer-facing reference to correlate subscription charges in the Klarna app.
     /// Use a value that persists across subscription charges.
     pub reference: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsKlarnaSubscriptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentMethodOptionsKlarnaSubscriptions")
+            .finish_non_exhaustive()
+    }
 }
 impl CreatePaymentIntentPaymentMethodOptionsKlarnaSubscriptions {
     pub fn new(
@@ -8548,9 +9803,19 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsKlarnaSubscrip
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsKlarnaSubscriptionsInterval {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsKlarnaSubscriptionsInterval {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePaymentIntentPaymentMethodOptionsKlarnaSubscriptionsInterval
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsKlarnaSubscriptionsInterval {
@@ -8572,7 +9837,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `konbini` PaymentMethod, this sub-hash contains details about the Konbini payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsKonbini {
     /// An optional 10 to 11 digit numeric-only string determining the confirmation code at applicable convenience stores.
     /// Must not consist of only zeroes and could be rejected in case of insufficient uniqueness.
@@ -8603,6 +9870,12 @@ pub struct CreatePaymentIntentPaymentMethodOptionsKonbini {
     /// If you've already set `setup_future_usage` and you're performing a request using a publishable key, you can only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<CreatePaymentIntentPaymentMethodOptionsKonbiniSetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsKonbini {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentMethodOptionsKonbini").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentIntentPaymentMethodOptionsKonbini {
     pub fn new() -> Self {
@@ -8670,9 +9943,17 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsKonbiniSetupFu
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsKonbiniSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsKonbiniSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentIntentPaymentMethodOptionsKonbiniSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsKonbiniSetupFutureUsage {
@@ -8694,7 +9975,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `kr_card` PaymentMethod, this sub-hash contains details about the KR Card payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsKrCard {
     /// Controls when the funds are captured from the customer's account.
     ///
@@ -8713,6 +9996,12 @@ pub struct CreatePaymentIntentPaymentMethodOptionsKrCard {
     /// When processing card payments, Stripe uses `setup_future_usage` to help you comply with regional legislation and network rules, such as [SCA](/strong-customer-authentication).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<CreatePaymentIntentPaymentMethodOptionsKrCardSetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsKrCard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentMethodOptionsKrCard").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentIntentPaymentMethodOptionsKrCard {
     pub fn new() -> Self {
@@ -8769,9 +10058,17 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsKrCardCaptureM
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsKrCardCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsKrCardCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentIntentPaymentMethodOptionsKrCardCaptureMethod))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsKrCardCaptureMethod {
@@ -8841,9 +10138,17 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsKrCardSetupFut
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsKrCardSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsKrCardSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentIntentPaymentMethodOptionsKrCardSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsKrCardSetupFutureUsage {
@@ -8865,7 +10170,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `link` PaymentMethod, this sub-hash contains details about the Link payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsLink {
     /// Controls when the funds are captured from the customer's account.
     ///
@@ -8889,6 +10196,12 @@ pub struct CreatePaymentIntentPaymentMethodOptionsLink {
     /// If you've already set `setup_future_usage` and you're performing a request using a publishable key, you can only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<CreatePaymentIntentPaymentMethodOptionsLinkSetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsLink {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentMethodOptionsLink").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentIntentPaymentMethodOptionsLink {
     pub fn new() -> Self {
@@ -8945,9 +10258,17 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsLinkCaptureMet
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsLinkCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsLinkCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentIntentPaymentMethodOptionsLinkCaptureMethod))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsLinkCaptureMethod {
@@ -9019,9 +10340,17 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsLinkSetupFutur
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsLinkSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsLinkSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentIntentPaymentMethodOptionsLinkSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsLinkSetupFutureUsage {
@@ -9041,7 +10370,9 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodOptionsLin
     }
 }
 /// If this is a `mb_way` PaymentMethod, this sub-hash contains details about the MB WAY payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsMbWay {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -9055,6 +10386,12 @@ pub struct CreatePaymentIntentPaymentMethodOptionsMbWay {
     /// If you've already set `setup_future_usage` and you're performing a request using a publishable key, you can only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<CreatePaymentIntentPaymentMethodOptionsMbWaySetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsMbWay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentMethodOptionsMbWay").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentIntentPaymentMethodOptionsMbWay {
     pub fn new() -> Self {
@@ -9116,9 +10453,17 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsMbWaySetupFutu
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsMbWaySetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsMbWaySetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentIntentPaymentMethodOptionsMbWaySetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsMbWaySetupFutureUsage {
@@ -9138,7 +10483,9 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodOptionsMbW
     }
 }
 /// If this is a `MobilePay` PaymentMethod, this sub-hash contains details about the MobilePay payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsMobilepay {
     /// Controls when the funds are captured from the customer's account.
     ///
@@ -9160,6 +10507,12 @@ pub struct CreatePaymentIntentPaymentMethodOptionsMobilepay {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage:
         Option<CreatePaymentIntentPaymentMethodOptionsMobilepaySetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsMobilepay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentMethodOptionsMobilepay").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentIntentPaymentMethodOptionsMobilepay {
     pub fn new() -> Self {
@@ -9216,9 +10569,17 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsMobilepayCaptu
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsMobilepayCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsMobilepayCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentIntentPaymentMethodOptionsMobilepayCaptureMethod))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsMobilepayCaptureMethod {
@@ -9289,9 +10650,17 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsMobilepaySetup
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsMobilepaySetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsMobilepaySetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentIntentPaymentMethodOptionsMobilepaySetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsMobilepaySetupFutureUsage {
@@ -9313,7 +10682,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `multibanco` PaymentMethod, this sub-hash contains details about the Multibanco payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsMultibanco {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -9328,6 +10699,12 @@ pub struct CreatePaymentIntentPaymentMethodOptionsMultibanco {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage:
         Option<CreatePaymentIntentPaymentMethodOptionsMultibancoSetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsMultibanco {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentMethodOptionsMultibanco").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentIntentPaymentMethodOptionsMultibanco {
     pub fn new() -> Self {
@@ -9389,9 +10766,19 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsMultibancoSetu
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsMultibancoSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsMultibancoSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePaymentIntentPaymentMethodOptionsMultibancoSetupFutureUsage
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsMultibancoSetupFutureUsage {
@@ -9413,7 +10800,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `naver_pay` PaymentMethod, this sub-hash contains details about the Naver Pay payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsNaverPay {
     /// Controls when the funds are captured from the customer's account.
     ///
@@ -9432,6 +10821,12 @@ pub struct CreatePaymentIntentPaymentMethodOptionsNaverPay {
     /// When processing card payments, Stripe uses `setup_future_usage` to help you comply with regional legislation and network rules, such as [SCA](/strong-customer-authentication).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<CreatePaymentIntentPaymentMethodOptionsNaverPaySetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsNaverPay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentMethodOptionsNaverPay").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentIntentPaymentMethodOptionsNaverPay {
     pub fn new() -> Self {
@@ -9488,9 +10883,17 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsNaverPayCaptur
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsNaverPayCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsNaverPayCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentIntentPaymentMethodOptionsNaverPayCaptureMethod))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsNaverPayCaptureMethod {
@@ -9560,9 +10963,17 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsNaverPaySetupF
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsNaverPaySetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsNaverPaySetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentIntentPaymentMethodOptionsNaverPaySetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsNaverPaySetupFutureUsage {
@@ -9584,7 +10995,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `nz_bank_account` PaymentMethod, this sub-hash contains details about the NZ BECS Direct Debit payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsNzBankAccount {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -9604,6 +11017,13 @@ pub struct CreatePaymentIntentPaymentMethodOptionsNzBankAccount {
     /// The date must be in the future and between 3 and 15 calendar days from now.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub target_date: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsNzBankAccount {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentMethodOptionsNzBankAccount")
+            .finish_non_exhaustive()
+    }
 }
 impl CreatePaymentIntentPaymentMethodOptionsNzBankAccount {
     pub fn new() -> Self {
@@ -9671,9 +11091,19 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsNzBankAccountS
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsNzBankAccountSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsNzBankAccountSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePaymentIntentPaymentMethodOptionsNzBankAccountSetupFutureUsage
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsNzBankAccountSetupFutureUsage {
@@ -9695,7 +11125,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `oxxo` PaymentMethod, this sub-hash contains details about the OXXO payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsOxxo {
     /// The number of calendar days before an OXXO voucher expires.
     /// For example, if you create an OXXO voucher on Monday and you set expires_after_days to 2, the OXXO invoice will expire on Wednesday at 23:59 America/Mexico_City time.
@@ -9713,6 +11145,12 @@ pub struct CreatePaymentIntentPaymentMethodOptionsOxxo {
     /// If you've already set `setup_future_usage` and you're performing a request using a publishable key, you can only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<CreatePaymentIntentPaymentMethodOptionsOxxoSetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsOxxo {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentMethodOptionsOxxo").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentIntentPaymentMethodOptionsOxxo {
     pub fn new() -> Self {
@@ -9774,9 +11212,17 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsOxxoSetupFutur
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsOxxoSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsOxxoSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentIntentPaymentMethodOptionsOxxoSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsOxxoSetupFutureUsage {
@@ -9796,7 +11242,9 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodOptionsOxx
     }
 }
 /// If this is a `p24` PaymentMethod, this sub-hash contains details about the Przelewy24 payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsP24 {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -9813,6 +11261,12 @@ pub struct CreatePaymentIntentPaymentMethodOptionsP24 {
     /// Confirm that the payer has accepted the P24 terms and conditions.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tos_shown_and_accepted: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsP24 {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentMethodOptionsP24").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentIntentPaymentMethodOptionsP24 {
     pub fn new() -> Self {
@@ -9874,9 +11328,17 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsP24SetupFuture
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsP24SetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsP24SetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentIntentPaymentMethodOptionsP24SetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsP24SetupFutureUsage {
@@ -9896,7 +11358,9 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodOptionsP24
     }
 }
 /// If this is a `payco` PaymentMethod, this sub-hash contains details about the PAYCO payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsPayco {
     /// Controls when the funds are captured from the customer's account.
     ///
@@ -9905,6 +11369,12 @@ pub struct CreatePaymentIntentPaymentMethodOptionsPayco {
     /// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter unsets the stored value for this payment method type.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub capture_method: Option<CreatePaymentIntentPaymentMethodOptionsPaycoCaptureMethod>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsPayco {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentMethodOptionsPayco").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentIntentPaymentMethodOptionsPayco {
     pub fn new() -> Self {
@@ -9961,9 +11431,17 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsPaycoCaptureMe
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsPaycoCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsPaycoCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentIntentPaymentMethodOptionsPaycoCaptureMethod))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsPaycoCaptureMethod {
@@ -9983,7 +11461,9 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodOptionsPay
     }
 }
 /// If this is a `paynow` PaymentMethod, this sub-hash contains details about the PayNow payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsPaynow {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -9997,6 +11477,12 @@ pub struct CreatePaymentIntentPaymentMethodOptionsPaynow {
     /// If you've already set `setup_future_usage` and you're performing a request using a publishable key, you can only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<CreatePaymentIntentPaymentMethodOptionsPaynowSetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsPaynow {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentMethodOptionsPaynow").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentIntentPaymentMethodOptionsPaynow {
     pub fn new() -> Self {
@@ -10058,9 +11544,17 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsPaynowSetupFut
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsPaynowSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsPaynowSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentIntentPaymentMethodOptionsPaynowSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsPaynowSetupFutureUsage {
@@ -10082,7 +11576,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `paypal` PaymentMethod, this sub-hash contains details about the PayPal payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsPaypal {
     /// Controls when the funds will be captured from the customer's account.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -10109,6 +11605,12 @@ pub struct CreatePaymentIntentPaymentMethodOptionsPaypal {
     /// If you've already set `setup_future_usage` and you're performing a request using a publishable key, you can only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<CreatePaymentIntentPaymentMethodOptionsPaypalSetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsPaypal {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentMethodOptionsPaypal").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentIntentPaymentMethodOptionsPaypal {
     pub fn new() -> Self {
@@ -10167,9 +11669,17 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsPaypalCaptureM
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsPaypalCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsPaypalCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentIntentPaymentMethodOptionsPaypalCaptureMethod))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsPaypalCaptureMethod {
@@ -10289,9 +11799,17 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsPaypalPreferre
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsPaypalPreferredLocale {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsPaypalPreferredLocale {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentIntentPaymentMethodOptionsPaypalPreferredLocale))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsPaypalPreferredLocale {
@@ -10363,9 +11881,17 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsPaypalSetupFut
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsPaypalSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsPaypalSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentIntentPaymentMethodOptionsPaypalSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsPaypalSetupFutureUsage {
@@ -10387,7 +11913,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `payto` PaymentMethod, this sub-hash contains details about the PayTo payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsPayto {
     /// Additional fields for Mandate creation.
     /// Only `purpose` field is configurable for PayTo PaymentIntent with `setup_future_usage=none`.
@@ -10407,6 +11935,12 @@ pub struct CreatePaymentIntentPaymentMethodOptionsPayto {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<CreatePaymentIntentPaymentMethodOptionsPaytoSetupFutureUsage>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsPayto {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentMethodOptionsPayto").finish_non_exhaustive()
+    }
+}
 impl CreatePaymentIntentPaymentMethodOptionsPayto {
     pub fn new() -> Self {
         Self { mandate_options: None, setup_future_usage: None }
@@ -10420,7 +11954,9 @@ impl Default for CreatePaymentIntentPaymentMethodOptionsPayto {
 /// Additional fields for Mandate creation.
 /// Only `purpose` field is configurable for PayTo PaymentIntent with `setup_future_usage=none`.
 /// Other fields are only applicable to PayTo PaymentIntent with `setup_future_usage=off_session`.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsPaytoMandateOptions {
     /// Amount that will be collected. It is required when `amount_type` is `fixed`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -10445,6 +11981,13 @@ pub struct CreatePaymentIntentPaymentMethodOptionsPaytoMandateOptions {
     /// The purpose for which payments are made. Has a default value based on your merchant category code.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub purpose: Option<CreatePaymentIntentPaymentMethodOptionsPaytoMandateOptionsPurpose>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsPaytoMandateOptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentMethodOptionsPaytoMandateOptions")
+            .finish_non_exhaustive()
+    }
 }
 impl CreatePaymentIntentPaymentMethodOptionsPaytoMandateOptions {
     pub fn new() -> Self {
@@ -10509,9 +12052,19 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsPaytoMandateOp
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsPaytoMandateOptionsAmountType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsPaytoMandateOptionsAmountType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePaymentIntentPaymentMethodOptionsPaytoMandateOptionsAmountType
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsPaytoMandateOptionsAmountType {
@@ -10598,9 +12151,19 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsPaytoMandateOptionsPaymentSchedule {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsPaytoMandateOptionsPaymentSchedule {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePaymentIntentPaymentMethodOptionsPaytoMandateOptionsPaymentSchedule
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -10694,9 +12257,19 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsPaytoMandateOp
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsPaytoMandateOptionsPurpose {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsPaytoMandateOptionsPurpose {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePaymentIntentPaymentMethodOptionsPaytoMandateOptionsPurpose
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsPaytoMandateOptionsPurpose {
@@ -10770,9 +12343,17 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsPaytoSetupFutu
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsPaytoSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsPaytoSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentIntentPaymentMethodOptionsPaytoSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsPaytoSetupFutureUsage {
@@ -10792,7 +12373,9 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodOptionsPay
     }
 }
 /// If this is a `pix` PaymentMethod, this sub-hash contains details about the Pix payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsPix {
     /// Determines if the amount includes the IOF tax. Defaults to `never`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -10817,6 +12400,12 @@ pub struct CreatePaymentIntentPaymentMethodOptionsPix {
     /// If you've already set `setup_future_usage` and you're performing a request using a publishable key, you can only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<CreatePaymentIntentPaymentMethodOptionsPixSetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsPix {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentMethodOptionsPix").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentIntentPaymentMethodOptionsPix {
     pub fn new() -> Self {
@@ -10877,9 +12466,17 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsPixAmountInclu
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsPixAmountIncludesIof {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsPixAmountIncludesIof {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentIntentPaymentMethodOptionsPixAmountIncludesIof))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsPixAmountIncludesIof {
@@ -10948,9 +12545,17 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsPixSetupFuture
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsPixSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsPixSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentIntentPaymentMethodOptionsPixSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsPixSetupFutureUsage {
@@ -10970,7 +12575,9 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodOptionsPix
     }
 }
 /// If this is a `promptpay` PaymentMethod, this sub-hash contains details about the PromptPay payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsPromptpay {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -10985,6 +12592,12 @@ pub struct CreatePaymentIntentPaymentMethodOptionsPromptpay {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage:
         Option<CreatePaymentIntentPaymentMethodOptionsPromptpaySetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsPromptpay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentMethodOptionsPromptpay").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentIntentPaymentMethodOptionsPromptpay {
     pub fn new() -> Self {
@@ -11046,9 +12659,17 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsPromptpaySetup
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsPromptpaySetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsPromptpaySetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentIntentPaymentMethodOptionsPromptpaySetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsPromptpaySetupFutureUsage {
@@ -11070,7 +12691,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `revolut_pay` PaymentMethod, this sub-hash contains details about the Revolut Pay payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsRevolutPay {
     /// Controls when the funds are captured from the customer's account.
     ///
@@ -11090,6 +12713,12 @@ pub struct CreatePaymentIntentPaymentMethodOptionsRevolutPay {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage:
         Option<CreatePaymentIntentPaymentMethodOptionsRevolutPaySetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsRevolutPay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentMethodOptionsRevolutPay").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentIntentPaymentMethodOptionsRevolutPay {
     pub fn new() -> Self {
@@ -11146,9 +12775,17 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsRevolutPayCapt
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsRevolutPayCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsRevolutPayCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentIntentPaymentMethodOptionsRevolutPayCaptureMethod))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsRevolutPayCaptureMethod {
@@ -11220,9 +12857,19 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsRevolutPaySetu
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsRevolutPaySetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsRevolutPaySetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePaymentIntentPaymentMethodOptionsRevolutPaySetupFutureUsage
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsRevolutPaySetupFutureUsage {
@@ -11244,7 +12891,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `samsung_pay` PaymentMethod, this sub-hash contains details about the Samsung Pay payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsSamsungPay {
     /// Controls when the funds are captured from the customer's account.
     ///
@@ -11253,6 +12902,12 @@ pub struct CreatePaymentIntentPaymentMethodOptionsSamsungPay {
     /// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter unsets the stored value for this payment method type.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub capture_method: Option<CreatePaymentIntentPaymentMethodOptionsSamsungPayCaptureMethod>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsSamsungPay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentMethodOptionsSamsungPay").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentIntentPaymentMethodOptionsSamsungPay {
     pub fn new() -> Self {
@@ -11309,9 +12964,17 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsSamsungPayCapt
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsSamsungPayCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsSamsungPayCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentIntentPaymentMethodOptionsSamsungPayCaptureMethod))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsSamsungPayCaptureMethod {
@@ -11333,7 +12996,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `satispay` PaymentMethod, this sub-hash contains details about the Satispay payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsSatispay {
     /// Controls when the funds are captured from the customer's account.
     ///
@@ -11342,6 +13007,12 @@ pub struct CreatePaymentIntentPaymentMethodOptionsSatispay {
     /// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter unsets the stored value for this payment method type.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub capture_method: Option<CreatePaymentIntentPaymentMethodOptionsSatispayCaptureMethod>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsSatispay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentMethodOptionsSatispay").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentIntentPaymentMethodOptionsSatispay {
     pub fn new() -> Self {
@@ -11398,9 +13069,17 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsSatispayCaptur
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsSatispayCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsSatispayCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentIntentPaymentMethodOptionsSatispayCaptureMethod))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsSatispayCaptureMethod {
@@ -11420,7 +13099,9 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodOptionsSat
     }
 }
 /// If this is a `sepa_debit` PaymentIntent, this sub-hash contains details about the SEPA Debit payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsSepaDebit {
     /// Additional fields for Mandate creation
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -11444,6 +13125,12 @@ pub struct CreatePaymentIntentPaymentMethodOptionsSepaDebit {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub target_date: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsSepaDebit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentMethodOptionsSepaDebit").finish_non_exhaustive()
+    }
+}
 impl CreatePaymentIntentPaymentMethodOptionsSepaDebit {
     pub fn new() -> Self {
         Self { mandate_options: None, setup_future_usage: None, target_date: None }
@@ -11455,7 +13142,9 @@ impl Default for CreatePaymentIntentPaymentMethodOptionsSepaDebit {
     }
 }
 /// Additional fields for Mandate creation
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsSepaDebitMandateOptions {
     /// Prefix used to generate the Mandate reference.
     /// Must be at most 12 characters long.
@@ -11463,6 +13152,13 @@ pub struct CreatePaymentIntentPaymentMethodOptionsSepaDebitMandateOptions {
     /// Cannot begin with 'STRIPE'.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reference_prefix: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsSepaDebitMandateOptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentMethodOptionsSepaDebitMandateOptions")
+            .finish_non_exhaustive()
+    }
 }
 impl CreatePaymentIntentPaymentMethodOptionsSepaDebitMandateOptions {
     pub fn new() -> Self {
@@ -11530,9 +13226,17 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsSepaDebitSetup
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsSepaDebitSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsSepaDebitSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentIntentPaymentMethodOptionsSepaDebitSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsSepaDebitSetupFutureUsage {
@@ -11554,7 +13258,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `sofort` PaymentMethod, this sub-hash contains details about the SOFORT payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsSofort {
     /// Language shown to the payer on redirect.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -11571,6 +13277,12 @@ pub struct CreatePaymentIntentPaymentMethodOptionsSofort {
     /// If you've already set `setup_future_usage` and you're performing a request using a publishable key, you can only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<CreatePaymentIntentPaymentMethodOptionsSofortSetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsSofort {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentMethodOptionsSofort").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentIntentPaymentMethodOptionsSofort {
     pub fn new() -> Self {
@@ -11641,9 +13353,17 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsSofortPreferre
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsSofortPreferredLanguage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsSofortPreferredLanguage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentIntentPaymentMethodOptionsSofortPreferredLanguage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsSofortPreferredLanguage {
@@ -11717,9 +13437,17 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsSofortSetupFut
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsSofortSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsSofortSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentIntentPaymentMethodOptionsSofortSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsSofortSetupFutureUsage {
@@ -11741,7 +13469,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `Swish` PaymentMethod, this sub-hash contains details about the Swish payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsSwish {
     /// A reference for this payment to be displayed in the Swish app.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -11758,6 +13488,12 @@ pub struct CreatePaymentIntentPaymentMethodOptionsSwish {
     /// If you've already set `setup_future_usage` and you're performing a request using a publishable key, you can only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<CreatePaymentIntentPaymentMethodOptionsSwishSetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsSwish {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentMethodOptionsSwish").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentIntentPaymentMethodOptionsSwish {
     pub fn new() -> Self {
@@ -11819,9 +13555,17 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsSwishSetupFutu
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsSwishSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsSwishSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentIntentPaymentMethodOptionsSwishSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsSwishSetupFutureUsage {
@@ -11841,7 +13585,9 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodOptionsSwi
     }
 }
 /// If this is a `twint` PaymentMethod, this sub-hash contains details about the TWINT payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsTwint {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -11855,6 +13601,12 @@ pub struct CreatePaymentIntentPaymentMethodOptionsTwint {
     /// If you've already set `setup_future_usage` and you're performing a request using a publishable key, you can only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<CreatePaymentIntentPaymentMethodOptionsTwintSetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsTwint {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentMethodOptionsTwint").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentIntentPaymentMethodOptionsTwint {
     pub fn new() -> Self {
@@ -11916,9 +13668,17 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsTwintSetupFutu
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsTwintSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsTwintSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentIntentPaymentMethodOptionsTwintSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsTwintSetupFutureUsage {
@@ -11938,13 +13698,21 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodOptionsTwi
     }
 }
 /// If this is a `upi` PaymentIntent, this sub-hash contains details about the UPI payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsUpi {
     /// Configuration options for setting up an eMandate
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mandate_options: Option<CreatePaymentIntentPaymentMethodOptionsUpiMandateOptions>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<CreatePaymentIntentPaymentMethodOptionsUpiSetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsUpi {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentMethodOptionsUpi").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentIntentPaymentMethodOptionsUpi {
     pub fn new() -> Self {
@@ -11957,7 +13725,9 @@ impl Default for CreatePaymentIntentPaymentMethodOptionsUpi {
     }
 }
 /// Configuration options for setting up an eMandate
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsUpiMandateOptions {
     /// Amount to be charged for future payments.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -11973,6 +13743,13 @@ pub struct CreatePaymentIntentPaymentMethodOptionsUpiMandateOptions {
     /// End date of the mandate or subscription.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub end_date: Option<stripe_types::Timestamp>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsUpiMandateOptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentMethodOptionsUpiMandateOptions")
+            .finish_non_exhaustive()
+    }
 }
 impl CreatePaymentIntentPaymentMethodOptionsUpiMandateOptions {
     pub fn new() -> Self {
@@ -12030,9 +13807,19 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsUpiMandateOpti
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsUpiMandateOptionsAmountType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsUpiMandateOptionsAmountType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePaymentIntentPaymentMethodOptionsUpiMandateOptionsAmountType
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsUpiMandateOptionsAmountType {
@@ -12099,9 +13886,17 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsUpiSetupFuture
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsUpiSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsUpiSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentIntentPaymentMethodOptionsUpiSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsUpiSetupFutureUsage {
@@ -12121,7 +13916,9 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodOptionsUpi
     }
 }
 /// If this is a `us_bank_account` PaymentMethod, this sub-hash contains details about the US bank account payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsUsBankAccount {
     /// Additional fields for Financial Connections Session creation
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -12160,6 +13957,13 @@ pub struct CreatePaymentIntentPaymentMethodOptionsUsBankAccount {
     pub verification_method:
         Option<CreatePaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsUsBankAccount {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentMethodOptionsUsBankAccount")
+            .finish_non_exhaustive()
+    }
+}
 impl CreatePaymentIntentPaymentMethodOptionsUsBankAccount {
     pub fn new() -> Self {
         Self {
@@ -12179,7 +13983,9 @@ impl Default for CreatePaymentIntentPaymentMethodOptionsUsBankAccount {
     }
 }
 /// Additional fields for Financial Connections Session creation
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnections {
     /// Provide filters for the linked accounts that the customer can select for the payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -12202,6 +14008,13 @@ pub struct CreatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnecti
     #[serde(skip_serializing_if = "Option::is_none")]
     pub return_url: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnections {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnections")
+            .finish_non_exhaustive()
+    }
+}
 impl CreatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnections {
     pub fn new() -> Self {
         Self { filters: None, permissions: None, prefetch: None, return_url: None }
@@ -12213,13 +14026,26 @@ impl Default for CreatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialCo
     }
 }
 /// Provide filters for the linked accounts that the customer can select for the payment method.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsFilters {
         /// The account subcategories to use to filter for selectable accounts.
     /// Valid subcategories are `checking` and `savings`.
 #[serde(skip_serializing_if = "Option::is_none")]
 pub account_subcategories: Option<Vec<CreatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsFiltersAccountSubcategories>>,
 
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for CreatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsFilters
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(
+            "CreatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsFilters",
+        )
+        .finish_non_exhaustive()
+    }
 }
 impl CreatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsFilters {
     pub fn new() -> Self {
@@ -12272,9 +14098,16 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsUsBankAccountF
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsFiltersAccountSubcategories {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsFiltersAccountSubcategories {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsFiltersAccountSubcategories)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsFiltersAccountSubcategories {
@@ -12346,11 +14179,23 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for CreatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for CreatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -12424,11 +14269,23 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for CreatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for CreatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -12452,12 +14309,21 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Additional fields for Mandate creation
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsUsBankAccountMandateOptions {
     /// The method used to collect offline mandate customer acceptance.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub collection_method:
         Option<CreatePaymentIntentPaymentMethodOptionsUsBankAccountMandateOptionsCollectionMethod>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsUsBankAccountMandateOptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentMethodOptionsUsBankAccountMandateOptions")
+            .finish_non_exhaustive()
+    }
 }
 impl CreatePaymentIntentPaymentMethodOptionsUsBankAccountMandateOptions {
     pub fn new() -> Self {
@@ -12514,11 +14380,23 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for CreatePaymentIntentPaymentMethodOptionsUsBankAccountMandateOptionsCollectionMethod
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for CreatePaymentIntentPaymentMethodOptionsUsBankAccountMandateOptionsCollectionMethod
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePaymentIntentPaymentMethodOptionsUsBankAccountMandateOptionsCollectionMethod
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -12542,12 +14420,21 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Additional fields for network related functions
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsUsBankAccountNetworks {
     /// Triggers validations to run across the selected networks
     #[serde(skip_serializing_if = "Option::is_none")]
     pub requested:
         Option<Vec<CreatePaymentIntentPaymentMethodOptionsUsBankAccountNetworksRequested>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsUsBankAccountNetworks {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentMethodOptionsUsBankAccountNetworks")
+            .finish_non_exhaustive()
+    }
 }
 impl CreatePaymentIntentPaymentMethodOptionsUsBankAccountNetworks {
     pub fn new() -> Self {
@@ -12603,9 +14490,19 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsUsBankAccountN
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsUsBankAccountNetworksRequested {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsUsBankAccountNetworksRequested {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePaymentIntentPaymentMethodOptionsUsBankAccountNetworksRequested
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsUsBankAccountNetworksRequested {
@@ -12682,9 +14579,19 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsUsBankAccountS
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsUsBankAccountSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsUsBankAccountSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePaymentIntentPaymentMethodOptionsUsBankAccountSetupFutureUsage
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsUsBankAccountSetupFutureUsage {
@@ -12755,9 +14662,19 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsUsBankAccountT
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsUsBankAccountTransactionPurpose {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsUsBankAccountTransactionPurpose {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePaymentIntentPaymentMethodOptionsUsBankAccountTransactionPurpose
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsUsBankAccountTransactionPurpose {
@@ -12825,9 +14742,19 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsUsBankAccountV
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod {
@@ -12849,7 +14776,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `wechat_pay` PaymentMethod, this sub-hash contains details about the WeChat Pay payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsWechatPay {
     /// The app ID registered with WeChat Pay. Only required when client is ios or android.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -12870,6 +14799,12 @@ pub struct CreatePaymentIntentPaymentMethodOptionsWechatPay {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage:
         Option<CreatePaymentIntentPaymentMethodOptionsWechatPaySetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsWechatPay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentMethodOptionsWechatPay").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentIntentPaymentMethodOptionsWechatPay {
     pub fn new() -> Self {
@@ -12928,9 +14863,17 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsWechatPayClien
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsWechatPayClient {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsWechatPayClient {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentIntentPaymentMethodOptionsWechatPayClient))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsWechatPayClient {
@@ -12999,9 +14942,17 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsWechatPaySetup
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsWechatPaySetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsWechatPaySetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentIntentPaymentMethodOptionsWechatPaySetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsWechatPaySetupFutureUsage {
@@ -13023,7 +14974,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `zip` PaymentMethod, this sub-hash contains details about the Zip payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentPaymentMethodOptionsZip {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -13037,6 +14990,12 @@ pub struct CreatePaymentIntentPaymentMethodOptionsZip {
     /// If you've already set `setup_future_usage` and you're performing a request using a publishable key, you can only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<CreatePaymentIntentPaymentMethodOptionsZipSetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsZip {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentMethodOptionsZip").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentIntentPaymentMethodOptionsZip {
     pub fn new() -> Self {
@@ -13098,9 +15057,17 @@ impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsZipSetupFuture
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsZipSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsZipSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentIntentPaymentMethodOptionsZipSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsZipSetupFutureUsage {
@@ -13121,11 +15088,19 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodOptionsZip
 }
 /// Options to configure Radar.
 /// Learn more about [Radar Sessions](https://docs.stripe.com/radar/radar-session).
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentRadarOptions {
     /// A [Radar Session](https://docs.stripe.com/radar/radar-session) is a snapshot of the browser metadata and device details that help Radar make more accurate predictions on your payments.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub session: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentRadarOptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentRadarOptions").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentIntentRadarOptions {
     pub fn new() -> Self {
@@ -13138,7 +15113,9 @@ impl Default for CreatePaymentIntentRadarOptions {
     }
 }
 /// Shipping information for this PaymentIntent.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentShipping {
     /// Shipping address.
     pub address: CreatePaymentIntentShippingAddress,
@@ -13155,6 +15132,12 @@ pub struct CreatePaymentIntentShipping {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tracking_number: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentShipping {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentShipping").finish_non_exhaustive()
+    }
+}
 impl CreatePaymentIntentShipping {
     pub fn new(
         address: impl Into<CreatePaymentIntentShippingAddress>,
@@ -13170,7 +15153,9 @@ impl CreatePaymentIntentShipping {
     }
 }
 /// Shipping address.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentShippingAddress {
     /// City, district, suburb, town, or village.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -13191,6 +15176,12 @@ pub struct CreatePaymentIntentShippingAddress {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentShippingAddress {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentShippingAddress").finish_non_exhaustive()
+    }
+}
 impl CreatePaymentIntentShippingAddress {
     pub fn new() -> Self {
         Self { city: None, country: None, line1: None, line2: None, postal_code: None, state: None }
@@ -13203,7 +15194,9 @@ impl Default for CreatePaymentIntentShippingAddress {
 }
 /// The parameters that you can use to automatically create a Transfer.
 /// Learn more about the [use case for connected accounts](https://docs.stripe.com/payments/connected-accounts).
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntentTransferData {
     /// The amount that will be transferred automatically when a charge succeeds.
     /// The amount is capped at the total transaction amount and if no amount is set,
@@ -13220,6 +15213,12 @@ pub struct CreatePaymentIntentTransferData {
     /// returned on the successful charge's `transfer` field.
     pub destination: String,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentTransferData {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentTransferData").finish_non_exhaustive()
+    }
+}
 impl CreatePaymentIntentTransferData {
     pub fn new(destination: impl Into<String>) -> Self {
         Self { amount: None, destination: destination.into() }
@@ -13235,9 +15234,17 @@ impl CreatePaymentIntentTransferData {
 /// and confirming the PaymentIntent in the same call. You can use any parameters
 /// available in the [confirm API](https://stripe.com/docs/api/payment_intents/confirm) when you supply
 /// `confirm=true`.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentIntent {
     inner: CreatePaymentIntentBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntent {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntent").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentIntent {
     /// Construct a new `CreatePaymentIntent`.
@@ -13543,7 +15550,9 @@ impl StripeRequest for CreatePaymentIntent {
         RequestBuilder::new(StripeMethod::Post, "/payment_intents").form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct UpdatePaymentIntentBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     amount: Option<i64>,
@@ -13597,6 +15606,12 @@ struct UpdatePaymentIntentBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     transfer_group: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentBuilder").finish_non_exhaustive()
+    }
+}
 impl UpdatePaymentIntentBuilder {
     fn new() -> Self {
         Self {
@@ -13629,7 +15644,9 @@ impl UpdatePaymentIntentBuilder {
     }
 }
 /// Provides industry-specific information about the amount.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentAmountDetails {
     /// The total discount applied on the transaction represented in the [smallest currency unit](https://docs.stripe.com/currencies#zero-decimal).
     /// An integer greater than 0.
@@ -13657,6 +15674,12 @@ pub struct UpdatePaymentIntentAmountDetails {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax: Option<AmountDetailsTaxParam>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentAmountDetails {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentAmountDetails").finish_non_exhaustive()
+    }
+}
 impl UpdatePaymentIntentAmountDetails {
     pub fn new() -> Self {
         Self {
@@ -13675,7 +15698,9 @@ impl Default for UpdatePaymentIntentAmountDetails {
 }
 /// A list of line items, each containing information about a product in the PaymentIntent.
 /// There is a maximum of 200 line items.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentAmountDetailsLineItems {
     /// The discount applied on this line item represented in the [smallest currency unit](https://docs.stripe.com/currencies#zero-decimal).
     /// An integer greater than 0.
@@ -13710,6 +15735,12 @@ pub struct UpdatePaymentIntentAmountDetailsLineItems {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_of_measure: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentAmountDetailsLineItems {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentAmountDetailsLineItems").finish_non_exhaustive()
+    }
+}
 impl UpdatePaymentIntentAmountDetailsLineItems {
     pub fn new(
         product_name: impl Into<String>,
@@ -13729,7 +15760,9 @@ impl UpdatePaymentIntentAmountDetailsLineItems {
     }
 }
 /// Payment method-specific information for line items.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentAmountDetailsLineItemsPaymentMethodOptions {
     /// This sub-hash contains line item details that are specific to the `card` payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -13745,6 +15778,13 @@ pub struct UpdatePaymentIntentAmountDetailsLineItemsPaymentMethodOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub paypal: Option<UpdatePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypal>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentAmountDetailsLineItemsPaymentMethodOptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentAmountDetailsLineItemsPaymentMethodOptions")
+            .finish_non_exhaustive()
+    }
+}
 impl UpdatePaymentIntentAmountDetailsLineItemsPaymentMethodOptions {
     pub fn new() -> Self {
         Self { card: None, card_present: None, klarna: None, paypal: None }
@@ -13756,11 +15796,20 @@ impl Default for UpdatePaymentIntentAmountDetailsLineItemsPaymentMethodOptions {
     }
 }
 /// This sub-hash contains line item details that are specific to the `card` payment method.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsCard {
     /// Identifier that categorizes the items being purchased using a standardized commodity scheme such as (but not limited to) UNSPSC, NAICS, NAPCS, and so on.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub commodity_code: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsCard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsCard")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsCard {
     pub fn new() -> Self {
@@ -13773,11 +15822,20 @@ impl Default for UpdatePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsCa
     }
 }
 /// This sub-hash contains line item details that are specific to the `card_present` payment method.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsCardPresent {
     /// Identifier that categorizes the items being purchased using a standardized commodity scheme such as (but not limited to) UNSPSC, NAICS, NAPCS, and so on.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub commodity_code: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsCardPresent {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsCardPresent")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsCardPresent {
     pub fn new() -> Self {
@@ -13790,7 +15848,9 @@ impl Default for UpdatePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsCa
     }
 }
 /// This sub-hash contains line item details that are specific to the `paypal` payment method.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypal {
     /// Type of the line item.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -13802,6 +15862,13 @@ pub struct UpdatePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypal {
     /// The Stripe account ID of the connected account that sells the item.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sold_by: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypal {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypal")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypal {
     pub fn new() -> Self {
@@ -13864,11 +15931,23 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for UpdatePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypalCategory
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for UpdatePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypalCategory
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdatePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypalCategory
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -13892,7 +15971,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Provides industry-specific information about the charge.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentDetails {
     /// A unique value to identify the customer. This field is available only for card payments.
     ///
@@ -13905,6 +15986,12 @@ pub struct UpdatePaymentIntentPaymentDetails {
     /// For Klarna, this field is truncated to 255 characters and is visible to customers when they view the order in the Klarna app.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub order_reference: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentDetails {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentDetails").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentIntentPaymentDetails {
     pub fn new() -> Self {
@@ -13919,7 +16006,9 @@ impl Default for UpdatePaymentIntentPaymentDetails {
 /// If provided, this hash will be used to create a PaymentMethod. The new PaymentMethod will appear
 /// in the [payment_method](https://docs.stripe.com/api/payment_intents/object#payment_intent_object-payment_method).
 /// property on the PaymentIntent.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodData {
     /// If this is an `acss_debit` PaymentMethod, this hash contains details about the ACSS Debit payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -14133,6 +16222,12 @@ pub struct UpdatePaymentIntentPaymentMethodData {
     #[serde(with = "stripe_types::with_serde_json_opt")]
     pub zip: Option<miniserde::json::Value>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodData {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentMethodData").finish_non_exhaustive()
+    }
+}
 impl UpdatePaymentIntentPaymentMethodData {
     pub fn new(type_: impl Into<UpdatePaymentIntentPaymentMethodDataType>) -> Self {
         Self {
@@ -14244,9 +16339,17 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodDataAllowRedisplay {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodDataAllowRedisplay {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodDataAllowRedisplay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentIntentPaymentMethodDataAllowRedisplay))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodDataAllowRedisplay {
@@ -14266,12 +16369,20 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodDataAllowR
     }
 }
 /// If this is an `au_becs_debit` PaymentMethod, this hash contains details about the bank account.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodDataAuBecsDebit {
     /// The account number for the bank account.
     pub account_number: String,
     /// Bank-State-Branch number of the bank account.
     pub bsb_number: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodDataAuBecsDebit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentMethodDataAuBecsDebit").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentIntentPaymentMethodDataAuBecsDebit {
     pub fn new(account_number: impl Into<String>, bsb_number: impl Into<String>) -> Self {
@@ -14279,7 +16390,9 @@ impl UpdatePaymentIntentPaymentMethodDataAuBecsDebit {
     }
 }
 /// If this is a `bacs_debit` PaymentMethod, this hash contains details about the Bacs Direct Debit bank account.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodDataBacsDebit {
     /// Account number of the bank account that the funds will be debited from.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -14287,6 +16400,12 @@ pub struct UpdatePaymentIntentPaymentMethodDataBacsDebit {
     /// Sort code of the bank account. (e.g., `10-20-30`)
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sort_code: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodDataBacsDebit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentMethodDataBacsDebit").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentIntentPaymentMethodDataBacsDebit {
     pub fn new() -> Self {
@@ -14299,7 +16418,9 @@ impl Default for UpdatePaymentIntentPaymentMethodDataBacsDebit {
     }
 }
 /// Billing information associated with the PaymentMethod that may be used or required by particular types of payment methods.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodDataBillingDetails {
     /// Billing address.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -14318,6 +16439,12 @@ pub struct UpdatePaymentIntentPaymentMethodDataBillingDetails {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_id: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodDataBillingDetails {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentMethodDataBillingDetails").finish_non_exhaustive()
+    }
+}
 impl UpdatePaymentIntentPaymentMethodDataBillingDetails {
     pub fn new() -> Self {
         Self { address: None, email: None, name: None, phone: None, tax_id: None }
@@ -14329,7 +16456,9 @@ impl Default for UpdatePaymentIntentPaymentMethodDataBillingDetails {
     }
 }
 /// Billing address.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodDataBillingDetailsAddress {
     /// City, district, suburb, town, or village.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -14350,6 +16479,13 @@ pub struct UpdatePaymentIntentPaymentMethodDataBillingDetailsAddress {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodDataBillingDetailsAddress {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentMethodDataBillingDetailsAddress")
+            .finish_non_exhaustive()
+    }
+}
 impl UpdatePaymentIntentPaymentMethodDataBillingDetailsAddress {
     pub fn new() -> Self {
         Self { city: None, country: None, line1: None, line2: None, postal_code: None, state: None }
@@ -14361,10 +16497,18 @@ impl Default for UpdatePaymentIntentPaymentMethodDataBillingDetailsAddress {
     }
 }
 /// If this is a `boleto` PaymentMethod, this hash contains details about the Boleto payment method.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodDataBoleto {
     /// The tax ID of the customer (CPF for individual consumers or CNPJ for businesses consumers)
     pub tax_id: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodDataBoleto {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentMethodDataBoleto").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentIntentPaymentMethodDataBoleto {
     pub fn new(tax_id: impl Into<String>) -> Self {
@@ -14372,11 +16516,19 @@ impl UpdatePaymentIntentPaymentMethodDataBoleto {
     }
 }
 /// If this is an `eps` PaymentMethod, this hash contains details about the EPS payment method.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodDataEps {
     /// The customer's bank.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bank: Option<UpdatePaymentIntentPaymentMethodDataEpsBank>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodDataEps {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentMethodDataEps").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentIntentPaymentMethodDataEps {
     pub fn new() -> Self {
@@ -14510,9 +16662,17 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodDataEpsBank {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodDataEpsBank {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodDataEpsBank {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentIntentPaymentMethodDataEpsBank))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodDataEpsBank {
@@ -14532,13 +16692,21 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodDataEpsBan
     }
 }
 /// If this is an `fpx` PaymentMethod, this hash contains details about the FPX payment method.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodDataFpx {
     /// Account holder type for FPX transaction
     #[serde(skip_serializing_if = "Option::is_none")]
     pub account_holder_type: Option<UpdatePaymentIntentPaymentMethodDataFpxAccountHolderType>,
     /// The customer's bank.
     pub bank: UpdatePaymentIntentPaymentMethodDataFpxBank,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodDataFpx {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentMethodDataFpx").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentIntentPaymentMethodDataFpx {
     pub fn new(bank: impl Into<UpdatePaymentIntentPaymentMethodDataFpxBank>) -> Self {
@@ -14589,9 +16757,17 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodDataFpxAccountHolderT
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodDataFpxAccountHolderType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodDataFpxAccountHolderType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentIntentPaymentMethodDataFpxAccountHolderType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodDataFpxAccountHolderType {
@@ -14714,9 +16890,17 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodDataFpxBank {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodDataFpxBank {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodDataFpxBank {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentIntentPaymentMethodDataFpxBank))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodDataFpxBank {
@@ -14736,13 +16920,21 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodDataFpxBan
     }
 }
 /// If this is an `ideal` PaymentMethod, this hash contains details about the iDEAL payment method.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodDataIdeal {
     /// The customer's bank.
     /// Only use this parameter for existing customers.
     /// Don't use it for new customers.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bank: Option<UpdatePaymentIntentPaymentMethodDataIdealBank>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodDataIdeal {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentMethodDataIdeal").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentIntentPaymentMethodDataIdeal {
     pub fn new() -> Self {
@@ -14854,9 +17046,17 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodDataIdealBank {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodDataIdealBank {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodDataIdealBank {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentIntentPaymentMethodDataIdealBank))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodDataIdealBank {
@@ -14876,11 +17076,19 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodDataIdealB
     }
 }
 /// If this is a `klarna` PaymentMethod, this hash contains details about the Klarna payment method.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodDataKlarna {
     /// Customer's date of birth
     #[serde(skip_serializing_if = "Option::is_none")]
     pub dob: Option<DateOfBirth>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodDataKlarna {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentMethodDataKlarna").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentIntentPaymentMethodDataKlarna {
     pub fn new() -> Self {
@@ -14893,12 +17101,20 @@ impl Default for UpdatePaymentIntentPaymentMethodDataKlarna {
     }
 }
 /// If this is a `naver_pay` PaymentMethod, this hash contains details about the Naver Pay payment method.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodDataNaverPay {
     /// Whether to use Naver Pay points or a card to fund this transaction.
     /// If not provided, this defaults to `card`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub funding: Option<UpdatePaymentIntentPaymentMethodDataNaverPayFunding>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodDataNaverPay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentMethodDataNaverPay").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentIntentPaymentMethodDataNaverPay {
     pub fn new() -> Self {
@@ -14955,9 +17171,17 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodDataNaverPayFunding {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodDataNaverPayFunding {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodDataNaverPayFunding {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentIntentPaymentMethodDataNaverPayFunding))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodDataNaverPayFunding {
@@ -14977,7 +17201,9 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodDataNaverP
     }
 }
 /// If this is an nz_bank_account PaymentMethod, this hash contains details about the nz_bank_account payment method.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodDataNzBankAccount {
     /// The name on the bank account.
     /// Only required if the account holder name is different from the name of the authorized signatory collected in the PaymentMethod’s billing details.
@@ -14993,6 +17219,12 @@ pub struct UpdatePaymentIntentPaymentMethodDataNzBankAccount {
     pub reference: Option<String>,
     /// The suffix of the bank account number.
     pub suffix: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodDataNzBankAccount {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentMethodDataNzBankAccount").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentIntentPaymentMethodDataNzBankAccount {
     pub fn new(
@@ -15012,11 +17244,19 @@ impl UpdatePaymentIntentPaymentMethodDataNzBankAccount {
     }
 }
 /// If this is a `p24` PaymentMethod, this hash contains details about the P24 payment method.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodDataP24 {
     /// The customer's bank.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bank: Option<UpdatePaymentIntentPaymentMethodDataP24Bank>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodDataP24 {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentMethodDataP24").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentIntentPaymentMethodDataP24 {
     pub fn new() -> Self {
@@ -15144,9 +17384,17 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodDataP24Bank {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodDataP24Bank {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodDataP24Bank {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentIntentPaymentMethodDataP24Bank))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodDataP24Bank {
@@ -15166,7 +17414,9 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodDataP24Ban
     }
 }
 /// If this is a `payto` PaymentMethod, this hash contains details about the PayTo payment method.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodDataPayto {
     /// The account number for the bank account.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -15177,6 +17427,12 @@ pub struct UpdatePaymentIntentPaymentMethodDataPayto {
     /// The PayID alias for the bank account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub pay_id: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodDataPayto {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentMethodDataPayto").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentIntentPaymentMethodDataPayto {
     pub fn new() -> Self {
@@ -15190,11 +17446,19 @@ impl Default for UpdatePaymentIntentPaymentMethodDataPayto {
 }
 /// Options to configure Radar.
 /// See [Radar Session](https://docs.stripe.com/radar/radar-session) for more information.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodDataRadarOptions {
     /// A [Radar Session](https://docs.stripe.com/radar/radar-session) is a snapshot of the browser metadata and device details that help Radar make more accurate predictions on your payments.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub session: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodDataRadarOptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentMethodDataRadarOptions").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentIntentPaymentMethodDataRadarOptions {
     pub fn new() -> Self {
@@ -15207,10 +17471,18 @@ impl Default for UpdatePaymentIntentPaymentMethodDataRadarOptions {
     }
 }
 /// If this is a `sepa_debit` PaymentMethod, this hash contains details about the SEPA debit bank account.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodDataSepaDebit {
     /// IBAN of the bank account.
     pub iban: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodDataSepaDebit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentMethodDataSepaDebit").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentIntentPaymentMethodDataSepaDebit {
     pub fn new(iban: impl Into<String>) -> Self {
@@ -15218,10 +17490,18 @@ impl UpdatePaymentIntentPaymentMethodDataSepaDebit {
     }
 }
 /// If this is a `sofort` PaymentMethod, this hash contains details about the SOFORT payment method.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodDataSofort {
     /// Two-letter ISO code representing the country the bank account is located in.
     pub country: UpdatePaymentIntentPaymentMethodDataSofortCountry,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodDataSofort {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentMethodDataSofort").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentIntentPaymentMethodDataSofort {
     pub fn new(country: impl Into<UpdatePaymentIntentPaymentMethodDataSofortCountry>) -> Self {
@@ -15284,9 +17564,17 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodDataSofortCountry {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodDataSofortCountry {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodDataSofortCountry {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentIntentPaymentMethodDataSofortCountry))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodDataSofortCountry {
@@ -15495,9 +17783,16 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodDataType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodDataType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodDataType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentIntentPaymentMethodDataType)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodDataType {
@@ -15517,11 +17812,19 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodDataType {
     }
 }
 /// If this is a `upi` PaymentMethod, this hash contains details about the UPI payment method.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodDataUpi {
     /// Configuration options for setting up an eMandate
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mandate_options: Option<UpdatePaymentIntentPaymentMethodDataUpiMandateOptions>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodDataUpi {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentMethodDataUpi").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentIntentPaymentMethodDataUpi {
     pub fn new() -> Self {
@@ -15534,7 +17837,9 @@ impl Default for UpdatePaymentIntentPaymentMethodDataUpi {
     }
 }
 /// Configuration options for setting up an eMandate
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodDataUpiMandateOptions {
     /// Amount to be charged for future payments.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -15550,6 +17855,13 @@ pub struct UpdatePaymentIntentPaymentMethodDataUpiMandateOptions {
     /// End date of the mandate or subscription.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub end_date: Option<stripe_types::Timestamp>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodDataUpiMandateOptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentMethodDataUpiMandateOptions")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentIntentPaymentMethodDataUpiMandateOptions {
     pub fn new() -> Self {
@@ -15607,9 +17919,17 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodDataUpiMandateOptions
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodDataUpiMandateOptionsAmountType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodDataUpiMandateOptionsAmountType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentIntentPaymentMethodDataUpiMandateOptionsAmountType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodDataUpiMandateOptionsAmountType {
@@ -15631,7 +17951,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is an `us_bank_account` PaymentMethod, this hash contains details about the US bank account payment method.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodDataUsBankAccount {
     /// Account holder type: individual or company.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -15649,6 +17971,12 @@ pub struct UpdatePaymentIntentPaymentMethodDataUsBankAccount {
     /// Routing number of the bank account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub routing_number: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodDataUsBankAccount {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentMethodDataUsBankAccount").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentIntentPaymentMethodDataUsBankAccount {
     pub fn new() -> Self {
@@ -15710,9 +18038,19 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodDataUsBankAccountAcco
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodDataUsBankAccountAccountHolderType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodDataUsBankAccountAccountHolderType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdatePaymentIntentPaymentMethodDataUsBankAccountAccountHolderType
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodDataUsBankAccountAccountHolderType {
@@ -15777,9 +18115,17 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodDataUsBankAccountAcco
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodDataUsBankAccountAccountType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodDataUsBankAccountAccountType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentIntentPaymentMethodDataUsBankAccountAccountType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodDataUsBankAccountAccountType {
@@ -15799,7 +18145,9 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodDataUsBank
     }
 }
 /// Payment-method-specific configuration for this PaymentIntent.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptions {
     /// If this is a `acss_debit` PaymentMethod, this sub-hash contains details about the ACSS Debit payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -15963,6 +18311,12 @@ pub struct UpdatePaymentIntentPaymentMethodOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub zip: Option<UpdatePaymentIntentPaymentMethodOptionsZip>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentMethodOptions").finish_non_exhaustive()
+    }
+}
 impl UpdatePaymentIntentPaymentMethodOptions {
     pub fn new() -> Self {
         Self {
@@ -16028,7 +18382,9 @@ impl Default for UpdatePaymentIntentPaymentMethodOptions {
     }
 }
 /// If this is a `acss_debit` PaymentMethod, this sub-hash contains details about the ACSS Debit payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsAcssDebit {
     /// Additional fields for Mandate creation
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -16056,6 +18412,12 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsAcssDebit {
     pub verification_method:
         Option<UpdatePaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsAcssDebit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentMethodOptionsAcssDebit").finish_non_exhaustive()
+    }
+}
 impl UpdatePaymentIntentPaymentMethodOptionsAcssDebit {
     pub fn new() -> Self {
         Self {
@@ -16072,7 +18434,9 @@ impl Default for UpdatePaymentIntentPaymentMethodOptionsAcssDebit {
     }
 }
 /// Additional fields for Mandate creation
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptions {
     /// A URL for custom mandate text to render during confirmation step.
     /// The URL will be rendered with additional GET parameters `payment_intent` and `payment_intent_client_secret` when confirming a Payment Intent,.
@@ -16091,6 +18455,13 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub transaction_type:
         Option<UpdatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptions")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptions {
     pub fn new() -> Self {
@@ -16158,11 +18529,23 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for UpdatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for UpdatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -16233,11 +18616,23 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for UpdatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for UpdatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdatePaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -16316,9 +18711,17 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsAcssDebitSetup
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsAcssDebitSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsAcssDebitSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentIntentPaymentMethodOptionsAcssDebitSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsAcssDebitSetupFutureUsage {
@@ -16386,9 +18789,19 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsAcssDebitVerif
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdatePaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod {
@@ -16410,7 +18823,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is an `affirm` PaymentMethod, this sub-hash contains details about the Affirm payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsAffirm {
     /// Controls when the funds are captured from the customer's account.
     ///
@@ -16434,6 +18849,12 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsAffirm {
     /// If you've already set `setup_future_usage` and you're performing a request using a publishable key, you can only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<UpdatePaymentIntentPaymentMethodOptionsAffirmSetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsAffirm {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentMethodOptionsAffirm").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentIntentPaymentMethodOptionsAffirm {
     pub fn new() -> Self {
@@ -16490,9 +18911,17 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsAffirmCaptureM
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsAffirmCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsAffirmCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentIntentPaymentMethodOptionsAffirmCaptureMethod))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsAffirmCaptureMethod {
@@ -16561,9 +18990,17 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsAffirmSetupFut
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsAffirmSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsAffirmSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentIntentPaymentMethodOptionsAffirmSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsAffirmSetupFutureUsage {
@@ -16585,7 +19022,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `afterpay_clearpay` PaymentMethod, this sub-hash contains details about the Afterpay Clearpay payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsAfterpayClearpay {
     /// Controls when the funds are captured from the customer's account.
     ///
@@ -16613,6 +19052,13 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsAfterpayClearpay {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage:
         Option<UpdatePaymentIntentPaymentMethodOptionsAfterpayClearpaySetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsAfterpayClearpay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentMethodOptionsAfterpayClearpay")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentIntentPaymentMethodOptionsAfterpayClearpay {
     pub fn new() -> Self {
@@ -16669,9 +19115,19 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsAfterpayClearp
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsAfterpayClearpayCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsAfterpayClearpayCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdatePaymentIntentPaymentMethodOptionsAfterpayClearpayCaptureMethod
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsAfterpayClearpayCaptureMethod {
@@ -16742,9 +19198,19 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsAfterpayClearp
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsAfterpayClearpaySetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsAfterpayClearpaySetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdatePaymentIntentPaymentMethodOptionsAfterpayClearpaySetupFutureUsage
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsAfterpayClearpaySetupFutureUsage {
@@ -16766,7 +19232,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `alipay` PaymentMethod, this sub-hash contains details about the Alipay payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsAlipay {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -16780,6 +19248,12 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsAlipay {
     /// If you've already set `setup_future_usage` and you're performing a request using a publishable key, you can only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<UpdatePaymentIntentPaymentMethodOptionsAlipaySetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsAlipay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentMethodOptionsAlipay").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentIntentPaymentMethodOptionsAlipay {
     pub fn new() -> Self {
@@ -16844,9 +19318,17 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsAlipaySetupFut
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsAlipaySetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsAlipaySetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentIntentPaymentMethodOptionsAlipaySetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsAlipaySetupFutureUsage {
@@ -16868,7 +19350,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `alma` PaymentMethod, this sub-hash contains details about the Alma payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsAlma {
     /// Controls when the funds are captured from the customer's account.
     ///
@@ -16877,6 +19361,12 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsAlma {
     /// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter unsets the stored value for this payment method type.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub capture_method: Option<UpdatePaymentIntentPaymentMethodOptionsAlmaCaptureMethod>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsAlma {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentMethodOptionsAlma").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentIntentPaymentMethodOptionsAlma {
     pub fn new() -> Self {
@@ -16933,9 +19423,17 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsAlmaCaptureMet
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsAlmaCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsAlmaCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentIntentPaymentMethodOptionsAlmaCaptureMethod))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsAlmaCaptureMethod {
@@ -16955,7 +19453,9 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodOptionsAlm
     }
 }
 /// If this is a `amazon_pay` PaymentMethod, this sub-hash contains details about the Amazon Pay payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsAmazonPay {
     /// Controls when the funds are captured from the customer's account.
     ///
@@ -16975,6 +19475,12 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsAmazonPay {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage:
         Option<UpdatePaymentIntentPaymentMethodOptionsAmazonPaySetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsAmazonPay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentMethodOptionsAmazonPay").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentIntentPaymentMethodOptionsAmazonPay {
     pub fn new() -> Self {
@@ -17031,9 +19537,17 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsAmazonPayCaptu
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsAmazonPayCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsAmazonPayCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentIntentPaymentMethodOptionsAmazonPayCaptureMethod))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsAmazonPayCaptureMethod {
@@ -17105,9 +19619,17 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsAmazonPaySetup
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsAmazonPaySetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsAmazonPaySetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentIntentPaymentMethodOptionsAmazonPaySetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsAmazonPaySetupFutureUsage {
@@ -17129,7 +19651,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `au_becs_debit` PaymentMethod, this sub-hash contains details about the AU BECS Direct Debit payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsAuBecsDebit {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -17149,6 +19673,12 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsAuBecsDebit {
     /// The date must be in the future and between 3 and 15 calendar days from now.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub target_date: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsAuBecsDebit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentMethodOptionsAuBecsDebit").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentIntentPaymentMethodOptionsAuBecsDebit {
     pub fn new() -> Self {
@@ -17216,9 +19746,19 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsAuBecsDebitSet
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsAuBecsDebitSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsAuBecsDebitSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdatePaymentIntentPaymentMethodOptionsAuBecsDebitSetupFutureUsage
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsAuBecsDebitSetupFutureUsage {
@@ -17240,7 +19780,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `bacs_debit` PaymentMethod, this sub-hash contains details about the BACS Debit payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsBacsDebit {
     /// Additional fields for Mandate creation
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -17263,6 +19805,12 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsBacsDebit {
     /// The date must be in the future and between 3 and 15 calendar days from now.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub target_date: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsBacsDebit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentMethodOptionsBacsDebit").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentIntentPaymentMethodOptionsBacsDebit {
     pub fn new() -> Self {
@@ -17330,9 +19878,17 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsBacsDebitSetup
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsBacsDebitSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsBacsDebitSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentIntentPaymentMethodOptionsBacsDebitSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsBacsDebitSetupFutureUsage {
@@ -17354,7 +19910,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `bancontact` PaymentMethod, this sub-hash contains details about the Bancontact payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsBancontact {
     /// Preferred language of the Bancontact authorization page that the customer is redirected to.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -17373,6 +19931,12 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsBancontact {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage:
         Option<UpdatePaymentIntentPaymentMethodOptionsBancontactSetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsBancontact {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentMethodOptionsBancontact").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentIntentPaymentMethodOptionsBancontact {
     pub fn new() -> Self {
@@ -17434,9 +19998,19 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsBancontactPref
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsBancontactPreferredLanguage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsBancontactPreferredLanguage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdatePaymentIntentPaymentMethodOptionsBancontactPreferredLanguage
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsBancontactPreferredLanguage {
@@ -17510,9 +20084,19 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsBancontactSetu
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsBancontactSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsBancontactSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdatePaymentIntentPaymentMethodOptionsBancontactSetupFutureUsage
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsBancontactSetupFutureUsage {
@@ -17534,7 +20118,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `billie` PaymentMethod, this sub-hash contains details about the Billie payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsBillie {
     /// Controls when the funds are captured from the customer's account.
     ///
@@ -17543,6 +20129,12 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsBillie {
     /// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter unsets the stored value for this payment method type.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub capture_method: Option<UpdatePaymentIntentPaymentMethodOptionsBillieCaptureMethod>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsBillie {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentMethodOptionsBillie").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentIntentPaymentMethodOptionsBillie {
     pub fn new() -> Self {
@@ -17599,9 +20191,17 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsBillieCaptureM
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsBillieCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsBillieCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentIntentPaymentMethodOptionsBillieCaptureMethod))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsBillieCaptureMethod {
@@ -17621,7 +20221,9 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodOptionsBil
     }
 }
 /// If this is a `blik` PaymentMethod, this sub-hash contains details about the BLIK payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsBlik {
     /// The 6-digit BLIK code that a customer has generated using their banking application.
     /// Can only be set on confirmation.
@@ -17639,6 +20241,12 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsBlik {
     /// If you've already set `setup_future_usage` and you're performing a request using a publishable key, you can only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<UpdatePaymentIntentPaymentMethodOptionsBlikSetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsBlik {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentMethodOptionsBlik").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentIntentPaymentMethodOptionsBlik {
     pub fn new() -> Self {
@@ -17700,9 +20308,17 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsBlikSetupFutur
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsBlikSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsBlikSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentIntentPaymentMethodOptionsBlikSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsBlikSetupFutureUsage {
@@ -17722,7 +20338,9 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodOptionsBli
     }
 }
 /// If this is a `boleto` PaymentMethod, this sub-hash contains details about the Boleto payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsBoleto {
     /// The number of calendar days before a Boleto voucher expires.
     /// For example, if you create a Boleto voucher on Monday and you set expires_after_days to 2, the Boleto invoice will expire on Wednesday at 23:59 America/Sao_Paulo time.
@@ -17740,6 +20358,12 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsBoleto {
     /// If you've already set `setup_future_usage` and you're performing a request using a publishable key, you can only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<UpdatePaymentIntentPaymentMethodOptionsBoletoSetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsBoleto {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentMethodOptionsBoleto").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentIntentPaymentMethodOptionsBoleto {
     pub fn new() -> Self {
@@ -17807,9 +20431,17 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsBoletoSetupFut
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsBoletoSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsBoletoSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentIntentPaymentMethodOptionsBoletoSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsBoletoSetupFutureUsage {
@@ -17831,7 +20463,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Configuration for any card payments attempted on this PaymentIntent.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsCard {
     /// Controls when the funds are captured from the customer's account.
     ///
@@ -17918,6 +20552,12 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsCard {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub three_d_secure: Option<UpdatePaymentIntentPaymentMethodOptionsCardThreeDSecure>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsCard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentMethodOptionsCard").finish_non_exhaustive()
+    }
+}
 impl UpdatePaymentIntentPaymentMethodOptionsCard {
     pub fn new() -> Self {
         Self {
@@ -17990,9 +20630,17 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsCardCaptureMet
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsCardCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsCardCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentIntentPaymentMethodOptionsCardCaptureMethod))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsCardCaptureMethod {
@@ -18014,7 +20662,9 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodOptionsCar
 /// Installment configuration for payments attempted on this PaymentIntent.
 ///
 /// For more information, see the [installments integration guide](https://docs.stripe.com/payments/installments).
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsCardInstallments {
     /// Setting to true enables installments for this PaymentIntent.
     /// This will cause the response to contain a list of available installment plans.
@@ -18025,6 +20675,13 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsCardInstallments {
     /// This parameter can only be provided during confirmation.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub plan: Option<UpdatePaymentIntentPaymentMethodOptionsCardInstallmentsPlan>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsCardInstallments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentMethodOptionsCardInstallments")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentIntentPaymentMethodOptionsCardInstallments {
     pub fn new() -> Self {
@@ -18038,7 +20695,9 @@ impl Default for UpdatePaymentIntentPaymentMethodOptionsCardInstallments {
 }
 /// The selected installment plan to use for this payment attempt.
 /// This parameter can only be provided during confirmation.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsCardInstallmentsPlan {
     /// For `fixed_count` installment plans, this is required.
     /// It represents the number of installment payments your customer will make to their credit card.
@@ -18052,6 +20711,13 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsCardInstallmentsPlan {
     /// Type of installment plan, one of `fixed_count`, `bonus`, or `revolving`.
     #[serde(rename = "type")]
     pub type_: UpdatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsCardInstallmentsPlan {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentMethodOptionsCardInstallmentsPlan")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentIntentPaymentMethodOptionsCardInstallmentsPlan {
     pub fn new(
@@ -18103,9 +20769,19 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsCardInstallmen
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanInterval {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanInterval {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanInterval
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanInterval {
@@ -18173,9 +20849,17 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsCardInstallmen
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsCardInstallmentsPlanType {
@@ -18197,7 +20881,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Configuration options for setting up an eMandate for cards issued in India.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsCardMandateOptions {
     /// Amount to be charged for future payments, specified in the presentment currency.
     pub amount: i64,
@@ -18229,6 +20915,13 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsCardMandateOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub supported_types:
         Option<Vec<UpdatePaymentIntentPaymentMethodOptionsCardMandateOptionsSupportedTypes>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsCardMandateOptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentMethodOptionsCardMandateOptions")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentIntentPaymentMethodOptionsCardMandateOptions {
     pub fn new(
@@ -18297,9 +20990,19 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsCardMandateOpt
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsCardMandateOptionsAmountType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsCardMandateOptionsAmountType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdatePaymentIntentPaymentMethodOptionsCardMandateOptionsAmountType
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsCardMandateOptionsAmountType {
@@ -18373,9 +21076,19 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsCardMandateOpt
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsCardMandateOptionsInterval {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsCardMandateOptionsInterval {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdatePaymentIntentPaymentMethodOptionsCardMandateOptionsInterval
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsCardMandateOptionsInterval {
@@ -18437,9 +21150,19 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsCardMandateOpt
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsCardMandateOptionsSupportedTypes {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsCardMandateOptionsSupportedTypes {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdatePaymentIntentPaymentMethodOptionsCardMandateOptionsSupportedTypes
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsCardMandateOptionsSupportedTypes {
@@ -18540,9 +21263,17 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsCardNetwork {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsCardNetwork {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsCardNetwork {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentIntentPaymentMethodOptionsCardNetwork))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsCardNetwork {
@@ -18605,9 +21336,19 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsCardRequestExt
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsCardRequestExtendedAuthorization {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsCardRequestExtendedAuthorization {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdatePaymentIntentPaymentMethodOptionsCardRequestExtendedAuthorization
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsCardRequestExtendedAuthorization {
@@ -18676,11 +21417,23 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for UpdatePaymentIntentPaymentMethodOptionsCardRequestIncrementalAuthorization
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for UpdatePaymentIntentPaymentMethodOptionsCardRequestIncrementalAuthorization
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdatePaymentIntentPaymentMethodOptionsCardRequestIncrementalAuthorization
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -18747,9 +21500,17 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsCardRequestMul
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsCardRequestMulticapture {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsCardRequestMulticapture {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentIntentPaymentMethodOptionsCardRequestMulticapture))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsCardRequestMulticapture {
@@ -18814,9 +21575,17 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsCardRequestOve
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsCardRequestOvercapture {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsCardRequestOvercapture {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentIntentPaymentMethodOptionsCardRequestOvercapture))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsCardRequestOvercapture {
@@ -18887,9 +21656,17 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsCardRequestThr
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsCardRequestThreeDSecure {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsCardRequestThreeDSecure {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentIntentPaymentMethodOptionsCardRequestThreeDSecure))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsCardRequestThreeDSecure {
@@ -18966,9 +21743,17 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsCardSetupFutur
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsCardSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsCardSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentIntentPaymentMethodOptionsCardSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsCardSetupFutureUsage {
@@ -18989,7 +21774,9 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodOptionsCar
 }
 /// If 3D Secure authentication was performed with a third-party provider,
 /// the authentication details to use for this payment.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsCardThreeDSecure {
     /// The `transStatus` returned from the card Issuer’s ACS in the ARes.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -19024,6 +21811,13 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsCardThreeDSecure {
     pub transaction_id: String,
     /// The version of 3D Secure that was performed.
     pub version: UpdatePaymentIntentPaymentMethodOptionsCardThreeDSecureVersion,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsCardThreeDSecure {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentMethodOptionsCardThreeDSecure")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentIntentPaymentMethodOptionsCardThreeDSecure {
     pub fn new(
@@ -19102,9 +21896,19 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsCardThreeDSecu
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsCardThreeDSecureAresTransStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsCardThreeDSecureAresTransStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdatePaymentIntentPaymentMethodOptionsCardThreeDSecureAresTransStatus
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsCardThreeDSecureAresTransStatus {
@@ -19183,11 +21987,23 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for UpdatePaymentIntentPaymentMethodOptionsCardThreeDSecureElectronicCommerceIndicator
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for UpdatePaymentIntentPaymentMethodOptionsCardThreeDSecureElectronicCommerceIndicator
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdatePaymentIntentPaymentMethodOptionsCardThreeDSecureElectronicCommerceIndicator
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -19258,9 +22074,19 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsCardThreeDSecureExemptionIndicator {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsCardThreeDSecureExemptionIndicator {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdatePaymentIntentPaymentMethodOptionsCardThreeDSecureExemptionIndicator
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -19286,13 +22112,22 @@ impl<'de> serde::Deserialize<'de>
 /// Network specific 3DS fields. Network specific arguments require an
 /// explicit card brand choice. The parameter `payment_method_options.card.network``
 /// must be populated accordingly
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsCardThreeDSecureNetworkOptions {
     /// Cartes Bancaires-specific 3DS fields.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub cartes_bancaires: Option<
         UpdatePaymentIntentPaymentMethodOptionsCardThreeDSecureNetworkOptionsCartesBancaires,
     >,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsCardThreeDSecureNetworkOptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentMethodOptionsCardThreeDSecureNetworkOptions")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentIntentPaymentMethodOptionsCardThreeDSecureNetworkOptions {
     pub fn new() -> Self {
@@ -19305,7 +22140,9 @@ impl Default for UpdatePaymentIntentPaymentMethodOptionsCardThreeDSecureNetworkO
     }
 }
 /// Cartes Bancaires-specific 3DS fields.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsCardThreeDSecureNetworkOptionsCartesBancaires {
     /// The cryptogram calculation algorithm used by the card Issuer's ACS
     /// to calculate the Authentication cryptogram. Also known as `cavvAlgorithm`.
@@ -19322,6 +22159,17 @@ pub cb_exemption: Option<String>,
 #[serde(skip_serializing_if = "Option::is_none")]
 pub cb_score: Option<i64>,
 
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for UpdatePaymentIntentPaymentMethodOptionsCardThreeDSecureNetworkOptionsCartesBancaires
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(
+            "UpdatePaymentIntentPaymentMethodOptionsCardThreeDSecureNetworkOptionsCartesBancaires",
+        )
+        .finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentIntentPaymentMethodOptionsCardThreeDSecureNetworkOptionsCartesBancaires {
     pub fn new(
@@ -19393,11 +22241,20 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for UpdatePaymentIntentPaymentMethodOptionsCardThreeDSecureNetworkOptionsCartesBancairesCbAvalgo
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for UpdatePaymentIntentPaymentMethodOptionsCardThreeDSecureNetworkOptionsCartesBancairesCbAvalgo
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentIntentPaymentMethodOptionsCardThreeDSecureNetworkOptionsCartesBancairesCbAvalgo)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -19473,9 +22330,17 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsCardThreeDSecu
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsCardThreeDSecureVersion {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsCardThreeDSecureVersion {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentIntentPaymentMethodOptionsCardThreeDSecureVersion))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsCardThreeDSecureVersion {
@@ -19497,7 +22362,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `card_present` PaymentMethod, this sub-hash contains details about the Card Present payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsCardPresent {
     /// Controls when the funds are captured from the customer's account.
     ///
@@ -19516,6 +22383,12 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsCardPresent {
     /// Network routing priority on co-branded EMV cards supporting domestic debit and international card schemes.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub routing: Option<UpdatePaymentIntentPaymentMethodOptionsCardPresentRouting>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsCardPresent {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentMethodOptionsCardPresent").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentIntentPaymentMethodOptionsCardPresent {
     pub fn new() -> Self {
@@ -19580,9 +22453,17 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsCardPresentCap
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsCardPresentCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsCardPresentCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentIntentPaymentMethodOptionsCardPresentCaptureMethod))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsCardPresentCaptureMethod {
@@ -19604,12 +22485,21 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Network routing priority on co-branded EMV cards supporting domestic debit and international card schemes.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsCardPresentRouting {
     /// Routing requested priority
     #[serde(skip_serializing_if = "Option::is_none")]
     pub requested_priority:
         Option<UpdatePaymentIntentPaymentMethodOptionsCardPresentRoutingRequestedPriority>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsCardPresentRouting {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentMethodOptionsCardPresentRouting")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentIntentPaymentMethodOptionsCardPresentRouting {
     pub fn new() -> Self {
@@ -19669,11 +22559,23 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for UpdatePaymentIntentPaymentMethodOptionsCardPresentRoutingRequestedPriority
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for UpdatePaymentIntentPaymentMethodOptionsCardPresentRoutingRequestedPriority
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdatePaymentIntentPaymentMethodOptionsCardPresentRoutingRequestedPriority
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -19697,7 +22599,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `cashapp` PaymentMethod, this sub-hash contains details about the Cash App Pay payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsCashapp {
     /// Controls when the funds are captured from the customer's account.
     ///
@@ -19718,6 +22622,12 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsCashapp {
     /// If you've already set `setup_future_usage` and you're performing a request using a publishable key, you can only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<UpdatePaymentIntentPaymentMethodOptionsCashappSetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsCashapp {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentMethodOptionsCashapp").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentIntentPaymentMethodOptionsCashapp {
     pub fn new() -> Self {
@@ -19774,9 +22684,17 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsCashappCapture
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsCashappCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsCashappCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentIntentPaymentMethodOptionsCashappCaptureMethod))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsCashappCaptureMethod {
@@ -19851,9 +22769,17 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsCashappSetupFu
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsCashappSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsCashappSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentIntentPaymentMethodOptionsCashappSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsCashappSetupFutureUsage {
@@ -19875,7 +22801,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `crypto` PaymentMethod, this sub-hash contains details about the Crypto payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsCrypto {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -19889,6 +22817,12 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsCrypto {
     /// If you've already set `setup_future_usage` and you're performing a request using a publishable key, you can only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<UpdatePaymentIntentPaymentMethodOptionsCryptoSetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsCrypto {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentMethodOptionsCrypto").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentIntentPaymentMethodOptionsCrypto {
     pub fn new() -> Self {
@@ -19950,9 +22884,17 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsCryptoSetupFut
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsCryptoSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsCryptoSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentIntentPaymentMethodOptionsCryptoSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsCryptoSetupFutureUsage {
@@ -19974,7 +22916,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `customer balance` PaymentMethod, this sub-hash contains details about the customer balance payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsCustomerBalance {
     /// Configuration for the bank transfer funding type, if the `funding_type` is set to `bank_transfer`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -19997,6 +22941,13 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsCustomerBalance {
     pub setup_future_usage:
         Option<UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceSetupFutureUsage>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsCustomerBalance {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentMethodOptionsCustomerBalance")
+            .finish_non_exhaustive()
+    }
+}
 impl UpdatePaymentIntentPaymentMethodOptionsCustomerBalance {
     pub fn new() -> Self {
         Self { bank_transfer: None, funding_type: None, setup_future_usage: None }
@@ -20008,7 +22959,9 @@ impl Default for UpdatePaymentIntentPaymentMethodOptionsCustomerBalance {
     }
 }
 /// Configuration for the bank transfer funding type, if the `funding_type` is set to `bank_transfer`.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransfer {
     /// Configuration for the eu_bank_transfer funding type.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -20026,6 +22979,13 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransfer {
     /// The list of bank transfer types that this PaymentIntent is allowed to use for funding Permitted values include: `eu_bank_transfer`, `gb_bank_transfer`, `jp_bank_transfer`, `mx_bank_transfer`, or `us_bank_transfer`.
     #[serde(rename = "type")]
     pub type_: UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransfer {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransfer")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransfer {
     pub fn new(
@@ -20100,11 +23060,23 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -20180,9 +23152,19 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsCustomerBalanc
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType {
@@ -20245,9 +23227,19 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsCustomerBalanc
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceFundingType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceFundingType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceFundingType
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceFundingType {
@@ -20318,9 +23310,19 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsCustomerBalanc
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceSetupFutureUsage
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsCustomerBalanceSetupFutureUsage {
@@ -20342,7 +23344,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `eps` PaymentMethod, this sub-hash contains details about the EPS payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsEps {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -20356,6 +23360,12 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsEps {
     /// If you've already set `setup_future_usage` and you're performing a request using a publishable key, you can only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<UpdatePaymentIntentPaymentMethodOptionsEpsSetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsEps {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentMethodOptionsEps").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentIntentPaymentMethodOptionsEps {
     pub fn new() -> Self {
@@ -20417,9 +23427,17 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsEpsSetupFuture
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsEpsSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsEpsSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentIntentPaymentMethodOptionsEpsSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsEpsSetupFutureUsage {
@@ -20439,7 +23457,9 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodOptionsEps
     }
 }
 /// If this is a `fpx` PaymentMethod, this sub-hash contains details about the FPX payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsFpx {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -20453,6 +23473,12 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsFpx {
     /// If you've already set `setup_future_usage` and you're performing a request using a publishable key, you can only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<UpdatePaymentIntentPaymentMethodOptionsFpxSetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsFpx {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentMethodOptionsFpx").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentIntentPaymentMethodOptionsFpx {
     pub fn new() -> Self {
@@ -20514,9 +23540,17 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsFpxSetupFuture
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsFpxSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsFpxSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentIntentPaymentMethodOptionsFpxSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsFpxSetupFutureUsage {
@@ -20536,7 +23570,9 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodOptionsFpx
     }
 }
 /// If this is a `giropay` PaymentMethod, this sub-hash contains details about the Giropay payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsGiropay {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -20550,6 +23586,12 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsGiropay {
     /// If you've already set `setup_future_usage` and you're performing a request using a publishable key, you can only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<UpdatePaymentIntentPaymentMethodOptionsGiropaySetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsGiropay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentMethodOptionsGiropay").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentIntentPaymentMethodOptionsGiropay {
     pub fn new() -> Self {
@@ -20611,9 +23653,17 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsGiropaySetupFu
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsGiropaySetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsGiropaySetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentIntentPaymentMethodOptionsGiropaySetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsGiropaySetupFutureUsage {
@@ -20635,7 +23685,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `grabpay` PaymentMethod, this sub-hash contains details about the Grabpay payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsGrabpay {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -20649,6 +23701,12 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsGrabpay {
     /// If you've already set `setup_future_usage` and you're performing a request using a publishable key, you can only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<UpdatePaymentIntentPaymentMethodOptionsGrabpaySetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsGrabpay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentMethodOptionsGrabpay").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentIntentPaymentMethodOptionsGrabpay {
     pub fn new() -> Self {
@@ -20710,9 +23768,17 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsGrabpaySetupFu
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsGrabpaySetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsGrabpaySetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentIntentPaymentMethodOptionsGrabpaySetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsGrabpaySetupFutureUsage {
@@ -20734,7 +23800,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `ideal` PaymentMethod, this sub-hash contains details about the Ideal payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsIdeal {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -20748,6 +23816,12 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsIdeal {
     /// If you've already set `setup_future_usage` and you're performing a request using a publishable key, you can only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<UpdatePaymentIntentPaymentMethodOptionsIdealSetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsIdeal {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentMethodOptionsIdeal").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentIntentPaymentMethodOptionsIdeal {
     pub fn new() -> Self {
@@ -20812,9 +23886,17 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsIdealSetupFutu
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsIdealSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsIdealSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentIntentPaymentMethodOptionsIdealSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsIdealSetupFutureUsage {
@@ -20834,7 +23916,9 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodOptionsIde
     }
 }
 /// If this is a `kakao_pay` PaymentMethod, this sub-hash contains details about the Kakao Pay payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsKakaoPay {
     /// Controls when the funds are captured from the customer's account.
     ///
@@ -20853,6 +23937,12 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsKakaoPay {
     /// When processing card payments, Stripe uses `setup_future_usage` to help you comply with regional legislation and network rules, such as [SCA](/strong-customer-authentication).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<UpdatePaymentIntentPaymentMethodOptionsKakaoPaySetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsKakaoPay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentMethodOptionsKakaoPay").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentIntentPaymentMethodOptionsKakaoPay {
     pub fn new() -> Self {
@@ -20909,9 +23999,17 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsKakaoPayCaptur
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsKakaoPayCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsKakaoPayCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentIntentPaymentMethodOptionsKakaoPayCaptureMethod))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsKakaoPayCaptureMethod {
@@ -20981,9 +24079,17 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsKakaoPaySetupF
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsKakaoPaySetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsKakaoPaySetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentIntentPaymentMethodOptionsKakaoPaySetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsKakaoPaySetupFutureUsage {
@@ -21005,7 +24111,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `klarna` PaymentMethod, this sub-hash contains details about the Klarna payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsKlarna {
     /// Controls when the funds are captured from the customer's account.
     ///
@@ -21035,6 +24143,12 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsKlarna {
     /// Subscription details if setting up or charging a subscription.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub subscriptions: Option<Vec<UpdatePaymentIntentPaymentMethodOptionsKlarnaSubscriptions>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsKlarna {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentMethodOptionsKlarna").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentIntentPaymentMethodOptionsKlarna {
     pub fn new() -> Self {
@@ -21097,9 +24211,17 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsKlarnaCaptureM
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsKlarnaCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsKlarnaCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentIntentPaymentMethodOptionsKlarnaCaptureMethod))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsKlarnaCaptureMethod {
@@ -21119,7 +24241,9 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodOptionsKla
     }
 }
 /// On-demand details if setting up or charging an on-demand payment.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsKlarnaOnDemand {
     /// Your average amount value.
     /// You can use a value across your customer base, or segment based on customer type, country, etc.
@@ -21140,6 +24264,13 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsKlarnaOnDemand {
     /// The number of `purchase_interval` between charges
     #[serde(skip_serializing_if = "Option::is_none")]
     pub purchase_interval_count: Option<u64>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsKlarnaOnDemand {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentMethodOptionsKlarnaOnDemand")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentIntentPaymentMethodOptionsKlarnaOnDemand {
     pub fn new() -> Self {
@@ -21207,9 +24338,19 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsKlarnaOnDemand
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsKlarnaOnDemandPurchaseInterval {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsKlarnaOnDemandPurchaseInterval {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdatePaymentIntentPaymentMethodOptionsKlarnaOnDemandPurchaseInterval
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsKlarnaOnDemandPurchaseInterval {
@@ -21406,9 +24547,17 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferre
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsKlarnaPreferredLocale {
@@ -21483,9 +24632,17 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsKlarnaSetupFut
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsKlarnaSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsKlarnaSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentIntentPaymentMethodOptionsKlarnaSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsKlarnaSetupFutureUsage {
@@ -21507,7 +24664,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Subscription details if setting up or charging a subscription.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsKlarnaSubscriptions {
     /// Unit of time between subscription charges.
     pub interval: UpdatePaymentIntentPaymentMethodOptionsKlarnaSubscriptionsInterval,
@@ -21524,6 +24683,13 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsKlarnaSubscriptions {
     /// A non-customer-facing reference to correlate subscription charges in the Klarna app.
     /// Use a value that persists across subscription charges.
     pub reference: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsKlarnaSubscriptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentMethodOptionsKlarnaSubscriptions")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentIntentPaymentMethodOptionsKlarnaSubscriptions {
     pub fn new(
@@ -21589,9 +24755,19 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsKlarnaSubscrip
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsKlarnaSubscriptionsInterval {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsKlarnaSubscriptionsInterval {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdatePaymentIntentPaymentMethodOptionsKlarnaSubscriptionsInterval
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsKlarnaSubscriptionsInterval {
@@ -21613,7 +24789,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `konbini` PaymentMethod, this sub-hash contains details about the Konbini payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsKonbini {
     /// An optional 10 to 11 digit numeric-only string determining the confirmation code at applicable convenience stores.
     /// Must not consist of only zeroes and could be rejected in case of insufficient uniqueness.
@@ -21644,6 +24822,12 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsKonbini {
     /// If you've already set `setup_future_usage` and you're performing a request using a publishable key, you can only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<UpdatePaymentIntentPaymentMethodOptionsKonbiniSetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsKonbini {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentMethodOptionsKonbini").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentIntentPaymentMethodOptionsKonbini {
     pub fn new() -> Self {
@@ -21711,9 +24895,17 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsKonbiniSetupFu
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsKonbiniSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsKonbiniSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentIntentPaymentMethodOptionsKonbiniSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsKonbiniSetupFutureUsage {
@@ -21735,7 +24927,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `kr_card` PaymentMethod, this sub-hash contains details about the KR Card payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsKrCard {
     /// Controls when the funds are captured from the customer's account.
     ///
@@ -21754,6 +24948,12 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsKrCard {
     /// When processing card payments, Stripe uses `setup_future_usage` to help you comply with regional legislation and network rules, such as [SCA](/strong-customer-authentication).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<UpdatePaymentIntentPaymentMethodOptionsKrCardSetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsKrCard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentMethodOptionsKrCard").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentIntentPaymentMethodOptionsKrCard {
     pub fn new() -> Self {
@@ -21810,9 +25010,17 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsKrCardCaptureM
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsKrCardCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsKrCardCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentIntentPaymentMethodOptionsKrCardCaptureMethod))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsKrCardCaptureMethod {
@@ -21882,9 +25090,17 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsKrCardSetupFut
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsKrCardSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsKrCardSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentIntentPaymentMethodOptionsKrCardSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsKrCardSetupFutureUsage {
@@ -21906,7 +25122,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `link` PaymentMethod, this sub-hash contains details about the Link payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsLink {
     /// Controls when the funds are captured from the customer's account.
     ///
@@ -21930,6 +25148,12 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsLink {
     /// If you've already set `setup_future_usage` and you're performing a request using a publishable key, you can only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<UpdatePaymentIntentPaymentMethodOptionsLinkSetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsLink {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentMethodOptionsLink").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentIntentPaymentMethodOptionsLink {
     pub fn new() -> Self {
@@ -21986,9 +25210,17 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsLinkCaptureMet
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsLinkCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsLinkCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentIntentPaymentMethodOptionsLinkCaptureMethod))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsLinkCaptureMethod {
@@ -22060,9 +25292,17 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsLinkSetupFutur
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsLinkSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsLinkSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentIntentPaymentMethodOptionsLinkSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsLinkSetupFutureUsage {
@@ -22082,7 +25322,9 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodOptionsLin
     }
 }
 /// If this is a `mb_way` PaymentMethod, this sub-hash contains details about the MB WAY payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsMbWay {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -22096,6 +25338,12 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsMbWay {
     /// If you've already set `setup_future_usage` and you're performing a request using a publishable key, you can only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<UpdatePaymentIntentPaymentMethodOptionsMbWaySetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsMbWay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentMethodOptionsMbWay").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentIntentPaymentMethodOptionsMbWay {
     pub fn new() -> Self {
@@ -22157,9 +25405,17 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsMbWaySetupFutu
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsMbWaySetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsMbWaySetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentIntentPaymentMethodOptionsMbWaySetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsMbWaySetupFutureUsage {
@@ -22179,7 +25435,9 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodOptionsMbW
     }
 }
 /// If this is a `MobilePay` PaymentMethod, this sub-hash contains details about the MobilePay payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsMobilepay {
     /// Controls when the funds are captured from the customer's account.
     ///
@@ -22201,6 +25459,12 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsMobilepay {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage:
         Option<UpdatePaymentIntentPaymentMethodOptionsMobilepaySetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsMobilepay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentMethodOptionsMobilepay").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentIntentPaymentMethodOptionsMobilepay {
     pub fn new() -> Self {
@@ -22257,9 +25521,17 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsMobilepayCaptu
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsMobilepayCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsMobilepayCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentIntentPaymentMethodOptionsMobilepayCaptureMethod))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsMobilepayCaptureMethod {
@@ -22330,9 +25602,17 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsMobilepaySetup
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsMobilepaySetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsMobilepaySetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentIntentPaymentMethodOptionsMobilepaySetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsMobilepaySetupFutureUsage {
@@ -22354,7 +25634,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `multibanco` PaymentMethod, this sub-hash contains details about the Multibanco payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsMultibanco {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -22369,6 +25651,12 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsMultibanco {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage:
         Option<UpdatePaymentIntentPaymentMethodOptionsMultibancoSetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsMultibanco {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentMethodOptionsMultibanco").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentIntentPaymentMethodOptionsMultibanco {
     pub fn new() -> Self {
@@ -22430,9 +25718,19 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsMultibancoSetu
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsMultibancoSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsMultibancoSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdatePaymentIntentPaymentMethodOptionsMultibancoSetupFutureUsage
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsMultibancoSetupFutureUsage {
@@ -22454,7 +25752,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `naver_pay` PaymentMethod, this sub-hash contains details about the Naver Pay payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsNaverPay {
     /// Controls when the funds are captured from the customer's account.
     ///
@@ -22473,6 +25773,12 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsNaverPay {
     /// When processing card payments, Stripe uses `setup_future_usage` to help you comply with regional legislation and network rules, such as [SCA](/strong-customer-authentication).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<UpdatePaymentIntentPaymentMethodOptionsNaverPaySetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsNaverPay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentMethodOptionsNaverPay").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentIntentPaymentMethodOptionsNaverPay {
     pub fn new() -> Self {
@@ -22529,9 +25835,17 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsNaverPayCaptur
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsNaverPayCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsNaverPayCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentIntentPaymentMethodOptionsNaverPayCaptureMethod))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsNaverPayCaptureMethod {
@@ -22601,9 +25915,17 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsNaverPaySetupF
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsNaverPaySetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsNaverPaySetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentIntentPaymentMethodOptionsNaverPaySetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsNaverPaySetupFutureUsage {
@@ -22625,7 +25947,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `nz_bank_account` PaymentMethod, this sub-hash contains details about the NZ BECS Direct Debit payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsNzBankAccount {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -22645,6 +25969,13 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsNzBankAccount {
     /// The date must be in the future and between 3 and 15 calendar days from now.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub target_date: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsNzBankAccount {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentMethodOptionsNzBankAccount")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentIntentPaymentMethodOptionsNzBankAccount {
     pub fn new() -> Self {
@@ -22712,9 +26043,19 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsNzBankAccountS
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsNzBankAccountSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsNzBankAccountSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdatePaymentIntentPaymentMethodOptionsNzBankAccountSetupFutureUsage
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsNzBankAccountSetupFutureUsage {
@@ -22736,7 +26077,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `oxxo` PaymentMethod, this sub-hash contains details about the OXXO payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsOxxo {
     /// The number of calendar days before an OXXO voucher expires.
     /// For example, if you create an OXXO voucher on Monday and you set expires_after_days to 2, the OXXO invoice will expire on Wednesday at 23:59 America/Mexico_City time.
@@ -22754,6 +26097,12 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsOxxo {
     /// If you've already set `setup_future_usage` and you're performing a request using a publishable key, you can only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<UpdatePaymentIntentPaymentMethodOptionsOxxoSetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsOxxo {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentMethodOptionsOxxo").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentIntentPaymentMethodOptionsOxxo {
     pub fn new() -> Self {
@@ -22815,9 +26164,17 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsOxxoSetupFutur
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsOxxoSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsOxxoSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentIntentPaymentMethodOptionsOxxoSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsOxxoSetupFutureUsage {
@@ -22837,7 +26194,9 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodOptionsOxx
     }
 }
 /// If this is a `p24` PaymentMethod, this sub-hash contains details about the Przelewy24 payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsP24 {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -22854,6 +26213,12 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsP24 {
     /// Confirm that the payer has accepted the P24 terms and conditions.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tos_shown_and_accepted: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsP24 {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentMethodOptionsP24").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentIntentPaymentMethodOptionsP24 {
     pub fn new() -> Self {
@@ -22915,9 +26280,17 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsP24SetupFuture
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsP24SetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsP24SetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentIntentPaymentMethodOptionsP24SetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsP24SetupFutureUsage {
@@ -22937,7 +26310,9 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodOptionsP24
     }
 }
 /// If this is a `payco` PaymentMethod, this sub-hash contains details about the PAYCO payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsPayco {
     /// Controls when the funds are captured from the customer's account.
     ///
@@ -22946,6 +26321,12 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsPayco {
     /// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter unsets the stored value for this payment method type.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub capture_method: Option<UpdatePaymentIntentPaymentMethodOptionsPaycoCaptureMethod>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsPayco {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentMethodOptionsPayco").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentIntentPaymentMethodOptionsPayco {
     pub fn new() -> Self {
@@ -23002,9 +26383,17 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsPaycoCaptureMe
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsPaycoCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsPaycoCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentIntentPaymentMethodOptionsPaycoCaptureMethod))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsPaycoCaptureMethod {
@@ -23024,7 +26413,9 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodOptionsPay
     }
 }
 /// If this is a `paynow` PaymentMethod, this sub-hash contains details about the PayNow payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsPaynow {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -23038,6 +26429,12 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsPaynow {
     /// If you've already set `setup_future_usage` and you're performing a request using a publishable key, you can only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<UpdatePaymentIntentPaymentMethodOptionsPaynowSetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsPaynow {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentMethodOptionsPaynow").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentIntentPaymentMethodOptionsPaynow {
     pub fn new() -> Self {
@@ -23099,9 +26496,17 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsPaynowSetupFut
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsPaynowSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsPaynowSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentIntentPaymentMethodOptionsPaynowSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsPaynowSetupFutureUsage {
@@ -23123,7 +26528,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `paypal` PaymentMethod, this sub-hash contains details about the PayPal payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsPaypal {
     /// Controls when the funds will be captured from the customer's account.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -23150,6 +26557,12 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsPaypal {
     /// If you've already set `setup_future_usage` and you're performing a request using a publishable key, you can only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<UpdatePaymentIntentPaymentMethodOptionsPaypalSetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsPaypal {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentMethodOptionsPaypal").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentIntentPaymentMethodOptionsPaypal {
     pub fn new() -> Self {
@@ -23208,9 +26621,17 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsPaypalCaptureM
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsPaypalCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsPaypalCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentIntentPaymentMethodOptionsPaypalCaptureMethod))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsPaypalCaptureMethod {
@@ -23330,9 +26751,17 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsPaypalPreferre
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsPaypalPreferredLocale {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsPaypalPreferredLocale {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentIntentPaymentMethodOptionsPaypalPreferredLocale))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsPaypalPreferredLocale {
@@ -23404,9 +26833,17 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsPaypalSetupFut
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsPaypalSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsPaypalSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentIntentPaymentMethodOptionsPaypalSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsPaypalSetupFutureUsage {
@@ -23428,7 +26865,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `payto` PaymentMethod, this sub-hash contains details about the PayTo payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsPayto {
     /// Additional fields for Mandate creation.
     /// Only `purpose` field is configurable for PayTo PaymentIntent with `setup_future_usage=none`.
@@ -23448,6 +26887,12 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsPayto {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<UpdatePaymentIntentPaymentMethodOptionsPaytoSetupFutureUsage>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsPayto {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentMethodOptionsPayto").finish_non_exhaustive()
+    }
+}
 impl UpdatePaymentIntentPaymentMethodOptionsPayto {
     pub fn new() -> Self {
         Self { mandate_options: None, setup_future_usage: None }
@@ -23461,7 +26906,9 @@ impl Default for UpdatePaymentIntentPaymentMethodOptionsPayto {
 /// Additional fields for Mandate creation.
 /// Only `purpose` field is configurable for PayTo PaymentIntent with `setup_future_usage=none`.
 /// Other fields are only applicable to PayTo PaymentIntent with `setup_future_usage=off_session`.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsPaytoMandateOptions {
     /// Amount that will be collected. It is required when `amount_type` is `fixed`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -23486,6 +26933,13 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsPaytoMandateOptions {
     /// The purpose for which payments are made. Has a default value based on your merchant category code.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub purpose: Option<UpdatePaymentIntentPaymentMethodOptionsPaytoMandateOptionsPurpose>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsPaytoMandateOptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentMethodOptionsPaytoMandateOptions")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentIntentPaymentMethodOptionsPaytoMandateOptions {
     pub fn new() -> Self {
@@ -23550,9 +27004,19 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsPaytoMandateOp
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsPaytoMandateOptionsAmountType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsPaytoMandateOptionsAmountType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdatePaymentIntentPaymentMethodOptionsPaytoMandateOptionsAmountType
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsPaytoMandateOptionsAmountType {
@@ -23639,9 +27103,19 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsPaytoMandateOptionsPaymentSchedule {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsPaytoMandateOptionsPaymentSchedule {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdatePaymentIntentPaymentMethodOptionsPaytoMandateOptionsPaymentSchedule
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -23735,9 +27209,19 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsPaytoMandateOp
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsPaytoMandateOptionsPurpose {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsPaytoMandateOptionsPurpose {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdatePaymentIntentPaymentMethodOptionsPaytoMandateOptionsPurpose
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsPaytoMandateOptionsPurpose {
@@ -23811,9 +27295,17 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsPaytoSetupFutu
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsPaytoSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsPaytoSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentIntentPaymentMethodOptionsPaytoSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsPaytoSetupFutureUsage {
@@ -23833,7 +27325,9 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodOptionsPay
     }
 }
 /// If this is a `pix` PaymentMethod, this sub-hash contains details about the Pix payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsPix {
     /// Determines if the amount includes the IOF tax. Defaults to `never`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -23858,6 +27352,12 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsPix {
     /// If you've already set `setup_future_usage` and you're performing a request using a publishable key, you can only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<UpdatePaymentIntentPaymentMethodOptionsPixSetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsPix {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentMethodOptionsPix").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentIntentPaymentMethodOptionsPix {
     pub fn new() -> Self {
@@ -23918,9 +27418,17 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsPixAmountInclu
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsPixAmountIncludesIof {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsPixAmountIncludesIof {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentIntentPaymentMethodOptionsPixAmountIncludesIof))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsPixAmountIncludesIof {
@@ -23989,9 +27497,17 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsPixSetupFuture
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsPixSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsPixSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentIntentPaymentMethodOptionsPixSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsPixSetupFutureUsage {
@@ -24011,7 +27527,9 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodOptionsPix
     }
 }
 /// If this is a `promptpay` PaymentMethod, this sub-hash contains details about the PromptPay payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsPromptpay {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -24026,6 +27544,12 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsPromptpay {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage:
         Option<UpdatePaymentIntentPaymentMethodOptionsPromptpaySetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsPromptpay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentMethodOptionsPromptpay").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentIntentPaymentMethodOptionsPromptpay {
     pub fn new() -> Self {
@@ -24087,9 +27611,17 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsPromptpaySetup
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsPromptpaySetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsPromptpaySetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentIntentPaymentMethodOptionsPromptpaySetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsPromptpaySetupFutureUsage {
@@ -24111,7 +27643,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `revolut_pay` PaymentMethod, this sub-hash contains details about the Revolut Pay payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsRevolutPay {
     /// Controls when the funds are captured from the customer's account.
     ///
@@ -24131,6 +27665,12 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsRevolutPay {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage:
         Option<UpdatePaymentIntentPaymentMethodOptionsRevolutPaySetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsRevolutPay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentMethodOptionsRevolutPay").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentIntentPaymentMethodOptionsRevolutPay {
     pub fn new() -> Self {
@@ -24187,9 +27727,17 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsRevolutPayCapt
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsRevolutPayCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsRevolutPayCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentIntentPaymentMethodOptionsRevolutPayCaptureMethod))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsRevolutPayCaptureMethod {
@@ -24261,9 +27809,19 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsRevolutPaySetu
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsRevolutPaySetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsRevolutPaySetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdatePaymentIntentPaymentMethodOptionsRevolutPaySetupFutureUsage
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsRevolutPaySetupFutureUsage {
@@ -24285,7 +27843,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `samsung_pay` PaymentMethod, this sub-hash contains details about the Samsung Pay payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsSamsungPay {
     /// Controls when the funds are captured from the customer's account.
     ///
@@ -24294,6 +27854,12 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsSamsungPay {
     /// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter unsets the stored value for this payment method type.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub capture_method: Option<UpdatePaymentIntentPaymentMethodOptionsSamsungPayCaptureMethod>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsSamsungPay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentMethodOptionsSamsungPay").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentIntentPaymentMethodOptionsSamsungPay {
     pub fn new() -> Self {
@@ -24350,9 +27916,17 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsSamsungPayCapt
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsSamsungPayCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsSamsungPayCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentIntentPaymentMethodOptionsSamsungPayCaptureMethod))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsSamsungPayCaptureMethod {
@@ -24374,7 +27948,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `satispay` PaymentMethod, this sub-hash contains details about the Satispay payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsSatispay {
     /// Controls when the funds are captured from the customer's account.
     ///
@@ -24383,6 +27959,12 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsSatispay {
     /// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter unsets the stored value for this payment method type.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub capture_method: Option<UpdatePaymentIntentPaymentMethodOptionsSatispayCaptureMethod>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsSatispay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentMethodOptionsSatispay").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentIntentPaymentMethodOptionsSatispay {
     pub fn new() -> Self {
@@ -24439,9 +28021,17 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsSatispayCaptur
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsSatispayCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsSatispayCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentIntentPaymentMethodOptionsSatispayCaptureMethod))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsSatispayCaptureMethod {
@@ -24461,7 +28051,9 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodOptionsSat
     }
 }
 /// If this is a `sepa_debit` PaymentIntent, this sub-hash contains details about the SEPA Debit payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsSepaDebit {
     /// Additional fields for Mandate creation
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -24485,6 +28077,12 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsSepaDebit {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub target_date: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsSepaDebit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentMethodOptionsSepaDebit").finish_non_exhaustive()
+    }
+}
 impl UpdatePaymentIntentPaymentMethodOptionsSepaDebit {
     pub fn new() -> Self {
         Self { mandate_options: None, setup_future_usage: None, target_date: None }
@@ -24496,7 +28094,9 @@ impl Default for UpdatePaymentIntentPaymentMethodOptionsSepaDebit {
     }
 }
 /// Additional fields for Mandate creation
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsSepaDebitMandateOptions {
     /// Prefix used to generate the Mandate reference.
     /// Must be at most 12 characters long.
@@ -24504,6 +28104,13 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsSepaDebitMandateOptions {
     /// Cannot begin with 'STRIPE'.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reference_prefix: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsSepaDebitMandateOptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentMethodOptionsSepaDebitMandateOptions")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentIntentPaymentMethodOptionsSepaDebitMandateOptions {
     pub fn new() -> Self {
@@ -24571,9 +28178,17 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsSepaDebitSetup
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsSepaDebitSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsSepaDebitSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentIntentPaymentMethodOptionsSepaDebitSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsSepaDebitSetupFutureUsage {
@@ -24595,7 +28210,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `sofort` PaymentMethod, this sub-hash contains details about the SOFORT payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsSofort {
     /// Language shown to the payer on redirect.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -24612,6 +28229,12 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsSofort {
     /// If you've already set `setup_future_usage` and you're performing a request using a publishable key, you can only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<UpdatePaymentIntentPaymentMethodOptionsSofortSetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsSofort {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentMethodOptionsSofort").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentIntentPaymentMethodOptionsSofort {
     pub fn new() -> Self {
@@ -24682,9 +28305,17 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsSofortPreferre
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsSofortPreferredLanguage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsSofortPreferredLanguage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentIntentPaymentMethodOptionsSofortPreferredLanguage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsSofortPreferredLanguage {
@@ -24758,9 +28389,17 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsSofortSetupFut
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsSofortSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsSofortSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentIntentPaymentMethodOptionsSofortSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsSofortSetupFutureUsage {
@@ -24782,7 +28421,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `Swish` PaymentMethod, this sub-hash contains details about the Swish payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsSwish {
     /// A reference for this payment to be displayed in the Swish app.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -24799,6 +28440,12 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsSwish {
     /// If you've already set `setup_future_usage` and you're performing a request using a publishable key, you can only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<UpdatePaymentIntentPaymentMethodOptionsSwishSetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsSwish {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentMethodOptionsSwish").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentIntentPaymentMethodOptionsSwish {
     pub fn new() -> Self {
@@ -24860,9 +28507,17 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsSwishSetupFutu
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsSwishSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsSwishSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentIntentPaymentMethodOptionsSwishSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsSwishSetupFutureUsage {
@@ -24882,7 +28537,9 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodOptionsSwi
     }
 }
 /// If this is a `twint` PaymentMethod, this sub-hash contains details about the TWINT payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsTwint {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -24896,6 +28553,12 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsTwint {
     /// If you've already set `setup_future_usage` and you're performing a request using a publishable key, you can only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<UpdatePaymentIntentPaymentMethodOptionsTwintSetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsTwint {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentMethodOptionsTwint").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentIntentPaymentMethodOptionsTwint {
     pub fn new() -> Self {
@@ -24957,9 +28620,17 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsTwintSetupFutu
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsTwintSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsTwintSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentIntentPaymentMethodOptionsTwintSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsTwintSetupFutureUsage {
@@ -24979,13 +28650,21 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodOptionsTwi
     }
 }
 /// If this is a `upi` PaymentIntent, this sub-hash contains details about the UPI payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsUpi {
     /// Configuration options for setting up an eMandate
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mandate_options: Option<UpdatePaymentIntentPaymentMethodOptionsUpiMandateOptions>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<UpdatePaymentIntentPaymentMethodOptionsUpiSetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsUpi {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentMethodOptionsUpi").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentIntentPaymentMethodOptionsUpi {
     pub fn new() -> Self {
@@ -24998,7 +28677,9 @@ impl Default for UpdatePaymentIntentPaymentMethodOptionsUpi {
     }
 }
 /// Configuration options for setting up an eMandate
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsUpiMandateOptions {
     /// Amount to be charged for future payments.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -25014,6 +28695,13 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsUpiMandateOptions {
     /// End date of the mandate or subscription.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub end_date: Option<stripe_types::Timestamp>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsUpiMandateOptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentMethodOptionsUpiMandateOptions")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentIntentPaymentMethodOptionsUpiMandateOptions {
     pub fn new() -> Self {
@@ -25071,9 +28759,19 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsUpiMandateOpti
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsUpiMandateOptionsAmountType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsUpiMandateOptionsAmountType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdatePaymentIntentPaymentMethodOptionsUpiMandateOptionsAmountType
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsUpiMandateOptionsAmountType {
@@ -25140,9 +28838,17 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsUpiSetupFuture
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsUpiSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsUpiSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentIntentPaymentMethodOptionsUpiSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsUpiSetupFutureUsage {
@@ -25162,7 +28868,9 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodOptionsUpi
     }
 }
 /// If this is a `us_bank_account` PaymentMethod, this sub-hash contains details about the US bank account payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsUsBankAccount {
     /// Additional fields for Financial Connections Session creation
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -25201,6 +28909,13 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsUsBankAccount {
     pub verification_method:
         Option<UpdatePaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsUsBankAccount {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentMethodOptionsUsBankAccount")
+            .finish_non_exhaustive()
+    }
+}
 impl UpdatePaymentIntentPaymentMethodOptionsUsBankAccount {
     pub fn new() -> Self {
         Self {
@@ -25220,7 +28935,9 @@ impl Default for UpdatePaymentIntentPaymentMethodOptionsUsBankAccount {
     }
 }
 /// Additional fields for Financial Connections Session creation
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnections {
     /// Provide filters for the linked accounts that the customer can select for the payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -25243,6 +28960,13 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnecti
     #[serde(skip_serializing_if = "Option::is_none")]
     pub return_url: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnections {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnections")
+            .finish_non_exhaustive()
+    }
+}
 impl UpdatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnections {
     pub fn new() -> Self {
         Self { filters: None, permissions: None, prefetch: None, return_url: None }
@@ -25254,13 +28978,26 @@ impl Default for UpdatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialCo
     }
 }
 /// Provide filters for the linked accounts that the customer can select for the payment method.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsFilters {
         /// The account subcategories to use to filter for selectable accounts.
     /// Valid subcategories are `checking` and `savings`.
 #[serde(skip_serializing_if = "Option::is_none")]
 pub account_subcategories: Option<Vec<UpdatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsFiltersAccountSubcategories>>,
 
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for UpdatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsFilters
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(
+            "UpdatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsFilters",
+        )
+        .finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsFilters {
     pub fn new() -> Self {
@@ -25313,9 +29050,16 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsUsBankAccountF
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsFiltersAccountSubcategories {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsFiltersAccountSubcategories {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsFiltersAccountSubcategories)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsFiltersAccountSubcategories {
@@ -25387,11 +29131,23 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for UpdatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for UpdatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -25465,11 +29221,23 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for UpdatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for UpdatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdatePaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -25493,12 +29261,21 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Additional fields for Mandate creation
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsUsBankAccountMandateOptions {
     /// The method used to collect offline mandate customer acceptance.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub collection_method:
         Option<UpdatePaymentIntentPaymentMethodOptionsUsBankAccountMandateOptionsCollectionMethod>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsUsBankAccountMandateOptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentMethodOptionsUsBankAccountMandateOptions")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentIntentPaymentMethodOptionsUsBankAccountMandateOptions {
     pub fn new() -> Self {
@@ -25555,11 +29332,23 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for UpdatePaymentIntentPaymentMethodOptionsUsBankAccountMandateOptionsCollectionMethod
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for UpdatePaymentIntentPaymentMethodOptionsUsBankAccountMandateOptionsCollectionMethod
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdatePaymentIntentPaymentMethodOptionsUsBankAccountMandateOptionsCollectionMethod
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -25583,12 +29372,21 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Additional fields for network related functions
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsUsBankAccountNetworks {
     /// Triggers validations to run across the selected networks
     #[serde(skip_serializing_if = "Option::is_none")]
     pub requested:
         Option<Vec<UpdatePaymentIntentPaymentMethodOptionsUsBankAccountNetworksRequested>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsUsBankAccountNetworks {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentMethodOptionsUsBankAccountNetworks")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentIntentPaymentMethodOptionsUsBankAccountNetworks {
     pub fn new() -> Self {
@@ -25644,9 +29442,19 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsUsBankAccountN
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsUsBankAccountNetworksRequested {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsUsBankAccountNetworksRequested {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdatePaymentIntentPaymentMethodOptionsUsBankAccountNetworksRequested
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsUsBankAccountNetworksRequested {
@@ -25723,9 +29531,19 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsUsBankAccountS
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsUsBankAccountSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsUsBankAccountSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdatePaymentIntentPaymentMethodOptionsUsBankAccountSetupFutureUsage
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsUsBankAccountSetupFutureUsage {
@@ -25796,9 +29614,19 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsUsBankAccountT
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsUsBankAccountTransactionPurpose {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsUsBankAccountTransactionPurpose {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdatePaymentIntentPaymentMethodOptionsUsBankAccountTransactionPurpose
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsUsBankAccountTransactionPurpose {
@@ -25866,9 +29694,19 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsUsBankAccountV
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdatePaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod {
@@ -25890,7 +29728,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `wechat_pay` PaymentMethod, this sub-hash contains details about the WeChat Pay payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsWechatPay {
     /// The app ID registered with WeChat Pay. Only required when client is ios or android.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -25911,6 +29751,12 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsWechatPay {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage:
         Option<UpdatePaymentIntentPaymentMethodOptionsWechatPaySetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsWechatPay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentMethodOptionsWechatPay").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentIntentPaymentMethodOptionsWechatPay {
     pub fn new() -> Self {
@@ -25969,9 +29815,17 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsWechatPayClien
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsWechatPayClient {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsWechatPayClient {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentIntentPaymentMethodOptionsWechatPayClient))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsWechatPayClient {
@@ -26040,9 +29894,17 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsWechatPaySetup
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsWechatPaySetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsWechatPaySetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentIntentPaymentMethodOptionsWechatPaySetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsWechatPaySetupFutureUsage {
@@ -26064,7 +29926,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `zip` PaymentMethod, this sub-hash contains details about the Zip payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentPaymentMethodOptionsZip {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -26078,6 +29942,12 @@ pub struct UpdatePaymentIntentPaymentMethodOptionsZip {
     /// If you've already set `setup_future_usage` and you're performing a request using a publishable key, you can only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<UpdatePaymentIntentPaymentMethodOptionsZipSetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsZip {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentMethodOptionsZip").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentIntentPaymentMethodOptionsZip {
     pub fn new() -> Self {
@@ -26139,9 +30009,17 @@ impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsZipSetupFuture
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsZipSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsZipSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentIntentPaymentMethodOptionsZipSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsZipSetupFutureUsage {
@@ -26161,7 +30039,9 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodOptionsZip
     }
 }
 /// Shipping information for this PaymentIntent.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentShipping {
     /// Shipping address.
     pub address: UpdatePaymentIntentShippingAddress,
@@ -26178,6 +30058,12 @@ pub struct UpdatePaymentIntentShipping {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tracking_number: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentShipping {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentShipping").finish_non_exhaustive()
+    }
+}
 impl UpdatePaymentIntentShipping {
     pub fn new(
         address: impl Into<UpdatePaymentIntentShippingAddress>,
@@ -26193,7 +30079,9 @@ impl UpdatePaymentIntentShipping {
     }
 }
 /// Shipping address.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentShippingAddress {
     /// City, district, suburb, town, or village.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -26214,6 +30102,12 @@ pub struct UpdatePaymentIntentShippingAddress {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentShippingAddress {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentShippingAddress").finish_non_exhaustive()
+    }
+}
 impl UpdatePaymentIntentShippingAddress {
     pub fn new() -> Self {
         Self { city: None, country: None, line1: None, line2: None, postal_code: None, state: None }
@@ -26226,11 +30120,19 @@ impl Default for UpdatePaymentIntentShippingAddress {
 }
 /// Use this parameter to automatically create a Transfer when the payment succeeds.
 /// Learn more about the [use case for connected accounts](https://docs.stripe.com/payments/connected-accounts).
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentTransferData {
     /// The amount that will be transferred automatically when a charge succeeds.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount: Option<i64>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentTransferData {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentTransferData").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentIntentTransferData {
     pub fn new() -> Self {
@@ -26249,10 +30151,18 @@ impl Default for UpdatePaymentIntentTransferData {
 /// always requires you to confirm the PaymentIntent again. If you prefer to
 /// update and confirm at the same time, we recommend updating properties through
 /// the [confirm API](https://stripe.com/docs/api/payment_intents/confirm) instead.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentIntent {
     inner: UpdatePaymentIntentBuilder,
     intent: stripe_shared::PaymentIntentId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntent {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntent").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentIntent {
     /// Construct a new `UpdatePaymentIntent`.
@@ -26490,7 +30400,9 @@ impl StripeRequest for UpdatePaymentIntent {
             .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ApplyCustomerBalancePaymentIntentBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     amount: Option<i64>,
@@ -26499,16 +30411,30 @@ struct ApplyCustomerBalancePaymentIntentBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ApplyCustomerBalancePaymentIntentBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ApplyCustomerBalancePaymentIntentBuilder").finish_non_exhaustive()
+    }
+}
 impl ApplyCustomerBalancePaymentIntentBuilder {
     fn new() -> Self {
         Self { amount: None, currency: None, expand: None }
     }
 }
 /// Manually reconcile the remaining amount for a `customer_balance` PaymentIntent.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ApplyCustomerBalancePaymentIntent {
     inner: ApplyCustomerBalancePaymentIntentBuilder,
     intent: stripe_shared::PaymentIntentId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ApplyCustomerBalancePaymentIntent {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ApplyCustomerBalancePaymentIntent").finish_non_exhaustive()
+    }
 }
 impl ApplyCustomerBalancePaymentIntent {
     /// Construct a new `ApplyCustomerBalancePaymentIntent`.
@@ -26568,12 +30494,20 @@ impl StripeRequest for ApplyCustomerBalancePaymentIntent {
         .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct CancelPaymentIntentBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     cancellation_reason: Option<CancelPaymentIntentCancellationReason>,
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CancelPaymentIntentBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CancelPaymentIntentBuilder").finish_non_exhaustive()
+    }
 }
 impl CancelPaymentIntentBuilder {
     fn new() -> Self {
@@ -26631,9 +30565,16 @@ impl std::fmt::Display for CancelPaymentIntentCancellationReason {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CancelPaymentIntentCancellationReason {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CancelPaymentIntentCancellationReason {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CancelPaymentIntentCancellationReason)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CancelPaymentIntentCancellationReason {
@@ -26661,10 +30602,18 @@ impl<'de> serde::Deserialize<'de> for CancelPaymentIntentCancellationReason {
 ///
 /// You can directly cancel the PaymentIntent for a Checkout Session only when the PaymentIntent has a status of `requires_capture`.
 /// Otherwise, you must [expire the Checkout Session](https://stripe.com/docs/api/checkout/sessions/expire).
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CancelPaymentIntent {
     inner: CancelPaymentIntentBuilder,
     intent: stripe_shared::PaymentIntentId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CancelPaymentIntent {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CancelPaymentIntent").finish_non_exhaustive()
+    }
 }
 impl CancelPaymentIntent {
     /// Construct a new `CancelPaymentIntent`.
@@ -26713,7 +30662,9 @@ impl StripeRequest for CancelPaymentIntent {
             .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct CapturePaymentIntentBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     amount_details: Option<CapturePaymentIntentAmountDetails>,
@@ -26738,6 +30689,12 @@ struct CapturePaymentIntentBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     transfer_data: Option<CapturePaymentIntentTransferData>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CapturePaymentIntentBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CapturePaymentIntentBuilder").finish_non_exhaustive()
+    }
+}
 impl CapturePaymentIntentBuilder {
     fn new() -> Self {
         Self {
@@ -26756,7 +30713,9 @@ impl CapturePaymentIntentBuilder {
     }
 }
 /// Provides industry-specific information about the amount.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CapturePaymentIntentAmountDetails {
     /// The total discount applied on the transaction represented in the [smallest currency unit](https://docs.stripe.com/currencies#zero-decimal).
     /// An integer greater than 0.
@@ -26784,6 +30743,12 @@ pub struct CapturePaymentIntentAmountDetails {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax: Option<AmountDetailsTaxParam>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CapturePaymentIntentAmountDetails {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CapturePaymentIntentAmountDetails").finish_non_exhaustive()
+    }
+}
 impl CapturePaymentIntentAmountDetails {
     pub fn new() -> Self {
         Self {
@@ -26802,7 +30767,9 @@ impl Default for CapturePaymentIntentAmountDetails {
 }
 /// A list of line items, each containing information about a product in the PaymentIntent.
 /// There is a maximum of 200 line items.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CapturePaymentIntentAmountDetailsLineItems {
     /// The discount applied on this line item represented in the [smallest currency unit](https://docs.stripe.com/currencies#zero-decimal).
     /// An integer greater than 0.
@@ -26837,6 +30804,12 @@ pub struct CapturePaymentIntentAmountDetailsLineItems {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_of_measure: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CapturePaymentIntentAmountDetailsLineItems {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CapturePaymentIntentAmountDetailsLineItems").finish_non_exhaustive()
+    }
+}
 impl CapturePaymentIntentAmountDetailsLineItems {
     pub fn new(
         product_name: impl Into<String>,
@@ -26856,7 +30829,9 @@ impl CapturePaymentIntentAmountDetailsLineItems {
     }
 }
 /// Payment method-specific information for line items.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CapturePaymentIntentAmountDetailsLineItemsPaymentMethodOptions {
     /// This sub-hash contains line item details that are specific to the `card` payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -26872,6 +30847,13 @@ pub struct CapturePaymentIntentAmountDetailsLineItemsPaymentMethodOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub paypal: Option<CapturePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypal>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CapturePaymentIntentAmountDetailsLineItemsPaymentMethodOptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CapturePaymentIntentAmountDetailsLineItemsPaymentMethodOptions")
+            .finish_non_exhaustive()
+    }
+}
 impl CapturePaymentIntentAmountDetailsLineItemsPaymentMethodOptions {
     pub fn new() -> Self {
         Self { card: None, card_present: None, klarna: None, paypal: None }
@@ -26883,11 +30865,20 @@ impl Default for CapturePaymentIntentAmountDetailsLineItemsPaymentMethodOptions 
     }
 }
 /// This sub-hash contains line item details that are specific to the `card` payment method.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CapturePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsCard {
     /// Identifier that categorizes the items being purchased using a standardized commodity scheme such as (but not limited to) UNSPSC, NAICS, NAPCS, and so on.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub commodity_code: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CapturePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsCard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CapturePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsCard")
+            .finish_non_exhaustive()
+    }
 }
 impl CapturePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsCard {
     pub fn new() -> Self {
@@ -26900,11 +30891,20 @@ impl Default for CapturePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsC
     }
 }
 /// This sub-hash contains line item details that are specific to the `card_present` payment method.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CapturePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsCardPresent {
     /// Identifier that categorizes the items being purchased using a standardized commodity scheme such as (but not limited to) UNSPSC, NAICS, NAPCS, and so on.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub commodity_code: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CapturePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsCardPresent {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CapturePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsCardPresent")
+            .finish_non_exhaustive()
+    }
 }
 impl CapturePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsCardPresent {
     pub fn new() -> Self {
@@ -26917,7 +30917,9 @@ impl Default for CapturePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsC
     }
 }
 /// This sub-hash contains line item details that are specific to the `paypal` payment method.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CapturePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypal {
     /// Type of the line item.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -26929,6 +30931,13 @@ pub struct CapturePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypal 
     /// The Stripe account ID of the connected account that sells the item.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sold_by: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CapturePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypal {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CapturePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypal")
+            .finish_non_exhaustive()
+    }
 }
 impl CapturePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypal {
     pub fn new() -> Self {
@@ -26991,11 +31000,23 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for CapturePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypalCategory
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for CapturePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypalCategory
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CapturePaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypalCategory
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -27019,7 +31040,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Provides industry-specific information about the charge.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CapturePaymentIntentPaymentDetails {
     /// A unique value to identify the customer. This field is available only for card payments.
     ///
@@ -27032,6 +31055,12 @@ pub struct CapturePaymentIntentPaymentDetails {
     /// For Klarna, this field is truncated to 255 characters and is visible to customers when they view the order in the Klarna app.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub order_reference: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CapturePaymentIntentPaymentDetails {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CapturePaymentIntentPaymentDetails").finish_non_exhaustive()
+    }
 }
 impl CapturePaymentIntentPaymentDetails {
     pub fn new() -> Self {
@@ -27046,11 +31075,19 @@ impl Default for CapturePaymentIntentPaymentDetails {
 /// The parameters that you can use to automatically create a transfer after the payment
 /// is captured.
 /// Learn more about the [use case for connected accounts](https://docs.stripe.com/payments/connected-accounts).
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CapturePaymentIntentTransferData {
     /// The amount that will be transferred automatically when a charge succeeds.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount: Option<i64>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CapturePaymentIntentTransferData {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CapturePaymentIntentTransferData").finish_non_exhaustive()
+    }
 }
 impl CapturePaymentIntentTransferData {
     pub fn new() -> Self {
@@ -27067,10 +31104,18 @@ impl Default for CapturePaymentIntentTransferData {
 /// Uncaptured PaymentIntents are cancelled a set number of days (7 by default) after their creation.
 ///
 /// Learn more about [separate authorization and capture](https://stripe.com/docs/payments/capture-later).
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CapturePaymentIntent {
     inner: CapturePaymentIntentBuilder,
     intent: stripe_shared::PaymentIntentId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CapturePaymentIntent {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CapturePaymentIntent").finish_non_exhaustive()
+    }
 }
 impl CapturePaymentIntent {
     /// Construct a new `CapturePaymentIntent`.
@@ -27191,7 +31236,9 @@ impl StripeRequest for CapturePaymentIntent {
             .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ConfirmPaymentIntentBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     amount_details: Option<ConfirmPaymentIntentAmountDetails>,
@@ -27237,6 +31284,12 @@ struct ConfirmPaymentIntentBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     use_stripe_sdk: Option<bool>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentBuilder").finish_non_exhaustive()
+    }
+}
 impl ConfirmPaymentIntentBuilder {
     fn new() -> Self {
         Self {
@@ -27265,7 +31318,9 @@ impl ConfirmPaymentIntentBuilder {
     }
 }
 /// Provides industry-specific information about the amount.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentAmountDetails {
     /// The total discount applied on the transaction represented in the [smallest currency unit](https://docs.stripe.com/currencies#zero-decimal).
     /// An integer greater than 0.
@@ -27293,6 +31348,12 @@ pub struct ConfirmPaymentIntentAmountDetails {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax: Option<AmountDetailsTaxParam>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentAmountDetails {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentAmountDetails").finish_non_exhaustive()
+    }
+}
 impl ConfirmPaymentIntentAmountDetails {
     pub fn new() -> Self {
         Self {
@@ -27311,7 +31372,9 @@ impl Default for ConfirmPaymentIntentAmountDetails {
 }
 /// A list of line items, each containing information about a product in the PaymentIntent.
 /// There is a maximum of 200 line items.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentAmountDetailsLineItems {
     /// The discount applied on this line item represented in the [smallest currency unit](https://docs.stripe.com/currencies#zero-decimal).
     /// An integer greater than 0.
@@ -27346,6 +31409,12 @@ pub struct ConfirmPaymentIntentAmountDetailsLineItems {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_of_measure: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentAmountDetailsLineItems {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentAmountDetailsLineItems").finish_non_exhaustive()
+    }
+}
 impl ConfirmPaymentIntentAmountDetailsLineItems {
     pub fn new(
         product_name: impl Into<String>,
@@ -27365,7 +31434,9 @@ impl ConfirmPaymentIntentAmountDetailsLineItems {
     }
 }
 /// Payment method-specific information for line items.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentAmountDetailsLineItemsPaymentMethodOptions {
     /// This sub-hash contains line item details that are specific to the `card` payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -27381,6 +31452,13 @@ pub struct ConfirmPaymentIntentAmountDetailsLineItemsPaymentMethodOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub paypal: Option<ConfirmPaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypal>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentAmountDetailsLineItemsPaymentMethodOptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentAmountDetailsLineItemsPaymentMethodOptions")
+            .finish_non_exhaustive()
+    }
+}
 impl ConfirmPaymentIntentAmountDetailsLineItemsPaymentMethodOptions {
     pub fn new() -> Self {
         Self { card: None, card_present: None, klarna: None, paypal: None }
@@ -27392,11 +31470,20 @@ impl Default for ConfirmPaymentIntentAmountDetailsLineItemsPaymentMethodOptions 
     }
 }
 /// This sub-hash contains line item details that are specific to the `card` payment method.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentAmountDetailsLineItemsPaymentMethodOptionsCard {
     /// Identifier that categorizes the items being purchased using a standardized commodity scheme such as (but not limited to) UNSPSC, NAICS, NAPCS, and so on.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub commodity_code: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentAmountDetailsLineItemsPaymentMethodOptionsCard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentAmountDetailsLineItemsPaymentMethodOptionsCard")
+            .finish_non_exhaustive()
+    }
 }
 impl ConfirmPaymentIntentAmountDetailsLineItemsPaymentMethodOptionsCard {
     pub fn new() -> Self {
@@ -27409,11 +31496,20 @@ impl Default for ConfirmPaymentIntentAmountDetailsLineItemsPaymentMethodOptionsC
     }
 }
 /// This sub-hash contains line item details that are specific to the `card_present` payment method.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentAmountDetailsLineItemsPaymentMethodOptionsCardPresent {
     /// Identifier that categorizes the items being purchased using a standardized commodity scheme such as (but not limited to) UNSPSC, NAICS, NAPCS, and so on.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub commodity_code: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentAmountDetailsLineItemsPaymentMethodOptionsCardPresent {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentAmountDetailsLineItemsPaymentMethodOptionsCardPresent")
+            .finish_non_exhaustive()
+    }
 }
 impl ConfirmPaymentIntentAmountDetailsLineItemsPaymentMethodOptionsCardPresent {
     pub fn new() -> Self {
@@ -27426,7 +31522,9 @@ impl Default for ConfirmPaymentIntentAmountDetailsLineItemsPaymentMethodOptionsC
     }
 }
 /// This sub-hash contains line item details that are specific to the `paypal` payment method.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypal {
     /// Type of the line item.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -27438,6 +31536,13 @@ pub struct ConfirmPaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypal 
     /// The Stripe account ID of the connected account that sells the item.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sold_by: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypal {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypal")
+            .finish_non_exhaustive()
+    }
 }
 impl ConfirmPaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypal {
     pub fn new() -> Self {
@@ -27500,11 +31605,23 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for ConfirmPaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypalCategory
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for ConfirmPaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypalCategory
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            ConfirmPaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypalCategory
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -27527,7 +31644,9 @@ impl<'de> serde::Deserialize<'de>
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 #[serde(rename_all = "snake_case")]
 pub enum ConfirmPaymentIntentMandateData {
     #[serde(untagged)]
@@ -27535,10 +31654,24 @@ pub enum ConfirmPaymentIntentMandateData {
     #[serde(untagged)]
     ClientKeyParam(ConfirmPaymentIntentClientKeyParam),
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentMandateData {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentMandateData").finish_non_exhaustive()
+    }
+}
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentSecretKeyParam {
     /// This hash contains details about the customer acceptance of the Mandate.
     pub customer_acceptance: ConfirmPaymentIntentSecretKeyParamCustomerAcceptance,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentSecretKeyParam {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentSecretKeyParam").finish_non_exhaustive()
+    }
 }
 impl ConfirmPaymentIntentSecretKeyParam {
     pub fn new(
@@ -27548,7 +31681,9 @@ impl ConfirmPaymentIntentSecretKeyParam {
     }
 }
 /// This hash contains details about the customer acceptance of the Mandate.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentSecretKeyParamCustomerAcceptance {
     /// The time at which the customer accepted the Mandate.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -27564,6 +31699,13 @@ pub struct ConfirmPaymentIntentSecretKeyParamCustomerAcceptance {
     /// One of `online` or `offline`.
     #[serde(rename = "type")]
     pub type_: ConfirmPaymentIntentSecretKeyParamCustomerAcceptanceType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentSecretKeyParamCustomerAcceptance {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentSecretKeyParamCustomerAcceptance")
+            .finish_non_exhaustive()
+    }
 }
 impl ConfirmPaymentIntentSecretKeyParamCustomerAcceptance {
     pub fn new(type_: impl Into<ConfirmPaymentIntentSecretKeyParamCustomerAcceptanceType>) -> Self {
@@ -27615,9 +31757,17 @@ impl std::fmt::Display for ConfirmPaymentIntentSecretKeyParamCustomerAcceptanceT
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentSecretKeyParamCustomerAcceptanceType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentSecretKeyParamCustomerAcceptanceType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ConfirmPaymentIntentSecretKeyParamCustomerAcceptanceType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentSecretKeyParamCustomerAcceptanceType {
@@ -27636,10 +31786,18 @@ impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentSecretKeyParamCustomer
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentClientKeyParam {
     /// This hash contains details about the customer acceptance of the Mandate.
     pub customer_acceptance: ConfirmPaymentIntentClientKeyParamCustomerAcceptance,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentClientKeyParam {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentClientKeyParam").finish_non_exhaustive()
+    }
 }
 impl ConfirmPaymentIntentClientKeyParam {
     pub fn new(
@@ -27649,13 +31807,22 @@ impl ConfirmPaymentIntentClientKeyParam {
     }
 }
 /// This hash contains details about the customer acceptance of the Mandate.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentClientKeyParamCustomerAcceptance {
     /// If this is a Mandate accepted online, this hash contains details about the online acceptance.
     pub online: ConfirmPaymentIntentClientKeyParamCustomerAcceptanceOnline,
     /// The type of customer acceptance information included with the Mandate.
     #[serde(rename = "type")]
     pub type_: ConfirmPaymentIntentClientKeyParamCustomerAcceptanceType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentClientKeyParamCustomerAcceptance {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentClientKeyParamCustomerAcceptance")
+            .finish_non_exhaustive()
+    }
 }
 impl ConfirmPaymentIntentClientKeyParamCustomerAcceptance {
     pub fn new(
@@ -27666,7 +31833,9 @@ impl ConfirmPaymentIntentClientKeyParamCustomerAcceptance {
     }
 }
 /// If this is a Mandate accepted online, this hash contains details about the online acceptance.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentClientKeyParamCustomerAcceptanceOnline {
     /// The IP address from which the Mandate was accepted by the customer.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -27674,6 +31843,13 @@ pub struct ConfirmPaymentIntentClientKeyParamCustomerAcceptanceOnline {
     /// The user agent of the browser from which the Mandate was accepted by the customer.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub user_agent: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentClientKeyParamCustomerAcceptanceOnline {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentClientKeyParamCustomerAcceptanceOnline")
+            .finish_non_exhaustive()
+    }
 }
 impl ConfirmPaymentIntentClientKeyParamCustomerAcceptanceOnline {
     pub fn new() -> Self {
@@ -27726,9 +31902,17 @@ impl std::fmt::Display for ConfirmPaymentIntentClientKeyParamCustomerAcceptanceT
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentClientKeyParamCustomerAcceptanceType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentClientKeyParamCustomerAcceptanceType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ConfirmPaymentIntentClientKeyParamCustomerAcceptanceType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentClientKeyParamCustomerAcceptanceType {
@@ -27749,7 +31933,9 @@ impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentClientKeyParamCustomer
 }
 /// Set to `true` to indicate that the customer isn't in your checkout flow during this payment attempt and can't authenticate.
 /// Use this parameter in scenarios where you collect card details and [charge them later](https://docs.stripe.com/payments/cards/charging-saved-cards).
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 #[serde(rename_all = "snake_case")]
 pub enum ConfirmPaymentIntentOffSession {
     OneOff,
@@ -27757,8 +31943,16 @@ pub enum ConfirmPaymentIntentOffSession {
     #[serde(untagged)]
     Bool(bool),
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentOffSession {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentOffSession").finish_non_exhaustive()
+    }
+}
 /// Provides industry-specific information about the charge.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentDetails {
     /// A unique value to identify the customer. This field is available only for card payments.
     ///
@@ -27771,6 +31965,12 @@ pub struct ConfirmPaymentIntentPaymentDetails {
     /// For Klarna, this field is truncated to 255 characters and is visible to customers when they view the order in the Klarna app.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub order_reference: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentDetails {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentDetails").finish_non_exhaustive()
+    }
 }
 impl ConfirmPaymentIntentPaymentDetails {
     pub fn new() -> Self {
@@ -27785,7 +31985,9 @@ impl Default for ConfirmPaymentIntentPaymentDetails {
 /// If provided, this hash will be used to create a PaymentMethod. The new PaymentMethod will appear
 /// in the [payment_method](https://docs.stripe.com/api/payment_intents/object#payment_intent_object-payment_method).
 /// property on the PaymentIntent.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodData {
     /// If this is an `acss_debit` PaymentMethod, this hash contains details about the ACSS Debit payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -27999,6 +32201,12 @@ pub struct ConfirmPaymentIntentPaymentMethodData {
     #[serde(with = "stripe_types::with_serde_json_opt")]
     pub zip: Option<miniserde::json::Value>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodData {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentMethodData").finish_non_exhaustive()
+    }
+}
 impl ConfirmPaymentIntentPaymentMethodData {
     pub fn new(type_: impl Into<ConfirmPaymentIntentPaymentMethodDataType>) -> Self {
         Self {
@@ -28110,9 +32318,17 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodDataAllowRedisplay {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodDataAllowRedisplay {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodDataAllowRedisplay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ConfirmPaymentIntentPaymentMethodDataAllowRedisplay))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodDataAllowRedisplay {
@@ -28132,12 +32348,20 @@ impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentMethodDataAllow
     }
 }
 /// If this is an `au_becs_debit` PaymentMethod, this hash contains details about the bank account.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodDataAuBecsDebit {
     /// The account number for the bank account.
     pub account_number: String,
     /// Bank-State-Branch number of the bank account.
     pub bsb_number: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodDataAuBecsDebit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentMethodDataAuBecsDebit").finish_non_exhaustive()
+    }
 }
 impl ConfirmPaymentIntentPaymentMethodDataAuBecsDebit {
     pub fn new(account_number: impl Into<String>, bsb_number: impl Into<String>) -> Self {
@@ -28145,7 +32369,9 @@ impl ConfirmPaymentIntentPaymentMethodDataAuBecsDebit {
     }
 }
 /// If this is a `bacs_debit` PaymentMethod, this hash contains details about the Bacs Direct Debit bank account.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodDataBacsDebit {
     /// Account number of the bank account that the funds will be debited from.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -28153,6 +32379,12 @@ pub struct ConfirmPaymentIntentPaymentMethodDataBacsDebit {
     /// Sort code of the bank account. (e.g., `10-20-30`)
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sort_code: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodDataBacsDebit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentMethodDataBacsDebit").finish_non_exhaustive()
+    }
 }
 impl ConfirmPaymentIntentPaymentMethodDataBacsDebit {
     pub fn new() -> Self {
@@ -28165,7 +32397,9 @@ impl Default for ConfirmPaymentIntentPaymentMethodDataBacsDebit {
     }
 }
 /// Billing information associated with the PaymentMethod that may be used or required by particular types of payment methods.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodDataBillingDetails {
     /// Billing address.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -28184,6 +32418,13 @@ pub struct ConfirmPaymentIntentPaymentMethodDataBillingDetails {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_id: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodDataBillingDetails {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentMethodDataBillingDetails")
+            .finish_non_exhaustive()
+    }
+}
 impl ConfirmPaymentIntentPaymentMethodDataBillingDetails {
     pub fn new() -> Self {
         Self { address: None, email: None, name: None, phone: None, tax_id: None }
@@ -28195,7 +32436,9 @@ impl Default for ConfirmPaymentIntentPaymentMethodDataBillingDetails {
     }
 }
 /// Billing address.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodDataBillingDetailsAddress {
     /// City, district, suburb, town, or village.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -28216,6 +32459,13 @@ pub struct ConfirmPaymentIntentPaymentMethodDataBillingDetailsAddress {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodDataBillingDetailsAddress {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentMethodDataBillingDetailsAddress")
+            .finish_non_exhaustive()
+    }
+}
 impl ConfirmPaymentIntentPaymentMethodDataBillingDetailsAddress {
     pub fn new() -> Self {
         Self { city: None, country: None, line1: None, line2: None, postal_code: None, state: None }
@@ -28227,10 +32477,18 @@ impl Default for ConfirmPaymentIntentPaymentMethodDataBillingDetailsAddress {
     }
 }
 /// If this is a `boleto` PaymentMethod, this hash contains details about the Boleto payment method.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodDataBoleto {
     /// The tax ID of the customer (CPF for individual consumers or CNPJ for businesses consumers)
     pub tax_id: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodDataBoleto {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentMethodDataBoleto").finish_non_exhaustive()
+    }
 }
 impl ConfirmPaymentIntentPaymentMethodDataBoleto {
     pub fn new(tax_id: impl Into<String>) -> Self {
@@ -28238,11 +32496,19 @@ impl ConfirmPaymentIntentPaymentMethodDataBoleto {
     }
 }
 /// If this is an `eps` PaymentMethod, this hash contains details about the EPS payment method.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodDataEps {
     /// The customer's bank.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bank: Option<ConfirmPaymentIntentPaymentMethodDataEpsBank>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodDataEps {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentMethodDataEps").finish_non_exhaustive()
+    }
 }
 impl ConfirmPaymentIntentPaymentMethodDataEps {
     pub fn new() -> Self {
@@ -28376,9 +32642,17 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodDataEpsBank {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodDataEpsBank {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodDataEpsBank {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ConfirmPaymentIntentPaymentMethodDataEpsBank))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodDataEpsBank {
@@ -28398,13 +32672,21 @@ impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentMethodDataEpsBa
     }
 }
 /// If this is an `fpx` PaymentMethod, this hash contains details about the FPX payment method.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodDataFpx {
     /// Account holder type for FPX transaction
     #[serde(skip_serializing_if = "Option::is_none")]
     pub account_holder_type: Option<ConfirmPaymentIntentPaymentMethodDataFpxAccountHolderType>,
     /// The customer's bank.
     pub bank: ConfirmPaymentIntentPaymentMethodDataFpxBank,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodDataFpx {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentMethodDataFpx").finish_non_exhaustive()
+    }
 }
 impl ConfirmPaymentIntentPaymentMethodDataFpx {
     pub fn new(bank: impl Into<ConfirmPaymentIntentPaymentMethodDataFpxBank>) -> Self {
@@ -28455,9 +32737,17 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodDataFpxAccountHolder
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodDataFpxAccountHolderType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodDataFpxAccountHolderType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ConfirmPaymentIntentPaymentMethodDataFpxAccountHolderType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodDataFpxAccountHolderType {
@@ -28580,9 +32870,17 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodDataFpxBank {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodDataFpxBank {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodDataFpxBank {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ConfirmPaymentIntentPaymentMethodDataFpxBank))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodDataFpxBank {
@@ -28602,13 +32900,21 @@ impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentMethodDataFpxBa
     }
 }
 /// If this is an `ideal` PaymentMethod, this hash contains details about the iDEAL payment method.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodDataIdeal {
     /// The customer's bank.
     /// Only use this parameter for existing customers.
     /// Don't use it for new customers.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bank: Option<ConfirmPaymentIntentPaymentMethodDataIdealBank>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodDataIdeal {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentMethodDataIdeal").finish_non_exhaustive()
+    }
 }
 impl ConfirmPaymentIntentPaymentMethodDataIdeal {
     pub fn new() -> Self {
@@ -28720,9 +33026,17 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodDataIdealBank {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodDataIdealBank {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodDataIdealBank {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ConfirmPaymentIntentPaymentMethodDataIdealBank))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodDataIdealBank {
@@ -28742,11 +33056,19 @@ impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentMethodDataIdeal
     }
 }
 /// If this is a `klarna` PaymentMethod, this hash contains details about the Klarna payment method.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodDataKlarna {
     /// Customer's date of birth
     #[serde(skip_serializing_if = "Option::is_none")]
     pub dob: Option<DateOfBirth>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodDataKlarna {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentMethodDataKlarna").finish_non_exhaustive()
+    }
 }
 impl ConfirmPaymentIntentPaymentMethodDataKlarna {
     pub fn new() -> Self {
@@ -28759,12 +33081,20 @@ impl Default for ConfirmPaymentIntentPaymentMethodDataKlarna {
     }
 }
 /// If this is a `naver_pay` PaymentMethod, this hash contains details about the Naver Pay payment method.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodDataNaverPay {
     /// Whether to use Naver Pay points or a card to fund this transaction.
     /// If not provided, this defaults to `card`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub funding: Option<ConfirmPaymentIntentPaymentMethodDataNaverPayFunding>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodDataNaverPay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentMethodDataNaverPay").finish_non_exhaustive()
+    }
 }
 impl ConfirmPaymentIntentPaymentMethodDataNaverPay {
     pub fn new() -> Self {
@@ -28821,9 +33151,17 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodDataNaverPayFunding 
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodDataNaverPayFunding {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodDataNaverPayFunding {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ConfirmPaymentIntentPaymentMethodDataNaverPayFunding))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodDataNaverPayFunding {
@@ -28843,7 +33181,9 @@ impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentMethodDataNaver
     }
 }
 /// If this is an nz_bank_account PaymentMethod, this hash contains details about the nz_bank_account payment method.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodDataNzBankAccount {
     /// The name on the bank account.
     /// Only required if the account holder name is different from the name of the authorized signatory collected in the PaymentMethod’s billing details.
@@ -28859,6 +33199,12 @@ pub struct ConfirmPaymentIntentPaymentMethodDataNzBankAccount {
     pub reference: Option<String>,
     /// The suffix of the bank account number.
     pub suffix: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodDataNzBankAccount {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentMethodDataNzBankAccount").finish_non_exhaustive()
+    }
 }
 impl ConfirmPaymentIntentPaymentMethodDataNzBankAccount {
     pub fn new(
@@ -28878,11 +33224,19 @@ impl ConfirmPaymentIntentPaymentMethodDataNzBankAccount {
     }
 }
 /// If this is a `p24` PaymentMethod, this hash contains details about the P24 payment method.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodDataP24 {
     /// The customer's bank.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bank: Option<ConfirmPaymentIntentPaymentMethodDataP24Bank>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodDataP24 {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentMethodDataP24").finish_non_exhaustive()
+    }
 }
 impl ConfirmPaymentIntentPaymentMethodDataP24 {
     pub fn new() -> Self {
@@ -29010,9 +33364,17 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodDataP24Bank {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodDataP24Bank {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodDataP24Bank {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ConfirmPaymentIntentPaymentMethodDataP24Bank))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodDataP24Bank {
@@ -29032,7 +33394,9 @@ impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentMethodDataP24Ba
     }
 }
 /// If this is a `payto` PaymentMethod, this hash contains details about the PayTo payment method.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodDataPayto {
     /// The account number for the bank account.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -29043,6 +33407,12 @@ pub struct ConfirmPaymentIntentPaymentMethodDataPayto {
     /// The PayID alias for the bank account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub pay_id: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodDataPayto {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentMethodDataPayto").finish_non_exhaustive()
+    }
 }
 impl ConfirmPaymentIntentPaymentMethodDataPayto {
     pub fn new() -> Self {
@@ -29056,11 +33426,19 @@ impl Default for ConfirmPaymentIntentPaymentMethodDataPayto {
 }
 /// Options to configure Radar.
 /// See [Radar Session](https://docs.stripe.com/radar/radar-session) for more information.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodDataRadarOptions {
     /// A [Radar Session](https://docs.stripe.com/radar/radar-session) is a snapshot of the browser metadata and device details that help Radar make more accurate predictions on your payments.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub session: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodDataRadarOptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentMethodDataRadarOptions").finish_non_exhaustive()
+    }
 }
 impl ConfirmPaymentIntentPaymentMethodDataRadarOptions {
     pub fn new() -> Self {
@@ -29073,10 +33451,18 @@ impl Default for ConfirmPaymentIntentPaymentMethodDataRadarOptions {
     }
 }
 /// If this is a `sepa_debit` PaymentMethod, this hash contains details about the SEPA debit bank account.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodDataSepaDebit {
     /// IBAN of the bank account.
     pub iban: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodDataSepaDebit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentMethodDataSepaDebit").finish_non_exhaustive()
+    }
 }
 impl ConfirmPaymentIntentPaymentMethodDataSepaDebit {
     pub fn new(iban: impl Into<String>) -> Self {
@@ -29084,10 +33470,18 @@ impl ConfirmPaymentIntentPaymentMethodDataSepaDebit {
     }
 }
 /// If this is a `sofort` PaymentMethod, this hash contains details about the SOFORT payment method.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodDataSofort {
     /// Two-letter ISO code representing the country the bank account is located in.
     pub country: ConfirmPaymentIntentPaymentMethodDataSofortCountry,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodDataSofort {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentMethodDataSofort").finish_non_exhaustive()
+    }
 }
 impl ConfirmPaymentIntentPaymentMethodDataSofort {
     pub fn new(country: impl Into<ConfirmPaymentIntentPaymentMethodDataSofortCountry>) -> Self {
@@ -29150,9 +33544,17 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodDataSofortCountry {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodDataSofortCountry {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodDataSofortCountry {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ConfirmPaymentIntentPaymentMethodDataSofortCountry))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodDataSofortCountry {
@@ -29361,9 +33763,17 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodDataType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodDataType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodDataType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ConfirmPaymentIntentPaymentMethodDataType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodDataType {
@@ -29383,11 +33793,19 @@ impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentMethodDataType 
     }
 }
 /// If this is a `upi` PaymentMethod, this hash contains details about the UPI payment method.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodDataUpi {
     /// Configuration options for setting up an eMandate
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mandate_options: Option<ConfirmPaymentIntentPaymentMethodDataUpiMandateOptions>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodDataUpi {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentMethodDataUpi").finish_non_exhaustive()
+    }
 }
 impl ConfirmPaymentIntentPaymentMethodDataUpi {
     pub fn new() -> Self {
@@ -29400,7 +33818,9 @@ impl Default for ConfirmPaymentIntentPaymentMethodDataUpi {
     }
 }
 /// Configuration options for setting up an eMandate
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodDataUpiMandateOptions {
     /// Amount to be charged for future payments.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -29416,6 +33836,13 @@ pub struct ConfirmPaymentIntentPaymentMethodDataUpiMandateOptions {
     /// End date of the mandate or subscription.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub end_date: Option<stripe_types::Timestamp>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodDataUpiMandateOptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentMethodDataUpiMandateOptions")
+            .finish_non_exhaustive()
+    }
 }
 impl ConfirmPaymentIntentPaymentMethodDataUpiMandateOptions {
     pub fn new() -> Self {
@@ -29473,9 +33900,17 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodDataUpiMandateOption
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodDataUpiMandateOptionsAmountType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodDataUpiMandateOptionsAmountType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ConfirmPaymentIntentPaymentMethodDataUpiMandateOptionsAmountType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodDataUpiMandateOptionsAmountType {
@@ -29497,7 +33932,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is an `us_bank_account` PaymentMethod, this hash contains details about the US bank account payment method.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodDataUsBankAccount {
     /// Account holder type: individual or company.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -29515,6 +33952,12 @@ pub struct ConfirmPaymentIntentPaymentMethodDataUsBankAccount {
     /// Routing number of the bank account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub routing_number: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodDataUsBankAccount {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentMethodDataUsBankAccount").finish_non_exhaustive()
+    }
 }
 impl ConfirmPaymentIntentPaymentMethodDataUsBankAccount {
     pub fn new() -> Self {
@@ -29576,9 +34019,19 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodDataUsBankAccountAcc
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodDataUsBankAccountAccountHolderType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodDataUsBankAccountAccountHolderType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            ConfirmPaymentIntentPaymentMethodDataUsBankAccountAccountHolderType
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodDataUsBankAccountAccountHolderType {
@@ -29643,9 +34096,17 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodDataUsBankAccountAcc
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodDataUsBankAccountAccountType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodDataUsBankAccountAccountType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ConfirmPaymentIntentPaymentMethodDataUsBankAccountAccountType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodDataUsBankAccountAccountType {
@@ -29667,7 +34128,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Payment method-specific configuration for this PaymentIntent.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodOptions {
     /// If this is a `acss_debit` PaymentMethod, this sub-hash contains details about the ACSS Debit payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -29831,6 +34294,12 @@ pub struct ConfirmPaymentIntentPaymentMethodOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub zip: Option<ConfirmPaymentIntentPaymentMethodOptionsZip>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentMethodOptions").finish_non_exhaustive()
+    }
+}
 impl ConfirmPaymentIntentPaymentMethodOptions {
     pub fn new() -> Self {
         Self {
@@ -29896,7 +34365,9 @@ impl Default for ConfirmPaymentIntentPaymentMethodOptions {
     }
 }
 /// If this is a `acss_debit` PaymentMethod, this sub-hash contains details about the ACSS Debit payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodOptionsAcssDebit {
     /// Additional fields for Mandate creation
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -29924,6 +34395,12 @@ pub struct ConfirmPaymentIntentPaymentMethodOptionsAcssDebit {
     pub verification_method:
         Option<ConfirmPaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsAcssDebit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentMethodOptionsAcssDebit").finish_non_exhaustive()
+    }
+}
 impl ConfirmPaymentIntentPaymentMethodOptionsAcssDebit {
     pub fn new() -> Self {
         Self {
@@ -29940,7 +34417,9 @@ impl Default for ConfirmPaymentIntentPaymentMethodOptionsAcssDebit {
     }
 }
 /// Additional fields for Mandate creation
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodOptionsAcssDebitMandateOptions {
     /// A URL for custom mandate text to render during confirmation step.
     /// The URL will be rendered with additional GET parameters `payment_intent` and `payment_intent_client_secret` when confirming a Payment Intent,.
@@ -29959,6 +34438,13 @@ pub struct ConfirmPaymentIntentPaymentMethodOptionsAcssDebitMandateOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub transaction_type:
         Option<ConfirmPaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsAcssDebitMandateOptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentMethodOptionsAcssDebitMandateOptions")
+            .finish_non_exhaustive()
+    }
 }
 impl ConfirmPaymentIntentPaymentMethodOptionsAcssDebitMandateOptions {
     pub fn new() -> Self {
@@ -30026,11 +34512,23 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for ConfirmPaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for ConfirmPaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            ConfirmPaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsPaymentSchedule
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -30101,11 +34599,23 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for ConfirmPaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for ConfirmPaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            ConfirmPaymentIntentPaymentMethodOptionsAcssDebitMandateOptionsTransactionType
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -30184,9 +34694,19 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsAcssDebitSetu
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsAcssDebitSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsAcssDebitSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            ConfirmPaymentIntentPaymentMethodOptionsAcssDebitSetupFutureUsage
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsAcssDebitSetupFutureUsage {
@@ -30254,9 +34774,19 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsAcssDebitVeri
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            ConfirmPaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsAcssDebitVerificationMethod {
@@ -30278,7 +34808,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is an `affirm` PaymentMethod, this sub-hash contains details about the Affirm payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodOptionsAffirm {
     /// Controls when the funds are captured from the customer's account.
     ///
@@ -30302,6 +34834,12 @@ pub struct ConfirmPaymentIntentPaymentMethodOptionsAffirm {
     /// If you've already set `setup_future_usage` and you're performing a request using a publishable key, you can only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<ConfirmPaymentIntentPaymentMethodOptionsAffirmSetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsAffirm {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentMethodOptionsAffirm").finish_non_exhaustive()
+    }
 }
 impl ConfirmPaymentIntentPaymentMethodOptionsAffirm {
     pub fn new() -> Self {
@@ -30358,9 +34896,17 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsAffirmCapture
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsAffirmCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsAffirmCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ConfirmPaymentIntentPaymentMethodOptionsAffirmCaptureMethod))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsAffirmCaptureMethod {
@@ -30429,9 +34975,17 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsAffirmSetupFu
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsAffirmSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsAffirmSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ConfirmPaymentIntentPaymentMethodOptionsAffirmSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsAffirmSetupFutureUsage {
@@ -30453,7 +35007,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `afterpay_clearpay` PaymentMethod, this sub-hash contains details about the Afterpay Clearpay payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodOptionsAfterpayClearpay {
     /// Controls when the funds are captured from the customer's account.
     ///
@@ -30481,6 +35037,13 @@ pub struct ConfirmPaymentIntentPaymentMethodOptionsAfterpayClearpay {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage:
         Option<ConfirmPaymentIntentPaymentMethodOptionsAfterpayClearpaySetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsAfterpayClearpay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentMethodOptionsAfterpayClearpay")
+            .finish_non_exhaustive()
+    }
 }
 impl ConfirmPaymentIntentPaymentMethodOptionsAfterpayClearpay {
     pub fn new() -> Self {
@@ -30537,9 +35100,19 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsAfterpayClear
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsAfterpayClearpayCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsAfterpayClearpayCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            ConfirmPaymentIntentPaymentMethodOptionsAfterpayClearpayCaptureMethod
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsAfterpayClearpayCaptureMethod {
@@ -30614,9 +35187,19 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsAfterpayClearpaySetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsAfterpayClearpaySetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            ConfirmPaymentIntentPaymentMethodOptionsAfterpayClearpaySetupFutureUsage
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsAfterpayClearpaySetupFutureUsage {
@@ -30638,7 +35221,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `alipay` PaymentMethod, this sub-hash contains details about the Alipay payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodOptionsAlipay {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -30652,6 +35237,12 @@ pub struct ConfirmPaymentIntentPaymentMethodOptionsAlipay {
     /// If you've already set `setup_future_usage` and you're performing a request using a publishable key, you can only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<ConfirmPaymentIntentPaymentMethodOptionsAlipaySetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsAlipay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentMethodOptionsAlipay").finish_non_exhaustive()
+    }
 }
 impl ConfirmPaymentIntentPaymentMethodOptionsAlipay {
     pub fn new() -> Self {
@@ -30716,9 +35307,17 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsAlipaySetupFu
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsAlipaySetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsAlipaySetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ConfirmPaymentIntentPaymentMethodOptionsAlipaySetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsAlipaySetupFutureUsage {
@@ -30740,7 +35339,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `alma` PaymentMethod, this sub-hash contains details about the Alma payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodOptionsAlma {
     /// Controls when the funds are captured from the customer's account.
     ///
@@ -30749,6 +35350,12 @@ pub struct ConfirmPaymentIntentPaymentMethodOptionsAlma {
     /// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter unsets the stored value for this payment method type.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub capture_method: Option<ConfirmPaymentIntentPaymentMethodOptionsAlmaCaptureMethod>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsAlma {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentMethodOptionsAlma").finish_non_exhaustive()
+    }
 }
 impl ConfirmPaymentIntentPaymentMethodOptionsAlma {
     pub fn new() -> Self {
@@ -30805,9 +35412,17 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsAlmaCaptureMe
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsAlmaCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsAlmaCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ConfirmPaymentIntentPaymentMethodOptionsAlmaCaptureMethod))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsAlmaCaptureMethod {
@@ -30827,7 +35442,9 @@ impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentMethodOptionsAl
     }
 }
 /// If this is a `amazon_pay` PaymentMethod, this sub-hash contains details about the Amazon Pay payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodOptionsAmazonPay {
     /// Controls when the funds are captured from the customer's account.
     ///
@@ -30847,6 +35464,12 @@ pub struct ConfirmPaymentIntentPaymentMethodOptionsAmazonPay {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage:
         Option<ConfirmPaymentIntentPaymentMethodOptionsAmazonPaySetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsAmazonPay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentMethodOptionsAmazonPay").finish_non_exhaustive()
+    }
 }
 impl ConfirmPaymentIntentPaymentMethodOptionsAmazonPay {
     pub fn new() -> Self {
@@ -30903,9 +35526,17 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsAmazonPayCapt
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsAmazonPayCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsAmazonPayCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ConfirmPaymentIntentPaymentMethodOptionsAmazonPayCaptureMethod))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsAmazonPayCaptureMethod {
@@ -30977,9 +35608,19 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsAmazonPaySetu
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsAmazonPaySetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsAmazonPaySetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            ConfirmPaymentIntentPaymentMethodOptionsAmazonPaySetupFutureUsage
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsAmazonPaySetupFutureUsage {
@@ -31001,7 +35642,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `au_becs_debit` PaymentMethod, this sub-hash contains details about the AU BECS Direct Debit payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodOptionsAuBecsDebit {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -31021,6 +35664,13 @@ pub struct ConfirmPaymentIntentPaymentMethodOptionsAuBecsDebit {
     /// The date must be in the future and between 3 and 15 calendar days from now.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub target_date: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsAuBecsDebit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentMethodOptionsAuBecsDebit")
+            .finish_non_exhaustive()
+    }
 }
 impl ConfirmPaymentIntentPaymentMethodOptionsAuBecsDebit {
     pub fn new() -> Self {
@@ -31088,9 +35738,19 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsAuBecsDebitSe
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsAuBecsDebitSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsAuBecsDebitSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            ConfirmPaymentIntentPaymentMethodOptionsAuBecsDebitSetupFutureUsage
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsAuBecsDebitSetupFutureUsage {
@@ -31112,7 +35772,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `bacs_debit` PaymentMethod, this sub-hash contains details about the BACS Debit payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodOptionsBacsDebit {
     /// Additional fields for Mandate creation
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -31135,6 +35797,12 @@ pub struct ConfirmPaymentIntentPaymentMethodOptionsBacsDebit {
     /// The date must be in the future and between 3 and 15 calendar days from now.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub target_date: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsBacsDebit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentMethodOptionsBacsDebit").finish_non_exhaustive()
+    }
 }
 impl ConfirmPaymentIntentPaymentMethodOptionsBacsDebit {
     pub fn new() -> Self {
@@ -31202,9 +35870,19 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsBacsDebitSetu
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsBacsDebitSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsBacsDebitSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            ConfirmPaymentIntentPaymentMethodOptionsBacsDebitSetupFutureUsage
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsBacsDebitSetupFutureUsage {
@@ -31226,7 +35904,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `bancontact` PaymentMethod, this sub-hash contains details about the Bancontact payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodOptionsBancontact {
     /// Preferred language of the Bancontact authorization page that the customer is redirected to.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -31245,6 +35925,12 @@ pub struct ConfirmPaymentIntentPaymentMethodOptionsBancontact {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage:
         Option<ConfirmPaymentIntentPaymentMethodOptionsBancontactSetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsBancontact {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentMethodOptionsBancontact").finish_non_exhaustive()
+    }
 }
 impl ConfirmPaymentIntentPaymentMethodOptionsBancontact {
     pub fn new() -> Self {
@@ -31306,9 +35992,19 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsBancontactPre
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsBancontactPreferredLanguage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsBancontactPreferredLanguage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            ConfirmPaymentIntentPaymentMethodOptionsBancontactPreferredLanguage
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsBancontactPreferredLanguage {
@@ -31382,9 +36078,19 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsBancontactSet
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsBancontactSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsBancontactSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            ConfirmPaymentIntentPaymentMethodOptionsBancontactSetupFutureUsage
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsBancontactSetupFutureUsage {
@@ -31406,7 +36112,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `billie` PaymentMethod, this sub-hash contains details about the Billie payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodOptionsBillie {
     /// Controls when the funds are captured from the customer's account.
     ///
@@ -31415,6 +36123,12 @@ pub struct ConfirmPaymentIntentPaymentMethodOptionsBillie {
     /// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter unsets the stored value for this payment method type.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub capture_method: Option<ConfirmPaymentIntentPaymentMethodOptionsBillieCaptureMethod>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsBillie {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentMethodOptionsBillie").finish_non_exhaustive()
+    }
 }
 impl ConfirmPaymentIntentPaymentMethodOptionsBillie {
     pub fn new() -> Self {
@@ -31471,9 +36185,17 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsBillieCapture
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsBillieCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsBillieCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ConfirmPaymentIntentPaymentMethodOptionsBillieCaptureMethod))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsBillieCaptureMethod {
@@ -31493,7 +36215,9 @@ impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentMethodOptionsBi
     }
 }
 /// If this is a `blik` PaymentMethod, this sub-hash contains details about the BLIK payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodOptionsBlik {
     /// The 6-digit BLIK code that a customer has generated using their banking application.
     /// Can only be set on confirmation.
@@ -31511,6 +36235,12 @@ pub struct ConfirmPaymentIntentPaymentMethodOptionsBlik {
     /// If you've already set `setup_future_usage` and you're performing a request using a publishable key, you can only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<ConfirmPaymentIntentPaymentMethodOptionsBlikSetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsBlik {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentMethodOptionsBlik").finish_non_exhaustive()
+    }
 }
 impl ConfirmPaymentIntentPaymentMethodOptionsBlik {
     pub fn new() -> Self {
@@ -31572,9 +36302,17 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsBlikSetupFutu
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsBlikSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsBlikSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ConfirmPaymentIntentPaymentMethodOptionsBlikSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsBlikSetupFutureUsage {
@@ -31594,7 +36332,9 @@ impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentMethodOptionsBl
     }
 }
 /// If this is a `boleto` PaymentMethod, this sub-hash contains details about the Boleto payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodOptionsBoleto {
     /// The number of calendar days before a Boleto voucher expires.
     /// For example, if you create a Boleto voucher on Monday and you set expires_after_days to 2, the Boleto invoice will expire on Wednesday at 23:59 America/Sao_Paulo time.
@@ -31612,6 +36352,12 @@ pub struct ConfirmPaymentIntentPaymentMethodOptionsBoleto {
     /// If you've already set `setup_future_usage` and you're performing a request using a publishable key, you can only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<ConfirmPaymentIntentPaymentMethodOptionsBoletoSetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsBoleto {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentMethodOptionsBoleto").finish_non_exhaustive()
+    }
 }
 impl ConfirmPaymentIntentPaymentMethodOptionsBoleto {
     pub fn new() -> Self {
@@ -31679,9 +36425,17 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsBoletoSetupFu
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsBoletoSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsBoletoSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ConfirmPaymentIntentPaymentMethodOptionsBoletoSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsBoletoSetupFutureUsage {
@@ -31703,7 +36457,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Configuration for any card payments attempted on this PaymentIntent.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodOptionsCard {
     /// Controls when the funds are captured from the customer's account.
     ///
@@ -31790,6 +36546,12 @@ pub struct ConfirmPaymentIntentPaymentMethodOptionsCard {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub three_d_secure: Option<ConfirmPaymentIntentPaymentMethodOptionsCardThreeDSecure>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsCard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentMethodOptionsCard").finish_non_exhaustive()
+    }
+}
 impl ConfirmPaymentIntentPaymentMethodOptionsCard {
     pub fn new() -> Self {
         Self {
@@ -31862,9 +36624,17 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsCardCaptureMe
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsCardCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsCardCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ConfirmPaymentIntentPaymentMethodOptionsCardCaptureMethod))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsCardCaptureMethod {
@@ -31886,7 +36656,9 @@ impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentMethodOptionsCa
 /// Installment configuration for payments attempted on this PaymentIntent.
 ///
 /// For more information, see the [installments integration guide](https://docs.stripe.com/payments/installments).
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodOptionsCardInstallments {
     /// Setting to true enables installments for this PaymentIntent.
     /// This will cause the response to contain a list of available installment plans.
@@ -31897,6 +36669,13 @@ pub struct ConfirmPaymentIntentPaymentMethodOptionsCardInstallments {
     /// This parameter can only be provided during confirmation.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub plan: Option<ConfirmPaymentIntentPaymentMethodOptionsCardInstallmentsPlan>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsCardInstallments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentMethodOptionsCardInstallments")
+            .finish_non_exhaustive()
+    }
 }
 impl ConfirmPaymentIntentPaymentMethodOptionsCardInstallments {
     pub fn new() -> Self {
@@ -31910,7 +36689,9 @@ impl Default for ConfirmPaymentIntentPaymentMethodOptionsCardInstallments {
 }
 /// The selected installment plan to use for this payment attempt.
 /// This parameter can only be provided during confirmation.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodOptionsCardInstallmentsPlan {
     /// For `fixed_count` installment plans, this is required.
     /// It represents the number of installment payments your customer will make to their credit card.
@@ -31924,6 +36705,13 @@ pub struct ConfirmPaymentIntentPaymentMethodOptionsCardInstallmentsPlan {
     /// Type of installment plan, one of `fixed_count`, `bonus`, or `revolving`.
     #[serde(rename = "type")]
     pub type_: ConfirmPaymentIntentPaymentMethodOptionsCardInstallmentsPlanType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsCardInstallmentsPlan {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentMethodOptionsCardInstallmentsPlan")
+            .finish_non_exhaustive()
+    }
 }
 impl ConfirmPaymentIntentPaymentMethodOptionsCardInstallmentsPlan {
     pub fn new(
@@ -31975,9 +36763,19 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsCardInstallme
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsCardInstallmentsPlanInterval {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsCardInstallmentsPlanInterval {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            ConfirmPaymentIntentPaymentMethodOptionsCardInstallmentsPlanInterval
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsCardInstallmentsPlanInterval {
@@ -32045,9 +36843,17 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsCardInstallme
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsCardInstallmentsPlanType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsCardInstallmentsPlanType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ConfirmPaymentIntentPaymentMethodOptionsCardInstallmentsPlanType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsCardInstallmentsPlanType {
@@ -32069,7 +36875,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Configuration options for setting up an eMandate for cards issued in India.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodOptionsCardMandateOptions {
     /// Amount to be charged for future payments, specified in the presentment currency.
     pub amount: i64,
@@ -32101,6 +36909,13 @@ pub struct ConfirmPaymentIntentPaymentMethodOptionsCardMandateOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub supported_types:
         Option<Vec<ConfirmPaymentIntentPaymentMethodOptionsCardMandateOptionsSupportedTypes>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsCardMandateOptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentMethodOptionsCardMandateOptions")
+            .finish_non_exhaustive()
+    }
 }
 impl ConfirmPaymentIntentPaymentMethodOptionsCardMandateOptions {
     pub fn new(
@@ -32169,9 +36984,19 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsCardMandateOp
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsCardMandateOptionsAmountType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsCardMandateOptionsAmountType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            ConfirmPaymentIntentPaymentMethodOptionsCardMandateOptionsAmountType
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsCardMandateOptionsAmountType {
@@ -32245,9 +37070,19 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsCardMandateOp
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsCardMandateOptionsInterval {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsCardMandateOptionsInterval {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            ConfirmPaymentIntentPaymentMethodOptionsCardMandateOptionsInterval
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsCardMandateOptionsInterval {
@@ -32313,9 +37148,19 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsCardMandateOptionsSupportedTypes {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsCardMandateOptionsSupportedTypes {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            ConfirmPaymentIntentPaymentMethodOptionsCardMandateOptionsSupportedTypes
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsCardMandateOptionsSupportedTypes {
@@ -32416,9 +37261,17 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsCardNetwork {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsCardNetwork {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsCardNetwork {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ConfirmPaymentIntentPaymentMethodOptionsCardNetwork))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsCardNetwork {
@@ -32485,9 +37338,19 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsCardRequestExtendedAuthorization {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsCardRequestExtendedAuthorization {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            ConfirmPaymentIntentPaymentMethodOptionsCardRequestExtendedAuthorization
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsCardRequestExtendedAuthorization {
@@ -32556,11 +37419,23 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for ConfirmPaymentIntentPaymentMethodOptionsCardRequestIncrementalAuthorization
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for ConfirmPaymentIntentPaymentMethodOptionsCardRequestIncrementalAuthorization
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            ConfirmPaymentIntentPaymentMethodOptionsCardRequestIncrementalAuthorization
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -32627,9 +37502,17 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsCardRequestMu
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsCardRequestMulticapture {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsCardRequestMulticapture {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ConfirmPaymentIntentPaymentMethodOptionsCardRequestMulticapture))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsCardRequestMulticapture {
@@ -32694,9 +37577,17 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsCardRequestOv
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsCardRequestOvercapture {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsCardRequestOvercapture {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ConfirmPaymentIntentPaymentMethodOptionsCardRequestOvercapture))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsCardRequestOvercapture {
@@ -32767,9 +37658,17 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsCardRequestTh
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsCardRequestThreeDSecure {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsCardRequestThreeDSecure {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ConfirmPaymentIntentPaymentMethodOptionsCardRequestThreeDSecure))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsCardRequestThreeDSecure {
@@ -32846,9 +37745,17 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsCardSetupFutu
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsCardSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsCardSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ConfirmPaymentIntentPaymentMethodOptionsCardSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsCardSetupFutureUsage {
@@ -32869,7 +37776,9 @@ impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentMethodOptionsCa
 }
 /// If 3D Secure authentication was performed with a third-party provider,
 /// the authentication details to use for this payment.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodOptionsCardThreeDSecure {
     /// The `transStatus` returned from the card Issuer’s ACS in the ARes.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -32904,6 +37813,13 @@ pub struct ConfirmPaymentIntentPaymentMethodOptionsCardThreeDSecure {
     pub transaction_id: String,
     /// The version of 3D Secure that was performed.
     pub version: ConfirmPaymentIntentPaymentMethodOptionsCardThreeDSecureVersion,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsCardThreeDSecure {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentMethodOptionsCardThreeDSecure")
+            .finish_non_exhaustive()
+    }
 }
 impl ConfirmPaymentIntentPaymentMethodOptionsCardThreeDSecure {
     pub fn new(
@@ -32982,9 +37898,19 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsCardThreeDSec
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsCardThreeDSecureAresTransStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsCardThreeDSecureAresTransStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            ConfirmPaymentIntentPaymentMethodOptionsCardThreeDSecureAresTransStatus
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsCardThreeDSecureAresTransStatus {
@@ -33063,11 +37989,23 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for ConfirmPaymentIntentPaymentMethodOptionsCardThreeDSecureElectronicCommerceIndicator
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for ConfirmPaymentIntentPaymentMethodOptionsCardThreeDSecureElectronicCommerceIndicator
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            ConfirmPaymentIntentPaymentMethodOptionsCardThreeDSecureElectronicCommerceIndicator
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -33138,11 +38076,23 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for ConfirmPaymentIntentPaymentMethodOptionsCardThreeDSecureExemptionIndicator
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for ConfirmPaymentIntentPaymentMethodOptionsCardThreeDSecureExemptionIndicator
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            ConfirmPaymentIntentPaymentMethodOptionsCardThreeDSecureExemptionIndicator
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -33168,13 +38118,22 @@ impl<'de> serde::Deserialize<'de>
 /// Network specific 3DS fields. Network specific arguments require an
 /// explicit card brand choice. The parameter `payment_method_options.card.network``
 /// must be populated accordingly
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodOptionsCardThreeDSecureNetworkOptions {
     /// Cartes Bancaires-specific 3DS fields.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub cartes_bancaires: Option<
         ConfirmPaymentIntentPaymentMethodOptionsCardThreeDSecureNetworkOptionsCartesBancaires,
     >,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsCardThreeDSecureNetworkOptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentMethodOptionsCardThreeDSecureNetworkOptions")
+            .finish_non_exhaustive()
+    }
 }
 impl ConfirmPaymentIntentPaymentMethodOptionsCardThreeDSecureNetworkOptions {
     pub fn new() -> Self {
@@ -33187,7 +38146,9 @@ impl Default for ConfirmPaymentIntentPaymentMethodOptionsCardThreeDSecureNetwork
     }
 }
 /// Cartes Bancaires-specific 3DS fields.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodOptionsCardThreeDSecureNetworkOptionsCartesBancaires {
     /// The cryptogram calculation algorithm used by the card Issuer's ACS
     /// to calculate the Authentication cryptogram. Also known as `cavvAlgorithm`.
@@ -33204,6 +38165,17 @@ pub cb_exemption: Option<String>,
 #[serde(skip_serializing_if = "Option::is_none")]
 pub cb_score: Option<i64>,
 
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for ConfirmPaymentIntentPaymentMethodOptionsCardThreeDSecureNetworkOptionsCartesBancaires
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(
+            "ConfirmPaymentIntentPaymentMethodOptionsCardThreeDSecureNetworkOptionsCartesBancaires",
+        )
+        .finish_non_exhaustive()
+    }
 }
 impl ConfirmPaymentIntentPaymentMethodOptionsCardThreeDSecureNetworkOptionsCartesBancaires {
     pub fn new(
@@ -33265,9 +38237,16 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsCardThreeDSec
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsCardThreeDSecureNetworkOptionsCartesBancairesCbAvalgo {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsCardThreeDSecureNetworkOptionsCartesBancairesCbAvalgo {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ConfirmPaymentIntentPaymentMethodOptionsCardThreeDSecureNetworkOptionsCartesBancairesCbAvalgo)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsCardThreeDSecureNetworkOptionsCartesBancairesCbAvalgo {
@@ -33336,9 +38315,17 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsCardThreeDSec
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsCardThreeDSecureVersion {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsCardThreeDSecureVersion {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ConfirmPaymentIntentPaymentMethodOptionsCardThreeDSecureVersion))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsCardThreeDSecureVersion {
@@ -33360,7 +38347,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `card_present` PaymentMethod, this sub-hash contains details about the Card Present payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodOptionsCardPresent {
     /// Controls when the funds are captured from the customer's account.
     ///
@@ -33379,6 +38368,13 @@ pub struct ConfirmPaymentIntentPaymentMethodOptionsCardPresent {
     /// Network routing priority on co-branded EMV cards supporting domestic debit and international card schemes.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub routing: Option<ConfirmPaymentIntentPaymentMethodOptionsCardPresentRouting>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsCardPresent {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentMethodOptionsCardPresent")
+            .finish_non_exhaustive()
+    }
 }
 impl ConfirmPaymentIntentPaymentMethodOptionsCardPresent {
     pub fn new() -> Self {
@@ -33443,9 +38439,17 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsCardPresentCa
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsCardPresentCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsCardPresentCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ConfirmPaymentIntentPaymentMethodOptionsCardPresentCaptureMethod))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsCardPresentCaptureMethod {
@@ -33467,12 +38471,21 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Network routing priority on co-branded EMV cards supporting domestic debit and international card schemes.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodOptionsCardPresentRouting {
     /// Routing requested priority
     #[serde(skip_serializing_if = "Option::is_none")]
     pub requested_priority:
         Option<ConfirmPaymentIntentPaymentMethodOptionsCardPresentRoutingRequestedPriority>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsCardPresentRouting {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentMethodOptionsCardPresentRouting")
+            .finish_non_exhaustive()
+    }
 }
 impl ConfirmPaymentIntentPaymentMethodOptionsCardPresentRouting {
     pub fn new() -> Self {
@@ -33532,11 +38545,23 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for ConfirmPaymentIntentPaymentMethodOptionsCardPresentRoutingRequestedPriority
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for ConfirmPaymentIntentPaymentMethodOptionsCardPresentRoutingRequestedPriority
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            ConfirmPaymentIntentPaymentMethodOptionsCardPresentRoutingRequestedPriority
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -33560,7 +38585,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `cashapp` PaymentMethod, this sub-hash contains details about the Cash App Pay payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodOptionsCashapp {
     /// Controls when the funds are captured from the customer's account.
     ///
@@ -33581,6 +38608,12 @@ pub struct ConfirmPaymentIntentPaymentMethodOptionsCashapp {
     /// If you've already set `setup_future_usage` and you're performing a request using a publishable key, you can only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<ConfirmPaymentIntentPaymentMethodOptionsCashappSetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsCashapp {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentMethodOptionsCashapp").finish_non_exhaustive()
+    }
 }
 impl ConfirmPaymentIntentPaymentMethodOptionsCashapp {
     pub fn new() -> Self {
@@ -33637,9 +38670,17 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsCashappCaptur
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsCashappCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsCashappCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ConfirmPaymentIntentPaymentMethodOptionsCashappCaptureMethod))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsCashappCaptureMethod {
@@ -33714,9 +38755,17 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsCashappSetupF
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsCashappSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsCashappSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ConfirmPaymentIntentPaymentMethodOptionsCashappSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsCashappSetupFutureUsage {
@@ -33738,7 +38787,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `crypto` PaymentMethod, this sub-hash contains details about the Crypto payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodOptionsCrypto {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -33752,6 +38803,12 @@ pub struct ConfirmPaymentIntentPaymentMethodOptionsCrypto {
     /// If you've already set `setup_future_usage` and you're performing a request using a publishable key, you can only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<ConfirmPaymentIntentPaymentMethodOptionsCryptoSetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsCrypto {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentMethodOptionsCrypto").finish_non_exhaustive()
+    }
 }
 impl ConfirmPaymentIntentPaymentMethodOptionsCrypto {
     pub fn new() -> Self {
@@ -33813,9 +38870,17 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsCryptoSetupFu
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsCryptoSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsCryptoSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ConfirmPaymentIntentPaymentMethodOptionsCryptoSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsCryptoSetupFutureUsage {
@@ -33837,7 +38902,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `customer balance` PaymentMethod, this sub-hash contains details about the customer balance payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodOptionsCustomerBalance {
     /// Configuration for the bank transfer funding type, if the `funding_type` is set to `bank_transfer`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -33860,6 +38927,13 @@ pub struct ConfirmPaymentIntentPaymentMethodOptionsCustomerBalance {
     pub setup_future_usage:
         Option<ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceSetupFutureUsage>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsCustomerBalance {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentMethodOptionsCustomerBalance")
+            .finish_non_exhaustive()
+    }
+}
 impl ConfirmPaymentIntentPaymentMethodOptionsCustomerBalance {
     pub fn new() -> Self {
         Self { bank_transfer: None, funding_type: None, setup_future_usage: None }
@@ -33871,7 +38945,9 @@ impl Default for ConfirmPaymentIntentPaymentMethodOptionsCustomerBalance {
     }
 }
 /// Configuration for the bank transfer funding type, if the `funding_type` is set to `bank_transfer`.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceBankTransfer {
     /// Configuration for the eu_bank_transfer funding type.
 #[serde(skip_serializing_if = "Option::is_none")]
@@ -33886,6 +38962,13 @@ pub requested_address_types: Option<Vec<ConfirmPaymentIntentPaymentMethodOptions
 #[serde(rename = "type")]
 pub type_: ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType,
 
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceBankTransfer {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceBankTransfer")
+            .finish_non_exhaustive()
+    }
 }
 impl ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceBankTransfer {
     pub fn new(
@@ -33960,11 +39043,20 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferRequestedAddressTypes)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -34040,9 +39132,19 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsCustomerBalan
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceBankTransferType {
@@ -34105,9 +39207,19 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsCustomerBalan
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceFundingType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceFundingType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceFundingType
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceFundingType {
@@ -34178,9 +39290,19 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsCustomerBalan
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceSetupFutureUsage
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsCustomerBalanceSetupFutureUsage {
@@ -34202,7 +39324,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `eps` PaymentMethod, this sub-hash contains details about the EPS payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodOptionsEps {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -34216,6 +39340,12 @@ pub struct ConfirmPaymentIntentPaymentMethodOptionsEps {
     /// If you've already set `setup_future_usage` and you're performing a request using a publishable key, you can only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<ConfirmPaymentIntentPaymentMethodOptionsEpsSetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsEps {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentMethodOptionsEps").finish_non_exhaustive()
+    }
 }
 impl ConfirmPaymentIntentPaymentMethodOptionsEps {
     pub fn new() -> Self {
@@ -34277,9 +39407,17 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsEpsSetupFutur
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsEpsSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsEpsSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ConfirmPaymentIntentPaymentMethodOptionsEpsSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsEpsSetupFutureUsage {
@@ -34299,7 +39437,9 @@ impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentMethodOptionsEp
     }
 }
 /// If this is a `fpx` PaymentMethod, this sub-hash contains details about the FPX payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodOptionsFpx {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -34313,6 +39453,12 @@ pub struct ConfirmPaymentIntentPaymentMethodOptionsFpx {
     /// If you've already set `setup_future_usage` and you're performing a request using a publishable key, you can only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<ConfirmPaymentIntentPaymentMethodOptionsFpxSetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsFpx {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentMethodOptionsFpx").finish_non_exhaustive()
+    }
 }
 impl ConfirmPaymentIntentPaymentMethodOptionsFpx {
     pub fn new() -> Self {
@@ -34374,9 +39520,17 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsFpxSetupFutur
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsFpxSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsFpxSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ConfirmPaymentIntentPaymentMethodOptionsFpxSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsFpxSetupFutureUsage {
@@ -34396,7 +39550,9 @@ impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentMethodOptionsFp
     }
 }
 /// If this is a `giropay` PaymentMethod, this sub-hash contains details about the Giropay payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodOptionsGiropay {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -34410,6 +39566,12 @@ pub struct ConfirmPaymentIntentPaymentMethodOptionsGiropay {
     /// If you've already set `setup_future_usage` and you're performing a request using a publishable key, you can only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<ConfirmPaymentIntentPaymentMethodOptionsGiropaySetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsGiropay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentMethodOptionsGiropay").finish_non_exhaustive()
+    }
 }
 impl ConfirmPaymentIntentPaymentMethodOptionsGiropay {
     pub fn new() -> Self {
@@ -34471,9 +39633,17 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsGiropaySetupF
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsGiropaySetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsGiropaySetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ConfirmPaymentIntentPaymentMethodOptionsGiropaySetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsGiropaySetupFutureUsage {
@@ -34495,7 +39665,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `grabpay` PaymentMethod, this sub-hash contains details about the Grabpay payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodOptionsGrabpay {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -34509,6 +39681,12 @@ pub struct ConfirmPaymentIntentPaymentMethodOptionsGrabpay {
     /// If you've already set `setup_future_usage` and you're performing a request using a publishable key, you can only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<ConfirmPaymentIntentPaymentMethodOptionsGrabpaySetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsGrabpay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentMethodOptionsGrabpay").finish_non_exhaustive()
+    }
 }
 impl ConfirmPaymentIntentPaymentMethodOptionsGrabpay {
     pub fn new() -> Self {
@@ -34570,9 +39748,17 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsGrabpaySetupF
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsGrabpaySetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsGrabpaySetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ConfirmPaymentIntentPaymentMethodOptionsGrabpaySetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsGrabpaySetupFutureUsage {
@@ -34594,7 +39780,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `ideal` PaymentMethod, this sub-hash contains details about the Ideal payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodOptionsIdeal {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -34608,6 +39796,12 @@ pub struct ConfirmPaymentIntentPaymentMethodOptionsIdeal {
     /// If you've already set `setup_future_usage` and you're performing a request using a publishable key, you can only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<ConfirmPaymentIntentPaymentMethodOptionsIdealSetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsIdeal {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentMethodOptionsIdeal").finish_non_exhaustive()
+    }
 }
 impl ConfirmPaymentIntentPaymentMethodOptionsIdeal {
     pub fn new() -> Self {
@@ -34672,9 +39866,17 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsIdealSetupFut
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsIdealSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsIdealSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ConfirmPaymentIntentPaymentMethodOptionsIdealSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsIdealSetupFutureUsage {
@@ -34696,7 +39898,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `kakao_pay` PaymentMethod, this sub-hash contains details about the Kakao Pay payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodOptionsKakaoPay {
     /// Controls when the funds are captured from the customer's account.
     ///
@@ -34716,6 +39920,12 @@ pub struct ConfirmPaymentIntentPaymentMethodOptionsKakaoPay {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage:
         Option<ConfirmPaymentIntentPaymentMethodOptionsKakaoPaySetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsKakaoPay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentMethodOptionsKakaoPay").finish_non_exhaustive()
+    }
 }
 impl ConfirmPaymentIntentPaymentMethodOptionsKakaoPay {
     pub fn new() -> Self {
@@ -34772,9 +39982,17 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsKakaoPayCaptu
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsKakaoPayCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsKakaoPayCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ConfirmPaymentIntentPaymentMethodOptionsKakaoPayCaptureMethod))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsKakaoPayCaptureMethod {
@@ -34846,9 +40064,17 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsKakaoPaySetup
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsKakaoPaySetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsKakaoPaySetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ConfirmPaymentIntentPaymentMethodOptionsKakaoPaySetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsKakaoPaySetupFutureUsage {
@@ -34870,7 +40096,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `klarna` PaymentMethod, this sub-hash contains details about the Klarna payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodOptionsKlarna {
     /// Controls when the funds are captured from the customer's account.
     ///
@@ -34900,6 +40128,12 @@ pub struct ConfirmPaymentIntentPaymentMethodOptionsKlarna {
     /// Subscription details if setting up or charging a subscription.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub subscriptions: Option<Vec<ConfirmPaymentIntentPaymentMethodOptionsKlarnaSubscriptions>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsKlarna {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentMethodOptionsKlarna").finish_non_exhaustive()
+    }
 }
 impl ConfirmPaymentIntentPaymentMethodOptionsKlarna {
     pub fn new() -> Self {
@@ -34962,9 +40196,17 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsKlarnaCapture
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsKlarnaCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsKlarnaCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ConfirmPaymentIntentPaymentMethodOptionsKlarnaCaptureMethod))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsKlarnaCaptureMethod {
@@ -34984,7 +40226,9 @@ impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentMethodOptionsKl
     }
 }
 /// On-demand details if setting up or charging an on-demand payment.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodOptionsKlarnaOnDemand {
     /// Your average amount value.
     /// You can use a value across your customer base, or segment based on customer type, country, etc.
@@ -35005,6 +40249,13 @@ pub struct ConfirmPaymentIntentPaymentMethodOptionsKlarnaOnDemand {
     /// The number of `purchase_interval` between charges
     #[serde(skip_serializing_if = "Option::is_none")]
     pub purchase_interval_count: Option<u64>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsKlarnaOnDemand {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentMethodOptionsKlarnaOnDemand")
+            .finish_non_exhaustive()
+    }
 }
 impl ConfirmPaymentIntentPaymentMethodOptionsKlarnaOnDemand {
     pub fn new() -> Self {
@@ -35072,9 +40323,19 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsKlarnaOnDeman
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsKlarnaOnDemandPurchaseInterval {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsKlarnaOnDemandPurchaseInterval {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            ConfirmPaymentIntentPaymentMethodOptionsKlarnaOnDemandPurchaseInterval
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsKlarnaOnDemandPurchaseInterval {
@@ -35271,9 +40532,17 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsKlarnaPreferr
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsKlarnaPreferredLocale {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsKlarnaPreferredLocale {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ConfirmPaymentIntentPaymentMethodOptionsKlarnaPreferredLocale))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsKlarnaPreferredLocale {
@@ -35350,9 +40619,17 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsKlarnaSetupFu
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsKlarnaSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsKlarnaSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ConfirmPaymentIntentPaymentMethodOptionsKlarnaSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsKlarnaSetupFutureUsage {
@@ -35374,7 +40651,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Subscription details if setting up or charging a subscription.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodOptionsKlarnaSubscriptions {
     /// Unit of time between subscription charges.
     pub interval: ConfirmPaymentIntentPaymentMethodOptionsKlarnaSubscriptionsInterval,
@@ -35391,6 +40670,13 @@ pub struct ConfirmPaymentIntentPaymentMethodOptionsKlarnaSubscriptions {
     /// A non-customer-facing reference to correlate subscription charges in the Klarna app.
     /// Use a value that persists across subscription charges.
     pub reference: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsKlarnaSubscriptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentMethodOptionsKlarnaSubscriptions")
+            .finish_non_exhaustive()
+    }
 }
 impl ConfirmPaymentIntentPaymentMethodOptionsKlarnaSubscriptions {
     pub fn new(
@@ -35456,9 +40742,19 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsKlarnaSubscri
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsKlarnaSubscriptionsInterval {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsKlarnaSubscriptionsInterval {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            ConfirmPaymentIntentPaymentMethodOptionsKlarnaSubscriptionsInterval
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsKlarnaSubscriptionsInterval {
@@ -35480,7 +40776,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `konbini` PaymentMethod, this sub-hash contains details about the Konbini payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodOptionsKonbini {
     /// An optional 10 to 11 digit numeric-only string determining the confirmation code at applicable convenience stores.
     /// Must not consist of only zeroes and could be rejected in case of insufficient uniqueness.
@@ -35511,6 +40809,12 @@ pub struct ConfirmPaymentIntentPaymentMethodOptionsKonbini {
     /// If you've already set `setup_future_usage` and you're performing a request using a publishable key, you can only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<ConfirmPaymentIntentPaymentMethodOptionsKonbiniSetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsKonbini {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentMethodOptionsKonbini").finish_non_exhaustive()
+    }
 }
 impl ConfirmPaymentIntentPaymentMethodOptionsKonbini {
     pub fn new() -> Self {
@@ -35578,9 +40882,17 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsKonbiniSetupF
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsKonbiniSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsKonbiniSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ConfirmPaymentIntentPaymentMethodOptionsKonbiniSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsKonbiniSetupFutureUsage {
@@ -35602,7 +40914,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `kr_card` PaymentMethod, this sub-hash contains details about the KR Card payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodOptionsKrCard {
     /// Controls when the funds are captured from the customer's account.
     ///
@@ -35621,6 +40935,12 @@ pub struct ConfirmPaymentIntentPaymentMethodOptionsKrCard {
     /// When processing card payments, Stripe uses `setup_future_usage` to help you comply with regional legislation and network rules, such as [SCA](/strong-customer-authentication).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<ConfirmPaymentIntentPaymentMethodOptionsKrCardSetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsKrCard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentMethodOptionsKrCard").finish_non_exhaustive()
+    }
 }
 impl ConfirmPaymentIntentPaymentMethodOptionsKrCard {
     pub fn new() -> Self {
@@ -35677,9 +40997,17 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsKrCardCapture
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsKrCardCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsKrCardCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ConfirmPaymentIntentPaymentMethodOptionsKrCardCaptureMethod))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsKrCardCaptureMethod {
@@ -35749,9 +41077,17 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsKrCardSetupFu
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsKrCardSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsKrCardSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ConfirmPaymentIntentPaymentMethodOptionsKrCardSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsKrCardSetupFutureUsage {
@@ -35773,7 +41109,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `link` PaymentMethod, this sub-hash contains details about the Link payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodOptionsLink {
     /// Controls when the funds are captured from the customer's account.
     ///
@@ -35797,6 +41135,12 @@ pub struct ConfirmPaymentIntentPaymentMethodOptionsLink {
     /// If you've already set `setup_future_usage` and you're performing a request using a publishable key, you can only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<ConfirmPaymentIntentPaymentMethodOptionsLinkSetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsLink {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentMethodOptionsLink").finish_non_exhaustive()
+    }
 }
 impl ConfirmPaymentIntentPaymentMethodOptionsLink {
     pub fn new() -> Self {
@@ -35853,9 +41197,17 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsLinkCaptureMe
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsLinkCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsLinkCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ConfirmPaymentIntentPaymentMethodOptionsLinkCaptureMethod))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsLinkCaptureMethod {
@@ -35927,9 +41279,17 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsLinkSetupFutu
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsLinkSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsLinkSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ConfirmPaymentIntentPaymentMethodOptionsLinkSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsLinkSetupFutureUsage {
@@ -35949,7 +41309,9 @@ impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentMethodOptionsLi
     }
 }
 /// If this is a `mb_way` PaymentMethod, this sub-hash contains details about the MB WAY payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodOptionsMbWay {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -35963,6 +41325,12 @@ pub struct ConfirmPaymentIntentPaymentMethodOptionsMbWay {
     /// If you've already set `setup_future_usage` and you're performing a request using a publishable key, you can only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<ConfirmPaymentIntentPaymentMethodOptionsMbWaySetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsMbWay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentMethodOptionsMbWay").finish_non_exhaustive()
+    }
 }
 impl ConfirmPaymentIntentPaymentMethodOptionsMbWay {
     pub fn new() -> Self {
@@ -36024,9 +41392,17 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsMbWaySetupFut
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsMbWaySetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsMbWaySetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ConfirmPaymentIntentPaymentMethodOptionsMbWaySetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsMbWaySetupFutureUsage {
@@ -36048,7 +41424,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `MobilePay` PaymentMethod, this sub-hash contains details about the MobilePay payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodOptionsMobilepay {
     /// Controls when the funds are captured from the customer's account.
     ///
@@ -36070,6 +41448,12 @@ pub struct ConfirmPaymentIntentPaymentMethodOptionsMobilepay {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage:
         Option<ConfirmPaymentIntentPaymentMethodOptionsMobilepaySetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsMobilepay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentMethodOptionsMobilepay").finish_non_exhaustive()
+    }
 }
 impl ConfirmPaymentIntentPaymentMethodOptionsMobilepay {
     pub fn new() -> Self {
@@ -36126,9 +41510,17 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsMobilepayCapt
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsMobilepayCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsMobilepayCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ConfirmPaymentIntentPaymentMethodOptionsMobilepayCaptureMethod))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsMobilepayCaptureMethod {
@@ -36199,9 +41591,19 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsMobilepaySetu
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsMobilepaySetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsMobilepaySetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            ConfirmPaymentIntentPaymentMethodOptionsMobilepaySetupFutureUsage
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsMobilepaySetupFutureUsage {
@@ -36223,7 +41625,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `multibanco` PaymentMethod, this sub-hash contains details about the Multibanco payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodOptionsMultibanco {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -36238,6 +41642,12 @@ pub struct ConfirmPaymentIntentPaymentMethodOptionsMultibanco {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage:
         Option<ConfirmPaymentIntentPaymentMethodOptionsMultibancoSetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsMultibanco {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentMethodOptionsMultibanco").finish_non_exhaustive()
+    }
 }
 impl ConfirmPaymentIntentPaymentMethodOptionsMultibanco {
     pub fn new() -> Self {
@@ -36299,9 +41709,19 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsMultibancoSet
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsMultibancoSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsMultibancoSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            ConfirmPaymentIntentPaymentMethodOptionsMultibancoSetupFutureUsage
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsMultibancoSetupFutureUsage {
@@ -36323,7 +41743,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `naver_pay` PaymentMethod, this sub-hash contains details about the Naver Pay payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodOptionsNaverPay {
     /// Controls when the funds are captured from the customer's account.
     ///
@@ -36343,6 +41765,12 @@ pub struct ConfirmPaymentIntentPaymentMethodOptionsNaverPay {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage:
         Option<ConfirmPaymentIntentPaymentMethodOptionsNaverPaySetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsNaverPay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentMethodOptionsNaverPay").finish_non_exhaustive()
+    }
 }
 impl ConfirmPaymentIntentPaymentMethodOptionsNaverPay {
     pub fn new() -> Self {
@@ -36399,9 +41827,17 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsNaverPayCaptu
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsNaverPayCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsNaverPayCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ConfirmPaymentIntentPaymentMethodOptionsNaverPayCaptureMethod))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsNaverPayCaptureMethod {
@@ -36473,9 +41909,17 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsNaverPaySetup
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsNaverPaySetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsNaverPaySetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ConfirmPaymentIntentPaymentMethodOptionsNaverPaySetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsNaverPaySetupFutureUsage {
@@ -36497,7 +41941,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `nz_bank_account` PaymentMethod, this sub-hash contains details about the NZ BECS Direct Debit payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodOptionsNzBankAccount {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -36517,6 +41963,13 @@ pub struct ConfirmPaymentIntentPaymentMethodOptionsNzBankAccount {
     /// The date must be in the future and between 3 and 15 calendar days from now.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub target_date: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsNzBankAccount {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentMethodOptionsNzBankAccount")
+            .finish_non_exhaustive()
+    }
 }
 impl ConfirmPaymentIntentPaymentMethodOptionsNzBankAccount {
     pub fn new() -> Self {
@@ -36584,9 +42037,19 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsNzBankAccount
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsNzBankAccountSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsNzBankAccountSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            ConfirmPaymentIntentPaymentMethodOptionsNzBankAccountSetupFutureUsage
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsNzBankAccountSetupFutureUsage {
@@ -36608,7 +42071,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `oxxo` PaymentMethod, this sub-hash contains details about the OXXO payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodOptionsOxxo {
     /// The number of calendar days before an OXXO voucher expires.
     /// For example, if you create an OXXO voucher on Monday and you set expires_after_days to 2, the OXXO invoice will expire on Wednesday at 23:59 America/Mexico_City time.
@@ -36626,6 +42091,12 @@ pub struct ConfirmPaymentIntentPaymentMethodOptionsOxxo {
     /// If you've already set `setup_future_usage` and you're performing a request using a publishable key, you can only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<ConfirmPaymentIntentPaymentMethodOptionsOxxoSetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsOxxo {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentMethodOptionsOxxo").finish_non_exhaustive()
+    }
 }
 impl ConfirmPaymentIntentPaymentMethodOptionsOxxo {
     pub fn new() -> Self {
@@ -36687,9 +42158,17 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsOxxoSetupFutu
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsOxxoSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsOxxoSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ConfirmPaymentIntentPaymentMethodOptionsOxxoSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsOxxoSetupFutureUsage {
@@ -36709,7 +42188,9 @@ impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentMethodOptionsOx
     }
 }
 /// If this is a `p24` PaymentMethod, this sub-hash contains details about the Przelewy24 payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodOptionsP24 {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -36726,6 +42207,12 @@ pub struct ConfirmPaymentIntentPaymentMethodOptionsP24 {
     /// Confirm that the payer has accepted the P24 terms and conditions.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tos_shown_and_accepted: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsP24 {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentMethodOptionsP24").finish_non_exhaustive()
+    }
 }
 impl ConfirmPaymentIntentPaymentMethodOptionsP24 {
     pub fn new() -> Self {
@@ -36787,9 +42274,17 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsP24SetupFutur
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsP24SetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsP24SetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ConfirmPaymentIntentPaymentMethodOptionsP24SetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsP24SetupFutureUsage {
@@ -36809,7 +42304,9 @@ impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentMethodOptionsP2
     }
 }
 /// If this is a `payco` PaymentMethod, this sub-hash contains details about the PAYCO payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodOptionsPayco {
     /// Controls when the funds are captured from the customer's account.
     ///
@@ -36818,6 +42315,12 @@ pub struct ConfirmPaymentIntentPaymentMethodOptionsPayco {
     /// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter unsets the stored value for this payment method type.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub capture_method: Option<ConfirmPaymentIntentPaymentMethodOptionsPaycoCaptureMethod>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsPayco {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentMethodOptionsPayco").finish_non_exhaustive()
+    }
 }
 impl ConfirmPaymentIntentPaymentMethodOptionsPayco {
     pub fn new() -> Self {
@@ -36874,9 +42377,17 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsPaycoCaptureM
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsPaycoCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsPaycoCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ConfirmPaymentIntentPaymentMethodOptionsPaycoCaptureMethod))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsPaycoCaptureMethod {
@@ -36896,7 +42407,9 @@ impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentMethodOptionsPa
     }
 }
 /// If this is a `paynow` PaymentMethod, this sub-hash contains details about the PayNow payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodOptionsPaynow {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -36910,6 +42423,12 @@ pub struct ConfirmPaymentIntentPaymentMethodOptionsPaynow {
     /// If you've already set `setup_future_usage` and you're performing a request using a publishable key, you can only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<ConfirmPaymentIntentPaymentMethodOptionsPaynowSetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsPaynow {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentMethodOptionsPaynow").finish_non_exhaustive()
+    }
 }
 impl ConfirmPaymentIntentPaymentMethodOptionsPaynow {
     pub fn new() -> Self {
@@ -36971,9 +42490,17 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsPaynowSetupFu
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsPaynowSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsPaynowSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ConfirmPaymentIntentPaymentMethodOptionsPaynowSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsPaynowSetupFutureUsage {
@@ -36995,7 +42522,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `paypal` PaymentMethod, this sub-hash contains details about the PayPal payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodOptionsPaypal {
     /// Controls when the funds will be captured from the customer's account.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -37022,6 +42551,12 @@ pub struct ConfirmPaymentIntentPaymentMethodOptionsPaypal {
     /// If you've already set `setup_future_usage` and you're performing a request using a publishable key, you can only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<ConfirmPaymentIntentPaymentMethodOptionsPaypalSetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsPaypal {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentMethodOptionsPaypal").finish_non_exhaustive()
+    }
 }
 impl ConfirmPaymentIntentPaymentMethodOptionsPaypal {
     pub fn new() -> Self {
@@ -37080,9 +42615,17 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsPaypalCapture
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsPaypalCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsPaypalCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ConfirmPaymentIntentPaymentMethodOptionsPaypalCaptureMethod))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsPaypalCaptureMethod {
@@ -37202,9 +42745,17 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsPaypalPreferr
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsPaypalPreferredLocale {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsPaypalPreferredLocale {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ConfirmPaymentIntentPaymentMethodOptionsPaypalPreferredLocale))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsPaypalPreferredLocale {
@@ -37278,9 +42829,17 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsPaypalSetupFu
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsPaypalSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsPaypalSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ConfirmPaymentIntentPaymentMethodOptionsPaypalSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsPaypalSetupFutureUsage {
@@ -37302,7 +42861,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `payto` PaymentMethod, this sub-hash contains details about the PayTo payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodOptionsPayto {
     /// Additional fields for Mandate creation.
     /// Only `purpose` field is configurable for PayTo PaymentIntent with `setup_future_usage=none`.
@@ -37322,6 +42883,12 @@ pub struct ConfirmPaymentIntentPaymentMethodOptionsPayto {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<ConfirmPaymentIntentPaymentMethodOptionsPaytoSetupFutureUsage>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsPayto {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentMethodOptionsPayto").finish_non_exhaustive()
+    }
+}
 impl ConfirmPaymentIntentPaymentMethodOptionsPayto {
     pub fn new() -> Self {
         Self { mandate_options: None, setup_future_usage: None }
@@ -37335,7 +42902,9 @@ impl Default for ConfirmPaymentIntentPaymentMethodOptionsPayto {
 /// Additional fields for Mandate creation.
 /// Only `purpose` field is configurable for PayTo PaymentIntent with `setup_future_usage=none`.
 /// Other fields are only applicable to PayTo PaymentIntent with `setup_future_usage=off_session`.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodOptionsPaytoMandateOptions {
     /// Amount that will be collected. It is required when `amount_type` is `fixed`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -37360,6 +42929,13 @@ pub struct ConfirmPaymentIntentPaymentMethodOptionsPaytoMandateOptions {
     /// The purpose for which payments are made. Has a default value based on your merchant category code.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub purpose: Option<ConfirmPaymentIntentPaymentMethodOptionsPaytoMandateOptionsPurpose>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsPaytoMandateOptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentMethodOptionsPaytoMandateOptions")
+            .finish_non_exhaustive()
+    }
 }
 impl ConfirmPaymentIntentPaymentMethodOptionsPaytoMandateOptions {
     pub fn new() -> Self {
@@ -37424,9 +43000,19 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsPaytoMandateO
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsPaytoMandateOptionsAmountType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsPaytoMandateOptionsAmountType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            ConfirmPaymentIntentPaymentMethodOptionsPaytoMandateOptionsAmountType
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsPaytoMandateOptionsAmountType {
@@ -37513,11 +43099,23 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for ConfirmPaymentIntentPaymentMethodOptionsPaytoMandateOptionsPaymentSchedule
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for ConfirmPaymentIntentPaymentMethodOptionsPaytoMandateOptionsPaymentSchedule
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            ConfirmPaymentIntentPaymentMethodOptionsPaytoMandateOptionsPaymentSchedule
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -37611,9 +43209,19 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsPaytoMandateO
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsPaytoMandateOptionsPurpose {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsPaytoMandateOptionsPurpose {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            ConfirmPaymentIntentPaymentMethodOptionsPaytoMandateOptionsPurpose
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsPaytoMandateOptionsPurpose {
@@ -37687,9 +43295,17 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsPaytoSetupFut
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsPaytoSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsPaytoSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ConfirmPaymentIntentPaymentMethodOptionsPaytoSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsPaytoSetupFutureUsage {
@@ -37711,7 +43327,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `pix` PaymentMethod, this sub-hash contains details about the Pix payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodOptionsPix {
     /// Determines if the amount includes the IOF tax. Defaults to `never`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -37736,6 +43354,12 @@ pub struct ConfirmPaymentIntentPaymentMethodOptionsPix {
     /// If you've already set `setup_future_usage` and you're performing a request using a publishable key, you can only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<ConfirmPaymentIntentPaymentMethodOptionsPixSetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsPix {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentMethodOptionsPix").finish_non_exhaustive()
+    }
 }
 impl ConfirmPaymentIntentPaymentMethodOptionsPix {
     pub fn new() -> Self {
@@ -37796,9 +43420,17 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsPixAmountIncl
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsPixAmountIncludesIof {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsPixAmountIncludesIof {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ConfirmPaymentIntentPaymentMethodOptionsPixAmountIncludesIof))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsPixAmountIncludesIof {
@@ -37867,9 +43499,17 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsPixSetupFutur
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsPixSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsPixSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ConfirmPaymentIntentPaymentMethodOptionsPixSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsPixSetupFutureUsage {
@@ -37889,7 +43529,9 @@ impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentMethodOptionsPi
     }
 }
 /// If this is a `promptpay` PaymentMethod, this sub-hash contains details about the PromptPay payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodOptionsPromptpay {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -37904,6 +43546,12 @@ pub struct ConfirmPaymentIntentPaymentMethodOptionsPromptpay {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage:
         Option<ConfirmPaymentIntentPaymentMethodOptionsPromptpaySetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsPromptpay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentMethodOptionsPromptpay").finish_non_exhaustive()
+    }
 }
 impl ConfirmPaymentIntentPaymentMethodOptionsPromptpay {
     pub fn new() -> Self {
@@ -37965,9 +43613,19 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsPromptpaySetu
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsPromptpaySetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsPromptpaySetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            ConfirmPaymentIntentPaymentMethodOptionsPromptpaySetupFutureUsage
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsPromptpaySetupFutureUsage {
@@ -37989,7 +43647,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `revolut_pay` PaymentMethod, this sub-hash contains details about the Revolut Pay payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodOptionsRevolutPay {
     /// Controls when the funds are captured from the customer's account.
     ///
@@ -38009,6 +43669,12 @@ pub struct ConfirmPaymentIntentPaymentMethodOptionsRevolutPay {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage:
         Option<ConfirmPaymentIntentPaymentMethodOptionsRevolutPaySetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsRevolutPay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentMethodOptionsRevolutPay").finish_non_exhaustive()
+    }
 }
 impl ConfirmPaymentIntentPaymentMethodOptionsRevolutPay {
     pub fn new() -> Self {
@@ -38065,9 +43731,17 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsRevolutPayCap
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsRevolutPayCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsRevolutPayCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ConfirmPaymentIntentPaymentMethodOptionsRevolutPayCaptureMethod))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsRevolutPayCaptureMethod {
@@ -38139,9 +43813,19 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsRevolutPaySet
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsRevolutPaySetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsRevolutPaySetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            ConfirmPaymentIntentPaymentMethodOptionsRevolutPaySetupFutureUsage
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsRevolutPaySetupFutureUsage {
@@ -38163,7 +43847,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `samsung_pay` PaymentMethod, this sub-hash contains details about the Samsung Pay payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodOptionsSamsungPay {
     /// Controls when the funds are captured from the customer's account.
     ///
@@ -38172,6 +43858,12 @@ pub struct ConfirmPaymentIntentPaymentMethodOptionsSamsungPay {
     /// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter unsets the stored value for this payment method type.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub capture_method: Option<ConfirmPaymentIntentPaymentMethodOptionsSamsungPayCaptureMethod>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsSamsungPay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentMethodOptionsSamsungPay").finish_non_exhaustive()
+    }
 }
 impl ConfirmPaymentIntentPaymentMethodOptionsSamsungPay {
     pub fn new() -> Self {
@@ -38228,9 +43920,17 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsSamsungPayCap
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsSamsungPayCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsSamsungPayCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ConfirmPaymentIntentPaymentMethodOptionsSamsungPayCaptureMethod))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsSamsungPayCaptureMethod {
@@ -38252,7 +43952,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `satispay` PaymentMethod, this sub-hash contains details about the Satispay payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodOptionsSatispay {
     /// Controls when the funds are captured from the customer's account.
     ///
@@ -38261,6 +43963,12 @@ pub struct ConfirmPaymentIntentPaymentMethodOptionsSatispay {
     /// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter unsets the stored value for this payment method type.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub capture_method: Option<ConfirmPaymentIntentPaymentMethodOptionsSatispayCaptureMethod>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsSatispay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentMethodOptionsSatispay").finish_non_exhaustive()
+    }
 }
 impl ConfirmPaymentIntentPaymentMethodOptionsSatispay {
     pub fn new() -> Self {
@@ -38317,9 +44025,17 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsSatispayCaptu
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsSatispayCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsSatispayCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ConfirmPaymentIntentPaymentMethodOptionsSatispayCaptureMethod))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsSatispayCaptureMethod {
@@ -38341,7 +44057,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `sepa_debit` PaymentIntent, this sub-hash contains details about the SEPA Debit payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodOptionsSepaDebit {
     /// Additional fields for Mandate creation
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -38365,6 +44083,12 @@ pub struct ConfirmPaymentIntentPaymentMethodOptionsSepaDebit {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub target_date: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsSepaDebit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentMethodOptionsSepaDebit").finish_non_exhaustive()
+    }
+}
 impl ConfirmPaymentIntentPaymentMethodOptionsSepaDebit {
     pub fn new() -> Self {
         Self { mandate_options: None, setup_future_usage: None, target_date: None }
@@ -38376,7 +44100,9 @@ impl Default for ConfirmPaymentIntentPaymentMethodOptionsSepaDebit {
     }
 }
 /// Additional fields for Mandate creation
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodOptionsSepaDebitMandateOptions {
     /// Prefix used to generate the Mandate reference.
     /// Must be at most 12 characters long.
@@ -38384,6 +44110,13 @@ pub struct ConfirmPaymentIntentPaymentMethodOptionsSepaDebitMandateOptions {
     /// Cannot begin with 'STRIPE'.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reference_prefix: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsSepaDebitMandateOptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentMethodOptionsSepaDebitMandateOptions")
+            .finish_non_exhaustive()
+    }
 }
 impl ConfirmPaymentIntentPaymentMethodOptionsSepaDebitMandateOptions {
     pub fn new() -> Self {
@@ -38451,9 +44184,19 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsSepaDebitSetu
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsSepaDebitSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsSepaDebitSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            ConfirmPaymentIntentPaymentMethodOptionsSepaDebitSetupFutureUsage
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsSepaDebitSetupFutureUsage {
@@ -38475,7 +44218,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `sofort` PaymentMethod, this sub-hash contains details about the SOFORT payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodOptionsSofort {
     /// Language shown to the payer on redirect.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -38492,6 +44237,12 @@ pub struct ConfirmPaymentIntentPaymentMethodOptionsSofort {
     /// If you've already set `setup_future_usage` and you're performing a request using a publishable key, you can only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<ConfirmPaymentIntentPaymentMethodOptionsSofortSetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsSofort {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentMethodOptionsSofort").finish_non_exhaustive()
+    }
 }
 impl ConfirmPaymentIntentPaymentMethodOptionsSofort {
     pub fn new() -> Self {
@@ -38562,9 +44313,17 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsSofortPreferr
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsSofortPreferredLanguage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsSofortPreferredLanguage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ConfirmPaymentIntentPaymentMethodOptionsSofortPreferredLanguage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsSofortPreferredLanguage {
@@ -38638,9 +44397,17 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsSofortSetupFu
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsSofortSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsSofortSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ConfirmPaymentIntentPaymentMethodOptionsSofortSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsSofortSetupFutureUsage {
@@ -38662,7 +44429,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `Swish` PaymentMethod, this sub-hash contains details about the Swish payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodOptionsSwish {
     /// A reference for this payment to be displayed in the Swish app.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -38679,6 +44448,12 @@ pub struct ConfirmPaymentIntentPaymentMethodOptionsSwish {
     /// If you've already set `setup_future_usage` and you're performing a request using a publishable key, you can only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<ConfirmPaymentIntentPaymentMethodOptionsSwishSetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsSwish {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentMethodOptionsSwish").finish_non_exhaustive()
+    }
 }
 impl ConfirmPaymentIntentPaymentMethodOptionsSwish {
     pub fn new() -> Self {
@@ -38740,9 +44515,17 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsSwishSetupFut
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsSwishSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsSwishSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ConfirmPaymentIntentPaymentMethodOptionsSwishSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsSwishSetupFutureUsage {
@@ -38764,7 +44547,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `twint` PaymentMethod, this sub-hash contains details about the TWINT payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodOptionsTwint {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -38778,6 +44563,12 @@ pub struct ConfirmPaymentIntentPaymentMethodOptionsTwint {
     /// If you've already set `setup_future_usage` and you're performing a request using a publishable key, you can only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<ConfirmPaymentIntentPaymentMethodOptionsTwintSetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsTwint {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentMethodOptionsTwint").finish_non_exhaustive()
+    }
 }
 impl ConfirmPaymentIntentPaymentMethodOptionsTwint {
     pub fn new() -> Self {
@@ -38839,9 +44630,17 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsTwintSetupFut
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsTwintSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsTwintSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ConfirmPaymentIntentPaymentMethodOptionsTwintSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsTwintSetupFutureUsage {
@@ -38863,13 +44662,21 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `upi` PaymentIntent, this sub-hash contains details about the UPI payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodOptionsUpi {
     /// Configuration options for setting up an eMandate
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mandate_options: Option<ConfirmPaymentIntentPaymentMethodOptionsUpiMandateOptions>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<ConfirmPaymentIntentPaymentMethodOptionsUpiSetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsUpi {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentMethodOptionsUpi").finish_non_exhaustive()
+    }
 }
 impl ConfirmPaymentIntentPaymentMethodOptionsUpi {
     pub fn new() -> Self {
@@ -38882,7 +44689,9 @@ impl Default for ConfirmPaymentIntentPaymentMethodOptionsUpi {
     }
 }
 /// Configuration options for setting up an eMandate
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodOptionsUpiMandateOptions {
     /// Amount to be charged for future payments.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -38898,6 +44707,13 @@ pub struct ConfirmPaymentIntentPaymentMethodOptionsUpiMandateOptions {
     /// End date of the mandate or subscription.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub end_date: Option<stripe_types::Timestamp>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsUpiMandateOptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentMethodOptionsUpiMandateOptions")
+            .finish_non_exhaustive()
+    }
 }
 impl ConfirmPaymentIntentPaymentMethodOptionsUpiMandateOptions {
     pub fn new() -> Self {
@@ -38955,9 +44771,19 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsUpiMandateOpt
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsUpiMandateOptionsAmountType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsUpiMandateOptionsAmountType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            ConfirmPaymentIntentPaymentMethodOptionsUpiMandateOptionsAmountType
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsUpiMandateOptionsAmountType {
@@ -39024,9 +44850,17 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsUpiSetupFutur
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsUpiSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsUpiSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ConfirmPaymentIntentPaymentMethodOptionsUpiSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsUpiSetupFutureUsage {
@@ -39046,7 +44880,9 @@ impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentMethodOptionsUp
     }
 }
 /// If this is a `us_bank_account` PaymentMethod, this sub-hash contains details about the US bank account payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodOptionsUsBankAccount {
     /// Additional fields for Financial Connections Session creation
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -39086,6 +44922,13 @@ pub struct ConfirmPaymentIntentPaymentMethodOptionsUsBankAccount {
     pub verification_method:
         Option<ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsUsBankAccount {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentMethodOptionsUsBankAccount")
+            .finish_non_exhaustive()
+    }
+}
 impl ConfirmPaymentIntentPaymentMethodOptionsUsBankAccount {
     pub fn new() -> Self {
         Self {
@@ -39105,7 +44948,9 @@ impl Default for ConfirmPaymentIntentPaymentMethodOptionsUsBankAccount {
     }
 }
 /// Additional fields for Financial Connections Session creation
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnections {
     /// Provide filters for the linked accounts that the customer can select for the payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -39128,6 +44973,13 @@ pub struct ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnect
     #[serde(skip_serializing_if = "Option::is_none")]
     pub return_url: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnections {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnections")
+            .finish_non_exhaustive()
+    }
+}
 impl ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnections {
     pub fn new() -> Self {
         Self { filters: None, permissions: None, prefetch: None, return_url: None }
@@ -39139,13 +44991,26 @@ impl Default for ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountFinancialC
     }
 }
 /// Provide filters for the linked accounts that the customer can select for the payment method.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsFilters {
         /// The account subcategories to use to filter for selectable accounts.
     /// Valid subcategories are `checking` and `savings`.
 #[serde(skip_serializing_if = "Option::is_none")]
 pub account_subcategories: Option<Vec<ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsFiltersAccountSubcategories>>,
 
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsFilters
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(
+            "ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsFilters",
+        )
+        .finish_non_exhaustive()
+    }
 }
 impl ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsFilters {
     pub fn new() -> Self {
@@ -39198,9 +45063,16 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsUsBankAccount
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsFiltersAccountSubcategories {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsFiltersAccountSubcategories {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsFiltersAccountSubcategories)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsFiltersAccountSubcategories {
@@ -39272,11 +45144,23 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPermissions
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -39350,11 +45234,23 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountFinancialConnectionsPrefetch
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -39378,12 +45274,21 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Additional fields for Mandate creation
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountMandateOptions {
     /// The method used to collect offline mandate customer acceptance.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub collection_method:
         Option<ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountMandateOptionsCollectionMethod>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountMandateOptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountMandateOptions")
+            .finish_non_exhaustive()
+    }
 }
 impl ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountMandateOptions {
     pub fn new() -> Self {
@@ -39440,11 +45345,23 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountMandateOptionsCollectionMethod
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountMandateOptionsCollectionMethod
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountMandateOptionsCollectionMethod
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -39468,12 +45385,21 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Additional fields for network related functions
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountNetworks {
     /// Triggers validations to run across the selected networks
     #[serde(skip_serializing_if = "Option::is_none")]
     pub requested:
         Option<Vec<ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountNetworksRequested>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountNetworks {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountNetworks")
+            .finish_non_exhaustive()
+    }
 }
 impl ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountNetworks {
     pub fn new() -> Self {
@@ -39529,9 +45455,19 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsUsBankAccount
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountNetworksRequested {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountNetworksRequested {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountNetworksRequested
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountNetworksRequested {
@@ -39608,9 +45544,19 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsUsBankAccount
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountSetupFutureUsage
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountSetupFutureUsage {
@@ -39681,9 +45627,19 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsUsBankAccount
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountTransactionPurpose {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountTransactionPurpose {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountTransactionPurpose
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountTransactionPurpose {
@@ -39751,9 +45707,19 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsUsBankAccount
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsUsBankAccountVerificationMethod {
@@ -39775,7 +45741,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `wechat_pay` PaymentMethod, this sub-hash contains details about the WeChat Pay payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodOptionsWechatPay {
     /// The app ID registered with WeChat Pay. Only required when client is ios or android.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -39796,6 +45764,12 @@ pub struct ConfirmPaymentIntentPaymentMethodOptionsWechatPay {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage:
         Option<ConfirmPaymentIntentPaymentMethodOptionsWechatPaySetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsWechatPay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentMethodOptionsWechatPay").finish_non_exhaustive()
+    }
 }
 impl ConfirmPaymentIntentPaymentMethodOptionsWechatPay {
     pub fn new() -> Self {
@@ -39854,9 +45828,17 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsWechatPayClie
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsWechatPayClient {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsWechatPayClient {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ConfirmPaymentIntentPaymentMethodOptionsWechatPayClient))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsWechatPayClient {
@@ -39925,9 +45907,19 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsWechatPaySetu
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsWechatPaySetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsWechatPaySetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            ConfirmPaymentIntentPaymentMethodOptionsWechatPaySetupFutureUsage
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsWechatPaySetupFutureUsage {
@@ -39949,7 +45941,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// If this is a `zip` PaymentMethod, this sub-hash contains details about the Zip payment method options.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentPaymentMethodOptionsZip {
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
@@ -39963,6 +45957,12 @@ pub struct ConfirmPaymentIntentPaymentMethodOptionsZip {
     /// If you've already set `setup_future_usage` and you're performing a request using a publishable key, you can only update the value from `on_session` to `off_session`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub setup_future_usage: Option<ConfirmPaymentIntentPaymentMethodOptionsZipSetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsZip {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentMethodOptionsZip").finish_non_exhaustive()
+    }
 }
 impl ConfirmPaymentIntentPaymentMethodOptionsZip {
     pub fn new() -> Self {
@@ -40024,9 +46024,17 @@ impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsZipSetupFutur
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsZipSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsZipSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ConfirmPaymentIntentPaymentMethodOptionsZipSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsZipSetupFutureUsage {
@@ -40047,11 +46055,19 @@ impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentPaymentMethodOptionsZi
 }
 /// Options to configure Radar.
 /// Learn more about [Radar Sessions](https://docs.stripe.com/radar/radar-session).
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentRadarOptions {
     /// A [Radar Session](https://docs.stripe.com/radar/radar-session) is a snapshot of the browser metadata and device details that help Radar make more accurate predictions on your payments.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub session: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentRadarOptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentRadarOptions").finish_non_exhaustive()
+    }
 }
 impl ConfirmPaymentIntentRadarOptions {
     pub fn new() -> Self {
@@ -40064,7 +46080,9 @@ impl Default for ConfirmPaymentIntentRadarOptions {
     }
 }
 /// Shipping information for this PaymentIntent.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentShipping {
     /// Shipping address.
     pub address: ConfirmPaymentIntentShippingAddress,
@@ -40081,6 +46099,12 @@ pub struct ConfirmPaymentIntentShipping {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tracking_number: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentShipping {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentShipping").finish_non_exhaustive()
+    }
+}
 impl ConfirmPaymentIntentShipping {
     pub fn new(
         address: impl Into<ConfirmPaymentIntentShippingAddress>,
@@ -40096,7 +46120,9 @@ impl ConfirmPaymentIntentShipping {
     }
 }
 /// Shipping address.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentShippingAddress {
     /// City, district, suburb, town, or village.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -40116,6 +46142,12 @@ pub struct ConfirmPaymentIntentShippingAddress {
     /// State, county, province, or region ([ISO 3166-2](https://en.wikipedia.org/wiki/ISO_3166-2)).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentShippingAddress {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentShippingAddress").finish_non_exhaustive()
+    }
 }
 impl ConfirmPaymentIntentShippingAddress {
     pub fn new() -> Self {
@@ -40157,10 +46189,18 @@ impl Default for ConfirmPaymentIntentShippingAddress {
 /// There is a variable upper limit on how many times a PaymentIntent can be confirmed.
 /// After this limit is reached, any further calls to this endpoint will
 /// transition the PaymentIntent to the `canceled` state.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntent {
     inner: ConfirmPaymentIntentBuilder,
     intent: stripe_shared::PaymentIntentId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntent {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntent").finish_non_exhaustive()
+    }
 }
 impl ConfirmPaymentIntent {
     /// Construct a new `ConfirmPaymentIntent`.
@@ -40350,7 +46390,9 @@ impl StripeRequest for ConfirmPaymentIntent {
             .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct IncrementAuthorizationPaymentIntentBuilder {
     amount: i64,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -40372,6 +46414,12 @@ struct IncrementAuthorizationPaymentIntentBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     transfer_data: Option<IncrementAuthorizationPaymentIntentTransferData>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for IncrementAuthorizationPaymentIntentBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("IncrementAuthorizationPaymentIntentBuilder").finish_non_exhaustive()
+    }
+}
 impl IncrementAuthorizationPaymentIntentBuilder {
     fn new(amount: impl Into<i64>) -> Self {
         Self {
@@ -40389,7 +46437,9 @@ impl IncrementAuthorizationPaymentIntentBuilder {
     }
 }
 /// Provides industry-specific information about the amount.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct IncrementAuthorizationPaymentIntentAmountDetails {
     /// The total discount applied on the transaction represented in the [smallest currency unit](https://docs.stripe.com/currencies#zero-decimal).
     /// An integer greater than 0.
@@ -40417,6 +46467,12 @@ pub struct IncrementAuthorizationPaymentIntentAmountDetails {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax: Option<AmountDetailsTaxParam>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for IncrementAuthorizationPaymentIntentAmountDetails {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("IncrementAuthorizationPaymentIntentAmountDetails").finish_non_exhaustive()
+    }
+}
 impl IncrementAuthorizationPaymentIntentAmountDetails {
     pub fn new() -> Self {
         Self {
@@ -40435,7 +46491,9 @@ impl Default for IncrementAuthorizationPaymentIntentAmountDetails {
 }
 /// A list of line items, each containing information about a product in the PaymentIntent.
 /// There is a maximum of 200 line items.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct IncrementAuthorizationPaymentIntentAmountDetailsLineItems {
     /// The discount applied on this line item represented in the [smallest currency unit](https://docs.stripe.com/currencies#zero-decimal).
     /// An integer greater than 0.
@@ -40470,6 +46528,13 @@ pub struct IncrementAuthorizationPaymentIntentAmountDetailsLineItems {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_of_measure: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for IncrementAuthorizationPaymentIntentAmountDetailsLineItems {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("IncrementAuthorizationPaymentIntentAmountDetailsLineItems")
+            .finish_non_exhaustive()
+    }
+}
 impl IncrementAuthorizationPaymentIntentAmountDetailsLineItems {
     pub fn new(
         product_name: impl Into<String>,
@@ -40489,7 +46554,9 @@ impl IncrementAuthorizationPaymentIntentAmountDetailsLineItems {
     }
 }
 /// Payment method-specific information for line items.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct IncrementAuthorizationPaymentIntentAmountDetailsLineItemsPaymentMethodOptions {
     /// This sub-hash contains line item details that are specific to the `card` payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -40508,6 +46575,17 @@ pub struct IncrementAuthorizationPaymentIntentAmountDetailsLineItemsPaymentMetho
     pub paypal:
         Option<IncrementAuthorizationPaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypal>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for IncrementAuthorizationPaymentIntentAmountDetailsLineItemsPaymentMethodOptions
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(
+            "IncrementAuthorizationPaymentIntentAmountDetailsLineItemsPaymentMethodOptions",
+        )
+        .finish_non_exhaustive()
+    }
+}
 impl IncrementAuthorizationPaymentIntentAmountDetailsLineItemsPaymentMethodOptions {
     pub fn new() -> Self {
         Self { card: None, card_present: None, klarna: None, paypal: None }
@@ -40519,11 +46597,24 @@ impl Default for IncrementAuthorizationPaymentIntentAmountDetailsLineItemsPaymen
     }
 }
 /// This sub-hash contains line item details that are specific to the `card` payment method.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct IncrementAuthorizationPaymentIntentAmountDetailsLineItemsPaymentMethodOptionsCard {
     /// Identifier that categorizes the items being purchased using a standardized commodity scheme such as (but not limited to) UNSPSC, NAICS, NAPCS, and so on.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub commodity_code: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for IncrementAuthorizationPaymentIntentAmountDetailsLineItemsPaymentMethodOptionsCard
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(
+            "IncrementAuthorizationPaymentIntentAmountDetailsLineItemsPaymentMethodOptionsCard",
+        )
+        .finish_non_exhaustive()
+    }
 }
 impl IncrementAuthorizationPaymentIntentAmountDetailsLineItemsPaymentMethodOptionsCard {
     pub fn new() -> Self {
@@ -40536,12 +46627,22 @@ impl Default for IncrementAuthorizationPaymentIntentAmountDetailsLineItemsPaymen
     }
 }
 /// This sub-hash contains line item details that are specific to the `card_present` payment method.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct IncrementAuthorizationPaymentIntentAmountDetailsLineItemsPaymentMethodOptionsCardPresent
 {
     /// Identifier that categorizes the items being purchased using a standardized commodity scheme such as (but not limited to) UNSPSC, NAICS, NAPCS, and so on.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub commodity_code: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for IncrementAuthorizationPaymentIntentAmountDetailsLineItemsPaymentMethodOptionsCardPresent
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("IncrementAuthorizationPaymentIntentAmountDetailsLineItemsPaymentMethodOptionsCardPresent").finish_non_exhaustive()
+    }
 }
 impl IncrementAuthorizationPaymentIntentAmountDetailsLineItemsPaymentMethodOptionsCardPresent {
     pub fn new() -> Self {
@@ -40556,7 +46657,9 @@ impl Default
     }
 }
 /// This sub-hash contains line item details that are specific to the `paypal` payment method.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct IncrementAuthorizationPaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypal {
     /// Type of the line item.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -40569,6 +46672,17 @@ pub struct IncrementAuthorizationPaymentIntentAmountDetailsLineItemsPaymentMetho
     /// The Stripe account ID of the connected account that sells the item.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sold_by: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for IncrementAuthorizationPaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypal
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(
+            "IncrementAuthorizationPaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypal",
+        )
+        .finish_non_exhaustive()
+    }
 }
 impl IncrementAuthorizationPaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypal {
     pub fn new() -> Self {
@@ -40634,11 +46748,20 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for IncrementAuthorizationPaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypalCategory
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for IncrementAuthorizationPaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypalCategory
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(IncrementAuthorizationPaymentIntentAmountDetailsLineItemsPaymentMethodOptionsPaypalCategory)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -40662,7 +46785,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Provides industry-specific information about the charge.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct IncrementAuthorizationPaymentIntentPaymentDetails {
     /// A unique value to identify the customer. This field is available only for card payments.
     ///
@@ -40676,6 +46801,12 @@ pub struct IncrementAuthorizationPaymentIntentPaymentDetails {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub order_reference: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for IncrementAuthorizationPaymentIntentPaymentDetails {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("IncrementAuthorizationPaymentIntentPaymentDetails").finish_non_exhaustive()
+    }
+}
 impl IncrementAuthorizationPaymentIntentPaymentDetails {
     pub fn new() -> Self {
         Self { customer_reference: None, order_reference: None }
@@ -40688,11 +46819,19 @@ impl Default for IncrementAuthorizationPaymentIntentPaymentDetails {
 }
 /// The parameters used to automatically create a transfer after the payment is captured.
 /// Learn more about the [use case for connected accounts](https://docs.stripe.com/payments/connected-accounts).
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct IncrementAuthorizationPaymentIntentTransferData {
     /// The amount that will be transferred automatically when a charge succeeds.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount: Option<i64>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for IncrementAuthorizationPaymentIntentTransferData {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("IncrementAuthorizationPaymentIntentTransferData").finish_non_exhaustive()
+    }
 }
 impl IncrementAuthorizationPaymentIntentTransferData {
     pub fn new() -> Self {
@@ -40728,10 +46867,18 @@ impl Default for IncrementAuthorizationPaymentIntentTransferData {
 /// After it’s captured, a PaymentIntent can no longer be incremented.
 ///
 /// Learn more about [incremental authorizations](https://stripe.com/docs/terminal/features/incremental-authorizations).
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct IncrementAuthorizationPaymentIntent {
     inner: IncrementAuthorizationPaymentIntentBuilder,
     intent: stripe_shared::PaymentIntentId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for IncrementAuthorizationPaymentIntent {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("IncrementAuthorizationPaymentIntent").finish_non_exhaustive()
+    }
 }
 impl IncrementAuthorizationPaymentIntent {
     /// Construct a new `IncrementAuthorizationPaymentIntent`.
@@ -40837,7 +46984,9 @@ impl StripeRequest for IncrementAuthorizationPaymentIntent {
         .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct VerifyMicrodepositsPaymentIntentBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     amounts: Option<Vec<i64>>,
@@ -40846,16 +46995,30 @@ struct VerifyMicrodepositsPaymentIntentBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for VerifyMicrodepositsPaymentIntentBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("VerifyMicrodepositsPaymentIntentBuilder").finish_non_exhaustive()
+    }
+}
 impl VerifyMicrodepositsPaymentIntentBuilder {
     fn new() -> Self {
         Self { amounts: None, descriptor_code: None, expand: None }
     }
 }
 /// Verifies microdeposits on a PaymentIntent object.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct VerifyMicrodepositsPaymentIntent {
     inner: VerifyMicrodepositsPaymentIntentBuilder,
     intent: stripe_shared::PaymentIntentId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for VerifyMicrodepositsPaymentIntent {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("VerifyMicrodepositsPaymentIntent").finish_non_exhaustive()
+    }
 }
 impl VerifyMicrodepositsPaymentIntent {
     /// Construct a new `VerifyMicrodepositsPaymentIntent`.
@@ -40909,7 +47072,9 @@ impl StripeRequest for VerifyMicrodepositsPaymentIntent {
     }
 }
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct PaymentIntentAmountDetailsLineItemPaymentMethodOptionsParam {
     /// URL to an image for the product. Max length, 4096 characters.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -40925,6 +47090,13 @@ pub struct PaymentIntentAmountDetailsLineItemPaymentMethodOptionsParam {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub subscription_reference: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentIntentAmountDetailsLineItemPaymentMethodOptionsParam {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PaymentIntentAmountDetailsLineItemPaymentMethodOptionsParam")
+            .finish_non_exhaustive()
+    }
+}
 impl PaymentIntentAmountDetailsLineItemPaymentMethodOptionsParam {
     pub fn new() -> Self {
         Self { image_url: None, product_url: None, reference: None, subscription_reference: None }
@@ -40935,7 +47107,9 @@ impl Default for PaymentIntentAmountDetailsLineItemPaymentMethodOptionsParam {
         Self::new()
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct AmountDetailsLineItemTaxParam {
     /// The total amount of tax on a single line item represented in the [smallest currency unit](https://docs.stripe.com/currencies#zero-decimal).
     /// Required for L3 rates.
@@ -40944,12 +47118,20 @@ pub struct AmountDetailsLineItemTaxParam {
     /// This field is mutually exclusive with the `amount_details[tax][total_tax_amount]` field.
     pub total_tax_amount: i64,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for AmountDetailsLineItemTaxParam {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("AmountDetailsLineItemTaxParam").finish_non_exhaustive()
+    }
+}
 impl AmountDetailsLineItemTaxParam {
     pub fn new(total_tax_amount: impl Into<i64>) -> Self {
         Self { total_tax_amount: total_tax_amount.into() }
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct AmountDetailsShippingParam {
     /// If a physical good is being shipped, the cost of shipping represented in the [smallest currency unit](https://docs.stripe.com/currencies#zero-decimal).
     /// An integer greater than or equal to 0.
@@ -40964,6 +47146,12 @@ pub struct AmountDetailsShippingParam {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub to_postal_code: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for AmountDetailsShippingParam {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("AmountDetailsShippingParam").finish_non_exhaustive()
+    }
+}
 impl AmountDetailsShippingParam {
     pub fn new() -> Self {
         Self { amount: None, from_postal_code: None, to_postal_code: None }
@@ -40974,7 +47162,9 @@ impl Default for AmountDetailsShippingParam {
         Self::new()
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct AmountDetailsTaxParam {
     /// The total amount of tax on the transaction represented in the [smallest currency unit](https://docs.stripe.com/currencies#zero-decimal).
     /// Required for L2 rates.
@@ -40983,34 +47173,58 @@ pub struct AmountDetailsTaxParam {
     /// This field is mutually exclusive with the `amount_details[line_items][#][tax][total_tax_amount]` field.
     pub total_tax_amount: i64,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for AmountDetailsTaxParam {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("AmountDetailsTaxParam").finish_non_exhaustive()
+    }
+}
 impl AmountDetailsTaxParam {
     pub fn new(total_tax_amount: impl Into<i64>) -> Self {
         Self { total_tax_amount: total_tax_amount.into() }
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct AsyncWorkflowsInputsTaxParam {
     /// The [TaxCalculation](https://docs.stripe.com/api/tax/calculations) id
     pub calculation: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for AsyncWorkflowsInputsTaxParam {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("AsyncWorkflowsInputsTaxParam").finish_non_exhaustive()
+    }
 }
 impl AsyncWorkflowsInputsTaxParam {
     pub fn new(calculation: impl Into<String>) -> Self {
         Self { calculation: calculation.into() }
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct OnlineParam {
     /// The IP address from which the Mandate was accepted by the customer.
     pub ip_address: String,
     /// The user agent of the browser from which the Mandate was accepted by the customer.
     pub user_agent: String,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for OnlineParam {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("OnlineParam").finish_non_exhaustive()
+    }
+}
 impl OnlineParam {
     pub fn new(ip_address: impl Into<String>, user_agent: impl Into<String>) -> Self {
         Self { ip_address: ip_address.into(), user_agent: user_agent.into() }
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct PaymentMethodParam {
     /// Customer's bank account number.
     pub account_number: String,
@@ -41018,6 +47232,12 @@ pub struct PaymentMethodParam {
     pub institution_number: String,
     /// Transit number of the customer's bank.
     pub transit_number: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentMethodParam {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PaymentMethodParam").finish_non_exhaustive()
+    }
 }
 impl PaymentMethodParam {
     pub fn new(
@@ -41032,7 +47252,9 @@ impl PaymentMethodParam {
         }
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct DateOfBirth {
     /// The day of birth, between 1 and 31.
     pub day: i64,
@@ -41041,12 +47263,20 @@ pub struct DateOfBirth {
     /// The four-digit year of birth.
     pub year: i64,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for DateOfBirth {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("DateOfBirth").finish_non_exhaustive()
+    }
+}
 impl DateOfBirth {
     pub fn new(day: impl Into<i64>, month: impl Into<i64>, year: impl Into<i64>) -> Self {
         Self { day: day.into(), month: month.into(), year: year.into() }
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct PaymentMethodOptionsMandateOptionsParam {
     /// Prefix used to generate the Mandate reference.
     /// Must be at most 12 characters long.
@@ -41054,6 +47284,12 @@ pub struct PaymentMethodOptionsMandateOptionsParam {
     /// Cannot begin with 'DDIC' or 'STRIPE'.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reference_prefix: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentMethodOptionsMandateOptionsParam {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PaymentMethodOptionsMandateOptionsParam").finish_non_exhaustive()
+    }
 }
 impl PaymentMethodOptionsMandateOptionsParam {
     pub fn new() -> Self {
@@ -41065,34 +47301,58 @@ impl Default for PaymentMethodOptionsMandateOptionsParam {
         Self::new()
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct EuBankTransferParams {
     /// The desired country code of the bank account information.
     /// Permitted values include: `DE`, `FR`, `IE`, or `NL`.
     pub country: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for EuBankTransferParams {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("EuBankTransferParams").finish_non_exhaustive()
+    }
 }
 impl EuBankTransferParams {
     pub fn new(country: impl Into<String>) -> Self {
         Self { country: country.into() }
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct SubscriptionNextBillingParam {
     /// The amount of the next charge for the subscription.
     pub amount: i64,
     /// The date of the next charge for the subscription in YYYY-MM-DD format.
     pub date: String,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for SubscriptionNextBillingParam {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("SubscriptionNextBillingParam").finish_non_exhaustive()
+    }
+}
 impl SubscriptionNextBillingParam {
     pub fn new(amount: impl Into<i64>, date: impl Into<String>) -> Self {
         Self { amount: amount.into(), date: date.into() }
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct AsyncWorkflowsInputsParam {
     /// Tax arguments for automations
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax: Option<AsyncWorkflowsInputsTaxParam>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for AsyncWorkflowsInputsParam {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("AsyncWorkflowsInputsParam").finish_non_exhaustive()
+    }
 }
 impl AsyncWorkflowsInputsParam {
     pub fn new() -> Self {
@@ -41104,11 +47364,19 @@ impl Default for AsyncWorkflowsInputsParam {
         Self::new()
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct AsyncWorkflowsParam {
     /// Arguments passed in automations
     #[serde(skip_serializing_if = "Option::is_none")]
     pub inputs: Option<AsyncWorkflowsInputsParam>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for AsyncWorkflowsParam {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("AsyncWorkflowsParam").finish_non_exhaustive()
+    }
 }
 impl AsyncWorkflowsParam {
     pub fn new() -> Self {

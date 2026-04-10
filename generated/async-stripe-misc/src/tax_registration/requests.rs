@@ -2,7 +2,9 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ListTaxRegistrationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<String>,
@@ -14,6 +16,12 @@ struct ListTaxRegistrationBuilder {
     starting_after: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     status: Option<ListTaxRegistrationStatus>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListTaxRegistrationBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListTaxRegistrationBuilder").finish_non_exhaustive()
+    }
 }
 impl ListTaxRegistrationBuilder {
     fn new() -> Self {
@@ -66,9 +74,16 @@ impl std::fmt::Display for ListTaxRegistrationStatus {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ListTaxRegistrationStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListTaxRegistrationStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ListTaxRegistrationStatus)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ListTaxRegistrationStatus {
@@ -88,9 +103,17 @@ impl<'de> serde::Deserialize<'de> for ListTaxRegistrationStatus {
     }
 }
 /// Returns a list of Tax `Registration` objects.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListTaxRegistration {
     inner: ListTaxRegistrationBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListTaxRegistration {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListTaxRegistration").finish_non_exhaustive()
+    }
 }
 impl ListTaxRegistration {
     /// Construct a new `ListTaxRegistration`.
@@ -164,10 +187,18 @@ impl StripeRequest for ListTaxRegistration {
         RequestBuilder::new(StripeMethod::Get, "/tax/registrations").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RetrieveTaxRegistrationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveTaxRegistrationBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveTaxRegistrationBuilder").finish_non_exhaustive()
+    }
 }
 impl RetrieveTaxRegistrationBuilder {
     fn new() -> Self {
@@ -175,10 +206,18 @@ impl RetrieveTaxRegistrationBuilder {
     }
 }
 /// Returns a Tax `Registration` object.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RetrieveTaxRegistration {
     inner: RetrieveTaxRegistrationBuilder,
     id: stripe_misc::TaxRegistrationId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveTaxRegistration {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveTaxRegistration").finish_non_exhaustive()
+    }
 }
 impl RetrieveTaxRegistration {
     /// Construct a new `RetrieveTaxRegistration`.
@@ -218,7 +257,9 @@ impl StripeRequest for RetrieveTaxRegistration {
             .query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct CreateTaxRegistrationBuilder {
     active_from: CreateTaxRegistrationActiveFrom,
     country: String,
@@ -227,6 +268,12 @@ struct CreateTaxRegistrationBuilder {
     expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     expires_at: Option<stripe_types::Timestamp>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationBuilder").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationBuilder {
     fn new(
@@ -245,15 +292,25 @@ impl CreateTaxRegistrationBuilder {
 }
 /// Time at which the Tax Registration becomes active.
 /// It can be either `now` to indicate the current time, or a future timestamp measured in seconds since the Unix epoch.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 #[serde(rename_all = "snake_case")]
 pub enum CreateTaxRegistrationActiveFrom {
     Now,
     #[serde(untagged)]
     Timestamp(stripe_types::Timestamp),
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationActiveFrom {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationActiveFrom").finish_non_exhaustive()
+    }
+}
 /// Specific options for a registration in the specified `country`.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptions {
     /// Options for the registration in AE.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -560,6 +617,12 @@ pub struct CreateTaxRegistrationCountryOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub zw: Option<CreateTaxRegistrationCountryOptionsZw>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptions").finish_non_exhaustive()
+    }
+}
 impl CreateTaxRegistrationCountryOptions {
     pub fn new() -> Self {
         Self {
@@ -673,7 +736,9 @@ impl Default for CreateTaxRegistrationCountryOptions {
     }
 }
 /// Options for the registration in AE.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsAe {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -682,18 +747,32 @@ pub struct CreateTaxRegistrationCountryOptionsAe {
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsAeType,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsAe {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsAe").finish_non_exhaustive()
+    }
+}
 impl CreateTaxRegistrationCountryOptionsAe {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsAeType>) -> Self {
         Self { standard: None, type_: type_.into() }
     }
 }
 /// Options for the standard registration.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsAeStandard {
     /// Place of supply scheme used in an standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub place_of_supply_scheme:
         Option<CreateTaxRegistrationCountryOptionsAeStandardPlaceOfSupplyScheme>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsAeStandard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsAeStandard").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsAeStandard {
     pub fn new() -> Self {
@@ -749,9 +828,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsAeStandardPlaceOfS
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsAeStandardPlaceOfSupplyScheme {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsAeStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsAeStandardPlaceOfSupplyScheme))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsAeStandardPlaceOfSupplyScheme {
@@ -813,9 +900,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsAeType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsAeType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsAeType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsAeType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsAeType {
@@ -835,7 +930,9 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsAeType 
     }
 }
 /// Options for the registration in AL.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsAl {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -844,18 +941,32 @@ pub struct CreateTaxRegistrationCountryOptionsAl {
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsAlType,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsAl {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsAl").finish_non_exhaustive()
+    }
+}
 impl CreateTaxRegistrationCountryOptionsAl {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsAlType>) -> Self {
         Self { standard: None, type_: type_.into() }
     }
 }
 /// Options for the standard registration.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsAlStandard {
     /// Place of supply scheme used in an standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub place_of_supply_scheme:
         Option<CreateTaxRegistrationCountryOptionsAlStandardPlaceOfSupplyScheme>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsAlStandard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsAlStandard").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsAlStandard {
     pub fn new() -> Self {
@@ -911,9 +1022,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsAlStandardPlaceOfS
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsAlStandardPlaceOfSupplyScheme {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsAlStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsAlStandardPlaceOfSupplyScheme))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsAlStandardPlaceOfSupplyScheme {
@@ -975,9 +1094,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsAlType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsAlType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsAlType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsAlType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsAlType {
@@ -997,11 +1124,19 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsAlType 
     }
 }
 /// Options for the registration in AM.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsAm {
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsAmType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsAm {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsAm").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsAm {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsAmType>) -> Self {
@@ -1049,9 +1184,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsAmType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsAmType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsAmType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsAmType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsAmType {
@@ -1071,7 +1214,9 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsAmType 
     }
 }
 /// Options for the registration in AO.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsAo {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1080,18 +1225,32 @@ pub struct CreateTaxRegistrationCountryOptionsAo {
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsAoType,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsAo {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsAo").finish_non_exhaustive()
+    }
+}
 impl CreateTaxRegistrationCountryOptionsAo {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsAoType>) -> Self {
         Self { standard: None, type_: type_.into() }
     }
 }
 /// Options for the standard registration.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsAoStandard {
     /// Place of supply scheme used in an standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub place_of_supply_scheme:
         Option<CreateTaxRegistrationCountryOptionsAoStandardPlaceOfSupplyScheme>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsAoStandard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsAoStandard").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsAoStandard {
     pub fn new() -> Self {
@@ -1147,9 +1306,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsAoStandardPlaceOfS
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsAoStandardPlaceOfSupplyScheme {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsAoStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsAoStandardPlaceOfSupplyScheme))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsAoStandardPlaceOfSupplyScheme {
@@ -1211,9 +1378,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsAoType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsAoType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsAoType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsAoType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsAoType {
@@ -1233,7 +1408,9 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsAoType 
     }
 }
 /// Options for the registration in AT.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsAt {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1242,16 +1419,30 @@ pub struct CreateTaxRegistrationCountryOptionsAt {
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsAtType,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsAt {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsAt").finish_non_exhaustive()
+    }
+}
 impl CreateTaxRegistrationCountryOptionsAt {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsAtType>) -> Self {
         Self { standard: None, type_: type_.into() }
     }
 }
 /// Options for the standard registration.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsAtStandard {
     /// Place of supply scheme used in an EU standard registration.
     pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsAtStandardPlaceOfSupplyScheme,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsAtStandard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsAtStandard").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsAtStandard {
     pub fn new(
@@ -1309,9 +1500,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsAtStandardPlaceOfS
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsAtStandardPlaceOfSupplyScheme {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsAtStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsAtStandardPlaceOfSupplyScheme))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsAtStandardPlaceOfSupplyScheme {
@@ -1382,9 +1581,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsAtType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsAtType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsAtType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsAtType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsAtType {
@@ -1404,7 +1611,9 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsAtType 
     }
 }
 /// Options for the registration in AU.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsAu {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1413,18 +1622,32 @@ pub struct CreateTaxRegistrationCountryOptionsAu {
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsAuType,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsAu {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsAu").finish_non_exhaustive()
+    }
+}
 impl CreateTaxRegistrationCountryOptionsAu {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsAuType>) -> Self {
         Self { standard: None, type_: type_.into() }
     }
 }
 /// Options for the standard registration.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsAuStandard {
     /// Place of supply scheme used in an standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub place_of_supply_scheme:
         Option<CreateTaxRegistrationCountryOptionsAuStandardPlaceOfSupplyScheme>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsAuStandard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsAuStandard").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsAuStandard {
     pub fn new() -> Self {
@@ -1480,9 +1703,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsAuStandardPlaceOfS
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsAuStandardPlaceOfSupplyScheme {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsAuStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsAuStandardPlaceOfSupplyScheme))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsAuStandardPlaceOfSupplyScheme {
@@ -1544,9 +1775,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsAuType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsAuType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsAuType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsAuType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsAuType {
@@ -1566,7 +1805,9 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsAuType 
     }
 }
 /// Options for the registration in AW.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsAw {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1575,18 +1816,32 @@ pub struct CreateTaxRegistrationCountryOptionsAw {
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsAwType,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsAw {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsAw").finish_non_exhaustive()
+    }
+}
 impl CreateTaxRegistrationCountryOptionsAw {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsAwType>) -> Self {
         Self { standard: None, type_: type_.into() }
     }
 }
 /// Options for the standard registration.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsAwStandard {
     /// Place of supply scheme used in an standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub place_of_supply_scheme:
         Option<CreateTaxRegistrationCountryOptionsAwStandardPlaceOfSupplyScheme>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsAwStandard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsAwStandard").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsAwStandard {
     pub fn new() -> Self {
@@ -1642,9 +1897,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsAwStandardPlaceOfS
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsAwStandardPlaceOfSupplyScheme {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsAwStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsAwStandardPlaceOfSupplyScheme))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsAwStandardPlaceOfSupplyScheme {
@@ -1706,9 +1969,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsAwType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsAwType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsAwType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsAwType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsAwType {
@@ -1728,11 +1999,19 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsAwType 
     }
 }
 /// Options for the registration in AZ.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsAz {
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsAzType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsAz {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsAz").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsAz {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsAzType>) -> Self {
@@ -1780,9 +2059,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsAzType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsAzType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsAzType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsAzType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsAzType {
@@ -1802,7 +2089,9 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsAzType 
     }
 }
 /// Options for the registration in BA.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsBa {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1811,18 +2100,32 @@ pub struct CreateTaxRegistrationCountryOptionsBa {
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsBaType,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsBa {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsBa").finish_non_exhaustive()
+    }
+}
 impl CreateTaxRegistrationCountryOptionsBa {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsBaType>) -> Self {
         Self { standard: None, type_: type_.into() }
     }
 }
 /// Options for the standard registration.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsBaStandard {
     /// Place of supply scheme used in an standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub place_of_supply_scheme:
         Option<CreateTaxRegistrationCountryOptionsBaStandardPlaceOfSupplyScheme>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsBaStandard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsBaStandard").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsBaStandard {
     pub fn new() -> Self {
@@ -1878,9 +2181,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsBaStandardPlaceOfS
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsBaStandardPlaceOfSupplyScheme {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsBaStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsBaStandardPlaceOfSupplyScheme))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsBaStandardPlaceOfSupplyScheme {
@@ -1942,9 +2253,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsBaType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsBaType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsBaType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsBaType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsBaType {
@@ -1964,7 +2283,9 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsBaType 
     }
 }
 /// Options for the registration in BB.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsBb {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1973,18 +2294,32 @@ pub struct CreateTaxRegistrationCountryOptionsBb {
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsBbType,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsBb {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsBb").finish_non_exhaustive()
+    }
+}
 impl CreateTaxRegistrationCountryOptionsBb {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsBbType>) -> Self {
         Self { standard: None, type_: type_.into() }
     }
 }
 /// Options for the standard registration.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsBbStandard {
     /// Place of supply scheme used in an standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub place_of_supply_scheme:
         Option<CreateTaxRegistrationCountryOptionsBbStandardPlaceOfSupplyScheme>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsBbStandard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsBbStandard").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsBbStandard {
     pub fn new() -> Self {
@@ -2040,9 +2375,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsBbStandardPlaceOfS
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsBbStandardPlaceOfSupplyScheme {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsBbStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsBbStandardPlaceOfSupplyScheme))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsBbStandardPlaceOfSupplyScheme {
@@ -2104,9 +2447,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsBbType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsBbType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsBbType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsBbType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsBbType {
@@ -2126,7 +2477,9 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsBbType 
     }
 }
 /// Options for the registration in BD.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsBd {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2135,18 +2488,32 @@ pub struct CreateTaxRegistrationCountryOptionsBd {
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsBdType,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsBd {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsBd").finish_non_exhaustive()
+    }
+}
 impl CreateTaxRegistrationCountryOptionsBd {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsBdType>) -> Self {
         Self { standard: None, type_: type_.into() }
     }
 }
 /// Options for the standard registration.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsBdStandard {
     /// Place of supply scheme used in an standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub place_of_supply_scheme:
         Option<CreateTaxRegistrationCountryOptionsBdStandardPlaceOfSupplyScheme>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsBdStandard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsBdStandard").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsBdStandard {
     pub fn new() -> Self {
@@ -2202,9 +2569,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsBdStandardPlaceOfS
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsBdStandardPlaceOfSupplyScheme {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsBdStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsBdStandardPlaceOfSupplyScheme))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsBdStandardPlaceOfSupplyScheme {
@@ -2266,9 +2641,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsBdType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsBdType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsBdType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsBdType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsBdType {
@@ -2288,7 +2671,9 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsBdType 
     }
 }
 /// Options for the registration in BE.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsBe {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2297,16 +2682,30 @@ pub struct CreateTaxRegistrationCountryOptionsBe {
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsBeType,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsBe {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsBe").finish_non_exhaustive()
+    }
+}
 impl CreateTaxRegistrationCountryOptionsBe {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsBeType>) -> Self {
         Self { standard: None, type_: type_.into() }
     }
 }
 /// Options for the standard registration.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsBeStandard {
     /// Place of supply scheme used in an EU standard registration.
     pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsBeStandardPlaceOfSupplyScheme,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsBeStandard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsBeStandard").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsBeStandard {
     pub fn new(
@@ -2364,9 +2763,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsBeStandardPlaceOfS
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsBeStandardPlaceOfSupplyScheme {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsBeStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsBeStandardPlaceOfSupplyScheme))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsBeStandardPlaceOfSupplyScheme {
@@ -2437,9 +2844,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsBeType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsBeType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsBeType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsBeType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsBeType {
@@ -2459,7 +2874,9 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsBeType 
     }
 }
 /// Options for the registration in BF.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsBf {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2468,18 +2885,32 @@ pub struct CreateTaxRegistrationCountryOptionsBf {
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsBfType,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsBf {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsBf").finish_non_exhaustive()
+    }
+}
 impl CreateTaxRegistrationCountryOptionsBf {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsBfType>) -> Self {
         Self { standard: None, type_: type_.into() }
     }
 }
 /// Options for the standard registration.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsBfStandard {
     /// Place of supply scheme used in an standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub place_of_supply_scheme:
         Option<CreateTaxRegistrationCountryOptionsBfStandardPlaceOfSupplyScheme>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsBfStandard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsBfStandard").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsBfStandard {
     pub fn new() -> Self {
@@ -2535,9 +2966,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsBfStandardPlaceOfS
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsBfStandardPlaceOfSupplyScheme {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsBfStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsBfStandardPlaceOfSupplyScheme))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsBfStandardPlaceOfSupplyScheme {
@@ -2599,9 +3038,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsBfType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsBfType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsBfType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsBfType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsBfType {
@@ -2621,7 +3068,9 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsBfType 
     }
 }
 /// Options for the registration in BG.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsBg {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2630,16 +3079,30 @@ pub struct CreateTaxRegistrationCountryOptionsBg {
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsBgType,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsBg {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsBg").finish_non_exhaustive()
+    }
+}
 impl CreateTaxRegistrationCountryOptionsBg {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsBgType>) -> Self {
         Self { standard: None, type_: type_.into() }
     }
 }
 /// Options for the standard registration.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsBgStandard {
     /// Place of supply scheme used in an EU standard registration.
     pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsBgStandardPlaceOfSupplyScheme,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsBgStandard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsBgStandard").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsBgStandard {
     pub fn new(
@@ -2697,9 +3160,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsBgStandardPlaceOfS
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsBgStandardPlaceOfSupplyScheme {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsBgStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsBgStandardPlaceOfSupplyScheme))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsBgStandardPlaceOfSupplyScheme {
@@ -2770,9 +3241,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsBgType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsBgType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsBgType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsBgType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsBgType {
@@ -2792,7 +3271,9 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsBgType 
     }
 }
 /// Options for the registration in BH.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsBh {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2801,18 +3282,32 @@ pub struct CreateTaxRegistrationCountryOptionsBh {
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsBhType,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsBh {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsBh").finish_non_exhaustive()
+    }
+}
 impl CreateTaxRegistrationCountryOptionsBh {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsBhType>) -> Self {
         Self { standard: None, type_: type_.into() }
     }
 }
 /// Options for the standard registration.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsBhStandard {
     /// Place of supply scheme used in an standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub place_of_supply_scheme:
         Option<CreateTaxRegistrationCountryOptionsBhStandardPlaceOfSupplyScheme>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsBhStandard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsBhStandard").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsBhStandard {
     pub fn new() -> Self {
@@ -2868,9 +3363,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsBhStandardPlaceOfS
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsBhStandardPlaceOfSupplyScheme {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsBhStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsBhStandardPlaceOfSupplyScheme))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsBhStandardPlaceOfSupplyScheme {
@@ -2932,9 +3435,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsBhType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsBhType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsBhType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsBhType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsBhType {
@@ -2954,11 +3465,19 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsBhType 
     }
 }
 /// Options for the registration in BJ.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsBj {
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsBjType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsBj {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsBj").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsBj {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsBjType>) -> Self {
@@ -3006,9 +3525,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsBjType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsBjType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsBjType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsBjType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsBjType {
@@ -3028,7 +3555,9 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsBjType 
     }
 }
 /// Options for the registration in BS.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsBs {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3037,18 +3566,32 @@ pub struct CreateTaxRegistrationCountryOptionsBs {
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsBsType,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsBs {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsBs").finish_non_exhaustive()
+    }
+}
 impl CreateTaxRegistrationCountryOptionsBs {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsBsType>) -> Self {
         Self { standard: None, type_: type_.into() }
     }
 }
 /// Options for the standard registration.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsBsStandard {
     /// Place of supply scheme used in an standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub place_of_supply_scheme:
         Option<CreateTaxRegistrationCountryOptionsBsStandardPlaceOfSupplyScheme>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsBsStandard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsBsStandard").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsBsStandard {
     pub fn new() -> Self {
@@ -3104,9 +3647,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsBsStandardPlaceOfS
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsBsStandardPlaceOfSupplyScheme {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsBsStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsBsStandardPlaceOfSupplyScheme))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsBsStandardPlaceOfSupplyScheme {
@@ -3168,9 +3719,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsBsType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsBsType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsBsType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsBsType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsBsType {
@@ -3190,11 +3749,19 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsBsType 
     }
 }
 /// Options for the registration in BY.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsBy {
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsByType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsBy {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsBy").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsBy {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsByType>) -> Self {
@@ -3242,9 +3809,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsByType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsByType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsByType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsByType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsByType {
@@ -3264,7 +3839,9 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsByType 
     }
 }
 /// Options for the registration in CA.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsCa {
     /// Options for the provincial tax registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3273,16 +3850,31 @@ pub struct CreateTaxRegistrationCountryOptionsCa {
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsCaType,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsCa {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsCa").finish_non_exhaustive()
+    }
+}
 impl CreateTaxRegistrationCountryOptionsCa {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsCaType>) -> Self {
         Self { province_standard: None, type_: type_.into() }
     }
 }
 /// Options for the provincial tax registration.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsCaProvinceStandard {
     /// Two-letter CA province code ([ISO 3166-2](https://en.wikipedia.org/wiki/ISO_3166-2)).
     pub province: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsCaProvinceStandard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsCaProvinceStandard")
+            .finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsCaProvinceStandard {
     pub fn new(province: impl Into<String>) -> Self {
@@ -3336,9 +3928,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsCaType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsCaType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsCaType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsCaType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsCaType {
@@ -3358,7 +3958,9 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsCaType 
     }
 }
 /// Options for the registration in CD.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsCd {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3367,18 +3969,32 @@ pub struct CreateTaxRegistrationCountryOptionsCd {
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsCdType,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsCd {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsCd").finish_non_exhaustive()
+    }
+}
 impl CreateTaxRegistrationCountryOptionsCd {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsCdType>) -> Self {
         Self { standard: None, type_: type_.into() }
     }
 }
 /// Options for the standard registration.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsCdStandard {
     /// Place of supply scheme used in an standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub place_of_supply_scheme:
         Option<CreateTaxRegistrationCountryOptionsCdStandardPlaceOfSupplyScheme>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsCdStandard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsCdStandard").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsCdStandard {
     pub fn new() -> Self {
@@ -3434,9 +4050,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsCdStandardPlaceOfS
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsCdStandardPlaceOfSupplyScheme {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsCdStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsCdStandardPlaceOfSupplyScheme))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsCdStandardPlaceOfSupplyScheme {
@@ -3498,9 +4122,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsCdType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsCdType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsCdType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsCdType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsCdType {
@@ -3520,7 +4152,9 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsCdType 
     }
 }
 /// Options for the registration in CH.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsCh {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3529,18 +4163,32 @@ pub struct CreateTaxRegistrationCountryOptionsCh {
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsChType,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsCh {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsCh").finish_non_exhaustive()
+    }
+}
 impl CreateTaxRegistrationCountryOptionsCh {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsChType>) -> Self {
         Self { standard: None, type_: type_.into() }
     }
 }
 /// Options for the standard registration.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsChStandard {
     /// Place of supply scheme used in an standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub place_of_supply_scheme:
         Option<CreateTaxRegistrationCountryOptionsChStandardPlaceOfSupplyScheme>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsChStandard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsChStandard").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsChStandard {
     pub fn new() -> Self {
@@ -3596,9 +4244,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsChStandardPlaceOfS
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsChStandardPlaceOfSupplyScheme {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsChStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsChStandardPlaceOfSupplyScheme))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsChStandardPlaceOfSupplyScheme {
@@ -3660,9 +4316,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsChType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsChType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsChType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsChType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsChType {
@@ -3682,11 +4346,19 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsChType 
     }
 }
 /// Options for the registration in CL.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsCl {
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsClType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsCl {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsCl").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsCl {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsClType>) -> Self {
@@ -3734,9 +4406,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsClType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsClType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsClType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsClType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsClType {
@@ -3756,11 +4436,19 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsClType 
     }
 }
 /// Options for the registration in CM.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsCm {
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsCmType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsCm {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsCm").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsCm {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsCmType>) -> Self {
@@ -3808,9 +4496,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsCmType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsCmType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsCmType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsCmType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsCmType {
@@ -3830,11 +4526,19 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsCmType 
     }
 }
 /// Options for the registration in CO.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsCo {
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsCoType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsCo {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsCo").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsCo {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsCoType>) -> Self {
@@ -3882,9 +4586,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsCoType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsCoType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsCoType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsCoType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsCoType {
@@ -3904,11 +4616,19 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsCoType 
     }
 }
 /// Options for the registration in CR.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsCr {
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsCrType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsCr {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsCr").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsCr {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsCrType>) -> Self {
@@ -3956,9 +4676,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsCrType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsCrType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsCrType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsCrType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsCrType {
@@ -3978,11 +4706,19 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsCrType 
     }
 }
 /// Options for the registration in CV.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsCv {
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsCvType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsCv {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsCv").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsCv {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsCvType>) -> Self {
@@ -4030,9 +4766,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsCvType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsCvType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsCvType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsCvType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsCvType {
@@ -4052,7 +4796,9 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsCvType 
     }
 }
 /// Options for the registration in CY.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsCy {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4061,16 +4807,30 @@ pub struct CreateTaxRegistrationCountryOptionsCy {
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsCyType,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsCy {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsCy").finish_non_exhaustive()
+    }
+}
 impl CreateTaxRegistrationCountryOptionsCy {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsCyType>) -> Self {
         Self { standard: None, type_: type_.into() }
     }
 }
 /// Options for the standard registration.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsCyStandard {
     /// Place of supply scheme used in an EU standard registration.
     pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsCyStandardPlaceOfSupplyScheme,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsCyStandard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsCyStandard").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsCyStandard {
     pub fn new(
@@ -4128,9 +4888,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsCyStandardPlaceOfS
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsCyStandardPlaceOfSupplyScheme {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsCyStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsCyStandardPlaceOfSupplyScheme))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsCyStandardPlaceOfSupplyScheme {
@@ -4201,9 +4969,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsCyType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsCyType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsCyType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsCyType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsCyType {
@@ -4223,7 +4999,9 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsCyType 
     }
 }
 /// Options for the registration in CZ.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsCz {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4232,16 +5010,30 @@ pub struct CreateTaxRegistrationCountryOptionsCz {
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsCzType,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsCz {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsCz").finish_non_exhaustive()
+    }
+}
 impl CreateTaxRegistrationCountryOptionsCz {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsCzType>) -> Self {
         Self { standard: None, type_: type_.into() }
     }
 }
 /// Options for the standard registration.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsCzStandard {
     /// Place of supply scheme used in an EU standard registration.
     pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsCzStandardPlaceOfSupplyScheme,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsCzStandard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsCzStandard").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsCzStandard {
     pub fn new(
@@ -4299,9 +5091,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsCzStandardPlaceOfS
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsCzStandardPlaceOfSupplyScheme {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsCzStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsCzStandardPlaceOfSupplyScheme))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsCzStandardPlaceOfSupplyScheme {
@@ -4372,9 +5172,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsCzType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsCzType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsCzType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsCzType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsCzType {
@@ -4394,7 +5202,9 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsCzType 
     }
 }
 /// Options for the registration in DE.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsDe {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4403,16 +5213,30 @@ pub struct CreateTaxRegistrationCountryOptionsDe {
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsDeType,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsDe {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsDe").finish_non_exhaustive()
+    }
+}
 impl CreateTaxRegistrationCountryOptionsDe {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsDeType>) -> Self {
         Self { standard: None, type_: type_.into() }
     }
 }
 /// Options for the standard registration.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsDeStandard {
     /// Place of supply scheme used in an EU standard registration.
     pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsDeStandardPlaceOfSupplyScheme,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsDeStandard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsDeStandard").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsDeStandard {
     pub fn new(
@@ -4470,9 +5294,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsDeStandardPlaceOfS
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsDeStandardPlaceOfSupplyScheme {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsDeStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsDeStandardPlaceOfSupplyScheme))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsDeStandardPlaceOfSupplyScheme {
@@ -4543,9 +5375,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsDeType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsDeType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsDeType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsDeType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsDeType {
@@ -4565,7 +5405,9 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsDeType 
     }
 }
 /// Options for the registration in DK.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsDk {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4574,16 +5416,30 @@ pub struct CreateTaxRegistrationCountryOptionsDk {
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsDkType,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsDk {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsDk").finish_non_exhaustive()
+    }
+}
 impl CreateTaxRegistrationCountryOptionsDk {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsDkType>) -> Self {
         Self { standard: None, type_: type_.into() }
     }
 }
 /// Options for the standard registration.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsDkStandard {
     /// Place of supply scheme used in an EU standard registration.
     pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsDkStandardPlaceOfSupplyScheme,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsDkStandard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsDkStandard").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsDkStandard {
     pub fn new(
@@ -4641,9 +5497,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsDkStandardPlaceOfS
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsDkStandardPlaceOfSupplyScheme {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsDkStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsDkStandardPlaceOfSupplyScheme))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsDkStandardPlaceOfSupplyScheme {
@@ -4714,9 +5578,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsDkType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsDkType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsDkType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsDkType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsDkType {
@@ -4736,11 +5608,19 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsDkType 
     }
 }
 /// Options for the registration in EC.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsEc {
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsEcType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsEc {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsEc").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsEc {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsEcType>) -> Self {
@@ -4788,9 +5668,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsEcType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsEcType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsEcType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsEcType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsEcType {
@@ -4810,7 +5698,9 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsEcType 
     }
 }
 /// Options for the registration in EE.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsEe {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4819,16 +5709,30 @@ pub struct CreateTaxRegistrationCountryOptionsEe {
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsEeType,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsEe {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsEe").finish_non_exhaustive()
+    }
+}
 impl CreateTaxRegistrationCountryOptionsEe {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsEeType>) -> Self {
         Self { standard: None, type_: type_.into() }
     }
 }
 /// Options for the standard registration.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsEeStandard {
     /// Place of supply scheme used in an EU standard registration.
     pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsEeStandardPlaceOfSupplyScheme,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsEeStandard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsEeStandard").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsEeStandard {
     pub fn new(
@@ -4886,9 +5790,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsEeStandardPlaceOfS
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsEeStandardPlaceOfSupplyScheme {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsEeStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsEeStandardPlaceOfSupplyScheme))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsEeStandardPlaceOfSupplyScheme {
@@ -4959,9 +5871,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsEeType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsEeType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsEeType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsEeType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsEeType {
@@ -4981,11 +5901,19 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsEeType 
     }
 }
 /// Options for the registration in EG.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsEg {
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsEgType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsEg {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsEg").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsEg {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsEgType>) -> Self {
@@ -5033,9 +5961,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsEgType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsEgType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsEgType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsEgType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsEgType {
@@ -5055,7 +5991,9 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsEgType 
     }
 }
 /// Options for the registration in ES.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsEs {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5064,16 +6002,30 @@ pub struct CreateTaxRegistrationCountryOptionsEs {
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsEsType,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsEs {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsEs").finish_non_exhaustive()
+    }
+}
 impl CreateTaxRegistrationCountryOptionsEs {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsEsType>) -> Self {
         Self { standard: None, type_: type_.into() }
     }
 }
 /// Options for the standard registration.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsEsStandard {
     /// Place of supply scheme used in an EU standard registration.
     pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsEsStandardPlaceOfSupplyScheme,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsEsStandard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsEsStandard").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsEsStandard {
     pub fn new(
@@ -5131,9 +6083,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsEsStandardPlaceOfS
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsEsStandardPlaceOfSupplyScheme {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsEsStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsEsStandardPlaceOfSupplyScheme))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsEsStandardPlaceOfSupplyScheme {
@@ -5204,9 +6164,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsEsType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsEsType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsEsType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsEsType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsEsType {
@@ -5226,7 +6194,9 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsEsType 
     }
 }
 /// Options for the registration in ET.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsEt {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5235,18 +6205,32 @@ pub struct CreateTaxRegistrationCountryOptionsEt {
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsEtType,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsEt {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsEt").finish_non_exhaustive()
+    }
+}
 impl CreateTaxRegistrationCountryOptionsEt {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsEtType>) -> Self {
         Self { standard: None, type_: type_.into() }
     }
 }
 /// Options for the standard registration.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsEtStandard {
     /// Place of supply scheme used in an standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub place_of_supply_scheme:
         Option<CreateTaxRegistrationCountryOptionsEtStandardPlaceOfSupplyScheme>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsEtStandard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsEtStandard").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsEtStandard {
     pub fn new() -> Self {
@@ -5302,9 +6286,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsEtStandardPlaceOfS
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsEtStandardPlaceOfSupplyScheme {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsEtStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsEtStandardPlaceOfSupplyScheme))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsEtStandardPlaceOfSupplyScheme {
@@ -5366,9 +6358,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsEtType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsEtType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsEtType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsEtType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsEtType {
@@ -5388,7 +6388,9 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsEtType 
     }
 }
 /// Options for the registration in FI.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsFi {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5397,16 +6399,30 @@ pub struct CreateTaxRegistrationCountryOptionsFi {
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsFiType,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsFi {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsFi").finish_non_exhaustive()
+    }
+}
 impl CreateTaxRegistrationCountryOptionsFi {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsFiType>) -> Self {
         Self { standard: None, type_: type_.into() }
     }
 }
 /// Options for the standard registration.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsFiStandard {
     /// Place of supply scheme used in an EU standard registration.
     pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsFiStandardPlaceOfSupplyScheme,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsFiStandard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsFiStandard").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsFiStandard {
     pub fn new(
@@ -5464,9 +6480,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsFiStandardPlaceOfS
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsFiStandardPlaceOfSupplyScheme {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsFiStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsFiStandardPlaceOfSupplyScheme))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsFiStandardPlaceOfSupplyScheme {
@@ -5537,9 +6561,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsFiType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsFiType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsFiType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsFiType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsFiType {
@@ -5559,7 +6591,9 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsFiType 
     }
 }
 /// Options for the registration in FR.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsFr {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5568,16 +6602,30 @@ pub struct CreateTaxRegistrationCountryOptionsFr {
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsFrType,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsFr {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsFr").finish_non_exhaustive()
+    }
+}
 impl CreateTaxRegistrationCountryOptionsFr {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsFrType>) -> Self {
         Self { standard: None, type_: type_.into() }
     }
 }
 /// Options for the standard registration.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsFrStandard {
     /// Place of supply scheme used in an EU standard registration.
     pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsFrStandardPlaceOfSupplyScheme,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsFrStandard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsFrStandard").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsFrStandard {
     pub fn new(
@@ -5635,9 +6683,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsFrStandardPlaceOfS
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsFrStandardPlaceOfSupplyScheme {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsFrStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsFrStandardPlaceOfSupplyScheme))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsFrStandardPlaceOfSupplyScheme {
@@ -5708,9 +6764,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsFrType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsFrType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsFrType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsFrType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsFrType {
@@ -5730,7 +6794,9 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsFrType 
     }
 }
 /// Options for the registration in GB.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsGb {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5739,18 +6805,32 @@ pub struct CreateTaxRegistrationCountryOptionsGb {
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsGbType,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsGb {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsGb").finish_non_exhaustive()
+    }
+}
 impl CreateTaxRegistrationCountryOptionsGb {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsGbType>) -> Self {
         Self { standard: None, type_: type_.into() }
     }
 }
 /// Options for the standard registration.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsGbStandard {
     /// Place of supply scheme used in an standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub place_of_supply_scheme:
         Option<CreateTaxRegistrationCountryOptionsGbStandardPlaceOfSupplyScheme>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsGbStandard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsGbStandard").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsGbStandard {
     pub fn new() -> Self {
@@ -5806,9 +6886,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsGbStandardPlaceOfS
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsGbStandardPlaceOfSupplyScheme {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsGbStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsGbStandardPlaceOfSupplyScheme))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsGbStandardPlaceOfSupplyScheme {
@@ -5870,9 +6958,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsGbType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsGbType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsGbType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsGbType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsGbType {
@@ -5892,11 +6988,19 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsGbType 
     }
 }
 /// Options for the registration in GE.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsGe {
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsGeType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsGe {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsGe").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsGe {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsGeType>) -> Self {
@@ -5944,9 +7048,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsGeType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsGeType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsGeType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsGeType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsGeType {
@@ -5966,7 +7078,9 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsGeType 
     }
 }
 /// Options for the registration in GN.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsGn {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -5975,18 +7089,32 @@ pub struct CreateTaxRegistrationCountryOptionsGn {
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsGnType,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsGn {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsGn").finish_non_exhaustive()
+    }
+}
 impl CreateTaxRegistrationCountryOptionsGn {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsGnType>) -> Self {
         Self { standard: None, type_: type_.into() }
     }
 }
 /// Options for the standard registration.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsGnStandard {
     /// Place of supply scheme used in an standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub place_of_supply_scheme:
         Option<CreateTaxRegistrationCountryOptionsGnStandardPlaceOfSupplyScheme>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsGnStandard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsGnStandard").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsGnStandard {
     pub fn new() -> Self {
@@ -6042,9 +7170,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsGnStandardPlaceOfS
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsGnStandardPlaceOfSupplyScheme {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsGnStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsGnStandardPlaceOfSupplyScheme))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsGnStandardPlaceOfSupplyScheme {
@@ -6106,9 +7242,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsGnType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsGnType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsGnType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsGnType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsGnType {
@@ -6128,7 +7272,9 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsGnType 
     }
 }
 /// Options for the registration in GR.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsGr {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -6137,16 +7283,30 @@ pub struct CreateTaxRegistrationCountryOptionsGr {
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsGrType,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsGr {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsGr").finish_non_exhaustive()
+    }
+}
 impl CreateTaxRegistrationCountryOptionsGr {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsGrType>) -> Self {
         Self { standard: None, type_: type_.into() }
     }
 }
 /// Options for the standard registration.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsGrStandard {
     /// Place of supply scheme used in an EU standard registration.
     pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsGrStandardPlaceOfSupplyScheme,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsGrStandard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsGrStandard").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsGrStandard {
     pub fn new(
@@ -6204,9 +7364,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsGrStandardPlaceOfS
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsGrStandardPlaceOfSupplyScheme {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsGrStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsGrStandardPlaceOfSupplyScheme))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsGrStandardPlaceOfSupplyScheme {
@@ -6277,9 +7445,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsGrType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsGrType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsGrType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsGrType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsGrType {
@@ -6299,7 +7475,9 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsGrType 
     }
 }
 /// Options for the registration in HR.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsHr {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -6308,16 +7486,30 @@ pub struct CreateTaxRegistrationCountryOptionsHr {
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsHrType,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsHr {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsHr").finish_non_exhaustive()
+    }
+}
 impl CreateTaxRegistrationCountryOptionsHr {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsHrType>) -> Self {
         Self { standard: None, type_: type_.into() }
     }
 }
 /// Options for the standard registration.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsHrStandard {
     /// Place of supply scheme used in an EU standard registration.
     pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsHrStandardPlaceOfSupplyScheme,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsHrStandard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsHrStandard").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsHrStandard {
     pub fn new(
@@ -6375,9 +7567,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsHrStandardPlaceOfS
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsHrStandardPlaceOfSupplyScheme {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsHrStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsHrStandardPlaceOfSupplyScheme))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsHrStandardPlaceOfSupplyScheme {
@@ -6448,9 +7648,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsHrType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsHrType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsHrType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsHrType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsHrType {
@@ -6470,7 +7678,9 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsHrType 
     }
 }
 /// Options for the registration in HU.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsHu {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -6479,16 +7689,30 @@ pub struct CreateTaxRegistrationCountryOptionsHu {
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsHuType,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsHu {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsHu").finish_non_exhaustive()
+    }
+}
 impl CreateTaxRegistrationCountryOptionsHu {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsHuType>) -> Self {
         Self { standard: None, type_: type_.into() }
     }
 }
 /// Options for the standard registration.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsHuStandard {
     /// Place of supply scheme used in an EU standard registration.
     pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsHuStandardPlaceOfSupplyScheme,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsHuStandard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsHuStandard").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsHuStandard {
     pub fn new(
@@ -6546,9 +7770,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsHuStandardPlaceOfS
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsHuStandardPlaceOfSupplyScheme {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsHuStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsHuStandardPlaceOfSupplyScheme))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsHuStandardPlaceOfSupplyScheme {
@@ -6619,9 +7851,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsHuType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsHuType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsHuType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsHuType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsHuType {
@@ -6641,11 +7881,19 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsHuType 
     }
 }
 /// Options for the registration in ID.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsId {
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsIdType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsId {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsId").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsId {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsIdType>) -> Self {
@@ -6693,9 +7941,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsIdType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsIdType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsIdType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsIdType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsIdType {
@@ -6715,7 +7971,9 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsIdType 
     }
 }
 /// Options for the registration in IE.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsIe {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -6724,16 +7982,30 @@ pub struct CreateTaxRegistrationCountryOptionsIe {
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsIeType,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsIe {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsIe").finish_non_exhaustive()
+    }
+}
 impl CreateTaxRegistrationCountryOptionsIe {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsIeType>) -> Self {
         Self { standard: None, type_: type_.into() }
     }
 }
 /// Options for the standard registration.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsIeStandard {
     /// Place of supply scheme used in an EU standard registration.
     pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsIeStandardPlaceOfSupplyScheme,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsIeStandard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsIeStandard").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsIeStandard {
     pub fn new(
@@ -6791,9 +8063,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsIeStandardPlaceOfS
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsIeStandardPlaceOfSupplyScheme {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsIeStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsIeStandardPlaceOfSupplyScheme))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsIeStandardPlaceOfSupplyScheme {
@@ -6864,9 +8144,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsIeType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsIeType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsIeType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsIeType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsIeType {
@@ -6886,11 +8174,19 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsIeType 
     }
 }
 /// Options for the registration in IN.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsIn {
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsInType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsIn {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsIn").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsIn {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsInType>) -> Self {
@@ -6938,9 +8234,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsInType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsInType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsInType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsInType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsInType {
@@ -6960,7 +8264,9 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsInType 
     }
 }
 /// Options for the registration in IS.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsIs {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -6969,18 +8275,32 @@ pub struct CreateTaxRegistrationCountryOptionsIs {
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsIsType,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsIs {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsIs").finish_non_exhaustive()
+    }
+}
 impl CreateTaxRegistrationCountryOptionsIs {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsIsType>) -> Self {
         Self { standard: None, type_: type_.into() }
     }
 }
 /// Options for the standard registration.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsIsStandard {
     /// Place of supply scheme used in an standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub place_of_supply_scheme:
         Option<CreateTaxRegistrationCountryOptionsIsStandardPlaceOfSupplyScheme>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsIsStandard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsIsStandard").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsIsStandard {
     pub fn new() -> Self {
@@ -7036,9 +8356,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsIsStandardPlaceOfS
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsIsStandardPlaceOfSupplyScheme {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsIsStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsIsStandardPlaceOfSupplyScheme))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsIsStandardPlaceOfSupplyScheme {
@@ -7100,9 +8428,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsIsType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsIsType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsIsType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsIsType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsIsType {
@@ -7122,7 +8458,9 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsIsType 
     }
 }
 /// Options for the registration in IT.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsIt {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -7131,16 +8469,30 @@ pub struct CreateTaxRegistrationCountryOptionsIt {
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsItType,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsIt {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsIt").finish_non_exhaustive()
+    }
+}
 impl CreateTaxRegistrationCountryOptionsIt {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsItType>) -> Self {
         Self { standard: None, type_: type_.into() }
     }
 }
 /// Options for the standard registration.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsItStandard {
     /// Place of supply scheme used in an EU standard registration.
     pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsItStandardPlaceOfSupplyScheme,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsItStandard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsItStandard").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsItStandard {
     pub fn new(
@@ -7198,9 +8550,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsItStandardPlaceOfS
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsItStandardPlaceOfSupplyScheme {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsItStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsItStandardPlaceOfSupplyScheme))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsItStandardPlaceOfSupplyScheme {
@@ -7271,9 +8631,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsItType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsItType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsItType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsItType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsItType {
@@ -7293,7 +8661,9 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsItType 
     }
 }
 /// Options for the registration in JP.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsJp {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -7302,18 +8672,32 @@ pub struct CreateTaxRegistrationCountryOptionsJp {
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsJpType,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsJp {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsJp").finish_non_exhaustive()
+    }
+}
 impl CreateTaxRegistrationCountryOptionsJp {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsJpType>) -> Self {
         Self { standard: None, type_: type_.into() }
     }
 }
 /// Options for the standard registration.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsJpStandard {
     /// Place of supply scheme used in an standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub place_of_supply_scheme:
         Option<CreateTaxRegistrationCountryOptionsJpStandardPlaceOfSupplyScheme>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsJpStandard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsJpStandard").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsJpStandard {
     pub fn new() -> Self {
@@ -7369,9 +8753,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsJpStandardPlaceOfS
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsJpStandardPlaceOfSupplyScheme {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsJpStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsJpStandardPlaceOfSupplyScheme))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsJpStandardPlaceOfSupplyScheme {
@@ -7433,9 +8825,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsJpType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsJpType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsJpType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsJpType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsJpType {
@@ -7455,11 +8855,19 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsJpType 
     }
 }
 /// Options for the registration in KE.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsKe {
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsKeType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsKe {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsKe").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsKe {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsKeType>) -> Self {
@@ -7507,9 +8915,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsKeType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsKeType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsKeType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsKeType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsKeType {
@@ -7529,11 +8945,19 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsKeType 
     }
 }
 /// Options for the registration in KG.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsKg {
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsKgType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsKg {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsKg").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsKg {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsKgType>) -> Self {
@@ -7581,9 +9005,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsKgType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsKgType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsKgType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsKgType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsKgType {
@@ -7603,11 +9035,19 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsKgType 
     }
 }
 /// Options for the registration in KH.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsKh {
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsKhType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsKh {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsKh").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsKh {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsKhType>) -> Self {
@@ -7655,9 +9095,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsKhType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsKhType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsKhType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsKhType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsKhType {
@@ -7677,11 +9125,19 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsKhType 
     }
 }
 /// Options for the registration in KR.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsKr {
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsKrType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsKr {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsKr").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsKr {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsKrType>) -> Self {
@@ -7729,9 +9185,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsKrType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsKrType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsKrType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsKrType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsKrType {
@@ -7751,11 +9215,19 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsKrType 
     }
 }
 /// Options for the registration in KZ.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsKz {
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsKzType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsKz {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsKz").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsKz {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsKzType>) -> Self {
@@ -7803,9 +9275,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsKzType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsKzType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsKzType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsKzType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsKzType {
@@ -7825,11 +9305,19 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsKzType 
     }
 }
 /// Options for the registration in LA.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsLa {
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsLaType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsLa {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsLa").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsLa {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsLaType>) -> Self {
@@ -7877,9 +9365,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsLaType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsLaType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsLaType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsLaType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsLaType {
@@ -7899,11 +9395,19 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsLaType 
     }
 }
 /// Options for the registration in LK.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsLk {
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsLkType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsLk {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsLk").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsLk {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsLkType>) -> Self {
@@ -7951,9 +9455,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsLkType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsLkType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsLkType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsLkType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsLkType {
@@ -7973,7 +9485,9 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsLkType 
     }
 }
 /// Options for the registration in LT.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsLt {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -7982,16 +9496,30 @@ pub struct CreateTaxRegistrationCountryOptionsLt {
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsLtType,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsLt {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsLt").finish_non_exhaustive()
+    }
+}
 impl CreateTaxRegistrationCountryOptionsLt {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsLtType>) -> Self {
         Self { standard: None, type_: type_.into() }
     }
 }
 /// Options for the standard registration.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsLtStandard {
     /// Place of supply scheme used in an EU standard registration.
     pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsLtStandardPlaceOfSupplyScheme,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsLtStandard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsLtStandard").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsLtStandard {
     pub fn new(
@@ -8049,9 +9577,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsLtStandardPlaceOfS
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsLtStandardPlaceOfSupplyScheme {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsLtStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsLtStandardPlaceOfSupplyScheme))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsLtStandardPlaceOfSupplyScheme {
@@ -8122,9 +9658,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsLtType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsLtType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsLtType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsLtType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsLtType {
@@ -8144,7 +9688,9 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsLtType 
     }
 }
 /// Options for the registration in LU.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsLu {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -8153,16 +9699,30 @@ pub struct CreateTaxRegistrationCountryOptionsLu {
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsLuType,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsLu {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsLu").finish_non_exhaustive()
+    }
+}
 impl CreateTaxRegistrationCountryOptionsLu {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsLuType>) -> Self {
         Self { standard: None, type_: type_.into() }
     }
 }
 /// Options for the standard registration.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsLuStandard {
     /// Place of supply scheme used in an EU standard registration.
     pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsLuStandardPlaceOfSupplyScheme,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsLuStandard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsLuStandard").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsLuStandard {
     pub fn new(
@@ -8220,9 +9780,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsLuStandardPlaceOfS
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsLuStandardPlaceOfSupplyScheme {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsLuStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsLuStandardPlaceOfSupplyScheme))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsLuStandardPlaceOfSupplyScheme {
@@ -8293,9 +9861,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsLuType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsLuType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsLuType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsLuType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsLuType {
@@ -8315,7 +9891,9 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsLuType 
     }
 }
 /// Options for the registration in LV.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsLv {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -8324,16 +9902,30 @@ pub struct CreateTaxRegistrationCountryOptionsLv {
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsLvType,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsLv {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsLv").finish_non_exhaustive()
+    }
+}
 impl CreateTaxRegistrationCountryOptionsLv {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsLvType>) -> Self {
         Self { standard: None, type_: type_.into() }
     }
 }
 /// Options for the standard registration.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsLvStandard {
     /// Place of supply scheme used in an EU standard registration.
     pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsLvStandardPlaceOfSupplyScheme,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsLvStandard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsLvStandard").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsLvStandard {
     pub fn new(
@@ -8391,9 +9983,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsLvStandardPlaceOfS
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsLvStandardPlaceOfSupplyScheme {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsLvStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsLvStandardPlaceOfSupplyScheme))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsLvStandardPlaceOfSupplyScheme {
@@ -8464,9 +10064,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsLvType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsLvType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsLvType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsLvType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsLvType {
@@ -8486,11 +10094,19 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsLvType 
     }
 }
 /// Options for the registration in MA.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsMa {
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsMaType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsMa {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsMa").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsMa {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsMaType>) -> Self {
@@ -8538,9 +10154,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsMaType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsMaType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsMaType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsMaType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsMaType {
@@ -8560,11 +10184,19 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsMaType 
     }
 }
 /// Options for the registration in MD.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsMd {
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsMdType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsMd {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsMd").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsMd {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsMdType>) -> Self {
@@ -8612,9 +10244,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsMdType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsMdType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsMdType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsMdType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsMdType {
@@ -8634,7 +10274,9 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsMdType 
     }
 }
 /// Options for the registration in ME.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsMe {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -8643,18 +10285,32 @@ pub struct CreateTaxRegistrationCountryOptionsMe {
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsMeType,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsMe {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsMe").finish_non_exhaustive()
+    }
+}
 impl CreateTaxRegistrationCountryOptionsMe {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsMeType>) -> Self {
         Self { standard: None, type_: type_.into() }
     }
 }
 /// Options for the standard registration.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsMeStandard {
     /// Place of supply scheme used in an standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub place_of_supply_scheme:
         Option<CreateTaxRegistrationCountryOptionsMeStandardPlaceOfSupplyScheme>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsMeStandard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsMeStandard").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsMeStandard {
     pub fn new() -> Self {
@@ -8710,9 +10366,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsMeStandardPlaceOfS
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsMeStandardPlaceOfSupplyScheme {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsMeStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsMeStandardPlaceOfSupplyScheme))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsMeStandardPlaceOfSupplyScheme {
@@ -8774,9 +10438,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsMeType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsMeType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsMeType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsMeType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsMeType {
@@ -8796,7 +10468,9 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsMeType 
     }
 }
 /// Options for the registration in MK.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsMk {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -8805,18 +10479,32 @@ pub struct CreateTaxRegistrationCountryOptionsMk {
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsMkType,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsMk {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsMk").finish_non_exhaustive()
+    }
+}
 impl CreateTaxRegistrationCountryOptionsMk {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsMkType>) -> Self {
         Self { standard: None, type_: type_.into() }
     }
 }
 /// Options for the standard registration.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsMkStandard {
     /// Place of supply scheme used in an standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub place_of_supply_scheme:
         Option<CreateTaxRegistrationCountryOptionsMkStandardPlaceOfSupplyScheme>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsMkStandard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsMkStandard").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsMkStandard {
     pub fn new() -> Self {
@@ -8872,9 +10560,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsMkStandardPlaceOfS
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsMkStandardPlaceOfSupplyScheme {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsMkStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsMkStandardPlaceOfSupplyScheme))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsMkStandardPlaceOfSupplyScheme {
@@ -8936,9 +10632,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsMkType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsMkType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsMkType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsMkType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsMkType {
@@ -8958,7 +10662,9 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsMkType 
     }
 }
 /// Options for the registration in MR.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsMr {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -8967,18 +10673,32 @@ pub struct CreateTaxRegistrationCountryOptionsMr {
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsMrType,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsMr {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsMr").finish_non_exhaustive()
+    }
+}
 impl CreateTaxRegistrationCountryOptionsMr {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsMrType>) -> Self {
         Self { standard: None, type_: type_.into() }
     }
 }
 /// Options for the standard registration.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsMrStandard {
     /// Place of supply scheme used in an standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub place_of_supply_scheme:
         Option<CreateTaxRegistrationCountryOptionsMrStandardPlaceOfSupplyScheme>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsMrStandard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsMrStandard").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsMrStandard {
     pub fn new() -> Self {
@@ -9034,9 +10754,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsMrStandardPlaceOfS
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsMrStandardPlaceOfSupplyScheme {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsMrStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsMrStandardPlaceOfSupplyScheme))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsMrStandardPlaceOfSupplyScheme {
@@ -9098,9 +10826,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsMrType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsMrType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsMrType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsMrType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsMrType {
@@ -9120,7 +10856,9 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsMrType 
     }
 }
 /// Options for the registration in MT.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsMt {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -9129,16 +10867,30 @@ pub struct CreateTaxRegistrationCountryOptionsMt {
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsMtType,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsMt {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsMt").finish_non_exhaustive()
+    }
+}
 impl CreateTaxRegistrationCountryOptionsMt {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsMtType>) -> Self {
         Self { standard: None, type_: type_.into() }
     }
 }
 /// Options for the standard registration.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsMtStandard {
     /// Place of supply scheme used in an EU standard registration.
     pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsMtStandardPlaceOfSupplyScheme,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsMtStandard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsMtStandard").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsMtStandard {
     pub fn new(
@@ -9196,9 +10948,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsMtStandardPlaceOfS
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsMtStandardPlaceOfSupplyScheme {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsMtStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsMtStandardPlaceOfSupplyScheme))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsMtStandardPlaceOfSupplyScheme {
@@ -9269,9 +11029,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsMtType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsMtType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsMtType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsMtType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsMtType {
@@ -9291,11 +11059,19 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsMtType 
     }
 }
 /// Options for the registration in MX.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsMx {
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsMxType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsMx {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsMx").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsMx {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsMxType>) -> Self {
@@ -9343,9 +11119,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsMxType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsMxType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsMxType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsMxType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsMxType {
@@ -9365,11 +11149,19 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsMxType 
     }
 }
 /// Options for the registration in MY.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsMy {
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsMyType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsMy {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsMy").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsMy {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsMyType>) -> Self {
@@ -9417,9 +11209,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsMyType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsMyType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsMyType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsMyType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsMyType {
@@ -9439,11 +11239,19 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsMyType 
     }
 }
 /// Options for the registration in NG.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsNg {
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsNgType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsNg {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsNg").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsNg {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsNgType>) -> Self {
@@ -9491,9 +11299,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsNgType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsNgType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsNgType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsNgType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsNgType {
@@ -9513,7 +11329,9 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsNgType 
     }
 }
 /// Options for the registration in NL.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsNl {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -9522,16 +11340,30 @@ pub struct CreateTaxRegistrationCountryOptionsNl {
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsNlType,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsNl {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsNl").finish_non_exhaustive()
+    }
+}
 impl CreateTaxRegistrationCountryOptionsNl {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsNlType>) -> Self {
         Self { standard: None, type_: type_.into() }
     }
 }
 /// Options for the standard registration.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsNlStandard {
     /// Place of supply scheme used in an EU standard registration.
     pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsNlStandardPlaceOfSupplyScheme,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsNlStandard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsNlStandard").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsNlStandard {
     pub fn new(
@@ -9589,9 +11421,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsNlStandardPlaceOfS
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsNlStandardPlaceOfSupplyScheme {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsNlStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsNlStandardPlaceOfSupplyScheme))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsNlStandardPlaceOfSupplyScheme {
@@ -9662,9 +11502,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsNlType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsNlType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsNlType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsNlType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsNlType {
@@ -9684,7 +11532,9 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsNlType 
     }
 }
 /// Options for the registration in NO.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsNo {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -9693,18 +11543,32 @@ pub struct CreateTaxRegistrationCountryOptionsNo {
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsNoType,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsNo {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsNo").finish_non_exhaustive()
+    }
+}
 impl CreateTaxRegistrationCountryOptionsNo {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsNoType>) -> Self {
         Self { standard: None, type_: type_.into() }
     }
 }
 /// Options for the standard registration.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsNoStandard {
     /// Place of supply scheme used in an standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub place_of_supply_scheme:
         Option<CreateTaxRegistrationCountryOptionsNoStandardPlaceOfSupplyScheme>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsNoStandard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsNoStandard").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsNoStandard {
     pub fn new() -> Self {
@@ -9760,9 +11624,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsNoStandardPlaceOfS
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsNoStandardPlaceOfSupplyScheme {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsNoStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsNoStandardPlaceOfSupplyScheme))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsNoStandardPlaceOfSupplyScheme {
@@ -9824,9 +11696,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsNoType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsNoType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsNoType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsNoType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsNoType {
@@ -9846,11 +11726,19 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsNoType 
     }
 }
 /// Options for the registration in NP.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsNp {
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsNpType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsNp {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsNp").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsNp {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsNpType>) -> Self {
@@ -9898,9 +11786,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsNpType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsNpType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsNpType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsNpType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsNpType {
@@ -9920,7 +11816,9 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsNpType 
     }
 }
 /// Options for the registration in NZ.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsNz {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -9929,18 +11827,32 @@ pub struct CreateTaxRegistrationCountryOptionsNz {
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsNzType,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsNz {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsNz").finish_non_exhaustive()
+    }
+}
 impl CreateTaxRegistrationCountryOptionsNz {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsNzType>) -> Self {
         Self { standard: None, type_: type_.into() }
     }
 }
 /// Options for the standard registration.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsNzStandard {
     /// Place of supply scheme used in an standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub place_of_supply_scheme:
         Option<CreateTaxRegistrationCountryOptionsNzStandardPlaceOfSupplyScheme>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsNzStandard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsNzStandard").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsNzStandard {
     pub fn new() -> Self {
@@ -9996,9 +11908,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsNzStandardPlaceOfS
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsNzStandardPlaceOfSupplyScheme {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsNzStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsNzStandardPlaceOfSupplyScheme))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsNzStandardPlaceOfSupplyScheme {
@@ -10060,9 +11980,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsNzType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsNzType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsNzType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsNzType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsNzType {
@@ -10082,7 +12010,9 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsNzType 
     }
 }
 /// Options for the registration in OM.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsOm {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -10091,18 +12021,32 @@ pub struct CreateTaxRegistrationCountryOptionsOm {
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsOmType,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsOm {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsOm").finish_non_exhaustive()
+    }
+}
 impl CreateTaxRegistrationCountryOptionsOm {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsOmType>) -> Self {
         Self { standard: None, type_: type_.into() }
     }
 }
 /// Options for the standard registration.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsOmStandard {
     /// Place of supply scheme used in an standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub place_of_supply_scheme:
         Option<CreateTaxRegistrationCountryOptionsOmStandardPlaceOfSupplyScheme>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsOmStandard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsOmStandard").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsOmStandard {
     pub fn new() -> Self {
@@ -10158,9 +12102,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsOmStandardPlaceOfS
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsOmStandardPlaceOfSupplyScheme {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsOmStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsOmStandardPlaceOfSupplyScheme))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsOmStandardPlaceOfSupplyScheme {
@@ -10222,9 +12174,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsOmType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsOmType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsOmType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsOmType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsOmType {
@@ -10244,11 +12204,19 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsOmType 
     }
 }
 /// Options for the registration in PE.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsPe {
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsPeType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsPe {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsPe").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsPe {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsPeType>) -> Self {
@@ -10296,9 +12264,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsPeType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsPeType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsPeType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsPeType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsPeType {
@@ -10318,11 +12294,19 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsPeType 
     }
 }
 /// Options for the registration in PH.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsPh {
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsPhType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsPh {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsPh").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsPh {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsPhType>) -> Self {
@@ -10370,9 +12354,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsPhType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsPhType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsPhType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsPhType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsPhType {
@@ -10392,7 +12384,9 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsPhType 
     }
 }
 /// Options for the registration in PL.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsPl {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -10401,16 +12395,30 @@ pub struct CreateTaxRegistrationCountryOptionsPl {
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsPlType,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsPl {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsPl").finish_non_exhaustive()
+    }
+}
 impl CreateTaxRegistrationCountryOptionsPl {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsPlType>) -> Self {
         Self { standard: None, type_: type_.into() }
     }
 }
 /// Options for the standard registration.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsPlStandard {
     /// Place of supply scheme used in an EU standard registration.
     pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsPlStandardPlaceOfSupplyScheme,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsPlStandard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsPlStandard").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsPlStandard {
     pub fn new(
@@ -10468,9 +12476,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsPlStandardPlaceOfS
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsPlStandardPlaceOfSupplyScheme {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsPlStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsPlStandardPlaceOfSupplyScheme))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsPlStandardPlaceOfSupplyScheme {
@@ -10541,9 +12557,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsPlType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsPlType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsPlType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsPlType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsPlType {
@@ -10563,7 +12587,9 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsPlType 
     }
 }
 /// Options for the registration in PT.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsPt {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -10572,16 +12598,30 @@ pub struct CreateTaxRegistrationCountryOptionsPt {
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsPtType,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsPt {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsPt").finish_non_exhaustive()
+    }
+}
 impl CreateTaxRegistrationCountryOptionsPt {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsPtType>) -> Self {
         Self { standard: None, type_: type_.into() }
     }
 }
 /// Options for the standard registration.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsPtStandard {
     /// Place of supply scheme used in an EU standard registration.
     pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsPtStandardPlaceOfSupplyScheme,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsPtStandard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsPtStandard").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsPtStandard {
     pub fn new(
@@ -10639,9 +12679,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsPtStandardPlaceOfS
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsPtStandardPlaceOfSupplyScheme {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsPtStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsPtStandardPlaceOfSupplyScheme))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsPtStandardPlaceOfSupplyScheme {
@@ -10712,9 +12760,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsPtType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsPtType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsPtType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsPtType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsPtType {
@@ -10734,7 +12790,9 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsPtType 
     }
 }
 /// Options for the registration in RO.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsRo {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -10743,16 +12801,30 @@ pub struct CreateTaxRegistrationCountryOptionsRo {
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsRoType,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsRo {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsRo").finish_non_exhaustive()
+    }
+}
 impl CreateTaxRegistrationCountryOptionsRo {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsRoType>) -> Self {
         Self { standard: None, type_: type_.into() }
     }
 }
 /// Options for the standard registration.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsRoStandard {
     /// Place of supply scheme used in an EU standard registration.
     pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsRoStandardPlaceOfSupplyScheme,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsRoStandard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsRoStandard").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsRoStandard {
     pub fn new(
@@ -10810,9 +12882,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsRoStandardPlaceOfS
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsRoStandardPlaceOfSupplyScheme {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsRoStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsRoStandardPlaceOfSupplyScheme))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsRoStandardPlaceOfSupplyScheme {
@@ -10883,9 +12963,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsRoType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsRoType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsRoType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsRoType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsRoType {
@@ -10905,7 +12993,9 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsRoType 
     }
 }
 /// Options for the registration in RS.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsRs {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -10914,18 +13004,32 @@ pub struct CreateTaxRegistrationCountryOptionsRs {
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsRsType,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsRs {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsRs").finish_non_exhaustive()
+    }
+}
 impl CreateTaxRegistrationCountryOptionsRs {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsRsType>) -> Self {
         Self { standard: None, type_: type_.into() }
     }
 }
 /// Options for the standard registration.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsRsStandard {
     /// Place of supply scheme used in an standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub place_of_supply_scheme:
         Option<CreateTaxRegistrationCountryOptionsRsStandardPlaceOfSupplyScheme>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsRsStandard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsRsStandard").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsRsStandard {
     pub fn new() -> Self {
@@ -10981,9 +13085,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsRsStandardPlaceOfS
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsRsStandardPlaceOfSupplyScheme {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsRsStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsRsStandardPlaceOfSupplyScheme))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsRsStandardPlaceOfSupplyScheme {
@@ -11045,9 +13157,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsRsType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsRsType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsRsType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsRsType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsRsType {
@@ -11067,11 +13187,19 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsRsType 
     }
 }
 /// Options for the registration in RU.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsRu {
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsRuType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsRu {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsRu").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsRu {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsRuType>) -> Self {
@@ -11119,9 +13247,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsRuType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsRuType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsRuType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsRuType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsRuType {
@@ -11141,11 +13277,19 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsRuType 
     }
 }
 /// Options for the registration in SA.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsSa {
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsSaType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsSa {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsSa").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsSa {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsSaType>) -> Self {
@@ -11193,9 +13337,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsSaType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsSaType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsSaType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsSaType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsSaType {
@@ -11215,7 +13367,9 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsSaType 
     }
 }
 /// Options for the registration in SE.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsSe {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -11224,16 +13378,30 @@ pub struct CreateTaxRegistrationCountryOptionsSe {
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsSeType,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsSe {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsSe").finish_non_exhaustive()
+    }
+}
 impl CreateTaxRegistrationCountryOptionsSe {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsSeType>) -> Self {
         Self { standard: None, type_: type_.into() }
     }
 }
 /// Options for the standard registration.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsSeStandard {
     /// Place of supply scheme used in an EU standard registration.
     pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsSeStandardPlaceOfSupplyScheme,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsSeStandard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsSeStandard").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsSeStandard {
     pub fn new(
@@ -11291,9 +13459,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsSeStandardPlaceOfS
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsSeStandardPlaceOfSupplyScheme {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsSeStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsSeStandardPlaceOfSupplyScheme))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsSeStandardPlaceOfSupplyScheme {
@@ -11364,9 +13540,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsSeType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsSeType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsSeType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsSeType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsSeType {
@@ -11386,7 +13570,9 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsSeType 
     }
 }
 /// Options for the registration in SG.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsSg {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -11395,18 +13581,32 @@ pub struct CreateTaxRegistrationCountryOptionsSg {
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsSgType,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsSg {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsSg").finish_non_exhaustive()
+    }
+}
 impl CreateTaxRegistrationCountryOptionsSg {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsSgType>) -> Self {
         Self { standard: None, type_: type_.into() }
     }
 }
 /// Options for the standard registration.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsSgStandard {
     /// Place of supply scheme used in an standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub place_of_supply_scheme:
         Option<CreateTaxRegistrationCountryOptionsSgStandardPlaceOfSupplyScheme>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsSgStandard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsSgStandard").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsSgStandard {
     pub fn new() -> Self {
@@ -11462,9 +13662,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsSgStandardPlaceOfS
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsSgStandardPlaceOfSupplyScheme {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsSgStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsSgStandardPlaceOfSupplyScheme))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsSgStandardPlaceOfSupplyScheme {
@@ -11526,9 +13734,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsSgType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsSgType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsSgType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsSgType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsSgType {
@@ -11548,7 +13764,9 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsSgType 
     }
 }
 /// Options for the registration in SI.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsSi {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -11557,16 +13775,30 @@ pub struct CreateTaxRegistrationCountryOptionsSi {
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsSiType,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsSi {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsSi").finish_non_exhaustive()
+    }
+}
 impl CreateTaxRegistrationCountryOptionsSi {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsSiType>) -> Self {
         Self { standard: None, type_: type_.into() }
     }
 }
 /// Options for the standard registration.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsSiStandard {
     /// Place of supply scheme used in an EU standard registration.
     pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsSiStandardPlaceOfSupplyScheme,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsSiStandard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsSiStandard").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsSiStandard {
     pub fn new(
@@ -11624,9 +13856,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsSiStandardPlaceOfS
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsSiStandardPlaceOfSupplyScheme {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsSiStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsSiStandardPlaceOfSupplyScheme))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsSiStandardPlaceOfSupplyScheme {
@@ -11697,9 +13937,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsSiType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsSiType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsSiType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsSiType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsSiType {
@@ -11719,7 +13967,9 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsSiType 
     }
 }
 /// Options for the registration in SK.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsSk {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -11728,16 +13978,30 @@ pub struct CreateTaxRegistrationCountryOptionsSk {
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsSkType,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsSk {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsSk").finish_non_exhaustive()
+    }
+}
 impl CreateTaxRegistrationCountryOptionsSk {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsSkType>) -> Self {
         Self { standard: None, type_: type_.into() }
     }
 }
 /// Options for the standard registration.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsSkStandard {
     /// Place of supply scheme used in an EU standard registration.
     pub place_of_supply_scheme: CreateTaxRegistrationCountryOptionsSkStandardPlaceOfSupplyScheme,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsSkStandard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsSkStandard").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsSkStandard {
     pub fn new(
@@ -11795,9 +14059,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsSkStandardPlaceOfS
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsSkStandardPlaceOfSupplyScheme {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsSkStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsSkStandardPlaceOfSupplyScheme))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsSkStandardPlaceOfSupplyScheme {
@@ -11868,9 +14140,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsSkType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsSkType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsSkType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsSkType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsSkType {
@@ -11890,11 +14170,19 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsSkType 
     }
 }
 /// Options for the registration in SN.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsSn {
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsSnType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsSn {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsSn").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsSn {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsSnType>) -> Self {
@@ -11942,9 +14230,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsSnType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsSnType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsSnType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsSnType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsSnType {
@@ -11964,7 +14260,9 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsSnType 
     }
 }
 /// Options for the registration in SR.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsSr {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -11973,18 +14271,32 @@ pub struct CreateTaxRegistrationCountryOptionsSr {
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsSrType,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsSr {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsSr").finish_non_exhaustive()
+    }
+}
 impl CreateTaxRegistrationCountryOptionsSr {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsSrType>) -> Self {
         Self { standard: None, type_: type_.into() }
     }
 }
 /// Options for the standard registration.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsSrStandard {
     /// Place of supply scheme used in an standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub place_of_supply_scheme:
         Option<CreateTaxRegistrationCountryOptionsSrStandardPlaceOfSupplyScheme>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsSrStandard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsSrStandard").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsSrStandard {
     pub fn new() -> Self {
@@ -12040,9 +14352,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsSrStandardPlaceOfS
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsSrStandardPlaceOfSupplyScheme {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsSrStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsSrStandardPlaceOfSupplyScheme))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsSrStandardPlaceOfSupplyScheme {
@@ -12104,9 +14424,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsSrType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsSrType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsSrType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsSrType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsSrType {
@@ -12126,11 +14454,19 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsSrType 
     }
 }
 /// Options for the registration in TH.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsTh {
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsThType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsTh {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsTh").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsTh {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsThType>) -> Self {
@@ -12178,9 +14514,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsThType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsThType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsThType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsThType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsThType {
@@ -12200,11 +14544,19 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsThType 
     }
 }
 /// Options for the registration in TJ.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsTj {
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsTjType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsTj {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsTj").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsTj {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsTjType>) -> Self {
@@ -12252,9 +14604,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsTjType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsTjType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsTjType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsTjType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsTjType {
@@ -12274,11 +14634,19 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsTjType 
     }
 }
 /// Options for the registration in TR.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsTr {
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsTrType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsTr {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsTr").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsTr {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsTrType>) -> Self {
@@ -12326,9 +14694,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsTrType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsTrType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsTrType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsTrType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsTrType {
@@ -12348,11 +14724,19 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsTrType 
     }
 }
 /// Options for the registration in TW.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsTw {
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsTwType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsTw {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsTw").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsTw {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsTwType>) -> Self {
@@ -12400,9 +14784,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsTwType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsTwType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsTwType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsTwType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsTwType {
@@ -12422,11 +14814,19 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsTwType 
     }
 }
 /// Options for the registration in TZ.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsTz {
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsTzType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsTz {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsTz").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsTz {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsTzType>) -> Self {
@@ -12474,9 +14874,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsTzType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsTzType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsTzType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsTzType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsTzType {
@@ -12496,11 +14904,19 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsTzType 
     }
 }
 /// Options for the registration in UA.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsUa {
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsUaType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsUa {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsUa").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsUa {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsUaType>) -> Self {
@@ -12548,9 +14964,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsUaType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsUaType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsUaType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsUaType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsUaType {
@@ -12570,11 +14994,19 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsUaType 
     }
 }
 /// Options for the registration in UG.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsUg {
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsUgType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsUg {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsUg").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsUg {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsUgType>) -> Self {
@@ -12622,9 +15054,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsUgType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsUgType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsUgType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsUgType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsUgType {
@@ -12644,7 +15084,9 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsUgType 
     }
 }
 /// Options for the registration in US.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsUs {
     /// Options for the local amusement tax registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -12661,6 +15103,12 @@ pub struct CreateTaxRegistrationCountryOptionsUs {
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsUsType,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsUs {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsUs").finish_non_exhaustive()
+    }
+}
 impl CreateTaxRegistrationCountryOptionsUs {
     pub fn new(
         state: impl Into<String>,
@@ -12676,11 +15124,20 @@ impl CreateTaxRegistrationCountryOptionsUs {
     }
 }
 /// Options for the local amusement tax registration.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsUsLocalAmusementTax {
     /// A [FIPS code](https://www.census.gov/library/reference/code-lists/ansi.html) representing the local jurisdiction.
     /// Supported FIPS codes are: `02154` (Arlington Heights), `05248` (Bensenville), `06613` (Bloomington), `10906` (Campton Hills), `14000` (Chicago), `21696` (East Dundee), `24582` (Evanston), `45421` (Lynwood), `48892` (Midlothian), `64343` (River Grove), `64421` (Riverside), `65806` (Roselle), and `68081` (Schiller Park).
     pub jurisdiction: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsUsLocalAmusementTax {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsUsLocalAmusementTax")
+            .finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsUsLocalAmusementTax {
     pub fn new(jurisdiction: impl Into<String>) -> Self {
@@ -12688,11 +15145,19 @@ impl CreateTaxRegistrationCountryOptionsUsLocalAmusementTax {
     }
 }
 /// Options for the local lease tax registration.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsUsLocalLeaseTax {
     /// A [FIPS code](https://www.census.gov/library/reference/code-lists/ansi.html) representing the local jurisdiction.
     /// Supported FIPS codes are: `14000` (Chicago).
     pub jurisdiction: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsUsLocalLeaseTax {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsUsLocalLeaseTax").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsUsLocalLeaseTax {
     pub fn new(jurisdiction: impl Into<String>) -> Self {
@@ -12700,10 +15165,18 @@ impl CreateTaxRegistrationCountryOptionsUsLocalLeaseTax {
     }
 }
 /// Options for the state sales tax registration.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsUsStateSalesTax {
     /// Elections for the state sales tax registration.
     pub elections: Vec<CreateTaxRegistrationCountryOptionsUsStateSalesTaxElections>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsUsStateSalesTax {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsUsStateSalesTax").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsUsStateSalesTax {
     pub fn new(
@@ -12713,7 +15186,9 @@ impl CreateTaxRegistrationCountryOptionsUsStateSalesTax {
     }
 }
 /// Elections for the state sales tax registration.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsUsStateSalesTaxElections {
     /// A [FIPS code](https://www.census.gov/library/reference/code-lists/ansi.html) representing the local jurisdiction.
     /// Supported FIPS codes are: `003` (Allegheny County) and `60000` (Philadelphia City).
@@ -12722,6 +15197,13 @@ pub struct CreateTaxRegistrationCountryOptionsUsStateSalesTaxElections {
     /// The type of the election for the state sales tax registration.
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsUsStateSalesTaxElectionsType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsUsStateSalesTaxElections {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsUsStateSalesTaxElections")
+            .finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsUsStateSalesTaxElections {
     pub fn new(
@@ -12777,9 +15259,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsUsStateSalesTaxEle
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsUsStateSalesTaxElectionsType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsUsStateSalesTaxElectionsType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsUsStateSalesTaxElectionsType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsUsStateSalesTaxElectionsType {
@@ -12853,9 +15343,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsUsType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsUsType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsUsType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsUsType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsUsType {
@@ -12875,7 +15373,9 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsUsType 
     }
 }
 /// Options for the registration in UY.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsUy {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -12884,18 +15384,32 @@ pub struct CreateTaxRegistrationCountryOptionsUy {
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsUyType,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsUy {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsUy").finish_non_exhaustive()
+    }
+}
 impl CreateTaxRegistrationCountryOptionsUy {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsUyType>) -> Self {
         Self { standard: None, type_: type_.into() }
     }
 }
 /// Options for the standard registration.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsUyStandard {
     /// Place of supply scheme used in an standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub place_of_supply_scheme:
         Option<CreateTaxRegistrationCountryOptionsUyStandardPlaceOfSupplyScheme>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsUyStandard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsUyStandard").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsUyStandard {
     pub fn new() -> Self {
@@ -12951,9 +15465,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsUyStandardPlaceOfS
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsUyStandardPlaceOfSupplyScheme {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsUyStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsUyStandardPlaceOfSupplyScheme))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsUyStandardPlaceOfSupplyScheme {
@@ -13015,9 +15537,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsUyType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsUyType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsUyType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsUyType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsUyType {
@@ -13037,11 +15567,19 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsUyType 
     }
 }
 /// Options for the registration in UZ.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsUz {
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsUzType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsUz {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsUz").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsUz {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsUzType>) -> Self {
@@ -13089,9 +15627,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsUzType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsUzType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsUzType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsUzType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsUzType {
@@ -13111,11 +15657,19 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsUzType 
     }
 }
 /// Options for the registration in VN.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsVn {
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsVnType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsVn {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsVn").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsVn {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsVnType>) -> Self {
@@ -13163,9 +15717,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsVnType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsVnType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsVnType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsVnType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsVnType {
@@ -13185,7 +15747,9 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsVnType 
     }
 }
 /// Options for the registration in ZA.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsZa {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -13194,18 +15758,32 @@ pub struct CreateTaxRegistrationCountryOptionsZa {
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsZaType,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsZa {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsZa").finish_non_exhaustive()
+    }
+}
 impl CreateTaxRegistrationCountryOptionsZa {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsZaType>) -> Self {
         Self { standard: None, type_: type_.into() }
     }
 }
 /// Options for the standard registration.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsZaStandard {
     /// Place of supply scheme used in an standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub place_of_supply_scheme:
         Option<CreateTaxRegistrationCountryOptionsZaStandardPlaceOfSupplyScheme>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsZaStandard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsZaStandard").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsZaStandard {
     pub fn new() -> Self {
@@ -13261,9 +15839,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsZaStandardPlaceOfS
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsZaStandardPlaceOfSupplyScheme {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsZaStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsZaStandardPlaceOfSupplyScheme))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsZaStandardPlaceOfSupplyScheme {
@@ -13325,9 +15911,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsZaType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsZaType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsZaType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsZaType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsZaType {
@@ -13347,11 +15941,19 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsZaType 
     }
 }
 /// Options for the registration in ZM.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsZm {
     /// Type of registration to be created in `country`.
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsZmType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsZm {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsZm").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsZm {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsZmType>) -> Self {
@@ -13399,9 +16001,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsZmType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsZmType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsZmType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsZmType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsZmType {
@@ -13421,7 +16031,9 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsZmType 
     }
 }
 /// Options for the registration in ZW.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsZw {
     /// Options for the standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -13430,18 +16042,32 @@ pub struct CreateTaxRegistrationCountryOptionsZw {
     #[serde(rename = "type")]
     pub type_: CreateTaxRegistrationCountryOptionsZwType,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsZw {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsZw").finish_non_exhaustive()
+    }
+}
 impl CreateTaxRegistrationCountryOptionsZw {
     pub fn new(type_: impl Into<CreateTaxRegistrationCountryOptionsZwType>) -> Self {
         Self { standard: None, type_: type_.into() }
     }
 }
 /// Options for the standard registration.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsZwStandard {
     /// Place of supply scheme used in an standard registration.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub place_of_supply_scheme:
         Option<CreateTaxRegistrationCountryOptionsZwStandardPlaceOfSupplyScheme>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsZwStandard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistrationCountryOptionsZwStandard").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistrationCountryOptionsZwStandard {
     pub fn new() -> Self {
@@ -13497,9 +16123,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsZwStandardPlaceOfS
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsZwStandardPlaceOfSupplyScheme {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsZwStandardPlaceOfSupplyScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsZwStandardPlaceOfSupplyScheme))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsZwStandardPlaceOfSupplyScheme {
@@ -13561,9 +16195,17 @@ impl std::fmt::Display for CreateTaxRegistrationCountryOptionsZwType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsZwType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistrationCountryOptionsZwType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTaxRegistrationCountryOptionsZwType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateTaxRegistrationCountryOptionsZwType {
@@ -13583,9 +16225,17 @@ impl<'de> serde::Deserialize<'de> for CreateTaxRegistrationCountryOptionsZwType 
     }
 }
 /// Creates a new Tax `Registration` object.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRegistration {
     inner: CreateTaxRegistrationBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRegistration {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRegistration").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRegistration {
     /// Construct a new `CreateTaxRegistration`.
@@ -13640,7 +16290,9 @@ impl StripeRequest for CreateTaxRegistration {
         RequestBuilder::new(StripeMethod::Post, "/tax/registrations").form(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct UpdateTaxRegistrationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     active_from: Option<UpdateTaxRegistrationActiveFrom>,
@@ -13649,6 +16301,12 @@ struct UpdateTaxRegistrationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expires_at: Option<UpdateTaxRegistrationExpiresAt>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateTaxRegistrationBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateTaxRegistrationBuilder").finish_non_exhaustive()
+    }
+}
 impl UpdateTaxRegistrationBuilder {
     fn new() -> Self {
         Self { active_from: None, expand: None, expires_at: None }
@@ -13656,31 +16314,55 @@ impl UpdateTaxRegistrationBuilder {
 }
 /// Time at which the registration becomes active.
 /// It can be either `now` to indicate the current time, or a timestamp measured in seconds since the Unix epoch.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 #[serde(rename_all = "snake_case")]
 pub enum UpdateTaxRegistrationActiveFrom {
     Now,
     #[serde(untagged)]
     Timestamp(stripe_types::Timestamp),
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateTaxRegistrationActiveFrom {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateTaxRegistrationActiveFrom").finish_non_exhaustive()
+    }
+}
 /// If set, the registration stops being active at this time.
 /// If not set, the registration will be active indefinitely.
 /// It can be either `now` to indicate the current time, or a timestamp measured in seconds since the Unix epoch.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 #[serde(rename_all = "snake_case")]
 pub enum UpdateTaxRegistrationExpiresAt {
     Now,
     #[serde(untagged)]
     Timestamp(stripe_types::Timestamp),
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateTaxRegistrationExpiresAt {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateTaxRegistrationExpiresAt").finish_non_exhaustive()
+    }
+}
 /// Updates an existing Tax `Registration` object.
 ///
 /// A registration cannot be deleted after it has been created.
 /// If you wish to end a registration you may do so by setting `expires_at`.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateTaxRegistration {
     inner: UpdateTaxRegistrationBuilder,
     id: stripe_misc::TaxRegistrationId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateTaxRegistration {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateTaxRegistration").finish_non_exhaustive()
+    }
 }
 impl UpdateTaxRegistration {
     /// Construct a new `UpdateTaxRegistration`.

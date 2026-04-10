@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct DisputeVisaCompellingEvidence3DisputedTransaction {
@@ -22,6 +23,12 @@ pub struct DisputeVisaCompellingEvidence3DisputedTransaction {
     /// The address to which a physical product was shipped.
     /// All fields are required for Visa Compelling Evidence 3.0 evidence submission.
     pub shipping_address: Option<stripe_shared::DisputeTransactionShippingAddress>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for DisputeVisaCompellingEvidence3DisputedTransaction {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("DisputeVisaCompellingEvidence3DisputedTransaction").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct DisputeVisaCompellingEvidence3DisputedTransactionBuilder {
@@ -227,9 +234,19 @@ impl std::fmt::Display for DisputeVisaCompellingEvidence3DisputedTransactionMerc
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for DisputeVisaCompellingEvidence3DisputedTransactionMerchandiseOrServices {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for DisputeVisaCompellingEvidence3DisputedTransactionMerchandiseOrServices {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            DisputeVisaCompellingEvidence3DisputedTransactionMerchandiseOrServices
+        ))
+        .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

@@ -2,7 +2,9 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ListReviewBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     created: Option<stripe_types::RangeQueryTs>,
@@ -15,6 +17,12 @@ struct ListReviewBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     starting_after: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListReviewBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListReviewBuilder").finish_non_exhaustive()
+    }
+}
 impl ListReviewBuilder {
     fn new() -> Self {
         Self { created: None, ending_before: None, expand: None, limit: None, starting_after: None }
@@ -22,9 +30,17 @@ impl ListReviewBuilder {
 }
 /// Returns a list of `Review` objects that have `open` set to `true`.
 /// The objects are sorted in descending order by creation date, with the most recently created object appearing first.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListReview {
     inner: ListReviewBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListReview {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListReview").finish_non_exhaustive()
+    }
 }
 impl ListReview {
     /// Construct a new `ListReview`.
@@ -98,10 +114,18 @@ impl StripeRequest for ListReview {
         RequestBuilder::new(StripeMethod::Get, "/reviews").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RetrieveReviewBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveReviewBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveReviewBuilder").finish_non_exhaustive()
+    }
 }
 impl RetrieveReviewBuilder {
     fn new() -> Self {
@@ -109,10 +133,18 @@ impl RetrieveReviewBuilder {
     }
 }
 /// Retrieves a `Review` object.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RetrieveReview {
     inner: RetrieveReviewBuilder,
     review: stripe_shared::ReviewId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveReview {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveReview").finish_non_exhaustive()
+    }
 }
 impl RetrieveReview {
     /// Construct a new `RetrieveReview`.
@@ -151,10 +183,18 @@ impl StripeRequest for RetrieveReview {
         RequestBuilder::new(StripeMethod::Get, format!("/reviews/{review}")).query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ApproveReviewBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ApproveReviewBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ApproveReviewBuilder").finish_non_exhaustive()
+    }
 }
 impl ApproveReviewBuilder {
     fn new() -> Self {
@@ -162,10 +202,18 @@ impl ApproveReviewBuilder {
     }
 }
 /// Approves a `Review` object, closing it and removing it from the list of reviews.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ApproveReview {
     inner: ApproveReviewBuilder,
     review: stripe_shared::ReviewId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ApproveReview {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ApproveReview").finish_non_exhaustive()
+    }
 }
 impl ApproveReview {
     /// Construct a new `ApproveReview`.

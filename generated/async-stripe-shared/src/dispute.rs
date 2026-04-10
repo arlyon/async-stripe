@@ -5,7 +5,8 @@
 /// Related guide: [Disputes and fraud](https://docs.stripe.com/disputes)
 ///
 /// For more details see <<https://stripe.com/docs/api/disputes/object>>.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct Dispute {
     /// Disputed amount.
@@ -47,6 +48,12 @@ pub struct Dispute {
     /// The current status of a dispute.
     /// Possible values include:`warning_needs_response`, `warning_under_review`, `warning_closed`, `needs_response`, `under_review`, `won`, `lost`, or `prevented`.
     pub status: DisputeStatus,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for Dispute {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("Dispute").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct DisputeBuilder {
@@ -336,9 +343,16 @@ impl std::fmt::Display for DisputeEnhancedEligibilityTypes {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for DisputeEnhancedEligibilityTypes {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for DisputeEnhancedEligibilityTypes {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(DisputeEnhancedEligibilityTypes)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -432,9 +446,16 @@ impl std::fmt::Display for DisputeStatus {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for DisputeStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for DisputeStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(DisputeStatus)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

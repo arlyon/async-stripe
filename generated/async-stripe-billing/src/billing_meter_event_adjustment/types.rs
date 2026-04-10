@@ -1,6 +1,7 @@
 /// A billing meter event adjustment is a resource that allows you to cancel a meter event.
 /// For example, you might create a billing meter event adjustment to cancel a meter event that was created in error or attached to the wrong customer.
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct BillingMeterEventAdjustment {
     /// Specifies which event to cancel.
@@ -16,6 +17,12 @@ pub struct BillingMeterEventAdjustment {
     /// Time period cancellation is not supported yet.
     #[cfg_attr(feature = "deserialize", serde(rename = "type"))]
     pub type_: stripe_billing::BillingMeterEventAdjustmentType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for BillingMeterEventAdjustment {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("BillingMeterEventAdjustment").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct BillingMeterEventAdjustmentBuilder {
@@ -193,9 +200,16 @@ impl std::fmt::Display for BillingMeterEventAdjustmentStatus {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for BillingMeterEventAdjustmentStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for BillingMeterEventAdjustmentStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(BillingMeterEventAdjustmentStatus)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -270,9 +284,16 @@ impl std::fmt::Display for BillingMeterEventAdjustmentType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for BillingMeterEventAdjustmentType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for BillingMeterEventAdjustmentType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(BillingMeterEventAdjustmentType)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for BillingMeterEventAdjustmentType {

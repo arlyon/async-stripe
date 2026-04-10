@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentPagesCheckoutSessionCustomerDetails {
@@ -21,6 +22,12 @@ pub struct PaymentPagesCheckoutSessionCustomerDetails {
     pub tax_exempt: Option<PaymentPagesCheckoutSessionCustomerDetailsTaxExempt>,
     /// The customer’s tax IDs after a completed Checkout Session.
     pub tax_ids: Option<Vec<stripe_shared::PaymentPagesCheckoutSessionTaxId>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentPagesCheckoutSessionCustomerDetails {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PaymentPagesCheckoutSessionCustomerDetails").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct PaymentPagesCheckoutSessionCustomerDetailsBuilder {
@@ -220,9 +227,17 @@ impl std::fmt::Display for PaymentPagesCheckoutSessionCustomerDetailsTaxExempt {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for PaymentPagesCheckoutSessionCustomerDetailsTaxExempt {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentPagesCheckoutSessionCustomerDetailsTaxExempt {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(PaymentPagesCheckoutSessionCustomerDetailsTaxExempt))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

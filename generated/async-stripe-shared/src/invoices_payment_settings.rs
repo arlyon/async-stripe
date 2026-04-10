@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct InvoicesPaymentSettings {
@@ -11,6 +12,12 @@ pub struct InvoicesPaymentSettings {
     /// card) to provide to the invoice’s PaymentIntent.
     /// If not set, Stripe attempts to automatically determine the types to use by looking at the invoice’s default payment method, the subscription’s default payment method, the customer’s default payment method, and your [invoice template settings](https://dashboard.stripe.com/settings/billing/invoice).
     pub payment_method_types: Option<Vec<InvoicesPaymentSettingsPaymentMethodTypes>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for InvoicesPaymentSettings {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("InvoicesPaymentSettings").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct InvoicesPaymentSettingsBuilder {
@@ -287,9 +294,17 @@ impl std::fmt::Display for InvoicesPaymentSettingsPaymentMethodTypes {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for InvoicesPaymentSettingsPaymentMethodTypes {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for InvoicesPaymentSettingsPaymentMethodTypes {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(InvoicesPaymentSettingsPaymentMethodTypes))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

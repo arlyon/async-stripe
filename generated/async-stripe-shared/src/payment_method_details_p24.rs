@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentMethodDetailsP24 {
@@ -11,6 +12,12 @@ pub struct PaymentMethodDetailsP24 {
     /// (if supported) at the time of authorization or settlement. They cannot be set or mutated.
     /// Przelewy24 rarely provides this information so the attribute is usually empty.
     pub verified_name: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentMethodDetailsP24 {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PaymentMethodDetailsP24").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct PaymentMethodDetailsP24Builder {
@@ -234,9 +241,16 @@ impl std::fmt::Display for PaymentMethodDetailsP24Bank {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for PaymentMethodDetailsP24Bank {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentMethodDetailsP24Bank {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(PaymentMethodDetailsP24Bank)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

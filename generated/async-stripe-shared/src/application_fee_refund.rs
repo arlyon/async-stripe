@@ -5,7 +5,8 @@
 /// Related guide: [Refunding application fees](https://docs.stripe.com/connect/destination-charges#refunding-app-fee).
 ///
 /// For more details see <<https://stripe.com/docs/api/fee_refunds/object>>.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct ApplicationFeeRefund {
     /// Amount, in cents (or local equivalent).
@@ -24,6 +25,12 @@ pub struct ApplicationFeeRefund {
     /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: Option<std::collections::HashMap<String, String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ApplicationFeeRefund {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ApplicationFeeRefund").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct ApplicationFeeRefundBuilder {

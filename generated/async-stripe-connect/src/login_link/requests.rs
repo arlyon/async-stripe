@@ -2,10 +2,18 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct CreateAccountLoginLinkBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountLoginLinkBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountLoginLinkBuilder").finish_non_exhaustive()
+    }
 }
 impl CreateAccountLoginLinkBuilder {
     fn new() -> Self {
@@ -15,10 +23,18 @@ impl CreateAccountLoginLinkBuilder {
 /// Creates a login link for a connected account to access the Express Dashboard.
 ///
 /// **You can only create login links for accounts that use the <a href="/connect/express-dashboard">Express Dashboard</a> and are connected to your platform**.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateAccountLoginLink {
     inner: CreateAccountLoginLinkBuilder,
     account: stripe_shared::AccountId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountLoginLink {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountLoginLink").finish_non_exhaustive()
+    }
 }
 impl CreateAccountLoginLink {
     /// Construct a new `CreateAccountLoginLink`.

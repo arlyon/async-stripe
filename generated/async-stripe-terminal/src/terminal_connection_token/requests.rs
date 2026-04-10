@@ -2,12 +2,20 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct CreateTerminalConnectionTokenBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     location: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTerminalConnectionTokenBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTerminalConnectionTokenBuilder").finish_non_exhaustive()
+    }
 }
 impl CreateTerminalConnectionTokenBuilder {
     fn new() -> Self {
@@ -16,9 +24,17 @@ impl CreateTerminalConnectionTokenBuilder {
 }
 /// To connect to a reader the Stripe Terminal SDK needs to retrieve a short-lived connection token from Stripe, proxied through your server.
 /// On your backend, add an endpoint that creates and returns a connection token.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTerminalConnectionToken {
     inner: CreateTerminalConnectionTokenBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTerminalConnectionToken {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTerminalConnectionToken").finish_non_exhaustive()
+    }
 }
 impl CreateTerminalConnectionToken {
     /// Construct a new `CreateTerminalConnectionToken`.

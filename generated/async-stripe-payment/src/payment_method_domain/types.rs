@@ -4,7 +4,8 @@
 /// Related guide: [Payment method domains](https://docs.stripe.com/payments/payment-methods/pmd-registration).
 ///
 /// For more details see <<https://stripe.com/docs/api/payment_method_domains/object>>.
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentMethodDomain {
     pub amazon_pay: stripe_payment::PaymentMethodDomainResourcePaymentMethodStatus,
@@ -25,6 +26,12 @@ pub struct PaymentMethodDomain {
     /// If the object exists in test mode, the value is `false`.
     pub livemode: bool,
     pub paypal: stripe_payment::PaymentMethodDomainResourcePaymentMethodStatus,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentMethodDomain {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PaymentMethodDomain").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct PaymentMethodDomainBuilder {

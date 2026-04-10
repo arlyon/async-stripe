@@ -1,4 +1,5 @@
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct BillingBillResourceInvoicingPricingPricing {
@@ -9,6 +10,12 @@ pub struct BillingBillResourceInvoicingPricingPricing {
     pub type_: BillingBillResourceInvoicingPricingPricingType,
     /// The unit amount (in the `currency` specified) of the item which contains a decimal value with at most 12 decimal places.
     pub unit_amount_decimal: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for BillingBillResourceInvoicingPricingPricing {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("BillingBillResourceInvoicingPricingPricing").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct BillingBillResourceInvoicingPricingPricingBuilder {
@@ -157,9 +164,17 @@ impl std::fmt::Display for BillingBillResourceInvoicingPricingPricingType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for BillingBillResourceInvoicingPricingPricingType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for BillingBillResourceInvoicingPricingPricingType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(BillingBillResourceInvoicingPricingPricingType))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

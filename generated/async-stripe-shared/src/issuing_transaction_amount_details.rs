@@ -1,4 +1,5 @@
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct IssuingTransactionAmountDetails {
@@ -6,6 +7,12 @@ pub struct IssuingTransactionAmountDetails {
     pub atm_fee: Option<i64>,
     /// The amount of cash requested by the cardholder.
     pub cashback_amount: Option<i64>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for IssuingTransactionAmountDetails {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("IssuingTransactionAmountDetails").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct IssuingTransactionAmountDetailsBuilder {

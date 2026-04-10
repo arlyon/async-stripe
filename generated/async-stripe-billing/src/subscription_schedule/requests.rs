@@ -2,7 +2,9 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ListSubscriptionScheduleBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     canceled_at: Option<stripe_types::RangeQueryTs>,
@@ -27,6 +29,12 @@ struct ListSubscriptionScheduleBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     starting_after: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListSubscriptionScheduleBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListSubscriptionScheduleBuilder").finish_non_exhaustive()
+    }
+}
 impl ListSubscriptionScheduleBuilder {
     fn new() -> Self {
         Self {
@@ -45,9 +53,17 @@ impl ListSubscriptionScheduleBuilder {
     }
 }
 /// Retrieves the list of your subscription schedules.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListSubscriptionSchedule {
     inner: ListSubscriptionScheduleBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListSubscriptionSchedule {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListSubscriptionSchedule").finish_non_exhaustive()
+    }
 }
 impl ListSubscriptionSchedule {
     /// Construct a new `ListSubscriptionSchedule`.
@@ -152,10 +168,18 @@ impl StripeRequest for ListSubscriptionSchedule {
         RequestBuilder::new(StripeMethod::Get, "/subscription_schedules").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RetrieveSubscriptionScheduleBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveSubscriptionScheduleBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveSubscriptionScheduleBuilder").finish_non_exhaustive()
+    }
 }
 impl RetrieveSubscriptionScheduleBuilder {
     fn new() -> Self {
@@ -164,10 +188,18 @@ impl RetrieveSubscriptionScheduleBuilder {
 }
 /// Retrieves the details of an existing subscription schedule.
 /// You only need to supply the unique subscription schedule identifier that was returned upon subscription schedule creation.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RetrieveSubscriptionSchedule {
     inner: RetrieveSubscriptionScheduleBuilder,
     schedule: stripe_shared::SubscriptionScheduleId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveSubscriptionSchedule {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveSubscriptionSchedule").finish_non_exhaustive()
+    }
 }
 impl RetrieveSubscriptionSchedule {
     /// Construct a new `RetrieveSubscriptionSchedule`.
@@ -207,7 +239,9 @@ impl StripeRequest for RetrieveSubscriptionSchedule {
             .query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct CreateSubscriptionScheduleBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     billing_mode: Option<CreateSubscriptionScheduleBillingMode>,
@@ -230,6 +264,12 @@ struct CreateSubscriptionScheduleBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     start_date: Option<CreateSubscriptionScheduleStartDate>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateSubscriptionScheduleBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateSubscriptionScheduleBuilder").finish_non_exhaustive()
+    }
+}
 impl CreateSubscriptionScheduleBuilder {
     fn new() -> Self {
         Self {
@@ -247,7 +287,9 @@ impl CreateSubscriptionScheduleBuilder {
     }
 }
 /// Controls how prorations and invoices for subscriptions are calculated and orchestrated.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateSubscriptionScheduleBillingMode {
     /// Configure behavior for flexible billing mode.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -257,18 +299,32 @@ pub struct CreateSubscriptionScheduleBillingMode {
     #[serde(rename = "type")]
     pub type_: CreateSubscriptionScheduleBillingModeType,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateSubscriptionScheduleBillingMode {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateSubscriptionScheduleBillingMode").finish_non_exhaustive()
+    }
+}
 impl CreateSubscriptionScheduleBillingMode {
     pub fn new(type_: impl Into<CreateSubscriptionScheduleBillingModeType>) -> Self {
         Self { flexible: None, type_: type_.into() }
     }
 }
 /// Configure behavior for flexible billing mode.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateSubscriptionScheduleBillingModeFlexible {
     /// Controls how invoices and invoice items display proration amounts and discount amounts.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub proration_discounts:
         Option<CreateSubscriptionScheduleBillingModeFlexibleProrationDiscounts>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateSubscriptionScheduleBillingModeFlexible {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateSubscriptionScheduleBillingModeFlexible").finish_non_exhaustive()
+    }
 }
 impl CreateSubscriptionScheduleBillingModeFlexible {
     pub fn new() -> Self {
@@ -324,9 +380,17 @@ impl std::fmt::Display for CreateSubscriptionScheduleBillingModeFlexibleProratio
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateSubscriptionScheduleBillingModeFlexibleProrationDiscounts {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateSubscriptionScheduleBillingModeFlexibleProrationDiscounts {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateSubscriptionScheduleBillingModeFlexibleProrationDiscounts))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateSubscriptionScheduleBillingModeFlexibleProrationDiscounts {
@@ -392,9 +456,17 @@ impl std::fmt::Display for CreateSubscriptionScheduleBillingModeType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateSubscriptionScheduleBillingModeType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateSubscriptionScheduleBillingModeType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateSubscriptionScheduleBillingModeType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateSubscriptionScheduleBillingModeType {
@@ -414,7 +486,9 @@ impl<'de> serde::Deserialize<'de> for CreateSubscriptionScheduleBillingModeType 
     }
 }
 /// Object representing the subscription schedule's default settings.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateSubscriptionScheduleDefaultSettings {
     /// A non-negative decimal between 0 and 100, with at most two decimal places.
     /// This represents the percentage of the subscription invoice total that will be transferred to the application owner's Stripe account.
@@ -459,6 +533,12 @@ pub struct CreateSubscriptionScheduleDefaultSettings {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub transfer_data: Option<TransferDataSpecs>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateSubscriptionScheduleDefaultSettings {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateSubscriptionScheduleDefaultSettings").finish_non_exhaustive()
+    }
+}
 impl CreateSubscriptionScheduleDefaultSettings {
     pub fn new() -> Self {
         Self {
@@ -481,7 +561,9 @@ impl Default for CreateSubscriptionScheduleDefaultSettings {
     }
 }
 /// Default settings for automatic tax computation.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateSubscriptionScheduleDefaultSettingsAutomaticTax {
     /// Enabled automatic tax calculation which will automatically compute tax rates on all invoices generated by the subscription.
     pub enabled: bool,
@@ -491,6 +573,13 @@ pub struct CreateSubscriptionScheduleDefaultSettingsAutomaticTax {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub liability: Option<CreateSubscriptionScheduleDefaultSettingsAutomaticTaxLiability>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateSubscriptionScheduleDefaultSettingsAutomaticTax {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateSubscriptionScheduleDefaultSettingsAutomaticTax")
+            .finish_non_exhaustive()
+    }
+}
 impl CreateSubscriptionScheduleDefaultSettingsAutomaticTax {
     pub fn new(enabled: impl Into<bool>) -> Self {
         Self { enabled: enabled.into(), liability: None }
@@ -499,7 +588,9 @@ impl CreateSubscriptionScheduleDefaultSettingsAutomaticTax {
 /// The account that's liable for tax.
 /// If set, the business address and tax registrations required to perform the tax calculation are loaded from this account.
 /// The tax transaction is returned in the report of the connected account.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateSubscriptionScheduleDefaultSettingsAutomaticTaxLiability {
     /// The connected account being referenced when `type` is `account`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -507,6 +598,13 @@ pub struct CreateSubscriptionScheduleDefaultSettingsAutomaticTaxLiability {
     /// Type of the account referenced in the request.
     #[serde(rename = "type")]
     pub type_: CreateSubscriptionScheduleDefaultSettingsAutomaticTaxLiabilityType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateSubscriptionScheduleDefaultSettingsAutomaticTaxLiability {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateSubscriptionScheduleDefaultSettingsAutomaticTaxLiability")
+            .finish_non_exhaustive()
+    }
 }
 impl CreateSubscriptionScheduleDefaultSettingsAutomaticTaxLiability {
     pub fn new(
@@ -559,9 +657,19 @@ impl std::fmt::Display for CreateSubscriptionScheduleDefaultSettingsAutomaticTax
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateSubscriptionScheduleDefaultSettingsAutomaticTaxLiabilityType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateSubscriptionScheduleDefaultSettingsAutomaticTaxLiabilityType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreateSubscriptionScheduleDefaultSettingsAutomaticTaxLiabilityType
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateSubscriptionScheduleDefaultSettingsAutomaticTaxLiabilityType {
@@ -628,9 +736,17 @@ impl std::fmt::Display for CreateSubscriptionScheduleDefaultSettingsBillingCycle
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateSubscriptionScheduleDefaultSettingsBillingCycleAnchor {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateSubscriptionScheduleDefaultSettingsBillingCycleAnchor {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateSubscriptionScheduleDefaultSettingsBillingCycleAnchor))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateSubscriptionScheduleDefaultSettingsBillingCycleAnchor {
@@ -696,9 +812,17 @@ impl std::fmt::Display for CreateSubscriptionScheduleDefaultSettingsCollectionMe
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateSubscriptionScheduleDefaultSettingsCollectionMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateSubscriptionScheduleDefaultSettingsCollectionMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateSubscriptionScheduleDefaultSettingsCollectionMethod))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateSubscriptionScheduleDefaultSettingsCollectionMethod {
@@ -718,7 +842,9 @@ impl<'de> serde::Deserialize<'de> for CreateSubscriptionScheduleDefaultSettingsC
     }
 }
 /// All invoices will be billed using the specified settings.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateSubscriptionScheduleDefaultSettingsInvoiceSettings {
     /// The account tax IDs associated with the subscription schedule.
     /// Will be set on invoices generated by the subscription schedule.
@@ -733,6 +859,13 @@ pub struct CreateSubscriptionScheduleDefaultSettingsInvoiceSettings {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub issuer: Option<CreateSubscriptionScheduleDefaultSettingsInvoiceSettingsIssuer>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateSubscriptionScheduleDefaultSettingsInvoiceSettings {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateSubscriptionScheduleDefaultSettingsInvoiceSettings")
+            .finish_non_exhaustive()
+    }
+}
 impl CreateSubscriptionScheduleDefaultSettingsInvoiceSettings {
     pub fn new() -> Self {
         Self { account_tax_ids: None, days_until_due: None, issuer: None }
@@ -745,7 +878,9 @@ impl Default for CreateSubscriptionScheduleDefaultSettingsInvoiceSettings {
 }
 /// The connected account that issues the invoice.
 /// The invoice is presented with the branding and support information of the specified account.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateSubscriptionScheduleDefaultSettingsInvoiceSettingsIssuer {
     /// The connected account being referenced when `type` is `account`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -753,6 +888,13 @@ pub struct CreateSubscriptionScheduleDefaultSettingsInvoiceSettingsIssuer {
     /// Type of the account referenced in the request.
     #[serde(rename = "type")]
     pub type_: CreateSubscriptionScheduleDefaultSettingsInvoiceSettingsIssuerType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateSubscriptionScheduleDefaultSettingsInvoiceSettingsIssuer {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateSubscriptionScheduleDefaultSettingsInvoiceSettingsIssuer")
+            .finish_non_exhaustive()
+    }
 }
 impl CreateSubscriptionScheduleDefaultSettingsInvoiceSettingsIssuer {
     pub fn new(
@@ -805,9 +947,19 @@ impl std::fmt::Display for CreateSubscriptionScheduleDefaultSettingsInvoiceSetti
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateSubscriptionScheduleDefaultSettingsInvoiceSettingsIssuerType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateSubscriptionScheduleDefaultSettingsInvoiceSettingsIssuerType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreateSubscriptionScheduleDefaultSettingsInvoiceSettingsIssuerType
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateSubscriptionScheduleDefaultSettingsInvoiceSettingsIssuerType {
@@ -831,7 +983,9 @@ impl<'de> serde::Deserialize<'de>
 /// List representing phases of the subscription schedule.
 /// Each phase can be customized to have different durations, plans, and coupons.
 /// If there are multiple phases, the `end_date` of one phase will always equal the `start_date` of the next phase.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateSubscriptionSchedulePhases {
     /// A list of prices and quantities that will generate invoice items appended to the next invoice for this phase.
     /// You may pass up to 20 items.
@@ -918,6 +1072,12 @@ pub struct CreateSubscriptionSchedulePhases {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub trial_end: Option<stripe_types::Timestamp>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateSubscriptionSchedulePhases {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateSubscriptionSchedulePhases").finish_non_exhaustive()
+    }
+}
 impl CreateSubscriptionSchedulePhases {
     pub fn new(items: impl Into<Vec<CreateSubscriptionSchedulePhasesItems>>) -> Self {
         Self {
@@ -947,7 +1107,9 @@ impl CreateSubscriptionSchedulePhases {
 }
 /// A list of prices and quantities that will generate invoice items appended to the next invoice for this phase.
 /// You may pass up to 20 items.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateSubscriptionSchedulePhasesAddInvoiceItems {
     /// The coupons to redeem into discounts for the item.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -976,6 +1138,12 @@ pub struct CreateSubscriptionSchedulePhasesAddInvoiceItems {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_rates: Option<Vec<String>>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateSubscriptionSchedulePhasesAddInvoiceItems {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateSubscriptionSchedulePhasesAddInvoiceItems").finish_non_exhaustive()
+    }
+}
 impl CreateSubscriptionSchedulePhasesAddInvoiceItems {
     pub fn new() -> Self {
         Self {
@@ -995,7 +1163,9 @@ impl Default for CreateSubscriptionSchedulePhasesAddInvoiceItems {
     }
 }
 /// The coupons to redeem into discounts for the item.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateSubscriptionSchedulePhasesAddInvoiceItemsDiscounts {
     /// ID of the coupon to create a new discount for.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1006,6 +1176,13 @@ pub struct CreateSubscriptionSchedulePhasesAddInvoiceItemsDiscounts {
     /// ID of the promotion code to create a new discount for.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub promotion_code: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateSubscriptionSchedulePhasesAddInvoiceItemsDiscounts {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateSubscriptionSchedulePhasesAddInvoiceItemsDiscounts")
+            .finish_non_exhaustive()
+    }
 }
 impl CreateSubscriptionSchedulePhasesAddInvoiceItemsDiscounts {
     pub fn new() -> Self {
@@ -1019,12 +1196,21 @@ impl Default for CreateSubscriptionSchedulePhasesAddInvoiceItemsDiscounts {
 }
 /// The period associated with this invoice item.
 /// If not set, `period.start.type` defaults to `max_item_period_start` and `period.end.type` defaults to `min_item_period_end`.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriod {
     /// End of the invoice item period.
     pub end: CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEnd,
     /// Start of the invoice item period.
     pub start: CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStart,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriod")
+            .finish_non_exhaustive()
+    }
 }
 impl CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriod {
     pub fn new(
@@ -1035,7 +1221,9 @@ impl CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriod {
     }
 }
 /// End of the invoice item period.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEnd {
     /// A precise Unix timestamp for the end of the invoice item period.
     /// Must be greater than or equal to `period.start`.
@@ -1044,6 +1232,13 @@ pub struct CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEnd {
     /// Select how to calculate the end of the invoice item period.
     #[serde(rename = "type")]
     pub type_: CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEndType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEnd {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEnd")
+            .finish_non_exhaustive()
+    }
 }
 impl CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEnd {
     pub fn new(
@@ -1099,9 +1294,17 @@ impl std::fmt::Display for CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriod
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEndType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEndType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEndType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEndType {
@@ -1121,7 +1324,9 @@ impl<'de> serde::Deserialize<'de> for CreateSubscriptionSchedulePhasesAddInvoice
     }
 }
 /// Start of the invoice item period.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStart {
     /// A precise Unix timestamp for the start of the invoice item period.
     /// Must be less than or equal to `period.end`.
@@ -1130,6 +1335,13 @@ pub struct CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStart {
     /// Select how to calculate the start of the invoice item period.
     #[serde(rename = "type")]
     pub type_: CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStartType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStart {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStart")
+            .finish_non_exhaustive()
+    }
 }
 impl CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStart {
     pub fn new(
@@ -1185,9 +1397,17 @@ impl std::fmt::Display for CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriod
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStartType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStartType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStartType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStartType {
@@ -1210,7 +1430,9 @@ impl<'de> serde::Deserialize<'de>
 }
 /// Data used to generate a new [Price](https://docs.stripe.com/api/prices) object inline.
 /// One of `price` or `price_data` is required.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateSubscriptionSchedulePhasesAddInvoiceItemsPriceData {
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
@@ -1230,6 +1452,13 @@ pub struct CreateSubscriptionSchedulePhasesAddInvoiceItemsPriceData {
     /// Only one of `unit_amount` and `unit_amount_decimal` can be set.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_amount_decimal: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateSubscriptionSchedulePhasesAddInvoiceItemsPriceData {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateSubscriptionSchedulePhasesAddInvoiceItemsPriceData")
+            .finish_non_exhaustive()
+    }
 }
 impl CreateSubscriptionSchedulePhasesAddInvoiceItemsPriceData {
     pub fn new(currency: impl Into<stripe_types::Currency>, product: impl Into<String>) -> Self {
@@ -1292,9 +1521,19 @@ impl std::fmt::Display for CreateSubscriptionSchedulePhasesAddInvoiceItemsPriceD
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateSubscriptionSchedulePhasesAddInvoiceItemsPriceDataTaxBehavior {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateSubscriptionSchedulePhasesAddInvoiceItemsPriceDataTaxBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreateSubscriptionSchedulePhasesAddInvoiceItemsPriceDataTaxBehavior
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateSubscriptionSchedulePhasesAddInvoiceItemsPriceDataTaxBehavior {
@@ -1316,7 +1555,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Automatic tax settings for this phase.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateSubscriptionSchedulePhasesAutomaticTax {
     /// Enabled automatic tax calculation which will automatically compute tax rates on all invoices generated by the subscription.
     pub enabled: bool,
@@ -1326,6 +1567,12 @@ pub struct CreateSubscriptionSchedulePhasesAutomaticTax {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub liability: Option<CreateSubscriptionSchedulePhasesAutomaticTaxLiability>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateSubscriptionSchedulePhasesAutomaticTax {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateSubscriptionSchedulePhasesAutomaticTax").finish_non_exhaustive()
+    }
+}
 impl CreateSubscriptionSchedulePhasesAutomaticTax {
     pub fn new(enabled: impl Into<bool>) -> Self {
         Self { enabled: enabled.into(), liability: None }
@@ -1334,7 +1581,9 @@ impl CreateSubscriptionSchedulePhasesAutomaticTax {
 /// The account that's liable for tax.
 /// If set, the business address and tax registrations required to perform the tax calculation are loaded from this account.
 /// The tax transaction is returned in the report of the connected account.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateSubscriptionSchedulePhasesAutomaticTaxLiability {
     /// The connected account being referenced when `type` is `account`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1342,6 +1591,13 @@ pub struct CreateSubscriptionSchedulePhasesAutomaticTaxLiability {
     /// Type of the account referenced in the request.
     #[serde(rename = "type")]
     pub type_: CreateSubscriptionSchedulePhasesAutomaticTaxLiabilityType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateSubscriptionSchedulePhasesAutomaticTaxLiability {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateSubscriptionSchedulePhasesAutomaticTaxLiability")
+            .finish_non_exhaustive()
+    }
 }
 impl CreateSubscriptionSchedulePhasesAutomaticTaxLiability {
     pub fn new(
@@ -1394,9 +1650,17 @@ impl std::fmt::Display for CreateSubscriptionSchedulePhasesAutomaticTaxLiability
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateSubscriptionSchedulePhasesAutomaticTaxLiabilityType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateSubscriptionSchedulePhasesAutomaticTaxLiabilityType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateSubscriptionSchedulePhasesAutomaticTaxLiabilityType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateSubscriptionSchedulePhasesAutomaticTaxLiabilityType {
@@ -1461,9 +1725,17 @@ impl std::fmt::Display for CreateSubscriptionSchedulePhasesBillingCycleAnchor {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateSubscriptionSchedulePhasesBillingCycleAnchor {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateSubscriptionSchedulePhasesBillingCycleAnchor {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateSubscriptionSchedulePhasesBillingCycleAnchor))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateSubscriptionSchedulePhasesBillingCycleAnchor {
@@ -1529,9 +1801,17 @@ impl std::fmt::Display for CreateSubscriptionSchedulePhasesCollectionMethod {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateSubscriptionSchedulePhasesCollectionMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateSubscriptionSchedulePhasesCollectionMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateSubscriptionSchedulePhasesCollectionMethod))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateSubscriptionSchedulePhasesCollectionMethod {
@@ -1553,7 +1833,9 @@ impl<'de> serde::Deserialize<'de> for CreateSubscriptionSchedulePhasesCollection
 /// The coupons to redeem into discounts for the schedule phase.
 /// If not specified, inherits the discount from the subscription's customer.
 /// Pass an empty string to avoid inheriting any discounts.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateSubscriptionSchedulePhasesDiscounts {
     /// ID of the coupon to create a new discount for.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1564,6 +1846,12 @@ pub struct CreateSubscriptionSchedulePhasesDiscounts {
     /// ID of the promotion code to create a new discount for.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub promotion_code: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateSubscriptionSchedulePhasesDiscounts {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateSubscriptionSchedulePhasesDiscounts").finish_non_exhaustive()
+    }
 }
 impl CreateSubscriptionSchedulePhasesDiscounts {
     pub fn new() -> Self {
@@ -1576,13 +1864,21 @@ impl Default for CreateSubscriptionSchedulePhasesDiscounts {
     }
 }
 /// The number of intervals the phase should last. If set, `end_date` must not be set.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateSubscriptionSchedulePhasesDuration {
     /// Specifies phase duration. Either `day`, `week`, `month` or `year`.
     pub interval: CreateSubscriptionSchedulePhasesDurationInterval,
     /// The multiplier applied to the interval.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub interval_count: Option<u64>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateSubscriptionSchedulePhasesDuration {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateSubscriptionSchedulePhasesDuration").finish_non_exhaustive()
+    }
 }
 impl CreateSubscriptionSchedulePhasesDuration {
     pub fn new(interval: impl Into<CreateSubscriptionSchedulePhasesDurationInterval>) -> Self {
@@ -1639,9 +1935,17 @@ impl std::fmt::Display for CreateSubscriptionSchedulePhasesDurationInterval {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateSubscriptionSchedulePhasesDurationInterval {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateSubscriptionSchedulePhasesDurationInterval {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateSubscriptionSchedulePhasesDurationInterval))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateSubscriptionSchedulePhasesDurationInterval {
@@ -1661,7 +1965,9 @@ impl<'de> serde::Deserialize<'de> for CreateSubscriptionSchedulePhasesDurationIn
     }
 }
 /// All invoices will be billed using the specified settings.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateSubscriptionSchedulePhasesInvoiceSettings {
     /// The account tax IDs associated with this phase of the subscription schedule.
     /// Will be set on invoices generated by this phase of the subscription schedule.
@@ -1676,6 +1982,12 @@ pub struct CreateSubscriptionSchedulePhasesInvoiceSettings {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub issuer: Option<CreateSubscriptionSchedulePhasesInvoiceSettingsIssuer>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateSubscriptionSchedulePhasesInvoiceSettings {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateSubscriptionSchedulePhasesInvoiceSettings").finish_non_exhaustive()
+    }
+}
 impl CreateSubscriptionSchedulePhasesInvoiceSettings {
     pub fn new() -> Self {
         Self { account_tax_ids: None, days_until_due: None, issuer: None }
@@ -1688,7 +2000,9 @@ impl Default for CreateSubscriptionSchedulePhasesInvoiceSettings {
 }
 /// The connected account that issues the invoice.
 /// The invoice is presented with the branding and support information of the specified account.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateSubscriptionSchedulePhasesInvoiceSettingsIssuer {
     /// The connected account being referenced when `type` is `account`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1696,6 +2010,13 @@ pub struct CreateSubscriptionSchedulePhasesInvoiceSettingsIssuer {
     /// Type of the account referenced in the request.
     #[serde(rename = "type")]
     pub type_: CreateSubscriptionSchedulePhasesInvoiceSettingsIssuerType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateSubscriptionSchedulePhasesInvoiceSettingsIssuer {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateSubscriptionSchedulePhasesInvoiceSettingsIssuer")
+            .finish_non_exhaustive()
+    }
 }
 impl CreateSubscriptionSchedulePhasesInvoiceSettingsIssuer {
     pub fn new(
@@ -1748,9 +2069,17 @@ impl std::fmt::Display for CreateSubscriptionSchedulePhasesInvoiceSettingsIssuer
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateSubscriptionSchedulePhasesInvoiceSettingsIssuerType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateSubscriptionSchedulePhasesInvoiceSettingsIssuerType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateSubscriptionSchedulePhasesInvoiceSettingsIssuerType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateSubscriptionSchedulePhasesInvoiceSettingsIssuerType {
@@ -1770,7 +2099,9 @@ impl<'de> serde::Deserialize<'de> for CreateSubscriptionSchedulePhasesInvoiceSet
     }
 }
 /// List of configuration items, each with an attached price, to apply during this phase of the subscription schedule.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateSubscriptionSchedulePhasesItems {
     /// Define thresholds at which an invoice will be sent, and the subscription advanced to a new billing period.
     /// Pass an empty string to remove previously-defined thresholds.
@@ -1804,6 +2135,12 @@ pub struct CreateSubscriptionSchedulePhasesItems {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_rates: Option<Vec<String>>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateSubscriptionSchedulePhasesItems {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateSubscriptionSchedulePhasesItems").finish_non_exhaustive()
+    }
+}
 impl CreateSubscriptionSchedulePhasesItems {
     pub fn new() -> Self {
         Self {
@@ -1824,7 +2161,9 @@ impl Default for CreateSubscriptionSchedulePhasesItems {
     }
 }
 /// The coupons to redeem into discounts for the subscription item.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateSubscriptionSchedulePhasesItemsDiscounts {
     /// ID of the coupon to create a new discount for.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1835,6 +2174,12 @@ pub struct CreateSubscriptionSchedulePhasesItemsDiscounts {
     /// ID of the promotion code to create a new discount for.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub promotion_code: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateSubscriptionSchedulePhasesItemsDiscounts {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateSubscriptionSchedulePhasesItemsDiscounts").finish_non_exhaustive()
+    }
 }
 impl CreateSubscriptionSchedulePhasesItemsDiscounts {
     pub fn new() -> Self {
@@ -1847,7 +2192,9 @@ impl Default for CreateSubscriptionSchedulePhasesItemsDiscounts {
     }
 }
 /// Data used to generate a new [Price](https://docs.stripe.com/api/prices) object inline.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateSubscriptionSchedulePhasesItemsPriceData {
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
@@ -1870,6 +2217,12 @@ pub struct CreateSubscriptionSchedulePhasesItemsPriceData {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_amount_decimal: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateSubscriptionSchedulePhasesItemsPriceData {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateSubscriptionSchedulePhasesItemsPriceData").finish_non_exhaustive()
+    }
+}
 impl CreateSubscriptionSchedulePhasesItemsPriceData {
     pub fn new(
         currency: impl Into<stripe_types::Currency>,
@@ -1887,7 +2240,9 @@ impl CreateSubscriptionSchedulePhasesItemsPriceData {
     }
 }
 /// The recurring components of a price such as `interval` and `interval_count`.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateSubscriptionSchedulePhasesItemsPriceDataRecurring {
     /// Specifies billing frequency. Either `day`, `week`, `month` or `year`.
     pub interval: CreateSubscriptionSchedulePhasesItemsPriceDataRecurringInterval,
@@ -1896,6 +2251,13 @@ pub struct CreateSubscriptionSchedulePhasesItemsPriceDataRecurring {
     /// Maximum of three years interval allowed (3 years, 36 months, or 156 weeks).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub interval_count: Option<u64>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateSubscriptionSchedulePhasesItemsPriceDataRecurring {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateSubscriptionSchedulePhasesItemsPriceDataRecurring")
+            .finish_non_exhaustive()
+    }
 }
 impl CreateSubscriptionSchedulePhasesItemsPriceDataRecurring {
     pub fn new(
@@ -1954,9 +2316,17 @@ impl std::fmt::Display for CreateSubscriptionSchedulePhasesItemsPriceDataRecurri
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateSubscriptionSchedulePhasesItemsPriceDataRecurringInterval {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateSubscriptionSchedulePhasesItemsPriceDataRecurringInterval {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateSubscriptionSchedulePhasesItemsPriceDataRecurringInterval))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateSubscriptionSchedulePhasesItemsPriceDataRecurringInterval {
@@ -2027,9 +2397,17 @@ impl std::fmt::Display for CreateSubscriptionSchedulePhasesItemsPriceDataTaxBeha
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateSubscriptionSchedulePhasesItemsPriceDataTaxBehavior {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateSubscriptionSchedulePhasesItemsPriceDataTaxBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateSubscriptionSchedulePhasesItemsPriceDataTaxBehavior))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateSubscriptionSchedulePhasesItemsPriceDataTaxBehavior {
@@ -2096,9 +2474,17 @@ impl std::fmt::Display for CreateSubscriptionSchedulePhasesProrationBehavior {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateSubscriptionSchedulePhasesProrationBehavior {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateSubscriptionSchedulePhasesProrationBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateSubscriptionSchedulePhasesProrationBehavior))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateSubscriptionSchedulePhasesProrationBehavior {
@@ -2120,18 +2506,34 @@ impl<'de> serde::Deserialize<'de> for CreateSubscriptionSchedulePhasesProrationB
 /// When the subscription schedule starts.
 /// We recommend using `now` so that it starts the subscription immediately.
 /// You can also use a Unix timestamp to backdate the subscription so that it starts on a past date, or set a future date for the subscription to start on.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 #[serde(rename_all = "snake_case")]
 pub enum CreateSubscriptionScheduleStartDate {
     Now,
     #[serde(untagged)]
     Timestamp(stripe_types::Timestamp),
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateSubscriptionScheduleStartDate {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateSubscriptionScheduleStartDate").finish_non_exhaustive()
+    }
+}
 /// Creates a new subscription schedule object.
 /// Each customer can have up to 500 active or scheduled subscriptions.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateSubscriptionSchedule {
     inner: CreateSubscriptionScheduleBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateSubscriptionSchedule {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateSubscriptionSchedule").finish_non_exhaustive()
+    }
 }
 impl CreateSubscriptionSchedule {
     /// Construct a new `CreateSubscriptionSchedule`.
@@ -2247,7 +2649,9 @@ impl StripeRequest for CreateSubscriptionSchedule {
         RequestBuilder::new(StripeMethod::Post, "/subscription_schedules").form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct UpdateSubscriptionScheduleBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     default_settings: Option<UpdateSubscriptionScheduleDefaultSettings>,
@@ -2262,6 +2666,12 @@ struct UpdateSubscriptionScheduleBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     proration_behavior: Option<UpdateSubscriptionScheduleProrationBehavior>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateSubscriptionScheduleBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateSubscriptionScheduleBuilder").finish_non_exhaustive()
+    }
+}
 impl UpdateSubscriptionScheduleBuilder {
     fn new() -> Self {
         Self {
@@ -2275,7 +2685,9 @@ impl UpdateSubscriptionScheduleBuilder {
     }
 }
 /// Object representing the subscription schedule's default settings.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateSubscriptionScheduleDefaultSettings {
     /// A non-negative decimal between 0 and 100, with at most two decimal places.
     /// This represents the percentage of the subscription invoice total that will be transferred to the application owner's Stripe account.
@@ -2320,6 +2732,12 @@ pub struct UpdateSubscriptionScheduleDefaultSettings {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub transfer_data: Option<TransferDataSpecs>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateSubscriptionScheduleDefaultSettings {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateSubscriptionScheduleDefaultSettings").finish_non_exhaustive()
+    }
+}
 impl UpdateSubscriptionScheduleDefaultSettings {
     pub fn new() -> Self {
         Self {
@@ -2342,7 +2760,9 @@ impl Default for UpdateSubscriptionScheduleDefaultSettings {
     }
 }
 /// Default settings for automatic tax computation.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateSubscriptionScheduleDefaultSettingsAutomaticTax {
     /// Enabled automatic tax calculation which will automatically compute tax rates on all invoices generated by the subscription.
     pub enabled: bool,
@@ -2352,6 +2772,13 @@ pub struct UpdateSubscriptionScheduleDefaultSettingsAutomaticTax {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub liability: Option<UpdateSubscriptionScheduleDefaultSettingsAutomaticTaxLiability>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateSubscriptionScheduleDefaultSettingsAutomaticTax {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateSubscriptionScheduleDefaultSettingsAutomaticTax")
+            .finish_non_exhaustive()
+    }
+}
 impl UpdateSubscriptionScheduleDefaultSettingsAutomaticTax {
     pub fn new(enabled: impl Into<bool>) -> Self {
         Self { enabled: enabled.into(), liability: None }
@@ -2360,7 +2787,9 @@ impl UpdateSubscriptionScheduleDefaultSettingsAutomaticTax {
 /// The account that's liable for tax.
 /// If set, the business address and tax registrations required to perform the tax calculation are loaded from this account.
 /// The tax transaction is returned in the report of the connected account.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateSubscriptionScheduleDefaultSettingsAutomaticTaxLiability {
     /// The connected account being referenced when `type` is `account`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2368,6 +2797,13 @@ pub struct UpdateSubscriptionScheduleDefaultSettingsAutomaticTaxLiability {
     /// Type of the account referenced in the request.
     #[serde(rename = "type")]
     pub type_: UpdateSubscriptionScheduleDefaultSettingsAutomaticTaxLiabilityType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateSubscriptionScheduleDefaultSettingsAutomaticTaxLiability {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateSubscriptionScheduleDefaultSettingsAutomaticTaxLiability")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdateSubscriptionScheduleDefaultSettingsAutomaticTaxLiability {
     pub fn new(
@@ -2420,9 +2856,19 @@ impl std::fmt::Display for UpdateSubscriptionScheduleDefaultSettingsAutomaticTax
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdateSubscriptionScheduleDefaultSettingsAutomaticTaxLiabilityType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateSubscriptionScheduleDefaultSettingsAutomaticTaxLiabilityType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdateSubscriptionScheduleDefaultSettingsAutomaticTaxLiabilityType
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdateSubscriptionScheduleDefaultSettingsAutomaticTaxLiabilityType {
@@ -2489,9 +2935,17 @@ impl std::fmt::Display for UpdateSubscriptionScheduleDefaultSettingsBillingCycle
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdateSubscriptionScheduleDefaultSettingsBillingCycleAnchor {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateSubscriptionScheduleDefaultSettingsBillingCycleAnchor {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdateSubscriptionScheduleDefaultSettingsBillingCycleAnchor))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdateSubscriptionScheduleDefaultSettingsBillingCycleAnchor {
@@ -2557,9 +3011,17 @@ impl std::fmt::Display for UpdateSubscriptionScheduleDefaultSettingsCollectionMe
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdateSubscriptionScheduleDefaultSettingsCollectionMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateSubscriptionScheduleDefaultSettingsCollectionMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdateSubscriptionScheduleDefaultSettingsCollectionMethod))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdateSubscriptionScheduleDefaultSettingsCollectionMethod {
@@ -2579,7 +3041,9 @@ impl<'de> serde::Deserialize<'de> for UpdateSubscriptionScheduleDefaultSettingsC
     }
 }
 /// All invoices will be billed using the specified settings.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateSubscriptionScheduleDefaultSettingsInvoiceSettings {
     /// The account tax IDs associated with the subscription schedule.
     /// Will be set on invoices generated by the subscription schedule.
@@ -2594,6 +3058,13 @@ pub struct UpdateSubscriptionScheduleDefaultSettingsInvoiceSettings {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub issuer: Option<UpdateSubscriptionScheduleDefaultSettingsInvoiceSettingsIssuer>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateSubscriptionScheduleDefaultSettingsInvoiceSettings {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateSubscriptionScheduleDefaultSettingsInvoiceSettings")
+            .finish_non_exhaustive()
+    }
+}
 impl UpdateSubscriptionScheduleDefaultSettingsInvoiceSettings {
     pub fn new() -> Self {
         Self { account_tax_ids: None, days_until_due: None, issuer: None }
@@ -2606,7 +3077,9 @@ impl Default for UpdateSubscriptionScheduleDefaultSettingsInvoiceSettings {
 }
 /// The connected account that issues the invoice.
 /// The invoice is presented with the branding and support information of the specified account.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateSubscriptionScheduleDefaultSettingsInvoiceSettingsIssuer {
     /// The connected account being referenced when `type` is `account`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2614,6 +3087,13 @@ pub struct UpdateSubscriptionScheduleDefaultSettingsInvoiceSettingsIssuer {
     /// Type of the account referenced in the request.
     #[serde(rename = "type")]
     pub type_: UpdateSubscriptionScheduleDefaultSettingsInvoiceSettingsIssuerType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateSubscriptionScheduleDefaultSettingsInvoiceSettingsIssuer {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateSubscriptionScheduleDefaultSettingsInvoiceSettingsIssuer")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdateSubscriptionScheduleDefaultSettingsInvoiceSettingsIssuer {
     pub fn new(
@@ -2666,9 +3146,19 @@ impl std::fmt::Display for UpdateSubscriptionScheduleDefaultSettingsInvoiceSetti
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdateSubscriptionScheduleDefaultSettingsInvoiceSettingsIssuerType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateSubscriptionScheduleDefaultSettingsInvoiceSettingsIssuerType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdateSubscriptionScheduleDefaultSettingsInvoiceSettingsIssuerType
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdateSubscriptionScheduleDefaultSettingsInvoiceSettingsIssuerType {
@@ -2693,7 +3183,9 @@ impl<'de> serde::Deserialize<'de>
 /// Each phase can be customized to have different durations, plans, and coupons.
 /// If there are multiple phases, the `end_date` of one phase will always equal the `start_date` of the next phase.
 /// Note that past phases can be omitted.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateSubscriptionSchedulePhases {
     /// A list of prices and quantities that will generate invoice items appended to the next invoice for this phase.
     /// You may pass up to 20 items.
@@ -2784,6 +3276,12 @@ pub struct UpdateSubscriptionSchedulePhases {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub trial_end: Option<UpdateSubscriptionSchedulePhasesTrialEnd>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateSubscriptionSchedulePhases {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateSubscriptionSchedulePhases").finish_non_exhaustive()
+    }
+}
 impl UpdateSubscriptionSchedulePhases {
     pub fn new(items: impl Into<Vec<UpdateSubscriptionSchedulePhasesItems>>) -> Self {
         Self {
@@ -2814,7 +3312,9 @@ impl UpdateSubscriptionSchedulePhases {
 }
 /// A list of prices and quantities that will generate invoice items appended to the next invoice for this phase.
 /// You may pass up to 20 items.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateSubscriptionSchedulePhasesAddInvoiceItems {
     /// The coupons to redeem into discounts for the item.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2843,6 +3343,12 @@ pub struct UpdateSubscriptionSchedulePhasesAddInvoiceItems {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_rates: Option<Vec<String>>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateSubscriptionSchedulePhasesAddInvoiceItems {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateSubscriptionSchedulePhasesAddInvoiceItems").finish_non_exhaustive()
+    }
+}
 impl UpdateSubscriptionSchedulePhasesAddInvoiceItems {
     pub fn new() -> Self {
         Self {
@@ -2862,7 +3368,9 @@ impl Default for UpdateSubscriptionSchedulePhasesAddInvoiceItems {
     }
 }
 /// The coupons to redeem into discounts for the item.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateSubscriptionSchedulePhasesAddInvoiceItemsDiscounts {
     /// ID of the coupon to create a new discount for.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2873,6 +3381,13 @@ pub struct UpdateSubscriptionSchedulePhasesAddInvoiceItemsDiscounts {
     /// ID of the promotion code to create a new discount for.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub promotion_code: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateSubscriptionSchedulePhasesAddInvoiceItemsDiscounts {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateSubscriptionSchedulePhasesAddInvoiceItemsDiscounts")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdateSubscriptionSchedulePhasesAddInvoiceItemsDiscounts {
     pub fn new() -> Self {
@@ -2886,12 +3401,21 @@ impl Default for UpdateSubscriptionSchedulePhasesAddInvoiceItemsDiscounts {
 }
 /// The period associated with this invoice item.
 /// If not set, `period.start.type` defaults to `max_item_period_start` and `period.end.type` defaults to `min_item_period_end`.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriod {
     /// End of the invoice item period.
     pub end: UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEnd,
     /// Start of the invoice item period.
     pub start: UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStart,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriod")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriod {
     pub fn new(
@@ -2902,7 +3426,9 @@ impl UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriod {
     }
 }
 /// End of the invoice item period.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEnd {
     /// A precise Unix timestamp for the end of the invoice item period.
     /// Must be greater than or equal to `period.start`.
@@ -2911,6 +3437,13 @@ pub struct UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEnd {
     /// Select how to calculate the end of the invoice item period.
     #[serde(rename = "type")]
     pub type_: UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEndType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEnd {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEnd")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEnd {
     pub fn new(
@@ -2966,9 +3499,17 @@ impl std::fmt::Display for UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriod
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEndType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEndType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEndType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodEndType {
@@ -2988,7 +3529,9 @@ impl<'de> serde::Deserialize<'de> for UpdateSubscriptionSchedulePhasesAddInvoice
     }
 }
 /// Start of the invoice item period.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStart {
     /// A precise Unix timestamp for the start of the invoice item period.
     /// Must be less than or equal to `period.end`.
@@ -2997,6 +3540,13 @@ pub struct UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStart {
     /// Select how to calculate the start of the invoice item period.
     #[serde(rename = "type")]
     pub type_: UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStartType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStart {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStart")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStart {
     pub fn new(
@@ -3052,9 +3602,17 @@ impl std::fmt::Display for UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriod
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStartType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStartType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStartType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdateSubscriptionSchedulePhasesAddInvoiceItemsPeriodStartType {
@@ -3077,7 +3635,9 @@ impl<'de> serde::Deserialize<'de>
 }
 /// Data used to generate a new [Price](https://docs.stripe.com/api/prices) object inline.
 /// One of `price` or `price_data` is required.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateSubscriptionSchedulePhasesAddInvoiceItemsPriceData {
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
@@ -3097,6 +3657,13 @@ pub struct UpdateSubscriptionSchedulePhasesAddInvoiceItemsPriceData {
     /// Only one of `unit_amount` and `unit_amount_decimal` can be set.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_amount_decimal: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateSubscriptionSchedulePhasesAddInvoiceItemsPriceData {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateSubscriptionSchedulePhasesAddInvoiceItemsPriceData")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdateSubscriptionSchedulePhasesAddInvoiceItemsPriceData {
     pub fn new(currency: impl Into<stripe_types::Currency>, product: impl Into<String>) -> Self {
@@ -3159,9 +3726,19 @@ impl std::fmt::Display for UpdateSubscriptionSchedulePhasesAddInvoiceItemsPriceD
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdateSubscriptionSchedulePhasesAddInvoiceItemsPriceDataTaxBehavior {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateSubscriptionSchedulePhasesAddInvoiceItemsPriceDataTaxBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdateSubscriptionSchedulePhasesAddInvoiceItemsPriceDataTaxBehavior
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdateSubscriptionSchedulePhasesAddInvoiceItemsPriceDataTaxBehavior {
@@ -3183,7 +3760,9 @@ impl<'de> serde::Deserialize<'de>
     }
 }
 /// Automatic tax settings for this phase.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateSubscriptionSchedulePhasesAutomaticTax {
     /// Enabled automatic tax calculation which will automatically compute tax rates on all invoices generated by the subscription.
     pub enabled: bool,
@@ -3193,6 +3772,12 @@ pub struct UpdateSubscriptionSchedulePhasesAutomaticTax {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub liability: Option<UpdateSubscriptionSchedulePhasesAutomaticTaxLiability>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateSubscriptionSchedulePhasesAutomaticTax {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateSubscriptionSchedulePhasesAutomaticTax").finish_non_exhaustive()
+    }
+}
 impl UpdateSubscriptionSchedulePhasesAutomaticTax {
     pub fn new(enabled: impl Into<bool>) -> Self {
         Self { enabled: enabled.into(), liability: None }
@@ -3201,7 +3786,9 @@ impl UpdateSubscriptionSchedulePhasesAutomaticTax {
 /// The account that's liable for tax.
 /// If set, the business address and tax registrations required to perform the tax calculation are loaded from this account.
 /// The tax transaction is returned in the report of the connected account.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateSubscriptionSchedulePhasesAutomaticTaxLiability {
     /// The connected account being referenced when `type` is `account`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3209,6 +3796,13 @@ pub struct UpdateSubscriptionSchedulePhasesAutomaticTaxLiability {
     /// Type of the account referenced in the request.
     #[serde(rename = "type")]
     pub type_: UpdateSubscriptionSchedulePhasesAutomaticTaxLiabilityType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateSubscriptionSchedulePhasesAutomaticTaxLiability {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateSubscriptionSchedulePhasesAutomaticTaxLiability")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdateSubscriptionSchedulePhasesAutomaticTaxLiability {
     pub fn new(
@@ -3261,9 +3855,17 @@ impl std::fmt::Display for UpdateSubscriptionSchedulePhasesAutomaticTaxLiability
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdateSubscriptionSchedulePhasesAutomaticTaxLiabilityType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateSubscriptionSchedulePhasesAutomaticTaxLiabilityType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdateSubscriptionSchedulePhasesAutomaticTaxLiabilityType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdateSubscriptionSchedulePhasesAutomaticTaxLiabilityType {
@@ -3328,9 +3930,17 @@ impl std::fmt::Display for UpdateSubscriptionSchedulePhasesBillingCycleAnchor {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdateSubscriptionSchedulePhasesBillingCycleAnchor {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateSubscriptionSchedulePhasesBillingCycleAnchor {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdateSubscriptionSchedulePhasesBillingCycleAnchor))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdateSubscriptionSchedulePhasesBillingCycleAnchor {
@@ -3396,9 +4006,17 @@ impl std::fmt::Display for UpdateSubscriptionSchedulePhasesCollectionMethod {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdateSubscriptionSchedulePhasesCollectionMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateSubscriptionSchedulePhasesCollectionMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdateSubscriptionSchedulePhasesCollectionMethod))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdateSubscriptionSchedulePhasesCollectionMethod {
@@ -3420,7 +4038,9 @@ impl<'de> serde::Deserialize<'de> for UpdateSubscriptionSchedulePhasesCollection
 /// The coupons to redeem into discounts for the schedule phase.
 /// If not specified, inherits the discount from the subscription's customer.
 /// Pass an empty string to avoid inheriting any discounts.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateSubscriptionSchedulePhasesDiscounts {
     /// ID of the coupon to create a new discount for.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3431,6 +4051,12 @@ pub struct UpdateSubscriptionSchedulePhasesDiscounts {
     /// ID of the promotion code to create a new discount for.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub promotion_code: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateSubscriptionSchedulePhasesDiscounts {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateSubscriptionSchedulePhasesDiscounts").finish_non_exhaustive()
+    }
 }
 impl UpdateSubscriptionSchedulePhasesDiscounts {
     pub fn new() -> Self {
@@ -3443,13 +4069,21 @@ impl Default for UpdateSubscriptionSchedulePhasesDiscounts {
     }
 }
 /// The number of intervals the phase should last. If set, `end_date` must not be set.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateSubscriptionSchedulePhasesDuration {
     /// Specifies phase duration. Either `day`, `week`, `month` or `year`.
     pub interval: UpdateSubscriptionSchedulePhasesDurationInterval,
     /// The multiplier applied to the interval.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub interval_count: Option<u64>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateSubscriptionSchedulePhasesDuration {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateSubscriptionSchedulePhasesDuration").finish_non_exhaustive()
+    }
 }
 impl UpdateSubscriptionSchedulePhasesDuration {
     pub fn new(interval: impl Into<UpdateSubscriptionSchedulePhasesDurationInterval>) -> Self {
@@ -3506,9 +4140,17 @@ impl std::fmt::Display for UpdateSubscriptionSchedulePhasesDurationInterval {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdateSubscriptionSchedulePhasesDurationInterval {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateSubscriptionSchedulePhasesDurationInterval {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdateSubscriptionSchedulePhasesDurationInterval))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdateSubscriptionSchedulePhasesDurationInterval {
@@ -3528,15 +4170,25 @@ impl<'de> serde::Deserialize<'de> for UpdateSubscriptionSchedulePhasesDurationIn
     }
 }
 /// The date at which this phase of the subscription schedule ends. If set, `duration` must not be set.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 #[serde(rename_all = "snake_case")]
 pub enum UpdateSubscriptionSchedulePhasesEndDate {
     Now,
     #[serde(untagged)]
     Timestamp(stripe_types::Timestamp),
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateSubscriptionSchedulePhasesEndDate {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateSubscriptionSchedulePhasesEndDate").finish_non_exhaustive()
+    }
+}
 /// All invoices will be billed using the specified settings.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateSubscriptionSchedulePhasesInvoiceSettings {
     /// The account tax IDs associated with this phase of the subscription schedule.
     /// Will be set on invoices generated by this phase of the subscription schedule.
@@ -3551,6 +4203,12 @@ pub struct UpdateSubscriptionSchedulePhasesInvoiceSettings {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub issuer: Option<UpdateSubscriptionSchedulePhasesInvoiceSettingsIssuer>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateSubscriptionSchedulePhasesInvoiceSettings {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateSubscriptionSchedulePhasesInvoiceSettings").finish_non_exhaustive()
+    }
+}
 impl UpdateSubscriptionSchedulePhasesInvoiceSettings {
     pub fn new() -> Self {
         Self { account_tax_ids: None, days_until_due: None, issuer: None }
@@ -3563,7 +4221,9 @@ impl Default for UpdateSubscriptionSchedulePhasesInvoiceSettings {
 }
 /// The connected account that issues the invoice.
 /// The invoice is presented with the branding and support information of the specified account.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateSubscriptionSchedulePhasesInvoiceSettingsIssuer {
     /// The connected account being referenced when `type` is `account`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3571,6 +4231,13 @@ pub struct UpdateSubscriptionSchedulePhasesInvoiceSettingsIssuer {
     /// Type of the account referenced in the request.
     #[serde(rename = "type")]
     pub type_: UpdateSubscriptionSchedulePhasesInvoiceSettingsIssuerType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateSubscriptionSchedulePhasesInvoiceSettingsIssuer {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateSubscriptionSchedulePhasesInvoiceSettingsIssuer")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdateSubscriptionSchedulePhasesInvoiceSettingsIssuer {
     pub fn new(
@@ -3623,9 +4290,17 @@ impl std::fmt::Display for UpdateSubscriptionSchedulePhasesInvoiceSettingsIssuer
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdateSubscriptionSchedulePhasesInvoiceSettingsIssuerType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateSubscriptionSchedulePhasesInvoiceSettingsIssuerType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdateSubscriptionSchedulePhasesInvoiceSettingsIssuerType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdateSubscriptionSchedulePhasesInvoiceSettingsIssuerType {
@@ -3645,7 +4320,9 @@ impl<'de> serde::Deserialize<'de> for UpdateSubscriptionSchedulePhasesInvoiceSet
     }
 }
 /// List of configuration items, each with an attached price, to apply during this phase of the subscription schedule.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateSubscriptionSchedulePhasesItems {
     /// Define thresholds at which an invoice will be sent, and the subscription advanced to a new billing period.
     /// Pass an empty string to remove previously-defined thresholds.
@@ -3679,6 +4356,12 @@ pub struct UpdateSubscriptionSchedulePhasesItems {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_rates: Option<Vec<String>>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateSubscriptionSchedulePhasesItems {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateSubscriptionSchedulePhasesItems").finish_non_exhaustive()
+    }
+}
 impl UpdateSubscriptionSchedulePhasesItems {
     pub fn new() -> Self {
         Self {
@@ -3699,7 +4382,9 @@ impl Default for UpdateSubscriptionSchedulePhasesItems {
     }
 }
 /// The coupons to redeem into discounts for the subscription item.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateSubscriptionSchedulePhasesItemsDiscounts {
     /// ID of the coupon to create a new discount for.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3710,6 +4395,12 @@ pub struct UpdateSubscriptionSchedulePhasesItemsDiscounts {
     /// ID of the promotion code to create a new discount for.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub promotion_code: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateSubscriptionSchedulePhasesItemsDiscounts {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateSubscriptionSchedulePhasesItemsDiscounts").finish_non_exhaustive()
+    }
 }
 impl UpdateSubscriptionSchedulePhasesItemsDiscounts {
     pub fn new() -> Self {
@@ -3722,7 +4413,9 @@ impl Default for UpdateSubscriptionSchedulePhasesItemsDiscounts {
     }
 }
 /// Data used to generate a new [Price](https://docs.stripe.com/api/prices) object inline.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateSubscriptionSchedulePhasesItemsPriceData {
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
@@ -3745,6 +4438,12 @@ pub struct UpdateSubscriptionSchedulePhasesItemsPriceData {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_amount_decimal: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateSubscriptionSchedulePhasesItemsPriceData {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateSubscriptionSchedulePhasesItemsPriceData").finish_non_exhaustive()
+    }
+}
 impl UpdateSubscriptionSchedulePhasesItemsPriceData {
     pub fn new(
         currency: impl Into<stripe_types::Currency>,
@@ -3762,7 +4461,9 @@ impl UpdateSubscriptionSchedulePhasesItemsPriceData {
     }
 }
 /// The recurring components of a price such as `interval` and `interval_count`.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateSubscriptionSchedulePhasesItemsPriceDataRecurring {
     /// Specifies billing frequency. Either `day`, `week`, `month` or `year`.
     pub interval: UpdateSubscriptionSchedulePhasesItemsPriceDataRecurringInterval,
@@ -3771,6 +4472,13 @@ pub struct UpdateSubscriptionSchedulePhasesItemsPriceDataRecurring {
     /// Maximum of three years interval allowed (3 years, 36 months, or 156 weeks).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub interval_count: Option<u64>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateSubscriptionSchedulePhasesItemsPriceDataRecurring {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateSubscriptionSchedulePhasesItemsPriceDataRecurring")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdateSubscriptionSchedulePhasesItemsPriceDataRecurring {
     pub fn new(
@@ -3829,9 +4537,17 @@ impl std::fmt::Display for UpdateSubscriptionSchedulePhasesItemsPriceDataRecurri
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdateSubscriptionSchedulePhasesItemsPriceDataRecurringInterval {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateSubscriptionSchedulePhasesItemsPriceDataRecurringInterval {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdateSubscriptionSchedulePhasesItemsPriceDataRecurringInterval))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdateSubscriptionSchedulePhasesItemsPriceDataRecurringInterval {
@@ -3902,9 +4618,17 @@ impl std::fmt::Display for UpdateSubscriptionSchedulePhasesItemsPriceDataTaxBeha
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdateSubscriptionSchedulePhasesItemsPriceDataTaxBehavior {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateSubscriptionSchedulePhasesItemsPriceDataTaxBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdateSubscriptionSchedulePhasesItemsPriceDataTaxBehavior))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdateSubscriptionSchedulePhasesItemsPriceDataTaxBehavior {
@@ -3971,9 +4695,17 @@ impl std::fmt::Display for UpdateSubscriptionSchedulePhasesProrationBehavior {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdateSubscriptionSchedulePhasesProrationBehavior {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateSubscriptionSchedulePhasesProrationBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdateSubscriptionSchedulePhasesProrationBehavior))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdateSubscriptionSchedulePhasesProrationBehavior {
@@ -3994,21 +4726,37 @@ impl<'de> serde::Deserialize<'de> for UpdateSubscriptionSchedulePhasesProrationB
 }
 /// The date at which this phase of the subscription schedule starts or `now`.
 /// Must be set on the first phase.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 #[serde(rename_all = "snake_case")]
 pub enum UpdateSubscriptionSchedulePhasesStartDate {
     Now,
     #[serde(untagged)]
     Timestamp(stripe_types::Timestamp),
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateSubscriptionSchedulePhasesStartDate {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateSubscriptionSchedulePhasesStartDate").finish_non_exhaustive()
+    }
+}
 /// Sets the phase to trialing from the start date to this date.
 /// Must be before the phase end date, can not be combined with `trial`.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 #[serde(rename_all = "snake_case")]
 pub enum UpdateSubscriptionSchedulePhasesTrialEnd {
     Now,
     #[serde(untagged)]
     Timestamp(stripe_types::Timestamp),
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateSubscriptionSchedulePhasesTrialEnd {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateSubscriptionSchedulePhasesTrialEnd").finish_non_exhaustive()
+    }
 }
 /// If the update changes the billing configuration (item price, quantity, etc.) of the current phase, indicates how prorations from this change should be handled.
 /// The default value is `create_prorations`.
@@ -4058,9 +4806,17 @@ impl std::fmt::Display for UpdateSubscriptionScheduleProrationBehavior {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdateSubscriptionScheduleProrationBehavior {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateSubscriptionScheduleProrationBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdateSubscriptionScheduleProrationBehavior))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdateSubscriptionScheduleProrationBehavior {
@@ -4080,10 +4836,18 @@ impl<'de> serde::Deserialize<'de> for UpdateSubscriptionScheduleProrationBehavio
     }
 }
 /// Updates an existing subscription schedule.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateSubscriptionSchedule {
     inner: UpdateSubscriptionScheduleBuilder,
     schedule: stripe_shared::SubscriptionScheduleId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateSubscriptionSchedule {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateSubscriptionSchedule").finish_non_exhaustive()
+    }
 }
 impl UpdateSubscriptionSchedule {
     /// Construct a new `UpdateSubscriptionSchedule`.
@@ -4170,7 +4934,9 @@ impl StripeRequest for UpdateSubscriptionSchedule {
             .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct CancelSubscriptionScheduleBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -4179,6 +4945,12 @@ struct CancelSubscriptionScheduleBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     prorate: Option<bool>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CancelSubscriptionScheduleBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CancelSubscriptionScheduleBuilder").finish_non_exhaustive()
+    }
+}
 impl CancelSubscriptionScheduleBuilder {
     fn new() -> Self {
         Self { expand: None, invoice_now: None, prorate: None }
@@ -4186,10 +4958,18 @@ impl CancelSubscriptionScheduleBuilder {
 }
 /// Cancels a subscription schedule and its associated subscription immediately (if the subscription schedule has an active subscription).
 /// A subscription schedule can only be canceled if its status is `not_started` or `active`.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CancelSubscriptionSchedule {
     inner: CancelSubscriptionScheduleBuilder,
     schedule: stripe_shared::SubscriptionScheduleId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CancelSubscriptionSchedule {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CancelSubscriptionSchedule").finish_non_exhaustive()
+    }
 }
 impl CancelSubscriptionSchedule {
     /// Construct a new `CancelSubscriptionSchedule`.
@@ -4244,12 +5024,20 @@ impl StripeRequest for CancelSubscriptionSchedule {
         .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ReleaseSubscriptionScheduleBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     preserve_cancel_date: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ReleaseSubscriptionScheduleBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ReleaseSubscriptionScheduleBuilder").finish_non_exhaustive()
+    }
 }
 impl ReleaseSubscriptionScheduleBuilder {
     fn new() -> Self {
@@ -4259,10 +5047,18 @@ impl ReleaseSubscriptionScheduleBuilder {
 /// Releases the subscription schedule immediately, which will stop scheduling of its phases, but leave any existing subscription in place.
 /// A schedule can only be released if its status is `not_started` or `active`.
 /// If the subscription schedule is currently associated with a subscription, releasing it will remove its `subscription` property and set the subscription’s ID to the `released_subscription` property.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ReleaseSubscriptionSchedule {
     inner: ReleaseSubscriptionScheduleBuilder,
     schedule: stripe_shared::SubscriptionScheduleId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ReleaseSubscriptionSchedule {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ReleaseSubscriptionSchedule").finish_non_exhaustive()
+    }
 }
 impl ReleaseSubscriptionSchedule {
     /// Construct a new `ReleaseSubscriptionSchedule`.
@@ -4311,7 +5107,9 @@ impl StripeRequest for ReleaseSubscriptionSchedule {
     }
 }
 
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct BillingThresholdsParam {
     /// Monetary threshold that triggers the subscription to advance to a new billing period
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -4320,6 +5118,12 @@ pub struct BillingThresholdsParam {
     /// If true, `billing_cycle_anchor` will be updated to the date/time the threshold was last reached; otherwise, the value will remain unchanged.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reset_billing_cycle_anchor: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for BillingThresholdsParam {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("BillingThresholdsParam").finish_non_exhaustive()
+    }
 }
 impl BillingThresholdsParam {
     pub fn new() -> Self {
@@ -4331,7 +5135,9 @@ impl Default for BillingThresholdsParam {
         Self::new()
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct TransferDataSpecs {
     /// A non-negative decimal between 0 and 100, with at most two decimal places.
     /// This represents the percentage of the subscription invoice total that will be transferred to the destination account.
@@ -4341,15 +5147,29 @@ pub struct TransferDataSpecs {
     /// ID of an existing, connected Stripe account.
     pub destination: String,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TransferDataSpecs {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("TransferDataSpecs").finish_non_exhaustive()
+    }
+}
 impl TransferDataSpecs {
     pub fn new(destination: impl Into<String>) -> Self {
         Self { amount_percent: None, destination: destination.into() }
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ItemBillingThresholdsParam {
     /// Number of units that meets the billing threshold to advance the subscription to a new billing period (e.g., it takes 10 $5 units to meet a $50 [monetary threshold](https://docs.stripe.com/api/subscriptions/update#update_subscription-billing_thresholds-amount_gte)).
     pub usage_gte: i64,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ItemBillingThresholdsParam {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ItemBillingThresholdsParam").finish_non_exhaustive()
+    }
 }
 impl ItemBillingThresholdsParam {
     pub fn new(usage_gte: impl Into<i64>) -> Self {

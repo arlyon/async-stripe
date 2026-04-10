@@ -1,5 +1,6 @@
 /// ReserveHolds are used to place a temporary ReserveHold on a merchant's funds.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct ReserveHold {
     /// Amount reserved.
@@ -35,6 +36,12 @@ pub struct ReserveHold {
     /// Which source balance type this ReserveHold reserves funds from.
     /// One of `bank_account`, `card`, or `fpx`.
     pub source_type: ReserveHoldSourceType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ReserveHold {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ReserveHold").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct ReserveHoldBuilder {
@@ -293,9 +300,16 @@ impl std::fmt::Display for ReserveHoldCreatedBy {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ReserveHoldCreatedBy {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ReserveHoldCreatedBy {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ReserveHoldCreatedBy)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -370,9 +384,16 @@ impl std::fmt::Display for ReserveHoldReason {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ReserveHoldReason {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ReserveHoldReason {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ReserveHoldReason)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -451,9 +472,16 @@ impl std::fmt::Display for ReserveHoldSourceType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ReserveHoldSourceType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ReserveHoldSourceType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ReserveHoldSourceType)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

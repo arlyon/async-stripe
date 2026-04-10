@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct AccountMonthlyEstimatedRevenue {
@@ -7,6 +8,12 @@ pub struct AccountMonthlyEstimatedRevenue {
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
     pub currency: stripe_types::Currency,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for AccountMonthlyEstimatedRevenue {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("AccountMonthlyEstimatedRevenue").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct AccountMonthlyEstimatedRevenueBuilder {

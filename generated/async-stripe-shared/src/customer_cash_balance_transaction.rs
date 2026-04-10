@@ -6,7 +6,8 @@
 /// to payments, and refunds to the customer.
 ///
 /// For more details see <<https://stripe.com/docs/api/cash_balance_transactions/object>>.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct CustomerCashBalanceTransaction {
 pub adjusted_for_overdraft: Option<stripe_shared::CustomerBalanceResourceCashBalanceTransactionResourceAdjustedForOverdraft>,
@@ -41,6 +42,12 @@ pub transferred_to_balance: Option<stripe_shared::CustomerBalanceResourceCashBal
 pub type_: CustomerCashBalanceTransactionType,
 pub unapplied_from_payment: Option<stripe_shared::CustomerBalanceResourceCashBalanceTransactionResourceUnappliedFromPaymentTransaction>,
 
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CustomerCashBalanceTransaction {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CustomerCashBalanceTransaction").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct CustomerCashBalanceTransactionBuilder {
@@ -343,9 +350,16 @@ impl std::fmt::Display for CustomerCashBalanceTransactionType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CustomerCashBalanceTransactionType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CustomerCashBalanceTransactionType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CustomerCashBalanceTransactionType)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

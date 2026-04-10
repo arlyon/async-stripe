@@ -2,7 +2,9 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ListChargeBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     created: Option<stripe_types::RangeQueryTs>,
@@ -21,6 +23,12 @@ struct ListChargeBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     transfer_group: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListChargeBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListChargeBuilder").finish_non_exhaustive()
+    }
+}
 impl ListChargeBuilder {
     fn new() -> Self {
         Self {
@@ -37,9 +45,17 @@ impl ListChargeBuilder {
 }
 /// Returns a list of charges you’ve previously created.
 /// The charges are returned in sorted order, with the most recent charges appearing first.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListCharge {
     inner: ListChargeBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListCharge {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListCharge").finish_non_exhaustive()
+    }
 }
 impl ListCharge {
     /// Construct a new `ListCharge`.
@@ -128,10 +144,18 @@ impl StripeRequest for ListCharge {
         RequestBuilder::new(StripeMethod::Get, "/charges").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RetrieveChargeBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveChargeBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveChargeBuilder").finish_non_exhaustive()
+    }
 }
 impl RetrieveChargeBuilder {
     fn new() -> Self {
@@ -141,10 +165,18 @@ impl RetrieveChargeBuilder {
 /// Retrieves the details of a charge that has previously been created.
 /// Supply the unique charge ID that was returned from your previous request, and Stripe will return the corresponding charge information.
 /// The same information is returned when creating or refunding the charge.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RetrieveCharge {
     inner: RetrieveChargeBuilder,
     charge: stripe_shared::ChargeId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveCharge {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveCharge").finish_non_exhaustive()
+    }
 }
 impl RetrieveCharge {
     /// Construct a new `RetrieveCharge`.
@@ -183,7 +215,9 @@ impl StripeRequest for RetrieveCharge {
         RequestBuilder::new(StripeMethod::Get, format!("/charges/{charge}")).query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct SearchChargeBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -192,6 +226,12 @@ struct SearchChargeBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     page: Option<String>,
     query: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for SearchChargeBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("SearchChargeBuilder").finish_non_exhaustive()
+    }
 }
 impl SearchChargeBuilder {
     fn new(query: impl Into<String>) -> Self {
@@ -204,9 +244,17 @@ impl SearchChargeBuilder {
 /// conditions, data is searchable in less than a minute.
 /// Occasionally, propagation of new or updated data can be up.
 /// to an hour behind during outages. Search functionality is not available to merchants in India.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct SearchCharge {
     inner: SearchChargeBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for SearchCharge {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("SearchCharge").finish_non_exhaustive()
+    }
 }
 impl SearchCharge {
     /// Construct a new `SearchCharge`.
@@ -263,7 +311,9 @@ impl StripeRequest for SearchCharge {
         RequestBuilder::new(StripeMethod::Get, "/charges/search").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct CreateChargeBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     amount: Option<i64>,
@@ -304,6 +354,12 @@ struct CreateChargeBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     transfer_group: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateChargeBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateChargeBuilder").finish_non_exhaustive()
+    }
+}
 impl CreateChargeBuilder {
     fn new() -> Self {
         Self {
@@ -329,7 +385,9 @@ impl CreateChargeBuilder {
         }
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateChargeDestination {
     /// ID of an existing, connected Stripe account.
     pub account: String,
@@ -339,6 +397,12 @@ pub struct CreateChargeDestination {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount: Option<i64>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateChargeDestination {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateChargeDestination").finish_non_exhaustive()
+    }
+}
 impl CreateChargeDestination {
     pub fn new(account: impl Into<String>) -> Self {
         Self { account: account.into(), amount: None }
@@ -346,11 +410,19 @@ impl CreateChargeDestination {
 }
 /// Options to configure Radar.
 /// See [Radar Session](https://docs.stripe.com/radar/radar-session) for more information.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateChargeRadarOptions {
     /// A [Radar Session](https://docs.stripe.com/radar/radar-session) is a snapshot of the browser metadata and device details that help Radar make more accurate predictions on your payments.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub session: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateChargeRadarOptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateChargeRadarOptions").finish_non_exhaustive()
+    }
 }
 impl CreateChargeRadarOptions {
     pub fn new() -> Self {
@@ -364,7 +436,9 @@ impl Default for CreateChargeRadarOptions {
 }
 /// An optional dictionary including the account to automatically transfer to as part of a destination charge.
 /// [See the Connect documentation](https://docs.stripe.com/connect/destination-charges) for details.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateChargeTransferData {
     /// The amount transferred to the destination account, if specified.
     /// By default, the entire charge amount is transferred to the destination account.
@@ -372,6 +446,12 @@ pub struct CreateChargeTransferData {
     pub amount: Option<i64>,
     /// ID of an existing, connected Stripe account.
     pub destination: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateChargeTransferData {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateChargeTransferData").finish_non_exhaustive()
+    }
 }
 impl CreateChargeTransferData {
     pub fn new(destination: impl Into<String>) -> Self {
@@ -381,9 +461,17 @@ impl CreateChargeTransferData {
 /// This method is no longer recommended—use the [Payment Intents API](https://stripe.com/docs/api/payment_intents).
 /// to initiate a new payment instead. Confirmation of the PaymentIntent creates the `Charge`
 /// object used to request payment.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCharge {
     inner: CreateChargeBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCharge {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCharge").finish_non_exhaustive()
+    }
 }
 impl CreateCharge {
     /// Construct a new `CreateCharge`.
@@ -551,7 +639,9 @@ impl StripeRequest for CreateCharge {
         RequestBuilder::new(StripeMethod::Post, "/charges").form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct UpdateChargeBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     customer: Option<String>,
@@ -569,6 +659,12 @@ struct UpdateChargeBuilder {
     shipping: Option<OptionalFieldsShipping>,
     #[serde(skip_serializing_if = "Option::is_none")]
     transfer_group: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateChargeBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateChargeBuilder").finish_non_exhaustive()
+    }
 }
 impl UpdateChargeBuilder {
     fn new() -> Self {
@@ -588,10 +684,18 @@ impl UpdateChargeBuilder {
 /// If you believe a charge is fraudulent, include a `user_report` key with a value of `fraudulent`.
 /// If you believe a charge is safe, include a `user_report` key with a value of `safe`.
 /// Stripe will use the information you send to improve our fraud detection algorithms.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateChargeFraudDetails {
     /// Either `safe` or `fraudulent`.
     pub user_report: UpdateChargeFraudDetailsUserReport,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateChargeFraudDetails {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateChargeFraudDetails").finish_non_exhaustive()
+    }
 }
 impl UpdateChargeFraudDetails {
     pub fn new(user_report: impl Into<UpdateChargeFraudDetailsUserReport>) -> Self {
@@ -642,9 +746,16 @@ impl std::fmt::Display for UpdateChargeFraudDetailsUserReport {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdateChargeFraudDetailsUserReport {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateChargeFraudDetailsUserReport {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdateChargeFraudDetailsUserReport)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdateChargeFraudDetailsUserReport {
@@ -665,10 +776,18 @@ impl<'de> serde::Deserialize<'de> for UpdateChargeFraudDetailsUserReport {
 }
 /// Updates the specified charge by setting the values of the parameters passed.
 /// Any parameters not provided will be left unchanged.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateCharge {
     inner: UpdateChargeBuilder,
     charge: stripe_shared::ChargeId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateCharge {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateCharge").finish_non_exhaustive()
+    }
 }
 impl UpdateCharge {
     /// Construct a new `UpdateCharge`.
@@ -757,7 +876,9 @@ impl StripeRequest for UpdateCharge {
         RequestBuilder::new(StripeMethod::Post, format!("/charges/{charge}")).form(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct CaptureChargeBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     amount: Option<i64>,
@@ -778,6 +899,12 @@ struct CaptureChargeBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     transfer_group: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CaptureChargeBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CaptureChargeBuilder").finish_non_exhaustive()
+    }
+}
 impl CaptureChargeBuilder {
     fn new() -> Self {
         Self {
@@ -795,12 +922,20 @@ impl CaptureChargeBuilder {
 }
 /// An optional dictionary including the account to automatically transfer to as part of a destination charge.
 /// [See the Connect documentation](https://docs.stripe.com/connect/destination-charges) for details.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CaptureChargeTransferData {
     /// The amount transferred to the destination account, if specified.
     /// By default, the entire charge amount is transferred to the destination account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount: Option<i64>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CaptureChargeTransferData {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CaptureChargeTransferData").finish_non_exhaustive()
+    }
 }
 impl CaptureChargeTransferData {
     pub fn new() -> Self {
@@ -818,10 +953,18 @@ impl Default for CaptureChargeTransferData {
 ///
 /// Don’t use this method to capture a PaymentIntent-initiated charge.
 /// Use [Capture a PaymentIntent](https://stripe.com/docs/api/payment_intents/capture).
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CaptureCharge {
     inner: CaptureChargeBuilder,
     charge: stripe_shared::ChargeId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CaptureCharge {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CaptureCharge").finish_non_exhaustive()
+    }
 }
 impl CaptureCharge {
     /// Construct a new `CaptureCharge`.
@@ -916,7 +1059,9 @@ impl StripeRequest for CaptureCharge {
     }
 }
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct OptionalFieldsAddress {
     /// City, district, suburb, town, or village.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -937,6 +1082,12 @@ pub struct OptionalFieldsAddress {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for OptionalFieldsAddress {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("OptionalFieldsAddress").finish_non_exhaustive()
+    }
+}
 impl OptionalFieldsAddress {
     pub fn new() -> Self {
         Self { city: None, country: None, line1: None, line2: None, postal_code: None, state: None }
@@ -947,7 +1098,9 @@ impl Default for OptionalFieldsAddress {
         Self::new()
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct OptionalFieldsShipping {
     /// Shipping address.
     pub address: OptionalFieldsAddress,
@@ -963,6 +1116,12 @@ pub struct OptionalFieldsShipping {
     /// If multiple tracking numbers were generated for this purchase, please separate them with commas.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tracking_number: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for OptionalFieldsShipping {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("OptionalFieldsShipping").finish_non_exhaustive()
+    }
 }
 impl OptionalFieldsShipping {
     pub fn new(address: impl Into<OptionalFieldsAddress>, name: impl Into<String>) -> Self {

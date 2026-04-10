@@ -2,13 +2,20 @@
 /// A Login Link differs from an [Account Link](https://docs.stripe.com/api/account_links) in that it takes the user directly to their [Express dashboard for the specified account](https://docs.stripe.com/connect/integrate-express-dashboard#create-login-link).
 ///
 /// For more details see <<https://stripe.com/docs/api/account/login_link>>.
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct LoginLink {
     /// Time at which the object was created. Measured in seconds since the Unix epoch.
     pub created: stripe_types::Timestamp,
     /// The URL for the login link.
     pub url: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for LoginLink {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("LoginLink").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct LoginLinkBuilder {

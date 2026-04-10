@@ -1,5 +1,6 @@
 /// This hash contains the features the customer sheet supports.
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct CustomerSessionResourceComponentsResourceCustomerSheetResourceFeatures {
@@ -14,6 +15,13 @@ pub payment_method_allow_redisplay_filters: Option<Vec<CustomerSessionResourceCo
     /// Removing the payment method detaches the [`customer` object](https://docs.stripe.com/api/payment_methods/object#payment_method_object-customer) from that [PaymentMethod](https://docs.stripe.com/api/payment_methods).
 pub payment_method_remove: Option<CustomerSessionResourceComponentsResourceCustomerSheetResourceFeaturesPaymentMethodRemove>,
 
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CustomerSessionResourceComponentsResourceCustomerSheetResourceFeatures {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CustomerSessionResourceComponentsResourceCustomerSheetResourceFeatures")
+            .finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct CustomerSessionResourceComponentsResourceCustomerSheetResourceFeaturesBuilder {
@@ -171,9 +179,16 @@ impl std::fmt::Display for CustomerSessionResourceComponentsResourceCustomerShee
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CustomerSessionResourceComponentsResourceCustomerSheetResourceFeaturesPaymentMethodAllowRedisplayFilters {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CustomerSessionResourceComponentsResourceCustomerSheetResourceFeaturesPaymentMethodAllowRedisplayFilters {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CustomerSessionResourceComponentsResourceCustomerSheetResourceFeaturesPaymentMethodAllowRedisplayFilters)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -256,11 +271,20 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for CustomerSessionResourceComponentsResourceCustomerSheetResourceFeaturesPaymentMethodRemove
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for CustomerSessionResourceComponentsResourceCustomerSheetResourceFeaturesPaymentMethodRemove
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CustomerSessionResourceComponentsResourceCustomerSheetResourceFeaturesPaymentMethodRemove)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

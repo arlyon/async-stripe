@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct Shipping {
@@ -12,6 +13,12 @@ pub struct Shipping {
     /// The tracking number for a physical product, obtained from the delivery service.
     /// If multiple tracking numbers were generated for this purchase, please separate them with commas.
     pub tracking_number: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for Shipping {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("Shipping").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct ShippingBuilder {

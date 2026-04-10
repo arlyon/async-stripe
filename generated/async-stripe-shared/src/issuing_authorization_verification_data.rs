@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct IssuingAuthorizationVerificationData {
@@ -17,6 +18,12 @@ pub struct IssuingAuthorizationVerificationData {
     pub postal_code: Option<String>,
     /// 3D Secure details.
     pub three_d_secure: Option<stripe_shared::IssuingAuthorizationThreeDSecure>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for IssuingAuthorizationVerificationData {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("IssuingAuthorizationVerificationData").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct IssuingAuthorizationVerificationDataBuilder {
@@ -218,9 +225,17 @@ impl std::fmt::Display for IssuingAuthorizationVerificationDataAddressLine1Check
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for IssuingAuthorizationVerificationDataAddressLine1Check {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for IssuingAuthorizationVerificationDataAddressLine1Check {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(IssuingAuthorizationVerificationDataAddressLine1Check))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -306,9 +321,17 @@ impl std::fmt::Display for IssuingAuthorizationVerificationDataAddressPostalCode
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for IssuingAuthorizationVerificationDataAddressPostalCodeCheck {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for IssuingAuthorizationVerificationDataAddressPostalCodeCheck {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(IssuingAuthorizationVerificationDataAddressPostalCodeCheck))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -397,9 +420,17 @@ impl std::fmt::Display for IssuingAuthorizationVerificationDataCvcCheck {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for IssuingAuthorizationVerificationDataCvcCheck {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for IssuingAuthorizationVerificationDataCvcCheck {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(IssuingAuthorizationVerificationDataCvcCheck))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -482,9 +513,17 @@ impl std::fmt::Display for IssuingAuthorizationVerificationDataExpiryCheck {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for IssuingAuthorizationVerificationDataExpiryCheck {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for IssuingAuthorizationVerificationDataExpiryCheck {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(IssuingAuthorizationVerificationDataExpiryCheck))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

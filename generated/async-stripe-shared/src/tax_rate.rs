@@ -3,7 +3,8 @@
 /// Related guide: [Tax rates](/billing/taxes/tax-rates)
 ///
 /// For more details see <<https://stripe.com/docs/api/tax_rates/object>>.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TaxRate {
     /// Defaults to `true`.
@@ -56,6 +57,12 @@ pub struct TaxRate {
     pub state: Option<String>,
     /// The high-level tax type, such as `vat` or `sales_tax`.
     pub tax_type: Option<stripe_shared::TaxRateTaxType>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TaxRate {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("TaxRate").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct TaxRateBuilder {
@@ -348,9 +355,16 @@ impl std::fmt::Display for TaxRateJurisdictionLevel {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for TaxRateJurisdictionLevel {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TaxRateJurisdictionLevel {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(TaxRateJurisdictionLevel)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -427,9 +441,16 @@ impl std::fmt::Display for TaxRateRateType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for TaxRateRateType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TaxRateRateType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(TaxRateRateType)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -550,9 +571,16 @@ impl std::fmt::Display for TaxRateTaxType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for TaxRateTaxType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TaxRateTaxType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(TaxRateTaxType)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for TaxRateTaxType {

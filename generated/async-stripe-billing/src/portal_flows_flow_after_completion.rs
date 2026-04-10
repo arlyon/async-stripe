@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PortalFlowsFlowAfterCompletion {
@@ -9,6 +10,12 @@ pub struct PortalFlowsFlowAfterCompletion {
     /// The specified type of behavior after the flow is completed.
     #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "type"))]
     pub type_: PortalFlowsFlowAfterCompletionType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PortalFlowsFlowAfterCompletion {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PortalFlowsFlowAfterCompletion").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct PortalFlowsFlowAfterCompletionBuilder {
@@ -163,9 +170,16 @@ impl std::fmt::Display for PortalFlowsFlowAfterCompletionType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for PortalFlowsFlowAfterCompletionType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PortalFlowsFlowAfterCompletionType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(PortalFlowsFlowAfterCompletionType)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

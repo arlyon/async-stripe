@@ -2,7 +2,8 @@
 /// Once accepted, it will automatically create an invoice, subscription or subscription schedule.
 ///
 /// For more details see <<https://stripe.com/docs/api/quotes/object>>.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct Quote {
     /// Total before any discounts or taxes are applied.
@@ -87,6 +88,12 @@ pub struct Quote {
     pub total_details: stripe_billing::QuotesResourceTotalDetails,
     /// The account (if any) the payments will be attributed to for tax reporting, and where funds from each payment will be transferred to for each of the invoices.
     pub transfer_data: Option<stripe_billing::QuotesResourceTransferData>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for Quote {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("Quote").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct QuoteBuilder {
@@ -527,9 +534,16 @@ impl std::fmt::Display for QuoteCollectionMethod {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for QuoteCollectionMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for QuoteCollectionMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(QuoteCollectionMethod)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for QuoteCollectionMethod {
@@ -608,9 +622,16 @@ impl std::fmt::Display for QuoteStatus {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for QuoteStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for QuoteStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(QuoteStatus)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for QuoteStatus {

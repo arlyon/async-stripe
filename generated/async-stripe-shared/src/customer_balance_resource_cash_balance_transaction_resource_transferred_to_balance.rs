@@ -1,9 +1,17 @@
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct CustomerBalanceResourceCashBalanceTransactionResourceTransferredToBalance {
     /// The [Balance Transaction](https://docs.stripe.com/api/balance_transactions/object) that corresponds to funds transferred to your Stripe balance.
     pub balance_transaction: stripe_types::Expandable<stripe_shared::BalanceTransaction>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CustomerBalanceResourceCashBalanceTransactionResourceTransferredToBalance {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CustomerBalanceResourceCashBalanceTransactionResourceTransferredToBalance")
+            .finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct CustomerBalanceResourceCashBalanceTransactionResourceTransferredToBalanceBuilder {

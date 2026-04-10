@@ -18,7 +18,8 @@
 /// for 30 days.
 ///
 /// For more details see <<https://stripe.com/docs/api/events/object>>.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct Event {
     /// The connected account that originates the event.
@@ -44,6 +45,12 @@ pub struct Event {
     /// Description of the event (for example, `invoice.created` or `charge.refunded`).
     #[cfg_attr(feature = "deserialize", serde(rename = "type"))]
     pub type_: EventType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for Event {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("Event").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct EventBuilder {
@@ -1097,9 +1104,16 @@ impl std::fmt::Display for EventType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for EventType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for EventType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(EventType)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

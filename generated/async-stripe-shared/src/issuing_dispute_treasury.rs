@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct IssuingDisputeTreasury {
@@ -6,6 +7,12 @@ pub struct IssuingDisputeTreasury {
     pub debit_reversal: Option<String>,
     /// The Treasury [ReceivedDebit](https://docs.stripe.com/api/treasury/received_debits) that is being disputed.
     pub received_debit: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for IssuingDisputeTreasury {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("IssuingDisputeTreasury").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct IssuingDisputeTreasuryBuilder {

@@ -1,5 +1,6 @@
 /// Details of an succeeded card outcome attached to this payment evaluation.
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct InsightsResourcesPaymentEvaluationSucceededCard {
@@ -10,6 +11,12 @@ pub struct InsightsResourcesPaymentEvaluationSucceededCard {
         InsightsResourcesPaymentEvaluationSucceededCardAddressPostalCodeCheck,
     /// Result of the CVC check.
     pub cvc_check: InsightsResourcesPaymentEvaluationSucceededCardCvcCheck,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for InsightsResourcesPaymentEvaluationSucceededCard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("InsightsResourcesPaymentEvaluationSucceededCard").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct InsightsResourcesPaymentEvaluationSucceededCardBuilder {
@@ -173,9 +180,17 @@ impl std::fmt::Display for InsightsResourcesPaymentEvaluationSucceededCardAddres
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for InsightsResourcesPaymentEvaluationSucceededCardAddressLine1Check {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for InsightsResourcesPaymentEvaluationSucceededCardAddressLine1Check {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(InsightsResourcesPaymentEvaluationSucceededCardAddressLine1Check))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -269,9 +284,19 @@ impl std::fmt::Display for InsightsResourcesPaymentEvaluationSucceededCardAddres
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for InsightsResourcesPaymentEvaluationSucceededCardAddressPostalCodeCheck {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for InsightsResourcesPaymentEvaluationSucceededCardAddressPostalCodeCheck {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            InsightsResourcesPaymentEvaluationSucceededCardAddressPostalCodeCheck
+        ))
+        .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -367,9 +392,17 @@ impl std::fmt::Display for InsightsResourcesPaymentEvaluationSucceededCardCvcChe
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for InsightsResourcesPaymentEvaluationSucceededCardCvcCheck {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for InsightsResourcesPaymentEvaluationSucceededCardCvcCheck {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(InsightsResourcesPaymentEvaluationSucceededCardCvcCheck))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

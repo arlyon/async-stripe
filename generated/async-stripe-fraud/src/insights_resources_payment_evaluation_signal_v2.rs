@@ -1,5 +1,6 @@
 /// A payment evaluation signal with evaluated_at, risk_level, and score fields.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct InsightsResourcesPaymentEvaluationSignalV2 {
@@ -12,6 +13,12 @@ pub struct InsightsResourcesPaymentEvaluationSignalV2 {
     /// The value is returned with two decimal places.
     /// A score of -1 indicates a test integration and higher scores indicate a higher likelihood of the signal being true.
     pub score: f64,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for InsightsResourcesPaymentEvaluationSignalV2 {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("InsightsResourcesPaymentEvaluationSignalV2").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct InsightsResourcesPaymentEvaluationSignalV2Builder {
@@ -165,9 +172,17 @@ impl std::fmt::Display for InsightsResourcesPaymentEvaluationSignalV2RiskLevel {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for InsightsResourcesPaymentEvaluationSignalV2RiskLevel {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for InsightsResourcesPaymentEvaluationSignalV2RiskLevel {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(InsightsResourcesPaymentEvaluationSignalV2RiskLevel))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

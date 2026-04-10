@@ -1,5 +1,6 @@
 /// Indicates the status of a specific payment method on a payment method domain.
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentMethodDomainResourcePaymentMethodStatus {
@@ -7,6 +8,12 @@ pub struct PaymentMethodDomainResourcePaymentMethodStatus {
     pub status: PaymentMethodDomainResourcePaymentMethodStatusStatus,
     pub status_details:
         Option<stripe_payment::PaymentMethodDomainResourcePaymentMethodStatusDetails>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentMethodDomainResourcePaymentMethodStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PaymentMethodDomainResourcePaymentMethodStatus").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct PaymentMethodDomainResourcePaymentMethodStatusBuilder {
@@ -151,9 +158,17 @@ impl std::fmt::Display for PaymentMethodDomainResourcePaymentMethodStatusStatus 
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for PaymentMethodDomainResourcePaymentMethodStatusStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentMethodDomainResourcePaymentMethodStatusStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(PaymentMethodDomainResourcePaymentMethodStatusStatus))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

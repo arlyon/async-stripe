@@ -2,12 +2,20 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct CreateAccountSessionBuilder {
     account: String,
     components: CreateAccountSessionComponents,
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountSessionBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountSessionBuilder").finish_non_exhaustive()
+    }
 }
 impl CreateAccountSessionBuilder {
     fn new(
@@ -19,7 +27,9 @@ impl CreateAccountSessionBuilder {
 }
 /// Each key of the dictionary represents an embedded component, and each embedded component maps to its configuration (e.g.
 /// whether it has been enabled or not).
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateAccountSessionComponents {
     /// Configuration for the [account management](/connect/supported-embedded-components/account-management/) embedded component.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -80,6 +90,12 @@ pub struct CreateAccountSessionComponents {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_settings: Option<BaseConfigParam>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountSessionComponents {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountSessionComponents").finish_non_exhaustive()
+    }
+}
 impl CreateAccountSessionComponents {
     pub fn new() -> Self {
         Self {
@@ -111,7 +127,9 @@ impl Default for CreateAccountSessionComponents {
     }
 }
 /// Configuration for the [disputes list](/connect/supported-embedded-components/disputes-list/) embedded component.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateAccountSessionComponentsDisputesList {
     /// Whether the embedded component is enabled.
     pub enabled: bool,
@@ -119,13 +137,21 @@ pub struct CreateAccountSessionComponentsDisputesList {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub features: Option<CreateAccountSessionComponentsDisputesListFeatures>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountSessionComponentsDisputesList {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountSessionComponentsDisputesList").finish_non_exhaustive()
+    }
+}
 impl CreateAccountSessionComponentsDisputesList {
     pub fn new(enabled: impl Into<bool>) -> Self {
         Self { enabled: enabled.into(), features: None }
     }
 }
 /// The list of features enabled in the embedded component.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateAccountSessionComponentsDisputesListFeatures {
     /// Whether to allow capturing and cancelling payment intents. This is `true` by default.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -141,6 +167,12 @@ pub struct CreateAccountSessionComponentsDisputesListFeatures {
     /// Whether sending refunds is enabled. This is `true` by default.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub refund_management: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountSessionComponentsDisputesListFeatures {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountSessionComponentsDisputesListFeatures").finish_non_exhaustive()
+    }
 }
 impl CreateAccountSessionComponentsDisputesListFeatures {
     pub fn new() -> Self {
@@ -158,7 +190,9 @@ impl Default for CreateAccountSessionComponentsDisputesListFeatures {
     }
 }
 /// Configuration for the [financial account](/connect/supported-embedded-components/financial-account/) embedded component.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateAccountSessionComponentsFinancialAccount {
     /// Whether the embedded component is enabled.
     pub enabled: bool,
@@ -166,13 +200,21 @@ pub struct CreateAccountSessionComponentsFinancialAccount {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub features: Option<CreateAccountSessionComponentsFinancialAccountFeatures>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountSessionComponentsFinancialAccount {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountSessionComponentsFinancialAccount").finish_non_exhaustive()
+    }
+}
 impl CreateAccountSessionComponentsFinancialAccount {
     pub fn new(enabled: impl Into<bool>) -> Self {
         Self { enabled: enabled.into(), features: None }
     }
 }
 /// The list of features enabled in the embedded component.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateAccountSessionComponentsFinancialAccountFeatures {
     /// Whether Stripe user authentication is disabled.
     /// This value can only be `true` for accounts where `controller.requirement_collection` is `application` for the account.
@@ -192,6 +234,13 @@ pub struct CreateAccountSessionComponentsFinancialAccountFeatures {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub transfer_balance: Option<bool>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountSessionComponentsFinancialAccountFeatures {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountSessionComponentsFinancialAccountFeatures")
+            .finish_non_exhaustive()
+    }
+}
 impl CreateAccountSessionComponentsFinancialAccountFeatures {
     pub fn new() -> Self {
         Self {
@@ -208,7 +257,9 @@ impl Default for CreateAccountSessionComponentsFinancialAccountFeatures {
     }
 }
 /// Configuration for the [financial account transactions](/connect/supported-embedded-components/financial-account-transactions/) embedded component.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateAccountSessionComponentsFinancialAccountTransactions {
     /// Whether the embedded component is enabled.
     pub enabled: bool,
@@ -216,17 +267,33 @@ pub struct CreateAccountSessionComponentsFinancialAccountTransactions {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub features: Option<CreateAccountSessionComponentsFinancialAccountTransactionsFeatures>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountSessionComponentsFinancialAccountTransactions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountSessionComponentsFinancialAccountTransactions")
+            .finish_non_exhaustive()
+    }
+}
 impl CreateAccountSessionComponentsFinancialAccountTransactions {
     pub fn new(enabled: impl Into<bool>) -> Self {
         Self { enabled: enabled.into(), features: None }
     }
 }
 /// The list of features enabled in the embedded component.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateAccountSessionComponentsFinancialAccountTransactionsFeatures {
     /// Whether to allow card spend dispute management features.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub card_spend_dispute_management: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountSessionComponentsFinancialAccountTransactionsFeatures {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountSessionComponentsFinancialAccountTransactionsFeatures")
+            .finish_non_exhaustive()
+    }
 }
 impl CreateAccountSessionComponentsFinancialAccountTransactionsFeatures {
     pub fn new() -> Self {
@@ -239,7 +306,9 @@ impl Default for CreateAccountSessionComponentsFinancialAccountTransactionsFeatu
     }
 }
 /// Configuration for the [instant payouts promotion](/connect/supported-embedded-components/instant-payouts-promotion/) embedded component.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateAccountSessionComponentsInstantPayoutsPromotion {
     /// Whether the embedded component is enabled.
     pub enabled: bool,
@@ -247,13 +316,22 @@ pub struct CreateAccountSessionComponentsInstantPayoutsPromotion {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub features: Option<CreateAccountSessionComponentsInstantPayoutsPromotionFeatures>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountSessionComponentsInstantPayoutsPromotion {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountSessionComponentsInstantPayoutsPromotion")
+            .finish_non_exhaustive()
+    }
+}
 impl CreateAccountSessionComponentsInstantPayoutsPromotion {
     pub fn new(enabled: impl Into<bool>) -> Self {
         Self { enabled: enabled.into(), features: None }
     }
 }
 /// The list of features enabled in the embedded component.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateAccountSessionComponentsInstantPayoutsPromotionFeatures {
     /// Whether Stripe user authentication is disabled.
     /// This value can only be `true` for accounts where `controller.requirement_collection` is `application` for the account.
@@ -270,6 +348,13 @@ pub struct CreateAccountSessionComponentsInstantPayoutsPromotionFeatures {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub instant_payouts: Option<bool>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountSessionComponentsInstantPayoutsPromotionFeatures {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountSessionComponentsInstantPayoutsPromotionFeatures")
+            .finish_non_exhaustive()
+    }
+}
 impl CreateAccountSessionComponentsInstantPayoutsPromotionFeatures {
     pub fn new() -> Self {
         Self {
@@ -285,7 +370,9 @@ impl Default for CreateAccountSessionComponentsInstantPayoutsPromotionFeatures {
     }
 }
 /// Configuration for the [issuing card](/connect/supported-embedded-components/issuing-card/) embedded component.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateAccountSessionComponentsIssuingCard {
     /// Whether the embedded component is enabled.
     pub enabled: bool,
@@ -293,13 +380,21 @@ pub struct CreateAccountSessionComponentsIssuingCard {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub features: Option<CreateAccountSessionComponentsIssuingCardFeatures>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountSessionComponentsIssuingCard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountSessionComponentsIssuingCard").finish_non_exhaustive()
+    }
+}
 impl CreateAccountSessionComponentsIssuingCard {
     pub fn new(enabled: impl Into<bool>) -> Self {
         Self { enabled: enabled.into(), features: None }
     }
 }
 /// The list of features enabled in the embedded component.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateAccountSessionComponentsIssuingCardFeatures {
     /// Whether to allow card management features.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -313,6 +408,12 @@ pub struct CreateAccountSessionComponentsIssuingCardFeatures {
     /// Whether to allow spend control management features.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub spend_control_management: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountSessionComponentsIssuingCardFeatures {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountSessionComponentsIssuingCardFeatures").finish_non_exhaustive()
+    }
 }
 impl CreateAccountSessionComponentsIssuingCardFeatures {
     pub fn new() -> Self {
@@ -330,7 +431,9 @@ impl Default for CreateAccountSessionComponentsIssuingCardFeatures {
     }
 }
 /// Configuration for the [issuing cards list](/connect/supported-embedded-components/issuing-cards-list/) embedded component.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateAccountSessionComponentsIssuingCardsList {
     /// Whether the embedded component is enabled.
     pub enabled: bool,
@@ -338,13 +441,21 @@ pub struct CreateAccountSessionComponentsIssuingCardsList {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub features: Option<CreateAccountSessionComponentsIssuingCardsListFeatures>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountSessionComponentsIssuingCardsList {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountSessionComponentsIssuingCardsList").finish_non_exhaustive()
+    }
+}
 impl CreateAccountSessionComponentsIssuingCardsList {
     pub fn new(enabled: impl Into<bool>) -> Self {
         Self { enabled: enabled.into(), features: None }
     }
 }
 /// The list of features enabled in the embedded component.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateAccountSessionComponentsIssuingCardsListFeatures {
     /// Whether to allow card management features.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -365,6 +476,13 @@ pub struct CreateAccountSessionComponentsIssuingCardsListFeatures {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub spend_control_management: Option<bool>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountSessionComponentsIssuingCardsListFeatures {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountSessionComponentsIssuingCardsListFeatures")
+            .finish_non_exhaustive()
+    }
+}
 impl CreateAccountSessionComponentsIssuingCardsListFeatures {
     pub fn new() -> Self {
         Self {
@@ -382,7 +500,9 @@ impl Default for CreateAccountSessionComponentsIssuingCardsListFeatures {
     }
 }
 /// Configuration for the [payment details](/connect/supported-embedded-components/payment-details/) embedded component.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateAccountSessionComponentsPaymentDetails {
     /// Whether the embedded component is enabled.
     pub enabled: bool,
@@ -390,13 +510,21 @@ pub struct CreateAccountSessionComponentsPaymentDetails {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub features: Option<CreateAccountSessionComponentsPaymentDetailsFeatures>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountSessionComponentsPaymentDetails {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountSessionComponentsPaymentDetails").finish_non_exhaustive()
+    }
+}
 impl CreateAccountSessionComponentsPaymentDetails {
     pub fn new(enabled: impl Into<bool>) -> Self {
         Self { enabled: enabled.into(), features: None }
     }
 }
 /// The list of features enabled in the embedded component.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateAccountSessionComponentsPaymentDetailsFeatures {
     /// Whether to allow capturing and cancelling payment intents. This is `true` by default.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -412,6 +540,13 @@ pub struct CreateAccountSessionComponentsPaymentDetailsFeatures {
     /// Whether sending refunds is enabled. This is `true` by default.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub refund_management: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountSessionComponentsPaymentDetailsFeatures {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountSessionComponentsPaymentDetailsFeatures")
+            .finish_non_exhaustive()
+    }
 }
 impl CreateAccountSessionComponentsPaymentDetailsFeatures {
     pub fn new() -> Self {
@@ -429,7 +564,9 @@ impl Default for CreateAccountSessionComponentsPaymentDetailsFeatures {
     }
 }
 /// Configuration for the [payment disputes](/connect/supported-embedded-components/payment-disputes/) embedded component.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateAccountSessionComponentsPaymentDisputes {
     /// Whether the embedded component is enabled.
     pub enabled: bool,
@@ -437,13 +574,21 @@ pub struct CreateAccountSessionComponentsPaymentDisputes {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub features: Option<CreateAccountSessionComponentsPaymentDisputesFeatures>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountSessionComponentsPaymentDisputes {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountSessionComponentsPaymentDisputes").finish_non_exhaustive()
+    }
+}
 impl CreateAccountSessionComponentsPaymentDisputes {
     pub fn new(enabled: impl Into<bool>) -> Self {
         Self { enabled: enabled.into(), features: None }
     }
 }
 /// The list of features enabled in the embedded component.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateAccountSessionComponentsPaymentDisputesFeatures {
     /// Whether connected accounts can manage destination charges that are created on behalf of them.
     /// This is `false` by default.
@@ -456,6 +601,13 @@ pub struct CreateAccountSessionComponentsPaymentDisputesFeatures {
     /// Whether sending refunds is enabled. This is `true` by default.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub refund_management: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountSessionComponentsPaymentDisputesFeatures {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountSessionComponentsPaymentDisputesFeatures")
+            .finish_non_exhaustive()
+    }
 }
 impl CreateAccountSessionComponentsPaymentDisputesFeatures {
     pub fn new() -> Self {
@@ -472,7 +624,9 @@ impl Default for CreateAccountSessionComponentsPaymentDisputesFeatures {
     }
 }
 /// Configuration for the [payments](/connect/supported-embedded-components/payments/) embedded component.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateAccountSessionComponentsPayments {
     /// Whether the embedded component is enabled.
     pub enabled: bool,
@@ -480,13 +634,21 @@ pub struct CreateAccountSessionComponentsPayments {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub features: Option<CreateAccountSessionComponentsPaymentsFeatures>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountSessionComponentsPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountSessionComponentsPayments").finish_non_exhaustive()
+    }
+}
 impl CreateAccountSessionComponentsPayments {
     pub fn new(enabled: impl Into<bool>) -> Self {
         Self { enabled: enabled.into(), features: None }
     }
 }
 /// The list of features enabled in the embedded component.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateAccountSessionComponentsPaymentsFeatures {
     /// Whether to allow capturing and cancelling payment intents. This is `true` by default.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -502,6 +664,12 @@ pub struct CreateAccountSessionComponentsPaymentsFeatures {
     /// Whether sending refunds is enabled. This is `true` by default.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub refund_management: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountSessionComponentsPaymentsFeatures {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountSessionComponentsPaymentsFeatures").finish_non_exhaustive()
+    }
 }
 impl CreateAccountSessionComponentsPaymentsFeatures {
     pub fn new() -> Self {
@@ -519,9 +687,17 @@ impl Default for CreateAccountSessionComponentsPaymentsFeatures {
     }
 }
 /// Creates a AccountSession object that includes a single-use token that the platform can use on their front-end to grant client-side API access.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateAccountSession {
     inner: CreateAccountSessionBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountSession {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountSession").finish_non_exhaustive()
+    }
 }
 impl CreateAccountSession {
     /// Construct a new `CreateAccountSession`.
@@ -563,7 +739,9 @@ impl StripeRequest for CreateAccountSession {
     }
 }
 
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct AccountFeaturesParam {
     /// Whether Stripe user authentication is disabled.
     /// This value can only be `true` for accounts where `controller.requirement_collection` is `application` for the account.
@@ -577,6 +755,12 @@ pub struct AccountFeaturesParam {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub external_account_collection: Option<bool>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for AccountFeaturesParam {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("AccountFeaturesParam").finish_non_exhaustive()
+    }
+}
 impl AccountFeaturesParam {
     pub fn new() -> Self {
         Self { disable_stripe_user_authentication: None, external_account_collection: None }
@@ -587,7 +771,9 @@ impl Default for AccountFeaturesParam {
         Self::new()
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct PayoutsFeaturesParam {
     /// Whether Stripe user authentication is disabled.
     /// This value can only be `true` for accounts where `controller.requirement_collection` is `application` for the account.
@@ -612,6 +798,12 @@ pub struct PayoutsFeaturesParam {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub standard_payouts: Option<bool>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PayoutsFeaturesParam {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PayoutsFeaturesParam").finish_non_exhaustive()
+    }
+}
 impl PayoutsFeaturesParam {
     pub fn new() -> Self {
         Self {
@@ -628,7 +820,9 @@ impl Default for PayoutsFeaturesParam {
         Self::new()
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct BaseConfigParam {
     /// Whether the embedded component is enabled.
     pub enabled: bool,
@@ -637,12 +831,20 @@ pub struct BaseConfigParam {
     #[serde(with = "stripe_types::with_serde_json_opt")]
     pub features: Option<miniserde::json::Value>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for BaseConfigParam {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("BaseConfigParam").finish_non_exhaustive()
+    }
+}
 impl BaseConfigParam {
     pub fn new(enabled: impl Into<bool>) -> Self {
         Self { enabled: enabled.into(), features: None }
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct AccountConfigParam {
     /// Whether the embedded component is enabled.
     pub enabled: bool,
@@ -650,18 +852,32 @@ pub struct AccountConfigParam {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub features: Option<AccountFeaturesParam>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for AccountConfigParam {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("AccountConfigParam").finish_non_exhaustive()
+    }
+}
 impl AccountConfigParam {
     pub fn new(enabled: impl Into<bool>) -> Self {
         Self { enabled: enabled.into(), features: None }
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct PayoutsConfigParam {
     /// Whether the embedded component is enabled.
     pub enabled: bool,
     /// The list of features enabled in the embedded component.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub features: Option<PayoutsFeaturesParam>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PayoutsConfigParam {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PayoutsConfigParam").finish_non_exhaustive()
+    }
 }
 impl PayoutsConfigParam {
     pub fn new(enabled: impl Into<bool>) -> Self {

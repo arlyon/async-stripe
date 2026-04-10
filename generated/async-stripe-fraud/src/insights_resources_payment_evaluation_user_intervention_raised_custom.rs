@@ -1,5 +1,6 @@
 /// User intervention raised custom event details attached to this payment evaluation
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct InsightsResourcesPaymentEvaluationUserInterventionRaisedCustom {
@@ -7,6 +8,13 @@ pub struct InsightsResourcesPaymentEvaluationUserInterventionRaisedCustom {
     /// The string must use a snake case description for the type of intervention performed.
     #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "type"))]
     pub type_: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for InsightsResourcesPaymentEvaluationUserInterventionRaisedCustom {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("InsightsResourcesPaymentEvaluationUserInterventionRaisedCustom")
+            .finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct InsightsResourcesPaymentEvaluationUserInterventionRaisedCustomBuilder {

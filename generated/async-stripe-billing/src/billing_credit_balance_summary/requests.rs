@@ -2,7 +2,9 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RetrieveForMyAccountBillingCreditBalanceSummaryBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     customer: Option<String>,
@@ -12,13 +14,22 @@ struct RetrieveForMyAccountBillingCreditBalanceSummaryBuilder {
     expand: Option<Vec<String>>,
     filter: RetrieveForMyAccountBillingCreditBalanceSummaryFilter,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveForMyAccountBillingCreditBalanceSummaryBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveForMyAccountBillingCreditBalanceSummaryBuilder")
+            .finish_non_exhaustive()
+    }
+}
 impl RetrieveForMyAccountBillingCreditBalanceSummaryBuilder {
     fn new(filter: impl Into<RetrieveForMyAccountBillingCreditBalanceSummaryFilter>) -> Self {
         Self { customer: None, customer_account: None, expand: None, filter: filter.into() }
     }
 }
 /// The filter criteria for the credit balance summary.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RetrieveForMyAccountBillingCreditBalanceSummaryFilter {
     /// The billing credit applicability scope for which to fetch credit balance summary.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -31,6 +42,13 @@ pub struct RetrieveForMyAccountBillingCreditBalanceSummaryFilter {
     #[serde(rename = "type")]
     pub type_: RetrieveForMyAccountBillingCreditBalanceSummaryFilterType,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveForMyAccountBillingCreditBalanceSummaryFilter {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveForMyAccountBillingCreditBalanceSummaryFilter")
+            .finish_non_exhaustive()
+    }
+}
 impl RetrieveForMyAccountBillingCreditBalanceSummaryFilter {
     pub fn new(
         type_: impl Into<RetrieveForMyAccountBillingCreditBalanceSummaryFilterType>,
@@ -39,7 +57,9 @@ impl RetrieveForMyAccountBillingCreditBalanceSummaryFilter {
     }
 }
 /// The billing credit applicability scope for which to fetch credit balance summary.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RetrieveForMyAccountBillingCreditBalanceSummaryFilterApplicabilityScope {
     /// The price type that credit grants can apply to.
     /// We currently only support the `metered` price type.
@@ -53,6 +73,13 @@ pub struct RetrieveForMyAccountBillingCreditBalanceSummaryFilterApplicabilitySco
     #[serde(skip_serializing_if = "Option::is_none")]
     pub prices:
         Option<Vec<RetrieveForMyAccountBillingCreditBalanceSummaryFilterApplicabilityScopePrices>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveForMyAccountBillingCreditBalanceSummaryFilterApplicabilityScope {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveForMyAccountBillingCreditBalanceSummaryFilterApplicabilityScope")
+            .finish_non_exhaustive()
+    }
 }
 impl RetrieveForMyAccountBillingCreditBalanceSummaryFilterApplicabilityScope {
     pub fn new() -> Self {
@@ -111,11 +138,23 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for RetrieveForMyAccountBillingCreditBalanceSummaryFilterApplicabilityScopePriceType
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for RetrieveForMyAccountBillingCreditBalanceSummaryFilterApplicabilityScopePriceType
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            RetrieveForMyAccountBillingCreditBalanceSummaryFilterApplicabilityScopePriceType
+        ))
+        .finish_non_exhaustive()
     }
 }
 impl serde::Serialize
@@ -141,10 +180,23 @@ impl<'de> serde::Deserialize<'de>
 /// A list of prices that the credit grant can apply to.
 /// We currently only support the `metered` prices.
 /// Cannot be used in combination with `price_type`.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RetrieveForMyAccountBillingCreditBalanceSummaryFilterApplicabilityScopePrices {
     /// The price ID this credit grant should apply to.
     pub id: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for RetrieveForMyAccountBillingCreditBalanceSummaryFilterApplicabilityScopePrices
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(
+            "RetrieveForMyAccountBillingCreditBalanceSummaryFilterApplicabilityScopePrices",
+        )
+        .finish_non_exhaustive()
+    }
 }
 impl RetrieveForMyAccountBillingCreditBalanceSummaryFilterApplicabilityScopePrices {
     pub fn new(id: impl Into<String>) -> Self {
@@ -195,9 +247,17 @@ impl std::fmt::Display for RetrieveForMyAccountBillingCreditBalanceSummaryFilter
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for RetrieveForMyAccountBillingCreditBalanceSummaryFilterType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveForMyAccountBillingCreditBalanceSummaryFilterType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(RetrieveForMyAccountBillingCreditBalanceSummaryFilterType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for RetrieveForMyAccountBillingCreditBalanceSummaryFilterType {
@@ -217,9 +277,17 @@ impl<'de> serde::Deserialize<'de> for RetrieveForMyAccountBillingCreditBalanceSu
     }
 }
 /// Retrieves the credit balance summary for a customer.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RetrieveForMyAccountBillingCreditBalanceSummary {
     inner: RetrieveForMyAccountBillingCreditBalanceSummaryBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveForMyAccountBillingCreditBalanceSummary {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveForMyAccountBillingCreditBalanceSummary").finish_non_exhaustive()
+    }
 }
 impl RetrieveForMyAccountBillingCreditBalanceSummary {
     /// Construct a new `RetrieveForMyAccountBillingCreditBalanceSummary`.

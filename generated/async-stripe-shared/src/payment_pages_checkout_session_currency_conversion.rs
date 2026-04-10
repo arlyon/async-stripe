@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentPagesCheckoutSessionCurrencyConversion {
@@ -10,6 +11,12 @@ pub struct PaymentPagesCheckoutSessionCurrencyConversion {
     pub fx_rate: String,
     /// Creation currency of the CheckoutSession before localization
     pub source_currency: stripe_types::Currency,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentPagesCheckoutSessionCurrencyConversion {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PaymentPagesCheckoutSessionCurrencyConversion").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct PaymentPagesCheckoutSessionCurrencyConversionBuilder {

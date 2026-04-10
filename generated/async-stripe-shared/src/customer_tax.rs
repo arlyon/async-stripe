@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct CustomerTax {
@@ -11,6 +12,12 @@ pub struct CustomerTax {
     /// The tax calculation provider used for location resolution.
     /// Defaults to `stripe` when not using a [third-party provider](/tax/third-party-apps).
     pub provider: CustomerTaxProvider,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CustomerTax {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CustomerTax").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct CustomerTaxBuilder {
@@ -170,9 +177,16 @@ impl std::fmt::Display for CustomerTaxAutomaticTax {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CustomerTaxAutomaticTax {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CustomerTaxAutomaticTax {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CustomerTaxAutomaticTax)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -254,9 +268,16 @@ impl std::fmt::Display for CustomerTaxProvider {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CustomerTaxProvider {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CustomerTaxProvider {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CustomerTaxProvider)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

@@ -1,9 +1,17 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TaxProductRegistrationsResourceCountryOptionsCaProvinceStandard {
     /// Two-letter CA province code ([ISO 3166-2](https://en.wikipedia.org/wiki/ISO_3166-2)).
     pub province: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TaxProductRegistrationsResourceCountryOptionsCaProvinceStandard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("TaxProductRegistrationsResourceCountryOptionsCaProvinceStandard")
+            .finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct TaxProductRegistrationsResourceCountryOptionsCaProvinceStandardBuilder {

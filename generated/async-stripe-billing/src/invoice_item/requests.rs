@@ -4,9 +4,17 @@ use stripe_client_core::{
 
 /// Deletes an invoice item, removing it from an invoice.
 /// Deleting invoice items is only possible when they’re not attached to invoices, or if it’s attached to a draft invoice.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct DeleteInvoiceItem {
     invoiceitem: stripe_billing::InvoiceItemId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for DeleteInvoiceItem {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("DeleteInvoiceItem").finish_non_exhaustive()
+    }
 }
 impl DeleteInvoiceItem {
     /// Construct a new `DeleteInvoiceItem`.
@@ -40,7 +48,9 @@ impl StripeRequest for DeleteInvoiceItem {
         RequestBuilder::new(StripeMethod::Delete, format!("/invoiceitems/{invoiceitem}"))
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ListInvoiceItemBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     created: Option<stripe_types::RangeQueryTs>,
@@ -61,6 +71,12 @@ struct ListInvoiceItemBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     starting_after: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListInvoiceItemBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListInvoiceItemBuilder").finish_non_exhaustive()
+    }
+}
 impl ListInvoiceItemBuilder {
     fn new() -> Self {
         Self {
@@ -78,9 +94,17 @@ impl ListInvoiceItemBuilder {
 }
 /// Returns a list of your invoice items.
 /// Invoice items are returned sorted by creation date, with the most recently created invoice items appearing first.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListInvoiceItem {
     inner: ListInvoiceItemBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListInvoiceItem {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListInvoiceItem").finish_non_exhaustive()
+    }
 }
 impl ListInvoiceItem {
     /// Construct a new `ListInvoiceItem`.
@@ -180,10 +204,18 @@ impl StripeRequest for ListInvoiceItem {
         RequestBuilder::new(StripeMethod::Get, "/invoiceitems").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RetrieveInvoiceItemBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveInvoiceItemBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveInvoiceItemBuilder").finish_non_exhaustive()
+    }
 }
 impl RetrieveInvoiceItemBuilder {
     fn new() -> Self {
@@ -191,10 +223,18 @@ impl RetrieveInvoiceItemBuilder {
     }
 }
 /// Retrieves the invoice item with the given ID.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RetrieveInvoiceItem {
     inner: RetrieveInvoiceItemBuilder,
     invoiceitem: stripe_billing::InvoiceItemId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveInvoiceItem {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveInvoiceItem").finish_non_exhaustive()
+    }
 }
 impl RetrieveInvoiceItem {
     /// Construct a new `RetrieveInvoiceItem`.
@@ -234,7 +274,9 @@ impl StripeRequest for RetrieveInvoiceItem {
             .query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct CreateInvoiceItemBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     amount: Option<i64>,
@@ -277,6 +319,12 @@ struct CreateInvoiceItemBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     unit_amount_decimal: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateInvoiceItemBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateInvoiceItemBuilder").finish_non_exhaustive()
+    }
+}
 impl CreateInvoiceItemBuilder {
     fn new() -> Self {
         Self {
@@ -304,7 +352,9 @@ impl CreateInvoiceItemBuilder {
     }
 }
 /// Data used to generate a new [Price](https://docs.stripe.com/api/prices) object inline.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateInvoiceItemPriceData {
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
@@ -324,6 +374,12 @@ pub struct CreateInvoiceItemPriceData {
     /// Only one of `unit_amount` and `unit_amount_decimal` can be set.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_amount_decimal: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateInvoiceItemPriceData {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateInvoiceItemPriceData").finish_non_exhaustive()
+    }
 }
 impl CreateInvoiceItemPriceData {
     pub fn new(currency: impl Into<stripe_types::Currency>, product: impl Into<String>) -> Self {
@@ -386,9 +442,16 @@ impl std::fmt::Display for CreateInvoiceItemPriceDataTaxBehavior {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateInvoiceItemPriceDataTaxBehavior {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateInvoiceItemPriceDataTaxBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateInvoiceItemPriceDataTaxBehavior)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateInvoiceItemPriceDataTaxBehavior {
@@ -457,9 +520,16 @@ impl std::fmt::Display for CreateInvoiceItemTaxBehavior {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateInvoiceItemTaxBehavior {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateInvoiceItemTaxBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateInvoiceItemTaxBehavior)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateInvoiceItemTaxBehavior {
@@ -480,9 +550,17 @@ impl<'de> serde::Deserialize<'de> for CreateInvoiceItemTaxBehavior {
 }
 /// Creates an item to be added to a draft invoice (up to 250 items per invoice).
 /// If no invoice is specified, the item will be on the next invoice created for the customer specified.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateInvoiceItem {
     inner: CreateInvoiceItemBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateInvoiceItem {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateInvoiceItem").finish_non_exhaustive()
+    }
 }
 impl CreateInvoiceItem {
     /// Construct a new `CreateInvoiceItem`.
@@ -650,7 +728,9 @@ impl StripeRequest for CreateInvoiceItem {
         RequestBuilder::new(StripeMethod::Post, "/invoiceitems").form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct UpdateInvoiceItemBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     amount: Option<i64>,
@@ -683,6 +763,12 @@ struct UpdateInvoiceItemBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     unit_amount_decimal: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateInvoiceItemBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateInvoiceItemBuilder").finish_non_exhaustive()
+    }
+}
 impl UpdateInvoiceItemBuilder {
     fn new() -> Self {
         Self {
@@ -705,7 +791,9 @@ impl UpdateInvoiceItemBuilder {
     }
 }
 /// Data used to generate a new [Price](https://docs.stripe.com/api/prices) object inline.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateInvoiceItemPriceData {
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
@@ -725,6 +813,12 @@ pub struct UpdateInvoiceItemPriceData {
     /// Only one of `unit_amount` and `unit_amount_decimal` can be set.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unit_amount_decimal: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateInvoiceItemPriceData {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateInvoiceItemPriceData").finish_non_exhaustive()
+    }
 }
 impl UpdateInvoiceItemPriceData {
     pub fn new(currency: impl Into<stripe_types::Currency>, product: impl Into<String>) -> Self {
@@ -787,9 +881,16 @@ impl std::fmt::Display for UpdateInvoiceItemPriceDataTaxBehavior {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdateInvoiceItemPriceDataTaxBehavior {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateInvoiceItemPriceDataTaxBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdateInvoiceItemPriceDataTaxBehavior)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdateInvoiceItemPriceDataTaxBehavior {
@@ -858,9 +959,16 @@ impl std::fmt::Display for UpdateInvoiceItemTaxBehavior {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdateInvoiceItemTaxBehavior {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateInvoiceItemTaxBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdateInvoiceItemTaxBehavior)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdateInvoiceItemTaxBehavior {
@@ -881,10 +989,18 @@ impl<'de> serde::Deserialize<'de> for UpdateInvoiceItemTaxBehavior {
 }
 /// Updates the amount or description of an invoice item on an upcoming invoice.
 /// Updating an invoice item is only possible before the invoice it’s attached to is closed.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateInvoiceItem {
     inner: UpdateInvoiceItemBuilder,
     invoiceitem: stripe_billing::InvoiceItemId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateInvoiceItem {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateInvoiceItem").finish_non_exhaustive()
+    }
 }
 impl UpdateInvoiceItem {
     /// Construct a new `UpdateInvoiceItem`.
@@ -1021,7 +1137,9 @@ impl StripeRequest for UpdateInvoiceItem {
     }
 }
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct DiscountsDataParam {
     /// ID of the coupon to create a new discount for.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1033,6 +1151,12 @@ pub struct DiscountsDataParam {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub promotion_code: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for DiscountsDataParam {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("DiscountsDataParam").finish_non_exhaustive()
+    }
+}
 impl DiscountsDataParam {
     pub fn new() -> Self {
         Self { coupon: None, discount: None, promotion_code: None }
@@ -1043,12 +1167,20 @@ impl Default for DiscountsDataParam {
         Self::new()
     }
 }
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct Period {
     /// The end of the period, which must be greater than or equal to the start. This value is inclusive.
     pub end: stripe_types::Timestamp,
     /// The start of the period. This value is inclusive.
     pub start: stripe_types::Timestamp,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for Period {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("Period").finish_non_exhaustive()
+    }
 }
 impl Period {
     pub fn new(
@@ -1058,11 +1190,19 @@ impl Period {
         Self { end: end.into(), start: start.into() }
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct PricingParam {
     /// The ID of the price object.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub price: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PricingParam {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PricingParam").finish_non_exhaustive()
+    }
 }
 impl PricingParam {
     pub fn new() -> Self {

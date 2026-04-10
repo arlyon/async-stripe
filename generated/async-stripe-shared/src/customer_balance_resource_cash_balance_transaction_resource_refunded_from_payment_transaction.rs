@@ -1,9 +1,21 @@
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct CustomerBalanceResourceCashBalanceTransactionResourceRefundedFromPaymentTransaction {
     /// The [Refund](https://docs.stripe.com/api/refunds/object) that moved these funds into the customer's cash balance.
     pub refund: stripe_types::Expandable<stripe_shared::Refund>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for CustomerBalanceResourceCashBalanceTransactionResourceRefundedFromPaymentTransaction
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(
+            "CustomerBalanceResourceCashBalanceTransactionResourceRefundedFromPaymentTransaction",
+        )
+        .finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct CustomerBalanceResourceCashBalanceTransactionResourceRefundedFromPaymentTransactionBuilder

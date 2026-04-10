@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct IssuingTransactionFleetData {
@@ -11,6 +12,12 @@ pub struct IssuingTransactionFleetData {
     pub reported_breakdown: Option<stripe_shared::IssuingTransactionFleetReportedBreakdown>,
     /// The type of fuel service. One of `non_fuel_transaction`, `full_service`, or `self_service`.
     pub service_type: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for IssuingTransactionFleetData {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("IssuingTransactionFleetData").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct IssuingTransactionFleetDataBuilder {

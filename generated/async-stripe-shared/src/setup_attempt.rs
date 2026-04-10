@@ -4,7 +4,8 @@
 /// payment method using a SetupIntent.
 ///
 /// For more details see <<https://stripe.com/docs/api/setup_attempts/object>>.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct SetupAttempt {
     /// The value of [application](https://docs.stripe.com/api/setup_intents/object#setup_intent_object-application) on the SetupIntent at the time of this confirmation.
@@ -44,6 +45,12 @@ pub struct SetupAttempt {
     pub status: String,
     /// The value of [usage](https://docs.stripe.com/api/setup_intents/object#setup_intent_object-usage) on the SetupIntent at the time of this confirmation, one of `off_session` or `on_session`.
     pub usage: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for SetupAttempt {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("SetupAttempt").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct SetupAttemptBuilder {
@@ -316,9 +323,16 @@ impl std::fmt::Display for SetupAttemptFlowDirections {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for SetupAttemptFlowDirections {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for SetupAttemptFlowDirections {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(SetupAttemptFlowDirections)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

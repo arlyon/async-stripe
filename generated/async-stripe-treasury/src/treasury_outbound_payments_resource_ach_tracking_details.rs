@@ -1,9 +1,16 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TreasuryOutboundPaymentsResourceAchTrackingDetails {
     /// ACH trace ID of the OutboundPayment for payments sent over the `ach` network.
     pub trace_id: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TreasuryOutboundPaymentsResourceAchTrackingDetails {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("TreasuryOutboundPaymentsResourceAchTrackingDetails").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct TreasuryOutboundPaymentsResourceAchTrackingDetailsBuilder {

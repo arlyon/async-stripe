@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct SetupIntentPaymentMethodOptions {
@@ -14,6 +15,12 @@ pub struct SetupIntentPaymentMethodOptions {
     pub sepa_debit: Option<stripe_shared::SetupIntentPaymentMethodOptionsSepaDebit>,
     pub upi: Option<stripe_shared::SetupIntentPaymentMethodOptionsUpi>,
     pub us_bank_account: Option<stripe_shared::SetupIntentPaymentMethodOptionsUsBankAccount>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for SetupIntentPaymentMethodOptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("SetupIntentPaymentMethodOptions").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct SetupIntentPaymentMethodOptionsBuilder {

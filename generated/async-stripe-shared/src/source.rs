@@ -10,7 +10,8 @@
 /// Related guides: [Sources API](https://docs.stripe.com/sources) and [Sources & Customers](https://docs.stripe.com/sources/customers).
 ///
 /// For more details see <<https://stripe.com/docs/api/sources/object>>.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct Source {
     pub ach_credit_transfer: Option<stripe_shared::SourceTypeAchCreditTransfer>,
@@ -85,6 +86,12 @@ pub struct Source {
     /// If an incompatible value is passed, an error will be returned.
     pub usage: Option<String>,
     pub wechat: Option<stripe_shared::SourceTypeWechat>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for Source {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("Source").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct SourceBuilder {
@@ -537,9 +544,16 @@ impl std::fmt::Display for SourceAllowRedisplay {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for SourceAllowRedisplay {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for SourceAllowRedisplay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(SourceAllowRedisplay)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -668,9 +682,16 @@ impl std::fmt::Display for SourceType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for SourceType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for SourceType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(SourceType)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

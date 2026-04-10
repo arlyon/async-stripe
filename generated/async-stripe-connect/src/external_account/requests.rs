@@ -3,10 +3,18 @@ use stripe_client_core::{
 };
 
 /// Delete a specified external account for a given account.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct DeleteExternalAccount {
     account: stripe_shared::AccountId,
     id: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for DeleteExternalAccount {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("DeleteExternalAccount").finish_non_exhaustive()
+    }
 }
 impl DeleteExternalAccount {
     /// Construct a new `DeleteExternalAccount`.
@@ -44,7 +52,9 @@ impl StripeRequest for DeleteExternalAccount {
         )
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ListAccountExternalAccountBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<String>,
@@ -56,6 +66,12 @@ struct ListAccountExternalAccountBuilder {
     object: Option<ListAccountExternalAccountObject>,
     #[serde(skip_serializing_if = "Option::is_none")]
     starting_after: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListAccountExternalAccountBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListAccountExternalAccountBuilder").finish_non_exhaustive()
+    }
 }
 impl ListAccountExternalAccountBuilder {
     fn new() -> Self {
@@ -106,9 +122,16 @@ impl std::fmt::Display for ListAccountExternalAccountObject {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ListAccountExternalAccountObject {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListAccountExternalAccountObject {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ListAccountExternalAccountObject)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ListAccountExternalAccountObject {
@@ -128,10 +151,18 @@ impl<'de> serde::Deserialize<'de> for ListAccountExternalAccountObject {
     }
 }
 /// List external accounts for an account.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListAccountExternalAccount {
     inner: ListAccountExternalAccountBuilder,
     account: stripe_shared::AccountId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListAccountExternalAccount {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListAccountExternalAccount").finish_non_exhaustive()
+    }
 }
 impl ListAccountExternalAccount {
     /// Construct a new `ListAccountExternalAccount`.
@@ -207,10 +238,18 @@ impl StripeRequest for ListAccountExternalAccount {
             .query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RetrieveExternalAccountBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveExternalAccountBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveExternalAccountBuilder").finish_non_exhaustive()
+    }
 }
 impl RetrieveExternalAccountBuilder {
     fn new() -> Self {
@@ -218,11 +257,19 @@ impl RetrieveExternalAccountBuilder {
     }
 }
 /// Retrieve a specified external account for a given account.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RetrieveExternalAccount {
     inner: RetrieveExternalAccountBuilder,
     account: stripe_shared::AccountId,
     id: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveExternalAccount {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveExternalAccount").finish_non_exhaustive()
+    }
 }
 impl RetrieveExternalAccount {
     /// Construct a new `RetrieveExternalAccount`.
@@ -270,7 +317,9 @@ impl StripeRequest for RetrieveExternalAccount {
         .query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct CreateAccountExternalAccountBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     default_for_currency: Option<bool>,
@@ -279,6 +328,12 @@ struct CreateAccountExternalAccountBuilder {
     external_account: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     metadata: Option<std::collections::HashMap<String, String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountExternalAccountBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountExternalAccountBuilder").finish_non_exhaustive()
+    }
 }
 impl CreateAccountExternalAccountBuilder {
     fn new(external_account: impl Into<String>) -> Self {
@@ -291,10 +346,18 @@ impl CreateAccountExternalAccountBuilder {
     }
 }
 /// Create an external account for a given account.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateAccountExternalAccount {
     inner: CreateAccountExternalAccountBuilder,
     account: stripe_shared::AccountId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountExternalAccount {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountExternalAccount").finish_non_exhaustive()
+    }
 }
 impl CreateAccountExternalAccount {
     /// Construct a new `CreateAccountExternalAccount`.
@@ -356,7 +419,9 @@ impl StripeRequest for CreateAccountExternalAccount {
             .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct UpdateExternalAccountBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     account_holder_name: Option<String>,
@@ -390,6 +455,12 @@ struct UpdateExternalAccountBuilder {
     metadata: Option<std::collections::HashMap<String, String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     name: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateExternalAccountBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateExternalAccountBuilder").finish_non_exhaustive()
+    }
 }
 impl UpdateExternalAccountBuilder {
     fn new() -> Self {
@@ -457,9 +528,16 @@ impl std::fmt::Display for UpdateExternalAccountAccountHolderType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdateExternalAccountAccountHolderType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateExternalAccountAccountHolderType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdateExternalAccountAccountHolderType)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdateExternalAccountAccountHolderType {
@@ -530,9 +608,16 @@ impl std::fmt::Display for UpdateExternalAccountAccountType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdateExternalAccountAccountType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateExternalAccountAccountType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdateExternalAccountAccountType)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdateExternalAccountAccountType {
@@ -552,13 +637,21 @@ impl<'de> serde::Deserialize<'de> for UpdateExternalAccountAccountType {
     }
 }
 /// Documents that may be submitted to satisfy various informational requests.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateExternalAccountDocuments {
     /// One or more documents that support the [Bank account ownership verification](https://support.stripe.com/questions/bank-account-ownership-verification) requirement.
     /// Must be a document associated with the bank account that displays the last 4 digits of the account number, either a statement or a check.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bank_account_ownership_verification:
         Option<UpdateExternalAccountDocumentsBankAccountOwnershipVerification>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateExternalAccountDocuments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateExternalAccountDocuments").finish_non_exhaustive()
+    }
 }
 impl UpdateExternalAccountDocuments {
     pub fn new() -> Self {
@@ -572,11 +665,20 @@ impl Default for UpdateExternalAccountDocuments {
 }
 /// One or more documents that support the [Bank account ownership verification](https://support.stripe.com/questions/bank-account-ownership-verification) requirement.
 /// Must be a document associated with the bank account that displays the last 4 digits of the account number, either a statement or a check.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateExternalAccountDocumentsBankAccountOwnershipVerification {
     /// One or more document ids returned by a [file upload](https://api.stripe.com#create_file) with a `purpose` value of `account_requirement`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub files: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateExternalAccountDocumentsBankAccountOwnershipVerification {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateExternalAccountDocumentsBankAccountOwnershipVerification")
+            .finish_non_exhaustive()
+    }
 }
 impl UpdateExternalAccountDocumentsBankAccountOwnershipVerification {
     pub fn new() -> Self {
@@ -596,11 +698,19 @@ impl Default for UpdateExternalAccountDocumentsBankAccountOwnershipVerification 
 ///
 /// You can re-enable a disabled bank account by performing an update call without providing any
 /// arguments or changes.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateExternalAccount {
     inner: UpdateExternalAccountBuilder,
     account: stripe_shared::AccountId,
     id: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateExternalAccount {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateExternalAccount").finish_non_exhaustive()
+    }
 }
 impl UpdateExternalAccount {
     /// Construct a new `UpdateExternalAccount`.

@@ -1,5 +1,6 @@
 /// A phase item describes the price and quantity of a phase.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct SubscriptionScheduleConfigurationItem {
@@ -21,6 +22,12 @@ pub struct SubscriptionScheduleConfigurationItem {
     /// The tax rates which apply to this `phase_item`.
     /// When set, the `default_tax_rates` on the phase do not apply to this `phase_item`.
     pub tax_rates: Option<Vec<stripe_shared::TaxRate>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for SubscriptionScheduleConfigurationItem {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("SubscriptionScheduleConfigurationItem").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct SubscriptionScheduleConfigurationItemBuilder {

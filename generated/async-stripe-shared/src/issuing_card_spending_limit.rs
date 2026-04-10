@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct IssuingCardSpendingLimit {
@@ -10,6 +11,12 @@ pub struct IssuingCardSpendingLimit {
     pub categories: Option<Vec<IssuingCardSpendingLimitCategories>>,
     /// Interval (or event) to which the amount applies.
     pub interval: IssuingCardSpendingLimitInterval,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for IssuingCardSpendingLimit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("IssuingCardSpendingLimit").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct IssuingCardSpendingLimitBuilder {
@@ -1132,9 +1139,16 @@ impl std::fmt::Display for IssuingCardSpendingLimitCategories {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for IssuingCardSpendingLimitCategories {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for IssuingCardSpendingLimitCategories {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(IssuingCardSpendingLimitCategories)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -1225,9 +1239,16 @@ impl std::fmt::Display for IssuingCardSpendingLimitInterval {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for IssuingCardSpendingLimitInterval {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for IssuingCardSpendingLimitInterval {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(IssuingCardSpendingLimitInterval)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

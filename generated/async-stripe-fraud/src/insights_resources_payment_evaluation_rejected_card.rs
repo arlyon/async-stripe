@@ -1,5 +1,6 @@
 /// Details of an rejected card outcome attached to this payment evaluation.
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct InsightsResourcesPaymentEvaluationRejectedCard {
@@ -12,6 +13,12 @@ pub struct InsightsResourcesPaymentEvaluationRejectedCard {
     pub cvc_check: InsightsResourcesPaymentEvaluationRejectedCardCvcCheck,
     /// Card issuer's reason for the network decline.
     pub reason: InsightsResourcesPaymentEvaluationRejectedCardReason,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for InsightsResourcesPaymentEvaluationRejectedCard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("InsightsResourcesPaymentEvaluationRejectedCard").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct InsightsResourcesPaymentEvaluationRejectedCardBuilder {
@@ -186,9 +193,17 @@ impl std::fmt::Display for InsightsResourcesPaymentEvaluationRejectedCardAddress
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for InsightsResourcesPaymentEvaluationRejectedCardAddressLine1Check {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for InsightsResourcesPaymentEvaluationRejectedCardAddressLine1Check {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(InsightsResourcesPaymentEvaluationRejectedCardAddressLine1Check))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -282,9 +297,19 @@ impl std::fmt::Display for InsightsResourcesPaymentEvaluationRejectedCardAddress
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for InsightsResourcesPaymentEvaluationRejectedCardAddressPostalCodeCheck {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for InsightsResourcesPaymentEvaluationRejectedCardAddressPostalCodeCheck {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            InsightsResourcesPaymentEvaluationRejectedCardAddressPostalCodeCheck
+        ))
+        .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -380,9 +405,17 @@ impl std::fmt::Display for InsightsResourcesPaymentEvaluationRejectedCardCvcChec
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for InsightsResourcesPaymentEvaluationRejectedCardCvcCheck {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for InsightsResourcesPaymentEvaluationRejectedCardCvcCheck {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(InsightsResourcesPaymentEvaluationRejectedCardCvcCheck))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -499,9 +532,17 @@ impl std::fmt::Display for InsightsResourcesPaymentEvaluationRejectedCardReason 
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for InsightsResourcesPaymentEvaluationRejectedCardReason {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for InsightsResourcesPaymentEvaluationRejectedCardReason {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(InsightsResourcesPaymentEvaluationRejectedCardReason))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

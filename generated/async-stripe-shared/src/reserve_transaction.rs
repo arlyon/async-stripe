@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct ReserveTransaction {
     pub amount: i64,
@@ -9,6 +10,12 @@ pub struct ReserveTransaction {
     pub description: Option<String>,
     /// Unique identifier for the object.
     pub id: stripe_shared::ReserveTransactionId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ReserveTransaction {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ReserveTransaction").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct ReserveTransactionBuilder {

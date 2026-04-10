@@ -1,4 +1,5 @@
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct QuotesResourceAutomaticTax {
@@ -12,6 +13,12 @@ pub struct QuotesResourceAutomaticTax {
     pub provider: Option<String>,
     /// The status of the most recent automated tax calculation for this quote.
     pub status: Option<QuotesResourceAutomaticTaxStatus>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for QuotesResourceAutomaticTax {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("QuotesResourceAutomaticTax").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct QuotesResourceAutomaticTaxBuilder {
@@ -169,9 +176,16 @@ impl std::fmt::Display for QuotesResourceAutomaticTaxStatus {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for QuotesResourceAutomaticTaxStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for QuotesResourceAutomaticTaxStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(QuotesResourceAutomaticTaxStatus)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

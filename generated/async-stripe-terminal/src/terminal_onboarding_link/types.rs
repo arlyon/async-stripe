@@ -1,5 +1,6 @@
 /// Returns redirect links used for onboarding onto Tap to Pay on iPhone.
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TerminalOnboardingLink {
     pub link_options: stripe_terminal::TerminalOnboardingLinkLinkOptions,
@@ -9,6 +10,12 @@ pub struct TerminalOnboardingLink {
     pub on_behalf_of: Option<String>,
     /// The link passed back to the user for their onboarding.
     pub redirect_url: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TerminalOnboardingLink {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("TerminalOnboardingLink").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct TerminalOnboardingLinkBuilder {
@@ -176,9 +183,16 @@ impl std::fmt::Display for TerminalOnboardingLinkLinkType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for TerminalOnboardingLinkLinkType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TerminalOnboardingLinkLinkType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(TerminalOnboardingLinkLinkType)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for TerminalOnboardingLinkLinkType {

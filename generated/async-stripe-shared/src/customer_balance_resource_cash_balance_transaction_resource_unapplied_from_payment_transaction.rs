@@ -1,9 +1,21 @@
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct CustomerBalanceResourceCashBalanceTransactionResourceUnappliedFromPaymentTransaction {
     /// The [Payment Intent](https://docs.stripe.com/api/payment_intents/object) that funds were unapplied from.
     pub payment_intent: stripe_types::Expandable<stripe_shared::PaymentIntent>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for CustomerBalanceResourceCashBalanceTransactionResourceUnappliedFromPaymentTransaction
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(
+            "CustomerBalanceResourceCashBalanceTransactionResourceUnappliedFromPaymentTransaction",
+        )
+        .finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct CustomerBalanceResourceCashBalanceTransactionResourceUnappliedFromPaymentTransactionBuilder

@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct MandateOptionsUpi {
@@ -12,6 +13,12 @@ pub struct MandateOptionsUpi {
     pub description: Option<String>,
     /// End date of the mandate or subscription.
     pub end_date: Option<stripe_types::Timestamp>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for MandateOptionsUpi {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("MandateOptionsUpi").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct MandateOptionsUpiBuilder {
@@ -168,9 +175,16 @@ impl std::fmt::Display for MandateOptionsUpiAmountType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for MandateOptionsUpiAmountType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for MandateOptionsUpiAmountType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(MandateOptionsUpiAmountType)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

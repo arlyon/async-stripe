@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentLinksResourceCustomFields {
@@ -15,6 +16,12 @@ pub struct PaymentLinksResourceCustomFields {
     /// The type of the field.
     #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "type"))]
     pub type_: PaymentLinksResourceCustomFieldsType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentLinksResourceCustomFields {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PaymentLinksResourceCustomFields").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct PaymentLinksResourceCustomFieldsBuilder {
@@ -199,9 +206,16 @@ impl std::fmt::Display for PaymentLinksResourceCustomFieldsType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for PaymentLinksResourceCustomFieldsType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentLinksResourceCustomFieldsType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(PaymentLinksResourceCustomFieldsType)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

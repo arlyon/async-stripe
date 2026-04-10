@@ -1,7 +1,8 @@
 /// A Financial Connections Account represents an account that exists outside of Stripe, to which you have been granted some degree of access.
 ///
 /// For more details see <<https://stripe.com/docs/api/financial_connections/accounts/object>>.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct FinancialConnectionsAccount {
     /// The account holder that this account belongs to.
@@ -57,6 +58,12 @@ pub struct FinancialConnectionsAccount {
     pub supported_payment_method_types: Vec<FinancialConnectionsAccountSupportedPaymentMethodTypes>,
     /// The state of the most recent attempt to refresh the account transactions.
     pub transaction_refresh: Option<stripe_misc::BankConnectionsResourceTransactionRefresh>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for FinancialConnectionsAccount {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("FinancialConnectionsAccount").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct FinancialConnectionsAccountBuilder {
@@ -371,9 +378,16 @@ impl std::fmt::Display for FinancialConnectionsAccountCategory {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for FinancialConnectionsAccountCategory {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for FinancialConnectionsAccountCategory {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(FinancialConnectionsAccountCategory)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -458,9 +472,16 @@ impl std::fmt::Display for FinancialConnectionsAccountPermissions {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for FinancialConnectionsAccountPermissions {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for FinancialConnectionsAccountPermissions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(FinancialConnectionsAccountPermissions)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -542,9 +563,16 @@ impl std::fmt::Display for FinancialConnectionsAccountStatus {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for FinancialConnectionsAccountStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for FinancialConnectionsAccountStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(FinancialConnectionsAccountStatus)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -648,9 +676,16 @@ impl std::fmt::Display for FinancialConnectionsAccountSubcategory {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for FinancialConnectionsAccountSubcategory {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for FinancialConnectionsAccountSubcategory {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(FinancialConnectionsAccountSubcategory)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -726,9 +761,16 @@ impl std::fmt::Display for FinancialConnectionsAccountSubscriptions {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for FinancialConnectionsAccountSubscriptions {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for FinancialConnectionsAccountSubscriptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(FinancialConnectionsAccountSubscriptions)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -807,9 +849,17 @@ impl std::fmt::Display for FinancialConnectionsAccountSupportedPaymentMethodType
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for FinancialConnectionsAccountSupportedPaymentMethodTypes {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for FinancialConnectionsAccountSupportedPaymentMethodTypes {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(FinancialConnectionsAccountSupportedPaymentMethodTypes))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

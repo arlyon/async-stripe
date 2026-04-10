@@ -1,6 +1,7 @@
 /// Pending Updates store the changes pending from a previous update that will be applied
 /// to the Subscription upon successful payment.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct SubscriptionsResourcePendingUpdate {
@@ -18,6 +19,12 @@ pub struct SubscriptionsResourcePendingUpdate {
     /// Setting this flag to `true` together with `trial_end` is not allowed.
     /// See [Using trial periods on subscriptions](https://docs.stripe.com/billing/subscriptions/trials) to learn more.
     pub trial_from_plan: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for SubscriptionsResourcePendingUpdate {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("SubscriptionsResourcePendingUpdate").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct SubscriptionsResourcePendingUpdateBuilder {

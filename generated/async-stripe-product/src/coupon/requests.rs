@@ -5,9 +5,17 @@ use stripe_client_core::{
 /// You can delete coupons via the [coupon management](https://dashboard.stripe.com/coupons) page of the Stripe dashboard.
 /// However, deleting a coupon does not affect any customers who have already applied the coupon; it means that new customers can’t redeem the coupon.
 /// You can also delete coupons via the API.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct DeleteCoupon {
     coupon: stripe_shared::CouponId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for DeleteCoupon {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("DeleteCoupon").finish_non_exhaustive()
+    }
 }
 impl DeleteCoupon {
     /// Construct a new `DeleteCoupon`.
@@ -41,7 +49,9 @@ impl StripeRequest for DeleteCoupon {
         RequestBuilder::new(StripeMethod::Delete, format!("/coupons/{coupon}"))
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ListCouponBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     created: Option<stripe_types::RangeQueryTs>,
@@ -54,15 +64,29 @@ struct ListCouponBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     starting_after: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListCouponBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListCouponBuilder").finish_non_exhaustive()
+    }
+}
 impl ListCouponBuilder {
     fn new() -> Self {
         Self { created: None, ending_before: None, expand: None, limit: None, starting_after: None }
     }
 }
 /// Returns a list of your coupons.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListCoupon {
     inner: ListCouponBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListCoupon {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListCoupon").finish_non_exhaustive()
+    }
 }
 impl ListCoupon {
     /// Construct a new `ListCoupon`.
@@ -137,10 +161,18 @@ impl StripeRequest for ListCoupon {
         RequestBuilder::new(StripeMethod::Get, "/coupons").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RetrieveCouponBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveCouponBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveCouponBuilder").finish_non_exhaustive()
+    }
 }
 impl RetrieveCouponBuilder {
     fn new() -> Self {
@@ -148,10 +180,18 @@ impl RetrieveCouponBuilder {
     }
 }
 /// Retrieves the coupon with the given ID.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RetrieveCoupon {
     inner: RetrieveCouponBuilder,
     coupon: stripe_shared::CouponId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveCoupon {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveCoupon").finish_non_exhaustive()
+    }
 }
 impl RetrieveCoupon {
     /// Construct a new `RetrieveCoupon`.
@@ -190,7 +230,9 @@ impl StripeRequest for RetrieveCoupon {
         RequestBuilder::new(StripeMethod::Get, format!("/coupons/{coupon}")).query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct CreateCouponBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     amount_off: Option<i64>,
@@ -219,6 +261,12 @@ struct CreateCouponBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     redeem_by: Option<stripe_types::Timestamp>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCouponBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCouponBuilder").finish_non_exhaustive()
+    }
+}
 impl CreateCouponBuilder {
     fn new() -> Self {
         Self {
@@ -239,11 +287,19 @@ impl CreateCouponBuilder {
     }
 }
 /// A hash containing directions for what this Coupon will apply discounts to.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCouponAppliesTo {
     /// An array of Product IDs that this Coupon will apply to.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub products: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCouponAppliesTo {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCouponAppliesTo").finish_non_exhaustive()
+    }
 }
 impl CreateCouponAppliesTo {
     pub fn new() -> Self {
@@ -261,9 +317,17 @@ impl Default for CreateCouponAppliesTo {
 /// A coupon has either a `percent_off` or an `amount_off` and `currency`.
 /// If you set an `amount_off`, that amount will be subtracted from any invoice’s subtotal.
 /// For example, an invoice with a subtotal of $100 will have a final total of $0 if a coupon with an `amount_off` of 20000 is applied to it and an invoice with a subtotal of $300 will have a final total of $100 if a coupon with an `amount_off` of 20000 is applied to it.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateCoupon {
     inner: CreateCouponBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCoupon {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCoupon").finish_non_exhaustive()
+    }
 }
 impl CreateCoupon {
     /// Construct a new `CreateCoupon`.
@@ -380,7 +444,9 @@ impl StripeRequest for CreateCoupon {
         RequestBuilder::new(StripeMethod::Post, "/coupons").form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct UpdateCouponBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     currency_options: Option<std::collections::HashMap<stripe_types::Currency, CurrencyOption>>,
@@ -391,6 +457,12 @@ struct UpdateCouponBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     name: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateCouponBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateCouponBuilder").finish_non_exhaustive()
+    }
+}
 impl UpdateCouponBuilder {
     fn new() -> Self {
         Self { currency_options: None, expand: None, metadata: None, name: None }
@@ -398,10 +470,18 @@ impl UpdateCouponBuilder {
 }
 /// Updates the metadata of a coupon.
 /// Other coupon details (currency, duration, amount_off) are, by design, not editable.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateCoupon {
     inner: UpdateCouponBuilder,
     coupon: stripe_shared::CouponId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateCoupon {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateCoupon").finish_non_exhaustive()
+    }
 }
 impl UpdateCoupon {
     /// Construct a new `UpdateCoupon`.
@@ -467,10 +547,18 @@ impl StripeRequest for UpdateCoupon {
     }
 }
 
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CurrencyOption {
     /// A positive integer representing the amount to subtract from an invoice total.
     pub amount_off: i64,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CurrencyOption {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CurrencyOption").finish_non_exhaustive()
+    }
 }
 impl CurrencyOption {
     pub fn new(amount_off: impl Into<i64>) -> Self {

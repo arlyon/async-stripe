@@ -3,7 +3,8 @@
 /// Related guide: [Account capabilities](https://docs.stripe.com/connect/account-capabilities)
 ///
 /// For more details see <<https://stripe.com/docs/api/capabilities/object>>.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct Capability {
     /// The account for which the capability enables functionality.
@@ -18,6 +19,12 @@ pub struct Capability {
     pub requirements: Option<stripe_shared::AccountCapabilityRequirements>,
     /// The status of the capability.
     pub status: CapabilityStatus,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for Capability {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("Capability").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct CapabilityBuilder {
@@ -226,9 +233,16 @@ impl std::fmt::Display for CapabilityStatus {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CapabilityStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CapabilityStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CapabilityStatus)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

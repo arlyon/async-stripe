@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct IssuingAuthorizationMerchantData {
@@ -26,6 +27,12 @@ pub struct IssuingAuthorizationMerchantData {
     pub terminal_id: Option<String>,
     /// URL provided by the merchant on a 3DS request
     pub url: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for IssuingAuthorizationMerchantData {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("IssuingAuthorizationMerchantData").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct IssuingAuthorizationMerchantDataBuilder {

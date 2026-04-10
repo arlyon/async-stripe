@@ -1,5 +1,6 @@
 /// Processor information associated with this payment.
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentsPrimitivesPaymentRecordsResourceProcessorDetails {
@@ -8,6 +9,13 @@ pub custom: Option<stripe_shared::PaymentsPrimitivesPaymentRecordsResourceProces
 #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "type"))]
 pub type_: PaymentsPrimitivesPaymentRecordsResourceProcessorDetailsType,
 
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentsPrimitivesPaymentRecordsResourceProcessorDetails {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PaymentsPrimitivesPaymentRecordsResourceProcessorDetails")
+            .finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct PaymentsPrimitivesPaymentRecordsResourceProcessorDetailsBuilder {
@@ -149,9 +157,17 @@ impl std::fmt::Display for PaymentsPrimitivesPaymentRecordsResourceProcessorDeta
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for PaymentsPrimitivesPaymentRecordsResourceProcessorDetailsType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentsPrimitivesPaymentRecordsResourceProcessorDetailsType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(PaymentsPrimitivesPaymentRecordsResourceProcessorDetailsType))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

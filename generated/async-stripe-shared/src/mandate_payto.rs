@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct MandatePayto {
@@ -20,6 +21,12 @@ pub struct MandatePayto {
     pub purpose: Option<MandatePaytoPurpose>,
     /// Date, in YYYY-MM-DD format, from which payments will be collected. Defaults to confirmation time.
     pub start_date: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for MandatePayto {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("MandatePayto").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct MandatePaytoBuilder {
@@ -207,9 +214,16 @@ impl std::fmt::Display for MandatePaytoAmountType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for MandatePaytoAmountType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for MandatePaytoAmountType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(MandatePaytoAmountType)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -306,9 +320,16 @@ impl std::fmt::Display for MandatePaytoPaymentSchedule {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for MandatePaytoPaymentSchedule {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for MandatePaytoPaymentSchedule {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(MandatePaytoPaymentSchedule)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -410,9 +431,16 @@ impl std::fmt::Display for MandatePaytoPurpose {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for MandatePaytoPurpose {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for MandatePaytoPurpose {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(MandatePaytoPurpose)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

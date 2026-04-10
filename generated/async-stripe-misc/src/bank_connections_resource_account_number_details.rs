@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct BankConnectionsResourceAccountNumberDetails {
@@ -10,6 +11,12 @@ pub struct BankConnectionsResourceAccountNumberDetails {
     pub status: BankConnectionsResourceAccountNumberDetailsStatus,
     /// The payment networks that the account number can be used for.
     pub supported_networks: Vec<BankConnectionsResourceAccountNumberDetailsSupportedNetworks>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for BankConnectionsResourceAccountNumberDetails {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("BankConnectionsResourceAccountNumberDetails").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct BankConnectionsResourceAccountNumberDetailsBuilder {
@@ -173,9 +180,17 @@ impl std::fmt::Display for BankConnectionsResourceAccountNumberDetailsIdentifier
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for BankConnectionsResourceAccountNumberDetailsIdentifierType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for BankConnectionsResourceAccountNumberDetailsIdentifierType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(BankConnectionsResourceAccountNumberDetailsIdentifierType))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -261,9 +276,17 @@ impl std::fmt::Display for BankConnectionsResourceAccountNumberDetailsStatus {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for BankConnectionsResourceAccountNumberDetailsStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for BankConnectionsResourceAccountNumberDetailsStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(BankConnectionsResourceAccountNumberDetailsStatus))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -341,9 +364,17 @@ impl std::fmt::Display for BankConnectionsResourceAccountNumberDetailsSupportedN
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for BankConnectionsResourceAccountNumberDetailsSupportedNetworks {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for BankConnectionsResourceAccountNumberDetailsSupportedNetworks {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(BankConnectionsResourceAccountNumberDetailsSupportedNetworks))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

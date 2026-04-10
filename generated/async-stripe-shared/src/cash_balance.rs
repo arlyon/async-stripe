@@ -3,7 +3,8 @@
 /// These funds can be used for payment and can eventually be paid out to your bank account.
 ///
 /// For more details see <<https://stripe.com/docs/api/cash_balance/object>>.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct CashBalance {
     /// A hash of all cash balances available to this customer.
@@ -18,6 +19,12 @@ pub struct CashBalance {
     /// If the object exists in test mode, the value is `false`.
     pub livemode: bool,
     pub settings: stripe_shared::CustomerBalanceCustomerBalanceSettings,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CashBalance {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CashBalance").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct CashBalanceBuilder {

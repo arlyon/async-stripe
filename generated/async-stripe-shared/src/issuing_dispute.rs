@@ -3,7 +3,8 @@
 /// Related guide: [Issuing disputes](https://docs.stripe.com/issuing/purchases/disputes)
 ///
 /// For more details see <<https://stripe.com/docs/api/issuing/disputes/object>>.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct IssuingDispute {
     /// Disputed amount in the card's currency and in the [smallest currency unit](https://docs.stripe.com/currencies#zero-decimal).
@@ -34,6 +35,12 @@ pub struct IssuingDispute {
     pub transaction: stripe_types::Expandable<stripe_shared::IssuingTransaction>,
     /// [Treasury](https://docs.stripe.com/api/treasury) details related to this dispute if it was created on a [FinancialAccount](/docs/api/treasury/financial_accounts.
     pub treasury: Option<stripe_shared::IssuingDisputeTreasury>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for IssuingDispute {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("IssuingDispute").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct IssuingDisputeBuilder {
@@ -346,9 +353,16 @@ impl std::fmt::Display for IssuingDisputeLossReason {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for IssuingDisputeLossReason {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for IssuingDisputeLossReason {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(IssuingDisputeLossReason)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -442,9 +456,16 @@ impl std::fmt::Display for IssuingDisputeStatus {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for IssuingDisputeStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for IssuingDisputeStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(IssuingDisputeStatus)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for IssuingDisputeStatus {

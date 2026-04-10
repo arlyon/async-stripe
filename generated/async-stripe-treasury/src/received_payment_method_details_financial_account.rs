@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct ReceivedPaymentMethodDetailsFinancialAccount {
@@ -6,6 +7,12 @@ pub struct ReceivedPaymentMethodDetailsFinancialAccount {
     pub id: String,
     /// The rails the ReceivedCredit was sent over. A FinancialAccount can only send funds over `stripe`.
     pub network: ReceivedPaymentMethodDetailsFinancialAccountNetwork,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ReceivedPaymentMethodDetailsFinancialAccount {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ReceivedPaymentMethodDetailsFinancialAccount").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct ReceivedPaymentMethodDetailsFinancialAccountBuilder {
@@ -144,9 +151,17 @@ impl std::fmt::Display for ReceivedPaymentMethodDetailsFinancialAccountNetwork {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ReceivedPaymentMethodDetailsFinancialAccountNetwork {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ReceivedPaymentMethodDetailsFinancialAccountNetwork {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ReceivedPaymentMethodDetailsFinancialAccountNetwork))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

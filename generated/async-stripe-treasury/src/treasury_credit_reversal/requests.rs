@@ -2,7 +2,9 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ListTreasuryCreditReversalBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<String>,
@@ -18,6 +20,12 @@ struct ListTreasuryCreditReversalBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     status: Option<stripe_treasury::TreasuryCreditReversalStatus>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListTreasuryCreditReversalBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListTreasuryCreditReversalBuilder").finish_non_exhaustive()
+    }
+}
 impl ListTreasuryCreditReversalBuilder {
     fn new(financial_account: impl Into<String>) -> Self {
         Self {
@@ -32,9 +40,17 @@ impl ListTreasuryCreditReversalBuilder {
     }
 }
 /// Returns a list of CreditReversals.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListTreasuryCreditReversal {
     inner: ListTreasuryCreditReversalBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListTreasuryCreditReversal {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListTreasuryCreditReversal").finish_non_exhaustive()
+    }
 }
 impl ListTreasuryCreditReversal {
     /// Construct a new `ListTreasuryCreditReversal`.
@@ -113,10 +129,18 @@ impl StripeRequest for ListTreasuryCreditReversal {
         RequestBuilder::new(StripeMethod::Get, "/treasury/credit_reversals").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RetrieveTreasuryCreditReversalBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveTreasuryCreditReversalBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveTreasuryCreditReversalBuilder").finish_non_exhaustive()
+    }
 }
 impl RetrieveTreasuryCreditReversalBuilder {
     fn new() -> Self {
@@ -124,10 +148,18 @@ impl RetrieveTreasuryCreditReversalBuilder {
     }
 }
 /// Retrieves the details of an existing CreditReversal by passing the unique CreditReversal ID from either the CreditReversal creation request or CreditReversal list.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RetrieveTreasuryCreditReversal {
     inner: RetrieveTreasuryCreditReversalBuilder,
     credit_reversal: stripe_treasury::TreasuryCreditReversalId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveTreasuryCreditReversal {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveTreasuryCreditReversal").finish_non_exhaustive()
+    }
 }
 impl RetrieveTreasuryCreditReversal {
     /// Construct a new `RetrieveTreasuryCreditReversal`.
@@ -173,7 +205,9 @@ impl StripeRequest for RetrieveTreasuryCreditReversal {
         .query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct CreateTreasuryCreditReversalBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -181,15 +215,29 @@ struct CreateTreasuryCreditReversalBuilder {
     metadata: Option<std::collections::HashMap<String, String>>,
     received_credit: String,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTreasuryCreditReversalBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTreasuryCreditReversalBuilder").finish_non_exhaustive()
+    }
+}
 impl CreateTreasuryCreditReversalBuilder {
     fn new(received_credit: impl Into<String>) -> Self {
         Self { expand: None, metadata: None, received_credit: received_credit.into() }
     }
 }
 /// Reverses a ReceivedCredit and creates a CreditReversal object.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTreasuryCreditReversal {
     inner: CreateTreasuryCreditReversalBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTreasuryCreditReversal {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTreasuryCreditReversal").finish_non_exhaustive()
+    }
 }
 impl CreateTreasuryCreditReversal {
     /// Construct a new `CreateTreasuryCreditReversal`.

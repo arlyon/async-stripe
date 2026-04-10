@@ -1,4 +1,5 @@
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct AccountInvoicesSettings {
@@ -7,6 +8,12 @@ pub struct AccountInvoicesSettings {
     pub default_account_tax_ids: Option<Vec<stripe_types::Expandable<stripe_shared::TaxId>>>,
     /// Whether to save the payment method after a payment is completed for a one-time invoice or a subscription invoice when the customer already has a default payment method on the hosted invoice page.
     pub hosted_payment_method_save: Option<AccountInvoicesSettingsHostedPaymentMethodSave>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for AccountInvoicesSettings {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("AccountInvoicesSettings").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct AccountInvoicesSettingsBuilder {
@@ -162,9 +169,17 @@ impl std::fmt::Display for AccountInvoicesSettingsHostedPaymentMethodSave {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for AccountInvoicesSettingsHostedPaymentMethodSave {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for AccountInvoicesSettingsHostedPaymentMethodSave {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(AccountInvoicesSettingsHostedPaymentMethodSave))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

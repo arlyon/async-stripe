@@ -12,7 +12,8 @@
 /// and billing details.
 ///
 /// Related guide: [Customer management](/customer-management)
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct BillingPortalSession {
     /// The configuration used by this session, describing the features available.
@@ -43,6 +44,12 @@ pub struct BillingPortalSession {
     pub return_url: Option<String>,
     /// The short-lived URL of the session that gives customers access to the customer portal.
     pub url: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for BillingPortalSession {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("BillingPortalSession").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct BillingPortalSessionBuilder {
@@ -422,9 +429,16 @@ impl std::fmt::Display for BillingPortalSessionLocale {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for BillingPortalSessionLocale {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for BillingPortalSessionLocale {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(BillingPortalSessionLocale)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for BillingPortalSessionLocale {

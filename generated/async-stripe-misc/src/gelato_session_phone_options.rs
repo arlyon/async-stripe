@@ -1,9 +1,16 @@
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct GelatoSessionPhoneOptions {
     /// Request one time password verification of `provided_details.phone`.
     pub require_verification: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for GelatoSessionPhoneOptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("GelatoSessionPhoneOptions").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct GelatoSessionPhoneOptionsBuilder {

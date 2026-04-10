@@ -1,7 +1,14 @@
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentMethodCardWalletSamsungPay {}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentMethodCardWalletSamsungPay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PaymentMethodCardWalletSamsungPay").finish_non_exhaustive()
+    }
+}
 #[doc(hidden)]
 pub struct PaymentMethodCardWalletSamsungPayBuilder {}
 

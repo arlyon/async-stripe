@@ -2,10 +2,18 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RetrieveFinancialConnectionsSessionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveFinancialConnectionsSessionBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveFinancialConnectionsSessionBuilder").finish_non_exhaustive()
+    }
 }
 impl RetrieveFinancialConnectionsSessionBuilder {
     fn new() -> Self {
@@ -13,10 +21,18 @@ impl RetrieveFinancialConnectionsSessionBuilder {
     }
 }
 /// Retrieves the details of a Financial Connections `Session`
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RetrieveFinancialConnectionsSession {
     inner: RetrieveFinancialConnectionsSessionBuilder,
     session: stripe_misc::FinancialConnectionsSessionId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveFinancialConnectionsSession {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveFinancialConnectionsSession").finish_non_exhaustive()
+    }
 }
 impl RetrieveFinancialConnectionsSession {
     /// Construct a new `RetrieveFinancialConnectionsSession`.
@@ -56,7 +72,9 @@ impl StripeRequest for RetrieveFinancialConnectionsSession {
             .query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct CreateFinancialConnectionsSessionBuilder {
     account_holder: CreateFinancialConnectionsSessionAccountHolder,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -68,6 +86,12 @@ struct CreateFinancialConnectionsSessionBuilder {
     prefetch: Option<Vec<stripe_misc::FinancialConnectionsSessionPrefetch>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     return_url: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateFinancialConnectionsSessionBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateFinancialConnectionsSessionBuilder").finish_non_exhaustive()
+    }
 }
 impl CreateFinancialConnectionsSessionBuilder {
     fn new(
@@ -85,7 +109,9 @@ impl CreateFinancialConnectionsSessionBuilder {
     }
 }
 /// The account holder to link accounts for.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateFinancialConnectionsSessionAccountHolder {
     /// The ID of the Stripe account whose accounts you will retrieve.
     /// Only available when `type` is `account`.
@@ -102,6 +128,12 @@ pub struct CreateFinancialConnectionsSessionAccountHolder {
     /// Type of account holder to collect accounts for.
     #[serde(rename = "type")]
     pub type_: CreateFinancialConnectionsSessionAccountHolderType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateFinancialConnectionsSessionAccountHolder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateFinancialConnectionsSessionAccountHolder").finish_non_exhaustive()
+    }
 }
 impl CreateFinancialConnectionsSessionAccountHolder {
     pub fn new(type_: impl Into<CreateFinancialConnectionsSessionAccountHolderType>) -> Self {
@@ -152,9 +184,17 @@ impl std::fmt::Display for CreateFinancialConnectionsSessionAccountHolderType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateFinancialConnectionsSessionAccountHolderType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateFinancialConnectionsSessionAccountHolderType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateFinancialConnectionsSessionAccountHolderType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateFinancialConnectionsSessionAccountHolderType {
@@ -174,7 +214,9 @@ impl<'de> serde::Deserialize<'de> for CreateFinancialConnectionsSessionAccountHo
     }
 }
 /// Filters to restrict the kinds of accounts to collect.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateFinancialConnectionsSessionFilters {
     /// Restricts the Session to subcategories of accounts that can be linked.
     /// Valid subcategories are: `checking`, `savings`, `mortgage`, `line_of_credit`, `credit_card`.
@@ -184,6 +226,12 @@ pub struct CreateFinancialConnectionsSessionFilters {
     /// List of countries from which to collect accounts.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub countries: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateFinancialConnectionsSessionFilters {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateFinancialConnectionsSessionFilters").finish_non_exhaustive()
+    }
 }
 impl CreateFinancialConnectionsSessionFilters {
     pub fn new() -> Self {
@@ -249,9 +297,17 @@ impl std::fmt::Display for CreateFinancialConnectionsSessionFiltersAccountSubcat
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateFinancialConnectionsSessionFiltersAccountSubcategories {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateFinancialConnectionsSessionFiltersAccountSubcategories {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateFinancialConnectionsSessionFiltersAccountSubcategories))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateFinancialConnectionsSessionFiltersAccountSubcategories {
@@ -272,9 +328,17 @@ impl<'de> serde::Deserialize<'de> for CreateFinancialConnectionsSessionFiltersAc
 }
 /// To launch the Financial Connections authorization flow, create a `Session`.
 /// The session’s `client_secret` can be used to launch the flow using Stripe.js.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateFinancialConnectionsSession {
     inner: CreateFinancialConnectionsSessionBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateFinancialConnectionsSession {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateFinancialConnectionsSession").finish_non_exhaustive()
+    }
 }
 impl CreateFinancialConnectionsSession {
     /// Construct a new `CreateFinancialConnectionsSession`.

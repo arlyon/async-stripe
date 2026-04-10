@@ -1,5 +1,6 @@
 /// Represents an input to be collected using the reader
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TerminalReaderReaderResourceInput {
@@ -20,6 +21,12 @@ pub struct TerminalReaderReaderResourceInput {
     /// Type of input being collected.
     #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "type"))]
     pub type_: TerminalReaderReaderResourceInputType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TerminalReaderReaderResourceInput {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("TerminalReaderReaderResourceInput").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct TerminalReaderReaderResourceInputBuilder {
@@ -249,9 +256,16 @@ impl std::fmt::Display for TerminalReaderReaderResourceInputType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for TerminalReaderReaderResourceInputType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TerminalReaderReaderResourceInputType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(TerminalReaderReaderResourceInputType)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

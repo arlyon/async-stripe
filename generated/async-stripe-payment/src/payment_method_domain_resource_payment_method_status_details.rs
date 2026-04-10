@@ -1,10 +1,18 @@
 /// Contains additional details about the status of a payment method for a specific payment method domain.
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentMethodDomainResourcePaymentMethodStatusDetails {
     /// The error message associated with the status of the payment method on the domain.
     pub error_message: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentMethodDomainResourcePaymentMethodStatusDetails {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PaymentMethodDomainResourcePaymentMethodStatusDetails")
+            .finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct PaymentMethodDomainResourcePaymentMethodStatusDetailsBuilder {

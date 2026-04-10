@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct CheckoutKrCardPaymentMethodOptions {
@@ -13,6 +14,12 @@ pub struct CheckoutKrCardPaymentMethodOptions {
     ///
     /// When processing card payments, Stripe uses `setup_future_usage` to help you comply with regional legislation and network rules, such as [SCA](/strong-customer-authentication).
     pub setup_future_usage: Option<CheckoutKrCardPaymentMethodOptionsSetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CheckoutKrCardPaymentMethodOptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CheckoutKrCardPaymentMethodOptions").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct CheckoutKrCardPaymentMethodOptionsBuilder {
@@ -156,9 +163,17 @@ impl std::fmt::Display for CheckoutKrCardPaymentMethodOptionsCaptureMethod {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CheckoutKrCardPaymentMethodOptionsCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CheckoutKrCardPaymentMethodOptionsCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CheckoutKrCardPaymentMethodOptionsCaptureMethod))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -245,9 +260,17 @@ impl std::fmt::Display for CheckoutKrCardPaymentMethodOptionsSetupFutureUsage {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CheckoutKrCardPaymentMethodOptionsSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CheckoutKrCardPaymentMethodOptionsSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CheckoutKrCardPaymentMethodOptionsSetupFutureUsage))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

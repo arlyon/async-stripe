@@ -6,7 +6,8 @@
 /// Related guide: [Customer balance](https://docs.stripe.com/billing/customer/balance)
 ///
 /// For more details see <<https://stripe.com/docs/api/customer_balance_transactions/object>>.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct CustomerBalanceTransaction {
     /// The amount of the transaction.
@@ -45,6 +46,12 @@ pub struct CustomerBalanceTransaction {
     /// See the [Customer Balance page](https://docs.stripe.com/billing/customer/balance#types) to learn more about transaction types.
     #[cfg_attr(feature = "deserialize", serde(rename = "type"))]
     pub type_: CustomerBalanceTransactionType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CustomerBalanceTransaction {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CustomerBalanceTransaction").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct CustomerBalanceTransactionBuilder {
@@ -342,9 +349,16 @@ impl std::fmt::Display for CustomerBalanceTransactionType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CustomerBalanceTransactionType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CustomerBalanceTransactionType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CustomerBalanceTransactionType)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

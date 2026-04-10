@@ -1,4 +1,5 @@
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct BalanceSettingsResourcePayouts {
@@ -14,6 +15,12 @@ pub struct BalanceSettingsResourcePayouts {
     pub statement_descriptor: Option<String>,
     /// Whether the funds in this account can be paid out.
     pub status: BalanceSettingsResourcePayoutsStatus,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for BalanceSettingsResourcePayouts {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("BalanceSettingsResourcePayouts").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct BalanceSettingsResourcePayoutsBuilder {
@@ -181,9 +188,16 @@ impl std::fmt::Display for BalanceSettingsResourcePayoutsStatus {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for BalanceSettingsResourcePayoutsStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for BalanceSettingsResourcePayoutsStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(BalanceSettingsResourcePayoutsStatus)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

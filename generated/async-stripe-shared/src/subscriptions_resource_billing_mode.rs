@@ -1,5 +1,6 @@
 /// The billing mode of the subscription.
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct SubscriptionsResourceBillingMode {
@@ -10,6 +11,12 @@ pub struct SubscriptionsResourceBillingMode {
     pub type_: SubscriptionsResourceBillingModeType,
     /// Details on when the current billing_mode was adopted.
     pub updated_at: Option<stripe_types::Timestamp>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for SubscriptionsResourceBillingMode {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("SubscriptionsResourceBillingMode").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct SubscriptionsResourceBillingModeBuilder {
@@ -160,9 +167,16 @@ impl std::fmt::Display for SubscriptionsResourceBillingModeType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for SubscriptionsResourceBillingModeType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for SubscriptionsResourceBillingModeType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(SubscriptionsResourceBillingModeType)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

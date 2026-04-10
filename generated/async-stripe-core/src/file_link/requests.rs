@@ -2,7 +2,9 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ListFileLinkBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     created: Option<stripe_types::RangeQueryTs>,
@@ -19,6 +21,12 @@ struct ListFileLinkBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     starting_after: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListFileLinkBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListFileLinkBuilder").finish_non_exhaustive()
+    }
+}
 impl ListFileLinkBuilder {
     fn new() -> Self {
         Self {
@@ -33,9 +41,17 @@ impl ListFileLinkBuilder {
     }
 }
 /// Returns a list of file links.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListFileLink {
     inner: ListFileLinkBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListFileLink {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListFileLink").finish_non_exhaustive()
+    }
 }
 impl ListFileLink {
     /// Construct a new `ListFileLink`.
@@ -119,10 +135,18 @@ impl StripeRequest for ListFileLink {
         RequestBuilder::new(StripeMethod::Get, "/file_links").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RetrieveFileLinkBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveFileLinkBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveFileLinkBuilder").finish_non_exhaustive()
+    }
 }
 impl RetrieveFileLinkBuilder {
     fn new() -> Self {
@@ -130,10 +154,18 @@ impl RetrieveFileLinkBuilder {
     }
 }
 /// Retrieves the file link with the given ID.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RetrieveFileLink {
     inner: RetrieveFileLinkBuilder,
     link: stripe_shared::FileLinkId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveFileLink {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveFileLink").finish_non_exhaustive()
+    }
 }
 impl RetrieveFileLink {
     /// Construct a new `RetrieveFileLink`.
@@ -172,7 +204,9 @@ impl StripeRequest for RetrieveFileLink {
         RequestBuilder::new(StripeMethod::Get, format!("/file_links/{link}")).query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct CreateFileLinkBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -182,15 +216,29 @@ struct CreateFileLinkBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     metadata: Option<std::collections::HashMap<String, String>>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateFileLinkBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateFileLinkBuilder").finish_non_exhaustive()
+    }
+}
 impl CreateFileLinkBuilder {
     fn new(file: impl Into<String>) -> Self {
         Self { expand: None, expires_at: None, file: file.into(), metadata: None }
     }
 }
 /// Creates a new file link object.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateFileLink {
     inner: CreateFileLinkBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateFileLink {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateFileLink").finish_non_exhaustive()
+    }
 }
 impl CreateFileLink {
     /// Construct a new `CreateFileLink`.
@@ -244,7 +292,9 @@ impl StripeRequest for CreateFileLink {
         RequestBuilder::new(StripeMethod::Post, "/file_links").form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct UpdateFileLinkBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -253,24 +303,46 @@ struct UpdateFileLinkBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     metadata: Option<std::collections::HashMap<String, String>>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateFileLinkBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateFileLinkBuilder").finish_non_exhaustive()
+    }
+}
 impl UpdateFileLinkBuilder {
     fn new() -> Self {
         Self { expand: None, expires_at: None, metadata: None }
     }
 }
 /// A future timestamp after which the link will no longer be usable, or `now` to expire the link immediately.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 #[serde(rename_all = "snake_case")]
 pub enum UpdateFileLinkExpiresAt {
     Now,
     #[serde(untagged)]
     Timestamp(stripe_types::Timestamp),
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateFileLinkExpiresAt {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateFileLinkExpiresAt").finish_non_exhaustive()
+    }
+}
 /// Updates an existing file link object. Expired links can no longer be updated.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateFileLink {
     inner: UpdateFileLinkBuilder,
     link: stripe_shared::FileLinkId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateFileLink {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateFileLink").finish_non_exhaustive()
+    }
 }
 impl UpdateFileLink {
     /// Construct a new `UpdateFileLink`.

@@ -1,5 +1,6 @@
 /// Represents a per-transaction override of a reader configuration
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TerminalReaderReaderResourceProcessConfig {
@@ -10,6 +11,12 @@ pub struct TerminalReaderReaderResourceProcessConfig {
     /// Override showing a tipping selection screen on this transaction.
     pub skip_tipping: Option<bool>,
     pub tipping: Option<stripe_terminal::TerminalReaderReaderResourceTippingConfig>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TerminalReaderReaderResourceProcessConfig {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("TerminalReaderReaderResourceProcessConfig").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct TerminalReaderReaderResourceProcessConfigBuilder {

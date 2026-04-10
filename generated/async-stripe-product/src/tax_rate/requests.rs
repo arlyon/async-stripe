@@ -2,7 +2,9 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ListTaxRateBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     active: Option<bool>,
@@ -19,6 +21,12 @@ struct ListTaxRateBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     starting_after: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListTaxRateBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListTaxRateBuilder").finish_non_exhaustive()
+    }
+}
 impl ListTaxRateBuilder {
     fn new() -> Self {
         Self {
@@ -34,9 +42,17 @@ impl ListTaxRateBuilder {
 }
 /// Returns a list of your tax rates.
 /// Tax rates are returned sorted by creation date, with the most recently created tax rates appearing first.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListTaxRate {
     inner: ListTaxRateBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListTaxRate {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListTaxRate").finish_non_exhaustive()
+    }
 }
 impl ListTaxRate {
     /// Construct a new `ListTaxRate`.
@@ -120,10 +136,18 @@ impl StripeRequest for ListTaxRate {
         RequestBuilder::new(StripeMethod::Get, "/tax_rates").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RetrieveTaxRateBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveTaxRateBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveTaxRateBuilder").finish_non_exhaustive()
+    }
 }
 impl RetrieveTaxRateBuilder {
     fn new() -> Self {
@@ -131,10 +155,18 @@ impl RetrieveTaxRateBuilder {
     }
 }
 /// Retrieves a tax rate with the given ID
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RetrieveTaxRate {
     inner: RetrieveTaxRateBuilder,
     tax_rate: stripe_shared::TaxRateId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveTaxRate {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveTaxRate").finish_non_exhaustive()
+    }
 }
 impl RetrieveTaxRate {
     /// Construct a new `RetrieveTaxRate`.
@@ -173,7 +205,9 @@ impl StripeRequest for RetrieveTaxRate {
         RequestBuilder::new(StripeMethod::Get, format!("/tax_rates/{tax_rate}")).query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct CreateTaxRateBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     active: Option<bool>,
@@ -194,6 +228,12 @@ struct CreateTaxRateBuilder {
     state: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     tax_type: Option<stripe_shared::TaxRateTaxType>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRateBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRateBuilder").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRateBuilder {
     fn new(
@@ -217,9 +257,17 @@ impl CreateTaxRateBuilder {
     }
 }
 /// Creates a new tax rate.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTaxRate {
     inner: CreateTaxRateBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTaxRate {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTaxRate").finish_non_exhaustive()
+    }
 }
 impl CreateTaxRate {
     /// Construct a new `CreateTaxRate`.
@@ -313,7 +361,9 @@ impl StripeRequest for CreateTaxRate {
         RequestBuilder::new(StripeMethod::Post, "/tax_rates").form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct UpdateTaxRateBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     active: Option<bool>,
@@ -334,6 +384,12 @@ struct UpdateTaxRateBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     tax_type: Option<stripe_shared::TaxRateTaxType>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateTaxRateBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateTaxRateBuilder").finish_non_exhaustive()
+    }
+}
 impl UpdateTaxRateBuilder {
     fn new() -> Self {
         Self {
@@ -350,10 +406,18 @@ impl UpdateTaxRateBuilder {
     }
 }
 /// Updates an existing tax rate.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateTaxRate {
     inner: UpdateTaxRateBuilder,
     tax_rate: stripe_shared::TaxRateId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateTaxRate {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateTaxRate").finish_non_exhaustive()
+    }
 }
 impl UpdateTaxRate {
     /// Construct a new `UpdateTaxRate`.

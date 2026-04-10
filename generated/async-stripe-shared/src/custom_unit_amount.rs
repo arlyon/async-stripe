@@ -1,4 +1,5 @@
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct CustomUnitAmount {
@@ -9,6 +10,12 @@ pub struct CustomUnitAmount {
     pub minimum: Option<i64>,
     /// The starting unit amount which can be updated by the customer.
     pub preset: Option<i64>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CustomUnitAmount {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CustomUnitAmount").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct CustomUnitAmountBuilder {

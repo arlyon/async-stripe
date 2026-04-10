@@ -2,7 +2,8 @@
 /// The funds will be transferred via an ACH debit.
 ///
 /// Related guide: [Moving money with Treasury using InboundTransfer objects](https://docs.stripe.com/docs/treasury/moving-money/financial-accounts/into/inbound-transfers).
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TreasuryInboundTransfer {
     /// Amount (in cents) transferred.
@@ -50,6 +51,12 @@ pub struct TreasuryInboundTransfer {
         stripe_treasury::TreasuryInboundTransfersResourceInboundTransferResourceStatusTransitions,
     /// The Transaction associated with this object.
     pub transaction: Option<stripe_types::Expandable<stripe_treasury::TreasuryTransaction>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TreasuryInboundTransfer {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("TreasuryInboundTransfer").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct TreasuryInboundTransferBuilder {
@@ -382,9 +389,16 @@ impl std::fmt::Display for TreasuryInboundTransferStatus {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for TreasuryInboundTransferStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TreasuryInboundTransferStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(TreasuryInboundTransferStatus)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for TreasuryInboundTransferStatus {

@@ -1,4 +1,5 @@
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct BillingAlertTriggered {
     pub alert: stripe_billing::BillingAlert,
@@ -11,6 +12,12 @@ pub struct BillingAlertTriggered {
     pub livemode: bool,
     /// The value triggering the alert
     pub value: i64,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for BillingAlertTriggered {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("BillingAlertTriggered").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct BillingAlertTriggeredBuilder {

@@ -1,5 +1,6 @@
 /// A Transaction represents a real transaction that affects a Financial Connections Account balance.
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct FinancialConnectionsTransaction {
     /// The ID of the Financial Connections Account this transaction belongs to.
@@ -26,6 +27,12 @@ pub struct FinancialConnectionsTransaction {
     pub transaction_refresh: String,
     /// Time at which the object was last updated. Measured in seconds since the Unix epoch.
     pub updated: stripe_types::Timestamp,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for FinancialConnectionsTransaction {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("FinancialConnectionsTransaction").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct FinancialConnectionsTransactionBuilder {
@@ -268,9 +275,16 @@ impl std::fmt::Display for FinancialConnectionsTransactionStatus {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for FinancialConnectionsTransactionStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for FinancialConnectionsTransactionStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(FinancialConnectionsTransactionStatus)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

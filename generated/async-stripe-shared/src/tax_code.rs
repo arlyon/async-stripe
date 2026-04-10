@@ -1,7 +1,8 @@
 /// [Tax codes](https://stripe.com/docs/tax/tax-categories) classify goods and services for tax purposes.
 ///
 /// For more details see <<https://stripe.com/docs/api/tax_codes/object>>.
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TaxCode {
     /// A detailed description of which types of products the tax code represents.
@@ -10,6 +11,12 @@ pub struct TaxCode {
     pub id: stripe_shared::TaxCodeId,
     /// A short name for the tax code.
     pub name: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TaxCode {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("TaxCode").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct TaxCodeBuilder {

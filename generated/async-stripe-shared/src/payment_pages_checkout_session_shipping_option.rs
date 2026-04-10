@@ -1,4 +1,5 @@
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentPagesCheckoutSessionShippingOption {
@@ -6,6 +7,12 @@ pub struct PaymentPagesCheckoutSessionShippingOption {
     pub shipping_amount: i64,
     /// The shipping rate.
     pub shipping_rate: stripe_types::Expandable<stripe_shared::ShippingRate>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentPagesCheckoutSessionShippingOption {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PaymentPagesCheckoutSessionShippingOption").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct PaymentPagesCheckoutSessionShippingOptionBuilder {

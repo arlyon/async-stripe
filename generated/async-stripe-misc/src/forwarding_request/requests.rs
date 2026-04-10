@@ -2,7 +2,9 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ListForwardingRequestBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     created: Option<ListForwardingRequestCreated>,
@@ -15,6 +17,12 @@ struct ListForwardingRequestBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     starting_after: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListForwardingRequestBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListForwardingRequestBuilder").finish_non_exhaustive()
+    }
+}
 impl ListForwardingRequestBuilder {
     fn new() -> Self {
         Self { created: None, ending_before: None, expand: None, limit: None, starting_after: None }
@@ -22,7 +30,9 @@ impl ListForwardingRequestBuilder {
 }
 /// Similar to other List endpoints, filters results based on created timestamp.
 /// You can pass gt, gte, lt, and lte timestamp values.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListForwardingRequestCreated {
     /// Return results where the `created` field is greater than this value.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -37,6 +47,12 @@ pub struct ListForwardingRequestCreated {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub lte: Option<i64>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListForwardingRequestCreated {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListForwardingRequestCreated").finish_non_exhaustive()
+    }
+}
 impl ListForwardingRequestCreated {
     pub fn new() -> Self {
         Self { gt: None, gte: None, lt: None, lte: None }
@@ -48,9 +64,17 @@ impl Default for ListForwardingRequestCreated {
     }
 }
 /// Lists all ForwardingRequest objects.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListForwardingRequest {
     inner: ListForwardingRequestBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListForwardingRequest {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListForwardingRequest").finish_non_exhaustive()
+    }
 }
 impl ListForwardingRequest {
     /// Construct a new `ListForwardingRequest`.
@@ -122,10 +146,18 @@ impl StripeRequest for ListForwardingRequest {
         RequestBuilder::new(StripeMethod::Get, "/forwarding/requests").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RetrieveForwardingRequestBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveForwardingRequestBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveForwardingRequestBuilder").finish_non_exhaustive()
+    }
 }
 impl RetrieveForwardingRequestBuilder {
     fn new() -> Self {
@@ -133,10 +165,18 @@ impl RetrieveForwardingRequestBuilder {
     }
 }
 /// Retrieves a ForwardingRequest object.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RetrieveForwardingRequest {
     inner: RetrieveForwardingRequestBuilder,
     id: stripe_misc::ForwardingRequestId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveForwardingRequest {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveForwardingRequest").finish_non_exhaustive()
+    }
 }
 impl RetrieveForwardingRequest {
     /// Construct a new `RetrieveForwardingRequest`.
@@ -176,7 +216,9 @@ impl StripeRequest for RetrieveForwardingRequest {
             .query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct CreateForwardingRequestBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -187,6 +229,12 @@ struct CreateForwardingRequestBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     request: Option<CreateForwardingRequestRequest>,
     url: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateForwardingRequestBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateForwardingRequestBuilder").finish_non_exhaustive()
+    }
 }
 impl CreateForwardingRequestBuilder {
     fn new(
@@ -205,7 +253,9 @@ impl CreateForwardingRequestBuilder {
     }
 }
 /// The request body and headers to be sent to the destination endpoint.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateForwardingRequestRequest {
     /// The body payload to send to the destination endpoint.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -214,6 +264,12 @@ pub struct CreateForwardingRequestRequest {
     /// Can be omitted if no additional headers (excluding Stripe-generated ones such as the Content-Type header) should be included.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub headers: Option<Vec<CreateForwardingRequestRequestHeaders>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateForwardingRequestRequest {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateForwardingRequestRequest").finish_non_exhaustive()
+    }
 }
 impl CreateForwardingRequestRequest {
     pub fn new() -> Self {
@@ -227,12 +283,20 @@ impl Default for CreateForwardingRequestRequest {
 }
 /// The headers to include in the forwarded request.
 /// Can be omitted if no additional headers (excluding Stripe-generated ones such as the Content-Type header) should be included.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateForwardingRequestRequestHeaders {
     /// The header name.
     pub name: String,
     /// The header value.
     pub value: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateForwardingRequestRequestHeaders {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateForwardingRequestRequestHeaders").finish_non_exhaustive()
+    }
 }
 impl CreateForwardingRequestRequestHeaders {
     pub fn new(name: impl Into<String>, value: impl Into<String>) -> Self {
@@ -240,9 +304,17 @@ impl CreateForwardingRequestRequestHeaders {
     }
 }
 /// Creates a ForwardingRequest object.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateForwardingRequest {
     inner: CreateForwardingRequestBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateForwardingRequest {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateForwardingRequest").finish_non_exhaustive()
+    }
 }
 impl CreateForwardingRequest {
     /// Construct a new `CreateForwardingRequest`.

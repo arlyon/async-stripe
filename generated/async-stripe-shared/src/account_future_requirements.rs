@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct AccountFutureRequirements {
@@ -27,6 +28,12 @@ pub struct AccountFutureRequirements {
     /// If the review fails, these fields can move to `eventually_due`, `currently_due`, `past_due` or `alternatives`.
     /// Fields might appear in `eventually_due`, `currently_due`, `past_due` or `alternatives` and in `pending_verification` if one verification fails but another is still pending.
     pub pending_verification: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for AccountFutureRequirements {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("AccountFutureRequirements").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct AccountFutureRequirementsBuilder {
@@ -262,9 +269,16 @@ impl std::fmt::Display for AccountFutureRequirementsDisabledReason {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for AccountFutureRequirementsDisabledReason {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for AccountFutureRequirementsDisabledReason {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(AccountFutureRequirementsDisabledReason)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

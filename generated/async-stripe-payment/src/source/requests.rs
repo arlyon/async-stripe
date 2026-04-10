@@ -2,10 +2,18 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct DetachSourceBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for DetachSourceBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("DetachSourceBuilder").finish_non_exhaustive()
+    }
 }
 impl DetachSourceBuilder {
     fn new() -> Self {
@@ -13,11 +21,19 @@ impl DetachSourceBuilder {
     }
 }
 /// Delete a specified source for a given customer.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct DetachSource {
     inner: DetachSourceBuilder,
     customer: stripe_shared::CustomerId,
     id: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for DetachSource {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("DetachSource").finish_non_exhaustive()
+    }
 }
 impl DetachSource {
     /// Construct a new `DetachSource`.
@@ -58,7 +74,8 @@ impl StripeRequest for DetachSource {
             .form(&self.inner)
     }
 }
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(untagged))]
@@ -138,12 +155,26 @@ const _: () = {
     }
 };
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for DetachSourceReturned {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("DetachSourceReturned").finish_non_exhaustive()
+    }
+}
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RetrieveSourceBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     client_secret: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveSourceBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveSourceBuilder").finish_non_exhaustive()
+    }
 }
 impl RetrieveSourceBuilder {
     fn new() -> Self {
@@ -152,10 +183,18 @@ impl RetrieveSourceBuilder {
 }
 /// Retrieves an existing source object.
 /// Supply the unique source ID from a source creation request and Stripe will return the corresponding up-to-date source object information.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RetrieveSource {
     inner: RetrieveSourceBuilder,
     source: stripe_shared::SourceId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveSource {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveSource").finish_non_exhaustive()
+    }
 }
 impl RetrieveSource {
     /// Construct a new `RetrieveSource`.
@@ -199,7 +238,9 @@ impl StripeRequest for RetrieveSource {
         RequestBuilder::new(StripeMethod::Get, format!("/sources/{source}")).query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct SourceTransactionsSourceBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<String>,
@@ -210,16 +251,30 @@ struct SourceTransactionsSourceBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     starting_after: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for SourceTransactionsSourceBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("SourceTransactionsSourceBuilder").finish_non_exhaustive()
+    }
+}
 impl SourceTransactionsSourceBuilder {
     fn new() -> Self {
         Self { ending_before: None, expand: None, limit: None, starting_after: None }
     }
 }
 /// List source transactions for a given source.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct SourceTransactionsSource {
     inner: SourceTransactionsSourceBuilder,
     source: stripe_shared::SourceId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for SourceTransactionsSource {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("SourceTransactionsSource").finish_non_exhaustive()
+    }
 }
 impl SourceTransactionsSource {
     /// Construct a new `SourceTransactionsSource`.
@@ -291,7 +346,9 @@ impl StripeRequest for SourceTransactionsSource {
             .query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct CreateSourceBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     amount: Option<i64>,
@@ -326,6 +383,12 @@ struct CreateSourceBuilder {
     type_: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     usage: Option<CreateSourceUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateSourceBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateSourceBuilder").finish_non_exhaustive()
+    }
 }
 impl CreateSourceBuilder {
     fn new() -> Self {
@@ -397,9 +460,16 @@ impl std::fmt::Display for CreateSourceFlow {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateSourceFlow {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateSourceFlow {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateSourceFlow)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateSourceFlow {
@@ -419,7 +489,9 @@ impl<'de> serde::Deserialize<'de> for CreateSourceFlow {
     }
 }
 /// Information about a mandate possibility attached to a source object (generally for bank debits) as well as its acceptance status.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateSourceMandate {
     /// The parameters required to notify Stripe of a mandate acceptance or refusal by the customer.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -439,6 +511,12 @@ pub struct CreateSourceMandate {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub notification_method: Option<CreateSourceMandateNotificationMethod>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateSourceMandate {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateSourceMandate").finish_non_exhaustive()
+    }
+}
 impl CreateSourceMandate {
     pub fn new() -> Self {
         Self {
@@ -456,7 +534,9 @@ impl Default for CreateSourceMandate {
     }
 }
 /// The parameters required to notify Stripe of a mandate acceptance or refusal by the customer.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateSourceMandateAcceptance {
     /// The Unix timestamp (in seconds) when the mandate was accepted or refused by the customer.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -482,6 +562,12 @@ pub struct CreateSourceMandateAcceptance {
     /// The user agent of the browser from which the mandate was accepted or refused by the customer.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub user_agent: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateSourceMandateAcceptance {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateSourceMandateAcceptance").finish_non_exhaustive()
+    }
 }
 impl CreateSourceMandateAcceptance {
     pub fn new(status: impl Into<CreateSourceMandateAcceptanceStatus>) -> Self {
@@ -547,9 +633,16 @@ impl std::fmt::Display for CreateSourceMandateAcceptanceStatus {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateSourceMandateAcceptanceStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateSourceMandateAcceptanceStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateSourceMandateAcceptanceStatus)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateSourceMandateAcceptanceStatus {
@@ -612,9 +705,16 @@ impl std::fmt::Display for CreateSourceMandateAcceptanceType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateSourceMandateAcceptanceType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateSourceMandateAcceptanceType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateSourceMandateAcceptanceType)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateSourceMandateAcceptanceType {
@@ -681,9 +781,16 @@ impl std::fmt::Display for CreateSourceMandateInterval {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateSourceMandateInterval {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateSourceMandateInterval {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateSourceMandateInterval)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateSourceMandateInterval {
@@ -756,9 +863,16 @@ impl std::fmt::Display for CreateSourceMandateNotificationMethod {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateSourceMandateNotificationMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateSourceMandateNotificationMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateSourceMandateNotificationMethod)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateSourceMandateNotificationMethod {
@@ -779,13 +893,21 @@ impl<'de> serde::Deserialize<'de> for CreateSourceMandateNotificationMethod {
 }
 /// Optional parameters for the receiver flow.
 /// Can be set only if the source is a receiver (`flow` is `receiver`).
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateSourceReceiver {
     /// The method Stripe should use to request information needed to process a refund or mispayment.
     /// Either `email` (an email is sent directly to the customer) or `manual` (a `source.refund_attributes_required` event is sent to your webhooks endpoint).
     /// Refer to each payment method's documentation to learn which refund attributes may be required.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub refund_attributes_method: Option<CreateSourceReceiverRefundAttributesMethod>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateSourceReceiver {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateSourceReceiver").finish_non_exhaustive()
+    }
 }
 impl CreateSourceReceiver {
     pub fn new() -> Self {
@@ -846,9 +968,17 @@ impl std::fmt::Display for CreateSourceReceiverRefundAttributesMethod {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateSourceReceiverRefundAttributesMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateSourceReceiverRefundAttributesMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateSourceReceiverRefundAttributesMethod))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateSourceReceiverRefundAttributesMethod {
@@ -869,11 +999,19 @@ impl<'de> serde::Deserialize<'de> for CreateSourceReceiverRefundAttributesMethod
 }
 /// Parameters required for the redirect flow.
 /// Required if the source is authenticated by a redirect (`flow` is `redirect`).
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateSourceRedirect {
     /// The URL you provide to redirect the customer back to you after they authenticated their payment.
     /// It can use your application URI scheme in the context of a mobile application.
     pub return_url: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateSourceRedirect {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateSourceRedirect").finish_non_exhaustive()
+    }
 }
 impl CreateSourceRedirect {
     pub fn new(return_url: impl Into<String>) -> Self {
@@ -882,7 +1020,9 @@ impl CreateSourceRedirect {
 }
 /// Information about the items and shipping associated with the source.
 /// Required for transactional credit (for example Klarna) sources before you can charge it.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateSourceSourceOrder {
     /// List of items constituting the order.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -891,6 +1031,12 @@ pub struct CreateSourceSourceOrder {
     /// Required if any of the SKUs are for products that have `shippable` set to true.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub shipping: Option<OrderShipping>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateSourceSourceOrder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateSourceSourceOrder").finish_non_exhaustive()
+    }
 }
 impl CreateSourceSourceOrder {
     pub fn new() -> Self {
@@ -903,7 +1049,9 @@ impl Default for CreateSourceSourceOrder {
     }
 }
 /// List of items constituting the order.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateSourceSourceOrderItems {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount: Option<i64>,
@@ -921,6 +1069,12 @@ pub struct CreateSourceSourceOrderItems {
     #[serde(rename = "type")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub type_: Option<CreateSourceSourceOrderItemsType>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateSourceSourceOrderItems {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateSourceSourceOrderItems").finish_non_exhaustive()
+    }
 }
 impl CreateSourceSourceOrderItems {
     pub fn new() -> Self {
@@ -988,9 +1142,16 @@ impl std::fmt::Display for CreateSourceSourceOrderItemsType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateSourceSourceOrderItemsType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateSourceSourceOrderItemsType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateSourceSourceOrderItemsType)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateSourceSourceOrderItemsType {
@@ -1048,9 +1209,16 @@ impl std::fmt::Display for CreateSourceUsage {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateSourceUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateSourceUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateSourceUsage)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateSourceUsage {
@@ -1070,9 +1238,17 @@ impl<'de> serde::Deserialize<'de> for CreateSourceUsage {
     }
 }
 /// Creates a new source object.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateSource {
     inner: CreateSourceBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateSource {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateSource").finish_non_exhaustive()
+    }
 }
 impl CreateSource {
     /// Construct a new `CreateSource`.
@@ -1204,7 +1380,9 @@ impl StripeRequest for CreateSource {
         RequestBuilder::new(StripeMethod::Post, "/sources").form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct UpdateSourceBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     amount: Option<i64>,
@@ -1219,6 +1397,12 @@ struct UpdateSourceBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     source_order: Option<UpdateSourceSourceOrder>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateSourceBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateSourceBuilder").finish_non_exhaustive()
+    }
+}
 impl UpdateSourceBuilder {
     fn new() -> Self {
         Self {
@@ -1232,7 +1416,9 @@ impl UpdateSourceBuilder {
     }
 }
 /// Information about a mandate possibility attached to a source object (generally for bank debits) as well as its acceptance status.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateSourceMandate {
     /// The parameters required to notify Stripe of a mandate acceptance or refusal by the customer.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1252,6 +1438,12 @@ pub struct UpdateSourceMandate {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub notification_method: Option<UpdateSourceMandateNotificationMethod>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateSourceMandate {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateSourceMandate").finish_non_exhaustive()
+    }
+}
 impl UpdateSourceMandate {
     pub fn new() -> Self {
         Self {
@@ -1269,7 +1461,9 @@ impl Default for UpdateSourceMandate {
     }
 }
 /// The parameters required to notify Stripe of a mandate acceptance or refusal by the customer.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateSourceMandateAcceptance {
     /// The Unix timestamp (in seconds) when the mandate was accepted or refused by the customer.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1295,6 +1489,12 @@ pub struct UpdateSourceMandateAcceptance {
     /// The user agent of the browser from which the mandate was accepted or refused by the customer.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub user_agent: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateSourceMandateAcceptance {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateSourceMandateAcceptance").finish_non_exhaustive()
+    }
 }
 impl UpdateSourceMandateAcceptance {
     pub fn new(status: impl Into<UpdateSourceMandateAcceptanceStatus>) -> Self {
@@ -1360,9 +1560,16 @@ impl std::fmt::Display for UpdateSourceMandateAcceptanceStatus {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdateSourceMandateAcceptanceStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateSourceMandateAcceptanceStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdateSourceMandateAcceptanceStatus)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdateSourceMandateAcceptanceStatus {
@@ -1425,9 +1632,16 @@ impl std::fmt::Display for UpdateSourceMandateAcceptanceType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdateSourceMandateAcceptanceType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateSourceMandateAcceptanceType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdateSourceMandateAcceptanceType)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdateSourceMandateAcceptanceType {
@@ -1494,9 +1708,16 @@ impl std::fmt::Display for UpdateSourceMandateInterval {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdateSourceMandateInterval {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateSourceMandateInterval {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdateSourceMandateInterval)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdateSourceMandateInterval {
@@ -1569,9 +1790,16 @@ impl std::fmt::Display for UpdateSourceMandateNotificationMethod {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdateSourceMandateNotificationMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateSourceMandateNotificationMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdateSourceMandateNotificationMethod)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdateSourceMandateNotificationMethod {
@@ -1592,7 +1820,9 @@ impl<'de> serde::Deserialize<'de> for UpdateSourceMandateNotificationMethod {
 }
 /// Information about the items and shipping associated with the source.
 /// Required for transactional credit (for example Klarna) sources before you can charge it.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateSourceSourceOrder {
     /// List of items constituting the order.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1601,6 +1831,12 @@ pub struct UpdateSourceSourceOrder {
     /// Required if any of the SKUs are for products that have `shippable` set to true.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub shipping: Option<OrderShipping>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateSourceSourceOrder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateSourceSourceOrder").finish_non_exhaustive()
+    }
 }
 impl UpdateSourceSourceOrder {
     pub fn new() -> Self {
@@ -1613,7 +1849,9 @@ impl Default for UpdateSourceSourceOrder {
     }
 }
 /// List of items constituting the order.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateSourceSourceOrderItems {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount: Option<i64>,
@@ -1631,6 +1869,12 @@ pub struct UpdateSourceSourceOrderItems {
     #[serde(rename = "type")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub type_: Option<UpdateSourceSourceOrderItemsType>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateSourceSourceOrderItems {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateSourceSourceOrderItems").finish_non_exhaustive()
+    }
 }
 impl UpdateSourceSourceOrderItems {
     pub fn new() -> Self {
@@ -1698,9 +1942,16 @@ impl std::fmt::Display for UpdateSourceSourceOrderItemsType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdateSourceSourceOrderItemsType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateSourceSourceOrderItemsType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdateSourceSourceOrderItemsType)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdateSourceSourceOrderItemsType {
@@ -1725,10 +1976,18 @@ impl<'de> serde::Deserialize<'de> for UpdateSourceSourceOrderItemsType {
 /// This request accepts the `metadata` and `owner` as arguments.
 /// It is also possible to update type specific information for selected payment methods.
 /// Please refer to our [payment method guides](https://stripe.com/docs/sources) for more detail.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateSource {
     inner: UpdateSourceBuilder,
     source: stripe_shared::SourceId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateSource {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateSource").finish_non_exhaustive()
+    }
 }
 impl UpdateSource {
     /// Construct a new `UpdateSource`.
@@ -1799,11 +2058,19 @@ impl StripeRequest for UpdateSource {
         RequestBuilder::new(StripeMethod::Post, format!("/sources/{source}")).form(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct VerifySourceBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
     values: Vec<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for VerifySourceBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("VerifySourceBuilder").finish_non_exhaustive()
+    }
 }
 impl VerifySourceBuilder {
     fn new(values: impl Into<Vec<String>>) -> Self {
@@ -1811,10 +2078,18 @@ impl VerifySourceBuilder {
     }
 }
 /// Verify a given source.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct VerifySource {
     inner: VerifySourceBuilder,
     source: stripe_shared::SourceId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for VerifySource {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("VerifySource").finish_non_exhaustive()
+    }
 }
 impl VerifySource {
     /// Construct a new `VerifySource`.
@@ -1855,17 +2130,27 @@ impl StripeRequest for VerifySource {
     }
 }
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct MandateOfflineAcceptanceParams {
     /// An email to contact you with if a copy of the mandate is requested, required if `type` is `offline`.
     pub contact_email: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for MandateOfflineAcceptanceParams {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("MandateOfflineAcceptanceParams").finish_non_exhaustive()
+    }
 }
 impl MandateOfflineAcceptanceParams {
     pub fn new(contact_email: impl Into<String>) -> Self {
         Self { contact_email: contact_email.into() }
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct MandateOnlineAcceptanceParams {
     /// The Unix timestamp (in seconds) when the mandate was accepted or refused by the customer.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1877,6 +2162,12 @@ pub struct MandateOnlineAcceptanceParams {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub user_agent: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for MandateOnlineAcceptanceParams {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("MandateOnlineAcceptanceParams").finish_non_exhaustive()
+    }
+}
 impl MandateOnlineAcceptanceParams {
     pub fn new() -> Self {
         Self { date: None, ip: None, user_agent: None }
@@ -1887,7 +2178,9 @@ impl Default for MandateOnlineAcceptanceParams {
         Self::new()
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct SourceAddress {
     /// City, district, suburb, town, or village.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1908,6 +2201,12 @@ pub struct SourceAddress {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for SourceAddress {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("SourceAddress").finish_non_exhaustive()
+    }
+}
 impl SourceAddress {
     pub fn new() -> Self {
         Self { city: None, country: None, line1: None, line2: None, postal_code: None, state: None }
@@ -1918,7 +2217,9 @@ impl Default for SourceAddress {
         Self::new()
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct Address {
     /// City, district, suburb, town, or village.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1938,6 +2239,12 @@ pub struct Address {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for Address {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("Address").finish_non_exhaustive()
+    }
+}
 impl Address {
     pub fn new(line1: impl Into<String>) -> Self {
         Self {
@@ -1950,7 +2257,9 @@ impl Address {
         }
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct Owner {
     /// Owner's address.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1965,6 +2274,12 @@ pub struct Owner {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub phone: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for Owner {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("Owner").finish_non_exhaustive()
+    }
+}
 impl Owner {
     pub fn new() -> Self {
         Self { address: None, email: None, name: None, phone: None }
@@ -1975,7 +2290,9 @@ impl Default for Owner {
         Self::new()
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct OrderShipping {
     /// Shipping address.
     pub address: Address,
@@ -1992,6 +2309,12 @@ pub struct OrderShipping {
     /// If multiple tracking numbers were generated for this purchase, please separate them with commas.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tracking_number: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for OrderShipping {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("OrderShipping").finish_non_exhaustive()
+    }
 }
 impl OrderShipping {
     pub fn new(address: impl Into<Address>) -> Self {

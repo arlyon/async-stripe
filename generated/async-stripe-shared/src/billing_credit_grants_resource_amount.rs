@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct BillingCreditGrantsResourceAmount {
@@ -7,6 +8,12 @@ pub struct BillingCreditGrantsResourceAmount {
     /// The type of this amount. We currently only support `monetary` billing credits.
     #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "type"))]
     pub type_: BillingCreditGrantsResourceAmountType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for BillingCreditGrantsResourceAmount {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("BillingCreditGrantsResourceAmount").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct BillingCreditGrantsResourceAmountBuilder {
@@ -145,9 +152,16 @@ impl std::fmt::Display for BillingCreditGrantsResourceAmountType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for BillingCreditGrantsResourceAmountType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for BillingCreditGrantsResourceAmountType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(BillingCreditGrantsResourceAmountType)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

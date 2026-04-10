@@ -2,7 +2,9 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ListTreasuryTransactionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     created: Option<stripe_types::RangeQueryTs>,
@@ -21,6 +23,12 @@ struct ListTreasuryTransactionBuilder {
     status: Option<stripe_treasury::TreasuryTransactionStatus>,
     #[serde(skip_serializing_if = "Option::is_none")]
     status_transitions: Option<ListTreasuryTransactionStatusTransitions>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListTreasuryTransactionBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListTreasuryTransactionBuilder").finish_non_exhaustive()
+    }
 }
 impl ListTreasuryTransactionBuilder {
     fn new(financial_account: impl Into<String>) -> Self {
@@ -82,9 +90,16 @@ impl std::fmt::Display for ListTreasuryTransactionOrderBy {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ListTreasuryTransactionOrderBy {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListTreasuryTransactionOrderBy {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ListTreasuryTransactionOrderBy)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ListTreasuryTransactionOrderBy {
@@ -105,11 +120,19 @@ impl<'de> serde::Deserialize<'de> for ListTreasuryTransactionOrderBy {
 }
 /// A filter for the `status_transitions.posted_at` timestamp.
 /// When using this filter, `status=posted` and `order_by=posted_at` must also be specified.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListTreasuryTransactionStatusTransitions {
     /// Returns Transactions with `posted_at` within the specified range.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub posted_at: Option<stripe_types::RangeQueryTs>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListTreasuryTransactionStatusTransitions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListTreasuryTransactionStatusTransitions").finish_non_exhaustive()
+    }
 }
 impl ListTreasuryTransactionStatusTransitions {
     pub fn new() -> Self {
@@ -122,9 +145,17 @@ impl Default for ListTreasuryTransactionStatusTransitions {
     }
 }
 /// Retrieves a list of Transaction objects.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListTreasuryTransaction {
     inner: ListTreasuryTransactionBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListTreasuryTransaction {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListTreasuryTransaction").finish_non_exhaustive()
+    }
 }
 impl ListTreasuryTransaction {
     /// Construct a new `ListTreasuryTransaction`.
@@ -214,10 +245,18 @@ impl StripeRequest for ListTreasuryTransaction {
         RequestBuilder::new(StripeMethod::Get, "/treasury/transactions").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RetrieveTreasuryTransactionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveTreasuryTransactionBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveTreasuryTransactionBuilder").finish_non_exhaustive()
+    }
 }
 impl RetrieveTreasuryTransactionBuilder {
     fn new() -> Self {
@@ -225,10 +264,18 @@ impl RetrieveTreasuryTransactionBuilder {
     }
 }
 /// Retrieves the details of an existing Transaction.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RetrieveTreasuryTransaction {
     inner: RetrieveTreasuryTransactionBuilder,
     id: stripe_treasury::TreasuryTransactionId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveTreasuryTransaction {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveTreasuryTransaction").finish_non_exhaustive()
+    }
 }
 impl RetrieveTreasuryTransaction {
     /// Construct a new `RetrieveTreasuryTransaction`.

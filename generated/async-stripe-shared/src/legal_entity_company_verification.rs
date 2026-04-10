@@ -1,8 +1,15 @@
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct LegalEntityCompanyVerification {
     pub document: stripe_shared::LegalEntityCompanyVerificationDocument,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for LegalEntityCompanyVerification {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("LegalEntityCompanyVerification").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct LegalEntityCompanyVerificationBuilder {

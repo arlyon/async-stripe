@@ -7,7 +7,8 @@
 /// Related guide: [Payment Links API](https://docs.stripe.com/payment-links)
 ///
 /// For more details see <<https://stripe.com/docs/api/payment_links/payment_links/object>>.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentLink {
     /// Whether the payment link's `url` is active.
@@ -82,6 +83,12 @@ pub struct PaymentLink {
     pub transfer_data: Option<stripe_shared::PaymentLinksResourceTransferData>,
     /// The public URL that can be shared with customers.
     pub url: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentLink {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PaymentLink").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct PaymentLinkBuilder {
@@ -525,9 +532,16 @@ impl std::fmt::Display for PaymentLinkCustomerCreation {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for PaymentLinkCustomerCreation {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentLinkCustomerCreation {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(PaymentLinkCustomerCreation)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -606,9 +620,16 @@ impl std::fmt::Display for PaymentLinkPaymentMethodCollection {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for PaymentLinkPaymentMethodCollection {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentLinkPaymentMethodCollection {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(PaymentLinkPaymentMethodCollection)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -697,9 +718,16 @@ impl std::fmt::Display for PaymentLinkBillingAddressCollection {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for PaymentLinkBillingAddressCollection {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentLinkBillingAddressCollection {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(PaymentLinkBillingAddressCollection)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for PaymentLinkBillingAddressCollection {
@@ -890,9 +918,16 @@ impl std::fmt::Display for PaymentLinkPaymentMethodTypes {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for PaymentLinkPaymentMethodTypes {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentLinkPaymentMethodTypes {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(PaymentLinkPaymentMethodTypes)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for PaymentLinkPaymentMethodTypes {
@@ -974,9 +1009,16 @@ impl std::fmt::Display for PaymentLinkSubmitType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for PaymentLinkSubmitType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentLinkSubmitType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(PaymentLinkSubmitType)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for PaymentLinkSubmitType {

@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentPagesCheckoutSessionConsent {
@@ -7,6 +8,12 @@ pub struct PaymentPagesCheckoutSessionConsent {
     pub promotions: Option<PaymentPagesCheckoutSessionConsentPromotions>,
     /// If `accepted`, the customer in this Checkout Session has agreed to the merchant's terms of service.
     pub terms_of_service: Option<PaymentPagesCheckoutSessionConsentTermsOfService>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentPagesCheckoutSessionConsent {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PaymentPagesCheckoutSessionConsent").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct PaymentPagesCheckoutSessionConsentBuilder {
@@ -151,9 +158,17 @@ impl std::fmt::Display for PaymentPagesCheckoutSessionConsentPromotions {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for PaymentPagesCheckoutSessionConsentPromotions {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentPagesCheckoutSessionConsentPromotions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(PaymentPagesCheckoutSessionConsentPromotions))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -230,9 +245,17 @@ impl std::fmt::Display for PaymentPagesCheckoutSessionConsentTermsOfService {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for PaymentPagesCheckoutSessionConsentTermsOfService {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentPagesCheckoutSessionConsentTermsOfService {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(PaymentPagesCheckoutSessionConsentTermsOfService))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

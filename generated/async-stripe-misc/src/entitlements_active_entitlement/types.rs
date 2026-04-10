@@ -1,5 +1,6 @@
 /// An active entitlement describes access to a feature for a customer.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct EntitlementsActiveEntitlement {
     /// The [Feature](https://docs.stripe.com/api/entitlements/feature) that the customer is entitled to.
@@ -11,6 +12,12 @@ pub struct EntitlementsActiveEntitlement {
     pub livemode: bool,
     /// A unique key you provide as your own system identifier. This may be up to 80 characters.
     pub lookup_key: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for EntitlementsActiveEntitlement {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("EntitlementsActiveEntitlement").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct EntitlementsActiveEntitlementBuilder {

@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct OutboundTransfersPaymentMethodDetailsFinancialAccount {
@@ -6,6 +7,13 @@ pub struct OutboundTransfersPaymentMethodDetailsFinancialAccount {
     pub id: String,
     /// The rails used to send funds.
     pub network: OutboundTransfersPaymentMethodDetailsFinancialAccountNetwork,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for OutboundTransfersPaymentMethodDetailsFinancialAccount {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("OutboundTransfersPaymentMethodDetailsFinancialAccount")
+            .finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct OutboundTransfersPaymentMethodDetailsFinancialAccountBuilder {
@@ -146,9 +154,17 @@ impl std::fmt::Display for OutboundTransfersPaymentMethodDetailsFinancialAccount
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for OutboundTransfersPaymentMethodDetailsFinancialAccountNetwork {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for OutboundTransfersPaymentMethodDetailsFinancialAccountNetwork {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(OutboundTransfersPaymentMethodDetailsFinancialAccountNetwork))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

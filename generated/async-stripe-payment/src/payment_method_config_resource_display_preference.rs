@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentMethodConfigResourceDisplayPreference {
@@ -9,6 +10,12 @@ pub struct PaymentMethodConfigResourceDisplayPreference {
     pub preference: PaymentMethodConfigResourceDisplayPreferencePreference,
     /// The effective display preference value.
     pub value: PaymentMethodConfigResourceDisplayPreferenceValue,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentMethodConfigResourceDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PaymentMethodConfigResourceDisplayPreference").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct PaymentMethodConfigResourceDisplayPreferenceBuilder {
@@ -162,9 +169,17 @@ impl std::fmt::Display for PaymentMethodConfigResourceDisplayPreferencePreferenc
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for PaymentMethodConfigResourceDisplayPreferencePreference {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentMethodConfigResourceDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(PaymentMethodConfigResourceDisplayPreferencePreference))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -248,9 +263,17 @@ impl std::fmt::Display for PaymentMethodConfigResourceDisplayPreferenceValue {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for PaymentMethodConfigResourceDisplayPreferenceValue {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentMethodConfigResourceDisplayPreferenceValue {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(PaymentMethodConfigResourceDisplayPreferenceValue))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

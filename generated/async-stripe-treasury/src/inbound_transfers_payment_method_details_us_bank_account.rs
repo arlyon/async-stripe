@@ -1,4 +1,5 @@
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct InboundTransfersPaymentMethodDetailsUsBankAccount {
@@ -21,6 +22,12 @@ pub struct InboundTransfersPaymentMethodDetailsUsBankAccount {
     pub network: InboundTransfersPaymentMethodDetailsUsBankAccountNetwork,
     /// Routing number of the bank account.
     pub routing_number: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for InboundTransfersPaymentMethodDetailsUsBankAccount {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("InboundTransfersPaymentMethodDetailsUsBankAccount").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct InboundTransfersPaymentMethodDetailsUsBankAccountBuilder {
@@ -218,9 +225,19 @@ impl std::fmt::Display for InboundTransfersPaymentMethodDetailsUsBankAccountAcco
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for InboundTransfersPaymentMethodDetailsUsBankAccountAccountHolderType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for InboundTransfersPaymentMethodDetailsUsBankAccountAccountHolderType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            InboundTransfersPaymentMethodDetailsUsBankAccountAccountHolderType
+        ))
+        .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -308,9 +325,17 @@ impl std::fmt::Display for InboundTransfersPaymentMethodDetailsUsBankAccountAcco
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for InboundTransfersPaymentMethodDetailsUsBankAccountAccountType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for InboundTransfersPaymentMethodDetailsUsBankAccountAccountType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(InboundTransfersPaymentMethodDetailsUsBankAccountAccountType))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -394,9 +419,17 @@ impl std::fmt::Display for InboundTransfersPaymentMethodDetailsUsBankAccountNetw
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for InboundTransfersPaymentMethodDetailsUsBankAccountNetwork {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for InboundTransfersPaymentMethodDetailsUsBankAccountNetwork {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(InboundTransfersPaymentMethodDetailsUsBankAccountNetwork))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

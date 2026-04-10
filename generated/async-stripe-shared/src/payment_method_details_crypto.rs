@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentMethodDetailsCrypto {
@@ -10,6 +11,12 @@ pub struct PaymentMethodDetailsCrypto {
     pub token_currency: Option<PaymentMethodDetailsCryptoTokenCurrency>,
     /// The blockchain transaction hash of the crypto payment.
     pub transaction_hash: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentMethodDetailsCrypto {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PaymentMethodDetailsCrypto").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct PaymentMethodDetailsCryptoBuilder {
@@ -176,9 +183,16 @@ impl std::fmt::Display for PaymentMethodDetailsCryptoNetwork {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for PaymentMethodDetailsCryptoNetwork {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentMethodDetailsCryptoNetwork {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(PaymentMethodDetailsCryptoNetwork)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -260,9 +274,16 @@ impl std::fmt::Display for PaymentMethodDetailsCryptoTokenCurrency {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for PaymentMethodDetailsCryptoTokenCurrency {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentMethodDetailsCryptoTokenCurrency {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(PaymentMethodDetailsCryptoTokenCurrency)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

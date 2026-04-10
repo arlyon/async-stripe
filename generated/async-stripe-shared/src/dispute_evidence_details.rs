@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct DisputeEvidenceDetails {
@@ -14,6 +15,12 @@ pub struct DisputeEvidenceDetails {
     pub past_due: bool,
     /// The number of times evidence has been submitted. Typically, you may only submit evidence once.
     pub submission_count: u64,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for DisputeEvidenceDetails {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("DisputeEvidenceDetails").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct DisputeEvidenceDetailsBuilder {

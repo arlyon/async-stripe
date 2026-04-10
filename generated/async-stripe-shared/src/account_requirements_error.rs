@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct AccountRequirementsError {
@@ -8,6 +9,12 @@ pub struct AccountRequirementsError {
     pub reason: String,
     /// The specific user onboarding requirement field (in the requirements hash) that needs to be resolved.
     pub requirement: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for AccountRequirementsError {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("AccountRequirementsError").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct AccountRequirementsErrorBuilder {
@@ -525,9 +532,16 @@ impl std::fmt::Display for AccountRequirementsErrorCode {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for AccountRequirementsErrorCode {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for AccountRequirementsErrorCode {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(AccountRequirementsErrorCode)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

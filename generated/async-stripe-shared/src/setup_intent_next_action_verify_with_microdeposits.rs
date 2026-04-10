@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct SetupIntentNextActionVerifyWithMicrodeposits {
@@ -9,6 +10,12 @@ pub struct SetupIntentNextActionVerifyWithMicrodeposits {
     /// The type of the microdeposit sent to the customer.
     /// Used to distinguish between different verification methods.
     pub microdeposit_type: Option<SetupIntentNextActionVerifyWithMicrodepositsMicrodepositType>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for SetupIntentNextActionVerifyWithMicrodeposits {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("SetupIntentNextActionVerifyWithMicrodeposits").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct SetupIntentNextActionVerifyWithMicrodepositsBuilder {
@@ -164,9 +171,17 @@ impl std::fmt::Display for SetupIntentNextActionVerifyWithMicrodepositsMicrodepo
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for SetupIntentNextActionVerifyWithMicrodepositsMicrodepositType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for SetupIntentNextActionVerifyWithMicrodepositsMicrodepositType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(SetupIntentNextActionVerifyWithMicrodepositsMicrodepositType))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

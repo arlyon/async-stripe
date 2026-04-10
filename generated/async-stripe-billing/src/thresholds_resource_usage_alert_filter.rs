@@ -1,4 +1,5 @@
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct ThresholdsResourceUsageAlertFilter {
@@ -6,6 +7,12 @@ pub struct ThresholdsResourceUsageAlertFilter {
     pub customer: Option<stripe_types::Expandable<stripe_shared::Customer>>,
     #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "type"))]
     pub type_: ThresholdsResourceUsageAlertFilterType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ThresholdsResourceUsageAlertFilter {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ThresholdsResourceUsageAlertFilter").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct ThresholdsResourceUsageAlertFilterBuilder {
@@ -143,9 +150,16 @@ impl std::fmt::Display for ThresholdsResourceUsageAlertFilterType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ThresholdsResourceUsageAlertFilterType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ThresholdsResourceUsageAlertFilterType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ThresholdsResourceUsageAlertFilterType)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

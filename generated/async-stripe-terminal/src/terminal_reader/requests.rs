@@ -3,9 +3,17 @@ use stripe_client_core::{
 };
 
 /// Deletes a `Reader` object.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct DeleteTerminalReader {
     reader: stripe_terminal::TerminalReaderId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for DeleteTerminalReader {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("DeleteTerminalReader").finish_non_exhaustive()
+    }
 }
 impl DeleteTerminalReader {
     /// Construct a new `DeleteTerminalReader`.
@@ -39,7 +47,9 @@ impl StripeRequest for DeleteTerminalReader {
         RequestBuilder::new(StripeMethod::Delete, format!("/terminal/readers/{reader}"))
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ListTerminalReaderBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     device_type: Option<stripe_terminal::TerminalReaderDeviceType>,
@@ -58,6 +68,12 @@ struct ListTerminalReaderBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     status: Option<stripe_terminal::TerminalReaderStatus>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListTerminalReaderBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListTerminalReaderBuilder").finish_non_exhaustive()
+    }
+}
 impl ListTerminalReaderBuilder {
     fn new() -> Self {
         Self {
@@ -73,9 +89,17 @@ impl ListTerminalReaderBuilder {
     }
 }
 /// Returns a list of `Reader` objects.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListTerminalReader {
     inner: ListTerminalReaderBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListTerminalReader {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListTerminalReader").finish_non_exhaustive()
+    }
 }
 impl ListTerminalReader {
     /// Construct a new `ListTerminalReader`.
@@ -168,10 +192,18 @@ impl StripeRequest for ListTerminalReader {
         RequestBuilder::new(StripeMethod::Get, "/terminal/readers").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RetrieveTerminalReaderBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveTerminalReaderBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveTerminalReaderBuilder").finish_non_exhaustive()
+    }
 }
 impl RetrieveTerminalReaderBuilder {
     fn new() -> Self {
@@ -179,10 +211,18 @@ impl RetrieveTerminalReaderBuilder {
     }
 }
 /// Retrieves a `Reader` object.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RetrieveTerminalReader {
     inner: RetrieveTerminalReaderBuilder,
     reader: stripe_terminal::TerminalReaderId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveTerminalReader {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveTerminalReader").finish_non_exhaustive()
+    }
 }
 impl RetrieveTerminalReader {
     /// Construct a new `RetrieveTerminalReader`.
@@ -222,7 +262,8 @@ impl StripeRequest for RetrieveTerminalReader {
             .query(&self.inner)
     }
 }
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(untagged))]
@@ -304,7 +345,15 @@ const _: () = {
     }
 };
 
-#[derive(Clone, Debug, serde::Serialize)]
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveTerminalReaderReturned {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveTerminalReaderReturned").finish_non_exhaustive()
+    }
+}
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct CreateTerminalReaderBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -315,6 +364,12 @@ struct CreateTerminalReaderBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     metadata: Option<std::collections::HashMap<String, String>>,
     registration_code: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTerminalReaderBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTerminalReaderBuilder").finish_non_exhaustive()
+    }
 }
 impl CreateTerminalReaderBuilder {
     fn new(registration_code: impl Into<String>) -> Self {
@@ -328,9 +383,17 @@ impl CreateTerminalReaderBuilder {
     }
 }
 /// Creates a new `Reader` object.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTerminalReader {
     inner: CreateTerminalReaderBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTerminalReader {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTerminalReader").finish_non_exhaustive()
+    }
 }
 impl CreateTerminalReader {
     /// Construct a new `CreateTerminalReader`.
@@ -390,7 +453,9 @@ impl StripeRequest for CreateTerminalReader {
         RequestBuilder::new(StripeMethod::Post, "/terminal/readers").form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct UpdateTerminalReaderBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -399,6 +464,12 @@ struct UpdateTerminalReaderBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     metadata: Option<std::collections::HashMap<String, String>>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateTerminalReaderBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateTerminalReaderBuilder").finish_non_exhaustive()
+    }
+}
 impl UpdateTerminalReaderBuilder {
     fn new() -> Self {
         Self { expand: None, label: None, metadata: None }
@@ -406,10 +477,18 @@ impl UpdateTerminalReaderBuilder {
 }
 /// Updates a `Reader` object by setting the values of the parameters passed.
 /// Any parameters not provided will be left unchanged.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateTerminalReader {
     inner: UpdateTerminalReaderBuilder,
     reader: stripe_terminal::TerminalReaderId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateTerminalReader {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateTerminalReader").finish_non_exhaustive()
+    }
 }
 impl UpdateTerminalReader {
     /// Construct a new `UpdateTerminalReader`.
@@ -465,7 +544,8 @@ impl StripeRequest for UpdateTerminalReader {
             .form(&self.inner)
     }
 }
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(untagged))]
@@ -547,10 +627,24 @@ const _: () = {
     }
 };
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateTerminalReaderReturned {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateTerminalReaderReturned").finish_non_exhaustive()
+    }
+}
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct CancelActionTerminalReaderBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CancelActionTerminalReaderBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CancelActionTerminalReaderBuilder").finish_non_exhaustive()
+    }
 }
 impl CancelActionTerminalReaderBuilder {
     fn new() -> Self {
@@ -559,10 +653,18 @@ impl CancelActionTerminalReaderBuilder {
 }
 /// Cancels the current reader action.
 /// See [Programmatic Cancellation](https://stripe.com/docs/terminal/payments/collect-card-payment?terminal-sdk-platform=server-driven#programmatic-cancellation) for more details.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CancelActionTerminalReader {
     inner: CancelActionTerminalReaderBuilder,
     reader: stripe_terminal::TerminalReaderId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CancelActionTerminalReader {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CancelActionTerminalReader").finish_non_exhaustive()
+    }
 }
 impl CancelActionTerminalReader {
     /// Construct a new `CancelActionTerminalReader`.
@@ -602,7 +704,9 @@ impl StripeRequest for CancelActionTerminalReader {
             .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct CollectInputsTerminalReaderBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -610,13 +714,21 @@ struct CollectInputsTerminalReaderBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     metadata: Option<std::collections::HashMap<String, String>>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CollectInputsTerminalReaderBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CollectInputsTerminalReaderBuilder").finish_non_exhaustive()
+    }
+}
 impl CollectInputsTerminalReaderBuilder {
     fn new(inputs: impl Into<Vec<CollectInputsTerminalReaderInputs>>) -> Self {
         Self { expand: None, inputs: inputs.into(), metadata: None }
     }
 }
 /// List of inputs to be collected from the customer using the Reader. Maximum 5 inputs.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CollectInputsTerminalReaderInputs {
     /// Customize the text which will be displayed while collecting this input
     pub custom_text: CollectInputsTerminalReaderInputsCustomText,
@@ -633,6 +745,12 @@ pub struct CollectInputsTerminalReaderInputs {
     #[serde(rename = "type")]
     pub type_: CollectInputsTerminalReaderInputsType,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CollectInputsTerminalReaderInputs {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CollectInputsTerminalReaderInputs").finish_non_exhaustive()
+    }
+}
 impl CollectInputsTerminalReaderInputs {
     pub fn new(
         custom_text: impl Into<CollectInputsTerminalReaderInputsCustomText>,
@@ -648,7 +766,9 @@ impl CollectInputsTerminalReaderInputs {
     }
 }
 /// Customize the text which will be displayed while collecting this input
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CollectInputsTerminalReaderInputsCustomText {
     /// The description which will be displayed when collecting this input
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -662,16 +782,30 @@ pub struct CollectInputsTerminalReaderInputsCustomText {
     /// The title which will be displayed when collecting this input
     pub title: String,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CollectInputsTerminalReaderInputsCustomText {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CollectInputsTerminalReaderInputsCustomText").finish_non_exhaustive()
+    }
+}
 impl CollectInputsTerminalReaderInputsCustomText {
     pub fn new(title: impl Into<String>) -> Self {
         Self { description: None, skip_button: None, submit_button: None, title: title.into() }
     }
 }
 /// Options for the `selection` input
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CollectInputsTerminalReaderInputsSelection {
     /// List of choices for the `selection` input
     pub choices: Vec<CollectInputsTerminalReaderInputsSelectionChoices>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CollectInputsTerminalReaderInputsSelection {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CollectInputsTerminalReaderInputsSelection").finish_non_exhaustive()
+    }
 }
 impl CollectInputsTerminalReaderInputsSelection {
     pub fn new(choices: impl Into<Vec<CollectInputsTerminalReaderInputsSelectionChoices>>) -> Self {
@@ -679,7 +813,9 @@ impl CollectInputsTerminalReaderInputsSelection {
     }
 }
 /// List of choices for the `selection` input
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CollectInputsTerminalReaderInputsSelectionChoices {
     /// The unique identifier for this choice
     pub id: String,
@@ -688,6 +824,12 @@ pub struct CollectInputsTerminalReaderInputsSelectionChoices {
     pub style: Option<CollectInputsTerminalReaderInputsSelectionChoicesStyle>,
     /// The text which will be shown on the button for this choice
     pub text: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CollectInputsTerminalReaderInputsSelectionChoices {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CollectInputsTerminalReaderInputsSelectionChoices").finish_non_exhaustive()
+    }
 }
 impl CollectInputsTerminalReaderInputsSelectionChoices {
     pub fn new(id: impl Into<String>, text: impl Into<String>) -> Self {
@@ -738,9 +880,17 @@ impl std::fmt::Display for CollectInputsTerminalReaderInputsSelectionChoicesStyl
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CollectInputsTerminalReaderInputsSelectionChoicesStyle {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CollectInputsTerminalReaderInputsSelectionChoicesStyle {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CollectInputsTerminalReaderInputsSelectionChoicesStyle))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CollectInputsTerminalReaderInputsSelectionChoicesStyle {
@@ -760,7 +910,9 @@ impl<'de> serde::Deserialize<'de> for CollectInputsTerminalReaderInputsSelection
     }
 }
 /// List of toggles to be displayed and customization for the toggles
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CollectInputsTerminalReaderInputsToggles {
     /// The default value of the toggle. Can be `enabled` or `disabled`.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -775,6 +927,12 @@ pub struct CollectInputsTerminalReaderInputsToggles {
     /// At least one of title or description must be provided.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub title: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CollectInputsTerminalReaderInputsToggles {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CollectInputsTerminalReaderInputsToggles").finish_non_exhaustive()
+    }
 }
 impl CollectInputsTerminalReaderInputsToggles {
     pub fn new() -> Self {
@@ -830,9 +988,17 @@ impl std::fmt::Display for CollectInputsTerminalReaderInputsTogglesDefaultValue 
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CollectInputsTerminalReaderInputsTogglesDefaultValue {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CollectInputsTerminalReaderInputsTogglesDefaultValue {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CollectInputsTerminalReaderInputsTogglesDefaultValue))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CollectInputsTerminalReaderInputsTogglesDefaultValue {
@@ -907,9 +1073,16 @@ impl std::fmt::Display for CollectInputsTerminalReaderInputsType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CollectInputsTerminalReaderInputsType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CollectInputsTerminalReaderInputsType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CollectInputsTerminalReaderInputsType)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CollectInputsTerminalReaderInputsType {
@@ -929,10 +1102,18 @@ impl<'de> serde::Deserialize<'de> for CollectInputsTerminalReaderInputsType {
     }
 }
 /// Initiates an [input collection flow](https://stripe.com/docs/terminal/features/collect-inputs) on a Reader to display input forms and collect information from your customers.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CollectInputsTerminalReader {
     inner: CollectInputsTerminalReaderBuilder,
     reader: stripe_terminal::TerminalReaderId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CollectInputsTerminalReader {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CollectInputsTerminalReader").finish_non_exhaustive()
+    }
 }
 impl CollectInputsTerminalReader {
     /// Construct a new `CollectInputsTerminalReader`.
@@ -992,7 +1173,9 @@ impl StripeRequest for CollectInputsTerminalReader {
         .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct CollectPaymentMethodTerminalReaderBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     collect_config: Option<CollectPaymentMethodTerminalReaderCollectConfig>,
@@ -1000,13 +1183,21 @@ struct CollectPaymentMethodTerminalReaderBuilder {
     expand: Option<Vec<String>>,
     payment_intent: String,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CollectPaymentMethodTerminalReaderBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CollectPaymentMethodTerminalReaderBuilder").finish_non_exhaustive()
+    }
+}
 impl CollectPaymentMethodTerminalReaderBuilder {
     fn new(payment_intent: impl Into<String>) -> Self {
         Self { collect_config: None, expand: None, payment_intent: payment_intent.into() }
     }
 }
 /// Configuration overrides for this collection, such as tipping, surcharging, and customer cancellation settings.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CollectPaymentMethodTerminalReaderCollectConfig {
     /// This field indicates whether this payment method can be shown again to its customer in a checkout flow.
     /// Stripe products such as Checkout and Elements use this field to determine whether a payment method can be shown as a saved payment method in a checkout flow.
@@ -1021,6 +1212,12 @@ pub struct CollectPaymentMethodTerminalReaderCollectConfig {
     /// Tipping configuration for this transaction.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tipping: Option<TippingConfig>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CollectPaymentMethodTerminalReaderCollectConfig {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CollectPaymentMethodTerminalReaderCollectConfig").finish_non_exhaustive()
+    }
 }
 impl CollectPaymentMethodTerminalReaderCollectConfig {
     pub fn new() -> Self {
@@ -1085,9 +1282,17 @@ impl std::fmt::Display for CollectPaymentMethodTerminalReaderCollectConfigAllowR
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CollectPaymentMethodTerminalReaderCollectConfigAllowRedisplay {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CollectPaymentMethodTerminalReaderCollectConfigAllowRedisplay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CollectPaymentMethodTerminalReaderCollectConfigAllowRedisplay))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CollectPaymentMethodTerminalReaderCollectConfigAllowRedisplay {
@@ -1110,10 +1315,18 @@ impl<'de> serde::Deserialize<'de>
 }
 /// Initiates a payment flow on a Reader and updates the PaymentIntent with card details before manual confirmation.
 /// See [Collecting a Payment method](https://stripe.com/docs/terminal/payments/collect-card-payment?terminal-sdk-platform=server-driven&process=inspect#collect-a-paymentmethod) for more details.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CollectPaymentMethodTerminalReader {
     inner: CollectPaymentMethodTerminalReaderBuilder,
     reader: stripe_terminal::TerminalReaderId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CollectPaymentMethodTerminalReader {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CollectPaymentMethodTerminalReader").finish_non_exhaustive()
+    }
 }
 impl CollectPaymentMethodTerminalReader {
     /// Construct a new `CollectPaymentMethodTerminalReader`.
@@ -1170,7 +1383,9 @@ impl StripeRequest for CollectPaymentMethodTerminalReader {
         .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ConfirmPaymentIntentTerminalReaderBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     confirm_config: Option<ConfirmPaymentIntentTerminalReaderConfirmConfig>,
@@ -1178,18 +1393,32 @@ struct ConfirmPaymentIntentTerminalReaderBuilder {
     expand: Option<Vec<String>>,
     payment_intent: String,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentTerminalReaderBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentTerminalReaderBuilder").finish_non_exhaustive()
+    }
+}
 impl ConfirmPaymentIntentTerminalReaderBuilder {
     fn new(payment_intent: impl Into<String>) -> Self {
         Self { confirm_config: None, expand: None, payment_intent: payment_intent.into() }
     }
 }
 /// Configuration overrides for this confirmation, such as surcharge settings and return URL.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentTerminalReaderConfirmConfig {
     /// The URL to redirect your customer back to after they authenticate or cancel their payment on the payment method's app or site.
     /// If you'd prefer to redirect to a mobile application, you can alternatively supply an application URI scheme.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub return_url: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentTerminalReaderConfirmConfig {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentTerminalReaderConfirmConfig").finish_non_exhaustive()
+    }
 }
 impl ConfirmPaymentIntentTerminalReaderConfirmConfig {
     pub fn new() -> Self {
@@ -1203,10 +1432,18 @@ impl Default for ConfirmPaymentIntentTerminalReaderConfirmConfig {
 }
 /// Finalizes a payment on a Reader.
 /// See [Confirming a Payment](https://stripe.com/docs/terminal/payments/collect-card-payment?terminal-sdk-platform=server-driven&process=inspect#confirm-the-paymentintent) for more details.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ConfirmPaymentIntentTerminalReader {
     inner: ConfirmPaymentIntentTerminalReaderBuilder,
     reader: stripe_terminal::TerminalReaderId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentTerminalReader {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentTerminalReader").finish_non_exhaustive()
+    }
 }
 impl ConfirmPaymentIntentTerminalReader {
     /// Construct a new `ConfirmPaymentIntentTerminalReader`.
@@ -1263,7 +1500,9 @@ impl StripeRequest for ConfirmPaymentIntentTerminalReader {
         .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ProcessPaymentIntentTerminalReaderBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -1271,13 +1510,21 @@ struct ProcessPaymentIntentTerminalReaderBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     process_config: Option<ProcessPaymentIntentTerminalReaderProcessConfig>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ProcessPaymentIntentTerminalReaderBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ProcessPaymentIntentTerminalReaderBuilder").finish_non_exhaustive()
+    }
+}
 impl ProcessPaymentIntentTerminalReaderBuilder {
     fn new(payment_intent: impl Into<String>) -> Self {
         Self { expand: None, payment_intent: payment_intent.into(), process_config: None }
     }
 }
 /// Configuration overrides for this transaction, such as tipping and customer cancellation settings.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ProcessPaymentIntentTerminalReaderProcessConfig {
     /// This field indicates whether this payment method can be shown again to its customer in a checkout flow.
     /// Stripe products such as Checkout and Elements use this field to determine whether a payment method can be shown as a saved payment method in a checkout flow.
@@ -1296,6 +1543,12 @@ pub struct ProcessPaymentIntentTerminalReaderProcessConfig {
     /// Tipping configuration for this transaction.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tipping: Option<TippingConfig>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ProcessPaymentIntentTerminalReaderProcessConfig {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ProcessPaymentIntentTerminalReaderProcessConfig").finish_non_exhaustive()
+    }
 }
 impl ProcessPaymentIntentTerminalReaderProcessConfig {
     pub fn new() -> Self {
@@ -1361,9 +1614,17 @@ impl std::fmt::Display for ProcessPaymentIntentTerminalReaderProcessConfigAllowR
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ProcessPaymentIntentTerminalReaderProcessConfigAllowRedisplay {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ProcessPaymentIntentTerminalReaderProcessConfigAllowRedisplay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ProcessPaymentIntentTerminalReaderProcessConfigAllowRedisplay))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ProcessPaymentIntentTerminalReaderProcessConfigAllowRedisplay {
@@ -1386,10 +1647,18 @@ impl<'de> serde::Deserialize<'de>
 }
 /// Initiates a payment flow on a Reader.
 /// See [process the payment](https://stripe.com/docs/terminal/payments/collect-card-payment?terminal-sdk-platform=server-driven&process=immediately#process-payment) for more details.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ProcessPaymentIntentTerminalReader {
     inner: ProcessPaymentIntentTerminalReaderBuilder,
     reader: stripe_terminal::TerminalReaderId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ProcessPaymentIntentTerminalReader {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ProcessPaymentIntentTerminalReader").finish_non_exhaustive()
+    }
 }
 impl ProcessPaymentIntentTerminalReader {
     /// Construct a new `ProcessPaymentIntentTerminalReader`.
@@ -1446,7 +1715,9 @@ impl StripeRequest for ProcessPaymentIntentTerminalReader {
         .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ProcessSetupIntentTerminalReaderBuilder {
     allow_redisplay: ProcessSetupIntentTerminalReaderAllowRedisplay,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1454,6 +1725,12 @@ struct ProcessSetupIntentTerminalReaderBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     process_config: Option<ProcessSetupIntentTerminalReaderProcessConfig>,
     setup_intent: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ProcessSetupIntentTerminalReaderBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ProcessSetupIntentTerminalReaderBuilder").finish_non_exhaustive()
+    }
 }
 impl ProcessSetupIntentTerminalReaderBuilder {
     fn new(
@@ -1516,9 +1793,17 @@ impl std::fmt::Display for ProcessSetupIntentTerminalReaderAllowRedisplay {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ProcessSetupIntentTerminalReaderAllowRedisplay {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ProcessSetupIntentTerminalReaderAllowRedisplay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ProcessSetupIntentTerminalReaderAllowRedisplay))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ProcessSetupIntentTerminalReaderAllowRedisplay {
@@ -1538,11 +1823,19 @@ impl<'de> serde::Deserialize<'de> for ProcessSetupIntentTerminalReaderAllowRedis
     }
 }
 /// Configuration overrides for this setup, such as MOTO and customer cancellation settings.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ProcessSetupIntentTerminalReaderProcessConfig {
     /// Enables cancel button on transaction screens.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub enable_customer_cancellation: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ProcessSetupIntentTerminalReaderProcessConfig {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ProcessSetupIntentTerminalReaderProcessConfig").finish_non_exhaustive()
+    }
 }
 impl ProcessSetupIntentTerminalReaderProcessConfig {
     pub fn new() -> Self {
@@ -1556,10 +1849,18 @@ impl Default for ProcessSetupIntentTerminalReaderProcessConfig {
 }
 /// Initiates a SetupIntent flow on a Reader.
 /// See [Save directly without charging](https://stripe.com/docs/terminal/features/saving-payment-details/save-directly) for more details.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ProcessSetupIntentTerminalReader {
     inner: ProcessSetupIntentTerminalReaderBuilder,
     reader: stripe_terminal::TerminalReaderId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ProcessSetupIntentTerminalReader {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ProcessSetupIntentTerminalReader").finish_non_exhaustive()
+    }
 }
 impl ProcessSetupIntentTerminalReader {
     /// Construct a new `ProcessSetupIntentTerminalReader`.
@@ -1620,7 +1921,9 @@ impl StripeRequest for ProcessSetupIntentTerminalReader {
         .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RefundPaymentTerminalReaderBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     amount: Option<i64>,
@@ -1639,6 +1942,12 @@ struct RefundPaymentTerminalReaderBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     reverse_transfer: Option<bool>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RefundPaymentTerminalReaderBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RefundPaymentTerminalReaderBuilder").finish_non_exhaustive()
+    }
+}
 impl RefundPaymentTerminalReaderBuilder {
     fn new() -> Self {
         Self {
@@ -1654,11 +1963,19 @@ impl RefundPaymentTerminalReaderBuilder {
     }
 }
 /// Configuration overrides for this refund, such as customer cancellation settings.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RefundPaymentTerminalReaderRefundPaymentConfig {
     /// Enables cancel button on transaction screens.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub enable_customer_cancellation: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RefundPaymentTerminalReaderRefundPaymentConfig {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RefundPaymentTerminalReaderRefundPaymentConfig").finish_non_exhaustive()
+    }
 }
 impl RefundPaymentTerminalReaderRefundPaymentConfig {
     pub fn new() -> Self {
@@ -1672,10 +1989,18 @@ impl Default for RefundPaymentTerminalReaderRefundPaymentConfig {
 }
 /// Initiates an in-person refund on a Reader.
 /// See [Refund an Interac Payment](https://stripe.com/docs/terminal/payments/regional?integration-country=CA#refund-an-interac-payment) for more details.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RefundPaymentTerminalReader {
     inner: RefundPaymentTerminalReaderBuilder,
     reader: stripe_terminal::TerminalReaderId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RefundPaymentTerminalReader {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RefundPaymentTerminalReader").finish_non_exhaustive()
+    }
 }
 impl RefundPaymentTerminalReader {
     /// Construct a new `RefundPaymentTerminalReader`.
@@ -1767,7 +2092,9 @@ impl StripeRequest for RefundPaymentTerminalReader {
         .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct SetReaderDisplayTerminalReaderBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     cart: Option<SetReaderDisplayTerminalReaderCart>,
@@ -1776,13 +2103,21 @@ struct SetReaderDisplayTerminalReaderBuilder {
     #[serde(rename = "type")]
     type_: SetReaderDisplayTerminalReaderType,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for SetReaderDisplayTerminalReaderBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("SetReaderDisplayTerminalReaderBuilder").finish_non_exhaustive()
+    }
+}
 impl SetReaderDisplayTerminalReaderBuilder {
     fn new(type_: impl Into<SetReaderDisplayTerminalReaderType>) -> Self {
         Self { cart: None, expand: None, type_: type_.into() }
     }
 }
 /// Cart details to display on the reader screen, including line items, amounts, and currency.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct SetReaderDisplayTerminalReaderCart {
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     /// Must be a [supported currency](https://stripe.com/docs/currencies).
@@ -1794,6 +2129,12 @@ pub struct SetReaderDisplayTerminalReaderCart {
     pub tax: Option<i64>,
     /// Total balance of cart due in the [smallest currency unit](https://docs.stripe.com/currencies#zero-decimal).
     pub total: i64,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for SetReaderDisplayTerminalReaderCart {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("SetReaderDisplayTerminalReaderCart").finish_non_exhaustive()
+    }
 }
 impl SetReaderDisplayTerminalReaderCart {
     pub fn new(
@@ -1810,7 +2151,9 @@ impl SetReaderDisplayTerminalReaderCart {
     }
 }
 /// Array of line items to display.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct SetReaderDisplayTerminalReaderCartLineItems {
     /// The price of the item in the [smallest currency unit](https://docs.stripe.com/currencies#zero-decimal).
     pub amount: i64,
@@ -1818,6 +2161,12 @@ pub struct SetReaderDisplayTerminalReaderCartLineItems {
     pub description: String,
     /// The quantity of the line item being purchased.
     pub quantity: u64,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for SetReaderDisplayTerminalReaderCartLineItems {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("SetReaderDisplayTerminalReaderCartLineItems").finish_non_exhaustive()
+    }
 }
 impl SetReaderDisplayTerminalReaderCartLineItems {
     pub fn new(
@@ -1869,9 +2218,16 @@ impl std::fmt::Display for SetReaderDisplayTerminalReaderType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for SetReaderDisplayTerminalReaderType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for SetReaderDisplayTerminalReaderType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(SetReaderDisplayTerminalReaderType)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for SetReaderDisplayTerminalReaderType {
@@ -1891,10 +2247,18 @@ impl<'de> serde::Deserialize<'de> for SetReaderDisplayTerminalReaderType {
     }
 }
 /// Sets the reader display to show [cart details](https://stripe.com/docs/terminal/features/display).
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct SetReaderDisplayTerminalReader {
     inner: SetReaderDisplayTerminalReaderBuilder,
     reader: stripe_terminal::TerminalReaderId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for SetReaderDisplayTerminalReader {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("SetReaderDisplayTerminalReader").finish_non_exhaustive()
+    }
 }
 impl SetReaderDisplayTerminalReader {
     /// Construct a new `SetReaderDisplayTerminalReader`.
@@ -1948,7 +2312,9 @@ impl StripeRequest for SetReaderDisplayTerminalReader {
         .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct PresentPaymentMethodTerminalReaderBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     amount_tip: Option<i64>,
@@ -1964,6 +2330,12 @@ struct PresentPaymentMethodTerminalReaderBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     type_: Option<PresentPaymentMethodTerminalReaderType>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PresentPaymentMethodTerminalReaderBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PresentPaymentMethodTerminalReaderBuilder").finish_non_exhaustive()
+    }
+}
 impl PresentPaymentMethodTerminalReaderBuilder {
     fn new() -> Self {
         Self {
@@ -1977,7 +2349,9 @@ impl PresentPaymentMethodTerminalReaderBuilder {
     }
 }
 /// Simulated data for the card payment method.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct PresentPaymentMethodTerminalReaderCard {
     /// Card security code.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1988,6 +2362,12 @@ pub struct PresentPaymentMethodTerminalReaderCard {
     pub exp_year: i64,
     /// The card number, as a string without any separators.
     pub number: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PresentPaymentMethodTerminalReaderCard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PresentPaymentMethodTerminalReaderCard").finish_non_exhaustive()
+    }
 }
 impl PresentPaymentMethodTerminalReaderCard {
     pub fn new(
@@ -2004,11 +2384,19 @@ impl PresentPaymentMethodTerminalReaderCard {
     }
 }
 /// Simulated data for the card_present payment method.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct PresentPaymentMethodTerminalReaderCardPresent {
     /// The card number, as a string without any separators.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub number: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PresentPaymentMethodTerminalReaderCardPresent {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PresentPaymentMethodTerminalReaderCardPresent").finish_non_exhaustive()
+    }
 }
 impl PresentPaymentMethodTerminalReaderCardPresent {
     pub fn new() -> Self {
@@ -2021,11 +2409,19 @@ impl Default for PresentPaymentMethodTerminalReaderCardPresent {
     }
 }
 /// Simulated data for the interac_present payment method.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct PresentPaymentMethodTerminalReaderInteracPresent {
     /// The Interac card number.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub number: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PresentPaymentMethodTerminalReaderInteracPresent {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PresentPaymentMethodTerminalReaderInteracPresent").finish_non_exhaustive()
+    }
 }
 impl PresentPaymentMethodTerminalReaderInteracPresent {
     pub fn new() -> Self {
@@ -2084,9 +2480,16 @@ impl std::fmt::Display for PresentPaymentMethodTerminalReaderType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for PresentPaymentMethodTerminalReaderType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PresentPaymentMethodTerminalReaderType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(PresentPaymentMethodTerminalReaderType)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for PresentPaymentMethodTerminalReaderType {
@@ -2107,10 +2510,18 @@ impl<'de> serde::Deserialize<'de> for PresentPaymentMethodTerminalReaderType {
 }
 /// Presents a payment method on a simulated reader.
 /// Can be used to simulate accepting a payment, saving a card or refunding a transaction.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct PresentPaymentMethodTerminalReader {
     inner: PresentPaymentMethodTerminalReaderBuilder,
     reader: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PresentPaymentMethodTerminalReader {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PresentPaymentMethodTerminalReader").finish_non_exhaustive()
+    }
 }
 impl PresentPaymentMethodTerminalReader {
     /// Construct a new `PresentPaymentMethodTerminalReader`.
@@ -2184,12 +2595,20 @@ impl StripeRequest for PresentPaymentMethodTerminalReader {
         .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct SucceedInputCollectionTerminalReaderBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     skip_non_required_inputs: Option<SucceedInputCollectionTerminalReaderSkipNonRequiredInputs>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for SucceedInputCollectionTerminalReaderBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("SucceedInputCollectionTerminalReaderBuilder").finish_non_exhaustive()
+    }
 }
 impl SucceedInputCollectionTerminalReaderBuilder {
     fn new() -> Self {
@@ -2240,9 +2659,17 @@ impl std::fmt::Display for SucceedInputCollectionTerminalReaderSkipNonRequiredIn
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for SucceedInputCollectionTerminalReaderSkipNonRequiredInputs {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for SucceedInputCollectionTerminalReaderSkipNonRequiredInputs {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(SucceedInputCollectionTerminalReaderSkipNonRequiredInputs))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for SucceedInputCollectionTerminalReaderSkipNonRequiredInputs {
@@ -2262,10 +2689,18 @@ impl<'de> serde::Deserialize<'de> for SucceedInputCollectionTerminalReaderSkipNo
     }
 }
 /// Use this endpoint to trigger a successful input collection on a simulated reader.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct SucceedInputCollectionTerminalReader {
     inner: SucceedInputCollectionTerminalReaderBuilder,
     reader: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for SucceedInputCollectionTerminalReader {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("SucceedInputCollectionTerminalReader").finish_non_exhaustive()
+    }
 }
 impl SucceedInputCollectionTerminalReader {
     /// Construct a new `SucceedInputCollectionTerminalReader`.
@@ -2316,10 +2751,18 @@ impl StripeRequest for SucceedInputCollectionTerminalReader {
         .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct TimeoutInputCollectionTerminalReaderBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TimeoutInputCollectionTerminalReaderBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("TimeoutInputCollectionTerminalReaderBuilder").finish_non_exhaustive()
+    }
 }
 impl TimeoutInputCollectionTerminalReaderBuilder {
     fn new() -> Self {
@@ -2327,10 +2770,18 @@ impl TimeoutInputCollectionTerminalReaderBuilder {
     }
 }
 /// Use this endpoint to complete an input collection with a timeout error on a simulated reader.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct TimeoutInputCollectionTerminalReader {
     inner: TimeoutInputCollectionTerminalReaderBuilder,
     reader: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TimeoutInputCollectionTerminalReader {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("TimeoutInputCollectionTerminalReader").finish_non_exhaustive()
+    }
 }
 impl TimeoutInputCollectionTerminalReader {
     /// Construct a new `TimeoutInputCollectionTerminalReader`.
@@ -2374,12 +2825,20 @@ impl StripeRequest for TimeoutInputCollectionTerminalReader {
     }
 }
 
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct TippingConfig {
     /// Amount used to calculate tip suggestions on tipping selection screen for this transaction.
     /// Must be a positive integer in the smallest currency unit (e.g., 100 cents to represent $1.00 or 100 to represent ¥100, a zero-decimal currency).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount_eligible: Option<i64>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TippingConfig {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("TippingConfig").finish_non_exhaustive()
+    }
 }
 impl TippingConfig {
     pub fn new() -> Self {

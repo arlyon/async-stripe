@@ -1,4 +1,5 @@
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct SubscriptionBillingThresholds {
@@ -8,6 +9,12 @@ pub struct SubscriptionBillingThresholds {
     /// If true, `billing_cycle_anchor` will be updated to the date/time the threshold was last reached; otherwise, the value will remain unchanged.
     /// This value may not be `true` if the subscription contains items with plans that have `aggregate_usage=last_ever`.
     pub reset_billing_cycle_anchor: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for SubscriptionBillingThresholds {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("SubscriptionBillingThresholds").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct SubscriptionBillingThresholdsBuilder {

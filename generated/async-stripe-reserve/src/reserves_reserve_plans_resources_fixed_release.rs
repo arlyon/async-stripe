@@ -1,4 +1,5 @@
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct ReservesReservePlansResourcesFixedRelease {
@@ -6,6 +7,12 @@ pub struct ReservesReservePlansResourcesFixedRelease {
     pub release_after: i64,
     /// The time at which reserved funds are scheduled for release, automatically set to midnight UTC of the day after `release_after`.
     pub scheduled_release: stripe_types::Timestamp,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ReservesReservePlansResourcesFixedRelease {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ReservesReservePlansResourcesFixedRelease").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct ReservesReservePlansResourcesFixedReleaseBuilder {

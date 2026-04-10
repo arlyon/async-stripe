@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct IssuingAuthorizationFuelData {
@@ -13,6 +14,12 @@ pub struct IssuingAuthorizationFuelData {
     pub unit: Option<IssuingAuthorizationFuelDataUnit>,
     /// The cost in cents per each unit of fuel, represented as a decimal string with at most 12 decimal places.
     pub unit_cost_decimal: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for IssuingAuthorizationFuelData {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("IssuingAuthorizationFuelData").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct IssuingAuthorizationFuelDataBuilder {
@@ -199,9 +206,16 @@ impl std::fmt::Display for IssuingAuthorizationFuelDataType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for IssuingAuthorizationFuelDataType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for IssuingAuthorizationFuelDataType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(IssuingAuthorizationFuelDataType)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -298,9 +312,16 @@ impl std::fmt::Display for IssuingAuthorizationFuelDataUnit {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for IssuingAuthorizationFuelDataUnit {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for IssuingAuthorizationFuelDataUnit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(IssuingAuthorizationFuelDataUnit)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

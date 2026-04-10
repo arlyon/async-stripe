@@ -11,7 +11,8 @@
 /// Use the `user` scope for per-user secrets like per-user OAuth tokens, where different users might have different permissions.
 ///
 /// Related guide: [Store data between page reloads](https://docs.stripe.com/stripe-apps/store-auth-data-custom-objects).
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct AppsSecret {
     /// Time at which the object was created. Measured in seconds since the Unix epoch.
@@ -30,6 +31,12 @@ pub struct AppsSecret {
     /// The plaintext secret value to be stored.
     pub payload: Option<String>,
     pub scope: stripe_connect::SecretServiceResourceScope,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for AppsSecret {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("AppsSecret").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct AppsSecretBuilder {

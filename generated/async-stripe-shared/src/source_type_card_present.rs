@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct SourceTypeCardPresent {
@@ -28,6 +29,12 @@ pub struct SourceTypeCardPresent {
     pub reader: Option<String>,
     pub terminal_verification_results: Option<String>,
     pub transaction_status_information: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for SourceTypeCardPresent {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("SourceTypeCardPresent").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct SourceTypeCardPresentBuilder {

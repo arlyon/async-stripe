@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TaxProductResourceTaxCalculationShippingCost {
@@ -17,6 +18,12 @@ pub struct TaxProductResourceTaxCalculationShippingCost {
     pub tax_breakdown: Option<Vec<stripe_misc::TaxProductResourceLineItemTaxBreakdown>>,
     /// The [tax code](https://docs.stripe.com/tax/tax-categories) ID used for shipping.
     pub tax_code: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TaxProductResourceTaxCalculationShippingCost {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("TaxProductResourceTaxCalculationShippingCost").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct TaxProductResourceTaxCalculationShippingCostBuilder {
@@ -200,9 +207,17 @@ impl std::fmt::Display for TaxProductResourceTaxCalculationShippingCostTaxBehavi
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for TaxProductResourceTaxCalculationShippingCostTaxBehavior {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TaxProductResourceTaxCalculationShippingCostTaxBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(TaxProductResourceTaxCalculationShippingCostTaxBehavior))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

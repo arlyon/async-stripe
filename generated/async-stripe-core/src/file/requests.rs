@@ -2,7 +2,9 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ListFileBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     created: Option<stripe_types::RangeQueryTs>,
@@ -16,6 +18,12 @@ struct ListFileBuilder {
     purpose: Option<stripe_shared::FilePurpose>,
     #[serde(skip_serializing_if = "Option::is_none")]
     starting_after: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListFileBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListFileBuilder").finish_non_exhaustive()
+    }
 }
 impl ListFileBuilder {
     fn new() -> Self {
@@ -31,9 +39,17 @@ impl ListFileBuilder {
 }
 /// Returns a list of the files that your account has access to.
 /// Stripe sorts and returns the files by their creation dates, placing the most recently created files at the top.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListFile {
     inner: ListFileBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListFile {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListFile").finish_non_exhaustive()
+    }
 }
 impl ListFile {
     /// Construct a new `ListFile`.
@@ -113,10 +129,18 @@ impl StripeRequest for ListFile {
         RequestBuilder::new(StripeMethod::Get, "/files").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RetrieveFileBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveFileBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveFileBuilder").finish_non_exhaustive()
+    }
 }
 impl RetrieveFileBuilder {
     fn new() -> Self {
@@ -126,10 +150,18 @@ impl RetrieveFileBuilder {
 /// Retrieves the details of an existing file object.
 /// After you supply a unique file ID, Stripe returns the corresponding file object.
 /// Learn how to [access file contents](https://stripe.com/docs/file-upload#download-file-contents).
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RetrieveFile {
     inner: RetrieveFileBuilder,
     file: stripe_shared::FileId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveFile {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveFile").finish_non_exhaustive()
+    }
 }
 impl RetrieveFile {
     /// Construct a new `RetrieveFile`.

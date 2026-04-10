@@ -1,5 +1,6 @@
 /// User Intervention Resolved Event details attached to this payment evaluation
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct InsightsResourcesPaymentEvaluationUserInterventionResolved {
@@ -7,6 +8,13 @@ pub struct InsightsResourcesPaymentEvaluationUserInterventionResolved {
     pub key: String,
     /// Result of the intervention if it has been completed.
     pub outcome: Option<InsightsResourcesPaymentEvaluationUserInterventionResolvedOutcome>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for InsightsResourcesPaymentEvaluationUserInterventionResolved {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("InsightsResourcesPaymentEvaluationUserInterventionResolved")
+            .finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct InsightsResourcesPaymentEvaluationUserInterventionResolvedBuilder {
@@ -154,9 +162,19 @@ impl std::fmt::Display for InsightsResourcesPaymentEvaluationUserInterventionRes
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for InsightsResourcesPaymentEvaluationUserInterventionResolvedOutcome {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for InsightsResourcesPaymentEvaluationUserInterventionResolvedOutcome {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            InsightsResourcesPaymentEvaluationUserInterventionResolvedOutcome
+        ))
+        .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

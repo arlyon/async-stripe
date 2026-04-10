@@ -8,7 +8,8 @@
 /// Related guides: [Set up a subscription](https://docs.stripe.com/billing/subscriptions/set-up-subscription), [create an invoice](https://docs.stripe.com/billing/invoices/create), and more about [products and prices](https://docs.stripe.com/products-prices/overview).
 ///
 /// For more details see <<https://stripe.com/docs/api/prices/object>>.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct Price {
     /// Whether the price can be used for new purchases.
@@ -71,6 +72,12 @@ pub struct Price {
     /// The unit amount in cents (or local equivalent) to be charged, represented as a decimal string with at most 12 decimal places.
     /// Only set if `billing_scheme=per_unit`.
     pub unit_amount_decimal: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for Price {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("Price").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct PriceBuilder {
@@ -386,9 +393,16 @@ impl std::fmt::Display for PriceBillingScheme {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for PriceBillingScheme {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PriceBillingScheme {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(PriceBillingScheme)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for PriceBillingScheme {
@@ -464,9 +478,16 @@ impl std::fmt::Display for PriceTaxBehavior {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for PriceTaxBehavior {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PriceTaxBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(PriceTaxBehavior)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for PriceTaxBehavior {
@@ -539,9 +560,16 @@ impl std::fmt::Display for PriceTiersMode {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for PriceTiersMode {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PriceTiersMode {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(PriceTiersMode)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for PriceTiersMode {
@@ -614,9 +642,16 @@ impl std::fmt::Display for PriceType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for PriceType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PriceType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(PriceType)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for PriceType {

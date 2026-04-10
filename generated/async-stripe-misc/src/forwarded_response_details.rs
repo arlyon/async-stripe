@@ -1,5 +1,6 @@
 /// Details about the response from the destination endpoint.
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct ForwardedResponseDetails {
@@ -9,6 +10,12 @@ pub struct ForwardedResponseDetails {
     pub headers: Vec<stripe_misc::ForwardedRequestHeader>,
     /// The HTTP status code that the destination endpoint returned.
     pub status: i64,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ForwardedResponseDetails {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ForwardedResponseDetails").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct ForwardedResponseDetailsBuilder {

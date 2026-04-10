@@ -1,4 +1,5 @@
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct IssuingPersonalizationDesignPreferences {
@@ -7,6 +8,12 @@ pub struct IssuingPersonalizationDesignPreferences {
     pub is_default: bool,
     /// Whether this personalization design is used to create cards when one is not specified and a default for this connected account does not exist.
     pub is_platform_default: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for IssuingPersonalizationDesignPreferences {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("IssuingPersonalizationDesignPreferences").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct IssuingPersonalizationDesignPreferencesBuilder {

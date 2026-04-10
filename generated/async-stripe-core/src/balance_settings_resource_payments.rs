@@ -1,4 +1,5 @@
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct BalanceSettingsResourcePayments {
@@ -9,6 +10,12 @@ pub struct BalanceSettingsResourcePayments {
     /// Settings specific to the account's payouts.
     pub payouts: Option<stripe_core::BalanceSettingsResourcePayouts>,
     pub settlement_timing: stripe_core::BalanceSettingsResourceSettlementTiming,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for BalanceSettingsResourcePayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("BalanceSettingsResourcePayments").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct BalanceSettingsResourcePaymentsBuilder {

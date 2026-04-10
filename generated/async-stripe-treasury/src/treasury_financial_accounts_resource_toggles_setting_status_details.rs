@@ -1,5 +1,6 @@
 /// Additional details on the FinancialAccount Features information.
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TreasuryFinancialAccountsResourceTogglesSettingStatusDetails {
@@ -10,6 +11,13 @@ pub struct TreasuryFinancialAccountsResourceTogglesSettingStatusDetails {
     /// The `platform_restrictions` that are restricting this Feature.
     pub restriction:
         Option<TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsRestriction>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TreasuryFinancialAccountsResourceTogglesSettingStatusDetails {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("TreasuryFinancialAccountsResourceTogglesSettingStatusDetails")
+            .finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsBuilder {
@@ -185,9 +193,17 @@ impl std::fmt::Display for TreasuryFinancialAccountsResourceTogglesSettingStatus
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsCode {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsCode {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsCode))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -278,9 +294,19 @@ impl std::fmt::Display for TreasuryFinancialAccountsResourceTogglesSettingStatus
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsResolution {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsResolution {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsResolution
+        ))
+        .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -370,9 +396,19 @@ impl std::fmt::Display for TreasuryFinancialAccountsResourceTogglesSettingStatus
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsRestriction {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsRestriction {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            TreasuryFinancialAccountsResourceTogglesSettingStatusDetailsRestriction
+        ))
+        .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

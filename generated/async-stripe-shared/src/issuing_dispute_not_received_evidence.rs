@@ -1,4 +1,5 @@
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct IssuingDisputeNotReceivedEvidence {
@@ -12,6 +13,12 @@ pub struct IssuingDisputeNotReceivedEvidence {
     pub product_description: Option<String>,
     /// Whether the product was a merchandise or service.
     pub product_type: Option<IssuingDisputeNotReceivedEvidenceProductType>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for IssuingDisputeNotReceivedEvidence {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("IssuingDisputeNotReceivedEvidence").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct IssuingDisputeNotReceivedEvidenceBuilder {
@@ -191,9 +198,17 @@ impl std::fmt::Display for IssuingDisputeNotReceivedEvidenceProductType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for IssuingDisputeNotReceivedEvidenceProductType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for IssuingDisputeNotReceivedEvidenceProductType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(IssuingDisputeNotReceivedEvidenceProductType))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

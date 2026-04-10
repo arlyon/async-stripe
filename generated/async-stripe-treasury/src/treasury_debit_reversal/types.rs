@@ -1,6 +1,7 @@
 /// You can reverse some [ReceivedDebits](https://api.stripe.com#received_debits) depending on their network and source flow.
 /// Reversing a ReceivedDebit leads to the creation of a new object known as a DebitReversal.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TreasuryDebitReversal {
     /// Amount (in cents) transferred.
@@ -34,6 +35,12 @@ pub struct TreasuryDebitReversal {
     pub status_transitions: stripe_treasury::TreasuryReceivedDebitsResourceStatusTransitions,
     /// The Transaction associated with this object.
     pub transaction: Option<stripe_types::Expandable<stripe_treasury::TreasuryTransaction>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TreasuryDebitReversal {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("TreasuryDebitReversal").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct TreasuryDebitReversalBuilder {
@@ -301,9 +308,16 @@ impl std::fmt::Display for TreasuryDebitReversalNetwork {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for TreasuryDebitReversalNetwork {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TreasuryDebitReversalNetwork {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(TreasuryDebitReversalNetwork)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -385,9 +399,16 @@ impl std::fmt::Display for TreasuryDebitReversalStatus {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for TreasuryDebitReversalStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TreasuryDebitReversalStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(TreasuryDebitReversalStatus)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

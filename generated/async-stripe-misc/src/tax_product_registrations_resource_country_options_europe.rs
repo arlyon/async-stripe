@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TaxProductRegistrationsResourceCountryOptionsEurope {
@@ -6,6 +7,13 @@ pub struct TaxProductRegistrationsResourceCountryOptionsEurope {
     /// Type of registration in an EU country.
     #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "type"))]
     pub type_: TaxProductRegistrationsResourceCountryOptionsEuropeType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TaxProductRegistrationsResourceCountryOptionsEurope {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("TaxProductRegistrationsResourceCountryOptionsEurope")
+            .finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct TaxProductRegistrationsResourceCountryOptionsEuropeBuilder {
@@ -154,9 +162,17 @@ impl std::fmt::Display for TaxProductRegistrationsResourceCountryOptionsEuropeTy
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for TaxProductRegistrationsResourceCountryOptionsEuropeType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TaxProductRegistrationsResourceCountryOptionsEuropeType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(TaxProductRegistrationsResourceCountryOptionsEuropeType))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

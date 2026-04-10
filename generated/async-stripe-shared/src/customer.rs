@@ -3,7 +3,8 @@
 /// and track payments that belong to the same customer.
 ///
 /// For more details see <<https://stripe.com/docs/api/customers/object>>.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct Customer {
     /// The customer's address.
@@ -91,6 +92,12 @@ pub struct Customer {
     pub tax_ids: Option<stripe_types::List<stripe_shared::TaxId>>,
     /// ID of the test clock that this customer belongs to.
     pub test_clock: Option<stripe_types::Expandable<stripe_shared::TestHelpersTestClock>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for Customer {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("Customer").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct CustomerBuilder {
@@ -491,9 +498,16 @@ impl std::fmt::Display for CustomerTaxExempt {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CustomerTaxExempt {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CustomerTaxExempt {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CustomerTaxExempt)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CustomerTaxExempt {

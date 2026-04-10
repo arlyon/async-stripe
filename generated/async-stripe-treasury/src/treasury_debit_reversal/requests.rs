@@ -2,7 +2,9 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ListTreasuryDebitReversalBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<String>,
@@ -19,6 +21,12 @@ struct ListTreasuryDebitReversalBuilder {
     starting_after: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     status: Option<ListTreasuryDebitReversalStatus>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListTreasuryDebitReversalBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListTreasuryDebitReversalBuilder").finish_non_exhaustive()
+    }
 }
 impl ListTreasuryDebitReversalBuilder {
     fn new(financial_account: impl Into<String>) -> Self {
@@ -78,9 +86,16 @@ impl std::fmt::Display for ListTreasuryDebitReversalResolution {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ListTreasuryDebitReversalResolution {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListTreasuryDebitReversalResolution {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ListTreasuryDebitReversalResolution)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ListTreasuryDebitReversalResolution {
@@ -146,9 +161,16 @@ impl std::fmt::Display for ListTreasuryDebitReversalStatus {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ListTreasuryDebitReversalStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListTreasuryDebitReversalStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ListTreasuryDebitReversalStatus)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ListTreasuryDebitReversalStatus {
@@ -168,9 +190,17 @@ impl<'de> serde::Deserialize<'de> for ListTreasuryDebitReversalStatus {
     }
 }
 /// Returns a list of DebitReversals.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListTreasuryDebitReversal {
     inner: ListTreasuryDebitReversalBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListTreasuryDebitReversal {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListTreasuryDebitReversal").finish_non_exhaustive()
+    }
 }
 impl ListTreasuryDebitReversal {
     /// Construct a new `ListTreasuryDebitReversal`.
@@ -253,10 +283,18 @@ impl StripeRequest for ListTreasuryDebitReversal {
         RequestBuilder::new(StripeMethod::Get, "/treasury/debit_reversals").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RetrieveTreasuryDebitReversalBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveTreasuryDebitReversalBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveTreasuryDebitReversalBuilder").finish_non_exhaustive()
+    }
 }
 impl RetrieveTreasuryDebitReversalBuilder {
     fn new() -> Self {
@@ -264,10 +302,18 @@ impl RetrieveTreasuryDebitReversalBuilder {
     }
 }
 /// Retrieves a DebitReversal object.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RetrieveTreasuryDebitReversal {
     inner: RetrieveTreasuryDebitReversalBuilder,
     debit_reversal: stripe_treasury::TreasuryDebitReversalId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveTreasuryDebitReversal {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveTreasuryDebitReversal").finish_non_exhaustive()
+    }
 }
 impl RetrieveTreasuryDebitReversal {
     /// Construct a new `RetrieveTreasuryDebitReversal`.
@@ -313,7 +359,9 @@ impl StripeRequest for RetrieveTreasuryDebitReversal {
         .query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct CreateTreasuryDebitReversalBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -321,15 +369,29 @@ struct CreateTreasuryDebitReversalBuilder {
     metadata: Option<std::collections::HashMap<String, String>>,
     received_debit: String,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTreasuryDebitReversalBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTreasuryDebitReversalBuilder").finish_non_exhaustive()
+    }
+}
 impl CreateTreasuryDebitReversalBuilder {
     fn new(received_debit: impl Into<String>) -> Self {
         Self { expand: None, metadata: None, received_debit: received_debit.into() }
     }
 }
 /// Reverses a ReceivedDebit and creates a DebitReversal object.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateTreasuryDebitReversal {
     inner: CreateTreasuryDebitReversalBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTreasuryDebitReversal {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTreasuryDebitReversal").finish_non_exhaustive()
+    }
 }
 impl CreateTreasuryDebitReversal {
     /// Construct a new `CreateTreasuryDebitReversal`.

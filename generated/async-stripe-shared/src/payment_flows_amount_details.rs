@@ -1,4 +1,5 @@
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentFlowsAmountDetails {
@@ -14,6 +15,12 @@ pub struct PaymentFlowsAmountDetails {
     pub shipping: Option<stripe_shared::PaymentFlowsAmountDetailsResourceShipping>,
     pub tax: Option<stripe_shared::PaymentFlowsAmountDetailsResourceTax>,
     pub tip: Option<stripe_shared::PaymentFlowsAmountDetailsClientResourceTip>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentFlowsAmountDetails {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PaymentFlowsAmountDetails").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct PaymentFlowsAmountDetailsBuilder {

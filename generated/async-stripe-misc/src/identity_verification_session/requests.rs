@@ -2,7 +2,9 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ListIdentityVerificationSessionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     client_reference_id: Option<String>,
@@ -23,6 +25,12 @@ struct ListIdentityVerificationSessionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     status: Option<stripe_misc::IdentityVerificationSessionStatus>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListIdentityVerificationSessionBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListIdentityVerificationSessionBuilder").finish_non_exhaustive()
+    }
+}
 impl ListIdentityVerificationSessionBuilder {
     fn new() -> Self {
         Self {
@@ -39,9 +47,17 @@ impl ListIdentityVerificationSessionBuilder {
     }
 }
 /// Returns a list of VerificationSessions
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListIdentityVerificationSession {
     inner: ListIdentityVerificationSessionBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListIdentityVerificationSession {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListIdentityVerificationSession").finish_non_exhaustive()
+    }
 }
 impl ListIdentityVerificationSession {
     /// Construct a new `ListIdentityVerificationSession`.
@@ -142,10 +158,18 @@ impl StripeRequest for ListIdentityVerificationSession {
         RequestBuilder::new(StripeMethod::Get, "/identity/verification_sessions").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RetrieveIdentityVerificationSessionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveIdentityVerificationSessionBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveIdentityVerificationSessionBuilder").finish_non_exhaustive()
+    }
 }
 impl RetrieveIdentityVerificationSessionBuilder {
     fn new() -> Self {
@@ -156,10 +180,18 @@ impl RetrieveIdentityVerificationSessionBuilder {
 ///
 /// When the session status is `requires_input`, you can use this method to retrieve a valid
 /// `client_secret` or `url` to allow re-submission.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RetrieveIdentityVerificationSession {
     inner: RetrieveIdentityVerificationSessionBuilder,
     session: stripe_misc::IdentityVerificationSessionId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveIdentityVerificationSession {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveIdentityVerificationSession").finish_non_exhaustive()
+    }
 }
 impl RetrieveIdentityVerificationSession {
     /// Construct a new `RetrieveIdentityVerificationSession`.
@@ -199,7 +231,9 @@ impl StripeRequest for RetrieveIdentityVerificationSession {
             .query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct CreateIdentityVerificationSessionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     client_reference_id: Option<String>,
@@ -225,6 +259,12 @@ struct CreateIdentityVerificationSessionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     verification_flow: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateIdentityVerificationSessionBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateIdentityVerificationSessionBuilder").finish_non_exhaustive()
+    }
+}
 impl CreateIdentityVerificationSessionBuilder {
     fn new() -> Self {
         Self {
@@ -243,11 +283,19 @@ impl CreateIdentityVerificationSessionBuilder {
     }
 }
 /// A set of options for the session’s verification checks.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateIdentityVerificationSessionOptions {
     /// Options that apply to the [document check](https://docs.stripe.com/identity/verification-checks?type=document).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub document: Option<CreateIdentityVerificationSessionOptionsDocument>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateIdentityVerificationSessionOptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateIdentityVerificationSessionOptions").finish_non_exhaustive()
+    }
 }
 impl CreateIdentityVerificationSessionOptions {
     pub fn new() -> Self {
@@ -260,7 +308,9 @@ impl Default for CreateIdentityVerificationSessionOptions {
     }
 }
 /// Options that apply to the [document check](https://docs.stripe.com/identity/verification-checks?type=document).
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateIdentityVerificationSessionOptionsDocument {
     /// Array of strings of allowed identity document types.
     /// If the provided identity document isn’t one of the allowed types, the verification check will fail with a document_type_not_allowed error code.
@@ -276,6 +326,12 @@ pub struct CreateIdentityVerificationSessionOptionsDocument {
     /// [Learn more](https://docs.stripe.com/identity/selfie).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub require_matching_selfie: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateIdentityVerificationSessionOptionsDocument {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateIdentityVerificationSessionOptionsDocument").finish_non_exhaustive()
+    }
 }
 impl CreateIdentityVerificationSessionOptionsDocument {
     pub fn new() -> Self {
@@ -340,9 +396,17 @@ impl std::fmt::Display for CreateIdentityVerificationSessionOptionsDocumentAllow
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateIdentityVerificationSessionOptionsDocumentAllowedTypes {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateIdentityVerificationSessionOptionsDocumentAllowedTypes {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateIdentityVerificationSessionOptionsDocumentAllowedTypes))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateIdentityVerificationSessionOptionsDocumentAllowedTypes {
@@ -362,13 +426,21 @@ impl<'de> serde::Deserialize<'de> for CreateIdentityVerificationSessionOptionsDo
     }
 }
 /// Tokens referencing a Person resource and it's associated account.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateIdentityVerificationSessionRelatedPerson {
     /// A token representing a connected account.
     /// If provided, the person parameter is also required and must be associated with the account.
     pub account: String,
     /// A token referencing a Person resource that this verification is being used to verify.
     pub person: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateIdentityVerificationSessionRelatedPerson {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateIdentityVerificationSessionRelatedPerson").finish_non_exhaustive()
+    }
 }
 impl CreateIdentityVerificationSessionRelatedPerson {
     pub fn new(account: impl Into<String>, person: impl Into<String>) -> Self {
@@ -420,9 +492,16 @@ impl std::fmt::Display for CreateIdentityVerificationSessionType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreateIdentityVerificationSessionType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateIdentityVerificationSessionType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateIdentityVerificationSessionType)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreateIdentityVerificationSessionType {
@@ -448,9 +527,17 @@ impl<'de> serde::Deserialize<'de> for CreateIdentityVerificationSessionType {
 /// If your API key is in test mode, verification checks won’t actually process, though everything else will occur as if in live mode.
 ///
 /// Related guide: [Verify your users’ identity documents](https://stripe.com/docs/identity/verify-identity-documents).
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateIdentityVerificationSession {
     inner: CreateIdentityVerificationSessionBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateIdentityVerificationSession {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateIdentityVerificationSession").finish_non_exhaustive()
+    }
 }
 impl CreateIdentityVerificationSession {
     /// Construct a new `CreateIdentityVerificationSession`.
@@ -555,7 +642,9 @@ impl StripeRequest for CreateIdentityVerificationSession {
         RequestBuilder::new(StripeMethod::Post, "/identity/verification_sessions").form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct UpdateIdentityVerificationSessionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
@@ -569,17 +658,31 @@ struct UpdateIdentityVerificationSessionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     type_: Option<UpdateIdentityVerificationSessionType>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateIdentityVerificationSessionBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateIdentityVerificationSessionBuilder").finish_non_exhaustive()
+    }
+}
 impl UpdateIdentityVerificationSessionBuilder {
     fn new() -> Self {
         Self { expand: None, metadata: None, options: None, provided_details: None, type_: None }
     }
 }
 /// A set of options for the session’s verification checks.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateIdentityVerificationSessionOptions {
     /// Options that apply to the [document check](https://docs.stripe.com/identity/verification-checks?type=document).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub document: Option<UpdateIdentityVerificationSessionOptionsDocument>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateIdentityVerificationSessionOptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateIdentityVerificationSessionOptions").finish_non_exhaustive()
+    }
 }
 impl UpdateIdentityVerificationSessionOptions {
     pub fn new() -> Self {
@@ -592,7 +695,9 @@ impl Default for UpdateIdentityVerificationSessionOptions {
     }
 }
 /// Options that apply to the [document check](https://docs.stripe.com/identity/verification-checks?type=document).
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateIdentityVerificationSessionOptionsDocument {
     /// Array of strings of allowed identity document types.
     /// If the provided identity document isn’t one of the allowed types, the verification check will fail with a document_type_not_allowed error code.
@@ -608,6 +713,12 @@ pub struct UpdateIdentityVerificationSessionOptionsDocument {
     /// [Learn more](https://docs.stripe.com/identity/selfie).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub require_matching_selfie: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateIdentityVerificationSessionOptionsDocument {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateIdentityVerificationSessionOptionsDocument").finish_non_exhaustive()
+    }
 }
 impl UpdateIdentityVerificationSessionOptionsDocument {
     pub fn new() -> Self {
@@ -672,9 +783,17 @@ impl std::fmt::Display for UpdateIdentityVerificationSessionOptionsDocumentAllow
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdateIdentityVerificationSessionOptionsDocumentAllowedTypes {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateIdentityVerificationSessionOptionsDocumentAllowedTypes {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdateIdentityVerificationSessionOptionsDocumentAllowedTypes))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdateIdentityVerificationSessionOptionsDocumentAllowedTypes {
@@ -737,9 +856,16 @@ impl std::fmt::Display for UpdateIdentityVerificationSessionType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdateIdentityVerificationSessionType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateIdentityVerificationSessionType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdateIdentityVerificationSessionType)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdateIdentityVerificationSessionType {
@@ -762,10 +888,18 @@ impl<'de> serde::Deserialize<'de> for UpdateIdentityVerificationSessionType {
 ///
 /// When the session status is `requires_input`, you can use this method to update the
 /// verification check and options.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateIdentityVerificationSession {
     inner: UpdateIdentityVerificationSessionBuilder,
     session: stripe_misc::IdentityVerificationSessionId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateIdentityVerificationSession {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateIdentityVerificationSession").finish_non_exhaustive()
+    }
 }
 impl UpdateIdentityVerificationSession {
     /// Construct a new `UpdateIdentityVerificationSession`.
@@ -834,10 +968,18 @@ impl StripeRequest for UpdateIdentityVerificationSession {
         .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct CancelIdentityVerificationSessionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CancelIdentityVerificationSessionBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CancelIdentityVerificationSessionBuilder").finish_non_exhaustive()
+    }
 }
 impl CancelIdentityVerificationSessionBuilder {
     fn new() -> Self {
@@ -849,10 +991,18 @@ impl CancelIdentityVerificationSessionBuilder {
 /// Once canceled, future submission attempts are disabled.
 /// This cannot be undone.
 /// [Learn more](https://stripe.com/docs/identity/verification-sessions#cancel).
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CancelIdentityVerificationSession {
     inner: CancelIdentityVerificationSessionBuilder,
     session: stripe_misc::IdentityVerificationSessionId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CancelIdentityVerificationSession {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CancelIdentityVerificationSession").finish_non_exhaustive()
+    }
 }
 impl CancelIdentityVerificationSession {
     /// Construct a new `CancelIdentityVerificationSession`.
@@ -895,10 +1045,18 @@ impl StripeRequest for CancelIdentityVerificationSession {
         .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RedactIdentityVerificationSessionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RedactIdentityVerificationSessionBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RedactIdentityVerificationSessionBuilder").finish_non_exhaustive()
+    }
 }
 impl RedactIdentityVerificationSessionBuilder {
     fn new() -> Self {
@@ -925,10 +1083,18 @@ impl RedactIdentityVerificationSessionBuilder {
 /// used for any purpose.
 ///
 /// [Learn more](https://stripe.com/docs/identity/verification-sessions#redact).
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RedactIdentityVerificationSession {
     inner: RedactIdentityVerificationSessionBuilder,
     session: stripe_misc::IdentityVerificationSessionId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RedactIdentityVerificationSession {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RedactIdentityVerificationSession").finish_non_exhaustive()
+    }
 }
 impl RedactIdentityVerificationSession {
     /// Construct a new `RedactIdentityVerificationSession`.
@@ -972,7 +1138,9 @@ impl StripeRequest for RedactIdentityVerificationSession {
     }
 }
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ProvidedDetailsParam {
     /// Email of user being verified
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -980,6 +1148,12 @@ pub struct ProvidedDetailsParam {
     /// Phone number of user being verified
     #[serde(skip_serializing_if = "Option::is_none")]
     pub phone: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ProvidedDetailsParam {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ProvidedDetailsParam").finish_non_exhaustive()
+    }
 }
 impl ProvidedDetailsParam {
     pub fn new() -> Self {

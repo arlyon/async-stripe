@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentFlowsPaymentDetails {
@@ -11,6 +12,12 @@ pub struct PaymentFlowsPaymentDetails {
     /// For Cards, this field is truncated to 25 alphanumeric characters, excluding spaces, before being sent to card networks.
     /// For Klarna, this field is truncated to 255 characters and is visible to customers when they view the order in the Klarna app.
     pub order_reference: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentFlowsPaymentDetails {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PaymentFlowsPaymentDetails").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct PaymentFlowsPaymentDetailsBuilder {

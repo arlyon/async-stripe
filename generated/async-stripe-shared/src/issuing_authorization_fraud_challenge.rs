@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct IssuingAuthorizationFraudChallenge {
@@ -8,6 +9,12 @@ pub struct IssuingAuthorizationFraudChallenge {
     pub status: IssuingAuthorizationFraudChallengeStatus,
     /// If the challenge is not deliverable, the reason why.
     pub undeliverable_reason: Option<IssuingAuthorizationFraudChallengeUndeliverableReason>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for IssuingAuthorizationFraudChallenge {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("IssuingAuthorizationFraudChallenge").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct IssuingAuthorizationFraudChallengeBuilder {
@@ -155,9 +162,17 @@ impl std::fmt::Display for IssuingAuthorizationFraudChallengeChannel {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for IssuingAuthorizationFraudChallengeChannel {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for IssuingAuthorizationFraudChallengeChannel {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(IssuingAuthorizationFraudChallengeChannel))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -246,9 +261,16 @@ impl std::fmt::Display for IssuingAuthorizationFraudChallengeStatus {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for IssuingAuthorizationFraudChallengeStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for IssuingAuthorizationFraudChallengeStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(IssuingAuthorizationFraudChallengeStatus)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -327,9 +349,17 @@ impl std::fmt::Display for IssuingAuthorizationFraudChallengeUndeliverableReason
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for IssuingAuthorizationFraudChallengeUndeliverableReason {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for IssuingAuthorizationFraudChallengeUndeliverableReason {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(IssuingAuthorizationFraudChallengeUndeliverableReason))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

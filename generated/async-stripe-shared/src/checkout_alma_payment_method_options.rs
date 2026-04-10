@@ -1,9 +1,16 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct CheckoutAlmaPaymentMethodOptions {
     /// Controls when the funds will be captured from the customer's account.
     pub capture_method: Option<CheckoutAlmaPaymentMethodOptionsCaptureMethod>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CheckoutAlmaPaymentMethodOptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CheckoutAlmaPaymentMethodOptions").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct CheckoutAlmaPaymentMethodOptionsBuilder {
@@ -139,9 +146,17 @@ impl std::fmt::Display for CheckoutAlmaPaymentMethodOptionsCaptureMethod {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CheckoutAlmaPaymentMethodOptionsCaptureMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CheckoutAlmaPaymentMethodOptionsCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CheckoutAlmaPaymentMethodOptionsCaptureMethod))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

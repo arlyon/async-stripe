@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PortalSubscriptionCancel {
@@ -10,6 +11,12 @@ pub struct PortalSubscriptionCancel {
     /// Whether to create prorations when canceling subscriptions.
     /// Possible values are `none` and `create_prorations`.
     pub proration_behavior: PortalSubscriptionCancelProrationBehavior,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PortalSubscriptionCancel {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PortalSubscriptionCancel").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct PortalSubscriptionCancelBuilder {
@@ -167,9 +174,16 @@ impl std::fmt::Display for PortalSubscriptionCancelMode {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for PortalSubscriptionCancelMode {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PortalSubscriptionCancelMode {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(PortalSubscriptionCancelMode)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -252,9 +266,17 @@ impl std::fmt::Display for PortalSubscriptionCancelProrationBehavior {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for PortalSubscriptionCancelProrationBehavior {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PortalSubscriptionCancelProrationBehavior {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(PortalSubscriptionCancelProrationBehavior))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

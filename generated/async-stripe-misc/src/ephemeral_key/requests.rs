@@ -2,10 +2,18 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct DeleteEphemeralKeyBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for DeleteEphemeralKeyBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("DeleteEphemeralKeyBuilder").finish_non_exhaustive()
+    }
 }
 impl DeleteEphemeralKeyBuilder {
     fn new() -> Self {
@@ -13,10 +21,18 @@ impl DeleteEphemeralKeyBuilder {
     }
 }
 /// Invalidates a short-lived API key for a given resource.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct DeleteEphemeralKey {
     inner: DeleteEphemeralKeyBuilder,
     key: stripe_misc::EphemeralKeyId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for DeleteEphemeralKey {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("DeleteEphemeralKey").finish_non_exhaustive()
+    }
 }
 impl DeleteEphemeralKey {
     /// Construct a new `DeleteEphemeralKey`.
@@ -56,7 +72,9 @@ impl StripeRequest for DeleteEphemeralKey {
             .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct CreateEphemeralKeyBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     customer: Option<String>,
@@ -68,6 +86,12 @@ struct CreateEphemeralKeyBuilder {
     nonce: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     verification_session: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateEphemeralKeyBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateEphemeralKeyBuilder").finish_non_exhaustive()
+    }
 }
 impl CreateEphemeralKeyBuilder {
     fn new() -> Self {
@@ -81,9 +105,17 @@ impl CreateEphemeralKeyBuilder {
     }
 }
 /// Creates a short-lived API key for a given resource.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateEphemeralKey {
     inner: CreateEphemeralKeyBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateEphemeralKey {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateEphemeralKey").finish_non_exhaustive()
+    }
 }
 impl CreateEphemeralKey {
     /// Construct a new `CreateEphemeralKey`.

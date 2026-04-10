@@ -1,4 +1,5 @@
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct QuotesResourceRecurring {
@@ -12,6 +13,12 @@ pub struct QuotesResourceRecurring {
     /// For example, `interval=month` and `interval_count=3` bills every 3 months.
     pub interval_count: u64,
     pub total_details: stripe_billing::QuotesResourceTotalDetails,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for QuotesResourceRecurring {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("QuotesResourceRecurring").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct QuotesResourceRecurringBuilder {
@@ -193,9 +200,16 @@ impl std::fmt::Display for QuotesResourceRecurringInterval {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for QuotesResourceRecurringInterval {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for QuotesResourceRecurringInterval {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(QuotesResourceRecurringInterval)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

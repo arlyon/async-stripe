@@ -4,7 +4,8 @@
 /// Related guides: [Customer tax identification numbers](https://docs.stripe.com/billing/taxes/tax-ids), [Account tax IDs](https://docs.stripe.com/invoicing/connect#account-tax-ids).
 ///
 /// For more details see <<https://stripe.com/docs/api/tax_ids/object>>.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TaxId {
     /// Two-letter ISO code representing the country of the tax ID.
@@ -30,6 +31,12 @@ pub struct TaxId {
     pub value: String,
     /// Tax ID verification information.
     pub verification: Option<stripe_shared::TaxIdVerification>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TaxId {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("TaxId").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct TaxIdBuilder {
@@ -588,9 +595,16 @@ impl std::fmt::Display for TaxIdType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for TaxIdType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TaxIdType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(TaxIdType)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

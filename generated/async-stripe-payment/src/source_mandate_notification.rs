@@ -1,7 +1,8 @@
 /// Source mandate notifications should be created when a notification related to
 /// a source mandate must be sent to the payer. They will trigger a webhook or
 /// deliver an email to the customer.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct SourceMandateNotification {
     pub acss_debit: Option<stripe_payment::SourceMandateNotificationAcssDebitData>,
@@ -27,6 +28,12 @@ pub struct SourceMandateNotification {
     /// Should be the source type identifier code for the payment method, such as `three_d_secure`.
     #[cfg_attr(feature = "deserialize", serde(rename = "type"))]
     pub type_: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for SourceMandateNotification {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("SourceMandateNotification").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct SourceMandateNotificationBuilder {

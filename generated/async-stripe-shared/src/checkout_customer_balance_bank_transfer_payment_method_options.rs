@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct CheckoutCustomerBalanceBankTransferPaymentMethodOptions {
@@ -12,6 +13,13 @@ pub struct CheckoutCustomerBalanceBankTransferPaymentMethodOptions {
     /// The bank transfer type that this PaymentIntent is allowed to use for funding Permitted values include: `eu_bank_transfer`, `gb_bank_transfer`, `jp_bank_transfer`, `mx_bank_transfer`, or `us_bank_transfer`.
     #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "type"))]
     pub type_: Option<CheckoutCustomerBalanceBankTransferPaymentMethodOptionsType>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CheckoutCustomerBalanceBankTransferPaymentMethodOptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CheckoutCustomerBalanceBankTransferPaymentMethodOptions")
+            .finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct CheckoutCustomerBalanceBankTransferPaymentMethodOptionsBuilder {
@@ -193,11 +201,23 @@ impl std::fmt::Display
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug
     for CheckoutCustomerBalanceBankTransferPaymentMethodOptionsRequestedAddressTypes
 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for CheckoutCustomerBalanceBankTransferPaymentMethodOptionsRequestedAddressTypes
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CheckoutCustomerBalanceBankTransferPaymentMethodOptionsRequestedAddressTypes
+        ))
+        .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -300,9 +320,17 @@ impl std::fmt::Display for CheckoutCustomerBalanceBankTransferPaymentMethodOptio
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CheckoutCustomerBalanceBankTransferPaymentMethodOptionsType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CheckoutCustomerBalanceBankTransferPaymentMethodOptionsType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CheckoutCustomerBalanceBankTransferPaymentMethodOptionsType))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

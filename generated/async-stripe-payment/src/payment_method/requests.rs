@@ -2,7 +2,9 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ListPaymentMethodBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     allow_redisplay: Option<stripe_shared::PaymentMethodAllowRedisplay>,
@@ -21,6 +23,12 @@ struct ListPaymentMethodBuilder {
     #[serde(rename = "type")]
     #[serde(skip_serializing_if = "Option::is_none")]
     type_: Option<ListPaymentMethodType>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListPaymentMethodBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListPaymentMethodBuilder").finish_non_exhaustive()
+    }
 }
 impl ListPaymentMethodBuilder {
     fn new() -> Self {
@@ -228,9 +236,16 @@ impl std::fmt::Display for ListPaymentMethodType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ListPaymentMethodType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListPaymentMethodType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ListPaymentMethodType)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ListPaymentMethodType {
@@ -250,9 +265,17 @@ impl<'de> serde::Deserialize<'de> for ListPaymentMethodType {
     }
 }
 /// Returns a list of all PaymentMethods.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListPaymentMethod {
     inner: ListPaymentMethodBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListPaymentMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListPaymentMethod").finish_non_exhaustive()
+    }
 }
 impl ListPaymentMethod {
     /// Construct a new `ListPaymentMethod`.
@@ -347,10 +370,18 @@ impl StripeRequest for ListPaymentMethod {
         RequestBuilder::new(StripeMethod::Get, "/payment_methods").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RetrievePaymentMethodBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrievePaymentMethodBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrievePaymentMethodBuilder").finish_non_exhaustive()
+    }
 }
 impl RetrievePaymentMethodBuilder {
     fn new() -> Self {
@@ -359,10 +390,18 @@ impl RetrievePaymentMethodBuilder {
 }
 /// Retrieves a PaymentMethod object attached to the StripeAccount.
 /// To retrieve a payment method attached to a Customer, you should use [Retrieve a Customer’s PaymentMethods](https://stripe.com/docs/api/payment_methods/customer).
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RetrievePaymentMethod {
     inner: RetrievePaymentMethodBuilder,
     payment_method: stripe_shared::PaymentMethodId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrievePaymentMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrievePaymentMethod").finish_non_exhaustive()
+    }
 }
 impl RetrievePaymentMethod {
     /// Construct a new `RetrievePaymentMethod`.
@@ -402,7 +441,9 @@ impl StripeRequest for RetrievePaymentMethod {
             .query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct CreatePaymentMethodBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     acss_debit: Option<CreatePaymentMethodAcssDebit>,
@@ -563,6 +604,12 @@ struct CreatePaymentMethodBuilder {
     #[serde(with = "stripe_types::with_serde_json_opt")]
     zip: Option<miniserde::json::Value>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodBuilder").finish_non_exhaustive()
+    }
+}
 impl CreatePaymentMethodBuilder {
     fn new() -> Self {
         Self {
@@ -631,7 +678,9 @@ impl CreatePaymentMethodBuilder {
     }
 }
 /// If this is an `acss_debit` PaymentMethod, this hash contains details about the ACSS Debit payment method.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodAcssDebit {
     /// Customer's bank account number.
     pub account_number: String,
@@ -639,6 +688,12 @@ pub struct CreatePaymentMethodAcssDebit {
     pub institution_number: String,
     /// Transit number of the customer's bank.
     pub transit_number: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodAcssDebit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodAcssDebit").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodAcssDebit {
     pub fn new(
@@ -654,12 +709,20 @@ impl CreatePaymentMethodAcssDebit {
     }
 }
 /// If this is an `au_becs_debit` PaymentMethod, this hash contains details about the bank account.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodAuBecsDebit {
     /// The account number for the bank account.
     pub account_number: String,
     /// Bank-State-Branch number of the bank account.
     pub bsb_number: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodAuBecsDebit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodAuBecsDebit").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodAuBecsDebit {
     pub fn new(account_number: impl Into<String>, bsb_number: impl Into<String>) -> Self {
@@ -667,7 +730,9 @@ impl CreatePaymentMethodAuBecsDebit {
     }
 }
 /// If this is a `bacs_debit` PaymentMethod, this hash contains details about the Bacs Direct Debit bank account.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodBacsDebit {
     /// Account number of the bank account that the funds will be debited from.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -675,6 +740,12 @@ pub struct CreatePaymentMethodBacsDebit {
     /// Sort code of the bank account. (e.g., `10-20-30`)
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sort_code: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodBacsDebit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodBacsDebit").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodBacsDebit {
     pub fn new() -> Self {
@@ -687,10 +758,18 @@ impl Default for CreatePaymentMethodBacsDebit {
     }
 }
 /// If this is a `boleto` PaymentMethod, this hash contains details about the Boleto payment method.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodBoleto {
     /// The tax ID of the customer (CPF for individual consumers or CNPJ for businesses consumers)
     pub tax_id: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodBoleto {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodBoleto").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodBoleto {
     pub fn new(tax_id: impl Into<String>) -> Self {
@@ -701,7 +780,9 @@ impl CreatePaymentMethodBoleto {
 /// For backwards compatibility, you can alternatively provide a Stripe token (e.g., for Apple Pay, Amex Express Checkout, or legacy Checkout) into the card hash with format `card: {token: "tok_visa"}`.
 /// When providing a card number, you must meet the requirements for [PCI compliance](https://stripe.com/docs/security#validating-pci-compliance).
 /// We strongly recommend using Stripe.js instead of interacting with this API directly.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 #[serde(rename_all = "snake_case")]
 pub enum CreatePaymentMethodCard {
     #[serde(untagged)]
@@ -709,11 +790,19 @@ pub enum CreatePaymentMethodCard {
     #[serde(untagged)]
     TokenParams(CreatePaymentMethodTokenParams),
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodCard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodCard").finish_non_exhaustive()
+    }
+}
 /// If this is a `card` PaymentMethod, this hash contains the user's card details.
 /// For backwards compatibility, you can alternatively provide a Stripe token (e.g., for Apple Pay, Amex Express Checkout, or legacy Checkout) into the card hash with format `card: {token: "tok_visa"}`.
 /// When providing a card number, you must meet the requirements for [PCI compliance](https://stripe.com/docs/security#validating-pci-compliance).
 /// We strongly recommend using Stripe.js instead of interacting with this API directly.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodCardDetailsParams {
     /// The card's CVC. It is highly recommended to always include this value.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -727,6 +816,12 @@ pub struct CreatePaymentMethodCardDetailsParams {
     pub networks: Option<CreatePaymentMethodCardDetailsParamsNetworks>,
     /// The card number, as a string without any separators.
     pub number: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodCardDetailsParams {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodCardDetailsParams").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodCardDetailsParams {
     pub fn new(
@@ -744,13 +839,21 @@ impl CreatePaymentMethodCardDetailsParams {
     }
 }
 /// Contains information about card networks used to process the payment.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodCardDetailsParamsNetworks {
     /// The customer's preferred card network for co-branded cards.
     /// Supports `cartes_bancaires`, `mastercard`, or `visa`.
     /// Selection of a network that does not apply to the card will be stored as `invalid_preference` on the card.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preferred: Option<CreatePaymentMethodCardDetailsParamsNetworksPreferred>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodCardDetailsParamsNetworks {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodCardDetailsParamsNetworks").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodCardDetailsParamsNetworks {
     pub fn new() -> Self {
@@ -811,9 +914,17 @@ impl std::fmt::Display for CreatePaymentMethodCardDetailsParamsNetworksPreferred
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentMethodCardDetailsParamsNetworksPreferred {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodCardDetailsParamsNetworksPreferred {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentMethodCardDetailsParamsNetworksPreferred))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentMethodCardDetailsParamsNetworksPreferred {
@@ -836,10 +947,18 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentMethodCardDetailsParamsNetwor
 /// For backwards compatibility, you can alternatively provide a Stripe token (e.g., for Apple Pay, Amex Express Checkout, or legacy Checkout) into the card hash with format `card: {token: "tok_visa"}`.
 /// When providing a card number, you must meet the requirements for [PCI compliance](https://stripe.com/docs/security#validating-pci-compliance).
 /// We strongly recommend using Stripe.js instead of interacting with this API directly.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodTokenParams {
     /// For backwards compatibility, you can alternatively provide a Stripe token (e.g., for Apple Pay, Amex Express Checkout, or legacy Checkout) into the card hash with format card: {token: "tok_visa"}.
     pub token: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodTokenParams {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodTokenParams").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodTokenParams {
     pub fn new(token: impl Into<String>) -> Self {
@@ -847,12 +966,20 @@ impl CreatePaymentMethodTokenParams {
     }
 }
 /// If this is a `custom` PaymentMethod, this hash contains details about the Custom payment method.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodCustom {
     /// ID of the Dashboard-only CustomPaymentMethodType.
     /// This field is used by Stripe products' internal code to support CPMs.
     #[serde(rename = "type")]
     pub type_: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodCustom {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodCustom").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodCustom {
     pub fn new(type_: impl Into<String>) -> Self {
@@ -860,11 +987,19 @@ impl CreatePaymentMethodCustom {
     }
 }
 /// If this is an `eps` PaymentMethod, this hash contains details about the EPS payment method.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodEps {
     /// The customer's bank.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bank: Option<CreatePaymentMethodEpsBank>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodEps {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodEps").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodEps {
     pub fn new() -> Self {
@@ -994,9 +1129,16 @@ impl std::fmt::Display for CreatePaymentMethodEpsBank {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentMethodEpsBank {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodEpsBank {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentMethodEpsBank)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentMethodEpsBank {
@@ -1016,13 +1158,21 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentMethodEpsBank {
     }
 }
 /// If this is an `fpx` PaymentMethod, this hash contains details about the FPX payment method.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodFpx {
     /// Account holder type for FPX transaction
     #[serde(skip_serializing_if = "Option::is_none")]
     pub account_holder_type: Option<CreatePaymentMethodFpxAccountHolderType>,
     /// The customer's bank.
     pub bank: CreatePaymentMethodFpxBank,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodFpx {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodFpx").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodFpx {
     pub fn new(bank: impl Into<CreatePaymentMethodFpxBank>) -> Self {
@@ -1073,9 +1223,16 @@ impl std::fmt::Display for CreatePaymentMethodFpxAccountHolderType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentMethodFpxAccountHolderType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodFpxAccountHolderType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentMethodFpxAccountHolderType)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentMethodFpxAccountHolderType {
@@ -1194,9 +1351,16 @@ impl std::fmt::Display for CreatePaymentMethodFpxBank {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentMethodFpxBank {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodFpxBank {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentMethodFpxBank)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentMethodFpxBank {
@@ -1216,13 +1380,21 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentMethodFpxBank {
     }
 }
 /// If this is an `ideal` PaymentMethod, this hash contains details about the iDEAL payment method.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodIdeal {
     /// The customer's bank.
     /// Only use this parameter for existing customers.
     /// Don't use it for new customers.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bank: Option<CreatePaymentMethodIdealBank>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodIdeal {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodIdeal").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodIdeal {
     pub fn new() -> Self {
@@ -1334,9 +1506,16 @@ impl std::fmt::Display for CreatePaymentMethodIdealBank {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentMethodIdealBank {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodIdealBank {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentMethodIdealBank)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentMethodIdealBank {
@@ -1356,11 +1535,19 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentMethodIdealBank {
     }
 }
 /// If this is a `klarna` PaymentMethod, this hash contains details about the Klarna payment method.
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodKlarna {
     /// Customer's date of birth
     #[serde(skip_serializing_if = "Option::is_none")]
     pub dob: Option<CreatePaymentMethodKlarnaDob>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodKlarna {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodKlarna").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodKlarna {
     pub fn new() -> Self {
@@ -1373,7 +1560,9 @@ impl Default for CreatePaymentMethodKlarna {
     }
 }
 /// Customer's date of birth
-#[derive(Copy, Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodKlarnaDob {
     /// The day of birth, between 1 and 31.
     pub day: i64,
@@ -1382,18 +1571,32 @@ pub struct CreatePaymentMethodKlarnaDob {
     /// The four-digit year of birth.
     pub year: i64,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodKlarnaDob {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodKlarnaDob").finish_non_exhaustive()
+    }
+}
 impl CreatePaymentMethodKlarnaDob {
     pub fn new(day: impl Into<i64>, month: impl Into<i64>, year: impl Into<i64>) -> Self {
         Self { day: day.into(), month: month.into(), year: year.into() }
     }
 }
 /// If this is a `naver_pay` PaymentMethod, this hash contains details about the Naver Pay payment method.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodNaverPay {
     /// Whether to use Naver Pay points or a card to fund this transaction.
     /// If not provided, this defaults to `card`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub funding: Option<CreatePaymentMethodNaverPayFunding>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodNaverPay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodNaverPay").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodNaverPay {
     pub fn new() -> Self {
@@ -1450,9 +1653,16 @@ impl std::fmt::Display for CreatePaymentMethodNaverPayFunding {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentMethodNaverPayFunding {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodNaverPayFunding {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentMethodNaverPayFunding)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentMethodNaverPayFunding {
@@ -1472,7 +1682,9 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentMethodNaverPayFunding {
     }
 }
 /// If this is an nz_bank_account PaymentMethod, this hash contains details about the nz_bank_account payment method.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodNzBankAccount {
     /// The name on the bank account.
     /// Only required if the account holder name is different from the name of the authorized signatory collected in the PaymentMethod’s billing details.
@@ -1488,6 +1700,12 @@ pub struct CreatePaymentMethodNzBankAccount {
     pub reference: Option<String>,
     /// The suffix of the bank account number.
     pub suffix: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodNzBankAccount {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodNzBankAccount").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodNzBankAccount {
     pub fn new(
@@ -1507,11 +1725,19 @@ impl CreatePaymentMethodNzBankAccount {
     }
 }
 /// If this is a `p24` PaymentMethod, this hash contains details about the P24 payment method.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodP24 {
     /// The customer's bank.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bank: Option<CreatePaymentMethodP24Bank>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodP24 {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodP24").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodP24 {
     pub fn new() -> Self {
@@ -1635,9 +1861,16 @@ impl std::fmt::Display for CreatePaymentMethodP24Bank {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentMethodP24Bank {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodP24Bank {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentMethodP24Bank)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentMethodP24Bank {
@@ -1657,7 +1890,9 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentMethodP24Bank {
     }
 }
 /// If this is a `payto` PaymentMethod, this hash contains details about the PayTo payment method.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodPayto {
     /// The account number for the bank account.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1668,6 +1903,12 @@ pub struct CreatePaymentMethodPayto {
     /// The PayID alias for the bank account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub pay_id: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodPayto {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodPayto").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodPayto {
     pub fn new() -> Self {
@@ -1681,11 +1922,19 @@ impl Default for CreatePaymentMethodPayto {
 }
 /// Options to configure Radar.
 /// See [Radar Session](https://docs.stripe.com/radar/radar-session) for more information.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodRadarOptions {
     /// A [Radar Session](https://docs.stripe.com/radar/radar-session) is a snapshot of the browser metadata and device details that help Radar make more accurate predictions on your payments.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub session: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodRadarOptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodRadarOptions").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodRadarOptions {
     pub fn new() -> Self {
@@ -1698,10 +1947,18 @@ impl Default for CreatePaymentMethodRadarOptions {
     }
 }
 /// If this is a `sepa_debit` PaymentMethod, this hash contains details about the SEPA debit bank account.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodSepaDebit {
     /// IBAN of the bank account.
     pub iban: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodSepaDebit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodSepaDebit").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodSepaDebit {
     pub fn new(iban: impl Into<String>) -> Self {
@@ -1709,10 +1966,18 @@ impl CreatePaymentMethodSepaDebit {
     }
 }
 /// If this is a `sofort` PaymentMethod, this hash contains details about the SOFORT payment method.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodSofort {
     /// Two-letter ISO code representing the country the bank account is located in.
     pub country: CreatePaymentMethodSofortCountry,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodSofort {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodSofort").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodSofort {
     pub fn new(country: impl Into<CreatePaymentMethodSofortCountry>) -> Self {
@@ -1775,9 +2040,16 @@ impl std::fmt::Display for CreatePaymentMethodSofortCountry {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentMethodSofortCountry {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodSofortCountry {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentMethodSofortCountry)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentMethodSofortCountry {
@@ -1988,9 +2260,16 @@ impl std::fmt::Display for CreatePaymentMethodType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentMethodType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentMethodType)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentMethodType {
@@ -2010,11 +2289,19 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentMethodType {
     }
 }
 /// If this is a `upi` PaymentMethod, this hash contains details about the UPI payment method.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodUpi {
     /// Configuration options for setting up an eMandate
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mandate_options: Option<CreatePaymentMethodUpiMandateOptions>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodUpi {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodUpi").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodUpi {
     pub fn new() -> Self {
@@ -2027,7 +2314,9 @@ impl Default for CreatePaymentMethodUpi {
     }
 }
 /// Configuration options for setting up an eMandate
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodUpiMandateOptions {
     /// Amount to be charged for future payments.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2043,6 +2332,12 @@ pub struct CreatePaymentMethodUpiMandateOptions {
     /// End date of the mandate or subscription.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub end_date: Option<stripe_types::Timestamp>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodUpiMandateOptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodUpiMandateOptions").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodUpiMandateOptions {
     pub fn new() -> Self {
@@ -2100,9 +2395,17 @@ impl std::fmt::Display for CreatePaymentMethodUpiMandateOptionsAmountType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentMethodUpiMandateOptionsAmountType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodUpiMandateOptionsAmountType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentMethodUpiMandateOptionsAmountType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentMethodUpiMandateOptionsAmountType {
@@ -2122,7 +2425,9 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentMethodUpiMandateOptionsAmount
     }
 }
 /// If this is an `us_bank_account` PaymentMethod, this hash contains details about the US bank account payment method.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethodUsBankAccount {
     /// Account holder type: individual or company.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2139,6 +2444,12 @@ pub struct CreatePaymentMethodUsBankAccount {
     /// Routing number of the bank account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub routing_number: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodUsBankAccount {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodUsBankAccount").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethodUsBankAccount {
     pub fn new() -> Self {
@@ -2200,9 +2511,17 @@ impl std::fmt::Display for CreatePaymentMethodUsBankAccountAccountHolderType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentMethodUsBankAccountAccountHolderType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodUsBankAccountAccountHolderType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentMethodUsBankAccountAccountHolderType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentMethodUsBankAccountAccountHolderType {
@@ -2265,9 +2584,17 @@ impl std::fmt::Display for CreatePaymentMethodUsBankAccountAccountType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for CreatePaymentMethodUsBankAccountAccountType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodUsBankAccountAccountType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentMethodUsBankAccountAccountType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for CreatePaymentMethodUsBankAccountAccountType {
@@ -2290,9 +2617,17 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentMethodUsBankAccountAccountTyp
 /// Read the [Stripe.js reference](https://stripe.com/docs/stripe-js/reference#stripe-create-payment-method) to learn how to create PaymentMethods via Stripe.js.
 ///
 /// Instead of creating a PaymentMethod directly, we recommend using the [PaymentIntents](https://stripe.com/docs/payments/accept-a-payment) API to accept a payment immediately or the [SetupIntent](https://stripe.com/docs/payments/save-and-reuse) API to collect payment method details ahead of a future payment.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreatePaymentMethod {
     inner: CreatePaymentMethodBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethod").finish_non_exhaustive()
+    }
 }
 impl CreatePaymentMethod {
     /// Construct a new `CreatePaymentMethod`.
@@ -2670,7 +3005,9 @@ impl StripeRequest for CreatePaymentMethod {
         RequestBuilder::new(StripeMethod::Post, "/payment_methods").form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct UpdatePaymentMethodBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     allow_redisplay: Option<stripe_shared::PaymentMethodAllowRedisplay>,
@@ -2687,6 +3024,12 @@ struct UpdatePaymentMethodBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     us_bank_account: Option<UpdatePaymentMethodUsBankAccount>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodBuilder").finish_non_exhaustive()
+    }
+}
 impl UpdatePaymentMethodBuilder {
     fn new() -> Self {
         Self {
@@ -2701,7 +3044,9 @@ impl UpdatePaymentMethodBuilder {
     }
 }
 /// If this is a `card` PaymentMethod, this hash contains the user's card details.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodCard {
     /// Two-digit number representing the card's expiration month.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2712,6 +3057,12 @@ pub struct UpdatePaymentMethodCard {
     /// Contains information about card networks used to process the payment.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub networks: Option<UpdatePaymentMethodCardNetworks>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodCard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodCard").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodCard {
     pub fn new() -> Self {
@@ -2724,13 +3075,21 @@ impl Default for UpdatePaymentMethodCard {
     }
 }
 /// Contains information about card networks used to process the payment.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodCardNetworks {
     /// The customer's preferred card network for co-branded cards.
     /// Supports `cartes_bancaires`, `mastercard`, or `visa`.
     /// Selection of a network that does not apply to the card will be stored as `invalid_preference` on the card.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub preferred: Option<UpdatePaymentMethodCardNetworksPreferred>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodCardNetworks {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodCardNetworks").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodCardNetworks {
     pub fn new() -> Self {
@@ -2791,9 +3150,16 @@ impl std::fmt::Display for UpdatePaymentMethodCardNetworksPreferred {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentMethodCardNetworksPreferred {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodCardNetworksPreferred {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentMethodCardNetworksPreferred)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentMethodCardNetworksPreferred {
@@ -2813,7 +3179,9 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentMethodCardNetworksPreferred {
     }
 }
 /// If this is a `payto` PaymentMethod, this hash contains details about the PayTo payment method.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodPayto {
     /// The account number for the bank account.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2824,6 +3192,12 @@ pub struct UpdatePaymentMethodPayto {
     /// The PayID alias for the bank account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub pay_id: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodPayto {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodPayto").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodPayto {
     pub fn new() -> Self {
@@ -2836,7 +3210,9 @@ impl Default for UpdatePaymentMethodPayto {
     }
 }
 /// If this is an `us_bank_account` PaymentMethod, this hash contains details about the US bank account payment method.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethodUsBankAccount {
     /// Bank account holder type.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2844,6 +3220,12 @@ pub struct UpdatePaymentMethodUsBankAccount {
     /// Bank account type.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub account_type: Option<UpdatePaymentMethodUsBankAccountAccountType>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodUsBankAccount {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodUsBankAccount").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethodUsBankAccount {
     pub fn new() -> Self {
@@ -2899,9 +3281,17 @@ impl std::fmt::Display for UpdatePaymentMethodUsBankAccountAccountHolderType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentMethodUsBankAccountAccountHolderType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodUsBankAccountAccountHolderType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentMethodUsBankAccountAccountHolderType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentMethodUsBankAccountAccountHolderType {
@@ -2964,9 +3354,17 @@ impl std::fmt::Display for UpdatePaymentMethodUsBankAccountAccountType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdatePaymentMethodUsBankAccountAccountType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodUsBankAccountAccountType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentMethodUsBankAccountAccountType))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdatePaymentMethodUsBankAccountAccountType {
@@ -2986,10 +3384,18 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentMethodUsBankAccountAccountTyp
     }
 }
 /// Updates a PaymentMethod object. A PaymentMethod must be attached to a customer to be updated.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdatePaymentMethod {
     inner: UpdatePaymentMethodBuilder,
     payment_method: stripe_shared::PaymentMethodId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethod").finish_non_exhaustive()
+    }
 }
 impl UpdatePaymentMethod {
     /// Construct a new `UpdatePaymentMethod`.
@@ -3076,7 +3482,9 @@ impl StripeRequest for UpdatePaymentMethod {
             .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct AttachPaymentMethodBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     customer: Option<String>,
@@ -3084,6 +3492,12 @@ struct AttachPaymentMethodBuilder {
     customer_account: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for AttachPaymentMethodBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("AttachPaymentMethodBuilder").finish_non_exhaustive()
+    }
 }
 impl AttachPaymentMethodBuilder {
     fn new() -> Self {
@@ -3104,10 +3518,18 @@ impl AttachPaymentMethodBuilder {
 /// To use this PaymentMethod as the default for invoice or subscription payments,
 /// set <a href="/docs/api/customers/update#update_customer-invoice_settings-default_payment_method">`invoice_settings.default_payment_method`</a>,.
 /// on the Customer to the PaymentMethod’s ID.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct AttachPaymentMethod {
     inner: AttachPaymentMethodBuilder,
     payment_method: stripe_shared::PaymentMethodId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for AttachPaymentMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("AttachPaymentMethod").finish_non_exhaustive()
+    }
 }
 impl AttachPaymentMethod {
     /// Construct a new `AttachPaymentMethod`.
@@ -3157,10 +3579,18 @@ impl StripeRequest for AttachPaymentMethod {
             .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct DetachPaymentMethodBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for DetachPaymentMethodBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("DetachPaymentMethodBuilder").finish_non_exhaustive()
+    }
 }
 impl DetachPaymentMethodBuilder {
     fn new() -> Self {
@@ -3169,10 +3599,18 @@ impl DetachPaymentMethodBuilder {
 }
 /// Detaches a PaymentMethod object from a Customer.
 /// After a PaymentMethod is detached, it can no longer be used for a payment or re-attached to a Customer.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct DetachPaymentMethod {
     inner: DetachPaymentMethodBuilder,
     payment_method: stripe_shared::PaymentMethodId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for DetachPaymentMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("DetachPaymentMethod").finish_non_exhaustive()
+    }
 }
 impl DetachPaymentMethod {
     /// Construct a new `DetachPaymentMethod`.
@@ -3213,7 +3651,9 @@ impl StripeRequest for DetachPaymentMethod {
     }
 }
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct BillingDetailsAddress {
     /// City, district, suburb, town, or village.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3234,6 +3674,12 @@ pub struct BillingDetailsAddress {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for BillingDetailsAddress {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("BillingDetailsAddress").finish_non_exhaustive()
+    }
+}
 impl BillingDetailsAddress {
     pub fn new() -> Self {
         Self { city: None, country: None, line1: None, line2: None, postal_code: None, state: None }
@@ -3244,7 +3690,9 @@ impl Default for BillingDetailsAddress {
         Self::new()
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct BillingDetailsInnerParams {
     /// Billing address.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3262,6 +3710,12 @@ pub struct BillingDetailsInnerParams {
     /// Used only for transactions between LATAM buyers and non-LATAM sellers.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_id: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for BillingDetailsInnerParams {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("BillingDetailsInnerParams").finish_non_exhaustive()
+    }
 }
 impl BillingDetailsInnerParams {
     pub fn new() -> Self {

@@ -2,7 +2,9 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ListIdBillingMeterEventSummaryBuilder {
     customer: String,
     end_time: stripe_types::Timestamp,
@@ -17,6 +19,12 @@ struct ListIdBillingMeterEventSummaryBuilder {
     starting_after: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     value_grouping_window: Option<ListIdBillingMeterEventSummaryValueGroupingWindow>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListIdBillingMeterEventSummaryBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListIdBillingMeterEventSummaryBuilder").finish_non_exhaustive()
+    }
 }
 impl ListIdBillingMeterEventSummaryBuilder {
     fn new(
@@ -83,9 +91,17 @@ impl std::fmt::Display for ListIdBillingMeterEventSummaryValueGroupingWindow {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ListIdBillingMeterEventSummaryValueGroupingWindow {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListIdBillingMeterEventSummaryValueGroupingWindow {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ListIdBillingMeterEventSummaryValueGroupingWindow))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for ListIdBillingMeterEventSummaryValueGroupingWindow {
@@ -105,10 +121,18 @@ impl<'de> serde::Deserialize<'de> for ListIdBillingMeterEventSummaryValueGroupin
     }
 }
 /// Retrieve a list of billing meter event summaries.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListIdBillingMeterEventSummary {
     inner: ListIdBillingMeterEventSummaryBuilder,
     id: stripe_billing::BillingMeterId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListIdBillingMeterEventSummary {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListIdBillingMeterEventSummary").finish_non_exhaustive()
+    }
 }
 impl ListIdBillingMeterEventSummary {
     /// Construct a new `ListIdBillingMeterEventSummary`.

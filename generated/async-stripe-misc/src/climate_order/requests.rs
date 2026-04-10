@@ -2,7 +2,9 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct ListClimateOrderBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<String>,
@@ -13,6 +15,12 @@ struct ListClimateOrderBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     starting_after: Option<String>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListClimateOrderBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListClimateOrderBuilder").finish_non_exhaustive()
+    }
+}
 impl ListClimateOrderBuilder {
     fn new() -> Self {
         Self { ending_before: None, expand: None, limit: None, starting_after: None }
@@ -20,9 +28,17 @@ impl ListClimateOrderBuilder {
 }
 /// Lists all Climate order objects. The orders are returned sorted by creation date, with the
 /// most recently created orders appearing first.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct ListClimateOrder {
     inner: ListClimateOrderBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ListClimateOrder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ListClimateOrder").finish_non_exhaustive()
+    }
 }
 impl ListClimateOrder {
     /// Construct a new `ListClimateOrder`.
@@ -91,10 +107,18 @@ impl StripeRequest for ListClimateOrder {
         RequestBuilder::new(StripeMethod::Get, "/climate/orders").query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RetrieveClimateOrderBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveClimateOrderBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveClimateOrderBuilder").finish_non_exhaustive()
+    }
 }
 impl RetrieveClimateOrderBuilder {
     fn new() -> Self {
@@ -102,10 +126,18 @@ impl RetrieveClimateOrderBuilder {
     }
 }
 /// Retrieves the details of a Climate order object with the given ID.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RetrieveClimateOrder {
     inner: RetrieveClimateOrderBuilder,
     order: stripe_misc::ClimateOrderId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveClimateOrder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveClimateOrder").finish_non_exhaustive()
+    }
 }
 impl RetrieveClimateOrder {
     /// Construct a new `RetrieveClimateOrder`.
@@ -145,7 +177,9 @@ impl StripeRequest for RetrieveClimateOrder {
             .query(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct CreateClimateOrderBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     amount: Option<i64>,
@@ -160,6 +194,12 @@ struct CreateClimateOrderBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     metric_tons: Option<String>,
     product: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateClimateOrderBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateClimateOrderBuilder").finish_non_exhaustive()
+    }
 }
 impl CreateClimateOrderBuilder {
     fn new(product: impl Into<String>) -> Self {
@@ -176,9 +216,17 @@ impl CreateClimateOrderBuilder {
 }
 /// Creates a Climate order object for a given Climate product. The order will be processed immediately
 /// after creation and payment will be deducted your Stripe balance.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CreateClimateOrder {
     inner: CreateClimateOrderBuilder,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateClimateOrder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateClimateOrder").finish_non_exhaustive()
+    }
 }
 impl CreateClimateOrder {
     /// Construct a new `CreateClimateOrder`.
@@ -250,7 +298,9 @@ impl StripeRequest for CreateClimateOrder {
         RequestBuilder::new(StripeMethod::Post, "/climate/orders").form(&self.inner)
     }
 }
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct UpdateClimateOrderBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     beneficiary: Option<BeneficiaryParams>,
@@ -259,16 +309,30 @@ struct UpdateClimateOrderBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     metadata: Option<std::collections::HashMap<String, String>>,
 }
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateClimateOrderBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateClimateOrderBuilder").finish_non_exhaustive()
+    }
+}
 impl UpdateClimateOrderBuilder {
     fn new() -> Self {
         Self { beneficiary: None, expand: None, metadata: None }
     }
 }
 /// Updates the specified order by setting the values of the parameters passed.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateClimateOrder {
     inner: UpdateClimateOrderBuilder,
     order: stripe_misc::ClimateOrderId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateClimateOrder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateClimateOrder").finish_non_exhaustive()
+    }
 }
 impl UpdateClimateOrder {
     /// Construct a new `UpdateClimateOrder`.
@@ -325,10 +389,18 @@ impl StripeRequest for UpdateClimateOrder {
             .form(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct CancelClimateOrderBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CancelClimateOrderBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CancelClimateOrderBuilder").finish_non_exhaustive()
+    }
 }
 impl CancelClimateOrderBuilder {
     fn new() -> Self {
@@ -339,10 +411,18 @@ impl CancelClimateOrderBuilder {
 /// reservation `amount_subtotal`, but not the `amount_fees` for user-triggered cancellations. Frontier
 /// might cancel reservations if suppliers fail to deliver. If Frontier cancels the reservation, Stripe
 /// provides 90 days advance notice and refunds the `amount_total`.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct CancelClimateOrder {
     inner: CancelClimateOrderBuilder,
     order: stripe_misc::ClimateOrderId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CancelClimateOrder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CancelClimateOrder").finish_non_exhaustive()
+    }
 }
 impl CancelClimateOrder {
     /// Construct a new `CancelClimateOrder`.
@@ -383,10 +463,18 @@ impl StripeRequest for CancelClimateOrder {
     }
 }
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct BeneficiaryParams {
     /// Publicly displayable name for the end beneficiary of carbon removal.
     pub public_name: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for BeneficiaryParams {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("BeneficiaryParams").finish_non_exhaustive()
+    }
 }
 impl BeneficiaryParams {
     pub fn new(public_name: impl Into<String>) -> Self {

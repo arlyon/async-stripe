@@ -2,10 +2,18 @@ use stripe_client_core::{
     RequestBuilder, StripeBlockingClient, StripeClient, StripeMethod, StripeRequest,
 };
 
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct RetrieveCashBalanceBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveCashBalanceBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveCashBalanceBuilder").finish_non_exhaustive()
+    }
 }
 impl RetrieveCashBalanceBuilder {
     fn new() -> Self {
@@ -13,10 +21,18 @@ impl RetrieveCashBalanceBuilder {
     }
 }
 /// Retrieves a customer’s cash balance.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct RetrieveCashBalance {
     inner: RetrieveCashBalanceBuilder,
     customer: stripe_shared::CustomerId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RetrieveCashBalance {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("RetrieveCashBalance").finish_non_exhaustive()
+    }
 }
 impl RetrieveCashBalance {
     /// Construct a new `RetrieveCashBalance`.
@@ -56,12 +72,20 @@ impl StripeRequest for RetrieveCashBalance {
             .query(&self.inner)
     }
 }
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 struct UpdateCashBalanceBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     settings: Option<UpdateCashBalanceSettings>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateCashBalanceBuilder {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateCashBalanceBuilder").finish_non_exhaustive()
+    }
 }
 impl UpdateCashBalanceBuilder {
     fn new() -> Self {
@@ -69,13 +93,21 @@ impl UpdateCashBalanceBuilder {
     }
 }
 /// A hash of settings for this cash balance.
-#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateCashBalanceSettings {
     /// Controls how funds transferred by the customer are applied to payment intents and invoices.
     /// Valid options are `automatic`, `manual`, or `merchant_default`.
     /// For more information about these reconciliation modes, see [Reconciliation](https://docs.stripe.com/payments/customer-balance/reconciliation).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reconciliation_mode: Option<UpdateCashBalanceSettingsReconciliationMode>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateCashBalanceSettings {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateCashBalanceSettings").finish_non_exhaustive()
+    }
 }
 impl UpdateCashBalanceSettings {
     pub fn new() -> Self {
@@ -136,9 +168,17 @@ impl std::fmt::Display for UpdateCashBalanceSettingsReconciliationMode {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for UpdateCashBalanceSettingsReconciliationMode {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateCashBalanceSettingsReconciliationMode {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdateCashBalanceSettingsReconciliationMode))
+            .finish_non_exhaustive()
     }
 }
 impl serde::Serialize for UpdateCashBalanceSettingsReconciliationMode {
@@ -158,10 +198,18 @@ impl<'de> serde::Deserialize<'de> for UpdateCashBalanceSettingsReconciliationMod
     }
 }
 /// Changes the settings on a customer’s cash balance.
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
 pub struct UpdateCashBalance {
     inner: UpdateCashBalanceBuilder,
     customer: stripe_shared::CustomerId,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateCashBalance {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateCashBalance").finish_non_exhaustive()
+    }
 }
 impl UpdateCashBalance {
     /// Construct a new `UpdateCashBalance`.

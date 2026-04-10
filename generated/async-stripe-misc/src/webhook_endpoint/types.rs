@@ -7,7 +7,8 @@
 /// Related guide: [Setting up webhooks](https://docs.stripe.com/webhooks/configure)
 ///
 /// For more details see <<https://stripe.com/docs/api/webhook_endpoints/object>>.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct WebhookEndpoint {
     /// The API version events are rendered as for this webhook endpoint.
@@ -36,6 +37,12 @@ pub struct WebhookEndpoint {
     pub status: String,
     /// The URL of the webhook endpoint.
     pub url: String,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for WebhookEndpoint {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("WebhookEndpoint").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct WebhookEndpointBuilder {

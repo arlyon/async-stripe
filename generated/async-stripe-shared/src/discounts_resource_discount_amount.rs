@@ -1,4 +1,5 @@
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct DiscountsResourceDiscountAmount {
@@ -6,6 +7,12 @@ pub struct DiscountsResourceDiscountAmount {
     pub amount: i64,
     /// The discount that was applied to get this discount amount.
     pub discount: stripe_types::Expandable<stripe_shared::Discount>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for DiscountsResourceDiscountAmount {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("DiscountsResourceDiscountAmount").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct DiscountsResourceDiscountAmountBuilder {

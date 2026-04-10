@@ -2,7 +2,8 @@
 /// For example, you can create a Payment Record to model a payment made on a different payment processor,.
 /// in order to mark an Invoice as paid and a Subscription as active. Payment Records consist of one or
 /// more Payment Attempt Records, which represent individual attempts made on a payment network.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentRecord {
     pub amount: stripe_shared::PaymentsPrimitivesPaymentRecordsResourceAmount,
@@ -42,6 +43,12 @@ pub struct PaymentRecord {
     /// Shipping information for this payment.
     pub shipping_details:
         Option<stripe_shared::PaymentsPrimitivesPaymentRecordsResourceShippingDetails>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentRecord {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("PaymentRecord").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct PaymentRecordBuilder {
@@ -358,9 +365,16 @@ impl std::fmt::Display for PaymentRecordReportedBy {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for PaymentRecordReportedBy {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentRecordReportedBy {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(PaymentRecordReportedBy)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -449,9 +463,16 @@ impl std::fmt::Display for PaymentRecordCustomerPresence {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for PaymentRecordCustomerPresence {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentRecordCustomerPresence {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(PaymentRecordCustomerPresence)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for PaymentRecordCustomerPresence {

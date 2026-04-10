@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct InvoicePaymentMethodOptionsUsBankAccount {
@@ -6,6 +7,12 @@ pub struct InvoicePaymentMethodOptionsUsBankAccount {
         Option<stripe_shared::InvoicePaymentMethodOptionsUsBankAccountLinkedAccountOptions>,
     /// Bank account verification method. The default value is `automatic`.
     pub verification_method: Option<InvoicePaymentMethodOptionsUsBankAccountVerificationMethod>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for InvoicePaymentMethodOptionsUsBankAccount {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("InvoicePaymentMethodOptionsUsBankAccount").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct InvoicePaymentMethodOptionsUsBankAccountBuilder {
@@ -158,9 +165,17 @@ impl std::fmt::Display for InvoicePaymentMethodOptionsUsBankAccountVerificationM
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for InvoicePaymentMethodOptionsUsBankAccountVerificationMethod {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for InvoicePaymentMethodOptionsUsBankAccountVerificationMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(InvoicePaymentMethodOptionsUsBankAccountVerificationMethod))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

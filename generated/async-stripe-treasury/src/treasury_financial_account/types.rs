@@ -1,6 +1,7 @@
 /// Stripe Treasury provides users with a container for money called a FinancialAccount that is separate from their Payments balance.
 /// FinancialAccounts serve as the source and destination of Treasury’s money movement APIs.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TreasuryFinancialAccount {
     /// The array of paths to active Features in the Features hash.
@@ -38,6 +39,12 @@ pub struct TreasuryFinancialAccount {
     /// The currencies the FinancialAccount can hold a balance in.
     /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
     pub supported_currencies: Vec<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TreasuryFinancialAccount {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("TreasuryFinancialAccount").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct TreasuryFinancialAccountBuilder {
@@ -365,9 +372,16 @@ impl std::fmt::Display for TreasuryFinancialAccountArray {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for TreasuryFinancialAccountArray {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TreasuryFinancialAccountArray {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(TreasuryFinancialAccountArray)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -445,9 +459,16 @@ impl std::fmt::Display for TreasuryFinancialAccountStatus {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for TreasuryFinancialAccountStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TreasuryFinancialAccountStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(TreasuryFinancialAccountStatus)).finish_non_exhaustive()
     }
 }
 impl serde::Serialize for TreasuryFinancialAccountStatus {

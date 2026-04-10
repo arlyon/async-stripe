@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct Recurring {
@@ -17,6 +18,12 @@ pub struct Recurring {
     /// `metered` aggregates the total usage based on usage records.
     /// Defaults to `licensed`.
     pub usage_type: RecurringUsageType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for Recurring {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("Recurring").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct RecurringBuilder {
@@ -185,9 +192,16 @@ impl std::fmt::Display for RecurringInterval {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for RecurringInterval {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RecurringInterval {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(RecurringInterval)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -266,9 +280,16 @@ impl std::fmt::Display for RecurringUsageType {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for RecurringUsageType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for RecurringUsageType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(RecurringUsageType)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

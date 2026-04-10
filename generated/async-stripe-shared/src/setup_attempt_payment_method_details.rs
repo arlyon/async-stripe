@@ -1,4 +1,5 @@
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct SetupAttemptPaymentMethodDetails {
@@ -30,6 +31,12 @@ pub struct SetupAttemptPaymentMethodDetails {
     pub type_: String,
     pub upi: Option<stripe_shared::SetupAttemptPaymentMethodDetailsUpi>,
     pub us_bank_account: Option<stripe_shared::SetupAttemptPaymentMethodDetailsUsBankAccount>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for SetupAttemptPaymentMethodDetails {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("SetupAttemptPaymentMethodDetails").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct SetupAttemptPaymentMethodDetailsBuilder {

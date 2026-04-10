@@ -1,5 +1,6 @@
 /// ReserveReleases represent the release of funds from a ReserveHold.
-#[derive(Clone, Debug)]
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct ReserveRelease {
     /// Amount released.
@@ -31,6 +32,12 @@ pub struct ReserveRelease {
     pub reserve_plan: Option<stripe_types::Expandable<stripe_reserve::ReservePlan>>,
     pub source_transaction:
         Option<stripe_reserve::ReservesReserveReleasesResourcesSourceTransaction>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ReserveRelease {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ReserveRelease").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct ReserveReleaseBuilder {
@@ -274,9 +281,16 @@ impl std::fmt::Display for ReserveReleaseCreatedBy {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ReserveReleaseCreatedBy {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ReserveReleaseCreatedBy {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ReserveReleaseCreatedBy)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
@@ -357,9 +371,16 @@ impl std::fmt::Display for ReserveReleaseReason {
     }
 }
 
+#[cfg(not(feature = "redact-generated-debug"))]
 impl std::fmt::Debug for ReserveReleaseReason {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ReserveReleaseReason {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ReserveReleaseReason)).finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]

@@ -1,4 +1,5 @@
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct DisputeEnhancedEvidenceVisaCompellingEvidence3 {
@@ -8,6 +9,12 @@ pub struct DisputeEnhancedEvidenceVisaCompellingEvidence3 {
     /// List of exactly two prior undisputed transaction objects for Visa Compelling Evidence 3.0 evidence submission.
     pub prior_undisputed_transactions:
         Vec<stripe_shared::DisputeVisaCompellingEvidence3PriorUndisputedTransaction>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for DisputeEnhancedEvidenceVisaCompellingEvidence3 {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("DisputeEnhancedEvidenceVisaCompellingEvidence3").finish_non_exhaustive()
+    }
 }
 #[doc(hidden)]
 pub struct DisputeEnhancedEvidenceVisaCompellingEvidence3Builder {
