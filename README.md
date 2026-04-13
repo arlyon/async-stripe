@@ -16,7 +16,7 @@ up-to-date with the latest API changes.
 
 For comprehensive guides, tutorials, and API documentation, visit:
 
-- **[async-stripe Documentation Site](https://payments.rs/docs)** - Complete guides on working with expandable fields, error handling, webhooks, testing, and more
+- **[async-stripe Documentation Site](https://payments.arlyon.dev/docs)** - Complete guides on working with expandable fields, error handling, webhooks, testing, and more
 - **[API Reference on docs.rs](https://docs.rs/async-stripe)** - Full API documentation for all types and methods
 - **[Examples](https://github.com/arlyon/async-stripe/tree/master/examples)** - Real-world examples for common Stripe operations
 
@@ -40,8 +40,6 @@ For comprehensive guides, tutorials, and API documentation, visit:
 - **Flexible HTTP Clients**: Supports `tokio` and `async-std` runtimes
   with `native-tls` and `rustls` backends.
 
-> ⏰ **1.0 Alpha Notice**: We are still expecting a few breaking changes before RC. We recommend using the [Migration Guide](MIGRATION.md) when upgrading from 0.x versions.
-
 ## 🚀 Quick Start
 
 Here's a quick example of how to create a new Stripe Customer.
@@ -53,8 +51,8 @@ crate for the APIs you want to use (e.g., `stripe-core` for customers).
 
 ```toml
 [dependencies]
-async-stripe = "=1.0.0-alpha.8"
-async-stripe-core = { version = "=1.0.0-alpha.8", features = ["customer"] }
+async-stripe = "=1.0.0-rc.5"
+async-stripe-core = { version = "=1.0.0-rc.5", features = ["customer"] }
 tokio = { version = "1", features = ["full"] }
 ```
 
