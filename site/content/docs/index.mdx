@@ -9,6 +9,7 @@ import { BookOpen, Code, ExternalLink, FileText } from "lucide-react"
 import { CodeFromFile } from "@/components/code-from-file"
 import { Callout } from "fumadocs-ui/components/callout"
 import { CurrentVersion } from "@/components/current-version"
+import {CargoFeatures} from "@/components/cargo-features"
 
 Welcome to the **async-stripe** documentation. This library provides strongly-typed, safe, and performant Rust bindings for the Stripe API. It is designed to be modular, allowing you to pull in only the specific Stripe resources you need for your application.
 
@@ -99,6 +100,12 @@ The new API uses a builder pattern that flows naturally from request creation to
   startLine={14}
   endLine={20}
 />
+
+## Feature Flags
+
+`async-stripe` uses feature flags to keep the dependency tree lean and allow you to choose your preferred HTTP client and TLS stack.
+
+<CargoFeatures file="async-stripe/Cargo.toml" />
 
 ## Working with Expandable Fields
 

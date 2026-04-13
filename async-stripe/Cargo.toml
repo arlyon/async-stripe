@@ -39,19 +39,30 @@ async-stripe-client-core = { path = "../async-stripe-client-core", version = "1.
 [features]
 default = ["default-tls"]
 
+# TLS Features
+
 default-tls = ["dep:hyper-tls", "__hyper"]
+# Use the default TLS chain on your platform (e.g. SChannel on Windows, Secure Transport on macOS, OpenSSL on Linux)
 native-tls = ["default-tls"]
+# Use Rustls with the webpki-roots crate, which provides a set of root certificates bundled with your binary.
 rustls-tls-webpki-roots = ["__rustls", "hyper-rustls/webpki-roots", "__hyper"]
+# Use Rustls with the rustls-native-certs crate, which provides access to the native certificate store on the platform. This is a good choice if you don't want a runtime dep on OpenSSL but still want to use the native certificate store.
 rustls-tls-native = ["__rustls", "hyper-rustls/rustls-native-certs", "__hyper"]
+# Use Rustls with the AWS-LC-Rust crate, which aims to be a drop-in high performance replacement for ring.
 rustls-aws-lc-rs = ["__rustls", "hyper-rustls/aws-lc-rs"]
+# Use Rustls with the Ring crate.
 rustls-ring = ["__rustls", "hyper-rustls/ring"]
 __rustls = ["dep:hyper-rustls"]
 __hyper = ["dep:hyper", "dep:hyper-util", "dep:http-body-util"]
 
+# Provides a synchronous client for use in non-async environments.
 blocking = ["__hyper"]
+# Uses the `surf` client and `async-std` runtime instead of hyper.
 async-std-surf = ["async-std", "surf", "http-types"]
 
+# Enables support for using the `uuid` crate with Stripe IDs.
 uuid = ["async-stripe-client-core/uuid"]
+# Redacts potentially sensitive fields from `Debug` implementations.
 redact-generated-debug = ["async-stripe-client-core/redact-generated-debug", "async-stripe-shared/redact-generated-debug"]
 
 [dev-dependencies]
