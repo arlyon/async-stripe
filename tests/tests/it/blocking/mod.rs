@@ -6,6 +6,7 @@ mod account;
 mod charge;
 mod checkout;
 mod customer;
+mod payment_intent;
 mod invoice;
 mod plan_interval;
 mod price;
