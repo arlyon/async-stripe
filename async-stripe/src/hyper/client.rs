@@ -1,4 +1,5 @@
 use std::fmt::Write as _;
+use std::time::Duration;
 
 use http_body_util::{BodyExt, Full};
 use hyper::body::Bytes;
@@ -95,6 +96,7 @@ impl Client {
         body: Option<Bytes>,
         mut req_builder: Builder,
         strategy: RequestStrategy,
+        timeout: Option<Duration>,
     ) -> Result<Bytes, StripeError> {
         let mut tries = 0;
         let mut last_status: Option<StatusCode> = None;
@@ -124,23 +126,33 @@ impl Client {
                     }
 
                     tracing::debug!("sending request (attempt {})", tries + 1);
-                    let response = match self.client.request(req.clone()).await {
-                        Ok(resp) => resp,
+                    let attempt = async {
+                        let response = self.client.request(req.clone()).await?;
+                        let status = response.status();
+                        let retry = response
+                            .headers()
+                            .get("Stripe-Should-Retry")
+                            .and_then(|s| s.to_str().ok())
+                            .and_then(|s| s.parse().ok());
+                        let bytes = response.into_body().collect().await?.to_bytes();
+                        Ok::<_, StripeError>((status, retry, bytes))
+                    };
+                    let attempt_result = match timeout {
+                        Some(t) => tokio::time::timeout(t, attempt)
+                            .await
+                            .unwrap_or_else(|_| Err(StripeError::Timeout)),
+                        None => attempt.await,
+                    };
+                    let (status, retry, bytes) = match attempt_result {
+                        Ok(parts) => parts,
                         Err(err) => {
                             tracing::warn!("request failed: {}", err);
-                            last_error = StripeError::from(err);
+                            last_error = err;
                             tries += 1;
                             continue;
                         }
                     };
-                    let status = response.status();
-                    let retry = response
-                        .headers()
-                        .get("Stripe-Should-Retry")
-                        .and_then(|s| s.to_str().ok())
-                        .and_then(|s| s.parse().ok());
 
-                    let bytes = response.into_body().collect().await?.to_bytes();
                     if !status.is_success() {
                         tries += 1;
                         tracing::warn!("request returned error status: {}", status);
@@ -191,6 +203,7 @@ impl stripe_client_core::StripeClient for Client {
 
         let request_strategy =
             config.request_strategy.unwrap_or_else(|| self.config.request_strategy.clone());
-        self.send_inner(body, builder, request_strategy).await
+        let timeout = config.timeout.or(self.config.timeout);
+        self.send_inner(body, builder, request_strategy, timeout).await
     }
 }

@@ -1,3 +1,5 @@
+use std::time::Duration;
+
 use hyper::http::{HeaderValue, Uri};
 use stripe_client_core::{RequestStrategy, SharedConfigBuilder};
 use stripe_shared::{AccountId, ApplicationId};
@@ -47,6 +49,28 @@ impl ClientBuilder {
     /// Create a new client pointed at a specific URL. This is useful for testing.
     pub fn url(mut self, url: impl Into<String>) -> Self {
         self.inner = self.inner.url(url);
+        self
+    }
+
+    /// Set the default per-attempt timeout used when making requests.
+    ///
+    /// The timeout applies to each individual HTTP attempt (including
+    /// response body collection). When the request strategy retries, each
+    /// attempt gets its own fresh budget; backoff sleeps between attempts
+    /// are not counted. A timed-out attempt is treated like any other
+    /// network error — if the strategy permits, it will be retried;
+    /// otherwise [`StripeError::Timeout`] is returned.
+    ///
+    /// Per-request timeouts set via
+    /// [`CustomizableStripeRequest::timeout`] take precedence.
+    ///
+    /// By default the async client has no timeout. The blocking client built
+    /// via [`ClientBuilder::build_sync`] defaults to 30 seconds per attempt
+    /// when no timeout has been set.
+    ///
+    /// [`CustomizableStripeRequest::timeout`]: stripe_client_core::CustomizableStripeRequest::timeout
+    pub fn timeout(mut self, timeout: Duration) -> Self {
+        self.inner = self.inner.timeout(timeout);
         self
     }
 
@@ -103,6 +127,7 @@ impl ClientBuilder {
             request_strategy: self.inner.request_strategy.unwrap_or(RequestStrategy::Once),
             secret,
             api_base,
+            timeout: self.inner.timeout,
         })
     }
 
@@ -116,13 +141,20 @@ impl ClientBuilder {
 
     /// Builds a Stripe `client` for making blocking API calls.
     ///
+    /// If no timeout has been configured via [`Self::timeout`], a default of
+    /// 30 seconds per attempt is applied so blocking calls are never
+    /// unbounded.
+    ///
     /// # Errors
     /// This method errors if any of the specified configuration is invalid.
     ///
     /// # Panics
     /// This method panics if called from within an async runtime.
     #[cfg(feature = "blocking")]
-    pub fn build_sync(self) -> Result<crate::hyper::blocking::Client, StripeError> {
+    pub fn build_sync(mut self) -> Result<crate::hyper::blocking::Client, StripeError> {
+        if self.inner.timeout.is_none() {
+            self.inner = self.inner.timeout(crate::hyper::blocking::DEFAULT_TIMEOUT);
+        }
         Ok(crate::hyper::blocking::Client::from_async(self.build()?))
     }
 }
@@ -143,4 +175,5 @@ pub struct ClientConfig {
     // NB: This `HeaderValue` is marked as sensitive, so it won't be debug printed.
     pub secret: HeaderValue,
     pub api_base: Uri,
+    pub timeout: Option<Duration>,
 }

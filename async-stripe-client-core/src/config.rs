@@ -1,5 +1,6 @@
 use std::fmt;
 use std::fmt::{Display, Formatter};
+use std::time::Duration;
 
 use stripe_shared::version::VERSION;
 use stripe_shared::{AccountId, ApiVersion, ApplicationId};
@@ -30,6 +31,10 @@ pub struct SharedConfigBuilder {
     pub secret: String,
     /// The base URL to send requests to.
     pub api_base: Option<String>,
+    /// The default per-attempt timeout to apply to each HTTP request.
+    /// Backoff sleeps between retries are not counted.
+    /// `None` means no timeout.
+    pub timeout: Option<Duration>,
 }
 
 impl SharedConfigBuilder {
@@ -51,6 +56,7 @@ impl SharedConfigBuilder {
             request_strategy: None,
             secret,
             api_base: None,
+            timeout: None,
         }
     }
 
@@ -78,6 +84,18 @@ impl SharedConfigBuilder {
     /// Create a new client pointed at a specific URL. This is useful for testing.
     pub fn url(mut self, url: impl Into<String>) -> Self {
         self.api_base = Some(url.into());
+        self
+    }
+
+    /// Set the default per-attempt timeout used when making requests.
+    ///
+    /// The timeout applies to each individual HTTP attempt; backoff sleeps
+    /// between retries are not counted. A timed-out attempt is treated like
+    /// any other network error and will be retried by strategies that
+    /// permit it. Per-request `ConfigOverride` values take precedence over
+    /// this default.
+    pub fn timeout(mut self, timeout: Duration) -> Self {
+        self.timeout = Some(timeout);
         self
     }
 
@@ -126,6 +144,7 @@ impl fmt::Debug for SharedConfigBuilder {
             builder.field("api_base", api_base);
         }
         builder.field("stripe_version", &self.stripe_version);
+        builder.field("timeout", &self.timeout);
         builder.finish()
     }
 }
@@ -138,10 +157,12 @@ pub struct ConfigOverride {
     pub account_id: Option<AccountId>,
     /// Use a particular `RequestStrategy`, instead of the client default.
     pub request_strategy: Option<RequestStrategy>,
+    /// Use a particular timeout, instead of the client default.
+    pub timeout: Option<Duration>,
 }
 
 impl ConfigOverride {
     pub(crate) fn new() -> Self {
-        Self { account_id: None, request_strategy: None }
+        Self { account_id: None, request_strategy: None, timeout: None }
     }
 }
