@@ -15,6 +15,7 @@ mod payment_intent;
 mod payment_link;
 mod strategy;
 mod subscriptions;
+mod timeout;
 
 #[tokio::main]
 async fn main() -> Result<(), stripe::StripeError> {

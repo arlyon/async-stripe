@@ -4,7 +4,9 @@
 //! ====================
 //!
 //! This example demonstrates advanced client configuration including
-//! app info and Stripe Connect account masquerading.
+//! app info, request timeouts, and Stripe Connect account masquerading.
+
+use std::time::Duration;
 
 use stripe::{ClientBuilder, StripeError};
 
@@ -14,11 +16,13 @@ pub async fn advanced_client_config() -> Result<(), StripeError> {
     let client = ClientBuilder::new(secret_key)
         // Identify your app to Stripe (useful for analytics and support)
         .app_info("MyApp", Some("1.0.0".to_string()), Some("https://myapp.com".to_string()))
+        // Apply a 10 second timeout to each HTTP attempt
+        .timeout(Duration::from_secs(10))
         // Acts as this connected account (Stripe Connect)
         .account_id(stripe::AccountId::from("acct_12345"))
         .build()?;
 
-    println!("Client configured with app info and account masquerading");
+    println!("Client configured with app info, timeout, and account masquerading");
 
     Ok(())
 }

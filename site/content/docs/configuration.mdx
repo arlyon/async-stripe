@@ -28,13 +28,37 @@ Basic initialization uses your secret key and default settings.
 
 ## Advanced Configuration
 
-You can use the `ClientBuilder` to configure headers, app info, or specific account masquerading (for Connect platforms).
+You can use the `ClientBuilder` to configure headers, app info, request timeouts, or specific account masquerading (for Connect platforms).
 
 <CodeFromFile
   file="examples/endpoints/src/client_config.rs"
   href={{base: "https://github.com/arlyon/async-stripe/blob/master/"}}
-  startLine={12}
-  endLine={21}
-  highlightLines={[12]}
+  startLine={14}
+  endLine={23}
+  highlightLines={[10]}
   dedent
 />
+
+## Request Timeouts
+
+Use `.timeout(Duration)` on `ClientBuilder` to set a default timeout for each HTTP attempt. You can also call `.timeout(...)` on an individual customizable request to override that client default for a single API call. If you also configure retries, each retry gets a fresh timeout budget and backoff sleeps are not counted toward that limit.
+
+<CodeFromFile
+  file="examples/endpoints/src/timeout.rs"
+  href={{base: "https://github.com/arlyon/async-stripe/blob/master/"}}
+  startLine={16}
+  endLine={26}
+  dedent
+/>
+
+If you need a timeout for the entire logical request, including retries and backoff, wrap the final `.send(&client)` future with your runtime's normal timeout helper such as `tokio::time::timeout` or `async_std::future::timeout`.
+
+<CodeFromFile
+  file="examples/endpoints/src/timeout.rs"
+  href={{base: "https://github.com/arlyon/async-stripe/blob/master/"}}
+  startLine={33}
+  endLine={37}
+  dedent
+/>
+
+For the Hyper async client, the default is no timeout unless you set one. For the blocking client built with `build_sync()`, async-stripe applies a default per-attempt timeout of 30 seconds so synchronous calls are never unbounded.

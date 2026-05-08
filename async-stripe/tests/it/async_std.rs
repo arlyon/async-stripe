@@ -21,7 +21,7 @@ fn server_errors_req() -> CustomizableStripeRequest<()> {
     RequestBuilder::new(StripeMethod::Get, "/server-errors").customize()
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, miniserde::Deserialize)]
 struct TestData {
     // Allowing dead code since used for deserialization
     #[allow(dead_code)]
@@ -34,6 +34,10 @@ impl TestData {
     pub fn new() -> Self {
         Self { id: TEST_DATA_ID.into() }
     }
+}
+
+fn test_req() -> CustomizableStripeRequest<TestData> {
+    RequestBuilder::new(StripeMethod::Get, "/test").customize()
 }
 
 #[async_std::test]
@@ -155,4 +159,23 @@ async fn timeout_per_attempt() {
 
     mock.assert_hits_async(3).await;
     assert!(matches!(res, Err(StripeError::Timeout)));
+}
+
+#[async_std::test]
+async fn timeout_per_request_override() {
+    // Per-request timeout should override the client default, including
+    // raising it above a tight client default.
+    let server = MockServer::start_async().await;
+    let mock = server.mock(|when, then| {
+        when.method(GET).path("/v1/test");
+        then.status(200).delay(Duration::from_millis(150)).json_body_obj(&TestData::new());
+    });
+
+    let client =
+        client_builder().url(server.base_url()).timeout(Duration::from_millis(50)).build().unwrap();
+
+    let res = test_req().timeout(Duration::from_secs(5)).send(&client).await;
+
+    mock.assert_hits_async(1).await;
+    assert!(res.is_ok());
 }
