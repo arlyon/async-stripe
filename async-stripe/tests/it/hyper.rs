@@ -1,3 +1,5 @@
+use std::time::Duration;
+
 use httpmock::Method::{GET, POST};
 use httpmock::MockServer;
 use serde::{Deserialize, Serialize};
@@ -306,6 +308,52 @@ async fn assert_header_ids(
         headers.push(("stripe-account", acct_id.as_str()));
     }
     assert_headers_sent(builder, req, headers).await;
+}
+
+#[tokio::test]
+async fn timeout_per_attempt() {
+    // The mock server delays 500ms before responding. With a 100ms per-attempt
+    // timeout and Retry(3), each attempt should time out and we should see
+    // exactly 3 attempts before giving up with StripeError::Timeout.
+    let server = MockServer::start_async().await;
+    let mock = server.mock(|when, then| {
+        when.method(GET).path("/v1/slow");
+        then.status(200).delay(Duration::from_millis(500)).body("{\"id\":\"test-id\"}");
+    });
+
+    let client = client_builder()
+        .url(server.base_url())
+        .timeout(Duration::from_millis(100))
+        .request_strategy(RequestStrategy::Retry(3))
+        .build()
+        .unwrap();
+
+    let res =
+        RequestBuilder::new(StripeMethod::Get, "/slow").customize::<TestData>().send(&client).await;
+
+    // Retry(n) makes n+1 attempts (initial + n retries) when last_status is
+    // None — the strategy keeps continuing until tries == n.
+    mock.assert_hits_async(3).await;
+    assert!(matches!(res, Err(StripeError::Timeout)));
+}
+
+#[tokio::test]
+async fn timeout_per_request_override() {
+    // Per-request timeout should override the client default, including
+    // raising it above a tight client default.
+    let server = MockServer::start_async().await;
+    let mock = server.mock(|when, then| {
+        when.method(GET).path("/v1/test");
+        then.status(200).delay(Duration::from_millis(150)).json_body_obj(&TestData::new());
+    });
+
+    let client =
+        client_builder().url(server.base_url()).timeout(Duration::from_millis(50)).build().unwrap();
+
+    let res = test_req().timeout(Duration::from_secs(5)).send(&client).await;
+
+    mock.assert_hits_async(1).await;
+    assert!(res.is_ok());
 }
 
 #[tokio::test]

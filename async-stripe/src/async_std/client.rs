@@ -1,3 +1,5 @@
+use std::time::Duration;
+
 use async_std::task::sleep;
 use http_types::{Body, Request, StatusCode};
 use miniserde::json::from_str;
@@ -68,6 +70,7 @@ impl Client {
         &self,
         mut request: Request,
         strategy: RequestStrategy,
+        timeout: Option<Duration>,
     ) -> Result<Vec<u8>, StripeError> {
         let mut tries = 0;
         let mut last_status: Option<StatusCode> = None;
@@ -103,23 +106,30 @@ impl Client {
                     request.set_body(body.clone());
 
                     tracing::debug!("sending request (attempt {})", tries + 1);
-                    let mut response = match self.client.send(request).await {
-                        Ok(response) => response,
+                    let attempt = async {
+                        let mut response = self.client.send(request).await?;
+                        let status = response.status();
+                        let retry = response
+                            .header("Stripe-Should-Retry")
+                            .and_then(|s| s.last().as_str().parse().ok());
+                        let bytes = response.body_bytes().await?;
+                        Ok::<_, StripeError>((status, retry, bytes))
+                    };
+                    let attempt_result = match timeout {
+                        Some(t) => async_std::future::timeout(t, attempt)
+                            .await
+                            .unwrap_or_else(|_| Err(StripeError::Timeout)),
+                        None => attempt.await,
+                    };
+                    let (status, retry, bytes) = match attempt_result {
+                        Ok(parts) => parts,
                         Err(err) => {
                             tracing::warn!("request failed: {}", err);
-                            last_error = StripeError::from(err);
+                            last_error = err;
                             tries += 1;
                             continue;
                         }
                     };
-
-                    let status = response.status();
-                    let retry = response
-                        .header("Stripe-Should-Retry")
-                        .and_then(|s| s.last().as_str().parse().ok());
-
-                    // if this fails parsing, we can probably just exit
-                    let bytes = response.body_bytes().await?;
 
                     if !status.is_success() {
                         tries += 1;
@@ -170,8 +180,9 @@ impl stripe_client_core::StripeClient for Client {
 
         let request_strategy =
             config.request_strategy.unwrap_or_else(|| self.config.request_strategy.clone());
+        let timeout = config.timeout.or(self.config.timeout);
         let req = self.create_request(req, config.account_id);
-        let bytes = self.send_inner(req, request_strategy).await?;
+        let bytes = self.send_inner(req, request_strategy, timeout).await?;
         Ok(bytes::Bytes::from(bytes))
     }
 }

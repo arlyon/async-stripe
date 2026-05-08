@@ -1,5 +1,6 @@
 use std::fmt::Display;
 use std::marker::PhantomData;
+use std::time::Duration;
 
 use bytes::Bytes;
 use miniserde::json::from_str;
@@ -120,6 +121,15 @@ impl<T> CustomizableStripeRequest<T> {
     /// during configuration.
     pub fn account_id(mut self, account_id: AccountId) -> Self {
         self.inner.config_override.account_id = Some(account_id);
+        self
+    }
+
+    /// Set a per-attempt timeout to use for this request, overriding the
+    /// default set during configuration. The timeout applies to each
+    /// individual HTTP attempt; the request strategy may still retry a
+    /// timed-out attempt.
+    pub fn timeout(mut self, timeout: Duration) -> Self {
+        self.inner.config_override.timeout = Some(timeout);
         self
     }
 }

@@ -1,5 +1,6 @@
 use std::fmt::{Debug, Formatter};
 use std::str::FromStr;
+use std::time::Duration;
 
 use http_types::Url;
 use stripe_client_core::{RequestStrategy, SharedConfigBuilder};
@@ -53,6 +54,23 @@ impl ClientBuilder {
         self
     }
 
+    /// Set the default per-attempt timeout used when making requests.
+    ///
+    /// The timeout applies to each individual HTTP attempt (including
+    /// response body collection). When the request strategy retries, each
+    /// attempt gets its own fresh budget; backoff sleeps between attempts
+    /// are not counted. A timed-out attempt is treated like any other
+    /// network error — if the strategy permits, it will be retried;
+    /// otherwise [`StripeError::Timeout`] is returned.
+    ///
+    /// Per-request timeouts set via
+    /// [`stripe_client_core::CustomizableStripeRequest::timeout`] take
+    /// precedence.
+    pub fn timeout(mut self, timeout: Duration) -> Self {
+        self.inner = self.inner.timeout(timeout);
+        self
+    }
+
     /// Set the application info for the client.
     ///
     /// It is recommended that applications set this so that
@@ -91,6 +109,7 @@ impl ClientBuilder {
             request_strategy: self.inner.request_strategy.unwrap_or(RequestStrategy::Once),
             secret: self.inner.secret,
             api_base,
+            timeout: self.inner.timeout,
         })
     }
 
@@ -113,6 +132,7 @@ pub struct ClientConfig {
     pub request_strategy: RequestStrategy,
     pub secret: String,
     pub api_base: Url,
+    pub timeout: Option<Duration>,
 }
 
 impl ClientConfig {
@@ -136,6 +156,7 @@ impl Debug for ClientConfig {
         s.field("api_base", &self.api_base);
         s.field("user_agent", &self.user_agent);
         s.field("stripe_version", &self.stripe_version);
+        s.field("timeout", &self.timeout);
         s.finish()
     }
 }

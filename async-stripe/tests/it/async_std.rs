@@ -1,3 +1,5 @@
+use std::time::Duration;
+
 use http_types::convert::{Deserialize, Serialize};
 use httpmock::prelude::*;
 use stripe::StripeError;
@@ -129,4 +131,28 @@ async fn retry_body() {
 
     hello_mock.assert_hits_async(5).await;
     assert!(res.is_err());
+}
+
+#[async_std::test]
+async fn timeout_per_attempt() {
+    // The mock server delays 500ms before responding. With a 100ms per-attempt
+    // timeout and Retry(3), each attempt should time out and we should see
+    // exactly 3 attempts before giving up with StripeError::Timeout.
+    let server = MockServer::start_async().await;
+    let mock = server.mock(|when, then| {
+        when.method(GET).path("/v1/slow");
+        then.status(200).delay(Duration::from_millis(500)).body("{\"id\":\"test-id\"}");
+    });
+
+    let client = client_builder()
+        .url(server.base_url())
+        .timeout(Duration::from_millis(100))
+        .request_strategy(RequestStrategy::Retry(3))
+        .build()
+        .unwrap();
+
+    let res = RequestBuilder::new(StripeMethod::Get, "/slow").customize::<()>().send(&client).await;
+
+    mock.assert_hits_async(3).await;
+    assert!(matches!(res, Err(StripeError::Timeout)));
 }

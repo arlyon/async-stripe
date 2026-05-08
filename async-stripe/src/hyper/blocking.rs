@@ -14,8 +14,10 @@ use stripe_client_core::{CustomizedStripeRequest, StripeBlockingClient, StripeCl
 
 use crate::error::StripeError;
 
-/// The delay after which the blocking `Client` will assume the request has failed.
-const DEFAULT_TIMEOUT: Duration = Duration::from_secs(30);
+/// The default per-attempt request timeout applied to a blocking client
+/// built via [`crate::ClientBuilder::build_sync`] when no explicit timeout
+/// has been set.
+pub(crate) const DEFAULT_TIMEOUT: Duration = Duration::from_secs(30);
 
 /// A blocking client for making Stripe API requests.
 #[derive(Clone, Debug)]
@@ -30,7 +32,7 @@ impl Client {
     /// # Panics
     /// This method panics if called from within an async runtime.
     pub fn new(secret_key: impl Into<String>) -> Client {
-        Client::from_async(crate::Client::new(secret_key))
+        crate::ClientBuilder::new(secret_key).build_sync().expect("invalid secret provided")
     }
 
     pub(crate) fn from_async(inner: crate::Client) -> Client {
@@ -47,14 +49,10 @@ impl StripeBlockingClient for Client {
     type Err = StripeError;
 
     fn execute(&self, req: CustomizedStripeRequest) -> Result<Bytes, Self::Err> {
-        let future = self.inner.execute(req);
-        match self.runtime.block_on(async {
-            // N.B. The `tokio::time::timeout` must be called from within a running async
-            //      context or else it will panic (it registers with the thread-local timer).
-            tokio::time::timeout(DEFAULT_TIMEOUT, future).await
-        }) {
-            Ok(finished) => finished,
-            Err(_) => Err(StripeError::Timeout),
-        }
+        // The inner async client applies the per-attempt timeout configured
+        // on its `ClientConfig` (defaulted to `DEFAULT_TIMEOUT` by
+        // `build_sync`), so the blocking wrapper just drives the future to
+        // completion.
+        self.runtime.block_on(self.inner.execute(req))
     }
 }
