@@ -1,0 +1,9 @@
+[package]
+name = "bench-minimal"
+version = "0.0.0"
+edition = "2024"
+publish = false
+
+[dependencies]
+miniserde = { workspace = true }
+async-stripe-shared = { path = "../../../../generated/async-stripe-shared" }

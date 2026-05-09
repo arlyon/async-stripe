@@ -1,0 +1,38 @@
+[
+  {
+    "slice": "deser-many",
+    "check_s": 13,
+    "build_s": 18,
+    "release_s": 37,
+    "debug_bytes": 38511776,
+    "release_bytes": 23519280,
+    "release_stripped_bytes": 16903280
+  },
+  {
+    "slice": "minimal",
+    "check_s": 9,
+    "build_s": 15,
+    "release_s": 23,
+    "debug_bytes": 26762672,
+    "release_bytes": 13388272,
+    "release_stripped_bytes": 8894112
+  },
+  {
+    "slice": "poly",
+    "check_s": 9,
+    "build_s": 16,
+    "release_s": 22,
+    "debug_bytes": 13993064,
+    "release_bytes": 8469024,
+    "release_stripped_bytes": 6917416
+  },
+  {
+    "slice": "requests",
+    "check_s": 13,
+    "build_s": 19,
+    "release_s": 32,
+    "debug_bytes": 39113664,
+    "release_bytes": 21356736,
+    "release_stripped_bytes": 15247664
+  }
+]

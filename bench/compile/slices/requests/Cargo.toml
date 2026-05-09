@@ -1,0 +1,30 @@
+[package]
+name = "bench-requests"
+version = "0.0.0"
+edition = "2024"
+publish = false
+
+[dependencies]
+tokio = { version = "1.24.1", features = ["rt-multi-thread", "macros"] }
+futures-util = "0.3.28"
+async-stripe = { path = "../../../../async-stripe" }
+async-stripe-types = { path = "../../../../async-stripe-types" }
+async-stripe-shared = { path = "../../../../generated/async-stripe-shared" }
+async-stripe-core = { path = "../../../../generated/async-stripe-core", features = [
+    "customer",
+    "charge",
+    "payment_intent",
+    "refund",
+    "setup_intent",
+] }
+async-stripe-billing = { path = "../../../../generated/async-stripe-billing", features = [
+    "subscription",
+    "invoice",
+] }
+async-stripe-product = { path = "../../../../generated/async-stripe-product", features = [
+    "product",
+    "price",
+] }
+async-stripe-payment = { path = "../../../../generated/async-stripe-payment", features = [
+    "payment_method",
+] }
