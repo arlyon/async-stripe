@@ -1,0 +1,99 @@
+[package]
+name = "bench-deser-many"
+version = "0.0.0"
+edition = "2024"
+publish = false
+
+[dependencies]
+miniserde = { workspace = true }
+async-stripe-shared = { path = "../../../../generated/async-stripe-shared" }
+
+async-stripe-core = { path = "../../../../generated/async-stripe-core", features = [
+    "balance",
+    "balance_transaction",
+    "charge",
+    "customer",
+    "dispute",
+    "event",
+    "file",
+    "mandate",
+    "payment_intent",
+    "payout",
+    "refund",
+    "setup_attempt",
+    "setup_intent",
+    "token",
+] }
+async-stripe-billing = { path = "../../../../generated/async-stripe-billing", features = [
+    "credit_note",
+    "invoice",
+    "invoice_item",
+    "plan",
+    "quote",
+    "subscription",
+    "subscription_item",
+    "subscription_schedule",
+    "tax_id",
+] }
+async-stripe-product = { path = "../../../../generated/async-stripe-product", features = [
+    "coupon",
+    "price",
+    "product",
+    "promotion_code",
+    "tax_rate",
+] }
+async-stripe-payment = { path = "../../../../generated/async-stripe-payment", features = [
+    "bank_account",
+    "card",
+    "confirmation_token",
+    "payment_link",
+    "payment_method",
+    "payment_method_configuration",
+    "source",
+] }
+async-stripe-checkout = { path = "../../../../generated/async-stripe-checkout", features = [
+    "checkout_session",
+] }
+async-stripe-connect = { path = "../../../../generated/async-stripe-connect", features = [
+    "account",
+    "account_link",
+    "application_fee",
+    "capability",
+    "country_spec",
+    "person",
+    "topup",
+    "transfer",
+] }
+async-stripe-treasury = { path = "../../../../generated/async-stripe-treasury", features = [
+    "treasury_financial_account",
+    "treasury_inbound_transfer",
+    "treasury_outbound_payment",
+    "treasury_outbound_transfer",
+    "treasury_received_credit",
+    "treasury_received_debit",
+    "treasury_transaction",
+] }
+async-stripe-issuing = { path = "../../../../generated/async-stripe-issuing", features = [
+    "issuing_authorization",
+    "issuing_card",
+    "issuing_cardholder",
+    "issuing_dispute",
+    "issuing_transaction",
+] }
+async-stripe-fraud = { path = "../../../../generated/async-stripe-fraud", features = [
+    "radar_early_fraud_warning",
+    "radar_value_list",
+    "review",
+] }
+async-stripe-terminal = { path = "../../../../generated/async-stripe-terminal", features = [
+    "terminal_configuration",
+    "terminal_location",
+    "terminal_reader",
+] }
+async-stripe-misc = { path = "../../../../generated/async-stripe-misc", features = [
+    "climate_order",
+    "exchange_rate",
+    "financial_connections_account",
+    "identity_verification_session",
+    "reporting_report_run",
+] }

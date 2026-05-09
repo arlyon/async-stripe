@@ -949,6 +949,56 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "72b3254f16251a8381aa12e40e3c4d2f0199f8c6508fbecb9d91f575e0fbb8c6"
 
 [[package]]
+name = "bench-deser-many"
+version = "0.0.0"
+dependencies = [
+ "async-stripe-billing",
+ "async-stripe-checkout",
+ "async-stripe-connect",
+ "async-stripe-core",
+ "async-stripe-fraud",
+ "async-stripe-issuing",
+ "async-stripe-misc",
+ "async-stripe-payment",
+ "async-stripe-product",
+ "async-stripe-shared",
+ "async-stripe-terminal",
+ "async-stripe-treasury",
+ "miniserde",
+]
+
+[[package]]
+name = "bench-minimal"
+version = "0.0.0"
+dependencies = [
+ "async-stripe-shared",
+ "miniserde",
+]
+
+[[package]]
+name = "bench-poly"
+version = "0.0.0"
+dependencies = [
+ "async-stripe-shared",
+ "miniserde",
+]
+
+[[package]]
+name = "bench-requests"
+version = "0.0.0"
+dependencies = [
+ "async-stripe",
+ "async-stripe-billing",
+ "async-stripe-core",
+ "async-stripe-payment",
+ "async-stripe-product",
+ "async-stripe-shared",
+ "async-stripe-types",
+ "futures-util",
+ "tokio",
+]
+
+[[package]]
 name = "binascii"
 version = "0.1.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
