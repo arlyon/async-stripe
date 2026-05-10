@@ -107,17 +107,17 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                bank_name: Deserialize::default(),
-                bic: Deserialize::default(),
-                iban: Deserialize::default(),
-                refund_account_holder_address_city: Deserialize::default(),
-                refund_account_holder_address_country: Deserialize::default(),
-                refund_account_holder_address_line1: Deserialize::default(),
-                refund_account_holder_address_line2: Deserialize::default(),
-                refund_account_holder_address_postal_code: Deserialize::default(),
-                refund_account_holder_address_state: Deserialize::default(),
-                refund_account_holder_name: Deserialize::default(),
-                refund_iban: Deserialize::default(),
+                bank_name: Some(None),
+                bic: Some(None),
+                iban: Some(None),
+                refund_account_holder_address_city: Some(None),
+                refund_account_holder_address_country: Some(None),
+                refund_account_holder_address_line1: Some(None),
+                refund_account_holder_address_line2: Some(None),
+                refund_account_holder_address_postal_code: Some(None),
+                refund_account_holder_address_state: Some(None),
+                refund_account_holder_name: Some(None),
+                refund_iban: Some(None),
             }
         }
 

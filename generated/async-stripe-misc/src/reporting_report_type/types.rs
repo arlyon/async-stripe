@@ -104,14 +104,14 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                data_available_end: Deserialize::default(),
-                data_available_start: Deserialize::default(),
-                default_columns: Deserialize::default(),
-                id: Deserialize::default(),
-                livemode: Deserialize::default(),
-                name: Deserialize::default(),
-                updated: Deserialize::default(),
-                version: Deserialize::default(),
+                data_available_end: None,
+                data_available_start: None,
+                default_columns: Some(None),
+                id: None,
+                livemode: None,
+                name: None,
+                updated: None,
+                version: None,
             }
         }
 

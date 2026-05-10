@@ -66,7 +66,7 @@ const _: () = {
     }
 
     fn deser_default() -> Self {
-        Self { type_: Deserialize::default(),
+        Self { type_: None,
  }
     }
 

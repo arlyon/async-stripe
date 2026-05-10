@@ -76,10 +76,10 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                finalized_at: Deserialize::default(),
-                marked_uncollectible_at: Deserialize::default(),
-                paid_at: Deserialize::default(),
-                voided_at: Deserialize::default(),
+                finalized_at: Some(None),
+                marked_uncollectible_at: Some(None),
+                paid_at: Some(None),
+                voided_at: Some(None),
             }
         }
 

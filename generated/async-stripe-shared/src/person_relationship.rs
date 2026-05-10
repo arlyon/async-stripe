@@ -96,14 +96,14 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                authorizer: Deserialize::default(),
-                director: Deserialize::default(),
-                executive: Deserialize::default(),
-                legal_guardian: Deserialize::default(),
-                owner: Deserialize::default(),
-                percent_ownership: Deserialize::default(),
-                representative: Deserialize::default(),
-                title: Deserialize::default(),
+                authorizer: Some(None),
+                director: Some(None),
+                executive: Some(None),
+                legal_guardian: Some(None),
+                owner: Some(None),
+                percent_ownership: Some(None),
+                representative: Some(None),
+                title: Some(None),
             }
         }
 

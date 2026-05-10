@@ -138,22 +138,22 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                amount_off: Deserialize::default(),
-                applies_to: Deserialize::default(),
-                created: Deserialize::default(),
-                currency: Deserialize::default(),
-                currency_options: Deserialize::default(),
-                duration: Deserialize::default(),
-                duration_in_months: Deserialize::default(),
-                id: Deserialize::default(),
-                livemode: Deserialize::default(),
-                max_redemptions: Deserialize::default(),
-                metadata: Deserialize::default(),
-                name: Deserialize::default(),
-                percent_off: Deserialize::default(),
-                redeem_by: Deserialize::default(),
-                times_redeemed: Deserialize::default(),
-                valid: Deserialize::default(),
+                amount_off: Some(None),
+                applies_to: Some(None),
+                created: None,
+                currency: Some(None),
+                currency_options: Some(None),
+                duration: None,
+                duration_in_months: Some(None),
+                id: None,
+                livemode: None,
+                max_redemptions: Some(None),
+                metadata: Some(None),
+                name: Some(None),
+                percent_off: Some(None),
+                redeem_by: Some(None),
+                times_redeemed: None,
+                valid: None,
             }
         }
 

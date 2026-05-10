@@ -64,7 +64,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self { jurisdiction: Deserialize::default() }
+            Self { jurisdiction: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {

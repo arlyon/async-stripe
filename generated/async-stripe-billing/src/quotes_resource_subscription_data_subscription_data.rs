@@ -86,11 +86,11 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                billing_mode: Deserialize::default(),
-                description: Deserialize::default(),
-                effective_date: Deserialize::default(),
-                metadata: Deserialize::default(),
-                trial_period_days: Deserialize::default(),
+                billing_mode: None,
+                description: Some(None),
+                effective_date: Some(None),
+                metadata: Some(None),
+                trial_period_days: Some(None),
             }
         }
 

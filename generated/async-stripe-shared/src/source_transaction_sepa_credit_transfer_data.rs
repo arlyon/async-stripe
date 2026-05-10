@@ -71,11 +71,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self {
-                reference: Deserialize::default(),
-                sender_iban: Deserialize::default(),
-                sender_name: Deserialize::default(),
-            }
+            Self { reference: Some(None), sender_iban: Some(None), sender_name: Some(None) }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {

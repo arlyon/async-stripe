@@ -63,7 +63,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self { event_payload_key: Deserialize::default() }
+            Self { event_payload_key: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {

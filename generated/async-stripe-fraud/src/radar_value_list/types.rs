@@ -103,15 +103,15 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                alias: Deserialize::default(),
-                created: Deserialize::default(),
-                created_by: Deserialize::default(),
-                id: Deserialize::default(),
-                item_type: Deserialize::default(),
-                list_items: Deserialize::default(),
-                livemode: Deserialize::default(),
-                metadata: Deserialize::default(),
-                name: Deserialize::default(),
+                alias: None,
+                created: None,
+                created_by: None,
+                id: None,
+                item_type: None,
+                list_items: None,
+                livemode: None,
+                metadata: None,
+                name: None,
             }
         }
 

@@ -107,17 +107,17 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                acss_debit: Deserialize::default(),
-                amount: Deserialize::default(),
-                bacs_debit: Deserialize::default(),
-                created: Deserialize::default(),
-                id: Deserialize::default(),
-                livemode: Deserialize::default(),
-                reason: Deserialize::default(),
-                sepa_debit: Deserialize::default(),
-                source: Deserialize::default(),
-                status: Deserialize::default(),
-                type_: Deserialize::default(),
+                acss_debit: Some(None),
+                amount: Some(None),
+                bacs_debit: Some(None),
+                created: None,
+                id: None,
+                livemode: None,
+                reason: None,
+                sepa_debit: Some(None),
+                source: None,
+                status: None,
+                type_: None,
             }
         }
 

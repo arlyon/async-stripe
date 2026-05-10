@@ -78,11 +78,11 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                buy_button: Deserialize::default(),
-                customer_sheet: Deserialize::default(),
-                mobile_payment_element: Deserialize::default(),
-                payment_element: Deserialize::default(),
-                pricing_table: Deserialize::default(),
+                buy_button: None,
+                customer_sheet: None,
+                mobile_payment_element: None,
+                payment_element: None,
+                pricing_table: None,
             }
         }
 

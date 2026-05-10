@@ -85,12 +85,12 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                discounts: Deserialize::default(),
-                metadata: Deserialize::default(),
-                period: Deserialize::default(),
-                price: Deserialize::default(),
-                quantity: Deserialize::default(),
-                tax_rates: Deserialize::default(),
+                discounts: None,
+                metadata: Some(None),
+                period: None,
+                price: None,
+                quantity: Some(None),
+                tax_rates: Some(None),
             }
         }
 

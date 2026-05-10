@@ -70,10 +70,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self {
-                account_subcategories: Deserialize::default(),
-                countries: Deserialize::default(),
-            }
+            Self { account_subcategories: Some(None), countries: Some(None) }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {

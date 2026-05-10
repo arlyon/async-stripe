@@ -75,12 +75,12 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                customer_reference: Deserialize::default(),
-                line_items: Deserialize::default(),
-                merchant_reference: Deserialize::default(),
-                shipping_address_zip: Deserialize::default(),
-                shipping_amount: Deserialize::default(),
-                shipping_from_zip: Deserialize::default(),
+                customer_reference: Some(None),
+                line_items: None,
+                merchant_reference: None,
+                shipping_address_zip: Some(None),
+                shipping_amount: Some(None),
+                shipping_from_zip: Some(None),
             }
         }
 

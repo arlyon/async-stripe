@@ -63,7 +63,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self { require_verification: Deserialize::default() }
+            Self { require_verification: Some(None) }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {

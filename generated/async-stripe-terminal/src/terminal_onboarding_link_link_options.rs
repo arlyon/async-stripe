@@ -68,7 +68,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self { apple_terms_and_conditions: Deserialize::default() }
+            Self { apple_terms_and_conditions: Some(None) }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {

@@ -90,14 +90,14 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                aba: Deserialize::default(),
-                iban: Deserialize::default(),
-                sort_code: Deserialize::default(),
-                spei: Deserialize::default(),
-                supported_networks: Deserialize::default(),
-                swift: Deserialize::default(),
-                type_: Deserialize::default(),
-                zengin: Deserialize::default(),
+                aba: Some(None),
+                iban: Some(None),
+                sort_code: Some(None),
+                spei: Some(None),
+                supported_networks: Some(None),
+                swift: Some(None),
+                type_: None,
+                zengin: Some(None),
             }
         }
 

@@ -115,16 +115,16 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                advice_code: Deserialize::default(),
-                network_advice_code: Deserialize::default(),
-                network_decline_code: Deserialize::default(),
-                network_status: Deserialize::default(),
-                reason: Deserialize::default(),
-                risk_level: Deserialize::default(),
-                risk_score: Deserialize::default(),
-                rule: Deserialize::default(),
-                seller_message: Deserialize::default(),
-                type_: Deserialize::default(),
+                advice_code: Some(None),
+                network_advice_code: Some(None),
+                network_decline_code: Some(None),
+                network_status: Some(None),
+                reason: Some(None),
+                risk_level: Some(None),
+                risk_score: Some(None),
+                rule: Some(None),
+                seller_message: Some(None),
+                type_: None,
             }
         }
 

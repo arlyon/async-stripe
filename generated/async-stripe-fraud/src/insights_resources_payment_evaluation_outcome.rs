@@ -80,11 +80,11 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                merchant_blocked: Deserialize::default(),
-                payment_intent_id: Deserialize::default(),
-                rejected: Deserialize::default(),
-                succeeded: Deserialize::default(),
-                type_: Deserialize::default(),
+                merchant_blocked: Some(None),
+                payment_intent_id: Some(None),
+                rejected: Some(None),
+                succeeded: Some(None),
+                type_: None,
             }
         }
 

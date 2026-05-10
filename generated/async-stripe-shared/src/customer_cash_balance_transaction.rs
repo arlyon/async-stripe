@@ -130,21 +130,21 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                adjusted_for_overdraft: Deserialize::default(),
-                applied_to_payment: Deserialize::default(),
-                created: Deserialize::default(),
-                currency: Deserialize::default(),
-                customer: Deserialize::default(),
-                customer_account: Deserialize::default(),
-                ending_balance: Deserialize::default(),
-                funded: Deserialize::default(),
-                id: Deserialize::default(),
-                livemode: Deserialize::default(),
-                net_amount: Deserialize::default(),
-                refunded_from_payment: Deserialize::default(),
-                transferred_to_balance: Deserialize::default(),
-                type_: Deserialize::default(),
-                unapplied_from_payment: Deserialize::default(),
+                adjusted_for_overdraft: Some(None),
+                applied_to_payment: Some(None),
+                created: None,
+                currency: None,
+                customer: None,
+                customer_account: Some(None),
+                ending_balance: None,
+                funded: Some(None),
+                id: None,
+                livemode: None,
+                net_amount: None,
+                refunded_from_payment: Some(None),
+                transferred_to_balance: Some(None),
+                type_: None,
+                unapplied_from_payment: Some(None),
             }
         }
 

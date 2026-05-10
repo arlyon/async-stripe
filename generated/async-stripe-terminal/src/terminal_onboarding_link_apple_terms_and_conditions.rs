@@ -68,10 +68,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self {
-                allow_relinking: Deserialize::default(),
-                merchant_display_name: Deserialize::default(),
-            }
+            Self { allow_relinking: Some(None), merchant_display_name: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {

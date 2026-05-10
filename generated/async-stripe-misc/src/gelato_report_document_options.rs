@@ -78,10 +78,10 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                allowed_types: Deserialize::default(),
-                require_id_number: Deserialize::default(),
-                require_live_capture: Deserialize::default(),
-                require_matching_selfie: Deserialize::default(),
+                allowed_types: Some(None),
+                require_id_number: Some(None),
+                require_live_capture: Some(None),
+                require_matching_selfie: Some(None),
             }
         }
 

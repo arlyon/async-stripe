@@ -73,9 +73,9 @@ const _: () = {
     }
 
     fn deser_default() -> Self {
-        Self { sender_bank: Deserialize::default(),
-sender_branch: Deserialize::default(),
-sender_name: Deserialize::default(),
+        Self { sender_bank: Some(None),
+sender_branch: Some(None),
+sender_name: Some(None),
  }
     }
 

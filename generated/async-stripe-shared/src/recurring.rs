@@ -82,11 +82,11 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                interval: Deserialize::default(),
-                interval_count: Deserialize::default(),
-                meter: Deserialize::default(),
-                trial_period_days: Deserialize::default(),
-                usage_type: Deserialize::default(),
+                interval: None,
+                interval_count: None,
+                meter: Some(None),
+                trial_period_days: Some(None),
+                usage_type: None,
             }
         }
 

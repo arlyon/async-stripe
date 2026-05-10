@@ -80,10 +80,10 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                id: Deserialize::default(),
-                last_attempted_at: Deserialize::default(),
-                next_refresh_available_at: Deserialize::default(),
-                status: Deserialize::default(),
+                id: None,
+                last_attempted_at: None,
+                next_refresh_available_at: Some(None),
+                status: None,
             }
         }
 

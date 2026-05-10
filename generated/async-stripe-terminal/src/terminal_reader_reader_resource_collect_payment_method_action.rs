@@ -72,11 +72,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self {
-                collect_config: Deserialize::default(),
-                payment_intent: Deserialize::default(),
-                payment_method: Deserialize::default(),
-            }
+            Self { collect_config: Some(None), payment_intent: None, payment_method: Some(None) }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {

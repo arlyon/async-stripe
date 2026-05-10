@@ -89,15 +89,15 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                credit_reversal: Deserialize::default(),
-                debit_reversal: Deserialize::default(),
-                inbound_transfer: Deserialize::default(),
-                issuing_authorization: Deserialize::default(),
-                outbound_payment: Deserialize::default(),
-                outbound_transfer: Deserialize::default(),
-                received_credit: Deserialize::default(),
-                received_debit: Deserialize::default(),
-                type_: Deserialize::default(),
+                credit_reversal: Some(None),
+                debit_reversal: Some(None),
+                inbound_transfer: Some(None),
+                issuing_authorization: Some(None),
+                outbound_payment: Some(None),
+                outbound_transfer: Some(None),
+                received_credit: Some(None),
+                received_debit: Some(None),
+                type_: None,
             }
         }
 

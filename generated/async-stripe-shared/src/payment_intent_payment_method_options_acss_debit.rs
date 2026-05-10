@@ -87,10 +87,10 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                mandate_options: Deserialize::default(),
-                setup_future_usage: Deserialize::default(),
-                target_date: Deserialize::default(),
-                verification_method: Deserialize::default(),
+                mandate_options: Some(None),
+                setup_future_usage: Some(None),
+                target_date: Some(None),
+                verification_method: Some(None),
             }
         }
 

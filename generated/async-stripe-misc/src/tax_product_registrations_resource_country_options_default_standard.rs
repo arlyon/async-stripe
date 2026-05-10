@@ -66,7 +66,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self { place_of_supply_scheme: Deserialize::default() }
+            Self { place_of_supply_scheme: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {

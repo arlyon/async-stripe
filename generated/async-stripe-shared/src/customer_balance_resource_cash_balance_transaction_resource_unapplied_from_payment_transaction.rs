@@ -75,7 +75,7 @@ const _: () = {
     }
 
     fn deser_default() -> Self {
-        Self { payment_intent: Deserialize::default(),
+        Self { payment_intent: None,
  }
     }
 

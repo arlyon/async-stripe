@@ -68,7 +68,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self { deadline: Deserialize::default(), restricted_reason: Deserialize::default() }
+            Self { deadline: Some(None), restricted_reason: Some(None) }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {

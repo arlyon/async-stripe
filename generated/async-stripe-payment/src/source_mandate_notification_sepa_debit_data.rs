@@ -72,9 +72,9 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                creditor_identifier: Deserialize::default(),
-                last4: Deserialize::default(),
-                mandate_reference: Deserialize::default(),
+                creditor_identifier: Some(None),
+                last4: Some(None),
+                mandate_reference: Some(None),
             }
         }
 

@@ -90,12 +90,12 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                aggregated_value: Deserialize::default(),
-                end_time: Deserialize::default(),
-                id: Deserialize::default(),
-                livemode: Deserialize::default(),
-                meter: Deserialize::default(),
-                start_time: Deserialize::default(),
+                aggregated_value: None,
+                end_time: None,
+                id: None,
+                livemode: None,
+                meter: None,
+                start_time: None,
             }
         }
 

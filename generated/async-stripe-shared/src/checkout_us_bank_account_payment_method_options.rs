@@ -85,10 +85,10 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                financial_connections: Deserialize::default(),
-                setup_future_usage: Deserialize::default(),
-                target_date: Deserialize::default(),
-                verification_method: Deserialize::default(),
+                financial_connections: Some(None),
+                setup_future_usage: Some(None),
+                target_date: Some(None),
+                verification_method: Some(None),
             }
         }
 

@@ -79,10 +79,10 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                after_submit: Deserialize::default(),
-                shipping_address: Deserialize::default(),
-                submit: Deserialize::default(),
-                terms_of_service_acceptance: Deserialize::default(),
+                after_submit: Some(None),
+                shipping_address: Some(None),
+                submit: Some(None),
+                terms_of_service_acceptance: Some(None),
             }
         }
 

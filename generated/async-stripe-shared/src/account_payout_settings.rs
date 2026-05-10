@@ -73,11 +73,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self {
-                debit_negative_balances: Deserialize::default(),
-                schedule: Deserialize::default(),
-                statement_descriptor: Deserialize::default(),
-            }
+            Self { debit_negative_balances: None, schedule: None, statement_descriptor: Some(None) }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {

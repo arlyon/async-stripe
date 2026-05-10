@@ -91,12 +91,12 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                delay_days: Deserialize::default(),
-                interval: Deserialize::default(),
-                monthly_anchor: Deserialize::default(),
-                monthly_payout_days: Deserialize::default(),
-                weekly_anchor: Deserialize::default(),
-                weekly_payout_days: Deserialize::default(),
+                delay_days: None,
+                interval: None,
+                monthly_anchor: Some(None),
+                monthly_payout_days: Some(None),
+                weekly_anchor: Some(None),
+                weekly_payout_days: Some(None),
             }
         }
 

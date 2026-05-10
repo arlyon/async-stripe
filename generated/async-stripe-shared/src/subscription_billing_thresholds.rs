@@ -71,10 +71,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self {
-                amount_gte: Deserialize::default(),
-                reset_billing_cycle_anchor: Deserialize::default(),
-            }
+            Self { amount_gte: Some(None), reset_billing_cycle_anchor: Some(None) }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {

@@ -67,7 +67,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self { currency: Deserialize::default(), preferred_locale: Deserialize::default() }
+            Self { currency: Some(None), preferred_locale: Some(None) }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {

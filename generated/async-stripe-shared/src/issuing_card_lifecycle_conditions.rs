@@ -64,7 +64,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self { payment_count: Deserialize::default() }
+            Self { payment_count: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {

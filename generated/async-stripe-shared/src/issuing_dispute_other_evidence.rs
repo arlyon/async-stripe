@@ -78,10 +78,10 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                additional_documentation: Deserialize::default(),
-                explanation: Deserialize::default(),
-                product_description: Deserialize::default(),
-                product_type: Deserialize::default(),
+                additional_documentation: Some(None),
+                explanation: Some(None),
+                product_description: Some(None),
+                product_type: Some(None),
             }
         }
 

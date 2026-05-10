@@ -83,13 +83,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self {
-                cancel: Deserialize::default(),
-                event_name: Deserialize::default(),
-                livemode: Deserialize::default(),
-                status: Deserialize::default(),
-                type_: Deserialize::default(),
-            }
+            Self { cancel: Some(None), event_name: None, livemode: None, status: None, type_: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {

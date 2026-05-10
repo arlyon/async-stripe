@@ -72,11 +72,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self {
-                entitlement_feature: Deserialize::default(),
-                id: Deserialize::default(),
-                livemode: Deserialize::default(),
-            }
+            Self { entitlement_feature: None, id: None, livemode: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {

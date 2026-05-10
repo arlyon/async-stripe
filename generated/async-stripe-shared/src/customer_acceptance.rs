@@ -74,12 +74,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self {
-                accepted_at: Deserialize::default(),
-                offline: Deserialize::default(),
-                online: Deserialize::default(),
-                type_: Deserialize::default(),
-            }
+            Self { accepted_at: Some(None), offline: Some(None), online: Some(None), type_: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {

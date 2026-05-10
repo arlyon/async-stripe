@@ -69,9 +69,9 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                data_string: Deserialize::default(),
-                native_url: Deserialize::default(),
-                statement_descriptor: Deserialize::default(),
+                data_string: Some(None),
+                native_url: Some(None),
+                statement_descriptor: Some(None),
             }
         }
 

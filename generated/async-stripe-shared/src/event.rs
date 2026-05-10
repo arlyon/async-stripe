@@ -119,16 +119,16 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                account: Deserialize::default(),
-                api_version: Deserialize::default(),
-                context: Deserialize::default(),
-                created: Deserialize::default(),
-                data: Deserialize::default(),
-                id: Deserialize::default(),
-                livemode: Deserialize::default(),
-                pending_webhooks: Deserialize::default(),
-                request: Deserialize::default(),
-                type_: Deserialize::default(),
+                account: Some(None),
+                api_version: Some(None),
+                context: Some(None),
+                created: None,
+                data: None,
+                id: None,
+                livemode: None,
+                pending_webhooks: None,
+                request: Some(None),
+                type_: None,
             }
         }
 

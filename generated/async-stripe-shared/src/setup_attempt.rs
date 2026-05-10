@@ -132,21 +132,21 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                application: Deserialize::default(),
-                attach_to_self: Deserialize::default(),
-                created: Deserialize::default(),
-                customer: Deserialize::default(),
-                customer_account: Deserialize::default(),
-                flow_directions: Deserialize::default(),
-                id: Deserialize::default(),
-                livemode: Deserialize::default(),
-                on_behalf_of: Deserialize::default(),
-                payment_method: Deserialize::default(),
-                payment_method_details: Deserialize::default(),
-                setup_error: Deserialize::default(),
-                setup_intent: Deserialize::default(),
-                status: Deserialize::default(),
-                usage: Deserialize::default(),
+                application: Some(None),
+                attach_to_self: Some(None),
+                created: None,
+                customer: Some(None),
+                customer_account: Some(None),
+                flow_directions: Some(None),
+                id: None,
+                livemode: None,
+                on_behalf_of: Some(None),
+                payment_method: None,
+                payment_method_details: None,
+                setup_error: Some(None),
+                setup_intent: None,
+                status: None,
+                usage: None,
             }
         }
 

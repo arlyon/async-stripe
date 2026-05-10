@@ -80,11 +80,11 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                day_of_month: Deserialize::default(),
-                hour: Deserialize::default(),
-                minute: Deserialize::default(),
-                month: Deserialize::default(),
-                second: Deserialize::default(),
+                day_of_month: None,
+                hour: Some(None),
+                minute: Some(None),
+                month: Some(None),
+                second: Some(None),
             }
         }
 

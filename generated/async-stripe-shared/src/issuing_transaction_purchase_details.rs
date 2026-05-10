@@ -84,12 +84,12 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                fleet: Deserialize::default(),
-                flight: Deserialize::default(),
-                fuel: Deserialize::default(),
-                lodging: Deserialize::default(),
-                receipt: Deserialize::default(),
-                reference: Deserialize::default(),
+                fleet: Some(None),
+                flight: Some(None),
+                fuel: Some(None),
+                lodging: Some(None),
+                receipt: Some(None),
+                reference: Some(None),
             }
         }
 

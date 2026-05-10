@@ -110,14 +110,14 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                bank_account: Deserialize::default(),
-                card: Deserialize::default(),
-                client_ip: Deserialize::default(),
-                created: Deserialize::default(),
-                id: Deserialize::default(),
-                livemode: Deserialize::default(),
-                type_: Deserialize::default(),
-                used: Deserialize::default(),
+                bank_account: Some(None),
+                card: Some(None),
+                client_ip: Some(None),
+                created: None,
+                id: None,
+                livemode: None,
+                type_: None,
+                used: None,
             }
         }
 

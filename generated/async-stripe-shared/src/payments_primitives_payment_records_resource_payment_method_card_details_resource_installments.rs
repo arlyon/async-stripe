@@ -76,7 +76,7 @@ const _: () = {
     }
 
     fn deser_default() -> Self {
-        Self { plan: Deserialize::default(),
+        Self { plan: Some(None),
  }
     }
 

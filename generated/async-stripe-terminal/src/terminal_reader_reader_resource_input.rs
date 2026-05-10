@@ -100,17 +100,17 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                custom_text: Deserialize::default(),
-                email: Deserialize::default(),
-                numeric: Deserialize::default(),
-                phone: Deserialize::default(),
-                required: Deserialize::default(),
-                selection: Deserialize::default(),
-                signature: Deserialize::default(),
-                skipped: Deserialize::default(),
-                text: Deserialize::default(),
-                toggles: Deserialize::default(),
-                type_: Deserialize::default(),
+                custom_text: Some(None),
+                email: Some(None),
+                numeric: Some(None),
+                phone: Some(None),
+                required: Some(None),
+                selection: Some(None),
+                signature: Some(None),
+                skipped: Some(None),
+                text: Some(None),
+                toggles: Some(None),
+                type_: None,
             }
         }
 

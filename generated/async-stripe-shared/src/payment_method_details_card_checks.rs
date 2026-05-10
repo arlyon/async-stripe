@@ -74,9 +74,9 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                address_line1_check: Deserialize::default(),
-                address_postal_code_check: Deserialize::default(),
-                cvc_check: Deserialize::default(),
+                address_line1_check: Some(None),
+                address_postal_code_check: Some(None),
+                cvc_check: Some(None),
             }
         }
 

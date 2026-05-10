@@ -94,11 +94,11 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                invoice_item: Deserialize::default(),
-                proration: Deserialize::default(),
-                proration_details: Deserialize::default(),
-                subscription: Deserialize::default(),
-                subscription_item: Deserialize::default(),
+                invoice_item: Some(None),
+                proration: None,
+                proration_details: Some(None),
+                subscription: Some(None),
+                subscription_item: None,
             }
         }
 

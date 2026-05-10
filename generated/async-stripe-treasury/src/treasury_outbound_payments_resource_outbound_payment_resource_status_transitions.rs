@@ -81,10 +81,10 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                canceled_at: Deserialize::default(),
-                failed_at: Deserialize::default(),
-                posted_at: Deserialize::default(),
-                returned_at: Deserialize::default(),
+                canceled_at: Some(None),
+                failed_at: Some(None),
+                posted_at: Some(None),
+                returned_at: Some(None),
             }
         }
 

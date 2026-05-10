@@ -77,9 +77,9 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                metadata: Deserialize::default(),
-                subscription: Deserialize::default(),
-                subscription_proration_date: Deserialize::default(),
+                metadata: Some(None),
+                subscription: None,
+                subscription_proration_date: Some(None),
             }
         }
 

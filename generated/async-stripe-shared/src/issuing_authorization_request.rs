@@ -119,18 +119,18 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                amount: Deserialize::default(),
-                amount_details: Deserialize::default(),
-                approved: Deserialize::default(),
-                authorization_code: Deserialize::default(),
-                created: Deserialize::default(),
-                currency: Deserialize::default(),
-                merchant_amount: Deserialize::default(),
-                merchant_currency: Deserialize::default(),
-                network_risk_score: Deserialize::default(),
-                reason: Deserialize::default(),
-                reason_message: Deserialize::default(),
-                requested_at: Deserialize::default(),
+                amount: None,
+                amount_details: Some(None),
+                approved: None,
+                authorization_code: Some(None),
+                created: None,
+                currency: None,
+                merchant_amount: None,
+                merchant_currency: None,
+                network_risk_score: Some(None),
+                reason: None,
+                reason_message: Some(None),
+                requested_at: Some(None),
             }
         }
 

@@ -69,8 +69,8 @@ const _: () = {
     }
 
     fn deser_default() -> Self {
-        Self { network: Deserialize::default(),
-sender_name: Deserialize::default(),
+        Self { network: Some(None),
+sender_name: Some(None),
  }
     }
 

@@ -68,10 +68,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self {
-                approval_requested: Deserialize::default(),
-                completes_at: Deserialize::default(),
-            }
+            Self { approval_requested: Some(None), completes_at: Some(None) }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {

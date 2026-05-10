@@ -70,11 +70,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self {
-                expires_at: Deserialize::default(),
-                hosted_voucher_url: Deserialize::default(),
-                stores: Deserialize::default(),
-            }
+            Self { expires_at: None, hosted_voucher_url: Some(None), stores: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {

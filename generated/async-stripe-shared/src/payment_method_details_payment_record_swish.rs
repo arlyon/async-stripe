@@ -73,9 +73,9 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                fingerprint: Deserialize::default(),
-                payment_reference: Deserialize::default(),
-                verified_phone_last4: Deserialize::default(),
+                fingerprint: Some(None),
+                payment_reference: Some(None),
+                verified_phone_last4: Some(None),
             }
         }
 

@@ -66,7 +66,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self { fee_acknowledged: Deserialize::default() }
+            Self { fee_acknowledged: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {

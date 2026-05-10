@@ -68,10 +68,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self {
-                destination_duration: Deserialize::default(),
-                destination_ip_address: Deserialize::default(),
-            }
+            Self { destination_duration: None, destination_ip_address: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {

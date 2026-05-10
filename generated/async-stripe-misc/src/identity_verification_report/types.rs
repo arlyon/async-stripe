@@ -121,19 +121,19 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                client_reference_id: Deserialize::default(),
-                created: Deserialize::default(),
-                document: Deserialize::default(),
-                email: Deserialize::default(),
-                id: Deserialize::default(),
-                id_number: Deserialize::default(),
-                livemode: Deserialize::default(),
-                options: Deserialize::default(),
-                phone: Deserialize::default(),
-                selfie: Deserialize::default(),
-                type_: Deserialize::default(),
-                verification_flow: Deserialize::default(),
-                verification_session: Deserialize::default(),
+                client_reference_id: Some(None),
+                created: None,
+                document: Some(None),
+                email: Some(None),
+                id: None,
+                id_number: Some(None),
+                livemode: None,
+                options: Some(None),
+                phone: Some(None),
+                selfie: Some(None),
+                type_: None,
+                verification_flow: Some(None),
+                verification_session: Some(None),
             }
         }
 

@@ -74,9 +74,9 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                payer_details: Deserialize::default(),
-                payment_method_category: Deserialize::default(),
-                preferred_locale: Deserialize::default(),
+                payer_details: Some(None),
+                payment_method_category: Some(None),
+                preferred_locale: Some(None),
             }
         }
 

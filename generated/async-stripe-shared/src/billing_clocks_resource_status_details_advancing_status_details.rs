@@ -65,7 +65,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self { target_frozen_time: Deserialize::default() }
+            Self { target_frozen_time: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {

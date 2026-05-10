@@ -107,17 +107,17 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                address: Deserialize::default(),
-                address_kana: Deserialize::default(),
-                address_kanji: Deserialize::default(),
-                configuration_overrides: Deserialize::default(),
-                display_name: Deserialize::default(),
-                display_name_kana: Deserialize::default(),
-                display_name_kanji: Deserialize::default(),
-                id: Deserialize::default(),
-                livemode: Deserialize::default(),
-                metadata: Deserialize::default(),
-                phone: Deserialize::default(),
+                address: None,
+                address_kana: Some(None),
+                address_kanji: Some(None),
+                configuration_overrides: Some(None),
+                display_name: None,
+                display_name_kana: Some(None),
+                display_name_kanji: Some(None),
+                id: None,
+                livemode: None,
+                metadata: None,
+                phone: Some(None),
             }
         }
 

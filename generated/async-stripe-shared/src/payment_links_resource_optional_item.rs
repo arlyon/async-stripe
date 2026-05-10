@@ -70,11 +70,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self {
-                adjustable_quantity: Deserialize::default(),
-                price: Deserialize::default(),
-                quantity: Deserialize::default(),
-            }
+            Self { adjustable_quantity: Some(None), price: None, quantity: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {

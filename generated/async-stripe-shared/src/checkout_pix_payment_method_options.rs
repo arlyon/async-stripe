@@ -79,9 +79,9 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                amount_includes_iof: Deserialize::default(),
-                expires_after_seconds: Deserialize::default(),
-                setup_future_usage: Deserialize::default(),
+                amount_includes_iof: Some(None),
+                expires_after_seconds: Some(None),
+                setup_future_usage: Some(None),
             }
         }
 

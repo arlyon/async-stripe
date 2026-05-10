@@ -75,11 +75,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self {
-                evaluated_at: Deserialize::default(),
-                risk_level: Deserialize::default(),
-                score: Deserialize::default(),
-            }
+            Self { evaluated_at: None, risk_level: None, score: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {

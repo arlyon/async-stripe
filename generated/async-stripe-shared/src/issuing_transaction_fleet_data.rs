@@ -78,10 +78,10 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                cardholder_prompt_data: Deserialize::default(),
-                purchase_type: Deserialize::default(),
-                reported_breakdown: Deserialize::default(),
-                service_type: Deserialize::default(),
+                cardholder_prompt_data: Some(None),
+                purchase_type: Some(None),
+                reported_breakdown: Some(None),
+                service_type: Some(None),
             }
         }
 

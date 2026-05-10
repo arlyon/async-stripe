@@ -65,10 +65,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self {
-                available_balance: Deserialize::default(),
-                ledger_balance: Deserialize::default(),
-            }
+            Self { available_balance: None, ledger_balance: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {

@@ -71,9 +71,9 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                financial_connections: Deserialize::default(),
-                mandate_options: Deserialize::default(),
-                verification_method: Deserialize::default(),
+                financial_connections: Some(None),
+                mandate_options: Some(None),
+                verification_method: Some(None),
             }
         }
 

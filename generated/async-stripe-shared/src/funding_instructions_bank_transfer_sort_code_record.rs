@@ -79,11 +79,11 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                account_holder_address: Deserialize::default(),
-                account_holder_name: Deserialize::default(),
-                account_number: Deserialize::default(),
-                bank_address: Deserialize::default(),
-                sort_code: Deserialize::default(),
+                account_holder_address: None,
+                account_holder_name: None,
+                account_number: None,
+                bank_address: None,
+                sort_code: None,
             }
         }
 

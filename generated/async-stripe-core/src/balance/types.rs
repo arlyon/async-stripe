@@ -96,13 +96,13 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                available: Deserialize::default(),
-                connect_reserved: Deserialize::default(),
-                instant_available: Deserialize::default(),
-                issuing: Deserialize::default(),
-                livemode: Deserialize::default(),
-                pending: Deserialize::default(),
-                refund_and_dispute_prefunding: Deserialize::default(),
+                available: None,
+                connect_reserved: Some(None),
+                instant_available: Some(None),
+                issuing: Some(None),
+                livemode: None,
+                pending: None,
+                refund_and_dispute_prefunding: Some(None),
             }
         }
 

@@ -73,11 +73,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self {
-                enabled: Deserialize::default(),
-                maximum: Deserialize::default(),
-                minimum: Deserialize::default(),
-            }
+            Self { enabled: None, maximum: Some(None), minimum: Some(None) }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {

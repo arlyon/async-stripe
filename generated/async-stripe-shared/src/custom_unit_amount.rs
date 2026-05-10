@@ -72,11 +72,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self {
-                maximum: Deserialize::default(),
-                minimum: Deserialize::default(),
-                preset: Deserialize::default(),
-            }
+            Self { maximum: Some(None), minimum: Some(None), preset: Some(None) }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {

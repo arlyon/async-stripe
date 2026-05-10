@@ -89,12 +89,12 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                created: Deserialize::default(),
-                event_name: Deserialize::default(),
-                identifier: Deserialize::default(),
-                livemode: Deserialize::default(),
-                payload: Deserialize::default(),
-                timestamp: Deserialize::default(),
+                created: None,
+                event_name: None,
+                identifier: None,
+                livemode: None,
+                payload: None,
+                timestamp: None,
             }
         }
 

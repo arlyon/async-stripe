@@ -117,19 +117,19 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                address: Deserialize::default(),
-                address_validation: Deserialize::default(),
-                carrier: Deserialize::default(),
-                customs: Deserialize::default(),
-                eta: Deserialize::default(),
-                name: Deserialize::default(),
-                phone_number: Deserialize::default(),
-                require_signature: Deserialize::default(),
-                service: Deserialize::default(),
-                status: Deserialize::default(),
-                tracking_number: Deserialize::default(),
-                tracking_url: Deserialize::default(),
-                type_: Deserialize::default(),
+                address: None,
+                address_validation: Some(None),
+                carrier: Some(None),
+                customs: Some(None),
+                eta: Some(None),
+                name: None,
+                phone_number: Some(None),
+                require_signature: Some(None),
+                service: None,
+                status: Some(None),
+                tracking_number: Some(None),
+                tracking_url: Some(None),
+                type_: None,
             }
         }
 

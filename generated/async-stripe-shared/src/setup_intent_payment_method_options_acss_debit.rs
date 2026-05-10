@@ -73,9 +73,9 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                currency: Deserialize::default(),
-                mandate_options: Deserialize::default(),
-                verification_method: Deserialize::default(),
+                currency: Some(None),
+                mandate_options: Some(None),
+                verification_method: Some(None),
             }
         }
 

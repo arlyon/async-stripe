@@ -80,11 +80,11 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                reference: Deserialize::default(),
-                sender_address_country: Deserialize::default(),
-                sender_address_line1: Deserialize::default(),
-                sender_iban: Deserialize::default(),
-                sender_name: Deserialize::default(),
+                reference: Some(None),
+                sender_address_country: Some(None),
+                sender_address_line1: Some(None),
+                sender_iban: Some(None),
+                sender_name: Some(None),
             }
         }
 

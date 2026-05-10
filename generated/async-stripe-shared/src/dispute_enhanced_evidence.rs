@@ -69,10 +69,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self {
-                visa_compelling_evidence_3: Deserialize::default(),
-                visa_compliance: Deserialize::default(),
-            }
+            Self { visa_compelling_evidence_3: Some(None), visa_compliance: Some(None) }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {

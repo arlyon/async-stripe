@@ -80,11 +80,11 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                address: Deserialize::default(),
-                address_source: Deserialize::default(),
-                ip_address: Deserialize::default(),
-                tax_ids: Deserialize::default(),
-                taxability_override: Deserialize::default(),
+                address: Some(None),
+                address_source: Some(None),
+                ip_address: Some(None),
+                tax_ids: None,
+                taxability_override: None,
             }
         }
 

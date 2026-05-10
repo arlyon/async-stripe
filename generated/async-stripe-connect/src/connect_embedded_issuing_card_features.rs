@@ -80,10 +80,10 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                card_management: Deserialize::default(),
-                card_spend_dispute_management: Deserialize::default(),
-                cardholder_management: Deserialize::default(),
-                spend_control_management: Deserialize::default(),
+                card_management: None,
+                card_spend_dispute_management: None,
+                cardholder_management: None,
+                spend_control_management: None,
             }
         }
 

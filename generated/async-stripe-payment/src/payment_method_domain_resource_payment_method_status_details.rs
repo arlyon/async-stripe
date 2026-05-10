@@ -66,7 +66,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self { error_message: Deserialize::default() }
+            Self { error_message: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {

@@ -77,10 +77,10 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                default_for: Deserialize::default(),
-                interval_description: Deserialize::default(),
-                payment_schedule: Deserialize::default(),
-                transaction_type: Deserialize::default(),
+                default_for: Some(None),
+                interval_description: Some(None),
+                payment_schedule: None,
+                transaction_type: None,
             }
         }
 

@@ -126,21 +126,21 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                amount: Deserialize::default(),
-                description: Deserialize::default(),
-                discount_amount: Deserialize::default(),
-                discount_amounts: Deserialize::default(),
-                id: Deserialize::default(),
-                invoice_line_item: Deserialize::default(),
-                livemode: Deserialize::default(),
-                metadata: Deserialize::default(),
-                pretax_credit_amounts: Deserialize::default(),
-                quantity: Deserialize::default(),
-                tax_rates: Deserialize::default(),
-                taxes: Deserialize::default(),
-                type_: Deserialize::default(),
-                unit_amount: Deserialize::default(),
-                unit_amount_decimal: Deserialize::default(),
+                amount: None,
+                description: Some(None),
+                discount_amount: None,
+                discount_amounts: None,
+                id: None,
+                invoice_line_item: Some(None),
+                livemode: None,
+                metadata: Some(None),
+                pretax_credit_amounts: None,
+                quantity: Some(None),
+                tax_rates: None,
+                taxes: Some(None),
+                type_: None,
+                unit_amount: Some(None),
+                unit_amount_decimal: Some(None),
             }
         }
 

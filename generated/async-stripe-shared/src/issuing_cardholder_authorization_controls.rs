@@ -105,12 +105,12 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                allowed_categories: Deserialize::default(),
-                allowed_merchant_countries: Deserialize::default(),
-                blocked_categories: Deserialize::default(),
-                blocked_merchant_countries: Deserialize::default(),
-                spending_limits: Deserialize::default(),
-                spending_limits_currency: Deserialize::default(),
+                allowed_categories: Some(None),
+                allowed_merchant_countries: Some(None),
+                blocked_categories: Some(None),
+                blocked_merchant_countries: Some(None),
+                spending_limits: Some(None),
+                spending_limits_currency: Some(None),
             }
         }
 

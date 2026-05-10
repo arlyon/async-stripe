@@ -73,9 +73,9 @@ const _: () = {
     }
 
     fn deser_default() -> Self {
-        Self { account_number_last4: Deserialize::default(),
-sender_name: Deserialize::default(),
-sort_code: Deserialize::default(),
+        Self { account_number_last4: Some(None),
+sender_name: Some(None),
+sort_code: Some(None),
  }
     }
 

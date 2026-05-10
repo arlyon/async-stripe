@@ -87,13 +87,13 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                dropdown: Deserialize::default(),
-                key: Deserialize::default(),
-                label: Deserialize::default(),
-                numeric: Deserialize::default(),
-                optional: Deserialize::default(),
-                text: Deserialize::default(),
-                type_: Deserialize::default(),
+                dropdown: Some(None),
+                key: None,
+                label: None,
+                numeric: Some(None),
+                optional: None,
+                text: Some(None),
+                type_: None,
             }
         }
 

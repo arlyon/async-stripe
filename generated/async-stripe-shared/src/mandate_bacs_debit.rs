@@ -85,12 +85,12 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                display_name: Deserialize::default(),
-                network_status: Deserialize::default(),
-                reference: Deserialize::default(),
-                revocation_reason: Deserialize::default(),
-                service_user_number: Deserialize::default(),
-                url: Deserialize::default(),
+                display_name: Some(None),
+                network_status: None,
+                reference: None,
+                revocation_reason: Some(None),
+                service_user_number: Some(None),
+                url: None,
             }
         }
 

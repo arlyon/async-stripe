@@ -94,13 +94,13 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                address_line1_check: Deserialize::default(),
-                address_postal_code_check: Deserialize::default(),
-                authentication_exemption: Deserialize::default(),
-                cvc_check: Deserialize::default(),
-                expiry_check: Deserialize::default(),
-                postal_code: Deserialize::default(),
-                three_d_secure: Deserialize::default(),
+                address_line1_check: None,
+                address_postal_code_check: None,
+                authentication_exemption: Some(None),
+                cvc_check: None,
+                expiry_check: None,
+                postal_code: Some(None),
+                three_d_secure: Some(None),
             }
         }
 

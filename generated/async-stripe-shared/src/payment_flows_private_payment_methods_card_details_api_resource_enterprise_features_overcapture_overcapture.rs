@@ -69,8 +69,8 @@ const _: () = {
     }
 
     fn deser_default() -> Self {
-        Self { maximum_amount_capturable: Deserialize::default(),
-status: Deserialize::default(),
+        Self { maximum_amount_capturable: None,
+status: None,
  }
     }
 

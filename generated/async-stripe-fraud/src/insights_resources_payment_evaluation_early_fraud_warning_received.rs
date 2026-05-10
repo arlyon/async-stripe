@@ -65,7 +65,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self { fraud_type: Deserialize::default() }
+            Self { fraud_type: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {

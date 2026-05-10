@@ -80,11 +80,11 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                departure_at: Deserialize::default(),
-                passenger_name: Deserialize::default(),
-                refundable: Deserialize::default(),
-                segments: Deserialize::default(),
-                travel_agency: Deserialize::default(),
+                departure_at: Some(None),
+                passenger_name: Some(None),
+                refundable: Some(None),
+                segments: Some(None),
+                travel_agency: Some(None),
             }
         }
 

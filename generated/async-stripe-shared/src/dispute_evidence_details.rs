@@ -82,11 +82,11 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                due_by: Deserialize::default(),
-                enhanced_eligibility: Deserialize::default(),
-                has_evidence: Deserialize::default(),
-                past_due: Deserialize::default(),
-                submission_count: Deserialize::default(),
+                due_by: Some(None),
+                enhanced_eligibility: None,
+                has_evidence: None,
+                past_due: None,
+                submission_count: None,
             }
         }
 

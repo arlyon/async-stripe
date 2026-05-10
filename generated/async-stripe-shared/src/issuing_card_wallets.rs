@@ -71,11 +71,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self {
-                apple_pay: Deserialize::default(),
-                google_pay: Deserialize::default(),
-                primary_account_identifier: Deserialize::default(),
-            }
+            Self { apple_pay: None, google_pay: None, primary_account_identifier: Some(None) }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
