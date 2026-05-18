@@ -10,7 +10,7 @@ Network requests fail. **async-stripe** provides a robust `RequestStrategy` API 
 
 ## Strategy Options
 
-The library respects Stripe's `Stripe-Should-Retry` response header when present, and otherwise falls back to retrying transient status codes such as `409`, `429`, and `5xx` responses.
+The library respects Stripe's `Stripe-Should-Retry` response header when present, and otherwise falls back to retrying transient status codes such as `409`, `424`, `429`, and `5xx` responses.
 
 | Strategy | Description | Use Case |
 |----------|-------------|----------|
