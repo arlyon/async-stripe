@@ -1,7 +1,14 @@
 use std::time::Duration;
 
 fn is_status_client_error(status: u16) -> bool {
-    (400..500).contains(&status) && status != 429
+    (400..500).contains(&status) && !matches!(status, 409 | 429)
+}
+
+// Fall back to Stripe's documented transient status codes when
+// `Stripe-Should-Retry` is absent.
+// See: https://docs.stripe.com/error-low-level#status-codes
+fn retryable_status(status: u16) -> bool {
+    matches!(status, 409 | 429 | 500..=504)
 }
 
 /// Possible strategies for sending Stripe API requests, including retry behavior
@@ -12,13 +19,13 @@ pub enum RequestStrategy {
     Once,
     /// Run it once with a given idempotency key.
     Idempotent(IdempotencyKey),
-    /// This strategy will retry the request up to the
-    /// specified number of times using the same, random,
-    /// idempotency key, up to n times.
+    /// This strategy will try the request up to the specified
+    /// number of total attempts using the same, random,
+    /// idempotency key.
     Retry(u32),
-    /// This strategy will retry the request up to the
-    /// specified number of times using the same, random,
-    /// idempotency key with exponential backoff, up to n times.
+    /// This strategy will try the request up to the specified
+    /// number of total attempts using the same, random,
+    /// idempotency key with exponential backoff.
     ExponentialBackoff(u32),
 }
 
@@ -41,10 +48,10 @@ impl RequestStrategy {
             Some(false) => return Outcome::Stop,
             // If Stripe explicitly says to retry, continue with retry logic
             Some(true) => {}
-            // If header is absent, only retry for 429 (Too Many Requests)
+            // If header is absent, fall back to retryable status codes.
             None => {
                 if let Some(s) = status
-                    && s != 429
+                    && !retryable_status(s)
                 {
                     return Outcome::Stop;
                 }
@@ -242,10 +249,12 @@ mod tests {
     #[test]
     fn test_stripe_should_retry_true() {
         let strategy = RequestStrategy::Retry(3);
-        // When Stripe-Should-Retry is true, should retry regardless of status code
+        // When Stripe-Should-Retry is true, should retry retryable status codes
         assert_eq!(strategy.test(Some(500), Some(true), 0), Outcome::Continue(None));
         assert_eq!(strategy.test(Some(503), Some(true), 0), Outcome::Continue(None));
-        // Except for client errors (4xx)
+        assert_eq!(strategy.test(Some(409), Some(true), 0), Outcome::Continue(None));
+        assert_eq!(strategy.test(Some(429), Some(true), 0), Outcome::Continue(None));
+        // Except for non-retryable client errors (4xx)
         assert_eq!(strategy.test(Some(400), Some(true), 0), Outcome::Stop);
         assert_eq!(strategy.test(Some(404), Some(true), 0), Outcome::Stop);
     }
@@ -270,9 +279,11 @@ mod tests {
     #[test]
     fn test_stripe_should_retry_absent_500() {
         let strategy = RequestStrategy::Retry(3);
-        // When header is absent and status is 500, should NOT retry
-        assert_eq!(strategy.test(Some(500), None, 0), Outcome::Stop);
-        assert_eq!(strategy.test(Some(503), None, 0), Outcome::Stop);
+        // When header is absent and status is 5xx, should retry
+        assert_eq!(strategy.test(Some(500), None, 0), Outcome::Continue(None));
+        assert_eq!(strategy.test(Some(502), None, 0), Outcome::Continue(None));
+        assert_eq!(strategy.test(Some(503), None, 0), Outcome::Continue(None));
+        assert_eq!(strategy.test(Some(504), None, 0), Outcome::Continue(None));
     }
 
     #[test]
@@ -281,6 +292,14 @@ mod tests {
         // When header is absent and status is 4xx, should NOT retry
         assert_eq!(strategy.test(Some(400), None, 0), Outcome::Stop);
         assert_eq!(strategy.test(Some(404), None, 0), Outcome::Stop);
+    }
+
+    #[test]
+    fn test_stripe_should_retry_absent_409() {
+        let strategy = RequestStrategy::Retry(3);
+        // When header is absent and status is 409, should retry
+        assert_eq!(strategy.test(Some(409), None, 0), Outcome::Continue(None));
+        assert_eq!(strategy.test(Some(409), None, 1), Outcome::Continue(None));
     }
 
     #[test]
