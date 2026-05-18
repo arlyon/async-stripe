@@ -1,14 +1,14 @@
 use std::time::Duration;
 
 fn is_status_client_error(status: u16) -> bool {
-    (400..500).contains(&status) && !matches!(status, 409 | 429)
+    (400..500).contains(&status) && !matches!(status, 409 | 424 | 429)
 }
 
 // Fall back to Stripe's documented transient status codes when
 // `Stripe-Should-Retry` is absent.
 // See: https://docs.stripe.com/error-low-level#status-codes
 fn retryable_status(status: u16) -> bool {
-    matches!(status, 409 | 429 | 500..=504)
+    matches!(status, 409 | 424 | 429 | 500..=504)
 }
 
 /// Possible strategies for sending Stripe API requests, including retry behavior
@@ -253,6 +253,7 @@ mod tests {
         assert_eq!(strategy.test(Some(500), Some(true), 0), Outcome::Continue(None));
         assert_eq!(strategy.test(Some(503), Some(true), 0), Outcome::Continue(None));
         assert_eq!(strategy.test(Some(409), Some(true), 0), Outcome::Continue(None));
+        assert_eq!(strategy.test(Some(424), Some(true), 0), Outcome::Continue(None));
         assert_eq!(strategy.test(Some(429), Some(true), 0), Outcome::Continue(None));
         // Except for non-retryable client errors (4xx)
         assert_eq!(strategy.test(Some(400), Some(true), 0), Outcome::Stop);
@@ -300,6 +301,14 @@ mod tests {
         // When header is absent and status is 409, should retry
         assert_eq!(strategy.test(Some(409), None, 0), Outcome::Continue(None));
         assert_eq!(strategy.test(Some(409), None, 1), Outcome::Continue(None));
+    }
+
+    #[test]
+    fn test_stripe_should_retry_absent_424() {
+        let strategy = RequestStrategy::Retry(3);
+        // When header is absent and status is 424, should retry
+        assert_eq!(strategy.test(Some(424), None, 0), Outcome::Continue(None));
+        assert_eq!(strategy.test(Some(424), None, 1), Outcome::Continue(None));
     }
 
     #[test]
