@@ -10,14 +10,14 @@ Network requests fail. **async-stripe** provides a robust `RequestStrategy` API 
 
 ## Strategy Options
 
-The library implements the "Full Jitter" exponential backoff algorithm recommended by Stripe engineering to prevent thundering herd problems.
+The library respects Stripe's `Stripe-Should-Retry` response header when present, and otherwise falls back to retrying transient status codes such as `409`, `429`, and `5xx` responses.
 
 | Strategy | Description | Use Case |
 |----------|-------------|----------|
 | `Once` | Fire and forget. No retries. | You are handling retries manually |
 | `Idempotent(key)` | Fire once with a specific, user-provided Idempotency Key | Critical payment creation flows where you need control over the idempotency key |
-| `Retry(n)` | Retry `n` times with a random UUID idempotency key | General retry logic without backoff |
-| `ExponentialBackoff(n)` | Retry `n` times with exponential backoff (0.5s base, up to 8s max) and randomized jitter | Recommended for production to handle transient failures gracefully |
+| `Retry(n)` | Try the request up to `n` total times with a random UUID idempotency key | General retry logic without backoff |
+| `ExponentialBackoff(n)` | Try the request up to `n` total times with exponential backoff | Recommended for production to handle transient failures gracefully |
 
 ## Usage
 

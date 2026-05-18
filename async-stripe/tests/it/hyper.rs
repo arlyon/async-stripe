@@ -331,8 +331,7 @@ async fn timeout_per_attempt() {
     let res =
         RequestBuilder::new(StripeMethod::Get, "/slow").customize::<TestData>().send(&client).await;
 
-    // Retry(n) makes n+1 attempts (initial + n retries) when last_status is
-    // None — the strategy keeps continuing until tries == n.
+    // Retry(n) makes up to n total attempts.
     mock.assert_hits_async(3).await;
     assert!(matches!(res, Err(StripeError::Timeout)));
 }
