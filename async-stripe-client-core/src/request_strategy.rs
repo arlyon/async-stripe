@@ -1,9 +1,5 @@
 use std::time::Duration;
 
-fn is_status_client_error(status: u16) -> bool {
-    (400..500).contains(&status) && !matches!(status, 409 | 424 | 429)
-}
-
 // Fall back to Stripe's documented transient status codes when
 // `Stripe-Should-Retry` is absent.
 // See: https://docs.stripe.com/error-low-level#status-codes
@@ -42,37 +38,29 @@ impl RequestStrategy {
     ) -> Outcome {
         use RequestStrategy::*;
 
-        // Handle Stripe-Should-Retry header
         match stripe_should_retry {
             // If Stripe explicitly says not to retry, never retry
             Some(false) => return Outcome::Stop,
             // If Stripe explicitly says to retry, continue with retry logic
             Some(true) => {}
-            // If header is absent, fall back to retryable status codes.
-            None => {
-                if let Some(s) = status
-                    && !retryable_status(s)
-                {
-                    return Outcome::Stop;
-                }
-            }
+            // If header is absent, fall back to retryable status codes below.
+            None => {}
         }
 
-        match (self, status, retry_count) {
-            // a strategy of once or idempotent should run once
-            (Once | Idempotent(_), _, 0) => Outcome::Continue(None),
+        if let Some(s) = status
+            && !retryable_status(s)
+        {
+            return Outcome::Stop;
+        }
 
-            // requests with idempotency keys that hit client
-            // errors usually cannot be solved with retries
-            // see: https://stripe.com/docs/error-handling#content-errors
-            (_, Some(c), _) if is_status_client_error(c) => Outcome::Stop,
+        match (self, retry_count) {
+            // a strategy of once or idempotent should run once
+            (Once | Idempotent(_), 0) => Outcome::Continue(None),
 
             // a strategy of retry or exponential backoff should retry with
             // the appropriate delay if the number of retries is less than the max
-            (Retry(n), _, x) if x < *n => Outcome::Continue(None),
-            (ExponentialBackoff(n), _, x) if x < *n => {
-                Outcome::Continue(Some(calculate_backoff(x)))
-            }
+            (Retry(n), x) if x < *n => Outcome::Continue(None),
+            (ExponentialBackoff(n), x) if x < *n => Outcome::Continue(Some(calculate_backoff(x))),
 
             // unknown cases should be stopped to prevent infinite loops
             _ => Outcome::Stop,
