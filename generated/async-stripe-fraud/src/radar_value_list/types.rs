@@ -16,7 +16,7 @@ pub struct RadarValueList {
     /// Unique identifier for the object.
     pub id: stripe_fraud::RadarValueListId,
     /// The type of items in the value list.
-    /// One of `card_fingerprint`, `card_bin`, `crypto_fingerprint`, `email`, `ip_address`, `country`, `string`, `case_sensitive_string`, `customer_id`, `sepa_debit_fingerprint`, or `us_bank_account_fingerprint`.
+    /// One of `card_fingerprint`, `card_bin`, `crypto_fingerprint`, `email`, `ip_address`, `country`, `string`, `case_sensitive_string`, `customer_id`, `account`, `sepa_debit_fingerprint`, or `us_bank_account_fingerprint`.
     pub item_type: stripe_fraud::RadarValueListItemType,
     /// List of items contained within this value list.
     pub list_items: stripe_types::List<stripe_fraud::RadarValueListItem>,
@@ -226,6 +226,7 @@ stripe_types::def_id!(RadarValueListId);
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum RadarValueListItemType {
+    Account,
     CardBin,
     CardFingerprint,
     CaseSensitiveString,
@@ -244,6 +245,7 @@ impl RadarValueListItemType {
     pub fn as_str(&self) -> &str {
         use RadarValueListItemType::*;
         match self {
+            Account => "account",
             CardBin => "card_bin",
             CardFingerprint => "card_fingerprint",
             CaseSensitiveString => "case_sensitive_string",
@@ -265,6 +267,7 @@ impl std::str::FromStr for RadarValueListItemType {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use RadarValueListItemType::*;
         match s {
+            "account" => Ok(Account),
             "card_bin" => Ok(CardBin),
             "card_fingerprint" => Ok(CardFingerprint),
             "case_sensitive_string" => Ok(CaseSensitiveString),

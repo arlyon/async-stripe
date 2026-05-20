@@ -310,6 +310,8 @@ struct CreatePaymentMethodConfigurationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     sofort: Option<CreatePaymentMethodConfigurationSofort>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    sunbit: Option<CreatePaymentMethodConfigurationSunbit>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     swish: Option<CreatePaymentMethodConfigurationSwish>,
     #[serde(skip_serializing_if = "Option::is_none")]
     twint: Option<CreatePaymentMethodConfigurationTwint>,
@@ -385,6 +387,7 @@ impl CreatePaymentMethodConfigurationBuilder {
             satispay: None,
             sepa_debit: None,
             sofort: None,
+            sunbit: None,
             swish: None,
             twint: None,
             upi: None,
@@ -7174,6 +7177,139 @@ impl<'de> serde::Deserialize<'de>
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
+/// Sunbit is a [single-use](https://docs.stripe.com/payments/payment-methods#usage) payment method where customers choose to pay in 3, 6, or 12 installments.
+/// Customers are redirected from your website or app, authorize the payment with Sunbit, then return to your website or app.
+/// You get [immediate notification](https://docs.stripe.com/payments/payment-methods#payment-notification) of whether the payment succeeded or failed.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreatePaymentMethodConfigurationSunbit {
+    /// Whether or not the payment method should be displayed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub display_preference: Option<CreatePaymentMethodConfigurationSunbitDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationSunbit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationSunbit").finish_non_exhaustive()
+    }
+}
+impl CreatePaymentMethodConfigurationSunbit {
+    pub fn new() -> Self {
+        Self { display_preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationSunbit {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Whether or not the payment method should be displayed.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreatePaymentMethodConfigurationSunbitDisplayPreference {
+    /// The account's preference for whether or not to display this payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub preference: Option<CreatePaymentMethodConfigurationSunbitDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationSunbitDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationSunbitDisplayPreference")
+            .finish_non_exhaustive()
+    }
+}
+impl CreatePaymentMethodConfigurationSunbitDisplayPreference {
+    pub fn new() -> Self {
+        Self { preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationSunbitDisplayPreference {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The account's preference for whether or not to display this payment method.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreatePaymentMethodConfigurationSunbitDisplayPreferencePreference {
+    None,
+    Off,
+    On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreatePaymentMethodConfigurationSunbitDisplayPreferencePreference {
+    pub fn as_str(&self) -> &str {
+        use CreatePaymentMethodConfigurationSunbitDisplayPreferencePreference::*;
+        match self {
+            None => "none",
+            Off => "off",
+            On => "on",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePaymentMethodConfigurationSunbitDisplayPreferencePreference {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreatePaymentMethodConfigurationSunbitDisplayPreferencePreference::*;
+        match s {
+            "none" => Ok(None),
+            "off" => Ok(Off),
+            "on" => Ok(On),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePaymentMethodConfigurationSunbitDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CreatePaymentMethodConfigurationSunbitDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationSunbitDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationSunbitDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePaymentMethodConfigurationSunbitDisplayPreferencePreference
+        ))
+        .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for CreatePaymentMethodConfigurationSunbitDisplayPreferencePreference {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentMethodConfigurationSunbitDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
 /// Swish is a [real-time](https://docs.stripe.com/payments/real-time) payment method popular in Sweden.
 /// It allows customers to [authenticate and approve](https://docs.stripe.com/payments/payment-methods#customer-actions) payments using the Swish mobile app and the Swedish BankID mobile app.
 /// Check this [page](https://docs.stripe.com/payments/swish) for more details.
@@ -8391,6 +8527,13 @@ impl CreatePaymentMethodConfiguration {
         self.inner.sofort = Some(sofort.into());
         self
     }
+    /// Sunbit is a [single-use](https://docs.stripe.com/payments/payment-methods#usage) payment method where customers choose to pay in 3, 6, or 12 installments.
+    /// Customers are redirected from your website or app, authorize the payment with Sunbit, then return to your website or app.
+    /// You get [immediate notification](https://docs.stripe.com/payments/payment-methods#payment-notification) of whether the payment succeeded or failed.
+    pub fn sunbit(mut self, sunbit: impl Into<CreatePaymentMethodConfigurationSunbit>) -> Self {
+        self.inner.sunbit = Some(sunbit.into());
+        self
+    }
     /// Swish is a [real-time](https://docs.stripe.com/payments/real-time) payment method popular in Sweden.
     /// It allows customers to [authenticate and approve](https://docs.stripe.com/payments/payment-methods#customer-actions) payments using the Swish mobile app and the Swedish BankID mobile app.
     /// Check this [page](https://docs.stripe.com/payments/swish) for more details.
@@ -8580,6 +8723,8 @@ struct UpdatePaymentMethodConfigurationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     sofort: Option<UpdatePaymentMethodConfigurationSofort>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    sunbit: Option<UpdatePaymentMethodConfigurationSunbit>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     swish: Option<UpdatePaymentMethodConfigurationSwish>,
     #[serde(skip_serializing_if = "Option::is_none")]
     twint: Option<UpdatePaymentMethodConfigurationTwint>,
@@ -8655,6 +8800,7 @@ impl UpdatePaymentMethodConfigurationBuilder {
             satispay: None,
             sepa_debit: None,
             sofort: None,
+            sunbit: None,
             swish: None,
             twint: None,
             upi: None,
@@ -15444,6 +15590,139 @@ impl<'de> serde::Deserialize<'de>
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
+/// Sunbit is a [single-use](https://docs.stripe.com/payments/payment-methods#usage) payment method where customers choose to pay in 3, 6, or 12 installments.
+/// Customers are redirected from your website or app, authorize the payment with Sunbit, then return to your website or app.
+/// You get [immediate notification](https://docs.stripe.com/payments/payment-methods#payment-notification) of whether the payment succeeded or failed.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdatePaymentMethodConfigurationSunbit {
+    /// Whether or not the payment method should be displayed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub display_preference: Option<UpdatePaymentMethodConfigurationSunbitDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationSunbit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationSunbit").finish_non_exhaustive()
+    }
+}
+impl UpdatePaymentMethodConfigurationSunbit {
+    pub fn new() -> Self {
+        Self { display_preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationSunbit {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Whether or not the payment method should be displayed.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdatePaymentMethodConfigurationSunbitDisplayPreference {
+    /// The account's preference for whether or not to display this payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub preference: Option<UpdatePaymentMethodConfigurationSunbitDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationSunbitDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationSunbitDisplayPreference")
+            .finish_non_exhaustive()
+    }
+}
+impl UpdatePaymentMethodConfigurationSunbitDisplayPreference {
+    pub fn new() -> Self {
+        Self { preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationSunbitDisplayPreference {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The account's preference for whether or not to display this payment method.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum UpdatePaymentMethodConfigurationSunbitDisplayPreferencePreference {
+    None,
+    Off,
+    On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl UpdatePaymentMethodConfigurationSunbitDisplayPreferencePreference {
+    pub fn as_str(&self) -> &str {
+        use UpdatePaymentMethodConfigurationSunbitDisplayPreferencePreference::*;
+        match self {
+            None => "none",
+            Off => "off",
+            On => "on",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for UpdatePaymentMethodConfigurationSunbitDisplayPreferencePreference {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdatePaymentMethodConfigurationSunbitDisplayPreferencePreference::*;
+        match s {
+            "none" => Ok(None),
+            "off" => Ok(Off),
+            "on" => Ok(On),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdatePaymentMethodConfigurationSunbitDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for UpdatePaymentMethodConfigurationSunbitDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationSunbitDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationSunbitDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdatePaymentMethodConfigurationSunbitDisplayPreferencePreference
+        ))
+        .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for UpdatePaymentMethodConfigurationSunbitDisplayPreferencePreference {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentMethodConfigurationSunbitDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
 /// Swish is a [real-time](https://docs.stripe.com/payments/real-time) payment method popular in Sweden.
 /// It allows customers to [authenticate and approve](https://docs.stripe.com/payments/payment-methods#customer-actions) payments using the Swish mobile app and the Swedish BankID mobile app.
 /// Check this [page](https://docs.stripe.com/payments/swish) for more details.
@@ -16663,6 +16942,13 @@ impl UpdatePaymentMethodConfiguration {
     /// Check this [page](https://docs.stripe.com/payments/sofort) for more details.
     pub fn sofort(mut self, sofort: impl Into<UpdatePaymentMethodConfigurationSofort>) -> Self {
         self.inner.sofort = Some(sofort.into());
+        self
+    }
+    /// Sunbit is a [single-use](https://docs.stripe.com/payments/payment-methods#usage) payment method where customers choose to pay in 3, 6, or 12 installments.
+    /// Customers are redirected from your website or app, authorize the payment with Sunbit, then return to your website or app.
+    /// You get [immediate notification](https://docs.stripe.com/payments/payment-methods#payment-notification) of whether the payment succeeded or failed.
+    pub fn sunbit(mut self, sunbit: impl Into<UpdatePaymentMethodConfigurationSunbit>) -> Self {
+        self.inner.sunbit = Some(sunbit.into());
         self
     }
     /// Swish is a [real-time](https://docs.stripe.com/payments/real-time) payment method popular in Sweden.

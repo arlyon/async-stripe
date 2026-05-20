@@ -302,6 +302,10 @@ pub struct CreateConfirmationTokenPaymentMethodData {
     /// If this is a `sofort` PaymentMethod, this hash contains details about the SOFORT payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sofort: Option<CreateConfirmationTokenPaymentMethodDataSofort>,
+    /// If this is a Sunbit PaymentMethod, this hash contains details about the Sunbit payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub sunbit: Option<miniserde::json::Value>,
     /// If this is a `swish` PaymentMethod, this hash contains details about the Swish payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
@@ -388,6 +392,7 @@ impl CreateConfirmationTokenPaymentMethodData {
             satispay: None,
             sepa_debit: None,
             sofort: None,
+            sunbit: None,
             swish: None,
             twint: None,
             type_: type_.into(),
@@ -1809,6 +1814,7 @@ pub enum CreateConfirmationTokenPaymentMethodDataType {
     Satispay,
     SepaDebit,
     Sofort,
+    Sunbit,
     Swish,
     Twint,
     Upi,
@@ -1866,6 +1872,7 @@ impl CreateConfirmationTokenPaymentMethodDataType {
             Satispay => "satispay",
             SepaDebit => "sepa_debit",
             Sofort => "sofort",
+            Sunbit => "sunbit",
             Swish => "swish",
             Twint => "twint",
             Upi => "upi",
@@ -1926,6 +1933,7 @@ impl std::str::FromStr for CreateConfirmationTokenPaymentMethodDataType {
             "satispay" => Ok(Satispay),
             "sepa_debit" => Ok(SepaDebit),
             "sofort" => Ok(Sofort),
+            "sunbit" => Ok(Sunbit),
             "swish" => Ok(Swish),
             "twint" => Ok(Twint),
             "upi" => Ok(Upi),

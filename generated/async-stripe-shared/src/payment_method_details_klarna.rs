@@ -3,6 +3,8 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentMethodDetailsKlarna {
+    /// ID of the [location](https://docs.stripe.com/api/terminal/locations) that this transaction's reader is assigned to.
+    pub location: Option<String>,
     /// The payer details for this transaction.
     pub payer_details: Option<stripe_shared::KlarnaPayerDetails>,
     /// The Klarna payment method used for this transaction.
@@ -11,6 +13,8 @@ pub struct PaymentMethodDetailsKlarna {
     /// Preferred language of the Klarna authorization page that the customer is redirected to.
     /// Can be one of `de-AT`, `en-AT`, `nl-BE`, `fr-BE`, `en-BE`, `de-DE`, `en-DE`, `da-DK`, `en-DK`, `es-ES`, `en-ES`, `fi-FI`, `sv-FI`, `en-FI`, `en-GB`, `en-IE`, `it-IT`, `en-IT`, `nl-NL`, `en-NL`, `nb-NO`, `en-NO`, `sv-SE`, `en-SE`, `en-US`, `es-US`, `fr-FR`, `en-FR`, `cs-CZ`, `en-CZ`, `ro-RO`, `en-RO`, `el-GR`, `en-GR`, `en-AU`, `en-NZ`, `en-CA`, `fr-CA`, `pl-PL`, `en-PL`, `pt-PT`, `en-PT`, `de-CH`, `fr-CH`, `it-CH`, or `en-CH`.
     pub preferred_locale: Option<String>,
+    /// ID of the [reader](https://docs.stripe.com/api/terminal/readers) this transaction was made on.
+    pub reader: Option<String>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for PaymentMethodDetailsKlarna {
@@ -20,9 +24,11 @@ impl std::fmt::Debug for PaymentMethodDetailsKlarna {
 }
 #[doc(hidden)]
 pub struct PaymentMethodDetailsKlarnaBuilder {
+    location: Option<Option<String>>,
     payer_details: Option<Option<stripe_shared::KlarnaPayerDetails>>,
     payment_method_category: Option<Option<String>>,
     preferred_locale: Option<Option<String>>,
+    reader: Option<Option<String>>,
 }
 
 #[allow(
@@ -65,30 +71,49 @@ const _: () = {
         type Out = PaymentMethodDetailsKlarna;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
+                "location" => Deserialize::begin(&mut self.location),
                 "payer_details" => Deserialize::begin(&mut self.payer_details),
                 "payment_method_category" => Deserialize::begin(&mut self.payment_method_category),
                 "preferred_locale" => Deserialize::begin(&mut self.preferred_locale),
+                "reader" => Deserialize::begin(&mut self.reader),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
             Self {
+                location: Some(None),
                 payer_details: Some(None),
                 payment_method_category: Some(None),
                 preferred_locale: Some(None),
+                reader: Some(None),
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(payer_details), Some(payment_method_category), Some(preferred_locale)) = (
+            let (
+                Some(location),
+                Some(payer_details),
+                Some(payment_method_category),
+                Some(preferred_locale),
+                Some(reader),
+            ) = (
+                self.location.take(),
                 self.payer_details.take(),
                 self.payment_method_category.take(),
                 self.preferred_locale.take(),
-            ) else {
+                self.reader.take(),
+            )
+            else {
                 return None;
             };
-            Some(Self::Out { payer_details, payment_method_category, preferred_locale })
+            Some(Self::Out {
+                location,
+                payer_details,
+                payment_method_category,
+                preferred_locale,
+                reader,
+            })
         }
     }
 
@@ -115,11 +140,13 @@ const _: () = {
             let mut b = PaymentMethodDetailsKlarnaBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
+                    "location" => b.location = FromValueOpt::from_value(v),
                     "payer_details" => b.payer_details = FromValueOpt::from_value(v),
                     "payment_method_category" => {
                         b.payment_method_category = FromValueOpt::from_value(v)
                     }
                     "preferred_locale" => b.preferred_locale = FromValueOpt::from_value(v),
+                    "reader" => b.reader = FromValueOpt::from_value(v),
                     _ => {}
                 }
             }

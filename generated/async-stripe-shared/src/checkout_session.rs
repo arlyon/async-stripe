@@ -105,6 +105,8 @@ pub struct CheckoutSession {
     /// The IETF language tag of the locale Checkout is displayed in.
     /// If blank or `auto`, the browser's locale is used.
     pub locale: Option<stripe_shared::CheckoutSessionLocale>,
+    /// Settings for Managed Payments for this Checkout Session and resulting [PaymentIntents](/api/payment_intents/object), [Invoices](/api/invoices/object), and [Subscriptions](/api/subscriptions/object).
+    pub managed_payments: Option<stripe_shared::PaymentPagesCheckoutSessionManagedPayments>,
     /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: Option<std::collections::HashMap<String, String>>,
@@ -236,6 +238,7 @@ pub struct CheckoutSessionBuilder {
     line_items: Option<Option<stripe_types::List<stripe_shared::CheckoutSessionItem>>>,
     livemode: Option<bool>,
     locale: Option<Option<stripe_shared::CheckoutSessionLocale>>,
+    managed_payments: Option<Option<stripe_shared::PaymentPagesCheckoutSessionManagedPayments>>,
     metadata: Option<Option<std::collections::HashMap<String, String>>>,
     mode: Option<stripe_shared::CheckoutSessionMode>,
     name_collection: Option<Option<stripe_shared::PaymentPagesCheckoutSessionNameCollection>>,
@@ -352,6 +355,7 @@ const _: () = {
                 "line_items" => Deserialize::begin(&mut self.line_items),
                 "livemode" => Deserialize::begin(&mut self.livemode),
                 "locale" => Deserialize::begin(&mut self.locale),
+                "managed_payments" => Deserialize::begin(&mut self.managed_payments),
                 "metadata" => Deserialize::begin(&mut self.metadata),
                 "mode" => Deserialize::begin(&mut self.mode),
                 "name_collection" => Deserialize::begin(&mut self.name_collection),
@@ -432,6 +436,7 @@ const _: () = {
                 line_items: Some(None),
                 livemode: None,
                 locale: Some(None),
+                managed_payments: Some(None),
                 metadata: Some(None),
                 mode: None,
                 name_collection: Some(None),
@@ -503,6 +508,7 @@ const _: () = {
                 Some(line_items),
                 Some(livemode),
                 Some(locale),
+                Some(managed_payments),
                 Some(metadata),
                 Some(mode),
                 Some(name_collection),
@@ -570,6 +576,7 @@ const _: () = {
                 self.line_items.take(),
                 self.livemode,
                 self.locale.take(),
+                self.managed_payments,
                 self.metadata.take(),
                 self.mode.take(),
                 self.name_collection,
@@ -641,6 +648,7 @@ const _: () = {
                 line_items,
                 livemode,
                 locale,
+                managed_payments,
                 metadata,
                 mode,
                 name_collection,
@@ -744,6 +752,7 @@ const _: () = {
                     "line_items" => b.line_items = FromValueOpt::from_value(v),
                     "livemode" => b.livemode = FromValueOpt::from_value(v),
                     "locale" => b.locale = FromValueOpt::from_value(v),
+                    "managed_payments" => b.managed_payments = FromValueOpt::from_value(v),
                     "metadata" => b.metadata = FromValueOpt::from_value(v),
                     "mode" => b.mode = FromValueOpt::from_value(v),
                     "name_collection" => b.name_collection = FromValueOpt::from_value(v),
@@ -801,7 +810,7 @@ const _: () = {
 impl serde::Serialize for CheckoutSession {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("CheckoutSession", 67)?;
+        let mut s = s.serialize_struct("CheckoutSession", 68)?;
         s.serialize_field("adaptive_pricing", &self.adaptive_pricing)?;
         s.serialize_field("after_expiration", &self.after_expiration)?;
         s.serialize_field("allow_promotion_codes", &self.allow_promotion_codes)?;
@@ -836,6 +845,7 @@ impl serde::Serialize for CheckoutSession {
         s.serialize_field("line_items", &self.line_items)?;
         s.serialize_field("livemode", &self.livemode)?;
         s.serialize_field("locale", &self.locale)?;
+        s.serialize_field("managed_payments", &self.managed_payments)?;
         s.serialize_field("metadata", &self.metadata)?;
         s.serialize_field("mode", &self.mode)?;
         s.serialize_field("name_collection", &self.name_collection)?;

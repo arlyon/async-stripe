@@ -5,6 +5,7 @@
 pub struct SetupIntentNextAction {
     pub cashapp_handle_redirect_or_display_qr_code:
         Option<stripe_shared::PaymentIntentNextActionCashappHandleRedirectOrDisplayQrCode>,
+    pub pix_display_qr_code: Option<stripe_shared::SetupIntentNextActionPixDisplayQrCode>,
     pub redirect_to_url: Option<stripe_shared::SetupIntentNextActionRedirectToUrl>,
     /// Type of the next action to perform.
     /// Refer to the other child attributes under `next_action` for available values.
@@ -33,6 +34,7 @@ impl std::fmt::Debug for SetupIntentNextAction {
 pub struct SetupIntentNextActionBuilder {
     cashapp_handle_redirect_or_display_qr_code:
         Option<Option<stripe_shared::PaymentIntentNextActionCashappHandleRedirectOrDisplayQrCode>>,
+    pix_display_qr_code: Option<Option<stripe_shared::SetupIntentNextActionPixDisplayQrCode>>,
     redirect_to_url: Option<Option<stripe_shared::SetupIntentNextActionRedirectToUrl>>,
     type_: Option<String>,
     upi_handle_redirect_or_display_qr_code:
@@ -85,6 +87,7 @@ const _: () = {
                 "cashapp_handle_redirect_or_display_qr_code" => {
                     Deserialize::begin(&mut self.cashapp_handle_redirect_or_display_qr_code)
                 }
+                "pix_display_qr_code" => Deserialize::begin(&mut self.pix_display_qr_code),
                 "redirect_to_url" => Deserialize::begin(&mut self.redirect_to_url),
                 "type" => Deserialize::begin(&mut self.type_),
                 "upi_handle_redirect_or_display_qr_code" => {
@@ -101,6 +104,7 @@ const _: () = {
         fn deser_default() -> Self {
             Self {
                 cashapp_handle_redirect_or_display_qr_code: Some(None),
+                pix_display_qr_code: Some(None),
                 redirect_to_url: Some(None),
                 type_: None,
                 upi_handle_redirect_or_display_qr_code: Some(None),
@@ -112,6 +116,7 @@ const _: () = {
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
                 Some(cashapp_handle_redirect_or_display_qr_code),
+                Some(pix_display_qr_code),
                 Some(redirect_to_url),
                 Some(type_),
                 Some(upi_handle_redirect_or_display_qr_code),
@@ -119,6 +124,7 @@ const _: () = {
                 Some(verify_with_microdeposits),
             ) = (
                 self.cashapp_handle_redirect_or_display_qr_code.take(),
+                self.pix_display_qr_code.take(),
                 self.redirect_to_url.take(),
                 self.type_.take(),
                 self.upi_handle_redirect_or_display_qr_code.take(),
@@ -130,6 +136,7 @@ const _: () = {
             };
             Some(Self::Out {
                 cashapp_handle_redirect_or_display_qr_code,
+                pix_display_qr_code,
                 redirect_to_url,
                 type_,
                 upi_handle_redirect_or_display_qr_code,
@@ -165,6 +172,7 @@ const _: () = {
                     "cashapp_handle_redirect_or_display_qr_code" => {
                         b.cashapp_handle_redirect_or_display_qr_code = FromValueOpt::from_value(v)
                     }
+                    "pix_display_qr_code" => b.pix_display_qr_code = FromValueOpt::from_value(v),
                     "redirect_to_url" => b.redirect_to_url = FromValueOpt::from_value(v),
                     "type" => b.type_ = FromValueOpt::from_value(v),
                     "upi_handle_redirect_or_display_qr_code" => {

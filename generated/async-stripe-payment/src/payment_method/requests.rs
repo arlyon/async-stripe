@@ -96,6 +96,7 @@ pub enum ListPaymentMethodType {
     Satispay,
     SepaDebit,
     Sofort,
+    Sunbit,
     Swish,
     Twint,
     Upi,
@@ -155,6 +156,7 @@ impl ListPaymentMethodType {
             Satispay => "satispay",
             SepaDebit => "sepa_debit",
             Sofort => "sofort",
+            Sunbit => "sunbit",
             Swish => "swish",
             Twint => "twint",
             Upi => "upi",
@@ -217,6 +219,7 @@ impl std::str::FromStr for ListPaymentMethodType {
             "satispay" => Ok(Satispay),
             "sepa_debit" => Ok(SepaDebit),
             "sofort" => Ok(Sofort),
+            "sunbit" => Ok(Sunbit),
             "swish" => Ok(Swish),
             "twint" => Ok(Twint),
             "upi" => Ok(Upi),
@@ -586,6 +589,9 @@ struct CreatePaymentMethodBuilder {
     sofort: Option<CreatePaymentMethodSofort>,
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
+    sunbit: Option<miniserde::json::Value>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(with = "stripe_types::with_serde_json_opt")]
     swish: Option<miniserde::json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
@@ -667,6 +673,7 @@ impl CreatePaymentMethodBuilder {
             satispay: None,
             sepa_debit: None,
             sofort: None,
+            sunbit: None,
             swish: None,
             twint: None,
             type_: None,
@@ -2120,6 +2127,7 @@ pub enum CreatePaymentMethodType {
     Satispay,
     SepaDebit,
     Sofort,
+    Sunbit,
     Swish,
     Twint,
     Upi,
@@ -2179,6 +2187,7 @@ impl CreatePaymentMethodType {
             Satispay => "satispay",
             SepaDebit => "sepa_debit",
             Sofort => "sofort",
+            Sunbit => "sunbit",
             Swish => "swish",
             Twint => "twint",
             Upi => "upi",
@@ -2241,6 +2250,7 @@ impl std::str::FromStr for CreatePaymentMethodType {
             "satispay" => Ok(Satispay),
             "sepa_debit" => Ok(SepaDebit),
             "sofort" => Ok(Sofort),
+            "sunbit" => Ok(Sunbit),
             "swish" => Ok(Swish),
             "twint" => Ok(Twint),
             "upi" => Ok(Upi),
@@ -2932,6 +2942,11 @@ impl CreatePaymentMethod {
     /// If this is a `sofort` PaymentMethod, this hash contains details about the SOFORT payment method.
     pub fn sofort(mut self, sofort: impl Into<CreatePaymentMethodSofort>) -> Self {
         self.inner.sofort = Some(sofort.into());
+        self
+    }
+    /// If this is a Sunbit PaymentMethod, this hash contains details about the Sunbit payment method.
+    pub fn sunbit(mut self, sunbit: impl Into<miniserde::json::Value>) -> Self {
+        self.inner.sunbit = Some(sunbit.into());
         self
     }
     /// If this is a `swish` PaymentMethod, this hash contains details about the Swish payment method.

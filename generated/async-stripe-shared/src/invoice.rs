@@ -205,12 +205,10 @@ pub struct Invoice {
     pub payment_settings: stripe_shared::InvoicesPaymentSettings,
     /// Payments for this invoice. Use [invoice payment](/api/invoice-payment) to get more details.
     pub payments: Option<stripe_types::List<stripe_shared::InvoicePayment>>,
-    /// End of the usage period during which invoice items were added to this invoice.
-    /// This looks back one period for a subscription invoice.
+    /// The latest timestamp at which invoice items can be associated with this invoice.
     /// Use the [line item period](/api/invoices/line_item#invoice_line_item_object-period) to get the service period for each price.
     pub period_end: stripe_types::Timestamp,
-    /// Start of the usage period during which invoice items were added to this invoice.
-    /// This looks back one period for a subscription invoice.
+    /// The earliest timestamp at which invoice items can be associated with this invoice.
     /// Use the [line item period](/api/invoices/line_item#invoice_line_item_object-period) to get the service period for each price.
     pub period_start: stripe_types::Timestamp,
     /// Total amount of all post-payment credit notes issued for this invoice.
