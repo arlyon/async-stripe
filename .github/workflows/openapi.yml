@@ -43,7 +43,7 @@ jobs:
 
             ${{ steps.warnings.outputs.has_warnings == 'true' && steps.warnings.outputs.body || '' }}
           branch: openapi
-          branch-suffix: timestamp
+          update-pull-request-title-and-body: true
 
       - name: email if failed
         if: failure()
