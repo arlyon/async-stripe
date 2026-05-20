@@ -1,8 +1,13 @@
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
-pub struct MandateMultiUse {}
+pub struct MandateMultiUse {
+    /// The amount of the payment on a multi use mandate.
+    pub amount: Option<i64>,
+    /// The currency of the payment on a multi use mandate.
+    pub currency: Option<stripe_types::Currency>,
+}
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for MandateMultiUse {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
@@ -10,7 +15,10 @@ impl std::fmt::Debug for MandateMultiUse {
     }
 }
 #[doc(hidden)]
-pub struct MandateMultiUseBuilder {}
+pub struct MandateMultiUseBuilder {
+    amount: Option<Option<i64>>,
+    currency: Option<Option<stripe_types::Currency>>,
+}
 
 #[allow(
     unused_variables,
@@ -52,19 +60,21 @@ const _: () = {
         type Out = MandateMultiUse;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
+                "amount" => Deserialize::begin(&mut self.amount),
+                "currency" => Deserialize::begin(&mut self.currency),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self {}
+            Self { amount: Some(None), currency: Some(None) }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let () = () else {
+            let (Some(amount), Some(currency)) = (self.amount, self.currency.take()) else {
                 return None;
             };
-            Some(Self::Out {})
+            Some(Self::Out { amount, currency })
         }
     }
 
@@ -91,6 +101,8 @@ const _: () = {
             let mut b = MandateMultiUseBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
+                    "amount" => b.amount = FromValueOpt::from_value(v),
+                    "currency" => b.currency = FromValueOpt::from_value(v),
                     _ => {}
                 }
             }

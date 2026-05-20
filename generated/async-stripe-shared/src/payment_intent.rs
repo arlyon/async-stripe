@@ -87,6 +87,8 @@ pub struct PaymentIntent {
     /// If the object exists in live mode, the value is `true`.
     /// If the object exists in test mode, the value is `false`.
     pub livemode: bool,
+    /// Settings for Managed Payments.
+    pub managed_payments: Option<stripe_shared::SmorResourceManagedPayments>,
     /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Learn more about [storing information in metadata](https://docs.stripe.com/payments/payment-intents/creating-payment-intents#storing-information-in-metadata).
@@ -184,6 +186,7 @@ pub struct PaymentIntentBuilder {
     last_payment_error: Option<Option<Box<stripe_shared::ApiErrors>>>,
     latest_charge: Option<Option<stripe_types::Expandable<stripe_shared::Charge>>>,
     livemode: Option<bool>,
+    managed_payments: Option<Option<stripe_shared::SmorResourceManagedPayments>>,
     metadata: Option<std::collections::HashMap<String, String>>,
     next_action: Option<Option<stripe_shared::PaymentIntentNextAction>>,
     on_behalf_of: Option<Option<stripe_types::Expandable<stripe_shared::Account>>>,
@@ -274,6 +277,7 @@ const _: () = {
                 "last_payment_error" => Deserialize::begin(&mut self.last_payment_error),
                 "latest_charge" => Deserialize::begin(&mut self.latest_charge),
                 "livemode" => Deserialize::begin(&mut self.livemode),
+                "managed_payments" => Deserialize::begin(&mut self.managed_payments),
                 "metadata" => Deserialize::begin(&mut self.metadata),
                 "next_action" => Deserialize::begin(&mut self.next_action),
                 "on_behalf_of" => Deserialize::begin(&mut self.on_behalf_of),
@@ -327,6 +331,7 @@ const _: () = {
                 last_payment_error: Some(None),
                 latest_charge: Some(None),
                 livemode: None,
+                managed_payments: Some(None),
                 metadata: None,
                 next_action: Some(None),
                 on_behalf_of: Some(None),
@@ -375,6 +380,7 @@ const _: () = {
                 Some(last_payment_error),
                 Some(latest_charge),
                 Some(livemode),
+                Some(managed_payments),
                 Some(metadata),
                 Some(next_action),
                 Some(on_behalf_of),
@@ -419,6 +425,7 @@ const _: () = {
                 self.last_payment_error.take(),
                 self.latest_charge.take(),
                 self.livemode,
+                self.managed_payments,
                 self.metadata.take(),
                 self.next_action.take(),
                 self.on_behalf_of.take(),
@@ -467,6 +474,7 @@ const _: () = {
                 last_payment_error,
                 latest_charge,
                 livemode,
+                managed_payments,
                 metadata,
                 next_action,
                 on_behalf_of,
@@ -543,6 +551,7 @@ const _: () = {
                     "last_payment_error" => b.last_payment_error = FromValueOpt::from_value(v),
                     "latest_charge" => b.latest_charge = FromValueOpt::from_value(v),
                     "livemode" => b.livemode = FromValueOpt::from_value(v),
+                    "managed_payments" => b.managed_payments = FromValueOpt::from_value(v),
                     "metadata" => b.metadata = FromValueOpt::from_value(v),
                     "next_action" => b.next_action = FromValueOpt::from_value(v),
                     "on_behalf_of" => b.on_behalf_of = FromValueOpt::from_value(v),
@@ -580,7 +589,7 @@ const _: () = {
 impl serde::Serialize for PaymentIntent {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("PaymentIntent", 44)?;
+        let mut s = s.serialize_struct("PaymentIntent", 45)?;
         s.serialize_field("amount", &self.amount)?;
         s.serialize_field("amount_capturable", &self.amount_capturable)?;
         s.serialize_field("amount_details", &self.amount_details)?;
@@ -604,6 +613,7 @@ impl serde::Serialize for PaymentIntent {
         s.serialize_field("last_payment_error", &self.last_payment_error)?;
         s.serialize_field("latest_charge", &self.latest_charge)?;
         s.serialize_field("livemode", &self.livemode)?;
+        s.serialize_field("managed_payments", &self.managed_payments)?;
         s.serialize_field("metadata", &self.metadata)?;
         s.serialize_field("next_action", &self.next_action)?;
         s.serialize_field("on_behalf_of", &self.on_behalf_of)?;
@@ -1067,6 +1077,7 @@ pub enum PaymentIntentExcludedPaymentMethodTypes {
     Satispay,
     SepaDebit,
     Sofort,
+    Sunbit,
     Swish,
     Twint,
     Upi,
@@ -1124,6 +1135,7 @@ impl PaymentIntentExcludedPaymentMethodTypes {
             Satispay => "satispay",
             SepaDebit => "sepa_debit",
             Sofort => "sofort",
+            Sunbit => "sunbit",
             Swish => "swish",
             Twint => "twint",
             Upi => "upi",
@@ -1184,6 +1196,7 @@ impl std::str::FromStr for PaymentIntentExcludedPaymentMethodTypes {
             "satispay" => Ok(Satispay),
             "sepa_debit" => Ok(SepaDebit),
             "sofort" => Ok(Sofort),
+            "sunbit" => Ok(Sunbit),
             "swish" => Ok(Swish),
             "twint" => Ok(Twint),
             "upi" => Ok(Upi),

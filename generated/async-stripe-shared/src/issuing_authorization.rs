@@ -24,6 +24,8 @@ pub struct IssuingAuthorization {
     /// List of balance transactions associated with this authorization.
     pub balance_transactions: Vec<stripe_shared::BalanceTransaction>,
     pub card: stripe_shared::IssuingCard,
+    /// Whether the card was present at the point of sale for the authorization.
+    pub card_presence: Option<IssuingAuthorizationCardPresence>,
     /// The cardholder to whom this authorization belongs.
     pub cardholder: Option<stripe_types::Expandable<stripe_shared::IssuingCardholder>>,
     /// Time at which the object was created. Measured in seconds since the Unix epoch.
@@ -99,6 +101,7 @@ pub struct IssuingAuthorizationBuilder {
     authorization_method: Option<stripe_shared::IssuingAuthorizationAuthorizationMethod>,
     balance_transactions: Option<Vec<stripe_shared::BalanceTransaction>>,
     card: Option<stripe_shared::IssuingCard>,
+    card_presence: Option<Option<IssuingAuthorizationCardPresence>>,
     cardholder: Option<Option<stripe_types::Expandable<stripe_shared::IssuingCardholder>>>,
     created: Option<stripe_types::Timestamp>,
     currency: Option<stripe_types::Currency>,
@@ -169,6 +172,7 @@ const _: () = {
                 "authorization_method" => Deserialize::begin(&mut self.authorization_method),
                 "balance_transactions" => Deserialize::begin(&mut self.balance_transactions),
                 "card" => Deserialize::begin(&mut self.card),
+                "card_presence" => Deserialize::begin(&mut self.card_presence),
                 "cardholder" => Deserialize::begin(&mut self.cardholder),
                 "created" => Deserialize::begin(&mut self.created),
                 "currency" => Deserialize::begin(&mut self.currency),
@@ -205,6 +209,7 @@ const _: () = {
                 authorization_method: None,
                 balance_transactions: None,
                 card: None,
+                card_presence: Some(None),
                 cardholder: Some(None),
                 created: None,
                 currency: None,
@@ -238,6 +243,7 @@ const _: () = {
                 Some(authorization_method),
                 Some(balance_transactions),
                 Some(card),
+                Some(card_presence),
                 Some(cardholder),
                 Some(created),
                 Some(currency),
@@ -267,6 +273,7 @@ const _: () = {
                 self.authorization_method.take(),
                 self.balance_transactions.take(),
                 self.card.take(),
+                self.card_presence.take(),
                 self.cardholder.take(),
                 self.created,
                 self.currency.take(),
@@ -300,6 +307,7 @@ const _: () = {
                 authorization_method,
                 balance_transactions,
                 card,
+                card_presence,
                 cardholder,
                 created,
                 currency,
@@ -355,6 +363,7 @@ const _: () = {
                     "authorization_method" => b.authorization_method = FromValueOpt::from_value(v),
                     "balance_transactions" => b.balance_transactions = FromValueOpt::from_value(v),
                     "card" => b.card = FromValueOpt::from_value(v),
+                    "card_presence" => b.card_presence = FromValueOpt::from_value(v),
                     "cardholder" => b.cardholder = FromValueOpt::from_value(v),
                     "created" => b.created = FromValueOpt::from_value(v),
                     "currency" => b.currency = FromValueOpt::from_value(v),
@@ -390,13 +399,14 @@ const _: () = {
 impl serde::Serialize for IssuingAuthorization {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("IssuingAuthorization", 29)?;
+        let mut s = s.serialize_struct("IssuingAuthorization", 30)?;
         s.serialize_field("amount", &self.amount)?;
         s.serialize_field("amount_details", &self.amount_details)?;
         s.serialize_field("approved", &self.approved)?;
         s.serialize_field("authorization_method", &self.authorization_method)?;
         s.serialize_field("balance_transactions", &self.balance_transactions)?;
         s.serialize_field("card", &self.card)?;
+        s.serialize_field("card_presence", &self.card_presence)?;
         s.serialize_field("cardholder", &self.cardholder)?;
         s.serialize_field("created", &self.created)?;
         s.serialize_field("currency", &self.currency)?;
@@ -422,6 +432,94 @@ impl serde::Serialize for IssuingAuthorization {
 
         s.serialize_field("object", "issuing.authorization")?;
         s.end()
+    }
+}
+/// Whether the card was present at the point of sale for the authorization.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum IssuingAuthorizationCardPresence {
+    NotPresent,
+    Present,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl IssuingAuthorizationCardPresence {
+    pub fn as_str(&self) -> &str {
+        use IssuingAuthorizationCardPresence::*;
+        match self {
+            NotPresent => "not_present",
+            Present => "present",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for IssuingAuthorizationCardPresence {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use IssuingAuthorizationCardPresence::*;
+        match s {
+            "not_present" => Ok(NotPresent),
+            "present" => Ok(Present),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "IssuingAuthorizationCardPresence"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for IssuingAuthorizationCardPresence {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for IssuingAuthorizationCardPresence {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for IssuingAuthorizationCardPresence {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(IssuingAuthorizationCardPresence)).finish_non_exhaustive()
+    }
+}
+#[cfg(feature = "serialize")]
+impl serde::Serialize for IssuingAuthorizationCardPresence {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl miniserde::Deserialize for IssuingAuthorizationCardPresence {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor for crate::Place<IssuingAuthorizationCardPresence> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out = Some(IssuingAuthorizationCardPresence::from_str(s).expect("infallible"));
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(IssuingAuthorizationCardPresence);
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for IssuingAuthorizationCardPresence {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 impl stripe_types::Object for IssuingAuthorization {

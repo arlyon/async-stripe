@@ -321,7 +321,6 @@ impl<'de> serde::Deserialize<'de> for CreateBillingMeterCustomerMappingType {
 #[derive(serde::Serialize)]
 pub struct CreateBillingMeterDefaultAggregation {
     /// Specifies how events are aggregated.
-    /// Allowed values are `count` to count the number of events, `sum` to sum each event's value and `last` to take the last event's value in the window.
     pub formula: CreateBillingMeterDefaultAggregationFormula,
 }
 #[cfg(feature = "redact-generated-debug")]
@@ -336,7 +335,6 @@ impl CreateBillingMeterDefaultAggregation {
     }
 }
 /// Specifies how events are aggregated.
-/// Allowed values are `count` to count the number of events, `sum` to sum each event's value and `last` to take the last event's value in the window.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum CreateBillingMeterDefaultAggregationFormula {

@@ -34,7 +34,10 @@ pub struct TaxCalculation {
     pub tax_amount_inclusive: i64,
     /// Breakdown of individual tax amounts that add up to the total.
     pub tax_breakdown: Vec<stripe_misc::TaxProductResourceTaxBreakdown>,
-    /// Timestamp of date at which the tax rules and rates in effect applies for the calculation.
+    /// The calculation uses the tax rules and rates that are in effect at this timestamp.
+    /// You can use a date up to 31 days in the past or up to 31 days in the future.
+    /// If you use a future date, Stripe doesn't guarantee that the expected tax rules and rate being used match the actual rules and rate that will be in effect on that date.
+    /// We deploy tax changes before their effective date, but not within a fixed window.
     pub tax_date: stripe_types::Timestamp,
 }
 #[cfg(feature = "redact-generated-debug")]

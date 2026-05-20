@@ -1,6 +1,9 @@
 use stripe::AccountId;
 use stripe_connect::AccountCapabilitiesStatus;
-use stripe_connect::account::{CapabilitiesParam, CapabilityParam, CreateAccount, ListAccount};
+use stripe_connect::account::{
+    CreateAccount, CreateAccountCapabilities, CreateAccountCapabilitiesAcssDebitPayments,
+    ListAccount,
+};
 
 #[test]
 fn is_account_listable() {
@@ -21,8 +24,9 @@ fn is_account_listable() {
 #[test]
 fn create_account() {
     let client = super::get_client();
-    let mut capabilities = CapabilitiesParam::new();
-    capabilities.acss_debit_payments = Some(CapabilityParam { requested: Some(true) });
+    let mut capabilities = CreateAccountCapabilities::new();
+    capabilities.acss_debit_payments =
+        Some(CreateAccountCapabilitiesAcssDebitPayments { requested: Some(true) });
     let result = CreateAccount::new().capabilities(capabilities).send_blocking(&client).unwrap();
     assert_eq!(result.email, Some("site@stripe.com".to_string()));
     assert_eq!(result.capabilities.unwrap().card_payments, Some(AccountCapabilitiesStatus::Active));

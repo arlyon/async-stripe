@@ -37,6 +37,9 @@ pub struct CreateAccountSessionComponents {
     /// Configuration for the [account onboarding](/connect/supported-embedded-components/account-onboarding/) embedded component.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub account_onboarding: Option<AccountConfigParam>,
+    /// Configuration for the [balance report](/connect/supported-embedded-components/financial-reports#balance-report) embedded component.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub balance_report: Option<BaseConfigParam>,
     /// Configuration for the [balances](/connect/supported-embedded-components/balances/) embedded component.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub balances: Option<PayoutsConfigParam>,
@@ -77,6 +80,9 @@ pub struct CreateAccountSessionComponents {
     /// Configuration for the [payout details](/connect/supported-embedded-components/payout-details/) embedded component.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payout_details: Option<BaseConfigParam>,
+    /// Configuration for the [payout reconciliation report](/connect/supported-embedded-components/financial-reports#payout-reconciliation-report) embedded component.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payout_reconciliation_report: Option<BaseConfigParam>,
     /// Configuration for the [payouts](/connect/supported-embedded-components/payouts/) embedded component.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payouts: Option<PayoutsConfigParam>,
@@ -101,6 +107,7 @@ impl CreateAccountSessionComponents {
         Self {
             account_management: None,
             account_onboarding: None,
+            balance_report: None,
             balances: None,
             disputes_list: None,
             documents: None,
@@ -114,6 +121,7 @@ impl CreateAccountSessionComponents {
             payment_disputes: None,
             payments: None,
             payout_details: None,
+            payout_reconciliation_report: None,
             payouts: None,
             payouts_list: None,
             tax_registrations: None,
@@ -771,6 +779,28 @@ impl Default for AccountFeaturesParam {
         Self::new()
     }
 }
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct BaseConfigParam {
+    /// Whether the embedded component is enabled.
+    pub enabled: bool,
+    /// An empty list, because this embedded component has no features.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub features: Option<miniserde::json::Value>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for BaseConfigParam {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("BaseConfigParam").finish_non_exhaustive()
+    }
+}
+impl BaseConfigParam {
+    pub fn new(enabled: impl Into<bool>) -> Self {
+        Self { enabled: enabled.into(), features: None }
+    }
+}
 #[derive(Copy, Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
@@ -818,28 +848,6 @@ impl PayoutsFeaturesParam {
 impl Default for PayoutsFeaturesParam {
     fn default() -> Self {
         Self::new()
-    }
-}
-#[derive(Clone)]
-#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
-#[derive(serde::Serialize)]
-pub struct BaseConfigParam {
-    /// Whether the embedded component is enabled.
-    pub enabled: bool,
-    /// An empty list, because this embedded component has no features.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(with = "stripe_types::with_serde_json_opt")]
-    pub features: Option<miniserde::json::Value>,
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for BaseConfigParam {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("BaseConfigParam").finish_non_exhaustive()
-    }
-}
-impl BaseConfigParam {
-    pub fn new(enabled: impl Into<bool>) -> Self {
-        Self { enabled: enabled.into(), features: None }
     }
 }
 #[derive(Copy, Clone, Eq, PartialEq)]

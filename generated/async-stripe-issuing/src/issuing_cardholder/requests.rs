@@ -282,6 +282,14 @@ impl CreateIssuingCardholderBuilder {
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
 pub struct CreateIssuingCardholderSpendingControls {
+    /// Array of card presence statuses from which authorizations will be allowed.
+    /// Possible options are `present`, `not_present`.
+    /// All other statuses will be blocked.
+    /// Cannot be set with `blocked_card_presences`.
+    /// Provide an empty value to unset this control.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub allowed_card_presences:
+        Option<Vec<CreateIssuingCardholderSpendingControlsAllowedCardPresences>>,
     /// Array of strings containing [categories](https://docs.stripe.com/api#issuing_authorization_object-merchant_data-category) of authorizations to allow.
     /// All other categories will be blocked.
     /// Cannot be set with `blocked_categories`.
@@ -295,6 +303,13 @@ pub struct CreateIssuingCardholderSpendingControls {
     /// Provide an empty value to unset this control.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub allowed_merchant_countries: Option<Vec<String>>,
+    /// Array of card presence statuses from which authorizations will be declined.
+    /// Possible options are `present`, `not_present`.
+    /// Cannot be set with `allowed_card_presences`.
+    /// Provide an empty value to unset this control.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub blocked_card_presences:
+        Option<Vec<CreateIssuingCardholderSpendingControlsBlockedCardPresences>>,
     /// Array of strings containing [categories](https://docs.stripe.com/api#issuing_authorization_object-merchant_data-category) of authorizations to decline.
     /// All other categories will be allowed.
     /// Cannot be set with `allowed_categories`.
@@ -323,8 +338,10 @@ impl std::fmt::Debug for CreateIssuingCardholderSpendingControls {
 impl CreateIssuingCardholderSpendingControls {
     pub fn new() -> Self {
         Self {
+            allowed_card_presences: None,
             allowed_categories: None,
             allowed_merchant_countries: None,
+            blocked_card_presences: None,
             blocked_categories: None,
             blocked_merchant_countries: None,
             spending_limits: None,
@@ -335,6 +352,83 @@ impl CreateIssuingCardholderSpendingControls {
 impl Default for CreateIssuingCardholderSpendingControls {
     fn default() -> Self {
         Self::new()
+    }
+}
+/// Array of card presence statuses from which authorizations will be allowed.
+/// Possible options are `present`, `not_present`.
+/// All other statuses will be blocked.
+/// Cannot be set with `blocked_card_presences`.
+/// Provide an empty value to unset this control.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreateIssuingCardholderSpendingControlsAllowedCardPresences {
+    NotPresent,
+    Present,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreateIssuingCardholderSpendingControlsAllowedCardPresences {
+    pub fn as_str(&self) -> &str {
+        use CreateIssuingCardholderSpendingControlsAllowedCardPresences::*;
+        match self {
+            NotPresent => "not_present",
+            Present => "present",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CreateIssuingCardholderSpendingControlsAllowedCardPresences {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateIssuingCardholderSpendingControlsAllowedCardPresences::*;
+        match s {
+            "not_present" => Ok(NotPresent),
+            "present" => Ok(Present),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateIssuingCardholderSpendingControlsAllowedCardPresences"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CreateIssuingCardholderSpendingControlsAllowedCardPresences {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for CreateIssuingCardholderSpendingControlsAllowedCardPresences {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateIssuingCardholderSpendingControlsAllowedCardPresences {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateIssuingCardholderSpendingControlsAllowedCardPresences))
+            .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for CreateIssuingCardholderSpendingControlsAllowedCardPresences {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateIssuingCardholderSpendingControlsAllowedCardPresences {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Array of strings containing [categories](https://docs.stripe.com/api#issuing_authorization_object-merchant_data-category) of authorizations to allow.
@@ -1377,6 +1471,82 @@ impl serde::Serialize for CreateIssuingCardholderSpendingControlsAllowedCategori
 }
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for CreateIssuingCardholderSpendingControlsAllowedCategories {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Array of card presence statuses from which authorizations will be declined.
+/// Possible options are `present`, `not_present`.
+/// Cannot be set with `allowed_card_presences`.
+/// Provide an empty value to unset this control.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreateIssuingCardholderSpendingControlsBlockedCardPresences {
+    NotPresent,
+    Present,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreateIssuingCardholderSpendingControlsBlockedCardPresences {
+    pub fn as_str(&self) -> &str {
+        use CreateIssuingCardholderSpendingControlsBlockedCardPresences::*;
+        match self {
+            NotPresent => "not_present",
+            Present => "present",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CreateIssuingCardholderSpendingControlsBlockedCardPresences {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateIssuingCardholderSpendingControlsBlockedCardPresences::*;
+        match s {
+            "not_present" => Ok(NotPresent),
+            "present" => Ok(Present),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateIssuingCardholderSpendingControlsBlockedCardPresences"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CreateIssuingCardholderSpendingControlsBlockedCardPresences {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for CreateIssuingCardholderSpendingControlsBlockedCardPresences {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateIssuingCardholderSpendingControlsBlockedCardPresences {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateIssuingCardholderSpendingControlsBlockedCardPresences))
+            .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for CreateIssuingCardholderSpendingControlsBlockedCardPresences {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateIssuingCardholderSpendingControlsBlockedCardPresences {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
@@ -3830,6 +4000,14 @@ impl UpdateIssuingCardholderBuilder {
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
 pub struct UpdateIssuingCardholderSpendingControls {
+    /// Array of card presence statuses from which authorizations will be allowed.
+    /// Possible options are `present`, `not_present`.
+    /// All other statuses will be blocked.
+    /// Cannot be set with `blocked_card_presences`.
+    /// Provide an empty value to unset this control.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub allowed_card_presences:
+        Option<Vec<UpdateIssuingCardholderSpendingControlsAllowedCardPresences>>,
     /// Array of strings containing [categories](https://docs.stripe.com/api#issuing_authorization_object-merchant_data-category) of authorizations to allow.
     /// All other categories will be blocked.
     /// Cannot be set with `blocked_categories`.
@@ -3843,6 +4021,13 @@ pub struct UpdateIssuingCardholderSpendingControls {
     /// Provide an empty value to unset this control.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub allowed_merchant_countries: Option<Vec<String>>,
+    /// Array of card presence statuses from which authorizations will be declined.
+    /// Possible options are `present`, `not_present`.
+    /// Cannot be set with `allowed_card_presences`.
+    /// Provide an empty value to unset this control.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub blocked_card_presences:
+        Option<Vec<UpdateIssuingCardholderSpendingControlsBlockedCardPresences>>,
     /// Array of strings containing [categories](https://docs.stripe.com/api#issuing_authorization_object-merchant_data-category) of authorizations to decline.
     /// All other categories will be allowed.
     /// Cannot be set with `allowed_categories`.
@@ -3871,8 +4056,10 @@ impl std::fmt::Debug for UpdateIssuingCardholderSpendingControls {
 impl UpdateIssuingCardholderSpendingControls {
     pub fn new() -> Self {
         Self {
+            allowed_card_presences: None,
             allowed_categories: None,
             allowed_merchant_countries: None,
+            blocked_card_presences: None,
             blocked_categories: None,
             blocked_merchant_countries: None,
             spending_limits: None,
@@ -3883,6 +4070,83 @@ impl UpdateIssuingCardholderSpendingControls {
 impl Default for UpdateIssuingCardholderSpendingControls {
     fn default() -> Self {
         Self::new()
+    }
+}
+/// Array of card presence statuses from which authorizations will be allowed.
+/// Possible options are `present`, `not_present`.
+/// All other statuses will be blocked.
+/// Cannot be set with `blocked_card_presences`.
+/// Provide an empty value to unset this control.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum UpdateIssuingCardholderSpendingControlsAllowedCardPresences {
+    NotPresent,
+    Present,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl UpdateIssuingCardholderSpendingControlsAllowedCardPresences {
+    pub fn as_str(&self) -> &str {
+        use UpdateIssuingCardholderSpendingControlsAllowedCardPresences::*;
+        match self {
+            NotPresent => "not_present",
+            Present => "present",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for UpdateIssuingCardholderSpendingControlsAllowedCardPresences {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdateIssuingCardholderSpendingControlsAllowedCardPresences::*;
+        match s {
+            "not_present" => Ok(NotPresent),
+            "present" => Ok(Present),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdateIssuingCardholderSpendingControlsAllowedCardPresences"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for UpdateIssuingCardholderSpendingControlsAllowedCardPresences {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for UpdateIssuingCardholderSpendingControlsAllowedCardPresences {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateIssuingCardholderSpendingControlsAllowedCardPresences {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdateIssuingCardholderSpendingControlsAllowedCardPresences))
+            .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for UpdateIssuingCardholderSpendingControlsAllowedCardPresences {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdateIssuingCardholderSpendingControlsAllowedCardPresences {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Array of strings containing [categories](https://docs.stripe.com/api#issuing_authorization_object-merchant_data-category) of authorizations to allow.
@@ -4925,6 +5189,82 @@ impl serde::Serialize for UpdateIssuingCardholderSpendingControlsAllowedCategori
 }
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for UpdateIssuingCardholderSpendingControlsAllowedCategories {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Array of card presence statuses from which authorizations will be declined.
+/// Possible options are `present`, `not_present`.
+/// Cannot be set with `allowed_card_presences`.
+/// Provide an empty value to unset this control.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum UpdateIssuingCardholderSpendingControlsBlockedCardPresences {
+    NotPresent,
+    Present,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl UpdateIssuingCardholderSpendingControlsBlockedCardPresences {
+    pub fn as_str(&self) -> &str {
+        use UpdateIssuingCardholderSpendingControlsBlockedCardPresences::*;
+        match self {
+            NotPresent => "not_present",
+            Present => "present",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for UpdateIssuingCardholderSpendingControlsBlockedCardPresences {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdateIssuingCardholderSpendingControlsBlockedCardPresences::*;
+        match s {
+            "not_present" => Ok(NotPresent),
+            "present" => Ok(Present),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdateIssuingCardholderSpendingControlsBlockedCardPresences"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for UpdateIssuingCardholderSpendingControlsBlockedCardPresences {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for UpdateIssuingCardholderSpendingControlsBlockedCardPresences {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateIssuingCardholderSpendingControlsBlockedCardPresences {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdateIssuingCardholderSpendingControlsBlockedCardPresences))
+            .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for UpdateIssuingCardholderSpendingControlsBlockedCardPresences {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdateIssuingCardholderSpendingControlsBlockedCardPresences {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;

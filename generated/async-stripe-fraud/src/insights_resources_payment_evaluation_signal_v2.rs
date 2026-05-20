@@ -8,10 +8,10 @@ pub struct InsightsResourcesPaymentEvaluationSignalV2 {
     pub evaluated_at: stripe_types::Timestamp,
     /// Risk level of this signal, based on the score.
     pub risk_level: InsightsResourcesPaymentEvaluationSignalV2RiskLevel,
-    /// Score for this insight.
-    /// Possible values for evaluated payments are -1 and any value between 0 and 100.
-    /// The value is returned with two decimal places.
-    /// A score of -1 indicates a test integration and higher scores indicate a higher likelihood of the signal being true.
+    /// Score for this signal.
+    /// Possible values for evaluated payments are between 0 and 100.
+    /// The value is returned with two decimal places and higher scores indicate a higher likelihood of the signal being true.
+    /// A score of -1 is returned when a model evaluation was not performed, such as requests from incomplete integrations.
     pub score: f64,
 }
 #[cfg(feature = "redact-generated-debug")]
@@ -127,9 +127,13 @@ const _: () = {
 pub enum InsightsResourcesPaymentEvaluationSignalV2RiskLevel {
     Elevated,
     Highest,
+    Low,
     Normal,
+    NotAssessed,
+    Unknown,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
+    /// This variant is prefixed with an underscore to avoid conflicts with Stripe's 'Unknown' variant.
+    _Unknown(String),
 }
 impl InsightsResourcesPaymentEvaluationSignalV2RiskLevel {
     pub fn as_str(&self) -> &str {
@@ -137,8 +141,11 @@ impl InsightsResourcesPaymentEvaluationSignalV2RiskLevel {
         match self {
             Elevated => "elevated",
             Highest => "highest",
+            Low => "low",
             Normal => "normal",
-            Unknown(v) => v,
+            NotAssessed => "not_assessed",
+            Unknown => "unknown",
+            _Unknown(v) => v,
         }
     }
 }
@@ -150,14 +157,17 @@ impl std::str::FromStr for InsightsResourcesPaymentEvaluationSignalV2RiskLevel {
         match s {
             "elevated" => Ok(Elevated),
             "highest" => Ok(Highest),
+            "low" => Ok(Low),
             "normal" => Ok(Normal),
+            "not_assessed" => Ok(NotAssessed),
+            "unknown" => Ok(Unknown),
             v => {
                 tracing::warn!(
                     "Unknown value '{}' for enum '{}'",
                     v,
                     "InsightsResourcesPaymentEvaluationSignalV2RiskLevel"
                 );
-                Ok(Unknown(v.to_owned()))
+                Ok(_Unknown(v.to_owned()))
             }
         }
     }

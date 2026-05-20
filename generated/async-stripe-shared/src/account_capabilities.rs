@@ -13,6 +13,8 @@ pub struct AccountCapabilities {
     pub alma_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
     /// The status of the AmazonPay capability of the account, or whether the account can directly process AmazonPay payments.
     pub amazon_pay_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    /// The status of the `app_distribution` capability of the account, or whether the platform can distribute apps to other accounts.
+    pub app_distribution: Option<stripe_shared::AccountCapabilitiesStatus>,
     /// The status of the BECS Direct Debit (AU) payments capability of the account, or whether the account can directly process BECS Direct Debit (AU) charges.
     pub au_becs_debit_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
     /// The status of the Bacs Direct Debits payments capability of the account, or whether the account can directly process Bacs Direct Debits charges.
@@ -107,6 +109,8 @@ pub struct AccountCapabilities {
     pub sepa_debit_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
     /// The status of the Sofort payments capability of the account, or whether the account can directly process Sofort charges.
     pub sofort_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    /// The status of the Sunbit capability of the account, or whether the account can directly process Sunbit payments.
+    pub sunbit_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
     /// The status of the Swish capability of the account, or whether the account can directly process Swish payments.
     pub swish_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
     /// The status of the tax reporting 1099-K (US) capability of the account.
@@ -141,6 +145,7 @@ pub struct AccountCapabilitiesBuilder {
     afterpay_clearpay_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
     alma_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
     amazon_pay_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
+    app_distribution: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
     au_becs_debit_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
     bacs_debit_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
     bancontact_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
@@ -188,6 +193,7 @@ pub struct AccountCapabilitiesBuilder {
     sepa_bank_transfer_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
     sepa_debit_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
     sofort_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
+    sunbit_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
     swish_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
     tax_reporting_us_1099_k: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
     tax_reporting_us_1099_misc: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
@@ -247,6 +253,7 @@ const _: () = {
                 }
                 "alma_payments" => Deserialize::begin(&mut self.alma_payments),
                 "amazon_pay_payments" => Deserialize::begin(&mut self.amazon_pay_payments),
+                "app_distribution" => Deserialize::begin(&mut self.app_distribution),
                 "au_becs_debit_payments" => Deserialize::begin(&mut self.au_becs_debit_payments),
                 "bacs_debit_payments" => Deserialize::begin(&mut self.bacs_debit_payments),
                 "bancontact_payments" => Deserialize::begin(&mut self.bancontact_payments),
@@ -308,6 +315,7 @@ const _: () = {
                 }
                 "sepa_debit_payments" => Deserialize::begin(&mut self.sepa_debit_payments),
                 "sofort_payments" => Deserialize::begin(&mut self.sofort_payments),
+                "sunbit_payments" => Deserialize::begin(&mut self.sunbit_payments),
                 "swish_payments" => Deserialize::begin(&mut self.swish_payments),
                 "tax_reporting_us_1099_k" => Deserialize::begin(&mut self.tax_reporting_us_1099_k),
                 "tax_reporting_us_1099_misc" => {
@@ -335,6 +343,7 @@ const _: () = {
                 afterpay_clearpay_payments: Some(None),
                 alma_payments: Some(None),
                 amazon_pay_payments: Some(None),
+                app_distribution: Some(None),
                 au_becs_debit_payments: Some(None),
                 bacs_debit_payments: Some(None),
                 bancontact_payments: Some(None),
@@ -382,6 +391,7 @@ const _: () = {
                 sepa_bank_transfer_payments: Some(None),
                 sepa_debit_payments: Some(None),
                 sofort_payments: Some(None),
+                sunbit_payments: Some(None),
                 swish_payments: Some(None),
                 tax_reporting_us_1099_k: Some(None),
                 tax_reporting_us_1099_misc: Some(None),
@@ -402,6 +412,7 @@ const _: () = {
                 Some(afterpay_clearpay_payments),
                 Some(alma_payments),
                 Some(amazon_pay_payments),
+                Some(app_distribution),
                 Some(au_becs_debit_payments),
                 Some(bacs_debit_payments),
                 Some(bancontact_payments),
@@ -449,6 +460,7 @@ const _: () = {
                 Some(sepa_bank_transfer_payments),
                 Some(sepa_debit_payments),
                 Some(sofort_payments),
+                Some(sunbit_payments),
                 Some(swish_payments),
                 Some(tax_reporting_us_1099_k),
                 Some(tax_reporting_us_1099_misc),
@@ -465,6 +477,7 @@ const _: () = {
                 self.afterpay_clearpay_payments.take(),
                 self.alma_payments.take(),
                 self.amazon_pay_payments.take(),
+                self.app_distribution.take(),
                 self.au_becs_debit_payments.take(),
                 self.bacs_debit_payments.take(),
                 self.bancontact_payments.take(),
@@ -512,6 +525,7 @@ const _: () = {
                 self.sepa_bank_transfer_payments.take(),
                 self.sepa_debit_payments.take(),
                 self.sofort_payments.take(),
+                self.sunbit_payments.take(),
                 self.swish_payments.take(),
                 self.tax_reporting_us_1099_k.take(),
                 self.tax_reporting_us_1099_misc.take(),
@@ -532,6 +546,7 @@ const _: () = {
                 afterpay_clearpay_payments,
                 alma_payments,
                 amazon_pay_payments,
+                app_distribution,
                 au_becs_debit_payments,
                 bacs_debit_payments,
                 bancontact_payments,
@@ -579,6 +594,7 @@ const _: () = {
                 sepa_bank_transfer_payments,
                 sepa_debit_payments,
                 sofort_payments,
+                sunbit_payments,
                 swish_payments,
                 tax_reporting_us_1099_k,
                 tax_reporting_us_1099_misc,
@@ -623,6 +639,7 @@ const _: () = {
                     }
                     "alma_payments" => b.alma_payments = FromValueOpt::from_value(v),
                     "amazon_pay_payments" => b.amazon_pay_payments = FromValueOpt::from_value(v),
+                    "app_distribution" => b.app_distribution = FromValueOpt::from_value(v),
                     "au_becs_debit_payments" => {
                         b.au_becs_debit_payments = FromValueOpt::from_value(v)
                     }
@@ -688,6 +705,7 @@ const _: () = {
                     }
                     "sepa_debit_payments" => b.sepa_debit_payments = FromValueOpt::from_value(v),
                     "sofort_payments" => b.sofort_payments = FromValueOpt::from_value(v),
+                    "sunbit_payments" => b.sunbit_payments = FromValueOpt::from_value(v),
                     "swish_payments" => b.swish_payments = FromValueOpt::from_value(v),
                     "tax_reporting_us_1099_k" => {
                         b.tax_reporting_us_1099_k = FromValueOpt::from_value(v)

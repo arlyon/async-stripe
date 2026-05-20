@@ -15128,8 +15128,7 @@ impl CreateTaxRegistrationCountryOptionsUs {
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
 pub struct CreateTaxRegistrationCountryOptionsUsLocalAmusementTax {
-    /// A [FIPS code](https://www.census.gov/library/reference/code-lists/ansi.html) representing the local jurisdiction.
-    /// Supported FIPS codes are: `02154` (Arlington Heights), `05248` (Bensenville), `06613` (Bloomington), `10906` (Campton Hills), `14000` (Chicago), `21696` (East Dundee), `24582` (Evanston), `45421` (Lynwood), `48892` (Midlothian), `64343` (River Grove), `64421` (Riverside), `65806` (Roselle), and `68081` (Schiller Park).
+    /// A jurisdiction code representing the [local jurisdiction](/tax/registering?type=amusement_tax#registration-types).
     pub jurisdiction: String,
 }
 #[cfg(feature = "redact-generated-debug")]
