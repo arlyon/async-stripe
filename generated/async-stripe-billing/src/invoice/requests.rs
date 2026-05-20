@@ -901,10 +901,16 @@ pub struct CreateInvoicePaymentSettingsPaymentMethodOptions {
     /// If paying by `payto`, this sub-hash contains details about the PayTo payment method options to pass to the invoice’s PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payto: Option<CreateInvoicePaymentSettingsPaymentMethodOptionsPayto>,
+    /// If paying by `pix`, this sub-hash contains details about the Pix payment method options to pass to the invoice’s PaymentIntent.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub pix: Option<CreateInvoicePaymentSettingsPaymentMethodOptionsPix>,
     /// If paying by `sepa_debit`, this sub-hash contains details about the SEPA Direct Debit payment method options to pass to the invoice’s PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
     pub sepa_debit: Option<miniserde::json::Value>,
+    /// If paying by `upi`, this sub-hash contains details about the UPI payment method options to pass to the invoice’s PaymentIntent.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub upi: Option<CreateInvoicePaymentSettingsPaymentMethodOptionsUpi>,
     /// If paying by `us_bank_account`, this sub-hash contains details about the ACH direct debit payment method options to pass to the invoice’s PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub us_bank_account: Option<CreateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccount>,
@@ -924,7 +930,9 @@ impl CreateInvoicePaymentSettingsPaymentMethodOptions {
             customer_balance: None,
             konbini: None,
             payto: None,
+            pix: None,
             sepa_debit: None,
+            upi: None,
             us_bank_account: None,
         }
     }
@@ -1812,6 +1820,267 @@ impl<'de> serde::Deserialize<'de>
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
+/// If paying by `pix`, this sub-hash contains details about the Pix payment method options to pass to the invoice’s PaymentIntent.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateInvoicePaymentSettingsPaymentMethodOptionsPix {
+    /// Determines if the amount includes the IOF tax. Defaults to `never`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount_includes_iof:
+        Option<CreateInvoicePaymentSettingsPaymentMethodOptionsPixAmountIncludesIof>,
+    /// The number of seconds (between 10 and 1209600) after which Pix payment will expire.
+    /// Defaults to 86400 seconds.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expires_after_seconds: Option<i64>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateInvoicePaymentSettingsPaymentMethodOptionsPix {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateInvoicePaymentSettingsPaymentMethodOptionsPix")
+            .finish_non_exhaustive()
+    }
+}
+impl CreateInvoicePaymentSettingsPaymentMethodOptionsPix {
+    pub fn new() -> Self {
+        Self { amount_includes_iof: None, expires_after_seconds: None }
+    }
+}
+impl Default for CreateInvoicePaymentSettingsPaymentMethodOptionsPix {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Determines if the amount includes the IOF tax. Defaults to `never`.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreateInvoicePaymentSettingsPaymentMethodOptionsPixAmountIncludesIof {
+    Always,
+    Never,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreateInvoicePaymentSettingsPaymentMethodOptionsPixAmountIncludesIof {
+    pub fn as_str(&self) -> &str {
+        use CreateInvoicePaymentSettingsPaymentMethodOptionsPixAmountIncludesIof::*;
+        match self {
+            Always => "always",
+            Never => "never",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CreateInvoicePaymentSettingsPaymentMethodOptionsPixAmountIncludesIof {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateInvoicePaymentSettingsPaymentMethodOptionsPixAmountIncludesIof::*;
+        match s {
+            "always" => Ok(Always),
+            "never" => Ok(Never),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateInvoicePaymentSettingsPaymentMethodOptionsPixAmountIncludesIof"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CreateInvoicePaymentSettingsPaymentMethodOptionsPixAmountIncludesIof {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for CreateInvoicePaymentSettingsPaymentMethodOptionsPixAmountIncludesIof {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateInvoicePaymentSettingsPaymentMethodOptionsPixAmountIncludesIof {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreateInvoicePaymentSettingsPaymentMethodOptionsPixAmountIncludesIof
+        ))
+        .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for CreateInvoicePaymentSettingsPaymentMethodOptionsPixAmountIncludesIof {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateInvoicePaymentSettingsPaymentMethodOptionsPixAmountIncludesIof
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// If paying by `upi`, this sub-hash contains details about the UPI payment method options to pass to the invoice’s PaymentIntent.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateInvoicePaymentSettingsPaymentMethodOptionsUpi {
+    /// Configuration options for setting up an eMandate
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mandate_options: Option<CreateInvoicePaymentSettingsPaymentMethodOptionsUpiMandateOptions>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateInvoicePaymentSettingsPaymentMethodOptionsUpi {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateInvoicePaymentSettingsPaymentMethodOptionsUpi")
+            .finish_non_exhaustive()
+    }
+}
+impl CreateInvoicePaymentSettingsPaymentMethodOptionsUpi {
+    pub fn new() -> Self {
+        Self { mandate_options: None }
+    }
+}
+impl Default for CreateInvoicePaymentSettingsPaymentMethodOptionsUpi {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Configuration options for setting up an eMandate
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateInvoicePaymentSettingsPaymentMethodOptionsUpiMandateOptions {
+    /// Amount to be charged for future payments.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount: Option<i64>,
+    /// One of `fixed` or `maximum`.
+    /// If `fixed`, the `amount` param refers to the exact amount to be charged in future payments.
+    /// If `maximum`, the amount charged can be up to the value passed for the `amount` param.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount_type:
+        Option<CreateInvoicePaymentSettingsPaymentMethodOptionsUpiMandateOptionsAmountType>,
+    /// A description of the mandate or subscription that is meant to be displayed to the customer.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
+    /// End date of the mandate or subscription.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub end_date: Option<stripe_types::Timestamp>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateInvoicePaymentSettingsPaymentMethodOptionsUpiMandateOptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateInvoicePaymentSettingsPaymentMethodOptionsUpiMandateOptions")
+            .finish_non_exhaustive()
+    }
+}
+impl CreateInvoicePaymentSettingsPaymentMethodOptionsUpiMandateOptions {
+    pub fn new() -> Self {
+        Self { amount: None, amount_type: None, description: None, end_date: None }
+    }
+}
+impl Default for CreateInvoicePaymentSettingsPaymentMethodOptionsUpiMandateOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// One of `fixed` or `maximum`.
+/// If `fixed`, the `amount` param refers to the exact amount to be charged in future payments.
+/// If `maximum`, the amount charged can be up to the value passed for the `amount` param.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreateInvoicePaymentSettingsPaymentMethodOptionsUpiMandateOptionsAmountType {
+    Fixed,
+    Maximum,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreateInvoicePaymentSettingsPaymentMethodOptionsUpiMandateOptionsAmountType {
+    pub fn as_str(&self) -> &str {
+        use CreateInvoicePaymentSettingsPaymentMethodOptionsUpiMandateOptionsAmountType::*;
+        match self {
+            Fixed => "fixed",
+            Maximum => "maximum",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr
+    for CreateInvoicePaymentSettingsPaymentMethodOptionsUpiMandateOptionsAmountType
+{
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateInvoicePaymentSettingsPaymentMethodOptionsUpiMandateOptionsAmountType::*;
+        match s {
+            "fixed" => Ok(Fixed),
+            "maximum" => Ok(Maximum),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateInvoicePaymentSettingsPaymentMethodOptionsUpiMandateOptionsAmountType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display
+    for CreateInvoicePaymentSettingsPaymentMethodOptionsUpiMandateOptionsAmountType
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug
+    for CreateInvoicePaymentSettingsPaymentMethodOptionsUpiMandateOptionsAmountType
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for CreateInvoicePaymentSettingsPaymentMethodOptionsUpiMandateOptionsAmountType
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreateInvoicePaymentSettingsPaymentMethodOptionsUpiMandateOptionsAmountType
+        ))
+        .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize
+    for CreateInvoicePaymentSettingsPaymentMethodOptionsUpiMandateOptionsAmountType
+{
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateInvoicePaymentSettingsPaymentMethodOptionsUpiMandateOptionsAmountType
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
 /// If paying by `us_bank_account`, this sub-hash contains details about the ACH direct debit payment method options to pass to the invoice’s PaymentIntent.
 #[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
@@ -2289,12 +2558,14 @@ pub enum CreateInvoicePaymentSettingsPaymentMethodTypes {
     Paynow,
     Paypal,
     Payto,
+    Pix,
     Promptpay,
     RevolutPay,
     SepaCreditTransfer,
     SepaDebit,
     Sofort,
     Swish,
+    Upi,
     UsBankAccount,
     WechatPay,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
@@ -2338,12 +2609,14 @@ impl CreateInvoicePaymentSettingsPaymentMethodTypes {
             Paynow => "paynow",
             Paypal => "paypal",
             Payto => "payto",
+            Pix => "pix",
             Promptpay => "promptpay",
             RevolutPay => "revolut_pay",
             SepaCreditTransfer => "sepa_credit_transfer",
             SepaDebit => "sepa_debit",
             Sofort => "sofort",
             Swish => "swish",
+            Upi => "upi",
             UsBankAccount => "us_bank_account",
             WechatPay => "wechat_pay",
             Unknown(v) => v,
@@ -2390,12 +2663,14 @@ impl std::str::FromStr for CreateInvoicePaymentSettingsPaymentMethodTypes {
             "paynow" => Ok(Paynow),
             "paypal" => Ok(Paypal),
             "payto" => Ok(Payto),
+            "pix" => Ok(Pix),
             "promptpay" => Ok(Promptpay),
             "revolut_pay" => Ok(RevolutPay),
             "sepa_credit_transfer" => Ok(SepaCreditTransfer),
             "sepa_debit" => Ok(SepaDebit),
             "sofort" => Ok(Sofort),
             "swish" => Ok(Swish),
+            "upi" => Ok(Upi),
             "us_bank_account" => Ok(UsBankAccount),
             "wechat_pay" => Ok(WechatPay),
             v => {
@@ -4035,10 +4310,16 @@ pub struct UpdateInvoicePaymentSettingsPaymentMethodOptions {
     /// If paying by `payto`, this sub-hash contains details about the PayTo payment method options to pass to the invoice’s PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payto: Option<UpdateInvoicePaymentSettingsPaymentMethodOptionsPayto>,
+    /// If paying by `pix`, this sub-hash contains details about the Pix payment method options to pass to the invoice’s PaymentIntent.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub pix: Option<UpdateInvoicePaymentSettingsPaymentMethodOptionsPix>,
     /// If paying by `sepa_debit`, this sub-hash contains details about the SEPA Direct Debit payment method options to pass to the invoice’s PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
     pub sepa_debit: Option<miniserde::json::Value>,
+    /// If paying by `upi`, this sub-hash contains details about the UPI payment method options to pass to the invoice’s PaymentIntent.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub upi: Option<UpdateInvoicePaymentSettingsPaymentMethodOptionsUpi>,
     /// If paying by `us_bank_account`, this sub-hash contains details about the ACH direct debit payment method options to pass to the invoice’s PaymentIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub us_bank_account: Option<UpdateInvoicePaymentSettingsPaymentMethodOptionsUsBankAccount>,
@@ -4058,7 +4339,9 @@ impl UpdateInvoicePaymentSettingsPaymentMethodOptions {
             customer_balance: None,
             konbini: None,
             payto: None,
+            pix: None,
             sepa_debit: None,
+            upi: None,
             us_bank_account: None,
         }
     }
@@ -4946,6 +5229,267 @@ impl<'de> serde::Deserialize<'de>
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
+/// If paying by `pix`, this sub-hash contains details about the Pix payment method options to pass to the invoice’s PaymentIntent.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateInvoicePaymentSettingsPaymentMethodOptionsPix {
+    /// Determines if the amount includes the IOF tax. Defaults to `never`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount_includes_iof:
+        Option<UpdateInvoicePaymentSettingsPaymentMethodOptionsPixAmountIncludesIof>,
+    /// The number of seconds (between 10 and 1209600) after which Pix payment will expire.
+    /// Defaults to 86400 seconds.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expires_after_seconds: Option<i64>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateInvoicePaymentSettingsPaymentMethodOptionsPix {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateInvoicePaymentSettingsPaymentMethodOptionsPix")
+            .finish_non_exhaustive()
+    }
+}
+impl UpdateInvoicePaymentSettingsPaymentMethodOptionsPix {
+    pub fn new() -> Self {
+        Self { amount_includes_iof: None, expires_after_seconds: None }
+    }
+}
+impl Default for UpdateInvoicePaymentSettingsPaymentMethodOptionsPix {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Determines if the amount includes the IOF tax. Defaults to `never`.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum UpdateInvoicePaymentSettingsPaymentMethodOptionsPixAmountIncludesIof {
+    Always,
+    Never,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl UpdateInvoicePaymentSettingsPaymentMethodOptionsPixAmountIncludesIof {
+    pub fn as_str(&self) -> &str {
+        use UpdateInvoicePaymentSettingsPaymentMethodOptionsPixAmountIncludesIof::*;
+        match self {
+            Always => "always",
+            Never => "never",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for UpdateInvoicePaymentSettingsPaymentMethodOptionsPixAmountIncludesIof {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdateInvoicePaymentSettingsPaymentMethodOptionsPixAmountIncludesIof::*;
+        match s {
+            "always" => Ok(Always),
+            "never" => Ok(Never),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdateInvoicePaymentSettingsPaymentMethodOptionsPixAmountIncludesIof"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for UpdateInvoicePaymentSettingsPaymentMethodOptionsPixAmountIncludesIof {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for UpdateInvoicePaymentSettingsPaymentMethodOptionsPixAmountIncludesIof {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateInvoicePaymentSettingsPaymentMethodOptionsPixAmountIncludesIof {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdateInvoicePaymentSettingsPaymentMethodOptionsPixAmountIncludesIof
+        ))
+        .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for UpdateInvoicePaymentSettingsPaymentMethodOptionsPixAmountIncludesIof {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdateInvoicePaymentSettingsPaymentMethodOptionsPixAmountIncludesIof
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// If paying by `upi`, this sub-hash contains details about the UPI payment method options to pass to the invoice’s PaymentIntent.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateInvoicePaymentSettingsPaymentMethodOptionsUpi {
+    /// Configuration options for setting up an eMandate
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mandate_options: Option<UpdateInvoicePaymentSettingsPaymentMethodOptionsUpiMandateOptions>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateInvoicePaymentSettingsPaymentMethodOptionsUpi {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateInvoicePaymentSettingsPaymentMethodOptionsUpi")
+            .finish_non_exhaustive()
+    }
+}
+impl UpdateInvoicePaymentSettingsPaymentMethodOptionsUpi {
+    pub fn new() -> Self {
+        Self { mandate_options: None }
+    }
+}
+impl Default for UpdateInvoicePaymentSettingsPaymentMethodOptionsUpi {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Configuration options for setting up an eMandate
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateInvoicePaymentSettingsPaymentMethodOptionsUpiMandateOptions {
+    /// Amount to be charged for future payments.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount: Option<i64>,
+    /// One of `fixed` or `maximum`.
+    /// If `fixed`, the `amount` param refers to the exact amount to be charged in future payments.
+    /// If `maximum`, the amount charged can be up to the value passed for the `amount` param.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount_type:
+        Option<UpdateInvoicePaymentSettingsPaymentMethodOptionsUpiMandateOptionsAmountType>,
+    /// A description of the mandate or subscription that is meant to be displayed to the customer.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
+    /// End date of the mandate or subscription.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub end_date: Option<stripe_types::Timestamp>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateInvoicePaymentSettingsPaymentMethodOptionsUpiMandateOptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateInvoicePaymentSettingsPaymentMethodOptionsUpiMandateOptions")
+            .finish_non_exhaustive()
+    }
+}
+impl UpdateInvoicePaymentSettingsPaymentMethodOptionsUpiMandateOptions {
+    pub fn new() -> Self {
+        Self { amount: None, amount_type: None, description: None, end_date: None }
+    }
+}
+impl Default for UpdateInvoicePaymentSettingsPaymentMethodOptionsUpiMandateOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// One of `fixed` or `maximum`.
+/// If `fixed`, the `amount` param refers to the exact amount to be charged in future payments.
+/// If `maximum`, the amount charged can be up to the value passed for the `amount` param.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum UpdateInvoicePaymentSettingsPaymentMethodOptionsUpiMandateOptionsAmountType {
+    Fixed,
+    Maximum,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl UpdateInvoicePaymentSettingsPaymentMethodOptionsUpiMandateOptionsAmountType {
+    pub fn as_str(&self) -> &str {
+        use UpdateInvoicePaymentSettingsPaymentMethodOptionsUpiMandateOptionsAmountType::*;
+        match self {
+            Fixed => "fixed",
+            Maximum => "maximum",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr
+    for UpdateInvoicePaymentSettingsPaymentMethodOptionsUpiMandateOptionsAmountType
+{
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdateInvoicePaymentSettingsPaymentMethodOptionsUpiMandateOptionsAmountType::*;
+        match s {
+            "fixed" => Ok(Fixed),
+            "maximum" => Ok(Maximum),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdateInvoicePaymentSettingsPaymentMethodOptionsUpiMandateOptionsAmountType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display
+    for UpdateInvoicePaymentSettingsPaymentMethodOptionsUpiMandateOptionsAmountType
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug
+    for UpdateInvoicePaymentSettingsPaymentMethodOptionsUpiMandateOptionsAmountType
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for UpdateInvoicePaymentSettingsPaymentMethodOptionsUpiMandateOptionsAmountType
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdateInvoicePaymentSettingsPaymentMethodOptionsUpiMandateOptionsAmountType
+        ))
+        .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize
+    for UpdateInvoicePaymentSettingsPaymentMethodOptionsUpiMandateOptionsAmountType
+{
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdateInvoicePaymentSettingsPaymentMethodOptionsUpiMandateOptionsAmountType
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
 /// If paying by `us_bank_account`, this sub-hash contains details about the ACH direct debit payment method options to pass to the invoice’s PaymentIntent.
 #[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
@@ -5423,12 +5967,14 @@ pub enum UpdateInvoicePaymentSettingsPaymentMethodTypes {
     Paynow,
     Paypal,
     Payto,
+    Pix,
     Promptpay,
     RevolutPay,
     SepaCreditTransfer,
     SepaDebit,
     Sofort,
     Swish,
+    Upi,
     UsBankAccount,
     WechatPay,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
@@ -5472,12 +6018,14 @@ impl UpdateInvoicePaymentSettingsPaymentMethodTypes {
             Paynow => "paynow",
             Paypal => "paypal",
             Payto => "payto",
+            Pix => "pix",
             Promptpay => "promptpay",
             RevolutPay => "revolut_pay",
             SepaCreditTransfer => "sepa_credit_transfer",
             SepaDebit => "sepa_debit",
             Sofort => "sofort",
             Swish => "swish",
+            Upi => "upi",
             UsBankAccount => "us_bank_account",
             WechatPay => "wechat_pay",
             Unknown(v) => v,
@@ -5524,12 +6072,14 @@ impl std::str::FromStr for UpdateInvoicePaymentSettingsPaymentMethodTypes {
             "paynow" => Ok(Paynow),
             "paypal" => Ok(Paypal),
             "payto" => Ok(Payto),
+            "pix" => Ok(Pix),
             "promptpay" => Ok(Promptpay),
             "revolut_pay" => Ok(RevolutPay),
             "sepa_credit_transfer" => Ok(SepaCreditTransfer),
             "sepa_debit" => Ok(SepaDebit),
             "sofort" => Ok(Sofort),
             "swish" => Ok(Swish),
+            "upi" => Ok(Upi),
             "us_bank_account" => Ok(UsBankAccount),
             "wechat_pay" => Ok(WechatPay),
             v => {
@@ -9285,7 +9835,7 @@ impl<'de> serde::Deserialize<'de> for CreatePreviewInvoiceCustomerDetailsTaxExem
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
 pub struct CreatePreviewInvoiceCustomerDetailsTaxIds {
-    /// Type of the tax ID, one of `ad_nrt`, `ae_trn`, `al_tin`, `am_tin`, `ao_tin`, `ar_cuit`, `au_abn`, `au_arn`, `aw_tin`, `az_tin`, `ba_tin`, `bb_tin`, `bd_bin`, `bf_ifu`, `bg_uic`, `bh_vat`, `bj_ifu`, `bo_tin`, `br_cnpj`, `br_cpf`, `bs_tin`, `by_tin`, `ca_bn`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `ca_qst`, `cd_nif`, `ch_uid`, `ch_vat`, `cl_tin`, `cm_niu`, `cn_tin`, `co_nit`, `cr_tin`, `cv_nif`, `de_stn`, `do_rcn`, `ec_ruc`, `eg_tin`, `es_cif`, `et_tin`, `eu_oss_vat`, `eu_vat`, `gb_vat`, `ge_vat`, `gn_nif`, `hk_br`, `hr_oib`, `hu_tin`, `id_npwp`, `il_vat`, `in_gst`, `is_vat`, `jp_cn`, `jp_rn`, `jp_trn`, `ke_pin`, `kg_tin`, `kh_tin`, `kr_brn`, `kz_bin`, `la_tin`, `li_uid`, `li_vat`, `lk_vat`, `ma_vat`, `md_vat`, `me_pib`, `mk_vat`, `mr_nif`, `mx_rfc`, `my_frp`, `my_itn`, `my_sst`, `ng_tin`, `no_vat`, `no_voec`, `np_pan`, `nz_gst`, `om_vat`, `pe_ruc`, `ph_tin`, `pl_nip`, `ro_tin`, `rs_pib`, `ru_inn`, `ru_kpp`, `sa_vat`, `sg_gst`, `sg_uen`, `si_tin`, `sn_ninea`, `sr_fin`, `sv_nit`, `th_vat`, `tj_tin`, `tr_tin`, `tw_vat`, `tz_vat`, `ua_vat`, `ug_tin`, `us_ein`, `uy_ruc`, `uz_tin`, `uz_vat`, `ve_rif`, `vn_tin`, `za_vat`, `zm_tin`, or `zw_tin`.
+    /// Type of the tax ID, one of `ad_nrt`, `ae_trn`, `al_tin`, `am_tin`, `ao_tin`, `ar_cuit`, `au_abn`, `au_arn`, `aw_tin`, `az_tin`, `ba_tin`, `bb_tin`, `bd_bin`, `bf_ifu`, `bg_uic`, `bh_vat`, `bj_ifu`, `bo_tin`, `br_cnpj`, `br_cpf`, `bs_tin`, `by_tin`, `ca_bn`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `ca_qst`, `cd_nif`, `ch_uid`, `ch_vat`, `cl_tin`, `cm_niu`, `cn_tin`, `co_nit`, `cr_tin`, `cv_nif`, `de_stn`, `do_rcn`, `ec_ruc`, `eg_tin`, `es_cif`, `et_tin`, `eu_oss_vat`, `eu_vat`, `fo_vat`, `gb_vat`, `ge_vat`, `gi_tin`, `gn_nif`, `hk_br`, `hr_oib`, `hu_tin`, `id_npwp`, `il_vat`, `in_gst`, `is_vat`, `it_cf`, `jp_cn`, `jp_rn`, `jp_trn`, `ke_pin`, `kg_tin`, `kh_tin`, `kr_brn`, `kz_bin`, `la_tin`, `li_uid`, `li_vat`, `lk_vat`, `ma_vat`, `md_vat`, `me_pib`, `mk_vat`, `mr_nif`, `mx_rfc`, `my_frp`, `my_itn`, `my_sst`, `ng_tin`, `no_vat`, `no_voec`, `np_pan`, `nz_gst`, `om_vat`, `pe_ruc`, `ph_tin`, `pl_nip`, `py_ruc`, `ro_tin`, `rs_pib`, `ru_inn`, `ru_kpp`, `sa_vat`, `sg_gst`, `sg_uen`, `si_tin`, `sn_ninea`, `sr_fin`, `sv_nit`, `th_vat`, `tj_tin`, `tr_tin`, `tw_vat`, `tz_vat`, `ua_vat`, `ug_tin`, `us_ein`, `uy_ruc`, `uz_tin`, `uz_vat`, `ve_rif`, `vn_tin`, `za_vat`, `zm_tin`, or `zw_tin`.
     #[serde(rename = "type")]
     pub type_: CreatePreviewInvoiceCustomerDetailsTaxIdsType,
     /// Value of the tax ID.
@@ -9305,7 +9855,7 @@ impl CreatePreviewInvoiceCustomerDetailsTaxIds {
         Self { type_: type_.into(), value: value.into() }
     }
 }
-/// Type of the tax ID, one of `ad_nrt`, `ae_trn`, `al_tin`, `am_tin`, `ao_tin`, `ar_cuit`, `au_abn`, `au_arn`, `aw_tin`, `az_tin`, `ba_tin`, `bb_tin`, `bd_bin`, `bf_ifu`, `bg_uic`, `bh_vat`, `bj_ifu`, `bo_tin`, `br_cnpj`, `br_cpf`, `bs_tin`, `by_tin`, `ca_bn`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `ca_qst`, `cd_nif`, `ch_uid`, `ch_vat`, `cl_tin`, `cm_niu`, `cn_tin`, `co_nit`, `cr_tin`, `cv_nif`, `de_stn`, `do_rcn`, `ec_ruc`, `eg_tin`, `es_cif`, `et_tin`, `eu_oss_vat`, `eu_vat`, `gb_vat`, `ge_vat`, `gn_nif`, `hk_br`, `hr_oib`, `hu_tin`, `id_npwp`, `il_vat`, `in_gst`, `is_vat`, `jp_cn`, `jp_rn`, `jp_trn`, `ke_pin`, `kg_tin`, `kh_tin`, `kr_brn`, `kz_bin`, `la_tin`, `li_uid`, `li_vat`, `lk_vat`, `ma_vat`, `md_vat`, `me_pib`, `mk_vat`, `mr_nif`, `mx_rfc`, `my_frp`, `my_itn`, `my_sst`, `ng_tin`, `no_vat`, `no_voec`, `np_pan`, `nz_gst`, `om_vat`, `pe_ruc`, `ph_tin`, `pl_nip`, `ro_tin`, `rs_pib`, `ru_inn`, `ru_kpp`, `sa_vat`, `sg_gst`, `sg_uen`, `si_tin`, `sn_ninea`, `sr_fin`, `sv_nit`, `th_vat`, `tj_tin`, `tr_tin`, `tw_vat`, `tz_vat`, `ua_vat`, `ug_tin`, `us_ein`, `uy_ruc`, `uz_tin`, `uz_vat`, `ve_rif`, `vn_tin`, `za_vat`, `zm_tin`, or `zw_tin`.
+/// Type of the tax ID, one of `ad_nrt`, `ae_trn`, `al_tin`, `am_tin`, `ao_tin`, `ar_cuit`, `au_abn`, `au_arn`, `aw_tin`, `az_tin`, `ba_tin`, `bb_tin`, `bd_bin`, `bf_ifu`, `bg_uic`, `bh_vat`, `bj_ifu`, `bo_tin`, `br_cnpj`, `br_cpf`, `bs_tin`, `by_tin`, `ca_bn`, `ca_gst_hst`, `ca_pst_bc`, `ca_pst_mb`, `ca_pst_sk`, `ca_qst`, `cd_nif`, `ch_uid`, `ch_vat`, `cl_tin`, `cm_niu`, `cn_tin`, `co_nit`, `cr_tin`, `cv_nif`, `de_stn`, `do_rcn`, `ec_ruc`, `eg_tin`, `es_cif`, `et_tin`, `eu_oss_vat`, `eu_vat`, `fo_vat`, `gb_vat`, `ge_vat`, `gi_tin`, `gn_nif`, `hk_br`, `hr_oib`, `hu_tin`, `id_npwp`, `il_vat`, `in_gst`, `is_vat`, `it_cf`, `jp_cn`, `jp_rn`, `jp_trn`, `ke_pin`, `kg_tin`, `kh_tin`, `kr_brn`, `kz_bin`, `la_tin`, `li_uid`, `li_vat`, `lk_vat`, `ma_vat`, `md_vat`, `me_pib`, `mk_vat`, `mr_nif`, `mx_rfc`, `my_frp`, `my_itn`, `my_sst`, `ng_tin`, `no_vat`, `no_voec`, `np_pan`, `nz_gst`, `om_vat`, `pe_ruc`, `ph_tin`, `pl_nip`, `py_ruc`, `ro_tin`, `rs_pib`, `ru_inn`, `ru_kpp`, `sa_vat`, `sg_gst`, `sg_uen`, `si_tin`, `sn_ninea`, `sr_fin`, `sv_nit`, `th_vat`, `tj_tin`, `tr_tin`, `tw_vat`, `tz_vat`, `ua_vat`, `ug_tin`, `us_ein`, `uy_ruc`, `uz_tin`, `uz_vat`, `ve_rif`, `vn_tin`, `za_vat`, `zm_tin`, or `zw_tin`.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum CreatePreviewInvoiceCustomerDetailsTaxIdsType {
@@ -9354,8 +9904,10 @@ pub enum CreatePreviewInvoiceCustomerDetailsTaxIdsType {
     EtTin,
     EuOssVat,
     EuVat,
+    FoVat,
     GbVat,
     GeVat,
+    GiTin,
     GnNif,
     HkBr,
     HrOib,
@@ -9364,6 +9916,7 @@ pub enum CreatePreviewInvoiceCustomerDetailsTaxIdsType {
     IlVat,
     InGst,
     IsVat,
+    ItCf,
     JpCn,
     JpRn,
     JpTrn,
@@ -9394,6 +9947,7 @@ pub enum CreatePreviewInvoiceCustomerDetailsTaxIdsType {
     PeRuc,
     PhTin,
     PlNip,
+    PyRuc,
     RoTin,
     RsPib,
     RuInn,
@@ -9473,8 +10027,10 @@ impl CreatePreviewInvoiceCustomerDetailsTaxIdsType {
             EtTin => "et_tin",
             EuOssVat => "eu_oss_vat",
             EuVat => "eu_vat",
+            FoVat => "fo_vat",
             GbVat => "gb_vat",
             GeVat => "ge_vat",
+            GiTin => "gi_tin",
             GnNif => "gn_nif",
             HkBr => "hk_br",
             HrOib => "hr_oib",
@@ -9483,6 +10039,7 @@ impl CreatePreviewInvoiceCustomerDetailsTaxIdsType {
             IlVat => "il_vat",
             InGst => "in_gst",
             IsVat => "is_vat",
+            ItCf => "it_cf",
             JpCn => "jp_cn",
             JpRn => "jp_rn",
             JpTrn => "jp_trn",
@@ -9513,6 +10070,7 @@ impl CreatePreviewInvoiceCustomerDetailsTaxIdsType {
             PeRuc => "pe_ruc",
             PhTin => "ph_tin",
             PlNip => "pl_nip",
+            PyRuc => "py_ruc",
             RoTin => "ro_tin",
             RsPib => "rs_pib",
             RuInn => "ru_inn",
@@ -9595,8 +10153,10 @@ impl std::str::FromStr for CreatePreviewInvoiceCustomerDetailsTaxIdsType {
             "et_tin" => Ok(EtTin),
             "eu_oss_vat" => Ok(EuOssVat),
             "eu_vat" => Ok(EuVat),
+            "fo_vat" => Ok(FoVat),
             "gb_vat" => Ok(GbVat),
             "ge_vat" => Ok(GeVat),
+            "gi_tin" => Ok(GiTin),
             "gn_nif" => Ok(GnNif),
             "hk_br" => Ok(HkBr),
             "hr_oib" => Ok(HrOib),
@@ -9605,6 +10165,7 @@ impl std::str::FromStr for CreatePreviewInvoiceCustomerDetailsTaxIdsType {
             "il_vat" => Ok(IlVat),
             "in_gst" => Ok(InGst),
             "is_vat" => Ok(IsVat),
+            "it_cf" => Ok(ItCf),
             "jp_cn" => Ok(JpCn),
             "jp_rn" => Ok(JpRn),
             "jp_trn" => Ok(JpTrn),
@@ -9635,6 +10196,7 @@ impl std::str::FromStr for CreatePreviewInvoiceCustomerDetailsTaxIdsType {
             "pe_ruc" => Ok(PeRuc),
             "ph_tin" => Ok(PhTin),
             "pl_nip" => Ok(PlNip),
+            "py_ruc" => Ok(PyRuc),
             "ro_tin" => Ok(RoTin),
             "rs_pib" => Ok(RsPib),
             "ru_inn" => Ok(RuInn),

@@ -77,6 +77,7 @@ pub struct PaymentMethod {
     pub satispay: Option<stripe_shared::PaymentMethodSatispay>,
     pub sepa_debit: Option<stripe_shared::PaymentMethodSepaDebit>,
     pub sofort: Option<stripe_shared::PaymentMethodSofort>,
+    pub sunbit: Option<stripe_shared::PaymentMethodSunbit>,
     pub swish: Option<stripe_shared::PaymentMethodSwish>,
     pub twint: Option<stripe_shared::PaymentMethodTwint>,
     /// The type of the PaymentMethod.
@@ -154,6 +155,7 @@ pub struct PaymentMethodBuilder {
     satispay: Option<Option<stripe_shared::PaymentMethodSatispay>>,
     sepa_debit: Option<Option<stripe_shared::PaymentMethodSepaDebit>>,
     sofort: Option<Option<stripe_shared::PaymentMethodSofort>>,
+    sunbit: Option<Option<stripe_shared::PaymentMethodSunbit>>,
     swish: Option<Option<stripe_shared::PaymentMethodSwish>>,
     twint: Option<Option<stripe_shared::PaymentMethodTwint>>,
     type_: Option<PaymentMethodType>,
@@ -260,6 +262,7 @@ const _: () = {
                 "satispay" => Deserialize::begin(&mut self.satispay),
                 "sepa_debit" => Deserialize::begin(&mut self.sepa_debit),
                 "sofort" => Deserialize::begin(&mut self.sofort),
+                "sunbit" => Deserialize::begin(&mut self.sunbit),
                 "swish" => Deserialize::begin(&mut self.swish),
                 "twint" => Deserialize::begin(&mut self.twint),
                 "type" => Deserialize::begin(&mut self.type_),
@@ -330,6 +333,7 @@ const _: () = {
                 satispay: Some(None),
                 sepa_debit: Some(None),
                 sofort: Some(None),
+                sunbit: Some(None),
                 swish: Some(None),
                 twint: Some(None),
                 type_: None,
@@ -399,6 +403,7 @@ const _: () = {
                 Some(satispay),
                 Some(sepa_debit),
                 Some(sofort),
+                Some(sunbit),
                 Some(swish),
                 Some(twint),
                 Some(type_),
@@ -464,6 +469,7 @@ const _: () = {
                 self.satispay,
                 self.sepa_debit.take(),
                 self.sofort.take(),
+                self.sunbit,
                 self.swish,
                 self.twint,
                 self.type_.take(),
@@ -533,6 +539,7 @@ const _: () = {
                 satispay,
                 sepa_debit,
                 sofort,
+                sunbit,
                 swish,
                 twint,
                 type_,
@@ -624,6 +631,7 @@ const _: () = {
                     "satispay" => b.satispay = FromValueOpt::from_value(v),
                     "sepa_debit" => b.sepa_debit = FromValueOpt::from_value(v),
                     "sofort" => b.sofort = FromValueOpt::from_value(v),
+                    "sunbit" => b.sunbit = FromValueOpt::from_value(v),
                     "swish" => b.swish = FromValueOpt::from_value(v),
                     "twint" => b.twint = FromValueOpt::from_value(v),
                     "type" => b.type_ = FromValueOpt::from_value(v),
@@ -642,7 +650,7 @@ const _: () = {
 impl serde::Serialize for PaymentMethod {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("PaymentMethod", 65)?;
+        let mut s = s.serialize_struct("PaymentMethod", 66)?;
         s.serialize_field("acss_debit", &self.acss_debit)?;
         s.serialize_field("affirm", &self.affirm)?;
         s.serialize_field("afterpay_clearpay", &self.afterpay_clearpay)?;
@@ -700,6 +708,7 @@ impl serde::Serialize for PaymentMethod {
         s.serialize_field("satispay", &self.satispay)?;
         s.serialize_field("sepa_debit", &self.sepa_debit)?;
         s.serialize_field("sofort", &self.sofort)?;
+        s.serialize_field("sunbit", &self.sunbit)?;
         s.serialize_field("swish", &self.swish)?;
         s.serialize_field("twint", &self.twint)?;
         s.serialize_field("type", &self.type_)?;
@@ -766,6 +775,7 @@ pub enum PaymentMethodType {
     Satispay,
     SepaDebit,
     Sofort,
+    Sunbit,
     Swish,
     Twint,
     Upi,
@@ -827,6 +837,7 @@ impl PaymentMethodType {
             Satispay => "satispay",
             SepaDebit => "sepa_debit",
             Sofort => "sofort",
+            Sunbit => "sunbit",
             Swish => "swish",
             Twint => "twint",
             Upi => "upi",
@@ -891,6 +902,7 @@ impl std::str::FromStr for PaymentMethodType {
             "satispay" => Ok(Satispay),
             "sepa_debit" => Ok(SepaDebit),
             "sofort" => Ok(Sofort),
+            "sunbit" => Ok(Sunbit),
             "swish" => Ok(Swish),
             "twint" => Ok(Twint),
             "upi" => Ok(Upi),

@@ -741,6 +741,10 @@ pub struct CreateSetupIntentPaymentMethodData {
     /// If this is a `sofort` PaymentMethod, this hash contains details about the SOFORT payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sofort: Option<CreateSetupIntentPaymentMethodDataSofort>,
+    /// If this is a Sunbit PaymentMethod, this hash contains details about the Sunbit payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub sunbit: Option<miniserde::json::Value>,
     /// If this is a `swish` PaymentMethod, this hash contains details about the Swish payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
@@ -827,6 +831,7 @@ impl CreateSetupIntentPaymentMethodData {
             satispay: None,
             sepa_debit: None,
             sofort: None,
+            sunbit: None,
             swish: None,
             twint: None,
             type_: type_.into(),
@@ -2085,6 +2090,7 @@ pub enum CreateSetupIntentPaymentMethodDataType {
     Satispay,
     SepaDebit,
     Sofort,
+    Sunbit,
     Swish,
     Twint,
     Upi,
@@ -2142,6 +2148,7 @@ impl CreateSetupIntentPaymentMethodDataType {
             Satispay => "satispay",
             SepaDebit => "sepa_debit",
             Sofort => "sofort",
+            Sunbit => "sunbit",
             Swish => "swish",
             Twint => "twint",
             Upi => "upi",
@@ -2202,6 +2209,7 @@ impl std::str::FromStr for CreateSetupIntentPaymentMethodDataType {
             "satispay" => Ok(Satispay),
             "sepa_debit" => Ok(SepaDebit),
             "sofort" => Ok(Sofort),
+            "sunbit" => Ok(Sunbit),
             "swish" => Ok(Swish),
             "twint" => Ok(Twint),
             "upi" => Ok(Upi),
@@ -2618,6 +2626,9 @@ pub struct CreateSetupIntentPaymentMethodOptions {
     /// If this is a `payto` SetupIntent, this sub-hash contains details about the PayTo payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payto: Option<CreateSetupIntentPaymentMethodOptionsPayto>,
+    /// If this is a `pix` SetupIntent, this sub-hash contains details about the Pix payment method options.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub pix: Option<CreateSetupIntentPaymentMethodOptionsPix>,
     /// If this is a `sepa_debit` SetupIntent, this sub-hash contains details about the SEPA Debit payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sepa_debit: Option<CreateSetupIntentPaymentMethodOptionsSepaDebit>,
@@ -2646,6 +2657,7 @@ impl CreateSetupIntentPaymentMethodOptions {
             link: None,
             paypal: None,
             payto: None,
+            pix: None,
             sepa_debit: None,
             upi: None,
             us_bank_account: None,
@@ -5071,6 +5083,334 @@ impl<'de> serde::Deserialize<'de>
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
+/// If this is a `pix` SetupIntent, this sub-hash contains details about the Pix payment method options.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateSetupIntentPaymentMethodOptionsPix {
+    /// Additional fields for mandate creation.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mandate_options: Option<CreateSetupIntentPaymentMethodOptionsPixMandateOptions>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateSetupIntentPaymentMethodOptionsPix {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateSetupIntentPaymentMethodOptionsPix").finish_non_exhaustive()
+    }
+}
+impl CreateSetupIntentPaymentMethodOptionsPix {
+    pub fn new() -> Self {
+        Self { mandate_options: None }
+    }
+}
+impl Default for CreateSetupIntentPaymentMethodOptionsPix {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Additional fields for mandate creation.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateSetupIntentPaymentMethodOptionsPixMandateOptions {
+    /// Amount to be charged for future payments.
+    /// Required when `amount_type=fixed`.
+    /// If not provided for `amount_type=maximum`, defaults to 40000.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount: Option<i64>,
+    /// Determines if the amount includes the IOF tax. Defaults to `never`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount_includes_iof:
+        Option<CreateSetupIntentPaymentMethodOptionsPixMandateOptionsAmountIncludesIof>,
+    /// Type of amount. Defaults to `maximum`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount_type: Option<CreateSetupIntentPaymentMethodOptionsPixMandateOptionsAmountType>,
+    /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
+    /// Only `brl` is supported currently.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub currency: Option<stripe_types::Currency>,
+    /// Date when the mandate expires and no further payments will be charged, in `YYYY-MM-DD`.
+    /// If not provided, the mandate will be active until canceled.
+    /// If provided, end date should be after start date.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub end_date: Option<String>,
+    /// Schedule at which the future payments will be charged. Defaults to `monthly`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payment_schedule:
+        Option<CreateSetupIntentPaymentMethodOptionsPixMandateOptionsPaymentSchedule>,
+    /// Subscription name displayed to buyers in their bank app. Defaults to the displayable business name.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reference: Option<String>,
+    /// Start date of the mandate, in `YYYY-MM-DD`.
+    /// Start date should be at least 3 days in the future.
+    /// Defaults to 3 days after the current date.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub start_date: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateSetupIntentPaymentMethodOptionsPixMandateOptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateSetupIntentPaymentMethodOptionsPixMandateOptions")
+            .finish_non_exhaustive()
+    }
+}
+impl CreateSetupIntentPaymentMethodOptionsPixMandateOptions {
+    pub fn new() -> Self {
+        Self {
+            amount: None,
+            amount_includes_iof: None,
+            amount_type: None,
+            currency: None,
+            end_date: None,
+            payment_schedule: None,
+            reference: None,
+            start_date: None,
+        }
+    }
+}
+impl Default for CreateSetupIntentPaymentMethodOptionsPixMandateOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Determines if the amount includes the IOF tax. Defaults to `never`.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreateSetupIntentPaymentMethodOptionsPixMandateOptionsAmountIncludesIof {
+    Always,
+    Never,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreateSetupIntentPaymentMethodOptionsPixMandateOptionsAmountIncludesIof {
+    pub fn as_str(&self) -> &str {
+        use CreateSetupIntentPaymentMethodOptionsPixMandateOptionsAmountIncludesIof::*;
+        match self {
+            Always => "always",
+            Never => "never",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CreateSetupIntentPaymentMethodOptionsPixMandateOptionsAmountIncludesIof {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateSetupIntentPaymentMethodOptionsPixMandateOptionsAmountIncludesIof::*;
+        match s {
+            "always" => Ok(Always),
+            "never" => Ok(Never),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateSetupIntentPaymentMethodOptionsPixMandateOptionsAmountIncludesIof"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CreateSetupIntentPaymentMethodOptionsPixMandateOptionsAmountIncludesIof {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for CreateSetupIntentPaymentMethodOptionsPixMandateOptionsAmountIncludesIof {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateSetupIntentPaymentMethodOptionsPixMandateOptionsAmountIncludesIof {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreateSetupIntentPaymentMethodOptionsPixMandateOptionsAmountIncludesIof
+        ))
+        .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for CreateSetupIntentPaymentMethodOptionsPixMandateOptionsAmountIncludesIof {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateSetupIntentPaymentMethodOptionsPixMandateOptionsAmountIncludesIof
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Type of amount. Defaults to `maximum`.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreateSetupIntentPaymentMethodOptionsPixMandateOptionsAmountType {
+    Fixed,
+    Maximum,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreateSetupIntentPaymentMethodOptionsPixMandateOptionsAmountType {
+    pub fn as_str(&self) -> &str {
+        use CreateSetupIntentPaymentMethodOptionsPixMandateOptionsAmountType::*;
+        match self {
+            Fixed => "fixed",
+            Maximum => "maximum",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CreateSetupIntentPaymentMethodOptionsPixMandateOptionsAmountType {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateSetupIntentPaymentMethodOptionsPixMandateOptionsAmountType::*;
+        match s {
+            "fixed" => Ok(Fixed),
+            "maximum" => Ok(Maximum),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateSetupIntentPaymentMethodOptionsPixMandateOptionsAmountType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CreateSetupIntentPaymentMethodOptionsPixMandateOptionsAmountType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for CreateSetupIntentPaymentMethodOptionsPixMandateOptionsAmountType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateSetupIntentPaymentMethodOptionsPixMandateOptionsAmountType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateSetupIntentPaymentMethodOptionsPixMandateOptionsAmountType))
+            .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for CreateSetupIntentPaymentMethodOptionsPixMandateOptionsAmountType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateSetupIntentPaymentMethodOptionsPixMandateOptionsAmountType
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Schedule at which the future payments will be charged. Defaults to `monthly`.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreateSetupIntentPaymentMethodOptionsPixMandateOptionsPaymentSchedule {
+    Halfyearly,
+    Monthly,
+    Quarterly,
+    Weekly,
+    Yearly,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreateSetupIntentPaymentMethodOptionsPixMandateOptionsPaymentSchedule {
+    pub fn as_str(&self) -> &str {
+        use CreateSetupIntentPaymentMethodOptionsPixMandateOptionsPaymentSchedule::*;
+        match self {
+            Halfyearly => "halfyearly",
+            Monthly => "monthly",
+            Quarterly => "quarterly",
+            Weekly => "weekly",
+            Yearly => "yearly",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CreateSetupIntentPaymentMethodOptionsPixMandateOptionsPaymentSchedule {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateSetupIntentPaymentMethodOptionsPixMandateOptionsPaymentSchedule::*;
+        match s {
+            "halfyearly" => Ok(Halfyearly),
+            "monthly" => Ok(Monthly),
+            "quarterly" => Ok(Quarterly),
+            "weekly" => Ok(Weekly),
+            "yearly" => Ok(Yearly),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateSetupIntentPaymentMethodOptionsPixMandateOptionsPaymentSchedule"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CreateSetupIntentPaymentMethodOptionsPixMandateOptionsPaymentSchedule {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for CreateSetupIntentPaymentMethodOptionsPixMandateOptionsPaymentSchedule {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateSetupIntentPaymentMethodOptionsPixMandateOptionsPaymentSchedule {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreateSetupIntentPaymentMethodOptionsPixMandateOptionsPaymentSchedule
+        ))
+        .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for CreateSetupIntentPaymentMethodOptionsPixMandateOptionsPaymentSchedule {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateSetupIntentPaymentMethodOptionsPixMandateOptionsPaymentSchedule
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
 /// If this is a `sepa_debit` SetupIntent, this sub-hash contains details about the SEPA Debit payment method options.
 #[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
@@ -6558,6 +6898,10 @@ pub struct UpdateSetupIntentPaymentMethodData {
     /// If this is a `sofort` PaymentMethod, this hash contains details about the SOFORT payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sofort: Option<UpdateSetupIntentPaymentMethodDataSofort>,
+    /// If this is a Sunbit PaymentMethod, this hash contains details about the Sunbit payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub sunbit: Option<miniserde::json::Value>,
     /// If this is a `swish` PaymentMethod, this hash contains details about the Swish payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
@@ -6644,6 +6988,7 @@ impl UpdateSetupIntentPaymentMethodData {
             satispay: None,
             sepa_debit: None,
             sofort: None,
+            sunbit: None,
             swish: None,
             twint: None,
             type_: type_.into(),
@@ -7902,6 +8247,7 @@ pub enum UpdateSetupIntentPaymentMethodDataType {
     Satispay,
     SepaDebit,
     Sofort,
+    Sunbit,
     Swish,
     Twint,
     Upi,
@@ -7959,6 +8305,7 @@ impl UpdateSetupIntentPaymentMethodDataType {
             Satispay => "satispay",
             SepaDebit => "sepa_debit",
             Sofort => "sofort",
+            Sunbit => "sunbit",
             Swish => "swish",
             Twint => "twint",
             Upi => "upi",
@@ -8019,6 +8366,7 @@ impl std::str::FromStr for UpdateSetupIntentPaymentMethodDataType {
             "satispay" => Ok(Satispay),
             "sepa_debit" => Ok(SepaDebit),
             "sofort" => Ok(Sofort),
+            "sunbit" => Ok(Sunbit),
             "swish" => Ok(Swish),
             "twint" => Ok(Twint),
             "upi" => Ok(Upi),
@@ -8435,6 +8783,9 @@ pub struct UpdateSetupIntentPaymentMethodOptions {
     /// If this is a `payto` SetupIntent, this sub-hash contains details about the PayTo payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payto: Option<UpdateSetupIntentPaymentMethodOptionsPayto>,
+    /// If this is a `pix` SetupIntent, this sub-hash contains details about the Pix payment method options.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub pix: Option<UpdateSetupIntentPaymentMethodOptionsPix>,
     /// If this is a `sepa_debit` SetupIntent, this sub-hash contains details about the SEPA Debit payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sepa_debit: Option<UpdateSetupIntentPaymentMethodOptionsSepaDebit>,
@@ -8463,6 +8814,7 @@ impl UpdateSetupIntentPaymentMethodOptions {
             link: None,
             paypal: None,
             payto: None,
+            pix: None,
             sepa_debit: None,
             upi: None,
             us_bank_account: None,
@@ -10888,6 +11240,334 @@ impl<'de> serde::Deserialize<'de>
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
+/// If this is a `pix` SetupIntent, this sub-hash contains details about the Pix payment method options.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateSetupIntentPaymentMethodOptionsPix {
+    /// Additional fields for mandate creation.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mandate_options: Option<UpdateSetupIntentPaymentMethodOptionsPixMandateOptions>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateSetupIntentPaymentMethodOptionsPix {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateSetupIntentPaymentMethodOptionsPix").finish_non_exhaustive()
+    }
+}
+impl UpdateSetupIntentPaymentMethodOptionsPix {
+    pub fn new() -> Self {
+        Self { mandate_options: None }
+    }
+}
+impl Default for UpdateSetupIntentPaymentMethodOptionsPix {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Additional fields for mandate creation.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateSetupIntentPaymentMethodOptionsPixMandateOptions {
+    /// Amount to be charged for future payments.
+    /// Required when `amount_type=fixed`.
+    /// If not provided for `amount_type=maximum`, defaults to 40000.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount: Option<i64>,
+    /// Determines if the amount includes the IOF tax. Defaults to `never`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount_includes_iof:
+        Option<UpdateSetupIntentPaymentMethodOptionsPixMandateOptionsAmountIncludesIof>,
+    /// Type of amount. Defaults to `maximum`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount_type: Option<UpdateSetupIntentPaymentMethodOptionsPixMandateOptionsAmountType>,
+    /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
+    /// Only `brl` is supported currently.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub currency: Option<stripe_types::Currency>,
+    /// Date when the mandate expires and no further payments will be charged, in `YYYY-MM-DD`.
+    /// If not provided, the mandate will be active until canceled.
+    /// If provided, end date should be after start date.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub end_date: Option<String>,
+    /// Schedule at which the future payments will be charged. Defaults to `monthly`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payment_schedule:
+        Option<UpdateSetupIntentPaymentMethodOptionsPixMandateOptionsPaymentSchedule>,
+    /// Subscription name displayed to buyers in their bank app. Defaults to the displayable business name.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reference: Option<String>,
+    /// Start date of the mandate, in `YYYY-MM-DD`.
+    /// Start date should be at least 3 days in the future.
+    /// Defaults to 3 days after the current date.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub start_date: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateSetupIntentPaymentMethodOptionsPixMandateOptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateSetupIntentPaymentMethodOptionsPixMandateOptions")
+            .finish_non_exhaustive()
+    }
+}
+impl UpdateSetupIntentPaymentMethodOptionsPixMandateOptions {
+    pub fn new() -> Self {
+        Self {
+            amount: None,
+            amount_includes_iof: None,
+            amount_type: None,
+            currency: None,
+            end_date: None,
+            payment_schedule: None,
+            reference: None,
+            start_date: None,
+        }
+    }
+}
+impl Default for UpdateSetupIntentPaymentMethodOptionsPixMandateOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Determines if the amount includes the IOF tax. Defaults to `never`.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum UpdateSetupIntentPaymentMethodOptionsPixMandateOptionsAmountIncludesIof {
+    Always,
+    Never,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl UpdateSetupIntentPaymentMethodOptionsPixMandateOptionsAmountIncludesIof {
+    pub fn as_str(&self) -> &str {
+        use UpdateSetupIntentPaymentMethodOptionsPixMandateOptionsAmountIncludesIof::*;
+        match self {
+            Always => "always",
+            Never => "never",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for UpdateSetupIntentPaymentMethodOptionsPixMandateOptionsAmountIncludesIof {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdateSetupIntentPaymentMethodOptionsPixMandateOptionsAmountIncludesIof::*;
+        match s {
+            "always" => Ok(Always),
+            "never" => Ok(Never),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdateSetupIntentPaymentMethodOptionsPixMandateOptionsAmountIncludesIof"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for UpdateSetupIntentPaymentMethodOptionsPixMandateOptionsAmountIncludesIof {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for UpdateSetupIntentPaymentMethodOptionsPixMandateOptionsAmountIncludesIof {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateSetupIntentPaymentMethodOptionsPixMandateOptionsAmountIncludesIof {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdateSetupIntentPaymentMethodOptionsPixMandateOptionsAmountIncludesIof
+        ))
+        .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for UpdateSetupIntentPaymentMethodOptionsPixMandateOptionsAmountIncludesIof {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdateSetupIntentPaymentMethodOptionsPixMandateOptionsAmountIncludesIof
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Type of amount. Defaults to `maximum`.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum UpdateSetupIntentPaymentMethodOptionsPixMandateOptionsAmountType {
+    Fixed,
+    Maximum,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl UpdateSetupIntentPaymentMethodOptionsPixMandateOptionsAmountType {
+    pub fn as_str(&self) -> &str {
+        use UpdateSetupIntentPaymentMethodOptionsPixMandateOptionsAmountType::*;
+        match self {
+            Fixed => "fixed",
+            Maximum => "maximum",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for UpdateSetupIntentPaymentMethodOptionsPixMandateOptionsAmountType {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdateSetupIntentPaymentMethodOptionsPixMandateOptionsAmountType::*;
+        match s {
+            "fixed" => Ok(Fixed),
+            "maximum" => Ok(Maximum),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdateSetupIntentPaymentMethodOptionsPixMandateOptionsAmountType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for UpdateSetupIntentPaymentMethodOptionsPixMandateOptionsAmountType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for UpdateSetupIntentPaymentMethodOptionsPixMandateOptionsAmountType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateSetupIntentPaymentMethodOptionsPixMandateOptionsAmountType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdateSetupIntentPaymentMethodOptionsPixMandateOptionsAmountType))
+            .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for UpdateSetupIntentPaymentMethodOptionsPixMandateOptionsAmountType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdateSetupIntentPaymentMethodOptionsPixMandateOptionsAmountType
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Schedule at which the future payments will be charged. Defaults to `monthly`.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum UpdateSetupIntentPaymentMethodOptionsPixMandateOptionsPaymentSchedule {
+    Halfyearly,
+    Monthly,
+    Quarterly,
+    Weekly,
+    Yearly,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl UpdateSetupIntentPaymentMethodOptionsPixMandateOptionsPaymentSchedule {
+    pub fn as_str(&self) -> &str {
+        use UpdateSetupIntentPaymentMethodOptionsPixMandateOptionsPaymentSchedule::*;
+        match self {
+            Halfyearly => "halfyearly",
+            Monthly => "monthly",
+            Quarterly => "quarterly",
+            Weekly => "weekly",
+            Yearly => "yearly",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for UpdateSetupIntentPaymentMethodOptionsPixMandateOptionsPaymentSchedule {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdateSetupIntentPaymentMethodOptionsPixMandateOptionsPaymentSchedule::*;
+        match s {
+            "halfyearly" => Ok(Halfyearly),
+            "monthly" => Ok(Monthly),
+            "quarterly" => Ok(Quarterly),
+            "weekly" => Ok(Weekly),
+            "yearly" => Ok(Yearly),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdateSetupIntentPaymentMethodOptionsPixMandateOptionsPaymentSchedule"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for UpdateSetupIntentPaymentMethodOptionsPixMandateOptionsPaymentSchedule {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for UpdateSetupIntentPaymentMethodOptionsPixMandateOptionsPaymentSchedule {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateSetupIntentPaymentMethodOptionsPixMandateOptionsPaymentSchedule {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdateSetupIntentPaymentMethodOptionsPixMandateOptionsPaymentSchedule
+        ))
+        .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for UpdateSetupIntentPaymentMethodOptionsPixMandateOptionsPaymentSchedule {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdateSetupIntentPaymentMethodOptionsPixMandateOptionsPaymentSchedule
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
 /// If this is a `sepa_debit` SetupIntent, this sub-hash contains details about the SEPA Debit payment method options.
 #[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
@@ -12572,6 +13252,10 @@ pub struct ConfirmSetupIntentPaymentMethodData {
     /// If this is a `sofort` PaymentMethod, this hash contains details about the SOFORT payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sofort: Option<ConfirmSetupIntentPaymentMethodDataSofort>,
+    /// If this is a Sunbit PaymentMethod, this hash contains details about the Sunbit payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub sunbit: Option<miniserde::json::Value>,
     /// If this is a `swish` PaymentMethod, this hash contains details about the Swish payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
@@ -12658,6 +13342,7 @@ impl ConfirmSetupIntentPaymentMethodData {
             satispay: None,
             sepa_debit: None,
             sofort: None,
+            sunbit: None,
             swish: None,
             twint: None,
             type_: type_.into(),
@@ -13916,6 +14601,7 @@ pub enum ConfirmSetupIntentPaymentMethodDataType {
     Satispay,
     SepaDebit,
     Sofort,
+    Sunbit,
     Swish,
     Twint,
     Upi,
@@ -13973,6 +14659,7 @@ impl ConfirmSetupIntentPaymentMethodDataType {
             Satispay => "satispay",
             SepaDebit => "sepa_debit",
             Sofort => "sofort",
+            Sunbit => "sunbit",
             Swish => "swish",
             Twint => "twint",
             Upi => "upi",
@@ -14033,6 +14720,7 @@ impl std::str::FromStr for ConfirmSetupIntentPaymentMethodDataType {
             "satispay" => Ok(Satispay),
             "sepa_debit" => Ok(SepaDebit),
             "sofort" => Ok(Sofort),
+            "sunbit" => Ok(Sunbit),
             "swish" => Ok(Swish),
             "twint" => Ok(Twint),
             "upi" => Ok(Upi),
@@ -14451,6 +15139,9 @@ pub struct ConfirmSetupIntentPaymentMethodOptions {
     /// If this is a `payto` SetupIntent, this sub-hash contains details about the PayTo payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payto: Option<ConfirmSetupIntentPaymentMethodOptionsPayto>,
+    /// If this is a `pix` SetupIntent, this sub-hash contains details about the Pix payment method options.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub pix: Option<ConfirmSetupIntentPaymentMethodOptionsPix>,
     /// If this is a `sepa_debit` SetupIntent, this sub-hash contains details about the SEPA Debit payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sepa_debit: Option<ConfirmSetupIntentPaymentMethodOptionsSepaDebit>,
@@ -14479,6 +15170,7 @@ impl ConfirmSetupIntentPaymentMethodOptions {
             link: None,
             paypal: None,
             payto: None,
+            pix: None,
             sepa_debit: None,
             upi: None,
             us_bank_account: None,
@@ -16909,6 +17601,340 @@ impl serde::Serialize for ConfirmSetupIntentPaymentMethodOptionsPaytoMandateOpti
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de>
     for ConfirmSetupIntentPaymentMethodOptionsPaytoMandateOptionsPurpose
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// If this is a `pix` SetupIntent, this sub-hash contains details about the Pix payment method options.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct ConfirmSetupIntentPaymentMethodOptionsPix {
+    /// Additional fields for mandate creation.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mandate_options: Option<ConfirmSetupIntentPaymentMethodOptionsPixMandateOptions>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmSetupIntentPaymentMethodOptionsPix {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmSetupIntentPaymentMethodOptionsPix").finish_non_exhaustive()
+    }
+}
+impl ConfirmSetupIntentPaymentMethodOptionsPix {
+    pub fn new() -> Self {
+        Self { mandate_options: None }
+    }
+}
+impl Default for ConfirmSetupIntentPaymentMethodOptionsPix {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Additional fields for mandate creation.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct ConfirmSetupIntentPaymentMethodOptionsPixMandateOptions {
+    /// Amount to be charged for future payments.
+    /// Required when `amount_type=fixed`.
+    /// If not provided for `amount_type=maximum`, defaults to 40000.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount: Option<i64>,
+    /// Determines if the amount includes the IOF tax. Defaults to `never`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount_includes_iof:
+        Option<ConfirmSetupIntentPaymentMethodOptionsPixMandateOptionsAmountIncludesIof>,
+    /// Type of amount. Defaults to `maximum`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount_type: Option<ConfirmSetupIntentPaymentMethodOptionsPixMandateOptionsAmountType>,
+    /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
+    /// Only `brl` is supported currently.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub currency: Option<stripe_types::Currency>,
+    /// Date when the mandate expires and no further payments will be charged, in `YYYY-MM-DD`.
+    /// If not provided, the mandate will be active until canceled.
+    /// If provided, end date should be after start date.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub end_date: Option<String>,
+    /// Schedule at which the future payments will be charged. Defaults to `monthly`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payment_schedule:
+        Option<ConfirmSetupIntentPaymentMethodOptionsPixMandateOptionsPaymentSchedule>,
+    /// Subscription name displayed to buyers in their bank app. Defaults to the displayable business name.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reference: Option<String>,
+    /// Start date of the mandate, in `YYYY-MM-DD`.
+    /// Start date should be at least 3 days in the future.
+    /// Defaults to 3 days after the current date.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub start_date: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmSetupIntentPaymentMethodOptionsPixMandateOptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmSetupIntentPaymentMethodOptionsPixMandateOptions")
+            .finish_non_exhaustive()
+    }
+}
+impl ConfirmSetupIntentPaymentMethodOptionsPixMandateOptions {
+    pub fn new() -> Self {
+        Self {
+            amount: None,
+            amount_includes_iof: None,
+            amount_type: None,
+            currency: None,
+            end_date: None,
+            payment_schedule: None,
+            reference: None,
+            start_date: None,
+        }
+    }
+}
+impl Default for ConfirmSetupIntentPaymentMethodOptionsPixMandateOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Determines if the amount includes the IOF tax. Defaults to `never`.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum ConfirmSetupIntentPaymentMethodOptionsPixMandateOptionsAmountIncludesIof {
+    Always,
+    Never,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl ConfirmSetupIntentPaymentMethodOptionsPixMandateOptionsAmountIncludesIof {
+    pub fn as_str(&self) -> &str {
+        use ConfirmSetupIntentPaymentMethodOptionsPixMandateOptionsAmountIncludesIof::*;
+        match self {
+            Always => "always",
+            Never => "never",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr
+    for ConfirmSetupIntentPaymentMethodOptionsPixMandateOptionsAmountIncludesIof
+{
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use ConfirmSetupIntentPaymentMethodOptionsPixMandateOptionsAmountIncludesIof::*;
+        match s {
+            "always" => Ok(Always),
+            "never" => Ok(Never),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "ConfirmSetupIntentPaymentMethodOptionsPixMandateOptionsAmountIncludesIof"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display
+    for ConfirmSetupIntentPaymentMethodOptionsPixMandateOptionsAmountIncludesIof
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for ConfirmSetupIntentPaymentMethodOptionsPixMandateOptionsAmountIncludesIof {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmSetupIntentPaymentMethodOptionsPixMandateOptionsAmountIncludesIof {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            ConfirmSetupIntentPaymentMethodOptionsPixMandateOptionsAmountIncludesIof
+        ))
+        .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for ConfirmSetupIntentPaymentMethodOptionsPixMandateOptionsAmountIncludesIof {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for ConfirmSetupIntentPaymentMethodOptionsPixMandateOptionsAmountIncludesIof
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Type of amount. Defaults to `maximum`.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum ConfirmSetupIntentPaymentMethodOptionsPixMandateOptionsAmountType {
+    Fixed,
+    Maximum,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl ConfirmSetupIntentPaymentMethodOptionsPixMandateOptionsAmountType {
+    pub fn as_str(&self) -> &str {
+        use ConfirmSetupIntentPaymentMethodOptionsPixMandateOptionsAmountType::*;
+        match self {
+            Fixed => "fixed",
+            Maximum => "maximum",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for ConfirmSetupIntentPaymentMethodOptionsPixMandateOptionsAmountType {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use ConfirmSetupIntentPaymentMethodOptionsPixMandateOptionsAmountType::*;
+        match s {
+            "fixed" => Ok(Fixed),
+            "maximum" => Ok(Maximum),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "ConfirmSetupIntentPaymentMethodOptionsPixMandateOptionsAmountType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for ConfirmSetupIntentPaymentMethodOptionsPixMandateOptionsAmountType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for ConfirmSetupIntentPaymentMethodOptionsPixMandateOptionsAmountType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmSetupIntentPaymentMethodOptionsPixMandateOptionsAmountType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            ConfirmSetupIntentPaymentMethodOptionsPixMandateOptionsAmountType
+        ))
+        .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for ConfirmSetupIntentPaymentMethodOptionsPixMandateOptionsAmountType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for ConfirmSetupIntentPaymentMethodOptionsPixMandateOptionsAmountType
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Schedule at which the future payments will be charged. Defaults to `monthly`.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum ConfirmSetupIntentPaymentMethodOptionsPixMandateOptionsPaymentSchedule {
+    Halfyearly,
+    Monthly,
+    Quarterly,
+    Weekly,
+    Yearly,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl ConfirmSetupIntentPaymentMethodOptionsPixMandateOptionsPaymentSchedule {
+    pub fn as_str(&self) -> &str {
+        use ConfirmSetupIntentPaymentMethodOptionsPixMandateOptionsPaymentSchedule::*;
+        match self {
+            Halfyearly => "halfyearly",
+            Monthly => "monthly",
+            Quarterly => "quarterly",
+            Weekly => "weekly",
+            Yearly => "yearly",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for ConfirmSetupIntentPaymentMethodOptionsPixMandateOptionsPaymentSchedule {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use ConfirmSetupIntentPaymentMethodOptionsPixMandateOptionsPaymentSchedule::*;
+        match s {
+            "halfyearly" => Ok(Halfyearly),
+            "monthly" => Ok(Monthly),
+            "quarterly" => Ok(Quarterly),
+            "weekly" => Ok(Weekly),
+            "yearly" => Ok(Yearly),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "ConfirmSetupIntentPaymentMethodOptionsPixMandateOptionsPaymentSchedule"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for ConfirmSetupIntentPaymentMethodOptionsPixMandateOptionsPaymentSchedule {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for ConfirmSetupIntentPaymentMethodOptionsPixMandateOptionsPaymentSchedule {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmSetupIntentPaymentMethodOptionsPixMandateOptionsPaymentSchedule {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            ConfirmSetupIntentPaymentMethodOptionsPixMandateOptionsPaymentSchedule
+        ))
+        .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for ConfirmSetupIntentPaymentMethodOptionsPixMandateOptionsPaymentSchedule {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for ConfirmSetupIntentPaymentMethodOptionsPixMandateOptionsPaymentSchedule
 {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;

@@ -15,8 +15,12 @@ pub struct InvoicesPaymentMethodOptions {
     pub konbini: Option<stripe_shared::InvoicePaymentMethodOptionsKonbini>,
     /// If paying by `payto`, this sub-hash contains details about the PayTo payment method options to pass to the invoice’s PaymentIntent.
     pub payto: Option<stripe_shared::InvoicePaymentMethodOptionsPayto>,
+    /// If paying by `pix`, this sub-hash contains details about the Pix payment method options to pass to the invoice’s PaymentIntent.
+    pub pix: Option<stripe_shared::InvoicePaymentMethodOptionsPix>,
     /// If paying by `sepa_debit`, this sub-hash contains details about the SEPA Direct Debit payment method options to pass to the invoice’s PaymentIntent.
     pub sepa_debit: Option<stripe_shared::InvoicePaymentMethodOptionsSepaDebit>,
+    /// If paying by `upi`, this sub-hash contains details about the UPI payment method options to pass to the invoice’s PaymentIntent.
+    pub upi: Option<stripe_shared::InvoicePaymentMethodOptionsUpi>,
     /// If paying by `us_bank_account`, this sub-hash contains details about the ACH direct debit payment method options to pass to the invoice’s PaymentIntent.
     pub us_bank_account: Option<stripe_shared::InvoicePaymentMethodOptionsUsBankAccount>,
 }
@@ -34,7 +38,9 @@ pub struct InvoicesPaymentMethodOptionsBuilder {
     customer_balance: Option<Option<stripe_shared::InvoicePaymentMethodOptionsCustomerBalance>>,
     konbini: Option<Option<stripe_shared::InvoicePaymentMethodOptionsKonbini>>,
     payto: Option<Option<stripe_shared::InvoicePaymentMethodOptionsPayto>>,
+    pix: Option<Option<stripe_shared::InvoicePaymentMethodOptionsPix>>,
     sepa_debit: Option<Option<stripe_shared::InvoicePaymentMethodOptionsSepaDebit>>,
+    upi: Option<Option<stripe_shared::InvoicePaymentMethodOptionsUpi>>,
     us_bank_account: Option<Option<stripe_shared::InvoicePaymentMethodOptionsUsBankAccount>>,
 }
 
@@ -84,7 +90,9 @@ const _: () = {
                 "customer_balance" => Deserialize::begin(&mut self.customer_balance),
                 "konbini" => Deserialize::begin(&mut self.konbini),
                 "payto" => Deserialize::begin(&mut self.payto),
+                "pix" => Deserialize::begin(&mut self.pix),
                 "sepa_debit" => Deserialize::begin(&mut self.sepa_debit),
+                "upi" => Deserialize::begin(&mut self.upi),
                 "us_bank_account" => Deserialize::begin(&mut self.us_bank_account),
                 _ => <dyn Visitor>::ignore(),
             })
@@ -98,7 +106,9 @@ const _: () = {
                 customer_balance: Some(None),
                 konbini: Some(None),
                 payto: Some(None),
+                pix: Some(None),
                 sepa_debit: Some(None),
+                upi: Some(None),
                 us_bank_account: Some(None),
             }
         }
@@ -111,7 +121,9 @@ const _: () = {
                 Some(customer_balance),
                 Some(konbini),
                 Some(payto),
+                Some(pix),
                 Some(sepa_debit),
+                Some(upi),
                 Some(us_bank_account),
             ) = (
                 self.acss_debit.take(),
@@ -120,7 +132,9 @@ const _: () = {
                 self.customer_balance.take(),
                 self.konbini,
                 self.payto.take(),
+                self.pix.take(),
                 self.sepa_debit,
+                self.upi.take(),
                 self.us_bank_account.take(),
             )
             else {
@@ -133,7 +147,9 @@ const _: () = {
                 customer_balance,
                 konbini,
                 payto,
+                pix,
                 sepa_debit,
+                upi,
                 us_bank_account,
             })
         }
@@ -168,7 +184,9 @@ const _: () = {
                     "customer_balance" => b.customer_balance = FromValueOpt::from_value(v),
                     "konbini" => b.konbini = FromValueOpt::from_value(v),
                     "payto" => b.payto = FromValueOpt::from_value(v),
+                    "pix" => b.pix = FromValueOpt::from_value(v),
                     "sepa_debit" => b.sepa_debit = FromValueOpt::from_value(v),
+                    "upi" => b.upi = FromValueOpt::from_value(v),
                     "us_bank_account" => b.us_bank_account = FromValueOpt::from_value(v),
                     _ => {}
                 }

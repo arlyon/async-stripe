@@ -126,7 +126,7 @@ const _: () = {
                 self.customer_acceptance.take(),
                 self.id.take(),
                 self.livemode,
-                self.multi_use,
+                self.multi_use.take(),
                 self.on_behalf_of.take(),
                 self.payment_method.take(),
                 self.payment_method_details.take(),

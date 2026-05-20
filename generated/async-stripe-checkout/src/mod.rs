@@ -90,6 +90,7 @@ pub use stripe_shared::payment_pages_checkout_session_discount::*;
 pub use stripe_shared::payment_pages_checkout_session_individual_name::*;
 pub use stripe_shared::payment_pages_checkout_session_invoice_creation::*;
 pub use stripe_shared::payment_pages_checkout_session_invoice_settings::*;
+pub use stripe_shared::payment_pages_checkout_session_managed_payments::*;
 pub use stripe_shared::payment_pages_checkout_session_name_collection::*;
 pub use stripe_shared::payment_pages_checkout_session_optional_item::*;
 pub use stripe_shared::payment_pages_checkout_session_optional_item_adjustable_quantity::*;

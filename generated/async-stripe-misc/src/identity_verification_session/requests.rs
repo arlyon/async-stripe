@@ -425,7 +425,7 @@ impl<'de> serde::Deserialize<'de> for CreateIdentityVerificationSessionOptionsDo
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-/// Tokens referencing a Person resource and it's associated account.
+/// Tokens referencing a Person resource and its associated account.
 #[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
@@ -571,7 +571,7 @@ impl CreateIdentityVerificationSession {
         self.inner.options = Some(options.into());
         self
     }
-    /// Details provided about the user being verified. These details may be shown to the user.
+    /// Details provided about the user being verified. These details might be shown to the user.
     pub fn provided_details(mut self, provided_details: impl Into<ProvidedDetailsParam>) -> Self {
         self.inner.provided_details = Some(provided_details.into());
         self
@@ -586,7 +586,7 @@ impl CreateIdentityVerificationSession {
         self.inner.related_customer_account = Some(related_customer_account.into());
         self
     }
-    /// Tokens referencing a Person resource and it's associated account.
+    /// Tokens referencing a Person resource and its associated account.
     pub fn related_person(
         mut self,
         related_person: impl Into<CreateIdentityVerificationSessionRelatedPerson>,

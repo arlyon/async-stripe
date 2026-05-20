@@ -89,6 +89,7 @@ pub struct PaymentMethodConfiguration {
     pub satispay: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
     pub sepa_debit: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
     pub sofort: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
+    pub sunbit: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
     pub swish: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
     pub twint: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
     pub upi: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
@@ -165,6 +166,7 @@ pub struct PaymentMethodConfigurationBuilder {
     satispay: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
     sepa_debit: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
     sofort: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
+    sunbit: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
     swish: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
     twint: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
     upi: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
@@ -270,6 +272,7 @@ const _: () = {
                 "satispay" => Deserialize::begin(&mut self.satispay),
                 "sepa_debit" => Deserialize::begin(&mut self.sepa_debit),
                 "sofort" => Deserialize::begin(&mut self.sofort),
+                "sunbit" => Deserialize::begin(&mut self.sunbit),
                 "swish" => Deserialize::begin(&mut self.swish),
                 "twint" => Deserialize::begin(&mut self.twint),
                 "upi" => Deserialize::begin(&mut self.upi),
@@ -338,6 +341,7 @@ const _: () = {
                 satispay: Some(None),
                 sepa_debit: Some(None),
                 sofort: Some(None),
+                sunbit: Some(None),
                 swish: Some(None),
                 twint: Some(None),
                 upi: Some(None),
@@ -405,6 +409,7 @@ const _: () = {
                 Some(satispay),
                 Some(sepa_debit),
                 Some(sofort),
+                Some(sunbit),
                 Some(swish),
                 Some(twint),
                 Some(upi),
@@ -468,6 +473,7 @@ const _: () = {
                 self.satispay.take(),
                 self.sepa_debit.take(),
                 self.sofort.take(),
+                self.sunbit.take(),
                 self.swish.take(),
                 self.twint.take(),
                 self.upi.take(),
@@ -535,6 +541,7 @@ const _: () = {
                 satispay,
                 sepa_debit,
                 sofort,
+                sunbit,
                 swish,
                 twint,
                 upi,
@@ -624,6 +631,7 @@ const _: () = {
                     "satispay" => b.satispay = FromValueOpt::from_value(v),
                     "sepa_debit" => b.sepa_debit = FromValueOpt::from_value(v),
                     "sofort" => b.sofort = FromValueOpt::from_value(v),
+                    "sunbit" => b.sunbit = FromValueOpt::from_value(v),
                     "swish" => b.swish = FromValueOpt::from_value(v),
                     "twint" => b.twint = FromValueOpt::from_value(v),
                     "upi" => b.upi = FromValueOpt::from_value(v),
@@ -641,7 +649,7 @@ const _: () = {
 impl serde::Serialize for PaymentMethodConfiguration {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("PaymentMethodConfiguration", 63)?;
+        let mut s = s.serialize_struct("PaymentMethodConfiguration", 64)?;
         s.serialize_field("acss_debit", &self.acss_debit)?;
         s.serialize_field("active", &self.active)?;
         s.serialize_field("affirm", &self.affirm)?;
@@ -698,6 +706,7 @@ impl serde::Serialize for PaymentMethodConfiguration {
         s.serialize_field("satispay", &self.satispay)?;
         s.serialize_field("sepa_debit", &self.sepa_debit)?;
         s.serialize_field("sofort", &self.sofort)?;
+        s.serialize_field("sunbit", &self.sunbit)?;
         s.serialize_field("swish", &self.swish)?;
         s.serialize_field("twint", &self.twint)?;
         s.serialize_field("upi", &self.upi)?;
