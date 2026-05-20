@@ -5,6 +5,7 @@ use anyhow::Context;
 use indoc::formatdoc;
 
 use crate::components::{Components, get_components};
+use crate::crate_inference::CrateInferenceWarning;
 use crate::crate_table::write_crate_table;
 use crate::crates::{ALL_CRATES, Crate, get_crate_doc_comment};
 use crate::object_writing::{gen_obj, gen_requests};
@@ -17,8 +18,6 @@ use crate::templates::utils::write_top_level_doc_comment;
 use crate::url_finder::UrlFinder;
 use crate::utils::{append_to_file, write_to_file};
 use crate::webhook::write_generated_for_webhooks;
-
-use crate::crate_inference::CrateInferenceWarning;
 
 pub struct CodeGen {
     pub components: Components,

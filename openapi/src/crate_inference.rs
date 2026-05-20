@@ -30,7 +30,11 @@ impl fmt::Display for CrateInferenceWarning {
             self.component,
             self.chosen_crate.base_name(),
             self.depended_on_by.iter().map(|p| p.to_string()).collect::<Vec<_>>().join(", "),
-            self.candidate_crates.iter().map(|c| c.base_name().to_string()).collect::<Vec<_>>().join(", "),
+            self.candidate_crates
+                .iter()
+                .map(|c| c.base_name().to_string())
+                .collect::<Vec<_>>()
+                .join(", "),
         )
     }
 }
@@ -50,9 +54,7 @@ pub fn validate_crate_info(components: &Components) -> anyhow::Result<()> {
 
 impl Components {
     #[tracing::instrument(skip_all)]
-    pub fn infer_all_crate_assignments(
-        &mut self,
-    ) -> anyhow::Result<Vec<CrateInferenceWarning>> {
+    pub fn infer_all_crate_assignments(&mut self) -> anyhow::Result<Vec<CrateInferenceWarning>> {
         // If a component includes requests that have URLs building off another component,
         // place with that component. This automates determinations like `external_account`
         // ending up in the same crate as `account` since all its requests start with `/account`.
@@ -117,14 +119,10 @@ impl Components {
         let mut warnings = Vec::new();
 
         for missing in &components_without_crates {
-            let depended_on: Vec<ComponentPath> = graph
-                .neighbors_directed(missing, Direction::Incoming)
-                .cloned()
-                .collect();
-            let candidate_crates: Vec<Crate> = depended_on
-                .iter()
-                .filter_map(|m| self.get(m).krate().map(|k| k.base()))
-                .collect();
+            let depended_on: Vec<ComponentPath> =
+                graph.neighbors_directed(missing, Direction::Incoming).cloned().collect();
+            let candidate_crates: Vec<Crate> =
+                depended_on.iter().filter_map(|m| self.get(m).krate().map(|k| k.base())).collect();
 
             // Pick the most common crate, breaking ties alphabetically
             let chosen = if candidate_crates.is_empty() {

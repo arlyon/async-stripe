@@ -89,12 +89,8 @@ fn main() -> Result<()> {
              |-----------|---------------|----------------|------------------|\n",
         );
         for w in &codegen.crate_inference_warnings {
-            let deps = w
-                .depended_on_by
-                .iter()
-                .map(|p| format!("`{p}`"))
-                .collect::<Vec<_>>()
-                .join(", ");
+            let deps =
+                w.depended_on_by.iter().map(|p| format!("`{p}`")).collect::<Vec<_>>().join(", ");
             let crates = w
                 .candidate_crates
                 .iter()
@@ -110,7 +106,9 @@ fn main() -> Result<()> {
             ));
         }
         body.push_str("\n### Suggested `gen_crates.toml` entries\n\n");
-        body.push_str("Add the following paths to the appropriate crate's `paths` array:\n\n```toml\n");
+        body.push_str(
+            "Add the following paths to the appropriate crate's `paths` array:\n\n```toml\n",
+        );
         for w in &codegen.crate_inference_warnings {
             body.push_str(&format!(
                 "# currently auto-assigned to \"{}\"\n\"{}\",\n",
