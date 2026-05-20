@@ -65,7 +65,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self { card: Deserialize::default() }
+            Self { card: Some(None) }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {

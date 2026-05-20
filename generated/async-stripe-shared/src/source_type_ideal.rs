@@ -72,10 +72,10 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                bank: Deserialize::default(),
-                bic: Deserialize::default(),
-                iban_last4: Deserialize::default(),
-                statement_descriptor: Deserialize::default(),
+                bank: Some(None),
+                bic: Some(None),
+                iban_last4: Some(None),
+                statement_descriptor: Some(None),
             }
         }
 

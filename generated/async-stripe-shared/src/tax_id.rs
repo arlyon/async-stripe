@@ -105,16 +105,16 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                country: Deserialize::default(),
-                created: Deserialize::default(),
-                customer: Deserialize::default(),
-                customer_account: Deserialize::default(),
-                id: Deserialize::default(),
-                livemode: Deserialize::default(),
-                owner: Deserialize::default(),
-                type_: Deserialize::default(),
-                value: Deserialize::default(),
-                verification: Deserialize::default(),
+                country: Some(None),
+                created: None,
+                customer: Some(None),
+                customer_account: Some(None),
+                id: None,
+                livemode: None,
+                owner: Some(None),
+                type_: None,
+                value: None,
+                verification: Some(None),
             }
         }
 

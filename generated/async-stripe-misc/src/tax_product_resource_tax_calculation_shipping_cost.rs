@@ -87,12 +87,12 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                amount: Deserialize::default(),
-                amount_tax: Deserialize::default(),
-                shipping_rate: Deserialize::default(),
-                tax_behavior: Deserialize::default(),
-                tax_breakdown: Deserialize::default(),
-                tax_code: Deserialize::default(),
+                amount: None,
+                amount_tax: None,
+                shipping_rate: Some(None),
+                tax_behavior: None,
+                tax_breakdown: Some(None),
+                tax_code: None,
             }
         }
 

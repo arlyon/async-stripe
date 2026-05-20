@@ -78,9 +78,9 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                acquiring_institution_id: Deserialize::default(),
-                system_trace_audit_number: Deserialize::default(),
-                transaction_id: Deserialize::default(),
+                acquiring_institution_id: Some(None),
+                system_trace_audit_number: Some(None),
+                transaction_id: Some(None),
             }
         }
 

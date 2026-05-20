@@ -126,19 +126,19 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                created: Deserialize::default(),
-                expires_at: Deserialize::default(),
-                id: Deserialize::default(),
-                livemode: Deserialize::default(),
-                mandate_data: Deserialize::default(),
-                payment_intent: Deserialize::default(),
-                payment_method_options: Deserialize::default(),
-                payment_method_preview: Deserialize::default(),
-                return_url: Deserialize::default(),
-                setup_future_usage: Deserialize::default(),
-                setup_intent: Deserialize::default(),
-                shipping: Deserialize::default(),
-                use_stripe_sdk: Deserialize::default(),
+                created: None,
+                expires_at: Some(None),
+                id: None,
+                livemode: None,
+                mandate_data: Some(None),
+                payment_intent: Some(None),
+                payment_method_options: Some(None),
+                payment_method_preview: Some(None),
+                return_url: Some(None),
+                setup_future_usage: Some(None),
+                setup_intent: Some(None),
+                shipping: Some(None),
+                use_stripe_sdk: None,
             }
         }
 

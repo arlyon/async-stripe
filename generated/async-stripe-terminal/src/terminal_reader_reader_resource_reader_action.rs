@@ -111,17 +111,17 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                collect_inputs: Deserialize::default(),
-                collect_payment_method: Deserialize::default(),
-                confirm_payment_intent: Deserialize::default(),
-                failure_code: Deserialize::default(),
-                failure_message: Deserialize::default(),
-                process_payment_intent: Deserialize::default(),
-                process_setup_intent: Deserialize::default(),
-                refund_payment: Deserialize::default(),
-                set_reader_display: Deserialize::default(),
-                status: Deserialize::default(),
-                type_: Deserialize::default(),
+                collect_inputs: Some(None),
+                collect_payment_method: Some(None),
+                confirm_payment_intent: Some(None),
+                failure_code: Some(None),
+                failure_message: Some(None),
+                process_payment_intent: Some(None),
+                process_setup_intent: Some(None),
+                refund_payment: Some(None),
+                set_reader_display: Some(None),
+                status: None,
+                type_: None,
             }
         }
 

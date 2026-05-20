@@ -90,13 +90,13 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                account_tax_ids: Deserialize::default(),
-                custom_fields: Deserialize::default(),
-                description: Deserialize::default(),
-                footer: Deserialize::default(),
-                issuer: Deserialize::default(),
-                metadata: Deserialize::default(),
-                rendering_options: Deserialize::default(),
+                account_tax_ids: Some(None),
+                custom_fields: Some(None),
+                description: Some(None),
+                footer: Some(None),
+                issuer: Some(None),
+                metadata: Some(None),
+                rendering_options: Some(None),
             }
         }
 

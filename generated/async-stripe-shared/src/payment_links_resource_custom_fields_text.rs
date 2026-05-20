@@ -72,9 +72,9 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                default_value: Deserialize::default(),
-                maximum_length: Deserialize::default(),
-                minimum_length: Deserialize::default(),
+                default_value: Some(None),
+                maximum_length: Some(None),
+                minimum_length: Some(None),
             }
         }
 

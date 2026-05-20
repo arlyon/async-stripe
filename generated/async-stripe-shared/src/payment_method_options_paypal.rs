@@ -84,10 +84,10 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                capture_method: Deserialize::default(),
-                preferred_locale: Deserialize::default(),
-                reference: Deserialize::default(),
-                setup_future_usage: Deserialize::default(),
+                capture_method: Some(None),
+                preferred_locale: Some(None),
+                reference: Some(None),
+                setup_future_usage: Some(None),
             }
         }
 

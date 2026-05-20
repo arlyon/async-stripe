@@ -91,12 +91,12 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                amount_remaining: Deserialize::default(),
-                currency: Deserialize::default(),
-                financial_addresses: Deserialize::default(),
-                hosted_instructions_url: Deserialize::default(),
-                reference: Deserialize::default(),
-                type_: Deserialize::default(),
+                amount_remaining: Some(None),
+                currency: Some(None),
+                financial_addresses: Some(None),
+                hosted_instructions_url: Some(None),
+                reference: Some(None),
+                type_: None,
             }
         }
 

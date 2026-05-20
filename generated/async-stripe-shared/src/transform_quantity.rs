@@ -67,7 +67,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self { divide_by: Deserialize::default(), round: Deserialize::default() }
+            Self { divide_by: None, round: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {

@@ -71,11 +71,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self {
-                country: Deserialize::default(),
-                source: Deserialize::default(),
-                state: Deserialize::default(),
-            }
+            Self { country: None, source: None, state: Some(None) }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {

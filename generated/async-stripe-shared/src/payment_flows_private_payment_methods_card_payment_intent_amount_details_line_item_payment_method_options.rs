@@ -66,7 +66,7 @@ const _: () = {
     }
 
     fn deser_default() -> Self {
-        Self { commodity_code: Deserialize::default(),
+        Self { commodity_code: Some(None),
  }
     }
 

@@ -112,15 +112,15 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                account_type: Deserialize::default(),
-                application_cryptogram: Deserialize::default(),
-                application_preferred_name: Deserialize::default(),
-                authorization_code: Deserialize::default(),
-                authorization_response_code: Deserialize::default(),
-                cardholder_verification_method: Deserialize::default(),
-                dedicated_file_name: Deserialize::default(),
-                terminal_verification_results: Deserialize::default(),
-                transaction_status_information: Deserialize::default(),
+                account_type: Some(None),
+                application_cryptogram: Some(None),
+                application_preferred_name: Some(None),
+                authorization_code: Some(None),
+                authorization_response_code: Some(None),
+                cardholder_verification_method: Some(None),
+                dedicated_file_name: Some(None),
+                terminal_verification_results: Some(None),
+                transaction_status_information: Some(None),
             }
         }
 

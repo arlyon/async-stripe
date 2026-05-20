@@ -78,10 +78,10 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                enable_customer_cancellation: Deserialize::default(),
-                return_url: Deserialize::default(),
-                skip_tipping: Deserialize::default(),
-                tipping: Deserialize::default(),
+                enable_customer_cancellation: Some(None),
+                return_url: Some(None),
+                skip_tipping: Some(None),
+                tipping: Some(None),
             }
         }
 

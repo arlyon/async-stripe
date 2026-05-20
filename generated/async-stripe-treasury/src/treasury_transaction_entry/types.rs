@@ -110,18 +110,18 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                balance_impact: Deserialize::default(),
-                created: Deserialize::default(),
-                currency: Deserialize::default(),
-                effective_at: Deserialize::default(),
-                financial_account: Deserialize::default(),
-                flow: Deserialize::default(),
-                flow_details: Deserialize::default(),
-                flow_type: Deserialize::default(),
-                id: Deserialize::default(),
-                livemode: Deserialize::default(),
-                transaction: Deserialize::default(),
-                type_: Deserialize::default(),
+                balance_impact: None,
+                created: None,
+                currency: None,
+                effective_at: None,
+                financial_account: None,
+                flow: Some(None),
+                flow_details: Some(None),
+                flow_type: None,
+                id: None,
+                livemode: None,
+                transaction: None,
+                type_: None,
             }
         }
 

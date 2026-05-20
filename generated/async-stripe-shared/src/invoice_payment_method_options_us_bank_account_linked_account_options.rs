@@ -78,11 +78,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self {
-                filters: Deserialize::default(),
-                permissions: Deserialize::default(),
-                prefetch: Deserialize::default(),
-            }
+            Self { filters: Some(None), permissions: Some(None), prefetch: Some(None) }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {

@@ -86,11 +86,11 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                available: Deserialize::default(),
-                customer: Deserialize::default(),
-                customer_account: Deserialize::default(),
-                livemode: Deserialize::default(),
-                settings: Deserialize::default(),
+                available: Some(None),
+                customer: None,
+                customer_account: Some(None),
+                livemode: None,
+                settings: None,
             }
         }
 

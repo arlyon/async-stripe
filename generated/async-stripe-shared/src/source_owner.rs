@@ -100,14 +100,14 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                address: Deserialize::default(),
-                email: Deserialize::default(),
-                name: Deserialize::default(),
-                phone: Deserialize::default(),
-                verified_address: Deserialize::default(),
-                verified_email: Deserialize::default(),
-                verified_name: Deserialize::default(),
-                verified_phone: Deserialize::default(),
+                address: Some(None),
+                email: Some(None),
+                name: Some(None),
+                phone: Some(None),
+                verified_address: Some(None),
+                verified_email: Some(None),
+                verified_name: Some(None),
+                verified_phone: Some(None),
             }
         }
 

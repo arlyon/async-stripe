@@ -75,12 +75,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self {
-                height: Deserialize::default(),
-                length: Deserialize::default(),
-                weight: Deserialize::default(),
-                width: Deserialize::default(),
-            }
+            Self { height: None, length: None, weight: None, width: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {

@@ -64,7 +64,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self { splashscreen: Deserialize::default() }
+            Self { splashscreen: Some(None) }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {

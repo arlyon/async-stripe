@@ -129,20 +129,20 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                bbpos_wisepad3: Deserialize::default(),
-                bbpos_wisepos_e: Deserialize::default(),
-                cellular: Deserialize::default(),
-                id: Deserialize::default(),
-                is_account_default: Deserialize::default(),
-                livemode: Deserialize::default(),
-                name: Deserialize::default(),
-                offline: Deserialize::default(),
-                reboot_window: Deserialize::default(),
-                stripe_s700: Deserialize::default(),
-                stripe_s710: Deserialize::default(),
-                tipping: Deserialize::default(),
-                verifone_p400: Deserialize::default(),
-                wifi: Deserialize::default(),
+                bbpos_wisepad3: Some(None),
+                bbpos_wisepos_e: Some(None),
+                cellular: Some(None),
+                id: None,
+                is_account_default: Some(None),
+                livemode: None,
+                name: Some(None),
+                offline: Some(None),
+                reboot_window: Some(None),
+                stripe_s700: Some(None),
+                stripe_s710: Some(None),
+                tipping: Some(None),
+                verifone_p400: Some(None),
+                wifi: Some(None),
             }
         }
 

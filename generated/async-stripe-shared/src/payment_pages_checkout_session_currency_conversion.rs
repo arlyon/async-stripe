@@ -75,12 +75,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self {
-                amount_subtotal: Deserialize::default(),
-                amount_total: Deserialize::default(),
-                fx_rate: Deserialize::default(),
-                source_currency: Deserialize::default(),
-            }
+            Self { amount_subtotal: None, amount_total: None, fx_rate: None, source_currency: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {

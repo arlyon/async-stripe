@@ -72,11 +72,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self {
-                bsb_number: Deserialize::default(),
-                fingerprint: Deserialize::default(),
-                last4: Deserialize::default(),
-            }
+            Self { bsb_number: Some(None), fingerprint: Some(None), last4: Some(None) }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {

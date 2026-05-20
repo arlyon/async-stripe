@@ -100,14 +100,14 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                created: Deserialize::default(),
-                current_prices_per_metric_ton: Deserialize::default(),
-                delivery_year: Deserialize::default(),
-                id: Deserialize::default(),
-                livemode: Deserialize::default(),
-                metric_tons_available: Deserialize::default(),
-                name: Deserialize::default(),
-                suppliers: Deserialize::default(),
+                created: None,
+                current_prices_per_metric_ton: None,
+                delivery_year: Some(None),
+                id: None,
+                livemode: None,
+                metric_tons_available: None,
+                name: None,
+                suppliers: None,
             }
         }
 

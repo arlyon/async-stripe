@@ -118,19 +118,19 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                billing_zip: Deserialize::default(),
-                charge: Deserialize::default(),
-                closed_reason: Deserialize::default(),
-                created: Deserialize::default(),
-                id: Deserialize::default(),
-                ip_address: Deserialize::default(),
-                ip_address_location: Deserialize::default(),
-                livemode: Deserialize::default(),
-                open: Deserialize::default(),
-                opened_reason: Deserialize::default(),
-                payment_intent: Deserialize::default(),
-                reason: Deserialize::default(),
-                session: Deserialize::default(),
+                billing_zip: Some(None),
+                charge: Some(None),
+                closed_reason: Some(None),
+                created: None,
+                id: None,
+                ip_address: Some(None),
+                ip_address_location: Some(None),
+                livemode: None,
+                open: None,
+                opened_reason: None,
+                payment_intent: Some(None),
+                reason: None,
+                session: Some(None),
             }
         }
 

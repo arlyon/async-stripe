@@ -72,11 +72,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self {
-                account_tax_ids: Deserialize::default(),
-                days_until_due: Deserialize::default(),
-                issuer: Deserialize::default(),
-            }
+            Self { account_tax_ids: Some(None), days_until_due: Some(None), issuer: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {

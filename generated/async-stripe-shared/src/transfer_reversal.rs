@@ -115,15 +115,15 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                amount: Deserialize::default(),
-                balance_transaction: Deserialize::default(),
-                created: Deserialize::default(),
-                currency: Deserialize::default(),
-                destination_payment_refund: Deserialize::default(),
-                id: Deserialize::default(),
-                metadata: Deserialize::default(),
-                source_refund: Deserialize::default(),
-                transfer: Deserialize::default(),
+                amount: None,
+                balance_transaction: Some(None),
+                created: None,
+                currency: None,
+                destination_payment_refund: Some(None),
+                id: None,
+                metadata: Some(None),
+                source_refund: Some(None),
+                transfer: None,
             }
         }
 

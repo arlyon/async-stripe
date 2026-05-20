@@ -72,11 +72,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self {
-                dispute: Deserialize::default(),
-                refund: Deserialize::default(),
-                type_: Deserialize::default(),
-            }
+            Self { dispute: Some(None), refund: Some(None), type_: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {

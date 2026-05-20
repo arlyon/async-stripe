@@ -122,22 +122,22 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                advice_code: Deserialize::default(),
-                charge: Deserialize::default(),
-                code: Deserialize::default(),
-                decline_code: Deserialize::default(),
-                doc_url: Deserialize::default(),
-                message: Deserialize::default(),
-                network_advice_code: Deserialize::default(),
-                network_decline_code: Deserialize::default(),
-                param: Deserialize::default(),
-                payment_intent: Deserialize::default(),
-                payment_method: Deserialize::default(),
-                payment_method_type: Deserialize::default(),
-                request_log_url: Deserialize::default(),
-                setup_intent: Deserialize::default(),
-                source: Deserialize::default(),
-                type_: Deserialize::default(),
+                advice_code: Some(None),
+                charge: Some(None),
+                code: Some(None),
+                decline_code: Some(None),
+                doc_url: Some(None),
+                message: Some(None),
+                network_advice_code: Some(None),
+                network_decline_code: Some(None),
+                param: Some(None),
+                payment_intent: Some(None),
+                payment_method: Some(None),
+                payment_method_type: Some(None),
+                request_log_url: Some(None),
+                setup_intent: Some(None),
+                source: Some(None),
+                type_: None,
             }
         }
 

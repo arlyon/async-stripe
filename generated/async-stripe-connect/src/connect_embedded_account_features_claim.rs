@@ -76,10 +76,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self {
-                disable_stripe_user_authentication: Deserialize::default(),
-                external_account_collection: Deserialize::default(),
-            }
+            Self { disable_stripe_user_authentication: None, external_account_collection: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {

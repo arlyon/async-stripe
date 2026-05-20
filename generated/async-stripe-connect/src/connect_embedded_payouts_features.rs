@@ -92,11 +92,11 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                disable_stripe_user_authentication: Deserialize::default(),
-                edit_payout_schedule: Deserialize::default(),
-                external_account_collection: Deserialize::default(),
-                instant_payouts: Deserialize::default(),
-                standard_payouts: Deserialize::default(),
+                disable_stripe_user_authentication: None,
+                edit_payout_schedule: None,
+                external_account_collection: None,
+                instant_payouts: None,
+                standard_payouts: None,
             }
         }
 

@@ -63,7 +63,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self { last4: Deserialize::default() }
+            Self { last4: Some(None) }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {

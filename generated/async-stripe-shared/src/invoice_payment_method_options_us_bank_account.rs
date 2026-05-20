@@ -68,10 +68,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self {
-                financial_connections: Deserialize::default(),
-                verification_method: Deserialize::default(),
-            }
+            Self { financial_connections: Some(None), verification_method: Some(None) }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {

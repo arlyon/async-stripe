@@ -86,12 +86,12 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                alert_type: Deserialize::default(),
-                id: Deserialize::default(),
-                livemode: Deserialize::default(),
-                status: Deserialize::default(),
-                title: Deserialize::default(),
-                usage_threshold: Deserialize::default(),
+                alert_type: None,
+                id: None,
+                livemode: None,
+                status: Some(None),
+                title: None,
+                usage_threshold: Some(None),
             }
         }
 

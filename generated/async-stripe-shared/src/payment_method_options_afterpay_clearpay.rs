@@ -81,9 +81,9 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                capture_method: Deserialize::default(),
-                reference: Deserialize::default(),
-                setup_future_usage: Deserialize::default(),
+                capture_method: Some(None),
+                reference: Some(None),
+                setup_future_usage: Some(None),
             }
         }
 

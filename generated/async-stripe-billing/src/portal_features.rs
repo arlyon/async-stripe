@@ -75,11 +75,11 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                customer_update: Deserialize::default(),
-                invoice_history: Deserialize::default(),
-                payment_method_update: Deserialize::default(),
-                subscription_cancel: Deserialize::default(),
-                subscription_update: Deserialize::default(),
+                customer_update: None,
+                invoice_history: None,
+                payment_method_update: None,
+                subscription_cancel: None,
+                subscription_update: None,
             }
         }
 

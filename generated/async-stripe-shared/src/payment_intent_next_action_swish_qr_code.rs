@@ -71,11 +71,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self {
-                data: Deserialize::default(),
-                image_url_png: Deserialize::default(),
-                image_url_svg: Deserialize::default(),
-            }
+            Self { data: None, image_url_png: None, image_url_svg: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {

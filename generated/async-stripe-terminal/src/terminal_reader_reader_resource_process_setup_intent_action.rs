@@ -74,11 +74,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self {
-                generated_card: Deserialize::default(),
-                process_config: Deserialize::default(),
-                setup_intent: Deserialize::default(),
-            }
+            Self { generated_card: Some(None), process_config: Some(None), setup_intent: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {

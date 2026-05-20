@@ -83,11 +83,11 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                ca_certificate_file: Deserialize::default(),
-                client_certificate_file: Deserialize::default(),
-                private_key_file: Deserialize::default(),
-                private_key_file_password: Deserialize::default(),
-                ssid: Deserialize::default(),
+                ca_certificate_file: Some(None),
+                client_certificate_file: None,
+                private_key_file: None,
+                private_key_file_password: Some(None),
+                ssid: None,
             }
         }
 

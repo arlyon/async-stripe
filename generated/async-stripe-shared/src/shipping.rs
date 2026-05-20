@@ -77,11 +77,11 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                address: Deserialize::default(),
-                carrier: Deserialize::default(),
-                name: Deserialize::default(),
-                phone: Deserialize::default(),
-                tracking_number: Deserialize::default(),
+                address: Some(None),
+                carrier: Some(None),
+                name: Some(None),
+                phone: Some(None),
+                tracking_number: Some(None),
             }
         }
 

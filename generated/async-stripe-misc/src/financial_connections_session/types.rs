@@ -99,15 +99,15 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                account_holder: Deserialize::default(),
-                accounts: Deserialize::default(),
-                client_secret: Deserialize::default(),
-                filters: Deserialize::default(),
-                id: Deserialize::default(),
-                livemode: Deserialize::default(),
-                permissions: Deserialize::default(),
-                prefetch: Deserialize::default(),
-                return_url: Deserialize::default(),
+                account_holder: Some(None),
+                accounts: None,
+                client_secret: Some(None),
+                filters: Some(None),
+                id: None,
+                livemode: None,
+                permissions: None,
+                prefetch: Some(None),
+                return_url: Some(None),
             }
         }
 

@@ -83,9 +83,9 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                allow_redisplay_filters: Deserialize::default(),
-                payment_method_remove: Deserialize::default(),
-                payment_method_save: Deserialize::default(),
+                allow_redisplay_filters: Some(None),
+                payment_method_remove: Some(None),
+                payment_method_save: Some(None),
             }
         }
 

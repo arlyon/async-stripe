@@ -100,12 +100,12 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                cashapp_handle_redirect_or_display_qr_code: Deserialize::default(),
-                redirect_to_url: Deserialize::default(),
-                type_: Deserialize::default(),
-                upi_handle_redirect_or_display_qr_code: Deserialize::default(),
-                use_stripe_sdk: Deserialize::default(),
-                verify_with_microdeposits: Deserialize::default(),
+                cashapp_handle_redirect_or_display_qr_code: Some(None),
+                redirect_to_url: Some(None),
+                type_: None,
+                upi_handle_redirect_or_display_qr_code: Some(None),
+                use_stripe_sdk: Some(None),
+                verify_with_microdeposits: Some(None),
             }
         }
 

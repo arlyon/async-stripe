@@ -97,15 +97,15 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                canceled: Deserialize::default(),
-                duplicate: Deserialize::default(),
-                fraudulent: Deserialize::default(),
-                merchandise_not_as_described: Deserialize::default(),
-                no_valid_authorization: Deserialize::default(),
-                not_received: Deserialize::default(),
-                other: Deserialize::default(),
-                reason: Deserialize::default(),
-                service_not_as_described: Deserialize::default(),
+                canceled: Some(None),
+                duplicate: Some(None),
+                fraudulent: Some(None),
+                merchandise_not_as_described: Some(None),
+                no_valid_authorization: Some(None),
+                not_received: Some(None),
+                other: Some(None),
+                reason: None,
+                service_not_as_described: Some(None),
             }
         }
 

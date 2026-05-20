@@ -113,19 +113,19 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                ach_credit_transfer: Deserialize::default(),
-                amount: Deserialize::default(),
-                chf_credit_transfer: Deserialize::default(),
-                created: Deserialize::default(),
-                currency: Deserialize::default(),
-                gbp_credit_transfer: Deserialize::default(),
-                id: Deserialize::default(),
-                livemode: Deserialize::default(),
-                paper_check: Deserialize::default(),
-                sepa_credit_transfer: Deserialize::default(),
-                source: Deserialize::default(),
-                status: Deserialize::default(),
-                type_: Deserialize::default(),
+                ach_credit_transfer: Some(None),
+                amount: None,
+                chf_credit_transfer: Some(None),
+                created: None,
+                currency: None,
+                gbp_credit_transfer: Some(None),
+                id: None,
+                livemode: None,
+                paper_check: Some(None),
+                sepa_credit_transfer: Some(None),
+                source: None,
+                status: None,
+                type_: None,
             }
         }
 

@@ -140,22 +140,22 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                amount: Deserialize::default(),
-                amount_reversed: Deserialize::default(),
-                balance_transaction: Deserialize::default(),
-                created: Deserialize::default(),
-                currency: Deserialize::default(),
-                description: Deserialize::default(),
-                destination: Deserialize::default(),
-                destination_payment: Deserialize::default(),
-                id: Deserialize::default(),
-                livemode: Deserialize::default(),
-                metadata: Deserialize::default(),
-                reversals: Deserialize::default(),
-                reversed: Deserialize::default(),
-                source_transaction: Deserialize::default(),
-                source_type: Deserialize::default(),
-                transfer_group: Deserialize::default(),
+                amount: None,
+                amount_reversed: None,
+                balance_transaction: Some(None),
+                created: None,
+                currency: None,
+                description: Some(None),
+                destination: Some(None),
+                destination_payment: Some(None),
+                id: None,
+                livemode: None,
+                metadata: None,
+                reversals: None,
+                reversed: None,
+                source_transaction: Some(None),
+                source_type: Some(None),
+                transfer_group: Some(None),
             }
         }
 

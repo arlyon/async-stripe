@@ -80,10 +80,10 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                capture_method: Deserialize::default(),
-                request_extended_authorization: Deserialize::default(),
-                request_incremental_authorization_support: Deserialize::default(),
-                routing: Deserialize::default(),
+                capture_method: Some(None),
+                request_extended_authorization: Some(None),
+                request_incremental_authorization_support: Some(None),
+                routing: Some(None),
             }
         }
 

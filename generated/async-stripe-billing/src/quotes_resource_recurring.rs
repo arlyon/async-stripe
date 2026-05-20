@@ -80,11 +80,11 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                amount_subtotal: Deserialize::default(),
-                amount_total: Deserialize::default(),
-                interval: Deserialize::default(),
-                interval_count: Deserialize::default(),
-                total_details: Deserialize::default(),
+                amount_subtotal: None,
+                amount_total: None,
+                interval: None,
+                interval_count: None,
+                total_details: None,
             }
         }
 

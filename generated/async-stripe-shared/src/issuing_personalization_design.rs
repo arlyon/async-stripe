@@ -110,18 +110,18 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                card_logo: Deserialize::default(),
-                carrier_text: Deserialize::default(),
-                created: Deserialize::default(),
-                id: Deserialize::default(),
-                livemode: Deserialize::default(),
-                lookup_key: Deserialize::default(),
-                metadata: Deserialize::default(),
-                name: Deserialize::default(),
-                physical_bundle: Deserialize::default(),
-                preferences: Deserialize::default(),
-                rejection_reasons: Deserialize::default(),
-                status: Deserialize::default(),
+                card_logo: Some(None),
+                carrier_text: Some(None),
+                created: None,
+                id: None,
+                livemode: None,
+                lookup_key: Some(None),
+                metadata: None,
+                name: Some(None),
+                physical_bundle: None,
+                preferences: None,
+                rejection_reasons: None,
+                status: None,
             }
         }
 

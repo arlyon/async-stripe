@@ -78,9 +78,9 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                mandate_options: Deserialize::default(),
-                network: Deserialize::default(),
-                request_three_d_secure: Deserialize::default(),
+                mandate_options: Some(None),
+                network: Some(None),
+                request_three_d_secure: Some(None),
             }
         }
 

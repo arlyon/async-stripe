@@ -68,10 +68,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self {
-                installments: Deserialize::default(),
-                request_three_d_secure: Deserialize::default(),
-            }
+            Self { installments: Some(None), request_three_d_secure: Some(None) }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {

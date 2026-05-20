@@ -69,7 +69,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self { avs_failure: Deserialize::default(), cvc_failure: Deserialize::default() }
+            Self { avs_failure: None, cvc_failure: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {

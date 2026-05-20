@@ -69,10 +69,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self {
-                chargeback_loss_reason_code: Deserialize::default(),
-                reason_code: Deserialize::default(),
-            }
+            Self { chargeback_loss_reason_code: Some(None), reason_code: Some(None) }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {

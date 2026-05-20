@@ -97,13 +97,13 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                dispute_opened: Deserialize::default(),
-                early_fraud_warning_received: Deserialize::default(),
-                occurred_at: Deserialize::default(),
-                refunded: Deserialize::default(),
-                type_: Deserialize::default(),
-                user_intervention_raised: Deserialize::default(),
-                user_intervention_resolved: Deserialize::default(),
+                dispute_opened: Some(None),
+                early_fraud_warning_received: Some(None),
+                occurred_at: None,
+                refunded: Some(None),
+                type_: None,
+                user_intervention_raised: Some(None),
+                user_intervention_resolved: Some(None),
             }
         }
 

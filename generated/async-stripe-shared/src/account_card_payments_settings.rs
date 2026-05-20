@@ -87,10 +87,10 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                decline_on: Deserialize::default(),
-                statement_descriptor_prefix: Deserialize::default(),
-                statement_descriptor_prefix_kana: Deserialize::default(),
-                statement_descriptor_prefix_kanji: Deserialize::default(),
+                decline_on: Some(None),
+                statement_descriptor_prefix: Some(None),
+                statement_descriptor_prefix_kana: Some(None),
+                statement_descriptor_prefix_kanji: Some(None),
             }
         }
 

@@ -108,17 +108,17 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                card: Deserialize::default(),
-                created: Deserialize::default(),
-                device_fingerprint: Deserialize::default(),
-                id: Deserialize::default(),
-                last4: Deserialize::default(),
-                livemode: Deserialize::default(),
-                network: Deserialize::default(),
-                network_data: Deserialize::default(),
-                network_updated_at: Deserialize::default(),
-                status: Deserialize::default(),
-                wallet_provider: Deserialize::default(),
+                card: None,
+                created: None,
+                device_fingerprint: Some(None),
+                id: None,
+                last4: Some(None),
+                livemode: None,
+                network: None,
+                network_data: Some(None),
+                network_updated_at: None,
+                status: None,
+                wallet_provider: Some(None),
             }
         }
 

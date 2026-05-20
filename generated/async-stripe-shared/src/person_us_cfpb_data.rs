@@ -72,9 +72,9 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                ethnicity_details: Deserialize::default(),
-                race_details: Deserialize::default(),
-                self_identified_gender: Deserialize::default(),
+                ethnicity_details: Some(None),
+                race_details: Some(None),
+                self_identified_gender: Some(None),
             }
         }
 

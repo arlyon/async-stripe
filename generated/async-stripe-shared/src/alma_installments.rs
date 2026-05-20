@@ -63,7 +63,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self { count: Deserialize::default() }
+            Self { count: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {

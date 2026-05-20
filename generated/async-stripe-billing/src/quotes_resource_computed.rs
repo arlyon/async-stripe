@@ -68,7 +68,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self { recurring: Deserialize::default(), upfront: Deserialize::default() }
+            Self { recurring: Some(None), upfront: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {

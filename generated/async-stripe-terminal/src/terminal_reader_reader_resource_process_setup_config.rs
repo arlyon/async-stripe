@@ -66,7 +66,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self { enable_customer_cancellation: Deserialize::default() }
+            Self { enable_customer_cancellation: Some(None) }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {

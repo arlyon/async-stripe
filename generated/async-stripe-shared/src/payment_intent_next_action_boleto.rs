@@ -76,10 +76,10 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                expires_at: Deserialize::default(),
-                hosted_voucher_url: Deserialize::default(),
-                number: Deserialize::default(),
-                pdf: Deserialize::default(),
+                expires_at: Some(None),
+                hosted_voucher_url: Some(None),
+                number: Some(None),
+                pdf: Some(None),
             }
         }
 

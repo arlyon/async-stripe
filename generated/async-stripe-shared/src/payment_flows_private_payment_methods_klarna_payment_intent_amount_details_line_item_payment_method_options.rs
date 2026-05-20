@@ -73,10 +73,10 @@ const _: () = {
     }
 
     fn deser_default() -> Self {
-        Self { image_url: Deserialize::default(),
-product_url: Deserialize::default(),
-reference: Deserialize::default(),
-subscription_reference: Deserialize::default(),
+        Self { image_url: Some(None),
+product_url: Some(None),
+reference: Some(None),
+subscription_reference: Some(None),
  }
     }
 

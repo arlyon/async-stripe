@@ -69,7 +69,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self { display_name: Deserialize::default(), timezone: Deserialize::default() }
+            Self { display_name: Some(None), timezone: Some(None) }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {

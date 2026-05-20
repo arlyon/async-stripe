@@ -148,19 +148,19 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                capture_method: Deserialize::default(),
-                installments: Deserialize::default(),
-                mandate_options: Deserialize::default(),
-                network: Deserialize::default(),
-                request_extended_authorization: Deserialize::default(),
-                request_incremental_authorization: Deserialize::default(),
-                request_multicapture: Deserialize::default(),
-                request_overcapture: Deserialize::default(),
-                request_three_d_secure: Deserialize::default(),
-                require_cvc_recollection: Deserialize::default(),
-                setup_future_usage: Deserialize::default(),
-                statement_descriptor_suffix_kana: Deserialize::default(),
-                statement_descriptor_suffix_kanji: Deserialize::default(),
+                capture_method: Some(None),
+                installments: Some(None),
+                mandate_options: Some(None),
+                network: Some(None),
+                request_extended_authorization: Some(None),
+                request_incremental_authorization: Some(None),
+                request_multicapture: Some(None),
+                request_overcapture: Some(None),
+                request_three_d_secure: Some(None),
+                require_cvc_recollection: Some(None),
+                setup_future_usage: Some(None),
+                statement_descriptor_suffix_kana: Some(None),
+                statement_descriptor_suffix_kanji: Some(None),
             }
         }
 

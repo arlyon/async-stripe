@@ -75,11 +75,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self {
-                last_attempted_at: Deserialize::default(),
-                next_refresh_available_at: Deserialize::default(),
-                status: Deserialize::default(),
-            }
+            Self { last_attempted_at: None, next_refresh_available_at: Some(None), status: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {

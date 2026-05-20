@@ -68,7 +68,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self { billing_agreement_id: Deserialize::default(), payer_id: Deserialize::default() }
+            Self { billing_agreement_id: Some(None), payer_id: Some(None) }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {

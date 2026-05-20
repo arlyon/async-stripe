@@ -72,11 +72,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self {
-                overridable: Deserialize::default(),
-                preference: Deserialize::default(),
-                value: Deserialize::default(),
-            }
+            Self { overridable: Some(None), preference: None, value: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {

@@ -72,7 +72,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self { inbound_flows: Deserialize::default(), outbound_flows: Deserialize::default() }
+            Self { inbound_flows: Some(None), outbound_flows: Some(None) }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {

@@ -67,7 +67,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self { days_after_charge: Deserialize::default(), expires_on: Deserialize::default() }
+            Self { days_after_charge: None, expires_on: Some(None) }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {

@@ -73,9 +73,9 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                debit_negative_balances: Deserialize::default(),
-                payouts: Deserialize::default(),
-                settlement_timing: Deserialize::default(),
+                debit_negative_balances: Some(None),
+                payouts: Some(None),
+                settlement_timing: None,
             }
         }
 

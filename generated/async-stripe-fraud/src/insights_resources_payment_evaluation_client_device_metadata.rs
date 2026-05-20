@@ -67,7 +67,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self { radar_session: Deserialize::default() }
+            Self { radar_session: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {

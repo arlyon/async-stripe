@@ -77,10 +77,10 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                description: Deserialize::default(),
-                skip_button: Deserialize::default(),
-                submit_button: Deserialize::default(),
-                title: Deserialize::default(),
+                description: Some(None),
+                skip_button: Some(None),
+                submit_button: Some(None),
+                title: Some(None),
             }
         }
 

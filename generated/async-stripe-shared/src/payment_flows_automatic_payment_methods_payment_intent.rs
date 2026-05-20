@@ -70,7 +70,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self { allow_redirects: Deserialize::default(), enabled: Deserialize::default() }
+            Self { allow_redirects: Some(None), enabled: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {

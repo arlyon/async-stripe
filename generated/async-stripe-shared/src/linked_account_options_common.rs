@@ -78,10 +78,10 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                filters: Deserialize::default(),
-                permissions: Deserialize::default(),
-                prefetch: Deserialize::default(),
-                return_url: Deserialize::default(),
+                filters: Some(None),
+                permissions: Some(None),
+                prefetch: Some(None),
+                return_url: Some(None),
             }
         }
 

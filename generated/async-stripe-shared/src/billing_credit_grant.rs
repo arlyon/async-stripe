@@ -127,22 +127,22 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                amount: Deserialize::default(),
-                applicability_config: Deserialize::default(),
-                category: Deserialize::default(),
-                created: Deserialize::default(),
-                customer: Deserialize::default(),
-                customer_account: Deserialize::default(),
-                effective_at: Deserialize::default(),
-                expires_at: Deserialize::default(),
-                id: Deserialize::default(),
-                livemode: Deserialize::default(),
-                metadata: Deserialize::default(),
-                name: Deserialize::default(),
-                priority: Deserialize::default(),
-                test_clock: Deserialize::default(),
-                updated: Deserialize::default(),
-                voided_at: Deserialize::default(),
+                amount: None,
+                applicability_config: None,
+                category: None,
+                created: None,
+                customer: None,
+                customer_account: Some(None),
+                effective_at: Some(None),
+                expires_at: Some(None),
+                id: None,
+                livemode: None,
+                metadata: None,
+                name: Some(None),
+                priority: Some(None),
+                test_clock: Some(None),
+                updated: None,
+                voided_at: Some(None),
             }
         }
 

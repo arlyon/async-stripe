@@ -76,12 +76,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self {
-                ca_certificate_file: Deserialize::default(),
-                password: Deserialize::default(),
-                ssid: Deserialize::default(),
-                username: Deserialize::default(),
-            }
+            Self { ca_certificate_file: Some(None), password: None, ssid: None, username: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {

@@ -92,13 +92,13 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                capture_method: Deserialize::default(),
-                description: Deserialize::default(),
-                metadata: Deserialize::default(),
-                setup_future_usage: Deserialize::default(),
-                statement_descriptor: Deserialize::default(),
-                statement_descriptor_suffix: Deserialize::default(),
-                transfer_group: Deserialize::default(),
+                capture_method: Some(None),
+                description: Some(None),
+                metadata: None,
+                setup_future_usage: Some(None),
+                statement_descriptor: Some(None),
+                statement_descriptor_suffix: Some(None),
+                transfer_group: Some(None),
             }
         }
 

@@ -71,11 +71,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self {
-                date: Deserialize::default(),
-                ip: Deserialize::default(),
-                user_agent: Deserialize::default(),
-            }
+            Self { date: Some(None), ip: Some(None), user_agent: Some(None) }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {

@@ -73,9 +73,9 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                business_name: Deserialize::default(),
-                individual_name: Deserialize::default(),
-                shipping_details: Deserialize::default(),
+                business_name: Some(None),
+                individual_name: Some(None),
+                shipping_details: Some(None),
             }
         }
 

@@ -67,7 +67,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self { check_in_at: Deserialize::default(), nights: Deserialize::default() }
+            Self { check_in_at: Some(None), nights: Some(None) }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {

@@ -72,7 +72,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self { cvc_token: Deserialize::default(), installments: Deserialize::default() }
+            Self { cvc_token: Some(None), installments: Some(None) }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {

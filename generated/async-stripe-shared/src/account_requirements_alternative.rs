@@ -67,10 +67,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self {
-                alternative_fields_due: Deserialize::default(),
-                original_fields_due: Deserialize::default(),
-            }
+            Self { alternative_fields_due: None, original_fields_due: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {

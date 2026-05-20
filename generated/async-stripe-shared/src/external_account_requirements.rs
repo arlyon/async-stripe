@@ -80,10 +80,10 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                currently_due: Deserialize::default(),
-                errors: Deserialize::default(),
-                past_due: Deserialize::default(),
-                pending_verification: Deserialize::default(),
+                currently_due: Some(None),
+                errors: Some(None),
+                past_due: Some(None),
+                pending_verification: Some(None),
             }
         }
 

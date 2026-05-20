@@ -80,11 +80,11 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                delivered_at: Deserialize::default(),
-                location: Deserialize::default(),
-                metric_tons: Deserialize::default(),
-                registry_url: Deserialize::default(),
-                supplier: Deserialize::default(),
+                delivered_at: None,
+                location: Some(None),
+                metric_tons: None,
+                registry_url: Some(None),
+                supplier: None,
             }
         }
 

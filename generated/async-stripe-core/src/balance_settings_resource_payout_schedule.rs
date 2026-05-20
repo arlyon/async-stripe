@@ -76,9 +76,9 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                interval: Deserialize::default(),
-                monthly_payout_days: Deserialize::default(),
-                weekly_payout_days: Deserialize::default(),
+                interval: Some(None),
+                monthly_payout_days: Some(None),
+                weekly_payout_days: Some(None),
             }
         }
 

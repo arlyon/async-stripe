@@ -76,10 +76,10 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                custom_fields: Deserialize::default(),
-                default_payment_method: Deserialize::default(),
-                footer: Deserialize::default(),
-                rendering_options: Deserialize::default(),
+                custom_fields: Some(None),
+                default_payment_method: Some(None),
+                footer: Some(None),
+                rendering_options: Some(None),
             }
         }
 

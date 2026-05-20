@@ -69,9 +69,9 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                prepay_id: Deserialize::default(),
-                qr_code_url: Deserialize::default(),
-                statement_descriptor: Deserialize::default(),
+                prepay_id: Some(None),
+                qr_code_url: Some(None),
+                statement_descriptor: Some(None),
             }
         }
 

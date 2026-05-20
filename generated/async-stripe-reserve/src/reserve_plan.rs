@@ -112,18 +112,18 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                created: Deserialize::default(),
-                created_by: Deserialize::default(),
-                currency: Deserialize::default(),
-                disabled_at: Deserialize::default(),
-                fixed_release: Deserialize::default(),
-                id: Deserialize::default(),
-                livemode: Deserialize::default(),
-                metadata: Deserialize::default(),
-                percent: Deserialize::default(),
-                rolling_release: Deserialize::default(),
-                status: Deserialize::default(),
-                type_: Deserialize::default(),
+                created: None,
+                created_by: None,
+                currency: Some(None),
+                disabled_at: Some(None),
+                fixed_release: Some(None),
+                id: None,
+                livemode: None,
+                metadata: Some(None),
+                percent: None,
+                rolling_release: Some(None),
+                status: None,
+                type_: None,
             }
         }
 

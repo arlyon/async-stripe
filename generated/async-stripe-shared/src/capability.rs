@@ -90,13 +90,13 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                account: Deserialize::default(),
-                future_requirements: Deserialize::default(),
-                id: Deserialize::default(),
-                requested: Deserialize::default(),
-                requested_at: Deserialize::default(),
-                requirements: Deserialize::default(),
-                status: Deserialize::default(),
+                account: None,
+                future_requirements: Some(None),
+                id: None,
+                requested: None,
+                requested_at: Some(None),
+                requirements: Some(None),
+                status: None,
             }
         }
 

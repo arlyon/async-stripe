@@ -109,16 +109,16 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                application_fee_percent: Deserialize::default(),
-                automatic_tax: Deserialize::default(),
-                billing_cycle_anchor: Deserialize::default(),
-                billing_thresholds: Deserialize::default(),
-                collection_method: Deserialize::default(),
-                default_payment_method: Deserialize::default(),
-                description: Deserialize::default(),
-                invoice_settings: Deserialize::default(),
-                on_behalf_of: Deserialize::default(),
-                transfer_data: Deserialize::default(),
+                application_fee_percent: Some(None),
+                automatic_tax: Some(None),
+                billing_cycle_anchor: None,
+                billing_thresholds: Some(None),
+                collection_method: Some(None),
+                default_payment_method: Some(None),
+                description: Some(None),
+                invoice_settings: None,
+                on_behalf_of: Some(None),
+                transfer_data: Some(None),
             }
         }
 

@@ -72,9 +72,9 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                headline: Deserialize::default(),
-                privacy_policy_url: Deserialize::default(),
-                terms_of_service_url: Deserialize::default(),
+                headline: Some(None),
+                privacy_policy_url: Some(None),
+                terms_of_service_url: Some(None),
             }
         }
 

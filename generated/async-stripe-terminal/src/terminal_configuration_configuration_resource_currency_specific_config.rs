@@ -73,9 +73,9 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                fixed_amounts: Deserialize::default(),
-                percentages: Deserialize::default(),
-                smart_tip_threshold: Deserialize::default(),
+                fixed_amounts: Some(None),
+                percentages: Some(None),
+                smart_tip_threshold: Some(None),
             }
         }
 

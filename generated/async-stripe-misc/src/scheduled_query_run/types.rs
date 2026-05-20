@@ -105,16 +105,16 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                created: Deserialize::default(),
-                data_load_time: Deserialize::default(),
-                error: Deserialize::default(),
-                file: Deserialize::default(),
-                id: Deserialize::default(),
-                livemode: Deserialize::default(),
-                result_available_until: Deserialize::default(),
-                sql: Deserialize::default(),
-                status: Deserialize::default(),
-                title: Deserialize::default(),
+                created: None,
+                data_load_time: None,
+                error: Some(None),
+                file: Some(None),
+                id: None,
+                livemode: None,
+                result_available_until: None,
+                sql: None,
+                status: None,
+                title: None,
             }
         }
 

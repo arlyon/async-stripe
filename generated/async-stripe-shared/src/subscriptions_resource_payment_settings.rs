@@ -80,9 +80,9 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                payment_method_options: Deserialize::default(),
-                payment_method_types: Deserialize::default(),
-                save_default_payment_method: Deserialize::default(),
+                payment_method_options: Some(None),
+                payment_method_types: Some(None),
+                save_default_payment_method: Some(None),
             }
         }
 

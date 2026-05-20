@@ -85,10 +85,10 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                enterprise_eap_peap: Deserialize::default(),
-                enterprise_eap_tls: Deserialize::default(),
-                personal_psk: Deserialize::default(),
-                type_: Deserialize::default(),
+                enterprise_eap_peap: Some(None),
+                enterprise_eap_tls: Some(None),
+                personal_psk: Some(None),
+                type_: None,
             }
         }
 

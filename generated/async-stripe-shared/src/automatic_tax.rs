@@ -83,11 +83,11 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                disabled_reason: Deserialize::default(),
-                enabled: Deserialize::default(),
-                liability: Deserialize::default(),
-                provider: Deserialize::default(),
-                status: Deserialize::default(),
+                disabled_reason: Some(None),
+                enabled: None,
+                liability: Some(None),
+                provider: Some(None),
+                status: Some(None),
             }
         }
 

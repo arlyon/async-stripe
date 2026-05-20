@@ -106,14 +106,14 @@ const _: () = {
     }
 
     fn deser_default() -> Self {
-        Self { authentication_flow: Deserialize::default(),
-cryptogram: Deserialize::default(),
-electronic_commerce_indicator: Deserialize::default(),
-exemption_indicator: Deserialize::default(),
-exemption_indicator_applied: Deserialize::default(),
-result: Deserialize::default(),
-result_reason: Deserialize::default(),
-version: Deserialize::default(),
+        Self { authentication_flow: Some(None),
+cryptogram: Some(None),
+electronic_commerce_indicator: Some(None),
+exemption_indicator: Some(None),
+exemption_indicator_applied: Some(None),
+result: Some(None),
+result_reason: Some(None),
+version: Some(None),
  }
     }
 

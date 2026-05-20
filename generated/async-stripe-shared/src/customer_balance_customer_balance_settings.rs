@@ -67,10 +67,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self {
-                reconciliation_mode: Deserialize::default(),
-                using_merchant_default: Deserialize::default(),
-            }
+            Self { reconciliation_mode: None, using_merchant_default: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {

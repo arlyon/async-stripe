@@ -93,10 +93,10 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                apple_pay: Deserialize::default(),
-                dynamic_last4: Deserialize::default(),
-                google_pay: Deserialize::default(),
-                type_: Deserialize::default(),
+                apple_pay: Some(None),
+                dynamic_last4: Some(None),
+                google_pay: Some(None),
+                type_: None,
             }
         }
 
