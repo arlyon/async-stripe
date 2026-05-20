@@ -117,7 +117,7 @@ fn main() -> Result<()> {
             ));
         }
         body.push_str("```\n");
-        write_to_file(body, "out/crate_warnings.md")?;
+        write_to_file(body, "crate_warnings.md")?;
     }
 
     if args.update_api_docs {

@@ -44,7 +44,6 @@ jobs:
             ${{ steps.warnings.outputs.has_warnings == 'true' && steps.warnings.outputs.body || '' }}
           branch: openapi
           branch-suffix: timestamp
-          reviewers: arlyon
 
       - name: email if failed
         if: failure()
