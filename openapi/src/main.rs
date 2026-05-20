@@ -46,6 +46,9 @@ struct Command {
     /// Skip the step of copying the generated code from `out` to `generated/`.
     #[arg(long)]
     dry_run: bool,
+    /// Write a markdown report of any auto-resolved crate inference warnings to `out/crate_warnings.md`.
+    #[arg(long)]
+    emit_warnings: bool,
 }
 
 fn main() -> Result<()> {
@@ -75,6 +78,49 @@ fn main() -> Result<()> {
         if let Some(version) = args.version { version } else { parse_workspace_version()? };
     info!("Generating with version {version}");
     let codegen = CodeGen::new(spec, url_finder, version)?;
+
+    if args.emit_warnings && !codegen.crate_inference_warnings.is_empty() {
+        let mut body = String::from(
+            "## Crate Inference Warnings\n\n\
+             The following components could not have their crate automatically inferred \
+             and were auto-assigned. Consider adding explicit path entries in \
+             `openapi/gen_crates.toml` to make these assignments permanent.\n\n\
+             | Component | Assigned Crate | Depended On By | Candidate Crates |\n\
+             |-----------|---------------|----------------|------------------|\n",
+        );
+        for w in &codegen.crate_inference_warnings {
+            let deps = w
+                .depended_on_by
+                .iter()
+                .map(|p| format!("`{p}`"))
+                .collect::<Vec<_>>()
+                .join(", ");
+            let crates = w
+                .candidate_crates
+                .iter()
+                .map(|c| format!("`{}`", c.base_name()))
+                .collect::<Vec<_>>()
+                .join(", ");
+            body.push_str(&format!(
+                "| `{}` | `{}` | {} | {} |\n",
+                w.component,
+                w.chosen_crate.base_name(),
+                deps,
+                crates,
+            ));
+        }
+        body.push_str("\n### Suggested `gen_crates.toml` entries\n\n");
+        body.push_str("Add the following paths to the appropriate crate's `paths` array:\n\n```toml\n");
+        for w in &codegen.crate_inference_warnings {
+            body.push_str(&format!(
+                "# currently auto-assigned to \"{}\"\n\"{}\",\n",
+                w.chosen_crate.base_name(),
+                w.component,
+            ));
+        }
+        body.push_str("```\n");
+        write_to_file(body, "out/crate_warnings.md")?;
+    }
 
     if args.update_api_docs {
         update_api_doc_data(&args.api_docs_url, &codegen.components)?;

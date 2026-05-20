@@ -1,13 +1,39 @@
+use std::collections::HashMap;
+use std::fmt;
+
 use anyhow::bail;
 use indexmap::{IndexMap, IndexSet};
 use petgraph::Direction;
 use petgraph::algo::is_cyclic_directed;
-use tracing::{debug, error, trace};
+use tracing::{debug, trace, warn};
 
 use crate::components::Components;
 use crate::crates::{CRATE_INFO, Crate};
 use crate::graph::ComponentGraph;
 use crate::types::ComponentPath;
+
+/// A warning emitted when a component's crate had to be auto-resolved
+/// because normal inference couldn't determine a unique crate.
+#[derive(Debug, Clone)]
+pub struct CrateInferenceWarning {
+    pub component: ComponentPath,
+    pub chosen_crate: Crate,
+    pub depended_on_by: Vec<ComponentPath>,
+    pub candidate_crates: Vec<Crate>,
+}
+
+impl fmt::Display for CrateInferenceWarning {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(
+            f,
+            "Auto-assigned `{}` to crate `{}` (depended on by: {}, candidate crates: {})",
+            self.component,
+            self.chosen_crate.base_name(),
+            self.depended_on_by.iter().map(|p| p.to_string()).collect::<Vec<_>>().join(", "),
+            self.candidate_crates.iter().map(|c| c.base_name().to_string()).collect::<Vec<_>>().join(", "),
+        )
+    }
+}
 
 /// Do some easy work to sanity check `gen_crates.toml` does not have any spurious or
 /// misspelled entries.
@@ -24,7 +50,9 @@ pub fn validate_crate_info(components: &Components) -> anyhow::Result<()> {
 
 impl Components {
     #[tracing::instrument(skip_all)]
-    pub fn infer_all_crate_assignments(&mut self) -> anyhow::Result<()> {
+    pub fn infer_all_crate_assignments(
+        &mut self,
+    ) -> anyhow::Result<Vec<CrateInferenceWarning>> {
         // If a component includes requests that have URLs building off another component,
         // place with that component. This automates determinations like `external_account`
         // ending up in the same crate as `account` since all its requests start with `/account`.
@@ -64,41 +92,77 @@ impl Components {
 
         infer_crates_using_deps(self, Self::maybe_infer_crate_by_what_depends_on_it);
         infer_crates_using_deps(self, Self::maybe_infer_crate_by_deps);
-        self.ensure_no_missing_crates()?;
+        let warnings = self.resolve_missing_crates();
         self.assign_paths_required_to_share_types();
-        self.validate_crate_assignment()
+        self.validate_crate_assignment()?;
+        Ok(warnings)
     }
 
-    /// If we find a component with no assigned crate, return an error with some
-    /// additional dependency graph information to help determine why.
+    /// For components with no assigned crate, auto-resolve by picking the most
+    /// common crate among dependents. Returns warnings for each auto-resolved component.
     #[tracing::instrument(skip_all)]
-    fn ensure_no_missing_crates(&self) -> anyhow::Result<()> {
-        let components_without_crates = self
+    fn resolve_missing_crates(&mut self) -> Vec<CrateInferenceWarning> {
+        let components_without_crates: Vec<ComponentPath> = self
             .components
             .iter()
             .filter(|(_, comp)| comp.krate().is_none())
-            .map(|(p, _)| p)
-            .collect::<Vec<_>>();
+            .map(|(p, _)| p.clone())
+            .collect();
 
-        // If we've got missing crates, also look at the dep graph to dump some
-        // helpful info
-        if !components_without_crates.is_empty() {
-            let graph = self.gen_component_dep_graph();
-            for missing in &components_without_crates {
-                let depended_on =
-                    graph.neighbors_directed(missing, Direction::Incoming).collect::<Vec<_>>();
-                let depended_crates =
-                    depended_on.iter().map(|m| self.get(m).krate()).collect::<IndexSet<_>>();
-                error!(
-                    "Could not infer crate for component {missing}. Depended on by components {depended_on:?}, crates {depended_crates:?}. Perhaps add a path entry for it?"
-                )
-            }
-            bail!(
-                "Some components could not have their crate inferred: {components_without_crates:#?}",
-            );
+        if components_without_crates.is_empty() {
+            return Vec::new();
         }
 
-        Ok(())
+        let graph = self.gen_component_dep_graph();
+        let mut warnings = Vec::new();
+
+        for missing in &components_without_crates {
+            let depended_on: Vec<ComponentPath> = graph
+                .neighbors_directed(missing, Direction::Incoming)
+                .cloned()
+                .collect();
+            let candidate_crates: Vec<Crate> = depended_on
+                .iter()
+                .filter_map(|m| self.get(m).krate().map(|k| k.base()))
+                .collect();
+
+            // Pick the most common crate, breaking ties alphabetically
+            let chosen = if candidate_crates.is_empty() {
+                Crate::SHARED
+            } else {
+                let mut counts: HashMap<Crate, usize> = HashMap::new();
+                for c in &candidate_crates {
+                    *counts.entry(*c).or_default() += 1;
+                }
+                let max_count = *counts.values().max().unwrap();
+                let mut best: Vec<Crate> =
+                    counts.into_iter().filter(|(_, c)| *c == max_count).map(|(k, _)| k).collect();
+                best.sort_by_key(|c| c.base_name());
+                best[0]
+            };
+
+            let unique_crates: Vec<Crate> =
+                candidate_crates.iter().copied().collect::<IndexSet<_>>().into_iter().collect();
+
+            warn!(
+                "Auto-assigning component {missing} to crate {} (depended on by {depended_on:?}, \
+                 candidate crates: {unique_crates:?}). Consider adding a path entry in gen_crates.toml.",
+                chosen.base_name()
+            );
+
+            warnings.push(CrateInferenceWarning {
+                component: missing.clone(),
+                chosen_crate: chosen,
+                depended_on_by: depended_on,
+                candidate_crates: unique_crates,
+            });
+        }
+
+        for warning in &warnings {
+            self.get_mut(&warning.component).assign_crate(warning.chosen_crate);
+        }
+
+        warnings
     }
 
     fn validate_crate_assignment(&self) -> anyhow::Result<()> {

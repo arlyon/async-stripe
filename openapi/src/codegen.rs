@@ -18,15 +18,18 @@ use crate::url_finder::UrlFinder;
 use crate::utils::{append_to_file, write_to_file};
 use crate::webhook::write_generated_for_webhooks;
 
+use crate::crate_inference::CrateInferenceWarning;
+
 pub struct CodeGen {
     pub components: Components,
     pub spec: Spec,
     pub version: String,
+    pub crate_inference_warnings: Vec<CrateInferenceWarning>,
 }
 
 impl CodeGen {
     pub fn new(spec: Spec, url_finder: UrlFinder, version: String) -> anyhow::Result<Self> {
-        let mut components = get_components(&spec)?;
+        let (mut components, crate_inference_warnings) = get_components(&spec)?;
 
         // Attach doc urls for top-level components
         for comp in components.components.values_mut() {
@@ -35,7 +38,7 @@ impl CodeGen {
             }
         }
 
-        Ok(Self { components, spec, version })
+        Ok(Self { components, spec, version, crate_inference_warnings })
     }
 
     fn write_api_version_file(&self) -> anyhow::Result<()> {

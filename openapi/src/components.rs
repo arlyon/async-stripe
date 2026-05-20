@@ -258,7 +258,9 @@ impl Components {
 }
 
 #[tracing::instrument(skip_all)]
-pub fn get_components(spec: &Spec) -> anyhow::Result<Components> {
+pub fn get_components(
+    spec: &Spec,
+) -> anyhow::Result<(Components, Vec<crate::crate_inference::CrateInferenceWarning>)> {
     let mut webhook_objs = vec![];
     let mut components = IndexMap::with_capacity(spec.component_schemas().len());
 
@@ -331,7 +333,7 @@ pub fn get_components(spec: &Spec) -> anyhow::Result<Components> {
     components.filter_unused_components();
 
     validate_crate_info(&components)?;
-    components.infer_all_crate_assignments()?;
+    let warnings = components.infer_all_crate_assignments()?;
     info!("Finished inferring crates");
 
     components.apply_overrides()?;
@@ -340,7 +342,7 @@ pub fn get_components(spec: &Spec) -> anyhow::Result<Components> {
     components.run_deduplication_pass();
     info!("Finished deduplication pass");
 
-    Ok(components)
+    Ok((components, warnings))
 }
 
 #[derive(Debug, Copy, Clone)]

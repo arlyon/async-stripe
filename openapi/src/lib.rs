@@ -1,6 +1,6 @@
 pub mod codegen;
 mod components;
-mod crate_inference;
+pub mod crate_inference;
 mod crate_table;
 pub mod crates;
 mod deduplication;
