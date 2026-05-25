@@ -306,16 +306,16 @@ impl Webhook {
         // Check for API version mismatch
         let api_version = base_evt.api_version.as_ref().and_then(|s| ApiVersion::from_str(s).ok());
 
-        if let Some(event_version) = &api_version {
-            if event_version != &stripe_shared::version::VERSION {
-                tracing::warn!(
-                    event_version=?event_version,
-                    sdk_version=?stripe_shared::version::VERSION,
-                    "API version mismatch: SDK compiled with {:?}, but event received with {:?}",
-                    stripe_shared::version::VERSION,
-                    event_version
-                );
-            }
+        if let Some(event_version) = &api_version
+            && event_version != &stripe_shared::version::VERSION
+        {
+            tracing::warn!(
+                event_version=?event_version,
+                sdk_version=?stripe_shared::version::VERSION,
+                "API version mismatch: SDK compiled with {:?}, but event received with {:?}",
+                stripe_shared::version::VERSION,
+                event_version
+            );
         }
 
         Ok(Event {

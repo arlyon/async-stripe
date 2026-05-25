@@ -43,10 +43,10 @@ impl RequestStrategy {
             Some(true) => {}
             // If header is absent, only retry for 429 (Too Many Requests)
             None => {
-                if let Some(s) = status {
-                    if s != 429 {
-                        return Outcome::Stop;
-                    }
+                if let Some(s) = status
+                    && s != 429
+                {
+                    return Outcome::Stop;
                 }
             }
         }
