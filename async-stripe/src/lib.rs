@@ -43,11 +43,11 @@
 //! - [`RequestStrategy::Idempotent`]: This strategy will make a request to stripe api, passing the provided
 //!   key to Stripe as the `Idempotency-Key` header, ensuring that the request is idempotent. If the request fails, you may retry it.
 //!
-//! - [`RequestStrategy::Retry`]: Make a request to the Stripe API and, if the request fails, retry it up to n
-//!   times with a timeout. The idempotency key is generated  automatically and is stable across retries.
+//! - [`RequestStrategy::Retry`]: Make a request to the Stripe API and, if the request fails, try it up to n
+//!   total times. The idempotency key is generated automatically and is stable across retries.
 //!
 //! - [`RequestStrategy::ExponentialBackoff`]: Make a request to the Stripe API and, if the request fails, retry
-//!   it up to n times with exponential backoff. The idempotency key is generated automatically and is stable across retries.
+//!   it up to n total times with exponential backoff. The idempotency key is generated automatically and is stable across retries.
 //!
 //! > Want to implement your own? If it is a common strategy, please consider opening a PR to add it to the library.
 //! > Otherwise, we are open to turning this into an open trait so that you can implement your own strategy.
