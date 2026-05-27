@@ -2,6 +2,7 @@
 "cargo:cargo-insta" = "latest"
 "cargo:release-plz" = "latest"
 "cargo:wasm-pack" = "latest"
+lefthook = "latest"
 rust = "1.88"
 
 [tasks.build-web]

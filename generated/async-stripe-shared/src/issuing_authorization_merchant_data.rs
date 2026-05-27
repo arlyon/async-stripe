@@ -106,17 +106,17 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                category: Deserialize::default(),
-                category_code: Deserialize::default(),
-                city: Deserialize::default(),
-                country: Deserialize::default(),
-                name: Deserialize::default(),
-                network_id: Deserialize::default(),
-                postal_code: Deserialize::default(),
-                state: Deserialize::default(),
-                tax_id: Deserialize::default(),
-                terminal_id: Deserialize::default(),
-                url: Deserialize::default(),
+                category: None,
+                category_code: None,
+                city: Some(None),
+                country: Some(None),
+                name: Some(None),
+                network_id: None,
+                postal_code: Some(None),
+                state: Some(None),
+                tax_id: Some(None),
+                terminal_id: Some(None),
+                url: Some(None),
             }
         }
 

@@ -71,11 +71,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self {
-                fuel: Deserialize::default(),
-                non_fuel: Deserialize::default(),
-                tax: Deserialize::default(),
-            }
+            Self { fuel: Some(None), non_fuel: Some(None), tax: Some(None) }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {

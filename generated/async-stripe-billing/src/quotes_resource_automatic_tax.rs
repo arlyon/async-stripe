@@ -77,12 +77,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self {
-                enabled: Deserialize::default(),
-                liability: Deserialize::default(),
-                provider: Deserialize::default(),
-                status: Deserialize::default(),
-            }
+            Self { enabled: None, liability: Some(None), provider: Some(None), status: Some(None) }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {

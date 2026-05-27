@@ -67,7 +67,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self { race: Deserialize::default(), race_other: Deserialize::default() }
+            Self { race: Some(None), race_other: Some(None) }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {

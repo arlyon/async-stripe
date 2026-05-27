@@ -74,12 +74,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self {
-                deleted: Deserialize::default(),
-                device_type: Deserialize::default(),
-                id: Deserialize::default(),
-                serial_number: Deserialize::default(),
-            }
+            Self { deleted: None, device_type: None, id: None, serial_number: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {

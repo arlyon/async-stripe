@@ -90,13 +90,13 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                app_id: Deserialize::default(),
-                nonce_str: Deserialize::default(),
-                package: Deserialize::default(),
-                partner_id: Deserialize::default(),
-                prepay_id: Deserialize::default(),
-                sign: Deserialize::default(),
-                timestamp: Deserialize::default(),
+                app_id: None,
+                nonce_str: None,
+                package: None,
+                partner_id: None,
+                prepay_id: None,
+                sign: None,
+                timestamp: None,
             }
         }
 

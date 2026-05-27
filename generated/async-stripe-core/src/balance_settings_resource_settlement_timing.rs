@@ -68,7 +68,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self { delay_days: Deserialize::default(), delay_days_override: Deserialize::default() }
+            Self { delay_days: None, delay_days_override: Some(None) }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {

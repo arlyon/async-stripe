@@ -86,12 +86,12 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                device_fingerprint: Deserialize::default(),
-                ip_address: Deserialize::default(),
-                location: Deserialize::default(),
-                name: Deserialize::default(),
-                phone_number: Deserialize::default(),
-                type_: Deserialize::default(),
+                device_fingerprint: Some(None),
+                ip_address: Some(None),
+                location: Some(None),
+                name: Some(None),
+                phone_number: Some(None),
+                type_: Some(None),
             }
         }
 

@@ -75,10 +75,10 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                link_options: Deserialize::default(),
-                link_type: Deserialize::default(),
-                on_behalf_of: Deserialize::default(),
-                redirect_url: Deserialize::default(),
+                link_options: None,
+                link_type: None,
+                on_behalf_of: Some(None),
+                redirect_url: None,
             }
         }
 

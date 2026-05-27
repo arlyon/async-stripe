@@ -89,10 +89,10 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                currency_options: Deserialize::default(),
-                first_time_transaction: Deserialize::default(),
-                minimum_amount: Deserialize::default(),
-                minimum_amount_currency: Deserialize::default(),
+                currency_options: Some(None),
+                first_time_transaction: None,
+                minimum_amount: Some(None),
+                minimum_amount_currency: Some(None),
             }
         }
 

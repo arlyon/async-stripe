@@ -85,12 +85,12 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                city: Deserialize::default(),
-                country: Deserialize::default(),
-                line1: Deserialize::default(),
-                line2: Deserialize::default(),
-                postal_code: Deserialize::default(),
-                state: Deserialize::default(),
+                city: Some(None),
+                country: Some(None),
+                line1: Some(None),
+                line2: Some(None),
+                postal_code: Some(None),
+                state: Some(None),
             }
         }
 

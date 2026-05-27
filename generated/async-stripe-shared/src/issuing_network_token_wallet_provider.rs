@@ -104,16 +104,16 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                account_id: Deserialize::default(),
-                account_trust_score: Deserialize::default(),
-                card_number_source: Deserialize::default(),
-                cardholder_address: Deserialize::default(),
-                cardholder_name: Deserialize::default(),
-                device_trust_score: Deserialize::default(),
-                hashed_account_email_address: Deserialize::default(),
-                reason_codes: Deserialize::default(),
-                suggested_decision: Deserialize::default(),
-                suggested_decision_version: Deserialize::default(),
+                account_id: Some(None),
+                account_trust_score: Some(None),
+                card_number_source: Some(None),
+                cardholder_address: Some(None),
+                cardholder_name: Some(None),
+                device_trust_score: Some(None),
+                hashed_account_email_address: Some(None),
+                reason_codes: Some(None),
+                suggested_decision: Some(None),
+                suggested_decision_version: Some(None),
             }
         }
 

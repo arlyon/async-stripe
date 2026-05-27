@@ -71,11 +71,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self {
-                bank_name: Deserialize::default(),
-                bic: Deserialize::default(),
-                iban: Deserialize::default(),
-            }
+            Self { bank_name: Some(None), bic: Some(None), iban: Some(None) }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {

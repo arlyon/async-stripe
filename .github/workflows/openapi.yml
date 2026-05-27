@@ -15,8 +15,22 @@ jobs:
           components: rustfmt
 
       - name: Run Codegen
-        run: cargo run --release -- --fetch latest
+        run: cargo run --release -- --fetch latest --emit-warnings
         working-directory: openapi
+
+      - name: Check for crate inference warnings
+        id: warnings
+        run: |
+          if [ -f openapi/out/crate_warnings.md ]; then
+            echo "has_warnings=true" >> "$GITHUB_OUTPUT"
+            {
+              echo 'body<<WARNINGS_EOF'
+              cat openapi/out/crate_warnings.md
+              echo 'WARNINGS_EOF'
+            } >> "$GITHUB_OUTPUT"
+          else
+            echo "has_warnings=false" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: create pull request
         uses: peter-evans/create-pull-request@v8
@@ -26,9 +40,11 @@ jobs:
           title: Generate latest changes from OpenApi spec
           body: |
             This is an automated PR that tries to build the latest changes generated from the [Stripe OpenApi spec](https://github.com/stripe/openapi).
+
+            ${{ steps.warnings.outputs.has_warnings == 'true' && steps.warnings.outputs.body || '' }}
           branch: openapi
-          branch-suffix: timestamp
-          reviewers: arlyon
+          update-pull-request-title-and-body: true
+
       - name: email if failed
         if: failure()
         uses: dawidd6/action-send-mail@v17
@@ -39,7 +55,7 @@ jobs:
           password: ${{ secrets.MAIL_PASSWORD }}
           subject: Failed to generate latest changes from OpenApi spec
           to: arlyon@me.com
-          from: Github Actions
+          from: ${{ secrets.MAIL_USERNAME }}
           body: |
             This is an automated email. The workflow that tries to build the latest changes generated from the [Stripe OpenApi spec](https://github.com/stripe/openapi).
 

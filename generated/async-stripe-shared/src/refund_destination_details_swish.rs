@@ -72,9 +72,9 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                network_decline_code: Deserialize::default(),
-                reference: Deserialize::default(),
-                reference_status: Deserialize::default(),
+                network_decline_code: Some(None),
+                reference: Some(None),
+                reference_status: Some(None),
             }
         }
 

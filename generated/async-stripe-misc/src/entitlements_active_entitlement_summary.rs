@@ -72,11 +72,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self {
-                customer: Deserialize::default(),
-                entitlements: Deserialize::default(),
-                livemode: Deserialize::default(),
-            }
+            Self { customer: None, entitlements: None, livemode: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {

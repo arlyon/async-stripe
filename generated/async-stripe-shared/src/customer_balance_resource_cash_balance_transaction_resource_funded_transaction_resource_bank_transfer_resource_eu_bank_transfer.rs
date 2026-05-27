@@ -73,9 +73,9 @@ const _: () = {
     }
 
     fn deser_default() -> Self {
-        Self { bic: Deserialize::default(),
-iban_last4: Deserialize::default(),
-sender_name: Deserialize::default(),
+        Self { bic: Some(None),
+iban_last4: Some(None),
+sender_name: Some(None),
  }
     }
 

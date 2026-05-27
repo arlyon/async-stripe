@@ -84,12 +84,12 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                arrival_airport_code: Deserialize::default(),
-                carrier: Deserialize::default(),
-                departure_airport_code: Deserialize::default(),
-                flight_number: Deserialize::default(),
-                service_class: Deserialize::default(),
-                stopover_allowed: Deserialize::default(),
+                arrival_airport_code: Some(None),
+                carrier: Some(None),
+                departure_airport_code: Some(None),
+                flight_number: Some(None),
+                service_class: Some(None),
+                stopover_allowed: Some(None),
             }
         }
 

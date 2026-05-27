@@ -75,9 +75,9 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                default_mandate: Deserialize::default(),
-                payment_method_options: Deserialize::default(),
-                payment_method_types: Deserialize::default(),
+                default_mandate: Some(None),
+                payment_method_options: Some(None),
+                payment_method_types: Some(None),
             }
         }
 
@@ -168,12 +168,14 @@ pub enum InvoicesPaymentSettingsPaymentMethodTypes {
     Paynow,
     Paypal,
     Payto,
+    Pix,
     Promptpay,
     RevolutPay,
     SepaCreditTransfer,
     SepaDebit,
     Sofort,
     Swish,
+    Upi,
     UsBankAccount,
     WechatPay,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
@@ -217,12 +219,14 @@ impl InvoicesPaymentSettingsPaymentMethodTypes {
             Paynow => "paynow",
             Paypal => "paypal",
             Payto => "payto",
+            Pix => "pix",
             Promptpay => "promptpay",
             RevolutPay => "revolut_pay",
             SepaCreditTransfer => "sepa_credit_transfer",
             SepaDebit => "sepa_debit",
             Sofort => "sofort",
             Swish => "swish",
+            Upi => "upi",
             UsBankAccount => "us_bank_account",
             WechatPay => "wechat_pay",
             Unknown(v) => v,
@@ -269,12 +273,14 @@ impl std::str::FromStr for InvoicesPaymentSettingsPaymentMethodTypes {
             "paynow" => Ok(Paynow),
             "paypal" => Ok(Paypal),
             "payto" => Ok(Payto),
+            "pix" => Ok(Pix),
             "promptpay" => Ok(Promptpay),
             "revolut_pay" => Ok(RevolutPay),
             "sepa_credit_transfer" => Ok(SepaCreditTransfer),
             "sepa_debit" => Ok(SepaDebit),
             "sofort" => Ok(Sofort),
             "swish" => Ok(Swish),
+            "upi" => Ok(Upi),
             "us_bank_account" => Ok(UsBankAccount),
             "wechat_pay" => Ok(WechatPay),
             v => {

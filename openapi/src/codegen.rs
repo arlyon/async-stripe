@@ -5,6 +5,7 @@ use anyhow::Context;
 use indoc::formatdoc;
 
 use crate::components::{Components, get_components};
+use crate::crate_inference::CrateInferenceWarning;
 use crate::crate_table::write_crate_table;
 use crate::crates::{ALL_CRATES, Crate, get_crate_doc_comment};
 use crate::object_writing::{gen_obj, gen_requests};
@@ -22,11 +23,12 @@ pub struct CodeGen {
     pub components: Components,
     pub spec: Spec,
     pub version: String,
+    pub crate_inference_warnings: Vec<CrateInferenceWarning>,
 }
 
 impl CodeGen {
     pub fn new(spec: Spec, url_finder: UrlFinder, version: String) -> anyhow::Result<Self> {
-        let mut components = get_components(&spec)?;
+        let (mut components, crate_inference_warnings) = get_components(&spec)?;
 
         // Attach doc urls for top-level components
         for comp in components.components.values_mut() {
@@ -35,7 +37,7 @@ impl CodeGen {
             }
         }
 
-        Ok(Self { components, spec, version })
+        Ok(Self { components, spec, version, crate_inference_warnings })
     }
 
     fn write_api_version_file(&self) -> anyhow::Result<()> {

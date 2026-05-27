@@ -77,10 +77,10 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                default_value: Deserialize::default(),
-                description: Deserialize::default(),
-                title: Deserialize::default(),
-                value: Deserialize::default(),
+                default_value: Some(None),
+                description: Some(None),
+                title: Some(None),
+                value: Some(None),
             }
         }
 

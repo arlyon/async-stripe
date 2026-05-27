@@ -80,6 +80,8 @@ pub struct Subscription {
     /// If the object exists in live mode, the value is `true`.
     /// If the object exists in test mode, the value is `false`.
     pub livemode: bool,
+    /// Settings for Managed Payments for this Subscription and resulting [Invoices](/api/invoices/object) and [PaymentIntents](/api/payment_intents/object).
+    pub managed_payments: Option<stripe_shared::SmorResourceManagedPayments>,
     /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: std::collections::HashMap<String, String>,
@@ -184,6 +186,7 @@ pub struct SubscriptionBuilder {
     items: Option<stripe_types::List<stripe_shared::SubscriptionItem>>,
     latest_invoice: Option<Option<stripe_types::Expandable<stripe_shared::Invoice>>>,
     livemode: Option<bool>,
+    managed_payments: Option<Option<stripe_shared::SmorResourceManagedPayments>>,
     metadata: Option<std::collections::HashMap<String, String>>,
     next_pending_invoice_item_invoice: Option<Option<stripe_types::Timestamp>>,
     on_behalf_of: Option<Option<stripe_types::Expandable<stripe_shared::Account>>>,
@@ -275,6 +278,7 @@ const _: () = {
                 "items" => Deserialize::begin(&mut self.items),
                 "latest_invoice" => Deserialize::begin(&mut self.latest_invoice),
                 "livemode" => Deserialize::begin(&mut self.livemode),
+                "managed_payments" => Deserialize::begin(&mut self.managed_payments),
                 "metadata" => Deserialize::begin(&mut self.metadata),
                 "next_pending_invoice_item_invoice" => {
                     Deserialize::begin(&mut self.next_pending_invoice_item_invoice)
@@ -302,51 +306,52 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                application: Deserialize::default(),
-                application_fee_percent: Deserialize::default(),
-                automatic_tax: Deserialize::default(),
-                billing_cycle_anchor: Deserialize::default(),
-                billing_cycle_anchor_config: Deserialize::default(),
-                billing_mode: Deserialize::default(),
-                billing_thresholds: Deserialize::default(),
-                cancel_at: Deserialize::default(),
-                cancel_at_period_end: Deserialize::default(),
-                canceled_at: Deserialize::default(),
-                cancellation_details: Deserialize::default(),
-                collection_method: Deserialize::default(),
-                created: Deserialize::default(),
-                currency: Deserialize::default(),
-                customer: Deserialize::default(),
-                customer_account: Deserialize::default(),
-                days_until_due: Deserialize::default(),
-                default_payment_method: Deserialize::default(),
-                default_source: Deserialize::default(),
-                default_tax_rates: Deserialize::default(),
-                description: Deserialize::default(),
-                discounts: Deserialize::default(),
-                ended_at: Deserialize::default(),
-                id: Deserialize::default(),
-                invoice_settings: Deserialize::default(),
-                items: Deserialize::default(),
-                latest_invoice: Deserialize::default(),
-                livemode: Deserialize::default(),
-                metadata: Deserialize::default(),
-                next_pending_invoice_item_invoice: Deserialize::default(),
-                on_behalf_of: Deserialize::default(),
-                pause_collection: Deserialize::default(),
-                payment_settings: Deserialize::default(),
-                pending_invoice_item_interval: Deserialize::default(),
-                pending_setup_intent: Deserialize::default(),
-                pending_update: Deserialize::default(),
-                presentment_details: Deserialize::default(),
-                schedule: Deserialize::default(),
-                start_date: Deserialize::default(),
-                status: Deserialize::default(),
-                test_clock: Deserialize::default(),
-                transfer_data: Deserialize::default(),
-                trial_end: Deserialize::default(),
-                trial_settings: Deserialize::default(),
-                trial_start: Deserialize::default(),
+                application: Some(None),
+                application_fee_percent: Some(None),
+                automatic_tax: None,
+                billing_cycle_anchor: None,
+                billing_cycle_anchor_config: Some(None),
+                billing_mode: None,
+                billing_thresholds: Some(None),
+                cancel_at: Some(None),
+                cancel_at_period_end: None,
+                canceled_at: Some(None),
+                cancellation_details: Some(None),
+                collection_method: None,
+                created: None,
+                currency: None,
+                customer: None,
+                customer_account: Some(None),
+                days_until_due: Some(None),
+                default_payment_method: Some(None),
+                default_source: Some(None),
+                default_tax_rates: Some(None),
+                description: Some(None),
+                discounts: None,
+                ended_at: Some(None),
+                id: None,
+                invoice_settings: None,
+                items: None,
+                latest_invoice: Some(None),
+                livemode: None,
+                managed_payments: Some(None),
+                metadata: None,
+                next_pending_invoice_item_invoice: Some(None),
+                on_behalf_of: Some(None),
+                pause_collection: Some(None),
+                payment_settings: Some(None),
+                pending_invoice_item_interval: Some(None),
+                pending_setup_intent: Some(None),
+                pending_update: Some(None),
+                presentment_details: Some(None),
+                schedule: Some(None),
+                start_date: None,
+                status: None,
+                test_clock: Some(None),
+                transfer_data: Some(None),
+                trial_end: Some(None),
+                trial_settings: Some(None),
+                trial_start: Some(None),
             }
         }
 
@@ -380,6 +385,7 @@ const _: () = {
                 Some(items),
                 Some(latest_invoice),
                 Some(livemode),
+                Some(managed_payments),
                 Some(metadata),
                 Some(next_pending_invoice_item_invoice),
                 Some(on_behalf_of),
@@ -426,6 +432,7 @@ const _: () = {
                 self.items.take(),
                 self.latest_invoice.take(),
                 self.livemode,
+                self.managed_payments,
                 self.metadata.take(),
                 self.next_pending_invoice_item_invoice,
                 self.on_behalf_of.take(),
@@ -476,6 +483,7 @@ const _: () = {
                 items,
                 latest_invoice,
                 livemode,
+                managed_payments,
                 metadata,
                 next_pending_invoice_item_invoice,
                 on_behalf_of,
@@ -554,6 +562,7 @@ const _: () = {
                     "items" => b.items = FromValueOpt::from_value(v),
                     "latest_invoice" => b.latest_invoice = FromValueOpt::from_value(v),
                     "livemode" => b.livemode = FromValueOpt::from_value(v),
+                    "managed_payments" => b.managed_payments = FromValueOpt::from_value(v),
                     "metadata" => b.metadata = FromValueOpt::from_value(v),
                     "next_pending_invoice_item_invoice" => {
                         b.next_pending_invoice_item_invoice = FromValueOpt::from_value(v)
@@ -586,7 +595,7 @@ const _: () = {
 impl serde::Serialize for Subscription {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("Subscription", 46)?;
+        let mut s = s.serialize_struct("Subscription", 47)?;
         s.serialize_field("application", &self.application)?;
         s.serialize_field("application_fee_percent", &self.application_fee_percent)?;
         s.serialize_field("automatic_tax", &self.automatic_tax)?;
@@ -615,6 +624,7 @@ impl serde::Serialize for Subscription {
         s.serialize_field("items", &self.items)?;
         s.serialize_field("latest_invoice", &self.latest_invoice)?;
         s.serialize_field("livemode", &self.livemode)?;
+        s.serialize_field("managed_payments", &self.managed_payments)?;
         s.serialize_field("metadata", &self.metadata)?;
         s.serialize_field(
             "next_pending_invoice_item_invoice",

@@ -114,19 +114,19 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                active: Deserialize::default(),
-                application: Deserialize::default(),
-                business_profile: Deserialize::default(),
-                created: Deserialize::default(),
-                default_return_url: Deserialize::default(),
-                features: Deserialize::default(),
-                id: Deserialize::default(),
-                is_default: Deserialize::default(),
-                livemode: Deserialize::default(),
-                login_page: Deserialize::default(),
-                metadata: Deserialize::default(),
-                name: Deserialize::default(),
-                updated: Deserialize::default(),
+                active: None,
+                application: Some(None),
+                business_profile: None,
+                created: None,
+                default_return_url: Some(None),
+                features: None,
+                id: None,
+                is_default: None,
+                livemode: None,
+                login_page: None,
+                metadata: Some(None),
+                name: Some(None),
+                updated: None,
             }
         }
 

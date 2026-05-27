@@ -94,15 +94,15 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                amex_express_checkout: Deserialize::default(),
-                apple_pay: Deserialize::default(),
-                dynamic_last4: Deserialize::default(),
-                google_pay: Deserialize::default(),
-                link: Deserialize::default(),
-                masterpass: Deserialize::default(),
-                samsung_pay: Deserialize::default(),
-                type_: Deserialize::default(),
-                visa_checkout: Deserialize::default(),
+                amex_express_checkout: Some(None),
+                apple_pay: Some(None),
+                dynamic_last4: Some(None),
+                google_pay: Some(None),
+                link: Some(None),
+                masterpass: Some(None),
+                samsung_pay: Some(None),
+                type_: None,
+                visa_checkout: Some(None),
             }
         }
 

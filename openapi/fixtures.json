@@ -165,6 +165,10 @@
             "external_account_collection": true
           }
         },
+        "balance_report": {
+          "enabled": true,
+          "features": {}
+        },
         "balances": {
           "enabled": false,
           "features": {
@@ -264,6 +268,10 @@
           }
         },
         "payout_details": {
+          "enabled": true,
+          "features": {}
+        },
+        "payout_reconciliation_report": {
           "enabled": true,
           "features": {}
         },
@@ -1137,6 +1145,9 @@
       },
       "livemode": false,
       "locale": null,
+      "managed_payments": {
+        "enabled": true
+      },
       "metadata": {},
       "mode": "payment",
       "object": "checkout.session",
@@ -2811,7 +2822,11 @@
           },
           "konbini": {},
           "payto": {},
+          "pix": {
+            "amount_includes_iof": null
+          },
           "sepa_debit": {},
+          "upi": {},
           "us_bank_account": {}
         },
         "payment_method_types": null
@@ -2977,8 +2992,10 @@
             "past_due": []
           },
           "spending_controls": {
+            "allowed_card_presences": null,
             "allowed_categories": [],
             "allowed_merchant_countries": [],
+            "blocked_card_presences": null,
             "blocked_categories": [],
             "blocked_merchant_countries": [],
             "spending_limits": [],
@@ -3046,8 +3063,10 @@
           "type": "bulk"
         },
         "spending_controls": {
+          "allowed_card_presences": null,
           "allowed_categories": null,
           "allowed_merchant_countries": null,
+          "blocked_card_presences": null,
           "blocked_categories": null,
           "blocked_merchant_countries": null,
           "spending_limits": [],
@@ -3067,6 +3086,7 @@
           "primary_account_identifier": null
         }
       },
+      "card_presence": null,
       "cardholder": null,
       "created": 1234567890,
       "currency": "usd",
@@ -3206,8 +3226,10 @@
           "past_due": []
         },
         "spending_controls": {
+          "allowed_card_presences": null,
           "allowed_categories": [],
           "allowed_merchant_countries": [],
+          "blocked_card_presences": null,
           "blocked_categories": [],
           "blocked_merchant_countries": [],
           "spending_limits": [],
@@ -3275,8 +3297,10 @@
         "type": "bulk"
       },
       "spending_controls": {
+        "allowed_card_presences": null,
         "allowed_categories": null,
         "allowed_merchant_countries": null,
+        "blocked_card_presences": null,
         "blocked_categories": null,
         "blocked_merchant_countries": null,
         "spending_limits": [],
@@ -3341,8 +3365,10 @@
         "past_due": []
       },
       "spending_controls": {
+        "allowed_card_presences": null,
         "allowed_categories": [],
         "allowed_merchant_countries": [],
+        "blocked_card_presences": null,
         "blocked_categories": [],
         "blocked_merchant_countries": [],
         "spending_limits": [],
@@ -3727,6 +3753,9 @@
       },
       "latest_charge": null,
       "livemode": false,
+      "managed_payments": {
+        "enabled": true
+      },
       "metadata": {},
       "next_action": {
         "type": "type"
@@ -3838,6 +3867,9 @@
         }
       },
       "livemode": false,
+      "managed_payments": {
+        "enabled": true
+      },
       "metadata": {},
       "object": "payment_link",
       "on_behalf_of": null,
@@ -5349,6 +5381,9 @@
       },
       "latest_invoice": null,
       "livemode": false,
+      "managed_payments": {
+        "enabled": true
+      },
       "metadata": {},
       "next_pending_invoice_item_invoice": 1234567890,
       "object": "subscription",
@@ -5372,7 +5407,9 @@
           },
           "konbini": {},
           "payto": {},
+          "pix": {},
           "sepa_debit": {},
+          "upi": {},
           "us_bank_account": {}
         },
         "payment_method_types": null,
@@ -6597,5 +6634,5 @@
       "url": "https://example.com/my/webhook/endpoint"
     }
   },
-  "version": "v2241"
+  "version": "v2274"
 }

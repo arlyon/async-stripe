@@ -80,11 +80,11 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                city: Deserialize::default(),
-                country: Deserialize::default(),
-                latitude: Deserialize::default(),
-                longitude: Deserialize::default(),
-                region: Deserialize::default(),
+                city: Some(None),
+                country: Some(None),
+                latitude: Some(None),
+                longitude: Some(None),
+                region: Some(None),
             }
         }
 

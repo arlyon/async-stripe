@@ -101,14 +101,14 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                alternatives: Deserialize::default(),
-                current_deadline: Deserialize::default(),
-                currently_due: Deserialize::default(),
-                disabled_reason: Deserialize::default(),
-                errors: Deserialize::default(),
-                eventually_due: Deserialize::default(),
-                past_due: Deserialize::default(),
-                pending_verification: Deserialize::default(),
+                alternatives: Some(None),
+                current_deadline: Some(None),
+                currently_due: Some(None),
+                disabled_reason: Some(None),
+                errors: Some(None),
+                eventually_due: Some(None),
+                past_due: Some(None),
+                pending_verification: Some(None),
             }
         }
 

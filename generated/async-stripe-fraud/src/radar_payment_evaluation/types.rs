@@ -23,7 +23,7 @@ pub struct RadarPaymentEvaluation {
     /// Indicates the final outcome for the payment evaluation.
     pub outcome: Option<stripe_fraud::InsightsResourcesPaymentEvaluationOutcome>,
     pub payment_details: Option<stripe_fraud::InsightsResourcesPaymentEvaluationPaymentDetails>,
-    /// Recommended action based on the score of the fraudulent_payment signal.
+    /// Recommended action based on the score of the `fraudulent_payment` signal.
     /// Possible values are `block` and `continue`.
     pub recommended_action: RadarPaymentEvaluationRecommendedAction,
     pub signals: stripe_fraud::InsightsResourcesPaymentEvaluationSignals,
@@ -110,17 +110,17 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                client_device_metadata_details: Deserialize::default(),
-                created_at: Deserialize::default(),
-                customer_details: Deserialize::default(),
-                events: Deserialize::default(),
-                id: Deserialize::default(),
-                livemode: Deserialize::default(),
-                metadata: Deserialize::default(),
-                outcome: Deserialize::default(),
-                payment_details: Deserialize::default(),
-                recommended_action: Deserialize::default(),
-                signals: Deserialize::default(),
+                client_device_metadata_details: Some(None),
+                created_at: None,
+                customer_details: Some(None),
+                events: Some(None),
+                id: None,
+                livemode: None,
+                metadata: Some(None),
+                outcome: Some(None),
+                payment_details: Some(None),
+                recommended_action: None,
+                signals: None,
             }
         }
 
@@ -233,7 +233,7 @@ impl serde::Serialize for RadarPaymentEvaluation {
         s.end()
     }
 }
-/// Recommended action based on the score of the fraudulent_payment signal.
+/// Recommended action based on the score of the `fraudulent_payment` signal.
 /// Possible values are `block` and `continue`.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]

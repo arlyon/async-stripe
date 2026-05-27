@@ -113,12 +113,12 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                payment_method_allow_redisplay_filters: Deserialize::default(),
-                payment_method_redisplay: Deserialize::default(),
-                payment_method_redisplay_limit: Deserialize::default(),
-                payment_method_remove: Deserialize::default(),
-                payment_method_save: Deserialize::default(),
-                payment_method_save_usage: Deserialize::default(),
+                payment_method_allow_redisplay_filters: None,
+                payment_method_redisplay: None,
+                payment_method_redisplay_limit: Some(None),
+                payment_method_remove: None,
+                payment_method_save: None,
+                payment_method_save_usage: Some(None),
             }
         }
 

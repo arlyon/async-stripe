@@ -121,19 +121,19 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                active: Deserialize::default(),
-                code: Deserialize::default(),
-                created: Deserialize::default(),
-                customer: Deserialize::default(),
-                customer_account: Deserialize::default(),
-                expires_at: Deserialize::default(),
-                id: Deserialize::default(),
-                livemode: Deserialize::default(),
-                max_redemptions: Deserialize::default(),
-                metadata: Deserialize::default(),
-                promotion: Deserialize::default(),
-                restrictions: Deserialize::default(),
-                times_redeemed: Deserialize::default(),
+                active: None,
+                code: None,
+                created: None,
+                customer: Some(None),
+                customer_account: Some(None),
+                expires_at: Some(None),
+                id: None,
+                livemode: None,
+                max_redemptions: Some(None),
+                metadata: Some(None),
+                promotion: None,
+                restrictions: None,
+                times_redeemed: None,
             }
         }
 

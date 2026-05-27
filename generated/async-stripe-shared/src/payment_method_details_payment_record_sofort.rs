@@ -101,15 +101,15 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                bank_code: Deserialize::default(),
-                bank_name: Deserialize::default(),
-                bic: Deserialize::default(),
-                country: Deserialize::default(),
-                generated_sepa_debit: Deserialize::default(),
-                generated_sepa_debit_mandate: Deserialize::default(),
-                iban_last4: Deserialize::default(),
-                preferred_language: Deserialize::default(),
-                verified_name: Deserialize::default(),
+                bank_code: Some(None),
+                bank_name: Some(None),
+                bic: Some(None),
+                country: Some(None),
+                generated_sepa_debit: Some(None),
+                generated_sepa_debit_mandate: Some(None),
+                iban_last4: Some(None),
+                preferred_language: Some(None),
+                verified_name: Some(None),
             }
         }
 

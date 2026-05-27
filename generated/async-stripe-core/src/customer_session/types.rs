@@ -98,13 +98,13 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                client_secret: Deserialize::default(),
-                components: Deserialize::default(),
-                created: Deserialize::default(),
-                customer: Deserialize::default(),
-                customer_account: Deserialize::default(),
-                expires_at: Deserialize::default(),
-                livemode: Deserialize::default(),
+                client_secret: None,
+                components: Some(None),
+                created: None,
+                customer: None,
+                customer_account: Some(None),
+                expires_at: None,
+                livemode: None,
             }
         }
 

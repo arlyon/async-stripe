@@ -76,11 +76,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self {
-                address_line1_check: Deserialize::default(),
-                address_postal_code_check: Deserialize::default(),
-                cvc_check: Deserialize::default(),
-            }
+            Self { address_line1_check: None, address_postal_code_check: None, cvc_check: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {

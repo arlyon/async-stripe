@@ -77,10 +77,10 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                card_reference_id: Deserialize::default(),
-                token_reference_id: Deserialize::default(),
-                token_requestor_id: Deserialize::default(),
-                token_requestor_name: Deserialize::default(),
+                card_reference_id: Some(None),
+                token_reference_id: None,
+                token_requestor_id: None,
+                token_requestor_name: Some(None),
             }
         }
 

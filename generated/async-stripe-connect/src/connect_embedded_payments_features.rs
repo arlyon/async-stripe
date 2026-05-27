@@ -80,10 +80,10 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                capture_payments: Deserialize::default(),
-                destination_on_behalf_of_charge_management: Deserialize::default(),
-                dispute_management: Deserialize::default(),
-                refund_management: Deserialize::default(),
+                capture_payments: None,
+                destination_on_behalf_of_charge_management: None,
+                dispute_management: None,
+                refund_management: None,
             }
         }
 

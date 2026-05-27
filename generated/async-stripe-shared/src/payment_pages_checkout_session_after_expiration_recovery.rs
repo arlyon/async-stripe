@@ -78,10 +78,10 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                allow_promotion_codes: Deserialize::default(),
-                enabled: Deserialize::default(),
-                expires_at: Deserialize::default(),
-                url: Deserialize::default(),
+                allow_promotion_codes: None,
+                enabled: None,
+                expires_at: Some(None),
+                url: Some(None),
             }
         }
 

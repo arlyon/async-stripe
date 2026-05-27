@@ -73,11 +73,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self {
-                hosted_instructions_url: Deserialize::default(),
-                mobile_auth_url: Deserialize::default(),
-                qr_code: Deserialize::default(),
-            }
+            Self { hosted_instructions_url: None, mobile_auth_url: None, qr_code: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {

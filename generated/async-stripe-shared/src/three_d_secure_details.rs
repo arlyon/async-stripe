@@ -90,12 +90,12 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                authentication_flow: Deserialize::default(),
-                electronic_commerce_indicator: Deserialize::default(),
-                result: Deserialize::default(),
-                result_reason: Deserialize::default(),
-                transaction_id: Deserialize::default(),
-                version: Deserialize::default(),
+                authentication_flow: Some(None),
+                electronic_commerce_indicator: Some(None),
+                result: Some(None),
+                result_reason: Some(None),
+                transaction_id: Some(None),
+                version: Some(None),
             }
         }
 

@@ -95,14 +95,14 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                created: Deserialize::default(),
-                expired: Deserialize::default(),
-                expires_at: Deserialize::default(),
-                file: Deserialize::default(),
-                id: Deserialize::default(),
-                livemode: Deserialize::default(),
-                metadata: Deserialize::default(),
-                url: Deserialize::default(),
+                created: None,
+                expired: None,
+                expires_at: Some(None),
+                file: None,
+                id: None,
+                livemode: None,
+                metadata: None,
+                url: Some(None),
             }
         }
 

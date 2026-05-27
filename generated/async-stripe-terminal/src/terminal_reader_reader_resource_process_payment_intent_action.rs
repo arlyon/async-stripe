@@ -69,7 +69,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self { payment_intent: Deserialize::default(), process_config: Deserialize::default() }
+            Self { payment_intent: None, process_config: Some(None) }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {

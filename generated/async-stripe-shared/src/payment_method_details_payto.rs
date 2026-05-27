@@ -76,10 +76,10 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                bsb_number: Deserialize::default(),
-                last4: Deserialize::default(),
-                mandate: Deserialize::default(),
-                pay_id: Deserialize::default(),
+                bsb_number: Some(None),
+                last4: Some(None),
+                mandate: Some(None),
+                pay_id: Some(None),
             }
         }
 

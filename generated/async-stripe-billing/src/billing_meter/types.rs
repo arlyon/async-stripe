@@ -110,18 +110,18 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                created: Deserialize::default(),
-                customer_mapping: Deserialize::default(),
-                default_aggregation: Deserialize::default(),
-                display_name: Deserialize::default(),
-                event_name: Deserialize::default(),
-                event_time_window: Deserialize::default(),
-                id: Deserialize::default(),
-                livemode: Deserialize::default(),
-                status: Deserialize::default(),
-                status_transitions: Deserialize::default(),
-                updated: Deserialize::default(),
-                value_settings: Deserialize::default(),
+                created: None,
+                customer_mapping: None,
+                default_aggregation: None,
+                display_name: None,
+                event_name: None,
+                event_time_window: Some(None),
+                id: None,
+                livemode: None,
+                status: None,
+                status_transitions: None,
+                updated: None,
+                value_settings: None,
             }
         }
 

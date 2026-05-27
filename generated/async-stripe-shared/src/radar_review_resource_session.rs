@@ -76,10 +76,10 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                browser: Deserialize::default(),
-                device: Deserialize::default(),
-                platform: Deserialize::default(),
-                version: Deserialize::default(),
+                browser: Some(None),
+                device: Some(None),
+                platform: Some(None),
+                version: Some(None),
             }
         }
 

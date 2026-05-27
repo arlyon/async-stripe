@@ -84,12 +84,12 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                id: Deserialize::default(),
-                info_url: Deserialize::default(),
-                livemode: Deserialize::default(),
-                locations: Deserialize::default(),
-                name: Deserialize::default(),
-                removal_pathway: Deserialize::default(),
+                id: None,
+                info_url: None,
+                livemode: None,
+                locations: None,
+                name: None,
+                removal_pathway: None,
             }
         }
 

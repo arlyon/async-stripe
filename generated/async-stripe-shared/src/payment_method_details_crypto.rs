@@ -76,10 +76,10 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                buyer_address: Deserialize::default(),
-                network: Deserialize::default(),
-                token_currency: Deserialize::default(),
-                transaction_hash: Deserialize::default(),
+                buyer_address: Some(None),
+                network: Some(None),
+                token_currency: Some(None),
+                transaction_hash: Some(None),
             }
         }
 
@@ -231,9 +231,11 @@ impl<'de> serde::Deserialize<'de> for PaymentMethodDetailsCryptoNetwork {
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum PaymentMethodDetailsCryptoTokenCurrency {
+    PhantomCash,
     Usdc,
     Usdg,
     Usdp,
+    Usdt,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
     Unknown(String),
 }
@@ -241,9 +243,11 @@ impl PaymentMethodDetailsCryptoTokenCurrency {
     pub fn as_str(&self) -> &str {
         use PaymentMethodDetailsCryptoTokenCurrency::*;
         match self {
+            PhantomCash => "phantom_cash",
             Usdc => "usdc",
             Usdg => "usdg",
             Usdp => "usdp",
+            Usdt => "usdt",
             Unknown(v) => v,
         }
     }
@@ -254,9 +258,11 @@ impl std::str::FromStr for PaymentMethodDetailsCryptoTokenCurrency {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use PaymentMethodDetailsCryptoTokenCurrency::*;
         match s {
+            "phantom_cash" => Ok(PhantomCash),
             "usdc" => Ok(Usdc),
             "usdg" => Ok(Usdg),
             "usdp" => Ok(Usdp),
+            "usdt" => Ok(Usdt),
             v => {
                 tracing::warn!(
                     "Unknown value '{}' for enum '{}'",

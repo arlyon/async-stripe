@@ -73,7 +73,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self { subscription_details: Deserialize::default(), type_: Deserialize::default() }
+            Self { subscription_details: Some(None), type_: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {

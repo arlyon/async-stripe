@@ -123,17 +123,17 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                configuration: Deserialize::default(),
-                created: Deserialize::default(),
-                customer: Deserialize::default(),
-                customer_account: Deserialize::default(),
-                flow: Deserialize::default(),
-                id: Deserialize::default(),
-                livemode: Deserialize::default(),
-                locale: Deserialize::default(),
-                on_behalf_of: Deserialize::default(),
-                return_url: Deserialize::default(),
-                url: Deserialize::default(),
+                configuration: None,
+                created: None,
+                customer: None,
+                customer_account: Some(None),
+                flow: Some(None),
+                id: None,
+                livemode: None,
+                locale: Some(None),
+                on_behalf_of: Some(None),
+                return_url: Some(None),
+                url: None,
             }
         }
 

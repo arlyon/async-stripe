@@ -49,6 +49,8 @@ pub struct PaymentLink {
     /// If the object exists in live mode, the value is `true`.
     /// If the object exists in test mode, the value is `false`.
     pub livemode: bool,
+    /// Settings for Managed Payments for this Payment Link and resulting [CheckoutSessions](/api/checkout/sessions/object), [PaymentIntents](/api/payment_intents/object), [Invoices](/api/invoices/object), and [Subscriptions](/api/subscriptions/object).
+    pub managed_payments: Option<stripe_shared::PaymentPagesCheckoutSessionManagedPayments>,
     /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     pub metadata: std::collections::HashMap<String, String>,
@@ -110,6 +112,7 @@ pub struct PaymentLinkBuilder {
     invoice_creation: Option<Option<stripe_shared::PaymentLinksResourceInvoiceCreation>>,
     line_items: Option<Option<stripe_types::List<stripe_shared::CheckoutSessionItem>>>,
     livemode: Option<bool>,
+    managed_payments: Option<Option<stripe_shared::PaymentPagesCheckoutSessionManagedPayments>>,
     metadata: Option<std::collections::HashMap<String, String>>,
     name_collection: Option<Option<stripe_shared::PaymentLinksResourceNameCollection>>,
     on_behalf_of: Option<Option<stripe_types::Expandable<stripe_shared::Account>>>,
@@ -189,6 +192,7 @@ const _: () = {
                 "invoice_creation" => Deserialize::begin(&mut self.invoice_creation),
                 "line_items" => Deserialize::begin(&mut self.line_items),
                 "livemode" => Deserialize::begin(&mut self.livemode),
+                "managed_payments" => Deserialize::begin(&mut self.managed_payments),
                 "metadata" => Deserialize::begin(&mut self.metadata),
                 "name_collection" => Deserialize::begin(&mut self.name_collection),
                 "on_behalf_of" => Deserialize::begin(&mut self.on_behalf_of),
@@ -215,40 +219,41 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                active: Deserialize::default(),
-                after_completion: Deserialize::default(),
-                allow_promotion_codes: Deserialize::default(),
-                application: Deserialize::default(),
-                application_fee_amount: Deserialize::default(),
-                application_fee_percent: Deserialize::default(),
-                automatic_tax: Deserialize::default(),
-                billing_address_collection: Deserialize::default(),
-                consent_collection: Deserialize::default(),
-                currency: Deserialize::default(),
-                custom_fields: Deserialize::default(),
-                custom_text: Deserialize::default(),
-                customer_creation: Deserialize::default(),
-                id: Deserialize::default(),
-                inactive_message: Deserialize::default(),
-                invoice_creation: Deserialize::default(),
-                line_items: Deserialize::default(),
-                livemode: Deserialize::default(),
-                metadata: Deserialize::default(),
-                name_collection: Deserialize::default(),
-                on_behalf_of: Deserialize::default(),
-                optional_items: Deserialize::default(),
-                payment_intent_data: Deserialize::default(),
-                payment_method_collection: Deserialize::default(),
-                payment_method_types: Deserialize::default(),
-                phone_number_collection: Deserialize::default(),
-                restrictions: Deserialize::default(),
-                shipping_address_collection: Deserialize::default(),
-                shipping_options: Deserialize::default(),
-                submit_type: Deserialize::default(),
-                subscription_data: Deserialize::default(),
-                tax_id_collection: Deserialize::default(),
-                transfer_data: Deserialize::default(),
-                url: Deserialize::default(),
+                active: None,
+                after_completion: None,
+                allow_promotion_codes: None,
+                application: Some(None),
+                application_fee_amount: Some(None),
+                application_fee_percent: Some(None),
+                automatic_tax: None,
+                billing_address_collection: None,
+                consent_collection: Some(None),
+                currency: None,
+                custom_fields: None,
+                custom_text: None,
+                customer_creation: None,
+                id: None,
+                inactive_message: Some(None),
+                invoice_creation: Some(None),
+                line_items: Some(None),
+                livemode: None,
+                managed_payments: Some(None),
+                metadata: None,
+                name_collection: Some(None),
+                on_behalf_of: Some(None),
+                optional_items: Some(None),
+                payment_intent_data: Some(None),
+                payment_method_collection: None,
+                payment_method_types: Some(None),
+                phone_number_collection: None,
+                restrictions: Some(None),
+                shipping_address_collection: Some(None),
+                shipping_options: None,
+                submit_type: None,
+                subscription_data: Some(None),
+                tax_id_collection: None,
+                transfer_data: Some(None),
+                url: None,
             }
         }
 
@@ -272,6 +277,7 @@ const _: () = {
                 Some(invoice_creation),
                 Some(line_items),
                 Some(livemode),
+                Some(managed_payments),
                 Some(metadata),
                 Some(name_collection),
                 Some(on_behalf_of),
@@ -307,6 +313,7 @@ const _: () = {
                 self.invoice_creation.take(),
                 self.line_items.take(),
                 self.livemode,
+                self.managed_payments,
                 self.metadata.take(),
                 self.name_collection,
                 self.on_behalf_of.take(),
@@ -346,6 +353,7 @@ const _: () = {
                 invoice_creation,
                 line_items,
                 livemode,
+                managed_payments,
                 metadata,
                 name_collection,
                 on_behalf_of,
@@ -415,6 +423,7 @@ const _: () = {
                     "invoice_creation" => b.invoice_creation = FromValueOpt::from_value(v),
                     "line_items" => b.line_items = FromValueOpt::from_value(v),
                     "livemode" => b.livemode = FromValueOpt::from_value(v),
+                    "managed_payments" => b.managed_payments = FromValueOpt::from_value(v),
                     "metadata" => b.metadata = FromValueOpt::from_value(v),
                     "name_collection" => b.name_collection = FromValueOpt::from_value(v),
                     "on_behalf_of" => b.on_behalf_of = FromValueOpt::from_value(v),
@@ -448,7 +457,7 @@ const _: () = {
 impl serde::Serialize for PaymentLink {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("PaymentLink", 35)?;
+        let mut s = s.serialize_struct("PaymentLink", 36)?;
         s.serialize_field("active", &self.active)?;
         s.serialize_field("after_completion", &self.after_completion)?;
         s.serialize_field("allow_promotion_codes", &self.allow_promotion_codes)?;
@@ -467,6 +476,7 @@ impl serde::Serialize for PaymentLink {
         s.serialize_field("invoice_creation", &self.invoice_creation)?;
         s.serialize_field("line_items", &self.line_items)?;
         s.serialize_field("livemode", &self.livemode)?;
+        s.serialize_field("managed_payments", &self.managed_payments)?;
         s.serialize_field("metadata", &self.metadata)?;
         s.serialize_field("name_collection", &self.name_collection)?;
         s.serialize_field("on_behalf_of", &self.on_behalf_of)?;
@@ -798,6 +808,7 @@ pub enum PaymentLinkPaymentMethodTypes {
     Satispay,
     SepaDebit,
     Sofort,
+    Sunbit,
     Swish,
     Twint,
     Upi,
@@ -845,6 +856,7 @@ impl PaymentLinkPaymentMethodTypes {
             Satispay => "satispay",
             SepaDebit => "sepa_debit",
             Sofort => "sofort",
+            Sunbit => "sunbit",
             Swish => "swish",
             Twint => "twint",
             Upi => "upi",
@@ -895,6 +907,7 @@ impl std::str::FromStr for PaymentLinkPaymentMethodTypes {
             "satispay" => Ok(Satispay),
             "sepa_debit" => Ok(SepaDebit),
             "sofort" => Ok(Sofort),
+            "sunbit" => Ok(Sunbit),
             "swish" => Ok(Swish),
             "twint" => Ok(Twint),
             "upi" => Ok(Upi),

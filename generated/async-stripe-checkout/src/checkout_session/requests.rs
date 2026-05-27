@@ -431,6 +431,8 @@ struct CreateCheckoutSessionBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     locale: Option<stripe_shared::CheckoutSessionLocale>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    managed_payments: Option<CreateCheckoutSessionManagedPayments>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     metadata: Option<std::collections::HashMap<String, String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     mode: Option<stripe_shared::CheckoutSessionMode>,
@@ -515,6 +517,7 @@ impl CreateCheckoutSessionBuilder {
             invoice_creation: None,
             line_items: None,
             locale: None,
+            managed_payments: None,
             metadata: None,
             mode: None,
             name_collection: None,
@@ -2298,6 +2301,7 @@ pub enum CreateCheckoutSessionExcludedPaymentMethodTypes {
     Satispay,
     SepaDebit,
     Sofort,
+    Sunbit,
     Swish,
     Twint,
     Upi,
@@ -2355,6 +2359,7 @@ impl CreateCheckoutSessionExcludedPaymentMethodTypes {
             Satispay => "satispay",
             SepaDebit => "sepa_debit",
             Sofort => "sofort",
+            Sunbit => "sunbit",
             Swish => "swish",
             Twint => "twint",
             Upi => "upi",
@@ -2415,6 +2420,7 @@ impl std::str::FromStr for CreateCheckoutSessionExcludedPaymentMethodTypes {
             "satispay" => Ok(Satispay),
             "sepa_debit" => Ok(SepaDebit),
             "sofort" => Ok(Sofort),
+            "sunbit" => Ok(Sunbit),
             "swish" => Ok(Swish),
             "twint" => Ok(Twint),
             "upi" => Ok(Upi),
@@ -3119,6 +3125,31 @@ impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionLineItemsPriceDataTax
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
         Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Settings for Managed Payments for this Checkout Session and resulting [PaymentIntents](/api/payment_intents/object), [Invoices](/api/invoices/object), and [Subscriptions](/api/subscriptions/object).
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateCheckoutSessionManagedPayments {
+    /// Set to `true` to enable [Managed Payments](https://docs.stripe.com/payments/managed-payments), Stripe's merchant of record solution, for this session.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionManagedPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionManagedPayments").finish_non_exhaustive()
+    }
+}
+impl CreateCheckoutSessionManagedPayments {
+    pub fn new() -> Self {
+        Self { enabled: None }
+    }
+}
+impl Default for CreateCheckoutSessionManagedPayments {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// Controls name collection settings for the session.
@@ -11012,6 +11043,9 @@ pub struct CreateCheckoutSessionPaymentMethodOptionsPix {
     /// Defaults to 86400 seconds.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub expires_after_seconds: Option<i64>,
+    /// Additional fields for mandate creation.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mandate_options: Option<CreateCheckoutSessionPaymentMethodOptionsPixMandateOptions>,
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
     /// If you provide a Customer with the PaymentIntent, you can use this parameter to [attach the payment method](/payments/save-during-payment) to the Customer after the PaymentIntent is confirmed and the customer completes any required actions.
@@ -11031,7 +11065,12 @@ impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsPix {
 }
 impl CreateCheckoutSessionPaymentMethodOptionsPix {
     pub fn new() -> Self {
-        Self { amount_includes_iof: None, expires_after_seconds: None, setup_future_usage: None }
+        Self {
+            amount_includes_iof: None,
+            expires_after_seconds: None,
+            mandate_options: None,
+            setup_future_usage: None,
+        }
     }
 }
 impl Default for CreateCheckoutSessionPaymentMethodOptionsPix {
@@ -11114,6 +11153,327 @@ impl<'de> serde::Deserialize<'de>
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
+/// Additional fields for mandate creation.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateCheckoutSessionPaymentMethodOptionsPixMandateOptions {
+    /// Amount to be charged for future payments.
+    /// Required when `amount_type=fixed`.
+    /// If not provided for `amount_type=maximum`, defaults to 40000.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount: Option<i64>,
+    /// Determines if the amount includes the IOF tax. Defaults to `never`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount_includes_iof:
+        Option<CreateCheckoutSessionPaymentMethodOptionsPixMandateOptionsAmountIncludesIof>,
+    /// Type of amount. Defaults to `maximum`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amount_type: Option<CreateCheckoutSessionPaymentMethodOptionsPixMandateOptionsAmountType>,
+    /// Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html), in lowercase.
+    /// Only `brl` is supported currently.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub currency: Option<stripe_types::Currency>,
+    /// Date when the mandate expires and no further payments will be charged, in `YYYY-MM-DD`.
+    /// If not provided, the mandate will be active until canceled.
+    /// If provided, end date should be after start date.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub end_date: Option<String>,
+    /// Schedule at which the future payments will be charged. Defaults to `monthly`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payment_schedule:
+        Option<CreateCheckoutSessionPaymentMethodOptionsPixMandateOptionsPaymentSchedule>,
+    /// Subscription name displayed to buyers in their bank app. Defaults to the displayable business name.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reference: Option<String>,
+    /// Start date of the mandate, in `YYYY-MM-DD`.
+    /// Start date should be at least 3 days in the future.
+    /// Defaults to 3 days after the current date.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub start_date: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsPixMandateOptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionPaymentMethodOptionsPixMandateOptions")
+            .finish_non_exhaustive()
+    }
+}
+impl CreateCheckoutSessionPaymentMethodOptionsPixMandateOptions {
+    pub fn new() -> Self {
+        Self {
+            amount: None,
+            amount_includes_iof: None,
+            amount_type: None,
+            currency: None,
+            end_date: None,
+            payment_schedule: None,
+            reference: None,
+            start_date: None,
+        }
+    }
+}
+impl Default for CreateCheckoutSessionPaymentMethodOptionsPixMandateOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Determines if the amount includes the IOF tax. Defaults to `never`.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreateCheckoutSessionPaymentMethodOptionsPixMandateOptionsAmountIncludesIof {
+    Always,
+    Never,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreateCheckoutSessionPaymentMethodOptionsPixMandateOptionsAmountIncludesIof {
+    pub fn as_str(&self) -> &str {
+        use CreateCheckoutSessionPaymentMethodOptionsPixMandateOptionsAmountIncludesIof::*;
+        match self {
+            Always => "always",
+            Never => "never",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr
+    for CreateCheckoutSessionPaymentMethodOptionsPixMandateOptionsAmountIncludesIof
+{
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateCheckoutSessionPaymentMethodOptionsPixMandateOptionsAmountIncludesIof::*;
+        match s {
+            "always" => Ok(Always),
+            "never" => Ok(Never),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateCheckoutSessionPaymentMethodOptionsPixMandateOptionsAmountIncludesIof"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display
+    for CreateCheckoutSessionPaymentMethodOptionsPixMandateOptionsAmountIncludesIof
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug
+    for CreateCheckoutSessionPaymentMethodOptionsPixMandateOptionsAmountIncludesIof
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for CreateCheckoutSessionPaymentMethodOptionsPixMandateOptionsAmountIncludesIof
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreateCheckoutSessionPaymentMethodOptionsPixMandateOptionsAmountIncludesIof
+        ))
+        .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize
+    for CreateCheckoutSessionPaymentMethodOptionsPixMandateOptionsAmountIncludesIof
+{
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateCheckoutSessionPaymentMethodOptionsPixMandateOptionsAmountIncludesIof
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Type of amount. Defaults to `maximum`.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreateCheckoutSessionPaymentMethodOptionsPixMandateOptionsAmountType {
+    Fixed,
+    Maximum,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreateCheckoutSessionPaymentMethodOptionsPixMandateOptionsAmountType {
+    pub fn as_str(&self) -> &str {
+        use CreateCheckoutSessionPaymentMethodOptionsPixMandateOptionsAmountType::*;
+        match self {
+            Fixed => "fixed",
+            Maximum => "maximum",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsPixMandateOptionsAmountType {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateCheckoutSessionPaymentMethodOptionsPixMandateOptionsAmountType::*;
+        match s {
+            "fixed" => Ok(Fixed),
+            "maximum" => Ok(Maximum),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateCheckoutSessionPaymentMethodOptionsPixMandateOptionsAmountType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsPixMandateOptionsAmountType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsPixMandateOptionsAmountType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsPixMandateOptionsAmountType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreateCheckoutSessionPaymentMethodOptionsPixMandateOptionsAmountType
+        ))
+        .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsPixMandateOptionsAmountType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateCheckoutSessionPaymentMethodOptionsPixMandateOptionsAmountType
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Schedule at which the future payments will be charged. Defaults to `monthly`.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreateCheckoutSessionPaymentMethodOptionsPixMandateOptionsPaymentSchedule {
+    Halfyearly,
+    Monthly,
+    Quarterly,
+    Weekly,
+    Yearly,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreateCheckoutSessionPaymentMethodOptionsPixMandateOptionsPaymentSchedule {
+    pub fn as_str(&self) -> &str {
+        use CreateCheckoutSessionPaymentMethodOptionsPixMandateOptionsPaymentSchedule::*;
+        match self {
+            Halfyearly => "halfyearly",
+            Monthly => "monthly",
+            Quarterly => "quarterly",
+            Weekly => "weekly",
+            Yearly => "yearly",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr
+    for CreateCheckoutSessionPaymentMethodOptionsPixMandateOptionsPaymentSchedule
+{
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateCheckoutSessionPaymentMethodOptionsPixMandateOptionsPaymentSchedule::*;
+        match s {
+            "halfyearly" => Ok(Halfyearly),
+            "monthly" => Ok(Monthly),
+            "quarterly" => Ok(Quarterly),
+            "weekly" => Ok(Weekly),
+            "yearly" => Ok(Yearly),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateCheckoutSessionPaymentMethodOptionsPixMandateOptionsPaymentSchedule"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display
+    for CreateCheckoutSessionPaymentMethodOptionsPixMandateOptionsPaymentSchedule
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsPixMandateOptionsPaymentSchedule {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsPixMandateOptionsPaymentSchedule {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreateCheckoutSessionPaymentMethodOptionsPixMandateOptionsPaymentSchedule
+        ))
+        .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize
+    for CreateCheckoutSessionPaymentMethodOptionsPixMandateOptionsPaymentSchedule
+{
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateCheckoutSessionPaymentMethodOptionsPixMandateOptionsPaymentSchedule
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
 /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
 ///
 /// If you provide a Customer with the PaymentIntent, you can use this parameter to [attach the payment method](/payments/save-during-payment) to the Customer after the PaymentIntent is confirmed and the customer completes any required actions.
@@ -11126,6 +11486,7 @@ impl<'de> serde::Deserialize<'de>
 #[non_exhaustive]
 pub enum CreateCheckoutSessionPaymentMethodOptionsPixSetupFutureUsage {
     None,
+    OffSession,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
     Unknown(String),
 }
@@ -11134,6 +11495,7 @@ impl CreateCheckoutSessionPaymentMethodOptionsPixSetupFutureUsage {
         use CreateCheckoutSessionPaymentMethodOptionsPixSetupFutureUsage::*;
         match self {
             None => "none",
+            OffSession => "off_session",
             Unknown(v) => v,
         }
     }
@@ -11145,6 +11507,7 @@ impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsPixSetupFutu
         use CreateCheckoutSessionPaymentMethodOptionsPixSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
+            "off_session" => Ok(OffSession),
             v => {
                 tracing::warn!(
                     "Unknown value '{}' for enum '{}'",
@@ -12895,6 +13258,7 @@ pub enum CreateCheckoutSessionPaymentMethodTypes {
     Satispay,
     SepaDebit,
     Sofort,
+    Sunbit,
     Swish,
     Twint,
     Upi,
@@ -12953,6 +13317,7 @@ impl CreateCheckoutSessionPaymentMethodTypes {
             Satispay => "satispay",
             SepaDebit => "sepa_debit",
             Sofort => "sofort",
+            Sunbit => "sunbit",
             Swish => "swish",
             Twint => "twint",
             Upi => "upi",
@@ -13014,6 +13379,7 @@ impl std::str::FromStr for CreateCheckoutSessionPaymentMethodTypes {
             "satispay" => Ok(Satispay),
             "sepa_debit" => Ok(SepaDebit),
             "sofort" => Ok(Sofort),
+            "sunbit" => Ok(Sunbit),
             "swish" => Ok(Swish),
             "twint" => Ok(Twint),
             "upi" => Ok(Upi),
@@ -16218,6 +16584,14 @@ impl CreateCheckoutSession {
     /// If blank or `auto`, the browser's locale is used.
     pub fn locale(mut self, locale: impl Into<stripe_shared::CheckoutSessionLocale>) -> Self {
         self.inner.locale = Some(locale.into());
+        self
+    }
+    /// Settings for Managed Payments for this Checkout Session and resulting [PaymentIntents](/api/payment_intents/object), [Invoices](/api/invoices/object), and [Subscriptions](/api/subscriptions/object).
+    pub fn managed_payments(
+        mut self,
+        managed_payments: impl Into<CreateCheckoutSessionManagedPayments>,
+    ) -> Self {
+        self.inner.managed_payments = Some(managed_payments.into());
         self
     }
     /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.

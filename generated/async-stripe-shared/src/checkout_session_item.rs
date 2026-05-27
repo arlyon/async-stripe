@@ -115,19 +115,19 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                adjustable_quantity: Deserialize::default(),
-                amount_discount: Deserialize::default(),
-                amount_subtotal: Deserialize::default(),
-                amount_tax: Deserialize::default(),
-                amount_total: Deserialize::default(),
-                currency: Deserialize::default(),
-                description: Deserialize::default(),
-                discounts: Deserialize::default(),
-                id: Deserialize::default(),
-                metadata: Deserialize::default(),
-                price: Deserialize::default(),
-                quantity: Deserialize::default(),
-                taxes: Deserialize::default(),
+                adjustable_quantity: Some(None),
+                amount_discount: None,
+                amount_subtotal: None,
+                amount_tax: None,
+                amount_total: None,
+                currency: None,
+                description: Some(None),
+                discounts: Some(None),
+                id: None,
+                metadata: Some(None),
+                price: Some(None),
+                quantity: Some(None),
+                taxes: Some(None),
             }
         }
 

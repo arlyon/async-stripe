@@ -113,18 +113,18 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                amount: Deserialize::default(),
-                amount_tax: Deserialize::default(),
-                id: Deserialize::default(),
-                livemode: Deserialize::default(),
-                metadata: Deserialize::default(),
-                product: Deserialize::default(),
-                quantity: Deserialize::default(),
-                reference: Deserialize::default(),
-                reversal: Deserialize::default(),
-                tax_behavior: Deserialize::default(),
-                tax_code: Deserialize::default(),
-                type_: Deserialize::default(),
+                amount: None,
+                amount_tax: None,
+                id: None,
+                livemode: None,
+                metadata: Some(None),
+                product: Some(None),
+                quantity: None,
+                reference: None,
+                reversal: Some(None),
+                tax_behavior: None,
+                tax_code: None,
+                type_: None,
             }
         }
 

@@ -76,9 +76,9 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                destination_on_behalf_of_charge_management: Deserialize::default(),
-                dispute_management: Deserialize::default(),
-                refund_management: Deserialize::default(),
+                destination_on_behalf_of_charge_management: None,
+                dispute_management: None,
+                refund_management: None,
             }
         }
 

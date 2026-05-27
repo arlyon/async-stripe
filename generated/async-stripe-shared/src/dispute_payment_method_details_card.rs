@@ -73,11 +73,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self {
-                brand: Deserialize::default(),
-                case_type: Deserialize::default(),
-                network_reason_code: Deserialize::default(),
-            }
+            Self { brand: None, case_type: None, network_reason_code: Some(None) }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {

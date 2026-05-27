@@ -34,7 +34,10 @@ pub struct TaxCalculation {
     pub tax_amount_inclusive: i64,
     /// Breakdown of individual tax amounts that add up to the total.
     pub tax_breakdown: Vec<stripe_misc::TaxProductResourceTaxBreakdown>,
-    /// Timestamp of date at which the tax rules and rates in effect applies for the calculation.
+    /// The calculation uses the tax rules and rates that are in effect at this timestamp.
+    /// You can use a date up to 31 days in the past or up to 31 days in the future.
+    /// If you use a future date, Stripe doesn't guarantee that the expected tax rules and rate being used match the actual rules and rate that will be in effect on that date.
+    /// We deploy tax changes before their effective date, but not within a fixed window.
     pub tax_date: stripe_types::Timestamp,
 }
 #[cfg(feature = "redact-generated-debug")]
@@ -121,20 +124,20 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                amount_total: Deserialize::default(),
-                currency: Deserialize::default(),
-                customer: Deserialize::default(),
-                customer_details: Deserialize::default(),
-                expires_at: Deserialize::default(),
-                id: Deserialize::default(),
-                line_items: Deserialize::default(),
-                livemode: Deserialize::default(),
-                ship_from_details: Deserialize::default(),
-                shipping_cost: Deserialize::default(),
-                tax_amount_exclusive: Deserialize::default(),
-                tax_amount_inclusive: Deserialize::default(),
-                tax_breakdown: Deserialize::default(),
-                tax_date: Deserialize::default(),
+                amount_total: None,
+                currency: None,
+                customer: Some(None),
+                customer_details: None,
+                expires_at: Some(None),
+                id: Some(None),
+                line_items: Some(None),
+                livemode: None,
+                ship_from_details: Some(None),
+                shipping_cost: Some(None),
+                tax_amount_exclusive: None,
+                tax_amount_inclusive: None,
+                tax_breakdown: None,
+                tax_date: None,
             }
         }
 

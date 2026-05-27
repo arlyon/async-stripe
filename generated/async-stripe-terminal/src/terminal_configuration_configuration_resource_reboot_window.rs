@@ -70,7 +70,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self { end_hour: Deserialize::default(), start_hour: Deserialize::default() }
+            Self { end_hour: None, start_hour: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {

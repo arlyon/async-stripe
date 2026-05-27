@@ -80,11 +80,11 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                data: Deserialize::default(),
-                expires_at: Deserialize::default(),
-                hosted_instructions_url: Deserialize::default(),
-                image_url_png: Deserialize::default(),
-                image_url_svg: Deserialize::default(),
+                data: Some(None),
+                expires_at: Some(None),
+                hosted_instructions_url: Some(None),
+                image_url_png: Some(None),
+                image_url_svg: Some(None),
             }
         }
 

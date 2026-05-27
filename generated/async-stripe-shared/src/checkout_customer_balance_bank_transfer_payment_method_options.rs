@@ -81,9 +81,9 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                eu_bank_transfer: Deserialize::default(),
-                requested_address_types: Deserialize::default(),
-                type_: Deserialize::default(),
+                eu_bank_transfer: Some(None),
+                requested_address_types: Some(None),
+                type_: Some(None),
             }
         }
 

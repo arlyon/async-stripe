@@ -85,10 +85,10 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                disable_stripe_user_authentication: Deserialize::default(),
-                external_account_collection: Deserialize::default(),
-                send_money: Deserialize::default(),
-                transfer_balance: Deserialize::default(),
+                disable_stripe_user_authentication: None,
+                external_account_collection: None,
+                send_money: None,
+                transfer_balance: None,
             }
         }
 

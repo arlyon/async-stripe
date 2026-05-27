@@ -72,7 +72,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self { province_standard: Deserialize::default(), type_: Deserialize::default() }
+            Self { province_standard: Some(None), type_: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {

@@ -116,17 +116,17 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                api_version: Deserialize::default(),
-                application: Deserialize::default(),
-                created: Deserialize::default(),
-                description: Deserialize::default(),
-                enabled_events: Deserialize::default(),
-                id: Deserialize::default(),
-                livemode: Deserialize::default(),
-                metadata: Deserialize::default(),
-                secret: Deserialize::default(),
-                status: Deserialize::default(),
-                url: Deserialize::default(),
+                api_version: Some(None),
+                application: Some(None),
+                created: None,
+                description: Some(None),
+                enabled_events: None,
+                id: None,
+                livemode: None,
+                metadata: None,
+                secret: Some(None),
+                status: None,
+                url: None,
             }
         }
 

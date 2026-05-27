@@ -72,11 +72,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self {
-                hosted_confirmation: Deserialize::default(),
-                redirect: Deserialize::default(),
-                type_: Deserialize::default(),
-            }
+            Self { hosted_confirmation: Some(None), redirect: Some(None), type_: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {

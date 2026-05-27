@@ -72,7 +72,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self { ip_address: Deserialize::default(), present: Deserialize::default() }
+            Self { ip_address: Some(None), present: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {

@@ -104,13 +104,13 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                default_currency: Deserialize::default(),
-                id: Deserialize::default(),
-                supported_bank_account_currencies: Deserialize::default(),
-                supported_payment_currencies: Deserialize::default(),
-                supported_payment_methods: Deserialize::default(),
-                supported_transfer_countries: Deserialize::default(),
-                verification_fields: Deserialize::default(),
+                default_currency: None,
+                id: None,
+                supported_bank_account_currencies: None,
+                supported_payment_currencies: None,
+                supported_payment_methods: None,
+                supported_transfer_countries: None,
+                verification_fields: None,
             }
         }
 

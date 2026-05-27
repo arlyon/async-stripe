@@ -95,12 +95,12 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                address: Deserialize::default(),
-                amount_charged: Deserialize::default(),
-                amount_received: Deserialize::default(),
-                amount_returned: Deserialize::default(),
-                refund_attributes_method: Deserialize::default(),
-                refund_attributes_status: Deserialize::default(),
+                address: Some(None),
+                amount_charged: None,
+                amount_received: None,
+                amount_returned: None,
+                refund_attributes_method: None,
+                refund_attributes_status: None,
             }
         }
 

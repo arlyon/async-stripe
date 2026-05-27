@@ -95,13 +95,13 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                billing_cycle_anchor: Deserialize::default(),
-                default_allowed_updates: Deserialize::default(),
-                enabled: Deserialize::default(),
-                products: Deserialize::default(),
-                proration_behavior: Deserialize::default(),
-                schedule_at_period_end: Deserialize::default(),
-                trial_update_behavior: Deserialize::default(),
+                billing_cycle_anchor: Some(None),
+                default_allowed_updates: None,
+                enabled: None,
+                products: Some(None),
+                proration_behavior: None,
+                schedule_at_period_end: None,
+                trial_update_behavior: None,
             }
         }
 

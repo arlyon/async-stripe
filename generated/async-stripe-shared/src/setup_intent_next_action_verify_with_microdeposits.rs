@@ -73,9 +73,9 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                arrival_date: Deserialize::default(),
-                hosted_verification_url: Deserialize::default(),
-                microdeposit_type: Deserialize::default(),
+                arrival_date: None,
+                hosted_verification_url: None,
+                microdeposit_type: Some(None),
             }
         }
 

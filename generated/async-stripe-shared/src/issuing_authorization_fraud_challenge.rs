@@ -71,11 +71,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self {
-                channel: Deserialize::default(),
-                status: Deserialize::default(),
-                undeliverable_reason: Deserialize::default(),
-            }
+            Self { channel: None, status: None, undeliverable_reason: Some(None) }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {

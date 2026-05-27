@@ -1,0 +1,9 @@
+pre-commit:
+  commands:
+    fmt-root:
+      glob: "*.rs"
+      exclude: "openapi/**"
+      run: cargo +nightly fmt
+    fmt-openapi:
+      glob: "openapi/**/*.rs"
+      run: cargo +nightly fmt --manifest-path openapi/Cargo.toml

@@ -78,9 +78,9 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                invoice_item_details: Deserialize::default(),
-                subscription_item_details: Deserialize::default(),
-                type_: Deserialize::default(),
+                invoice_item_details: Some(None),
+                subscription_item_details: Some(None),
+                type_: None,
             }
         }
 

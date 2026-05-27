@@ -78,11 +78,11 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                device: Deserialize::default(),
-                mastercard: Deserialize::default(),
-                type_: Deserialize::default(),
-                visa: Deserialize::default(),
-                wallet_provider: Deserialize::default(),
+                device: Some(None),
+                mastercard: Some(None),
+                type_: None,
+                visa: Some(None),
+                wallet_provider: Some(None),
             }
         }
 

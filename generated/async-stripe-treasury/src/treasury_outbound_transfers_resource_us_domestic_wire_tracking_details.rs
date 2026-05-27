@@ -72,11 +72,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self {
-                chips: Deserialize::default(),
-                imad: Deserialize::default(),
-                omad: Deserialize::default(),
-            }
+            Self { chips: Some(None), imad: Some(None), omad: Some(None) }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {

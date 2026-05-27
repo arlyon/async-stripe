@@ -113,18 +113,18 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                checkout_session: Deserialize::default(),
-                customer: Deserialize::default(),
-                customer_account: Deserialize::default(),
-                end: Deserialize::default(),
-                id: Deserialize::default(),
-                invoice: Deserialize::default(),
-                invoice_item: Deserialize::default(),
-                promotion_code: Deserialize::default(),
-                source: Deserialize::default(),
-                start: Deserialize::default(),
-                subscription: Deserialize::default(),
-                subscription_item: Deserialize::default(),
+                checkout_session: Some(None),
+                customer: Some(None),
+                customer_account: Some(None),
+                end: Some(None),
+                id: None,
+                invoice: Some(None),
+                invoice_item: Some(None),
+                promotion_code: Some(None),
+                source: None,
+                start: None,
+                subscription: Some(None),
+                subscription_item: Some(None),
             }
         }
 

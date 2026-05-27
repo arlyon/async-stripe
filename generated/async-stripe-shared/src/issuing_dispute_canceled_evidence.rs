@@ -104,16 +104,16 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                additional_documentation: Deserialize::default(),
-                canceled_at: Deserialize::default(),
-                cancellation_policy_provided: Deserialize::default(),
-                cancellation_reason: Deserialize::default(),
-                expected_at: Deserialize::default(),
-                explanation: Deserialize::default(),
-                product_description: Deserialize::default(),
-                product_type: Deserialize::default(),
-                return_status: Deserialize::default(),
-                returned_at: Deserialize::default(),
+                additional_documentation: Some(None),
+                canceled_at: Some(None),
+                cancellation_policy_provided: Some(None),
+                cancellation_reason: Some(None),
+                expected_at: Some(None),
+                explanation: Some(None),
+                product_description: Some(None),
+                product_type: Some(None),
+                return_status: Some(None),
+                returned_at: Some(None),
             }
         }
 

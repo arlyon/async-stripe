@@ -326,6 +326,8 @@ struct CreatePaymentLinkBuilder {
     invoice_creation: Option<CreatePaymentLinkInvoiceCreation>,
     line_items: Vec<CreatePaymentLinkLineItems>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    managed_payments: Option<CreatePaymentLinkManagedPayments>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     metadata: Option<std::collections::HashMap<String, String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     name_collection: Option<NameCollectionParams>,
@@ -380,6 +382,7 @@ impl CreatePaymentLinkBuilder {
             inactive_message: None,
             invoice_creation: None,
             line_items: line_items.into(),
+            managed_payments: None,
             metadata: None,
             name_collection: None,
             on_behalf_of: None,
@@ -1878,6 +1881,31 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentLinkLineItemsPriceDataTaxBeha
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
         Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Settings for Managed Payments for this Payment Link and resulting [CheckoutSessions](/api/checkout/sessions/object), [PaymentIntents](/api/payment_intents/object), [Invoices](/api/invoices/object), and [Subscriptions](/api/subscriptions/object).
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreatePaymentLinkManagedPayments {
+    /// Set to `true` to enable [Managed Payments](https://docs.stripe.com/payments/managed-payments), Stripe's merchant of record solution, for this session.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentLinkManagedPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentLinkManagedPayments").finish_non_exhaustive()
+    }
+}
+impl CreatePaymentLinkManagedPayments {
+    pub fn new() -> Self {
+        Self { enabled: None }
+    }
+}
+impl Default for CreatePaymentLinkManagedPayments {
+    fn default() -> Self {
+        Self::new()
     }
 }
 /// A subset of parameters to be passed to PaymentIntent creation for Checkout Sessions in `payment` mode.
@@ -3564,6 +3592,14 @@ impl CreatePaymentLink {
         invoice_creation: impl Into<CreatePaymentLinkInvoiceCreation>,
     ) -> Self {
         self.inner.invoice_creation = Some(invoice_creation.into());
+        self
+    }
+    /// Settings for Managed Payments for this Payment Link and resulting [CheckoutSessions](/api/checkout/sessions/object), [PaymentIntents](/api/payment_intents/object), [Invoices](/api/invoices/object), and [Subscriptions](/api/subscriptions/object).
+    pub fn managed_payments(
+        mut self,
+        managed_payments: impl Into<CreatePaymentLinkManagedPayments>,
+    ) -> Self {
+        self.inner.managed_payments = Some(managed_payments.into());
         self
     }
     /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.

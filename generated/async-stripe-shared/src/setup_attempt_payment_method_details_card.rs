@@ -34,6 +34,8 @@ pub struct SetupAttemptPaymentMethodDetailsCard {
     pub issuer: Option<String>,
     /// The last four digits of the card.
     pub last4: Option<String>,
+    /// True if this payment was marked as MOTO and out of scope for SCA.
+    pub moto: Option<bool>,
     /// Identifies which network this charge was processed on.
     /// Can be `amex`, `cartes_bancaires`, `diners`, `discover`, `eftpos_au`, `interac`, `jcb`, `link`, `mastercard`, `unionpay`, `visa`, or `unknown`.
     pub network: Option<String>,
@@ -61,6 +63,7 @@ pub struct SetupAttemptPaymentMethodDetailsCardBuilder {
     iin: Option<Option<String>>,
     issuer: Option<Option<String>>,
     last4: Option<Option<String>>,
+    moto: Option<Option<bool>>,
     network: Option<Option<String>>,
     three_d_secure: Option<Option<stripe_shared::ThreeDSecureDetails>>,
     wallet: Option<Option<stripe_shared::SetupAttemptPaymentMethodDetailsCardWallet>>,
@@ -117,6 +120,7 @@ const _: () = {
                 "iin" => Deserialize::begin(&mut self.iin),
                 "issuer" => Deserialize::begin(&mut self.issuer),
                 "last4" => Deserialize::begin(&mut self.last4),
+                "moto" => Deserialize::begin(&mut self.moto),
                 "network" => Deserialize::begin(&mut self.network),
                 "three_d_secure" => Deserialize::begin(&mut self.three_d_secure),
                 "wallet" => Deserialize::begin(&mut self.wallet),
@@ -126,20 +130,21 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                brand: Deserialize::default(),
-                checks: Deserialize::default(),
-                country: Deserialize::default(),
-                description: Deserialize::default(),
-                exp_month: Deserialize::default(),
-                exp_year: Deserialize::default(),
-                fingerprint: Deserialize::default(),
-                funding: Deserialize::default(),
-                iin: Deserialize::default(),
-                issuer: Deserialize::default(),
-                last4: Deserialize::default(),
-                network: Deserialize::default(),
-                three_d_secure: Deserialize::default(),
-                wallet: Deserialize::default(),
+                brand: Some(None),
+                checks: Some(None),
+                country: Some(None),
+                description: Some(None),
+                exp_month: Some(None),
+                exp_year: Some(None),
+                fingerprint: Some(None),
+                funding: Some(None),
+                iin: Some(None),
+                issuer: Some(None),
+                last4: Some(None),
+                moto: Some(None),
+                network: Some(None),
+                three_d_secure: Some(None),
+                wallet: Some(None),
             }
         }
 
@@ -156,6 +161,7 @@ const _: () = {
                 Some(iin),
                 Some(issuer),
                 Some(last4),
+                Some(moto),
                 Some(network),
                 Some(three_d_secure),
                 Some(wallet),
@@ -171,6 +177,7 @@ const _: () = {
                 self.iin.take(),
                 self.issuer.take(),
                 self.last4.take(),
+                self.moto,
                 self.network.take(),
                 self.three_d_secure.take(),
                 self.wallet.take(),
@@ -190,6 +197,7 @@ const _: () = {
                 iin,
                 issuer,
                 last4,
+                moto,
                 network,
                 three_d_secure,
                 wallet,
@@ -231,6 +239,7 @@ const _: () = {
                     "iin" => b.iin = FromValueOpt::from_value(v),
                     "issuer" => b.issuer = FromValueOpt::from_value(v),
                     "last4" => b.last4 = FromValueOpt::from_value(v),
+                    "moto" => b.moto = FromValueOpt::from_value(v),
                     "network" => b.network = FromValueOpt::from_value(v),
                     "three_d_secure" => b.three_d_secure = FromValueOpt::from_value(v),
                     "wallet" => b.wallet = FromValueOpt::from_value(v),

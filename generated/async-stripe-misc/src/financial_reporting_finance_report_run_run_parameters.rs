@@ -97,14 +97,14 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                columns: Deserialize::default(),
-                connected_account: Deserialize::default(),
-                currency: Deserialize::default(),
-                interval_end: Deserialize::default(),
-                interval_start: Deserialize::default(),
-                payout: Deserialize::default(),
-                reporting_category: Deserialize::default(),
-                timezone: Deserialize::default(),
+                columns: Some(None),
+                connected_account: Some(None),
+                currency: Some(None),
+                interval_end: Some(None),
+                interval_start: Some(None),
+                payout: Some(None),
+                reporting_category: Some(None),
+                timezone: Some(None),
             }
         }
 

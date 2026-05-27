@@ -3,9 +3,9 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentMethodDetailsAffirm {
-    /// ID of the [location](https://docs.stripe.com/api/terminal/locations) that this transaction's reader is assigned to.
+    /// ID of the location that this reader is assigned to.
     pub location: Option<String>,
-    /// ID of the [reader](https://docs.stripe.com/api/terminal/readers) this transaction was made on.
+    /// ID of the reader this transaction was made on.
     pub reader: Option<String>,
     /// The Affirm transaction ID associated with this payment.
     pub transaction_id: Option<String>,
@@ -71,11 +71,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self {
-                location: Deserialize::default(),
-                reader: Deserialize::default(),
-                transaction_id: Deserialize::default(),
-            }
+            Self { location: Some(None), reader: Some(None), transaction_id: Some(None) }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {

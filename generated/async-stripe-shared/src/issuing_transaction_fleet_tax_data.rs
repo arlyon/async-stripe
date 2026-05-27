@@ -69,10 +69,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self {
-                local_amount_decimal: Deserialize::default(),
-                national_amount_decimal: Deserialize::default(),
-            }
+            Self { local_amount_decimal: Some(None), national_amount_decimal: Some(None) }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {

@@ -35,7 +35,10 @@ pub struct TaxTransaction {
     pub ship_from_details: Option<stripe_misc::TaxProductResourceShipFromDetails>,
     /// The shipping cost details for the transaction.
     pub shipping_cost: Option<stripe_misc::TaxProductResourceTaxTransactionShippingCost>,
-    /// Timestamp of date at which the tax rules and rates in effect applies for the calculation.
+    /// The calculation uses the tax rules and rates that are in effect at this timestamp.
+    /// You can use a date up to 31 days in the past or up to 31 days in the future.
+    /// If you use a future date, Stripe doesn't guarantee that the expected tax rules and rate being used match the actual rules and rate that will be in effect on that date.
+    /// We deploy tax changes before their effective date, but not within a fixed window.
     pub tax_date: stripe_types::Timestamp,
     /// If `reversal`, this transaction reverses an earlier transaction.
     #[cfg_attr(feature = "deserialize", serde(rename = "type"))]
@@ -127,21 +130,21 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                created: Deserialize::default(),
-                currency: Deserialize::default(),
-                customer: Deserialize::default(),
-                customer_details: Deserialize::default(),
-                id: Deserialize::default(),
-                line_items: Deserialize::default(),
-                livemode: Deserialize::default(),
-                metadata: Deserialize::default(),
-                posted_at: Deserialize::default(),
-                reference: Deserialize::default(),
-                reversal: Deserialize::default(),
-                ship_from_details: Deserialize::default(),
-                shipping_cost: Deserialize::default(),
-                tax_date: Deserialize::default(),
-                type_: Deserialize::default(),
+                created: None,
+                currency: None,
+                customer: Some(None),
+                customer_details: None,
+                id: None,
+                line_items: Some(None),
+                livemode: None,
+                metadata: Some(None),
+                posted_at: None,
+                reference: None,
+                reversal: Some(None),
+                ship_from_details: Some(None),
+                shipping_cost: Some(None),
+                tax_date: None,
+                type_: None,
             }
         }
 

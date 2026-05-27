@@ -78,10 +78,10 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                icon: Deserialize::default(),
-                logo: Deserialize::default(),
-                primary_color: Deserialize::default(),
-                secondary_color: Deserialize::default(),
+                icon: Some(None),
+                logo: Some(None),
+                primary_color: Some(None),
+                secondary_color: Some(None),
             }
         }
 

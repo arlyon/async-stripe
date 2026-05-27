@@ -77,11 +77,11 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                amazon_pay: Deserialize::default(),
-                card: Deserialize::default(),
-                klarna: Deserialize::default(),
-                paypal: Deserialize::default(),
-                type_: Deserialize::default(),
+                amazon_pay: Some(None),
+                card: Some(None),
+                klarna: Some(None),
+                paypal: Some(None),
+                type_: None,
             }
         }
 

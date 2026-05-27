@@ -84,11 +84,11 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                after_completion: Deserialize::default(),
-                subscription_cancel: Deserialize::default(),
-                subscription_update: Deserialize::default(),
-                subscription_update_confirm: Deserialize::default(),
-                type_: Deserialize::default(),
+                after_completion: None,
+                subscription_cancel: Some(None),
+                subscription_update: Some(None),
+                subscription_update_confirm: Some(None),
+                type_: None,
             }
         }
 

@@ -70,7 +70,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self { id: Deserialize::default(), idempotency_key: Deserialize::default() }
+            Self { id: Some(None), idempotency_key: Some(None) }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {

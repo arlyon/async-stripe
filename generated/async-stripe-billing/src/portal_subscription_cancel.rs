@@ -75,12 +75,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self {
-                cancellation_reason: Deserialize::default(),
-                enabled: Deserialize::default(),
-                mode: Deserialize::default(),
-                proration_behavior: Deserialize::default(),
-            }
+            Self { cancellation_reason: None, enabled: None, mode: None, proration_behavior: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {

@@ -128,20 +128,20 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                brand: Deserialize::default(),
-                cardholder_name: Deserialize::default(),
-                country: Deserialize::default(),
-                description: Deserialize::default(),
-                exp_month: Deserialize::default(),
-                exp_year: Deserialize::default(),
-                fingerprint: Deserialize::default(),
-                funding: Deserialize::default(),
-                iin: Deserialize::default(),
-                issuer: Deserialize::default(),
-                last4: Deserialize::default(),
-                networks: Deserialize::default(),
-                preferred_locales: Deserialize::default(),
-                read_method: Deserialize::default(),
+                brand: Some(None),
+                cardholder_name: Some(None),
+                country: Some(None),
+                description: Some(None),
+                exp_month: None,
+                exp_year: None,
+                fingerprint: Some(None),
+                funding: Some(None),
+                iin: Some(None),
+                issuer: Some(None),
+                last4: Some(None),
+                networks: Some(None),
+                preferred_locales: Some(None),
+                read_method: Some(None),
             }
         }
 

@@ -63,7 +63,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self { network_decline_code: Deserialize::default() }
+            Self { network_decline_code: Some(None) }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {

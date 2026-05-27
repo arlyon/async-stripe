@@ -67,7 +67,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self { dispute_categories: Deserialize::default(), status: Deserialize::default() }
+            Self { dispute_categories: Some(None), status: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {

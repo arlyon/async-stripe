@@ -98,15 +98,15 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                created: Deserialize::default(),
-                credit: Deserialize::default(),
-                credit_grant: Deserialize::default(),
-                debit: Deserialize::default(),
-                effective_at: Deserialize::default(),
-                id: Deserialize::default(),
-                livemode: Deserialize::default(),
-                test_clock: Deserialize::default(),
-                type_: Deserialize::default(),
+                created: None,
+                credit: Some(None),
+                credit_grant: None,
+                debit: Some(None),
+                effective_at: None,
+                id: None,
+                livemode: None,
+                test_clock: Some(None),
+                type_: Some(None),
             }
         }
 

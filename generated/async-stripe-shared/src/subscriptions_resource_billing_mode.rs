@@ -73,11 +73,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self {
-                flexible: Deserialize::default(),
-                type_: Deserialize::default(),
-                updated_at: Deserialize::default(),
-            }
+            Self { flexible: Some(None), type_: None, updated_at: Some(None) }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {

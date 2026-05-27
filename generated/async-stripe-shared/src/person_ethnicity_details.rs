@@ -67,7 +67,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self { ethnicity: Deserialize::default(), ethnicity_other: Deserialize::default() }
+            Self { ethnicity: Some(None), ethnicity_other: Some(None) }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {

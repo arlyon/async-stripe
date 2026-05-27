@@ -77,10 +77,10 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                automatic_tax: Deserialize::default(),
-                ip_address: Deserialize::default(),
-                location: Deserialize::default(),
-                provider: Deserialize::default(),
+                automatic_tax: None,
+                ip_address: Some(None),
+                location: Some(None),
+                provider: None,
             }
         }
 

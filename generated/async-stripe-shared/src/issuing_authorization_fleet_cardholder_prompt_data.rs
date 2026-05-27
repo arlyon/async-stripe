@@ -86,12 +86,12 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                alphanumeric_id: Deserialize::default(),
-                driver_id: Deserialize::default(),
-                odometer: Deserialize::default(),
-                unspecified_id: Deserialize::default(),
-                user_id: Deserialize::default(),
-                vehicle_number: Deserialize::default(),
+                alphanumeric_id: Some(None),
+                driver_id: Some(None),
+                odometer: Some(None),
+                unspecified_id: Some(None),
+                user_id: Some(None),
+                vehicle_number: Some(None),
             }
         }
 

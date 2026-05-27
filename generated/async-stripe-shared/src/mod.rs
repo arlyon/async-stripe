@@ -941,13 +941,25 @@ pub mod invoice_payment_method_options_konbini;
 #[doc(inline)]
 pub use invoice_payment_method_options_konbini::*;
 #[doc(hidden)]
+pub mod invoice_payment_method_options_mandate_options_upi;
+#[doc(inline)]
+pub use invoice_payment_method_options_mandate_options_upi::*;
+#[doc(hidden)]
 pub mod invoice_payment_method_options_payto;
 #[doc(inline)]
 pub use invoice_payment_method_options_payto::*;
 #[doc(hidden)]
+pub mod invoice_payment_method_options_pix;
+#[doc(inline)]
+pub use invoice_payment_method_options_pix::*;
+#[doc(hidden)]
 pub mod invoice_payment_method_options_sepa_debit;
 #[doc(inline)]
 pub use invoice_payment_method_options_sepa_debit::*;
+#[doc(hidden)]
+pub mod invoice_payment_method_options_upi;
+#[doc(inline)]
+pub use invoice_payment_method_options_upi::*;
 #[doc(hidden)]
 pub mod invoice_payment_method_options_us_bank_account;
 #[doc(inline)]
@@ -1521,6 +1533,10 @@ pub mod mandate_payto;
 #[doc(inline)]
 pub use mandate_payto::*;
 #[doc(hidden)]
+pub mod mandate_pix;
+#[doc(inline)]
+pub use mandate_pix::*;
+#[doc(hidden)]
 pub mod mandate_revolut_pay;
 #[doc(inline)]
 pub use mandate_revolut_pay::*;
@@ -1736,6 +1752,10 @@ pub use payment_intent_next_action_display_multibanco_details::*;
 pub mod payment_intent_next_action_display_oxxo_details;
 #[doc(inline)]
 pub use payment_intent_next_action_display_oxxo_details::*;
+#[doc(hidden)]
+pub mod payment_intent_next_action_klarna_display_qr_code;
+#[doc(inline)]
+pub use payment_intent_next_action_klarna_display_qr_code::*;
 #[doc(hidden)]
 pub mod payment_intent_next_action_konbini;
 #[doc(inline)]
@@ -2361,6 +2381,10 @@ pub mod payment_method_details_payco;
 #[doc(inline)]
 pub use payment_method_details_payco::*;
 #[doc(hidden)]
+pub mod payment_method_details_payment_record_acss_debit;
+#[doc(inline)]
+pub use payment_method_details_payment_record_acss_debit::*;
+#[doc(hidden)]
 pub mod payment_method_details_payment_record_affirm;
 #[doc(inline)]
 pub use payment_method_details_payment_record_affirm::*;
@@ -2369,9 +2393,25 @@ pub mod payment_method_details_payment_record_afterpay_clearpay;
 #[doc(inline)]
 pub use payment_method_details_payment_record_afterpay_clearpay::*;
 #[doc(hidden)]
+pub mod payment_method_details_payment_record_alma;
+#[doc(inline)]
+pub use payment_method_details_payment_record_alma::*;
+#[doc(hidden)]
+pub mod payment_method_details_payment_record_amazon_pay;
+#[doc(inline)]
+pub use payment_method_details_payment_record_amazon_pay::*;
+#[doc(hidden)]
 pub mod payment_method_details_payment_record_bancontact;
 #[doc(inline)]
 pub use payment_method_details_payment_record_bancontact::*;
+#[doc(hidden)]
+pub mod payment_method_details_payment_record_billie;
+#[doc(inline)]
+pub use payment_method_details_payment_record_billie::*;
+#[doc(hidden)]
+pub mod payment_method_details_payment_record_blik;
+#[doc(inline)]
+pub use payment_method_details_payment_record_blik::*;
 #[doc(hidden)]
 pub mod payment_method_details_payment_record_boleto;
 #[doc(inline)]
@@ -2380,6 +2420,10 @@ pub use payment_method_details_payment_record_boleto::*;
 pub mod payment_method_details_payment_record_cashapp;
 #[doc(inline)]
 pub use payment_method_details_payment_record_cashapp::*;
+#[doc(hidden)]
+pub mod payment_method_details_payment_record_eps;
+#[doc(inline)]
+pub use payment_method_details_payment_record_eps::*;
 #[doc(hidden)]
 pub mod payment_method_details_payment_record_giropay;
 #[doc(inline)]
@@ -2417,6 +2461,10 @@ pub mod payment_method_details_payment_record_oxxo;
 #[doc(inline)]
 pub use payment_method_details_payment_record_oxxo::*;
 #[doc(hidden)]
+pub mod payment_method_details_payment_record_pay_by_bank;
+#[doc(inline)]
+pub use payment_method_details_payment_record_pay_by_bank::*;
+#[doc(hidden)]
 pub mod payment_method_details_payment_record_payco;
 #[doc(inline)]
 pub use payment_method_details_payment_record_payco::*;
@@ -2452,6 +2500,10 @@ pub use payment_method_details_payment_record_swish::*;
 pub mod payment_method_details_payment_record_twint;
 #[doc(inline)]
 pub use payment_method_details_payment_record_twint::*;
+#[doc(hidden)]
+pub mod payment_method_details_payment_record_upi;
+#[doc(inline)]
+pub use payment_method_details_payment_record_upi::*;
 #[doc(hidden)]
 pub mod payment_method_details_payment_record_us_bank_account;
 #[doc(inline)]
@@ -2512,6 +2564,10 @@ pub use payment_method_details_sofort::*;
 pub mod payment_method_details_stripe_account;
 #[doc(inline)]
 pub use payment_method_details_stripe_account::*;
+#[doc(hidden)]
+pub mod payment_method_details_sunbit;
+#[doc(inline)]
+pub use payment_method_details_sunbit::*;
 #[doc(hidden)]
 pub mod payment_method_details_swish;
 #[doc(inline)]
@@ -2705,6 +2761,10 @@ pub mod payment_method_options_kr_card;
 #[doc(inline)]
 pub use payment_method_options_kr_card::*;
 #[doc(hidden)]
+pub mod payment_method_options_mandate_options_pix;
+#[doc(inline)]
+pub use payment_method_options_mandate_options_pix::*;
+#[doc(hidden)]
 pub mod payment_method_options_mandate_options_upi;
 #[doc(inline)]
 pub use payment_method_options_mandate_options_upi::*;
@@ -2832,6 +2892,10 @@ pub use payment_method_sepa_debit::*;
 pub mod payment_method_sofort;
 #[doc(inline)]
 pub use payment_method_sofort::*;
+#[doc(hidden)]
+pub mod payment_method_sunbit;
+#[doc(inline)]
+pub use payment_method_sunbit::*;
 #[doc(hidden)]
 pub mod payment_method_swish;
 #[doc(inline)]
@@ -2969,6 +3033,10 @@ pub mod payment_pages_checkout_session_invoice_settings;
 #[doc(inline)]
 pub use payment_pages_checkout_session_invoice_settings::*;
 #[doc(hidden)]
+pub mod payment_pages_checkout_session_managed_payments;
+#[doc(inline)]
+pub use payment_pages_checkout_session_managed_payments::*;
+#[doc(hidden)]
 pub mod payment_pages_checkout_session_name_collection;
 #[doc(inline)]
 pub use payment_pages_checkout_session_name_collection::*;
@@ -3052,6 +3120,18 @@ pub use payments_primitives_payment_records_resource_billing_details::*;
 pub mod payments_primitives_payment_records_resource_customer_details;
 #[doc(inline)]
 pub use payments_primitives_payment_records_resource_customer_details::*;
+#[doc(hidden)]
+pub mod payments_primitives_payment_records_resource_payment_method_alma_details_resource_installments;
+#[doc(inline)]
+pub use payments_primitives_payment_records_resource_payment_method_alma_details_resource_installments::*;
+#[doc(hidden)]
+pub mod payments_primitives_payment_records_resource_payment_method_amazon_pay_details_resource_funding;
+#[doc(inline)]
+pub use payments_primitives_payment_records_resource_payment_method_amazon_pay_details_resource_funding::*;
+#[doc(hidden)]
+pub mod payments_primitives_payment_records_resource_payment_method_amazon_pay_details_resource_funding_resource_funding_card;
+#[doc(inline)]
+pub use payments_primitives_payment_records_resource_payment_method_amazon_pay_details_resource_funding_resource_funding_card::*;
 #[doc(hidden)]
 pub mod payments_primitives_payment_records_resource_payment_method_card_details;
 #[doc(inline)]
@@ -3413,6 +3493,10 @@ pub mod setup_attempt_payment_method_details_payto;
 #[doc(inline)]
 pub use setup_attempt_payment_method_details_payto::*;
 #[doc(hidden)]
+pub mod setup_attempt_payment_method_details_pix;
+#[doc(inline)]
+pub use setup_attempt_payment_method_details_pix::*;
+#[doc(hidden)]
 pub mod setup_attempt_payment_method_details_revolut_pay;
 #[doc(inline)]
 pub use setup_attempt_payment_method_details_revolut_pay::*;
@@ -3440,6 +3524,10 @@ pub use setup_intent::*;
 pub mod setup_intent_next_action;
 #[doc(inline)]
 pub use setup_intent_next_action::*;
+#[doc(hidden)]
+pub mod setup_intent_next_action_pix_display_qr_code;
+#[doc(inline)]
+pub use setup_intent_next_action_pix_display_qr_code::*;
 #[doc(hidden)]
 pub mod setup_intent_next_action_redirect_to_url;
 #[doc(inline)]
@@ -3509,6 +3597,10 @@ pub mod setup_intent_payment_method_options_payto;
 #[doc(inline)]
 pub use setup_intent_payment_method_options_payto::*;
 #[doc(hidden)]
+pub mod setup_intent_payment_method_options_pix;
+#[doc(inline)]
+pub use setup_intent_payment_method_options_pix::*;
+#[doc(hidden)]
 pub mod setup_intent_payment_method_options_sepa_debit;
 #[doc(inline)]
 pub use setup_intent_payment_method_options_sepa_debit::*;
@@ -3544,6 +3636,10 @@ pub use shipping_rate_delivery_estimate_bound::*;
 pub mod shipping_rate_fixed_amount;
 #[doc(inline)]
 pub use shipping_rate_fixed_amount::*;
+#[doc(hidden)]
+pub mod smor_resource_managed_payments;
+#[doc(inline)]
+pub use smor_resource_managed_payments::*;
 #[doc(hidden)]
 pub mod source;
 #[doc(inline)]
@@ -3704,6 +3800,14 @@ pub use subscription_item_billing_thresholds::*;
 pub mod subscription_payment_method_options_card;
 #[doc(inline)]
 pub use subscription_payment_method_options_card::*;
+#[doc(hidden)]
+pub mod subscription_payment_method_options_mandate_options_pix;
+#[doc(inline)]
+pub use subscription_payment_method_options_mandate_options_pix::*;
+#[doc(hidden)]
+pub mod subscription_payment_method_options_pix;
+#[doc(inline)]
+pub use subscription_payment_method_options_pix::*;
 #[doc(hidden)]
 pub mod subscription_pending_invoice_item_interval;
 #[doc(inline)]

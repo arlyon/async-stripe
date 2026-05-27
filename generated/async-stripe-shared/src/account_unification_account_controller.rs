@@ -87,12 +87,12 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                fees: Deserialize::default(),
-                is_controller: Deserialize::default(),
-                losses: Deserialize::default(),
-                requirement_collection: Deserialize::default(),
-                stripe_dashboard: Deserialize::default(),
-                type_: Deserialize::default(),
+                fees: Some(None),
+                is_controller: Some(None),
+                losses: Some(None),
+                requirement_collection: Some(None),
+                stripe_dashboard: Some(None),
+                type_: None,
             }
         }
 

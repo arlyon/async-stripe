@@ -97,13 +97,13 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                amount: Deserialize::default(),
-                currency: Deserialize::default(),
-                description: Deserialize::default(),
-                money_movement_details: Deserialize::default(),
-                payment_method_details: Deserialize::default(),
-                shipping_details: Deserialize::default(),
-                statement_descriptor: Deserialize::default(),
+                amount: None,
+                currency: None,
+                description: Some(None),
+                money_movement_details: Some(None),
+                payment_method_details: Some(None),
+                shipping_details: Some(None),
+                statement_descriptor: Some(None),
             }
         }
 

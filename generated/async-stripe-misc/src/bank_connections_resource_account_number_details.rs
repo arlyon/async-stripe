@@ -76,10 +76,10 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                expected_expiry_date: Deserialize::default(),
-                identifier_type: Deserialize::default(),
-                status: Deserialize::default(),
-                supported_networks: Deserialize::default(),
+                expected_expiry_date: Some(None),
+                identifier_type: None,
+                status: None,
+                supported_networks: None,
             }
         }
 

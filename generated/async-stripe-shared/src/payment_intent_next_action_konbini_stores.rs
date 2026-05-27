@@ -76,10 +76,10 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                familymart: Deserialize::default(),
-                lawson: Deserialize::default(),
-                ministop: Deserialize::default(),
-                seicomart: Deserialize::default(),
+                familymart: Some(None),
+                lawson: Some(None),
+                ministop: Some(None),
+                seicomart: Some(None),
             }
         }
 

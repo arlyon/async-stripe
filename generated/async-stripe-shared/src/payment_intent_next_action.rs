@@ -11,6 +11,7 @@ pub struct PaymentIntentNextAction {
         Option<stripe_shared::PaymentIntentNextActionCashappHandleRedirectOrDisplayQrCode>,
     pub display_bank_transfer_instructions:
         Option<stripe_shared::PaymentIntentNextActionDisplayBankTransferInstructions>,
+    pub klarna_display_qr_code: Option<stripe_shared::PaymentIntentNextActionKlarnaDisplayQrCode>,
     pub konbini_display_details: Option<stripe_shared::PaymentIntentNextActionKonbini>,
     pub multibanco_display_details:
         Option<stripe_shared::PaymentIntentNextActionDisplayMultibancoDetails>,
@@ -62,6 +63,8 @@ pub struct PaymentIntentNextActionBuilder {
         Option<Option<stripe_shared::PaymentIntentNextActionCashappHandleRedirectOrDisplayQrCode>>,
     display_bank_transfer_instructions:
         Option<Option<stripe_shared::PaymentIntentNextActionDisplayBankTransferInstructions>>,
+    klarna_display_qr_code:
+        Option<Option<stripe_shared::PaymentIntentNextActionKlarnaDisplayQrCode>>,
     konbini_display_details: Option<Option<stripe_shared::PaymentIntentNextActionKonbini>>,
     multibanco_display_details:
         Option<Option<stripe_shared::PaymentIntentNextActionDisplayMultibancoDetails>>,
@@ -137,6 +140,7 @@ const _: () = {
                 "display_bank_transfer_instructions" => {
                     Deserialize::begin(&mut self.display_bank_transfer_instructions)
                 }
+                "klarna_display_qr_code" => Deserialize::begin(&mut self.klarna_display_qr_code),
                 "konbini_display_details" => Deserialize::begin(&mut self.konbini_display_details),
                 "multibanco_display_details" => {
                     Deserialize::begin(&mut self.multibanco_display_details)
@@ -174,26 +178,27 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                alipay_handle_redirect: Deserialize::default(),
-                boleto_display_details: Deserialize::default(),
-                card_await_notification: Deserialize::default(),
-                cashapp_handle_redirect_or_display_qr_code: Deserialize::default(),
-                display_bank_transfer_instructions: Deserialize::default(),
-                konbini_display_details: Deserialize::default(),
-                multibanco_display_details: Deserialize::default(),
-                oxxo_display_details: Deserialize::default(),
-                paynow_display_qr_code: Deserialize::default(),
-                pix_display_qr_code: Deserialize::default(),
-                promptpay_display_qr_code: Deserialize::default(),
-                redirect_to_url: Deserialize::default(),
-                swish_handle_redirect_or_display_qr_code: Deserialize::default(),
-                type_: Deserialize::default(),
-                upi_handle_redirect_or_display_qr_code: Deserialize::default(),
-                use_stripe_sdk: Deserialize::default(),
-                verify_with_microdeposits: Deserialize::default(),
-                wechat_pay_display_qr_code: Deserialize::default(),
-                wechat_pay_redirect_to_android_app: Deserialize::default(),
-                wechat_pay_redirect_to_ios_app: Deserialize::default(),
+                alipay_handle_redirect: Some(None),
+                boleto_display_details: Some(None),
+                card_await_notification: Some(None),
+                cashapp_handle_redirect_or_display_qr_code: Some(None),
+                display_bank_transfer_instructions: Some(None),
+                klarna_display_qr_code: Some(None),
+                konbini_display_details: Some(None),
+                multibanco_display_details: Some(None),
+                oxxo_display_details: Some(None),
+                paynow_display_qr_code: Some(None),
+                pix_display_qr_code: Some(None),
+                promptpay_display_qr_code: Some(None),
+                redirect_to_url: Some(None),
+                swish_handle_redirect_or_display_qr_code: Some(None),
+                type_: None,
+                upi_handle_redirect_or_display_qr_code: Some(None),
+                use_stripe_sdk: Some(None),
+                verify_with_microdeposits: Some(None),
+                wechat_pay_display_qr_code: Some(None),
+                wechat_pay_redirect_to_android_app: Some(None),
+                wechat_pay_redirect_to_ios_app: Some(None),
             }
         }
 
@@ -204,6 +209,7 @@ const _: () = {
                 Some(card_await_notification),
                 Some(cashapp_handle_redirect_or_display_qr_code),
                 Some(display_bank_transfer_instructions),
+                Some(klarna_display_qr_code),
                 Some(konbini_display_details),
                 Some(multibanco_display_details),
                 Some(oxxo_display_details),
@@ -225,6 +231,7 @@ const _: () = {
                 self.card_await_notification,
                 self.cashapp_handle_redirect_or_display_qr_code.take(),
                 self.display_bank_transfer_instructions.take(),
+                self.klarna_display_qr_code.take(),
                 self.konbini_display_details.take(),
                 self.multibanco_display_details.take(),
                 self.oxxo_display_details.take(),
@@ -250,6 +257,7 @@ const _: () = {
                 card_await_notification,
                 cashapp_handle_redirect_or_display_qr_code,
                 display_bank_transfer_instructions,
+                klarna_display_qr_code,
                 konbini_display_details,
                 multibanco_display_details,
                 oxxo_display_details,
@@ -306,6 +314,9 @@ const _: () = {
                     }
                     "display_bank_transfer_instructions" => {
                         b.display_bank_transfer_instructions = FromValueOpt::from_value(v)
+                    }
+                    "klarna_display_qr_code" => {
+                        b.klarna_display_qr_code = FromValueOpt::from_value(v)
                     }
                     "konbini_display_details" => {
                         b.konbini_display_details = FromValueOpt::from_value(v)

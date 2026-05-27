@@ -75,10 +75,10 @@ const _: () = {
     }
 
     fn deser_default() -> Self {
-        Self { card: Deserialize::default(),
-card_present: Deserialize::default(),
-klarna: Deserialize::default(),
-paypal: Deserialize::default(),
+        Self { card: Some(None),
+card_present: Some(None),
+klarna: Some(None),
+paypal: Some(None),
  }
     }
 

@@ -71,10 +71,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self {
-                charge_attempt_at: Deserialize::default(),
-                customer_approval_required: Deserialize::default(),
-            }
+            Self { charge_attempt_at: Some(None), customer_approval_required: Some(None) }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {

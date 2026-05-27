@@ -77,12 +77,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self {
-                filters: Deserialize::default(),
-                gte: Deserialize::default(),
-                meter: Deserialize::default(),
-                recurrence: Deserialize::default(),
-            }
+            Self { filters: Some(None), gte: None, meter: None, recurrence: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {

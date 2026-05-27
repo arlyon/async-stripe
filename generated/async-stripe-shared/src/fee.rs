@@ -12,7 +12,7 @@ pub struct Fee {
     pub currency: stripe_types::Currency,
     /// An arbitrary string attached to the object. Often useful for displaying to users.
     pub description: Option<String>,
-    /// Type of the fee, one of: `application_fee`, `payment_method_passthrough_fee`, `stripe_fee` or `tax`.
+    /// Type of the fee, one of: `application_fee`, `payment_method_passthrough_fee`, `stripe_fee`, `tax`, or `withheld_tax`.
     #[cfg_attr(any(feature = "deserialize", feature = "serialize"), serde(rename = "type"))]
     pub type_: String,
 }
@@ -79,11 +79,11 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                amount: Deserialize::default(),
-                application: Deserialize::default(),
-                currency: Deserialize::default(),
-                description: Deserialize::default(),
-                type_: Deserialize::default(),
+                amount: None,
+                application: Some(None),
+                currency: None,
+                description: Some(None),
+                type_: None,
             }
         }
 

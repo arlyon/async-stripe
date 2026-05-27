@@ -99,14 +99,14 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                customer_account_id: Deserialize::default(),
-                customer_device_fingerprint: Deserialize::default(),
-                customer_device_id: Deserialize::default(),
-                customer_email_address: Deserialize::default(),
-                customer_purchase_ip: Deserialize::default(),
-                merchandise_or_services: Deserialize::default(),
-                product_description: Deserialize::default(),
-                shipping_address: Deserialize::default(),
+                customer_account_id: Some(None),
+                customer_device_fingerprint: Some(None),
+                customer_device_id: Some(None),
+                customer_email_address: Some(None),
+                customer_purchase_ip: Some(None),
+                merchandise_or_services: Some(None),
+                product_description: Some(None),
+                shipping_address: Some(None),
             }
         }
 

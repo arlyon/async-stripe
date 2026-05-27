@@ -7,6 +7,7 @@ pub struct CheckoutPixPaymentMethodOptions {
     pub amount_includes_iof: Option<CheckoutPixPaymentMethodOptionsAmountIncludesIof>,
     /// The number of seconds after which Pix payment will expire.
     pub expires_after_seconds: Option<i64>,
+    pub mandate_options: Option<stripe_shared::PaymentMethodOptionsMandateOptionsPix>,
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
     /// If you provide a Customer with the PaymentIntent, you can use this parameter to [attach the payment method](/payments/save-during-payment) to the Customer after the PaymentIntent is confirmed and the customer completes any required actions.
@@ -27,6 +28,7 @@ impl std::fmt::Debug for CheckoutPixPaymentMethodOptions {
 pub struct CheckoutPixPaymentMethodOptionsBuilder {
     amount_includes_iof: Option<Option<CheckoutPixPaymentMethodOptionsAmountIncludesIof>>,
     expires_after_seconds: Option<Option<i64>>,
+    mandate_options: Option<Option<stripe_shared::PaymentMethodOptionsMandateOptionsPix>>,
     setup_future_usage: Option<Option<CheckoutPixPaymentMethodOptionsSetupFutureUsage>>,
 }
 
@@ -72,6 +74,7 @@ const _: () = {
             Ok(match k {
                 "amount_includes_iof" => Deserialize::begin(&mut self.amount_includes_iof),
                 "expires_after_seconds" => Deserialize::begin(&mut self.expires_after_seconds),
+                "mandate_options" => Deserialize::begin(&mut self.mandate_options),
                 "setup_future_usage" => Deserialize::begin(&mut self.setup_future_usage),
                 _ => <dyn Visitor>::ignore(),
             })
@@ -79,21 +82,34 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                amount_includes_iof: Deserialize::default(),
-                expires_after_seconds: Deserialize::default(),
-                setup_future_usage: Deserialize::default(),
+                amount_includes_iof: Some(None),
+                expires_after_seconds: Some(None),
+                mandate_options: Some(None),
+                setup_future_usage: Some(None),
             }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(amount_includes_iof), Some(expires_after_seconds), Some(setup_future_usage)) = (
+            let (
+                Some(amount_includes_iof),
+                Some(expires_after_seconds),
+                Some(mandate_options),
+                Some(setup_future_usage),
+            ) = (
                 self.amount_includes_iof.take(),
                 self.expires_after_seconds,
+                self.mandate_options.take(),
                 self.setup_future_usage.take(),
-            ) else {
+            )
+            else {
                 return None;
             };
-            Some(Self::Out { amount_includes_iof, expires_after_seconds, setup_future_usage })
+            Some(Self::Out {
+                amount_includes_iof,
+                expires_after_seconds,
+                mandate_options,
+                setup_future_usage,
+            })
         }
     }
 
@@ -124,6 +140,7 @@ const _: () = {
                     "expires_after_seconds" => {
                         b.expires_after_seconds = FromValueOpt::from_value(v)
                     }
+                    "mandate_options" => b.mandate_options = FromValueOpt::from_value(v),
                     "setup_future_usage" => b.setup_future_usage = FromValueOpt::from_value(v),
                     _ => {}
                 }
@@ -235,6 +252,7 @@ impl<'de> serde::Deserialize<'de> for CheckoutPixPaymentMethodOptionsAmountInclu
 #[non_exhaustive]
 pub enum CheckoutPixPaymentMethodOptionsSetupFutureUsage {
     None,
+    OffSession,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
     Unknown(String),
 }
@@ -243,6 +261,7 @@ impl CheckoutPixPaymentMethodOptionsSetupFutureUsage {
         use CheckoutPixPaymentMethodOptionsSetupFutureUsage::*;
         match self {
             None => "none",
+            OffSession => "off_session",
             Unknown(v) => v,
         }
     }
@@ -254,6 +273,7 @@ impl std::str::FromStr for CheckoutPixPaymentMethodOptionsSetupFutureUsage {
         use CheckoutPixPaymentMethodOptionsSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
+            "off_session" => Ok(OffSession),
             v => {
                 tracing::warn!(
                     "Unknown value '{}' for enum '{}'",

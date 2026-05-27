@@ -13,16 +13,17 @@
 
 use stripe::StripeError;
 use stripe_connect::account::{
-    CapabilitiesParam, CapabilityParam, CreateAccount, CreateAccountType,
+    CreateAccount, CreateAccountCapabilities, CreateAccountCapabilitiesCardPayments,
+    CreateAccountCapabilitiesTransfers, CreateAccountType,
 };
 use stripe_connect::account_link::{CreateAccountLink, CreateAccountLinkType};
 
 pub async fn run_connect_example(client: &stripe::Client) -> Result<(), StripeError> {
     let account = CreateAccount::new()
         .type_(CreateAccountType::Express)
-        .capabilities(CapabilitiesParam {
-            card_payments: Some(CapabilityParam { requested: Some(true) }),
-            transfers: Some(CapabilityParam { requested: Some(true) }),
+        .capabilities(CreateAccountCapabilities {
+            card_payments: Some(CreateAccountCapabilitiesCardPayments { requested: Some(true) }),
+            transfers: Some(CreateAccountCapabilitiesTransfers { requested: Some(true) }),
             ..Default::default()
         })
         .send(client)

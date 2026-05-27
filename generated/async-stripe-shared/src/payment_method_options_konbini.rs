@@ -89,11 +89,11 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                confirmation_number: Deserialize::default(),
-                expires_after_days: Deserialize::default(),
-                expires_at: Deserialize::default(),
-                product_description: Deserialize::default(),
-                setup_future_usage: Deserialize::default(),
+                confirmation_number: Some(None),
+                expires_after_days: Some(None),
+                expires_at: Some(None),
+                product_description: Some(None),
+                setup_future_usage: Some(None),
             }
         }
 

@@ -70,7 +70,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self { password: Deserialize::default(), ssid: Deserialize::default() }
+            Self { password: None, ssid: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {

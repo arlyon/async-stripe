@@ -53,7 +53,7 @@ pub struct IssuingCard {
     /// The card this card replaces, if any.
     pub replacement_for: Option<stripe_types::Expandable<stripe_shared::IssuingCard>>,
     /// The reason why the previous card needed to be replaced.
-    pub replacement_reason: Option<stripe_shared::IssuingCardReplacementReason>,
+    pub replacement_reason: Option<IssuingCardReplacementReason>,
     /// Text separate from cardholder name, printed on the card.
     pub second_line: Option<String>,
     /// Where and how the card will be shipped.
@@ -97,7 +97,7 @@ pub struct IssuingCardBuilder {
         Option<Option<stripe_types::Expandable<stripe_shared::IssuingPersonalizationDesign>>>,
     replaced_by: Option<Option<stripe_types::Expandable<stripe_shared::IssuingCard>>>,
     replacement_for: Option<Option<stripe_types::Expandable<stripe_shared::IssuingCard>>>,
-    replacement_reason: Option<Option<stripe_shared::IssuingCardReplacementReason>>,
+    replacement_reason: Option<Option<IssuingCardReplacementReason>>,
     second_line: Option<Option<String>>,
     shipping: Option<Option<stripe_shared::IssuingCardShipping>>,
     spending_controls: Option<stripe_shared::IssuingCardAuthorizationControls>,
@@ -178,32 +178,32 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                brand: Deserialize::default(),
-                cancellation_reason: Deserialize::default(),
-                cardholder: Deserialize::default(),
-                created: Deserialize::default(),
-                currency: Deserialize::default(),
-                cvc: Deserialize::default(),
-                exp_month: Deserialize::default(),
-                exp_year: Deserialize::default(),
-                financial_account: Deserialize::default(),
-                id: Deserialize::default(),
-                last4: Deserialize::default(),
-                latest_fraud_warning: Deserialize::default(),
-                lifecycle_controls: Deserialize::default(),
-                livemode: Deserialize::default(),
-                metadata: Deserialize::default(),
-                number: Deserialize::default(),
-                personalization_design: Deserialize::default(),
-                replaced_by: Deserialize::default(),
-                replacement_for: Deserialize::default(),
-                replacement_reason: Deserialize::default(),
-                second_line: Deserialize::default(),
-                shipping: Deserialize::default(),
-                spending_controls: Deserialize::default(),
-                status: Deserialize::default(),
-                type_: Deserialize::default(),
-                wallets: Deserialize::default(),
+                brand: None,
+                cancellation_reason: Some(None),
+                cardholder: None,
+                created: None,
+                currency: None,
+                cvc: Some(None),
+                exp_month: None,
+                exp_year: None,
+                financial_account: Some(None),
+                id: None,
+                last4: None,
+                latest_fraud_warning: Some(None),
+                lifecycle_controls: Some(None),
+                livemode: None,
+                metadata: None,
+                number: Some(None),
+                personalization_design: Some(None),
+                replaced_by: Some(None),
+                replacement_for: Some(None),
+                replacement_reason: Some(None),
+                second_line: Some(None),
+                shipping: Some(None),
+                spending_controls: None,
+                status: None,
+                type_: None,
+                wallets: Some(None),
             }
         }
 
@@ -396,6 +396,7 @@ impl serde::Serialize for IssuingCard {
 #[non_exhaustive]
 pub enum IssuingCardCancellationReason {
     DesignRejected,
+    FulfillmentError,
     Lost,
     Stolen,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
@@ -406,6 +407,7 @@ impl IssuingCardCancellationReason {
         use IssuingCardCancellationReason::*;
         match self {
             DesignRejected => "design_rejected",
+            FulfillmentError => "fulfillment_error",
             Lost => "lost",
             Stolen => "stolen",
             Unknown(v) => v,
@@ -419,6 +421,7 @@ impl std::str::FromStr for IssuingCardCancellationReason {
         use IssuingCardCancellationReason::*;
         match s {
             "design_rejected" => Ok(DesignRejected),
+            "fulfillment_error" => Ok(FulfillmentError),
             "lost" => Ok(Lost),
             "stolen" => Ok(Stolen),
             v => {
@@ -482,22 +485,13 @@ impl<'de> serde::Deserialize<'de> for IssuingCardCancellationReason {
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-impl stripe_types::Object for IssuingCard {
-    type Id = stripe_shared::IssuingCardId;
-    fn id(&self) -> &Self::Id {
-        &self.id
-    }
-
-    fn into_id(self) -> Self::Id {
-        self.id
-    }
-}
-stripe_types::def_id!(IssuingCardId);
+/// The reason why the previous card needed to be replaced.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum IssuingCardReplacementReason {
     Damaged,
     Expired,
+    FulfillmentError,
     Lost,
     Stolen,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
@@ -509,6 +503,7 @@ impl IssuingCardReplacementReason {
         match self {
             Damaged => "damaged",
             Expired => "expired",
+            FulfillmentError => "fulfillment_error",
             Lost => "lost",
             Stolen => "stolen",
             Unknown(v) => v,
@@ -523,6 +518,7 @@ impl std::str::FromStr for IssuingCardReplacementReason {
         match s {
             "damaged" => Ok(Damaged),
             "expired" => Ok(Expired),
+            "fulfillment_error" => Ok(FulfillmentError),
             "lost" => Ok(Lost),
             "stolen" => Ok(Stolen),
             v => {
@@ -554,6 +550,7 @@ impl std::fmt::Debug for IssuingCardReplacementReason {
         f.debug_struct(stringify!(IssuingCardReplacementReason)).finish_non_exhaustive()
     }
 }
+#[cfg(feature = "serialize")]
 impl serde::Serialize for IssuingCardReplacementReason {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
@@ -585,6 +582,17 @@ impl<'de> serde::Deserialize<'de> for IssuingCardReplacementReason {
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
+impl stripe_types::Object for IssuingCard {
+    type Id = stripe_shared::IssuingCardId;
+    fn id(&self) -> &Self::Id {
+        &self.id
+    }
+
+    fn into_id(self) -> Self::Id {
+        self.id
+    }
+}
+stripe_types::def_id!(IssuingCardId);
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum IssuingCardStatus {

@@ -87,6 +87,8 @@ pub struct PaymentIntent {
     /// If the object exists in live mode, the value is `true`.
     /// If the object exists in test mode, the value is `false`.
     pub livemode: bool,
+    /// Settings for Managed Payments.
+    pub managed_payments: Option<stripe_shared::SmorResourceManagedPayments>,
     /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
     /// This can be useful for storing additional information about the object in a structured format.
     /// Learn more about [storing information in metadata](https://docs.stripe.com/payments/payment-intents/creating-payment-intents#storing-information-in-metadata).
@@ -184,6 +186,7 @@ pub struct PaymentIntentBuilder {
     last_payment_error: Option<Option<Box<stripe_shared::ApiErrors>>>,
     latest_charge: Option<Option<stripe_types::Expandable<stripe_shared::Charge>>>,
     livemode: Option<bool>,
+    managed_payments: Option<Option<stripe_shared::SmorResourceManagedPayments>>,
     metadata: Option<std::collections::HashMap<String, String>>,
     next_action: Option<Option<stripe_shared::PaymentIntentNextAction>>,
     on_behalf_of: Option<Option<stripe_types::Expandable<stripe_shared::Account>>>,
@@ -274,6 +277,7 @@ const _: () = {
                 "last_payment_error" => Deserialize::begin(&mut self.last_payment_error),
                 "latest_charge" => Deserialize::begin(&mut self.latest_charge),
                 "livemode" => Deserialize::begin(&mut self.livemode),
+                "managed_payments" => Deserialize::begin(&mut self.managed_payments),
                 "metadata" => Deserialize::begin(&mut self.metadata),
                 "next_action" => Deserialize::begin(&mut self.next_action),
                 "on_behalf_of" => Deserialize::begin(&mut self.on_behalf_of),
@@ -304,49 +308,50 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                amount: Deserialize::default(),
-                amount_capturable: Deserialize::default(),
-                amount_details: Deserialize::default(),
-                amount_received: Deserialize::default(),
-                application: Deserialize::default(),
-                application_fee_amount: Deserialize::default(),
-                automatic_payment_methods: Deserialize::default(),
-                canceled_at: Deserialize::default(),
-                cancellation_reason: Deserialize::default(),
-                capture_method: Deserialize::default(),
-                client_secret: Deserialize::default(),
-                confirmation_method: Deserialize::default(),
-                created: Deserialize::default(),
-                currency: Deserialize::default(),
-                customer: Deserialize::default(),
-                customer_account: Deserialize::default(),
-                description: Deserialize::default(),
-                excluded_payment_method_types: Deserialize::default(),
-                hooks: Deserialize::default(),
-                id: Deserialize::default(),
-                last_payment_error: Deserialize::default(),
-                latest_charge: Deserialize::default(),
-                livemode: Deserialize::default(),
-                metadata: Deserialize::default(),
-                next_action: Deserialize::default(),
-                on_behalf_of: Deserialize::default(),
-                payment_details: Deserialize::default(),
-                payment_method: Deserialize::default(),
-                payment_method_configuration_details: Deserialize::default(),
-                payment_method_options: Deserialize::default(),
-                payment_method_types: Deserialize::default(),
-                presentment_details: Deserialize::default(),
-                processing: Deserialize::default(),
-                receipt_email: Deserialize::default(),
-                review: Deserialize::default(),
-                setup_future_usage: Deserialize::default(),
-                shipping: Deserialize::default(),
-                source: Deserialize::default(),
-                statement_descriptor: Deserialize::default(),
-                statement_descriptor_suffix: Deserialize::default(),
-                status: Deserialize::default(),
-                transfer_data: Deserialize::default(),
-                transfer_group: Deserialize::default(),
+                amount: None,
+                amount_capturable: None,
+                amount_details: Some(None),
+                amount_received: None,
+                application: Some(None),
+                application_fee_amount: Some(None),
+                automatic_payment_methods: Some(None),
+                canceled_at: Some(None),
+                cancellation_reason: Some(None),
+                capture_method: None,
+                client_secret: Some(None),
+                confirmation_method: None,
+                created: None,
+                currency: None,
+                customer: Some(None),
+                customer_account: Some(None),
+                description: Some(None),
+                excluded_payment_method_types: Some(None),
+                hooks: Some(None),
+                id: None,
+                last_payment_error: Some(None),
+                latest_charge: Some(None),
+                livemode: None,
+                managed_payments: Some(None),
+                metadata: None,
+                next_action: Some(None),
+                on_behalf_of: Some(None),
+                payment_details: Some(None),
+                payment_method: Some(None),
+                payment_method_configuration_details: Some(None),
+                payment_method_options: Some(None),
+                payment_method_types: None,
+                presentment_details: Some(None),
+                processing: Some(None),
+                receipt_email: Some(None),
+                review: Some(None),
+                setup_future_usage: Some(None),
+                shipping: Some(None),
+                source: Some(None),
+                statement_descriptor: Some(None),
+                statement_descriptor_suffix: Some(None),
+                status: None,
+                transfer_data: Some(None),
+                transfer_group: Some(None),
             }
         }
 
@@ -375,6 +380,7 @@ const _: () = {
                 Some(last_payment_error),
                 Some(latest_charge),
                 Some(livemode),
+                Some(managed_payments),
                 Some(metadata),
                 Some(next_action),
                 Some(on_behalf_of),
@@ -419,6 +425,7 @@ const _: () = {
                 self.last_payment_error.take(),
                 self.latest_charge.take(),
                 self.livemode,
+                self.managed_payments,
                 self.metadata.take(),
                 self.next_action.take(),
                 self.on_behalf_of.take(),
@@ -467,6 +474,7 @@ const _: () = {
                 last_payment_error,
                 latest_charge,
                 livemode,
+                managed_payments,
                 metadata,
                 next_action,
                 on_behalf_of,
@@ -543,6 +551,7 @@ const _: () = {
                     "last_payment_error" => b.last_payment_error = FromValueOpt::from_value(v),
                     "latest_charge" => b.latest_charge = FromValueOpt::from_value(v),
                     "livemode" => b.livemode = FromValueOpt::from_value(v),
+                    "managed_payments" => b.managed_payments = FromValueOpt::from_value(v),
                     "metadata" => b.metadata = FromValueOpt::from_value(v),
                     "next_action" => b.next_action = FromValueOpt::from_value(v),
                     "on_behalf_of" => b.on_behalf_of = FromValueOpt::from_value(v),
@@ -580,7 +589,7 @@ const _: () = {
 impl serde::Serialize for PaymentIntent {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("PaymentIntent", 44)?;
+        let mut s = s.serialize_struct("PaymentIntent", 45)?;
         s.serialize_field("amount", &self.amount)?;
         s.serialize_field("amount_capturable", &self.amount_capturable)?;
         s.serialize_field("amount_details", &self.amount_details)?;
@@ -604,6 +613,7 @@ impl serde::Serialize for PaymentIntent {
         s.serialize_field("last_payment_error", &self.last_payment_error)?;
         s.serialize_field("latest_charge", &self.latest_charge)?;
         s.serialize_field("livemode", &self.livemode)?;
+        s.serialize_field("managed_payments", &self.managed_payments)?;
         s.serialize_field("metadata", &self.metadata)?;
         s.serialize_field("next_action", &self.next_action)?;
         s.serialize_field("on_behalf_of", &self.on_behalf_of)?;
@@ -1067,6 +1077,7 @@ pub enum PaymentIntentExcludedPaymentMethodTypes {
     Satispay,
     SepaDebit,
     Sofort,
+    Sunbit,
     Swish,
     Twint,
     Upi,
@@ -1124,6 +1135,7 @@ impl PaymentIntentExcludedPaymentMethodTypes {
             Satispay => "satispay",
             SepaDebit => "sepa_debit",
             Sofort => "sofort",
+            Sunbit => "sunbit",
             Swish => "swish",
             Twint => "twint",
             Upi => "upi",
@@ -1184,6 +1196,7 @@ impl std::str::FromStr for PaymentIntentExcludedPaymentMethodTypes {
             "satispay" => Ok(Satispay),
             "sepa_debit" => Ok(SepaDebit),
             "sofort" => Ok(Sofort),
+            "sunbit" => Ok(Sunbit),
             "swish" => Ok(Swish),
             "twint" => Ok(Twint),
             "upi" => Ok(Upi),

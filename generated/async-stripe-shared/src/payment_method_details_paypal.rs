@@ -88,12 +88,12 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                country: Deserialize::default(),
-                payer_email: Deserialize::default(),
-                payer_id: Deserialize::default(),
-                payer_name: Deserialize::default(),
-                seller_protection: Deserialize::default(),
-                transaction_id: Deserialize::default(),
+                country: Some(None),
+                payer_email: Some(None),
+                payer_id: Some(None),
+                payer_name: Some(None),
+                seller_protection: Some(None),
+                transaction_id: Some(None),
             }
         }
 

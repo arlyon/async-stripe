@@ -75,7 +75,7 @@ const _: () = {
     }
 
     fn deser_default() -> Self {
-        Self { refund: Deserialize::default(),
+        Self { refund: None,
  }
     }
 

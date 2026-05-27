@@ -5,7 +5,7 @@
 pub struct PaymentMethodDetailsAfterpayClearpay {
     /// The Afterpay order ID associated with this payment intent.
     pub order_id: Option<String>,
-    /// Order identifier shown to the merchant in Afterpay’s online portal.
+    /// Order identifier shown to the merchant in Afterpay's online portal.
     pub reference: Option<String>,
 }
 #[cfg(feature = "redact-generated-debug")]
@@ -67,7 +67,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self { order_id: Deserialize::default(), reference: Deserialize::default() }
+            Self { order_id: Some(None), reference: Some(None) }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {

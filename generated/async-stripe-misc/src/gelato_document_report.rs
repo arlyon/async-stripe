@@ -122,21 +122,21 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                address: Deserialize::default(),
-                dob: Deserialize::default(),
-                error: Deserialize::default(),
-                expiration_date: Deserialize::default(),
-                files: Deserialize::default(),
-                first_name: Deserialize::default(),
-                issued_date: Deserialize::default(),
-                issuing_country: Deserialize::default(),
-                last_name: Deserialize::default(),
-                number: Deserialize::default(),
-                sex: Deserialize::default(),
-                status: Deserialize::default(),
-                type_: Deserialize::default(),
-                unparsed_place_of_birth: Deserialize::default(),
-                unparsed_sex: Deserialize::default(),
+                address: Some(None),
+                dob: Some(None),
+                error: Some(None),
+                expiration_date: Some(None),
+                files: Some(None),
+                first_name: Some(None),
+                issued_date: Some(None),
+                issuing_country: Some(None),
+                last_name: Some(None),
+                number: Some(None),
+                sex: Some(None),
+                status: None,
+                type_: Some(None),
+                unparsed_place_of_birth: Some(None),
+                unparsed_sex: Some(None),
             }
         }
 

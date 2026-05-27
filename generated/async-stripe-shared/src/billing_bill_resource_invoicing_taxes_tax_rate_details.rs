@@ -1,10 +1,10 @@
-#[derive(Clone, Eq, PartialEq)]
+#[derive(Clone)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct BillingBillResourceInvoicingTaxesTaxRateDetails {
     /// ID of the tax rate
-    pub tax_rate: String,
+    pub tax_rate: stripe_types::Expandable<stripe_shared::TaxRate>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for BillingBillResourceInvoicingTaxesTaxRateDetails {
@@ -14,7 +14,7 @@ impl std::fmt::Debug for BillingBillResourceInvoicingTaxesTaxRateDetails {
 }
 #[doc(hidden)]
 pub struct BillingBillResourceInvoicingTaxesTaxRateDetailsBuilder {
-    tax_rate: Option<String>,
+    tax_rate: Option<stripe_types::Expandable<stripe_shared::TaxRate>>,
 }
 
 #[allow(
@@ -63,7 +63,7 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self { tax_rate: Deserialize::default() }
+            Self { tax_rate: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {

@@ -117,18 +117,18 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                action: Deserialize::default(),
-                device_sw_version: Deserialize::default(),
-                device_type: Deserialize::default(),
-                id: Deserialize::default(),
-                ip_address: Deserialize::default(),
-                label: Deserialize::default(),
-                last_seen_at: Deserialize::default(),
-                livemode: Deserialize::default(),
-                location: Deserialize::default(),
-                metadata: Deserialize::default(),
-                serial_number: Deserialize::default(),
-                status: Deserialize::default(),
+                action: Some(None),
+                device_sw_version: Some(None),
+                device_type: None,
+                id: None,
+                ip_address: Some(None),
+                label: None,
+                last_seen_at: Some(None),
+                livemode: None,
+                location: Some(None),
+                metadata: None,
+                serial_number: None,
+                status: Some(None),
             }
         }
 

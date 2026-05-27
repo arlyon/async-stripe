@@ -82,10 +82,10 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                minimum_balance_by_currency: Deserialize::default(),
-                schedule: Deserialize::default(),
-                statement_descriptor: Deserialize::default(),
-                status: Deserialize::default(),
+                minimum_balance_by_currency: Some(None),
+                schedule: Some(None),
+                statement_descriptor: Some(None),
+                status: None,
             }
         }
 

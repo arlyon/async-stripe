@@ -225,10 +225,10 @@ fn miniserde_struct_inner(
         let take = if is_copy { "" } else { ".take()" };
         let _ = writeln!(take_out_right, "self.{f_name}{take},");
 
-        // NB: using miniserde::Deserialize::default() instead of `None` is very important - this copies
-        // the miniserde derives in defaulting `Option<Option<T>>` to `Ok(Some)` so that missing
-        // values are allowed for option types
-        let _ = writeln!(builder_new_inner, "{f_name}: Deserialize::default(),");
+        // NB: matches miniserde::Deserialize::default(), but generates smaller artifacts. `None` vs `Some(None)`
+        // is how missing required values are detected
+        let builder_default = if field.rust_type.is_option() { "Some(None)" } else { "None" };
+        let _ = writeln!(builder_new_inner, "{f_name}: {builder_default},");
     }
 
     let comma_sep_fields =

@@ -568,7 +568,7 @@ struct CreateAccountBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     business_type: Option<stripe_shared::AccountBusinessType>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    capabilities: Option<CapabilitiesParam>,
+    capabilities: Option<CreateAccountCapabilities>,
     #[serde(skip_serializing_if = "Option::is_none")]
     company: Option<CreateAccountCompany>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -822,6 +822,2023 @@ impl CreateAccountBusinessProfileSupportAddress {
     }
 }
 impl Default for CreateAccountBusinessProfileSupportAddress {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Each key of the dictionary represents a capability, and each capability
+/// maps to its settings (for example, whether it has been requested or not). Each
+/// capability is inactive until you have provided its specific
+/// requirements and Stripe has verified them. An account might have some
+/// of its requested capabilities be active and some be inactive.
+///
+/// Required when [account.controller.stripe_dashboard.type](/api/accounts/create#create_account-controller-dashboard-type).
+/// is `none`, which includes Custom accounts.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateAccountCapabilities {
+    /// The acss_debit_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub acss_debit_payments: Option<CreateAccountCapabilitiesAcssDebitPayments>,
+    /// The affirm_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub affirm_payments: Option<CreateAccountCapabilitiesAffirmPayments>,
+    /// The afterpay_clearpay_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub afterpay_clearpay_payments: Option<CreateAccountCapabilitiesAfterpayClearpayPayments>,
+    /// The alma_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub alma_payments: Option<CreateAccountCapabilitiesAlmaPayments>,
+    /// The amazon_pay_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amazon_pay_payments: Option<CreateAccountCapabilitiesAmazonPayPayments>,
+    /// The app_distribution capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub app_distribution: Option<CreateAccountCapabilitiesAppDistribution>,
+    /// The au_becs_debit_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub au_becs_debit_payments: Option<CreateAccountCapabilitiesAuBecsDebitPayments>,
+    /// The bacs_debit_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bacs_debit_payments: Option<CreateAccountCapabilitiesBacsDebitPayments>,
+    /// The bancontact_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bancontact_payments: Option<CreateAccountCapabilitiesBancontactPayments>,
+    /// The bank_transfer_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bank_transfer_payments: Option<CreateAccountCapabilitiesBankTransferPayments>,
+    /// The billie_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub billie_payments: Option<CreateAccountCapabilitiesBilliePayments>,
+    /// The blik_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub blik_payments: Option<CreateAccountCapabilitiesBlikPayments>,
+    /// The boleto_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub boleto_payments: Option<CreateAccountCapabilitiesBoletoPayments>,
+    /// The card_issuing capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub card_issuing: Option<CreateAccountCapabilitiesCardIssuing>,
+    /// The card_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub card_payments: Option<CreateAccountCapabilitiesCardPayments>,
+    /// The cartes_bancaires_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub cartes_bancaires_payments: Option<CreateAccountCapabilitiesCartesBancairesPayments>,
+    /// The cashapp_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub cashapp_payments: Option<CreateAccountCapabilitiesCashappPayments>,
+    /// The crypto_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub crypto_payments: Option<CreateAccountCapabilitiesCryptoPayments>,
+    /// The eps_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub eps_payments: Option<CreateAccountCapabilitiesEpsPayments>,
+    /// The fpx_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub fpx_payments: Option<CreateAccountCapabilitiesFpxPayments>,
+    /// The gb_bank_transfer_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub gb_bank_transfer_payments: Option<CreateAccountCapabilitiesGbBankTransferPayments>,
+    /// The giropay_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub giropay_payments: Option<CreateAccountCapabilitiesGiropayPayments>,
+    /// The grabpay_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub grabpay_payments: Option<CreateAccountCapabilitiesGrabpayPayments>,
+    /// The ideal_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ideal_payments: Option<CreateAccountCapabilitiesIdealPayments>,
+    /// The india_international_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub india_international_payments: Option<CreateAccountCapabilitiesIndiaInternationalPayments>,
+    /// The jcb_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub jcb_payments: Option<CreateAccountCapabilitiesJcbPayments>,
+    /// The jp_bank_transfer_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub jp_bank_transfer_payments: Option<CreateAccountCapabilitiesJpBankTransferPayments>,
+    /// The kakao_pay_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub kakao_pay_payments: Option<CreateAccountCapabilitiesKakaoPayPayments>,
+    /// The klarna_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub klarna_payments: Option<CreateAccountCapabilitiesKlarnaPayments>,
+    /// The konbini_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub konbini_payments: Option<CreateAccountCapabilitiesKonbiniPayments>,
+    /// The kr_card_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub kr_card_payments: Option<CreateAccountCapabilitiesKrCardPayments>,
+    /// The legacy_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub legacy_payments: Option<CreateAccountCapabilitiesLegacyPayments>,
+    /// The link_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub link_payments: Option<CreateAccountCapabilitiesLinkPayments>,
+    /// The mb_way_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mb_way_payments: Option<CreateAccountCapabilitiesMbWayPayments>,
+    /// The mobilepay_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mobilepay_payments: Option<CreateAccountCapabilitiesMobilepayPayments>,
+    /// The multibanco_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub multibanco_payments: Option<CreateAccountCapabilitiesMultibancoPayments>,
+    /// The mx_bank_transfer_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mx_bank_transfer_payments: Option<CreateAccountCapabilitiesMxBankTransferPayments>,
+    /// The naver_pay_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub naver_pay_payments: Option<CreateAccountCapabilitiesNaverPayPayments>,
+    /// The nz_bank_account_becs_debit_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub nz_bank_account_becs_debit_payments:
+        Option<CreateAccountCapabilitiesNzBankAccountBecsDebitPayments>,
+    /// The oxxo_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub oxxo_payments: Option<CreateAccountCapabilitiesOxxoPayments>,
+    /// The p24_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub p24_payments: Option<CreateAccountCapabilitiesP24Payments>,
+    /// The pay_by_bank_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub pay_by_bank_payments: Option<CreateAccountCapabilitiesPayByBankPayments>,
+    /// The payco_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payco_payments: Option<CreateAccountCapabilitiesPaycoPayments>,
+    /// The paynow_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub paynow_payments: Option<CreateAccountCapabilitiesPaynowPayments>,
+    /// The payto_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payto_payments: Option<CreateAccountCapabilitiesPaytoPayments>,
+    /// The pix_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub pix_payments: Option<CreateAccountCapabilitiesPixPayments>,
+    /// The promptpay_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub promptpay_payments: Option<CreateAccountCapabilitiesPromptpayPayments>,
+    /// The revolut_pay_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub revolut_pay_payments: Option<CreateAccountCapabilitiesRevolutPayPayments>,
+    /// The samsung_pay_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub samsung_pay_payments: Option<CreateAccountCapabilitiesSamsungPayPayments>,
+    /// The satispay_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub satispay_payments: Option<CreateAccountCapabilitiesSatispayPayments>,
+    /// The sepa_bank_transfer_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub sepa_bank_transfer_payments: Option<CreateAccountCapabilitiesSepaBankTransferPayments>,
+    /// The sepa_debit_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub sepa_debit_payments: Option<CreateAccountCapabilitiesSepaDebitPayments>,
+    /// The sofort_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub sofort_payments: Option<CreateAccountCapabilitiesSofortPayments>,
+    /// The sunbit_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub sunbit_payments: Option<CreateAccountCapabilitiesSunbitPayments>,
+    /// The swish_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub swish_payments: Option<CreateAccountCapabilitiesSwishPayments>,
+    /// The tax_reporting_us_1099_k capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_reporting_us_1099_k: Option<CreateAccountCapabilitiesTaxReportingUs1099K>,
+    /// The tax_reporting_us_1099_misc capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_reporting_us_1099_misc: Option<CreateAccountCapabilitiesTaxReportingUs1099Misc>,
+    /// The transfers capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub transfers: Option<CreateAccountCapabilitiesTransfers>,
+    /// The treasury capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub treasury: Option<CreateAccountCapabilitiesTreasury>,
+    /// The twint_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub twint_payments: Option<CreateAccountCapabilitiesTwintPayments>,
+    /// The upi_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub upi_payments: Option<CreateAccountCapabilitiesUpiPayments>,
+    /// The us_bank_account_ach_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub us_bank_account_ach_payments: Option<CreateAccountCapabilitiesUsBankAccountAchPayments>,
+    /// The us_bank_transfer_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub us_bank_transfer_payments: Option<CreateAccountCapabilitiesUsBankTransferPayments>,
+    /// The zip_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub zip_payments: Option<CreateAccountCapabilitiesZipPayments>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountCapabilities {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountCapabilities").finish_non_exhaustive()
+    }
+}
+impl CreateAccountCapabilities {
+    pub fn new() -> Self {
+        Self {
+            acss_debit_payments: None,
+            affirm_payments: None,
+            afterpay_clearpay_payments: None,
+            alma_payments: None,
+            amazon_pay_payments: None,
+            app_distribution: None,
+            au_becs_debit_payments: None,
+            bacs_debit_payments: None,
+            bancontact_payments: None,
+            bank_transfer_payments: None,
+            billie_payments: None,
+            blik_payments: None,
+            boleto_payments: None,
+            card_issuing: None,
+            card_payments: None,
+            cartes_bancaires_payments: None,
+            cashapp_payments: None,
+            crypto_payments: None,
+            eps_payments: None,
+            fpx_payments: None,
+            gb_bank_transfer_payments: None,
+            giropay_payments: None,
+            grabpay_payments: None,
+            ideal_payments: None,
+            india_international_payments: None,
+            jcb_payments: None,
+            jp_bank_transfer_payments: None,
+            kakao_pay_payments: None,
+            klarna_payments: None,
+            konbini_payments: None,
+            kr_card_payments: None,
+            legacy_payments: None,
+            link_payments: None,
+            mb_way_payments: None,
+            mobilepay_payments: None,
+            multibanco_payments: None,
+            mx_bank_transfer_payments: None,
+            naver_pay_payments: None,
+            nz_bank_account_becs_debit_payments: None,
+            oxxo_payments: None,
+            p24_payments: None,
+            pay_by_bank_payments: None,
+            payco_payments: None,
+            paynow_payments: None,
+            payto_payments: None,
+            pix_payments: None,
+            promptpay_payments: None,
+            revolut_pay_payments: None,
+            samsung_pay_payments: None,
+            satispay_payments: None,
+            sepa_bank_transfer_payments: None,
+            sepa_debit_payments: None,
+            sofort_payments: None,
+            sunbit_payments: None,
+            swish_payments: None,
+            tax_reporting_us_1099_k: None,
+            tax_reporting_us_1099_misc: None,
+            transfers: None,
+            treasury: None,
+            twint_payments: None,
+            upi_payments: None,
+            us_bank_account_ach_payments: None,
+            us_bank_transfer_payments: None,
+            zip_payments: None,
+        }
+    }
+}
+impl Default for CreateAccountCapabilities {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The acss_debit_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateAccountCapabilitiesAcssDebitPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountCapabilitiesAcssDebitPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountCapabilitiesAcssDebitPayments").finish_non_exhaustive()
+    }
+}
+impl CreateAccountCapabilitiesAcssDebitPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for CreateAccountCapabilitiesAcssDebitPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The affirm_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateAccountCapabilitiesAffirmPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountCapabilitiesAffirmPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountCapabilitiesAffirmPayments").finish_non_exhaustive()
+    }
+}
+impl CreateAccountCapabilitiesAffirmPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for CreateAccountCapabilitiesAffirmPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The afterpay_clearpay_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateAccountCapabilitiesAfterpayClearpayPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountCapabilitiesAfterpayClearpayPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountCapabilitiesAfterpayClearpayPayments").finish_non_exhaustive()
+    }
+}
+impl CreateAccountCapabilitiesAfterpayClearpayPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for CreateAccountCapabilitiesAfterpayClearpayPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The alma_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateAccountCapabilitiesAlmaPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountCapabilitiesAlmaPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountCapabilitiesAlmaPayments").finish_non_exhaustive()
+    }
+}
+impl CreateAccountCapabilitiesAlmaPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for CreateAccountCapabilitiesAlmaPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The amazon_pay_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateAccountCapabilitiesAmazonPayPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountCapabilitiesAmazonPayPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountCapabilitiesAmazonPayPayments").finish_non_exhaustive()
+    }
+}
+impl CreateAccountCapabilitiesAmazonPayPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for CreateAccountCapabilitiesAmazonPayPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The app_distribution capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateAccountCapabilitiesAppDistribution {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountCapabilitiesAppDistribution {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountCapabilitiesAppDistribution").finish_non_exhaustive()
+    }
+}
+impl CreateAccountCapabilitiesAppDistribution {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for CreateAccountCapabilitiesAppDistribution {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The au_becs_debit_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateAccountCapabilitiesAuBecsDebitPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountCapabilitiesAuBecsDebitPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountCapabilitiesAuBecsDebitPayments").finish_non_exhaustive()
+    }
+}
+impl CreateAccountCapabilitiesAuBecsDebitPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for CreateAccountCapabilitiesAuBecsDebitPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The bacs_debit_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateAccountCapabilitiesBacsDebitPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountCapabilitiesBacsDebitPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountCapabilitiesBacsDebitPayments").finish_non_exhaustive()
+    }
+}
+impl CreateAccountCapabilitiesBacsDebitPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for CreateAccountCapabilitiesBacsDebitPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The bancontact_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateAccountCapabilitiesBancontactPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountCapabilitiesBancontactPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountCapabilitiesBancontactPayments").finish_non_exhaustive()
+    }
+}
+impl CreateAccountCapabilitiesBancontactPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for CreateAccountCapabilitiesBancontactPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The bank_transfer_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateAccountCapabilitiesBankTransferPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountCapabilitiesBankTransferPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountCapabilitiesBankTransferPayments").finish_non_exhaustive()
+    }
+}
+impl CreateAccountCapabilitiesBankTransferPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for CreateAccountCapabilitiesBankTransferPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The billie_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateAccountCapabilitiesBilliePayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountCapabilitiesBilliePayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountCapabilitiesBilliePayments").finish_non_exhaustive()
+    }
+}
+impl CreateAccountCapabilitiesBilliePayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for CreateAccountCapabilitiesBilliePayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The blik_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateAccountCapabilitiesBlikPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountCapabilitiesBlikPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountCapabilitiesBlikPayments").finish_non_exhaustive()
+    }
+}
+impl CreateAccountCapabilitiesBlikPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for CreateAccountCapabilitiesBlikPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The boleto_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateAccountCapabilitiesBoletoPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountCapabilitiesBoletoPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountCapabilitiesBoletoPayments").finish_non_exhaustive()
+    }
+}
+impl CreateAccountCapabilitiesBoletoPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for CreateAccountCapabilitiesBoletoPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The card_issuing capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateAccountCapabilitiesCardIssuing {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountCapabilitiesCardIssuing {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountCapabilitiesCardIssuing").finish_non_exhaustive()
+    }
+}
+impl CreateAccountCapabilitiesCardIssuing {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for CreateAccountCapabilitiesCardIssuing {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The card_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateAccountCapabilitiesCardPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountCapabilitiesCardPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountCapabilitiesCardPayments").finish_non_exhaustive()
+    }
+}
+impl CreateAccountCapabilitiesCardPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for CreateAccountCapabilitiesCardPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The cartes_bancaires_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateAccountCapabilitiesCartesBancairesPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountCapabilitiesCartesBancairesPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountCapabilitiesCartesBancairesPayments").finish_non_exhaustive()
+    }
+}
+impl CreateAccountCapabilitiesCartesBancairesPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for CreateAccountCapabilitiesCartesBancairesPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The cashapp_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateAccountCapabilitiesCashappPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountCapabilitiesCashappPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountCapabilitiesCashappPayments").finish_non_exhaustive()
+    }
+}
+impl CreateAccountCapabilitiesCashappPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for CreateAccountCapabilitiesCashappPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The crypto_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateAccountCapabilitiesCryptoPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountCapabilitiesCryptoPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountCapabilitiesCryptoPayments").finish_non_exhaustive()
+    }
+}
+impl CreateAccountCapabilitiesCryptoPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for CreateAccountCapabilitiesCryptoPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The eps_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateAccountCapabilitiesEpsPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountCapabilitiesEpsPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountCapabilitiesEpsPayments").finish_non_exhaustive()
+    }
+}
+impl CreateAccountCapabilitiesEpsPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for CreateAccountCapabilitiesEpsPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The fpx_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateAccountCapabilitiesFpxPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountCapabilitiesFpxPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountCapabilitiesFpxPayments").finish_non_exhaustive()
+    }
+}
+impl CreateAccountCapabilitiesFpxPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for CreateAccountCapabilitiesFpxPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The gb_bank_transfer_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateAccountCapabilitiesGbBankTransferPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountCapabilitiesGbBankTransferPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountCapabilitiesGbBankTransferPayments").finish_non_exhaustive()
+    }
+}
+impl CreateAccountCapabilitiesGbBankTransferPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for CreateAccountCapabilitiesGbBankTransferPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The giropay_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateAccountCapabilitiesGiropayPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountCapabilitiesGiropayPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountCapabilitiesGiropayPayments").finish_non_exhaustive()
+    }
+}
+impl CreateAccountCapabilitiesGiropayPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for CreateAccountCapabilitiesGiropayPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The grabpay_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateAccountCapabilitiesGrabpayPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountCapabilitiesGrabpayPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountCapabilitiesGrabpayPayments").finish_non_exhaustive()
+    }
+}
+impl CreateAccountCapabilitiesGrabpayPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for CreateAccountCapabilitiesGrabpayPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The ideal_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateAccountCapabilitiesIdealPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountCapabilitiesIdealPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountCapabilitiesIdealPayments").finish_non_exhaustive()
+    }
+}
+impl CreateAccountCapabilitiesIdealPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for CreateAccountCapabilitiesIdealPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The india_international_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateAccountCapabilitiesIndiaInternationalPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountCapabilitiesIndiaInternationalPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountCapabilitiesIndiaInternationalPayments")
+            .finish_non_exhaustive()
+    }
+}
+impl CreateAccountCapabilitiesIndiaInternationalPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for CreateAccountCapabilitiesIndiaInternationalPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The jcb_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateAccountCapabilitiesJcbPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountCapabilitiesJcbPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountCapabilitiesJcbPayments").finish_non_exhaustive()
+    }
+}
+impl CreateAccountCapabilitiesJcbPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for CreateAccountCapabilitiesJcbPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The jp_bank_transfer_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateAccountCapabilitiesJpBankTransferPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountCapabilitiesJpBankTransferPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountCapabilitiesJpBankTransferPayments").finish_non_exhaustive()
+    }
+}
+impl CreateAccountCapabilitiesJpBankTransferPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for CreateAccountCapabilitiesJpBankTransferPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The kakao_pay_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateAccountCapabilitiesKakaoPayPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountCapabilitiesKakaoPayPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountCapabilitiesKakaoPayPayments").finish_non_exhaustive()
+    }
+}
+impl CreateAccountCapabilitiesKakaoPayPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for CreateAccountCapabilitiesKakaoPayPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The klarna_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateAccountCapabilitiesKlarnaPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountCapabilitiesKlarnaPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountCapabilitiesKlarnaPayments").finish_non_exhaustive()
+    }
+}
+impl CreateAccountCapabilitiesKlarnaPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for CreateAccountCapabilitiesKlarnaPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The konbini_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateAccountCapabilitiesKonbiniPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountCapabilitiesKonbiniPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountCapabilitiesKonbiniPayments").finish_non_exhaustive()
+    }
+}
+impl CreateAccountCapabilitiesKonbiniPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for CreateAccountCapabilitiesKonbiniPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The kr_card_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateAccountCapabilitiesKrCardPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountCapabilitiesKrCardPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountCapabilitiesKrCardPayments").finish_non_exhaustive()
+    }
+}
+impl CreateAccountCapabilitiesKrCardPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for CreateAccountCapabilitiesKrCardPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The legacy_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateAccountCapabilitiesLegacyPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountCapabilitiesLegacyPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountCapabilitiesLegacyPayments").finish_non_exhaustive()
+    }
+}
+impl CreateAccountCapabilitiesLegacyPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for CreateAccountCapabilitiesLegacyPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The link_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateAccountCapabilitiesLinkPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountCapabilitiesLinkPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountCapabilitiesLinkPayments").finish_non_exhaustive()
+    }
+}
+impl CreateAccountCapabilitiesLinkPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for CreateAccountCapabilitiesLinkPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The mb_way_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateAccountCapabilitiesMbWayPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountCapabilitiesMbWayPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountCapabilitiesMbWayPayments").finish_non_exhaustive()
+    }
+}
+impl CreateAccountCapabilitiesMbWayPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for CreateAccountCapabilitiesMbWayPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The mobilepay_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateAccountCapabilitiesMobilepayPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountCapabilitiesMobilepayPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountCapabilitiesMobilepayPayments").finish_non_exhaustive()
+    }
+}
+impl CreateAccountCapabilitiesMobilepayPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for CreateAccountCapabilitiesMobilepayPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The multibanco_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateAccountCapabilitiesMultibancoPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountCapabilitiesMultibancoPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountCapabilitiesMultibancoPayments").finish_non_exhaustive()
+    }
+}
+impl CreateAccountCapabilitiesMultibancoPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for CreateAccountCapabilitiesMultibancoPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The mx_bank_transfer_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateAccountCapabilitiesMxBankTransferPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountCapabilitiesMxBankTransferPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountCapabilitiesMxBankTransferPayments").finish_non_exhaustive()
+    }
+}
+impl CreateAccountCapabilitiesMxBankTransferPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for CreateAccountCapabilitiesMxBankTransferPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The naver_pay_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateAccountCapabilitiesNaverPayPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountCapabilitiesNaverPayPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountCapabilitiesNaverPayPayments").finish_non_exhaustive()
+    }
+}
+impl CreateAccountCapabilitiesNaverPayPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for CreateAccountCapabilitiesNaverPayPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The nz_bank_account_becs_debit_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateAccountCapabilitiesNzBankAccountBecsDebitPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountCapabilitiesNzBankAccountBecsDebitPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountCapabilitiesNzBankAccountBecsDebitPayments")
+            .finish_non_exhaustive()
+    }
+}
+impl CreateAccountCapabilitiesNzBankAccountBecsDebitPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for CreateAccountCapabilitiesNzBankAccountBecsDebitPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The oxxo_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateAccountCapabilitiesOxxoPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountCapabilitiesOxxoPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountCapabilitiesOxxoPayments").finish_non_exhaustive()
+    }
+}
+impl CreateAccountCapabilitiesOxxoPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for CreateAccountCapabilitiesOxxoPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The p24_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateAccountCapabilitiesP24Payments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountCapabilitiesP24Payments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountCapabilitiesP24Payments").finish_non_exhaustive()
+    }
+}
+impl CreateAccountCapabilitiesP24Payments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for CreateAccountCapabilitiesP24Payments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The pay_by_bank_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateAccountCapabilitiesPayByBankPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountCapabilitiesPayByBankPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountCapabilitiesPayByBankPayments").finish_non_exhaustive()
+    }
+}
+impl CreateAccountCapabilitiesPayByBankPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for CreateAccountCapabilitiesPayByBankPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The payco_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateAccountCapabilitiesPaycoPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountCapabilitiesPaycoPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountCapabilitiesPaycoPayments").finish_non_exhaustive()
+    }
+}
+impl CreateAccountCapabilitiesPaycoPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for CreateAccountCapabilitiesPaycoPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The paynow_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateAccountCapabilitiesPaynowPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountCapabilitiesPaynowPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountCapabilitiesPaynowPayments").finish_non_exhaustive()
+    }
+}
+impl CreateAccountCapabilitiesPaynowPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for CreateAccountCapabilitiesPaynowPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The payto_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateAccountCapabilitiesPaytoPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountCapabilitiesPaytoPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountCapabilitiesPaytoPayments").finish_non_exhaustive()
+    }
+}
+impl CreateAccountCapabilitiesPaytoPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for CreateAccountCapabilitiesPaytoPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The pix_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateAccountCapabilitiesPixPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountCapabilitiesPixPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountCapabilitiesPixPayments").finish_non_exhaustive()
+    }
+}
+impl CreateAccountCapabilitiesPixPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for CreateAccountCapabilitiesPixPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The promptpay_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateAccountCapabilitiesPromptpayPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountCapabilitiesPromptpayPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountCapabilitiesPromptpayPayments").finish_non_exhaustive()
+    }
+}
+impl CreateAccountCapabilitiesPromptpayPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for CreateAccountCapabilitiesPromptpayPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The revolut_pay_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateAccountCapabilitiesRevolutPayPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountCapabilitiesRevolutPayPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountCapabilitiesRevolutPayPayments").finish_non_exhaustive()
+    }
+}
+impl CreateAccountCapabilitiesRevolutPayPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for CreateAccountCapabilitiesRevolutPayPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The samsung_pay_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateAccountCapabilitiesSamsungPayPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountCapabilitiesSamsungPayPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountCapabilitiesSamsungPayPayments").finish_non_exhaustive()
+    }
+}
+impl CreateAccountCapabilitiesSamsungPayPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for CreateAccountCapabilitiesSamsungPayPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The satispay_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateAccountCapabilitiesSatispayPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountCapabilitiesSatispayPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountCapabilitiesSatispayPayments").finish_non_exhaustive()
+    }
+}
+impl CreateAccountCapabilitiesSatispayPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for CreateAccountCapabilitiesSatispayPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The sepa_bank_transfer_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateAccountCapabilitiesSepaBankTransferPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountCapabilitiesSepaBankTransferPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountCapabilitiesSepaBankTransferPayments").finish_non_exhaustive()
+    }
+}
+impl CreateAccountCapabilitiesSepaBankTransferPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for CreateAccountCapabilitiesSepaBankTransferPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The sepa_debit_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateAccountCapabilitiesSepaDebitPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountCapabilitiesSepaDebitPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountCapabilitiesSepaDebitPayments").finish_non_exhaustive()
+    }
+}
+impl CreateAccountCapabilitiesSepaDebitPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for CreateAccountCapabilitiesSepaDebitPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The sofort_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateAccountCapabilitiesSofortPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountCapabilitiesSofortPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountCapabilitiesSofortPayments").finish_non_exhaustive()
+    }
+}
+impl CreateAccountCapabilitiesSofortPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for CreateAccountCapabilitiesSofortPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The sunbit_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateAccountCapabilitiesSunbitPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountCapabilitiesSunbitPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountCapabilitiesSunbitPayments").finish_non_exhaustive()
+    }
+}
+impl CreateAccountCapabilitiesSunbitPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for CreateAccountCapabilitiesSunbitPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The swish_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateAccountCapabilitiesSwishPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountCapabilitiesSwishPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountCapabilitiesSwishPayments").finish_non_exhaustive()
+    }
+}
+impl CreateAccountCapabilitiesSwishPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for CreateAccountCapabilitiesSwishPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The tax_reporting_us_1099_k capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateAccountCapabilitiesTaxReportingUs1099K {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountCapabilitiesTaxReportingUs1099K {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountCapabilitiesTaxReportingUs1099K").finish_non_exhaustive()
+    }
+}
+impl CreateAccountCapabilitiesTaxReportingUs1099K {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for CreateAccountCapabilitiesTaxReportingUs1099K {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The tax_reporting_us_1099_misc capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateAccountCapabilitiesTaxReportingUs1099Misc {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountCapabilitiesTaxReportingUs1099Misc {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountCapabilitiesTaxReportingUs1099Misc").finish_non_exhaustive()
+    }
+}
+impl CreateAccountCapabilitiesTaxReportingUs1099Misc {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for CreateAccountCapabilitiesTaxReportingUs1099Misc {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The transfers capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateAccountCapabilitiesTransfers {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountCapabilitiesTransfers {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountCapabilitiesTransfers").finish_non_exhaustive()
+    }
+}
+impl CreateAccountCapabilitiesTransfers {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for CreateAccountCapabilitiesTransfers {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The treasury capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateAccountCapabilitiesTreasury {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountCapabilitiesTreasury {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountCapabilitiesTreasury").finish_non_exhaustive()
+    }
+}
+impl CreateAccountCapabilitiesTreasury {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for CreateAccountCapabilitiesTreasury {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The twint_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateAccountCapabilitiesTwintPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountCapabilitiesTwintPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountCapabilitiesTwintPayments").finish_non_exhaustive()
+    }
+}
+impl CreateAccountCapabilitiesTwintPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for CreateAccountCapabilitiesTwintPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The upi_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateAccountCapabilitiesUpiPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountCapabilitiesUpiPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountCapabilitiesUpiPayments").finish_non_exhaustive()
+    }
+}
+impl CreateAccountCapabilitiesUpiPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for CreateAccountCapabilitiesUpiPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The us_bank_account_ach_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateAccountCapabilitiesUsBankAccountAchPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountCapabilitiesUsBankAccountAchPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountCapabilitiesUsBankAccountAchPayments").finish_non_exhaustive()
+    }
+}
+impl CreateAccountCapabilitiesUsBankAccountAchPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for CreateAccountCapabilitiesUsBankAccountAchPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The us_bank_transfer_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateAccountCapabilitiesUsBankTransferPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountCapabilitiesUsBankTransferPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountCapabilitiesUsBankTransferPayments").finish_non_exhaustive()
+    }
+}
+impl CreateAccountCapabilitiesUsBankTransferPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for CreateAccountCapabilitiesUsBankTransferPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The zip_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateAccountCapabilitiesZipPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountCapabilitiesZipPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountCapabilitiesZipPayments").finish_non_exhaustive()
+    }
+}
+impl CreateAccountCapabilitiesZipPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for CreateAccountCapabilitiesZipPayments {
     fn default() -> Self {
         Self::new()
     }
@@ -2623,7 +4640,8 @@ impl<'de> serde::Deserialize<'de> for CreateAccountSettingsPayoutsScheduleWeekly
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-/// The type of Stripe account to create. May be one of `custom`, `express` or `standard`.
+/// The `type` parameter is deprecated.
+/// Use [`controller`](/api/accounts/create#create_account-controller) instead to configure dashboard access, fee payer, loss liability, and requirement collection.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum CreateAccountType {
@@ -2748,7 +4766,7 @@ impl CreateAccount {
     ///
     /// Required when [account.controller.stripe_dashboard.type](/api/accounts/create#create_account-controller-dashboard-type).
     /// is `none`, which includes Custom accounts.
-    pub fn capabilities(mut self, capabilities: impl Into<CapabilitiesParam>) -> Self {
+    pub fn capabilities(mut self, capabilities: impl Into<CreateAccountCapabilities>) -> Self {
         self.inner.capabilities = Some(capabilities.into());
         self
     }
@@ -2841,7 +4859,8 @@ impl CreateAccount {
         self.inner.tos_acceptance = Some(tos_acceptance.into());
         self
     }
-    /// The type of Stripe account to create. May be one of `custom`, `express` or `standard`.
+    /// The `type` parameter is deprecated.
+    /// Use [`controller`](/api/accounts/create#create_account-controller) instead to configure dashboard access, fee payer, loss liability, and requirement collection.
     pub fn type_(mut self, type_: impl Into<CreateAccountType>) -> Self {
         self.inner.type_ = Some(type_.into());
         self
@@ -2888,7 +4907,7 @@ struct UpdateAccountBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     business_type: Option<stripe_shared::AccountBusinessType>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    capabilities: Option<CapabilitiesParam>,
+    capabilities: Option<UpdateAccountCapabilities>,
     #[serde(skip_serializing_if = "Option::is_none")]
     company: Option<UpdateAccountCompany>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -3132,6 +5151,2023 @@ impl UpdateAccountBusinessProfileSupportAddress {
     }
 }
 impl Default for UpdateAccountBusinessProfileSupportAddress {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Each key of the dictionary represents a capability, and each capability
+/// maps to its settings (for example, whether it has been requested or not). Each
+/// capability is inactive until you have provided its specific
+/// requirements and Stripe has verified them. An account might have some
+/// of its requested capabilities be active and some be inactive.
+///
+/// Required when [account.controller.stripe_dashboard.type](/api/accounts/create#create_account-controller-dashboard-type).
+/// is `none`, which includes Custom accounts.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateAccountCapabilities {
+    /// The acss_debit_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub acss_debit_payments: Option<UpdateAccountCapabilitiesAcssDebitPayments>,
+    /// The affirm_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub affirm_payments: Option<UpdateAccountCapabilitiesAffirmPayments>,
+    /// The afterpay_clearpay_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub afterpay_clearpay_payments: Option<UpdateAccountCapabilitiesAfterpayClearpayPayments>,
+    /// The alma_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub alma_payments: Option<UpdateAccountCapabilitiesAlmaPayments>,
+    /// The amazon_pay_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub amazon_pay_payments: Option<UpdateAccountCapabilitiesAmazonPayPayments>,
+    /// The app_distribution capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub app_distribution: Option<UpdateAccountCapabilitiesAppDistribution>,
+    /// The au_becs_debit_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub au_becs_debit_payments: Option<UpdateAccountCapabilitiesAuBecsDebitPayments>,
+    /// The bacs_debit_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bacs_debit_payments: Option<UpdateAccountCapabilitiesBacsDebitPayments>,
+    /// The bancontact_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bancontact_payments: Option<UpdateAccountCapabilitiesBancontactPayments>,
+    /// The bank_transfer_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bank_transfer_payments: Option<UpdateAccountCapabilitiesBankTransferPayments>,
+    /// The billie_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub billie_payments: Option<UpdateAccountCapabilitiesBilliePayments>,
+    /// The blik_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub blik_payments: Option<UpdateAccountCapabilitiesBlikPayments>,
+    /// The boleto_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub boleto_payments: Option<UpdateAccountCapabilitiesBoletoPayments>,
+    /// The card_issuing capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub card_issuing: Option<UpdateAccountCapabilitiesCardIssuing>,
+    /// The card_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub card_payments: Option<UpdateAccountCapabilitiesCardPayments>,
+    /// The cartes_bancaires_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub cartes_bancaires_payments: Option<UpdateAccountCapabilitiesCartesBancairesPayments>,
+    /// The cashapp_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub cashapp_payments: Option<UpdateAccountCapabilitiesCashappPayments>,
+    /// The crypto_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub crypto_payments: Option<UpdateAccountCapabilitiesCryptoPayments>,
+    /// The eps_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub eps_payments: Option<UpdateAccountCapabilitiesEpsPayments>,
+    /// The fpx_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub fpx_payments: Option<UpdateAccountCapabilitiesFpxPayments>,
+    /// The gb_bank_transfer_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub gb_bank_transfer_payments: Option<UpdateAccountCapabilitiesGbBankTransferPayments>,
+    /// The giropay_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub giropay_payments: Option<UpdateAccountCapabilitiesGiropayPayments>,
+    /// The grabpay_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub grabpay_payments: Option<UpdateAccountCapabilitiesGrabpayPayments>,
+    /// The ideal_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ideal_payments: Option<UpdateAccountCapabilitiesIdealPayments>,
+    /// The india_international_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub india_international_payments: Option<UpdateAccountCapabilitiesIndiaInternationalPayments>,
+    /// The jcb_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub jcb_payments: Option<UpdateAccountCapabilitiesJcbPayments>,
+    /// The jp_bank_transfer_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub jp_bank_transfer_payments: Option<UpdateAccountCapabilitiesJpBankTransferPayments>,
+    /// The kakao_pay_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub kakao_pay_payments: Option<UpdateAccountCapabilitiesKakaoPayPayments>,
+    /// The klarna_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub klarna_payments: Option<UpdateAccountCapabilitiesKlarnaPayments>,
+    /// The konbini_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub konbini_payments: Option<UpdateAccountCapabilitiesKonbiniPayments>,
+    /// The kr_card_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub kr_card_payments: Option<UpdateAccountCapabilitiesKrCardPayments>,
+    /// The legacy_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub legacy_payments: Option<UpdateAccountCapabilitiesLegacyPayments>,
+    /// The link_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub link_payments: Option<UpdateAccountCapabilitiesLinkPayments>,
+    /// The mb_way_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mb_way_payments: Option<UpdateAccountCapabilitiesMbWayPayments>,
+    /// The mobilepay_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mobilepay_payments: Option<UpdateAccountCapabilitiesMobilepayPayments>,
+    /// The multibanco_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub multibanco_payments: Option<UpdateAccountCapabilitiesMultibancoPayments>,
+    /// The mx_bank_transfer_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mx_bank_transfer_payments: Option<UpdateAccountCapabilitiesMxBankTransferPayments>,
+    /// The naver_pay_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub naver_pay_payments: Option<UpdateAccountCapabilitiesNaverPayPayments>,
+    /// The nz_bank_account_becs_debit_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub nz_bank_account_becs_debit_payments:
+        Option<UpdateAccountCapabilitiesNzBankAccountBecsDebitPayments>,
+    /// The oxxo_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub oxxo_payments: Option<UpdateAccountCapabilitiesOxxoPayments>,
+    /// The p24_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub p24_payments: Option<UpdateAccountCapabilitiesP24Payments>,
+    /// The pay_by_bank_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub pay_by_bank_payments: Option<UpdateAccountCapabilitiesPayByBankPayments>,
+    /// The payco_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payco_payments: Option<UpdateAccountCapabilitiesPaycoPayments>,
+    /// The paynow_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub paynow_payments: Option<UpdateAccountCapabilitiesPaynowPayments>,
+    /// The payto_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payto_payments: Option<UpdateAccountCapabilitiesPaytoPayments>,
+    /// The pix_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub pix_payments: Option<UpdateAccountCapabilitiesPixPayments>,
+    /// The promptpay_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub promptpay_payments: Option<UpdateAccountCapabilitiesPromptpayPayments>,
+    /// The revolut_pay_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub revolut_pay_payments: Option<UpdateAccountCapabilitiesRevolutPayPayments>,
+    /// The samsung_pay_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub samsung_pay_payments: Option<UpdateAccountCapabilitiesSamsungPayPayments>,
+    /// The satispay_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub satispay_payments: Option<UpdateAccountCapabilitiesSatispayPayments>,
+    /// The sepa_bank_transfer_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub sepa_bank_transfer_payments: Option<UpdateAccountCapabilitiesSepaBankTransferPayments>,
+    /// The sepa_debit_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub sepa_debit_payments: Option<UpdateAccountCapabilitiesSepaDebitPayments>,
+    /// The sofort_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub sofort_payments: Option<UpdateAccountCapabilitiesSofortPayments>,
+    /// The sunbit_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub sunbit_payments: Option<UpdateAccountCapabilitiesSunbitPayments>,
+    /// The swish_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub swish_payments: Option<UpdateAccountCapabilitiesSwishPayments>,
+    /// The tax_reporting_us_1099_k capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_reporting_us_1099_k: Option<UpdateAccountCapabilitiesTaxReportingUs1099K>,
+    /// The tax_reporting_us_1099_misc capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tax_reporting_us_1099_misc: Option<UpdateAccountCapabilitiesTaxReportingUs1099Misc>,
+    /// The transfers capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub transfers: Option<UpdateAccountCapabilitiesTransfers>,
+    /// The treasury capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub treasury: Option<UpdateAccountCapabilitiesTreasury>,
+    /// The twint_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub twint_payments: Option<UpdateAccountCapabilitiesTwintPayments>,
+    /// The upi_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub upi_payments: Option<UpdateAccountCapabilitiesUpiPayments>,
+    /// The us_bank_account_ach_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub us_bank_account_ach_payments: Option<UpdateAccountCapabilitiesUsBankAccountAchPayments>,
+    /// The us_bank_transfer_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub us_bank_transfer_payments: Option<UpdateAccountCapabilitiesUsBankTransferPayments>,
+    /// The zip_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub zip_payments: Option<UpdateAccountCapabilitiesZipPayments>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateAccountCapabilities {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateAccountCapabilities").finish_non_exhaustive()
+    }
+}
+impl UpdateAccountCapabilities {
+    pub fn new() -> Self {
+        Self {
+            acss_debit_payments: None,
+            affirm_payments: None,
+            afterpay_clearpay_payments: None,
+            alma_payments: None,
+            amazon_pay_payments: None,
+            app_distribution: None,
+            au_becs_debit_payments: None,
+            bacs_debit_payments: None,
+            bancontact_payments: None,
+            bank_transfer_payments: None,
+            billie_payments: None,
+            blik_payments: None,
+            boleto_payments: None,
+            card_issuing: None,
+            card_payments: None,
+            cartes_bancaires_payments: None,
+            cashapp_payments: None,
+            crypto_payments: None,
+            eps_payments: None,
+            fpx_payments: None,
+            gb_bank_transfer_payments: None,
+            giropay_payments: None,
+            grabpay_payments: None,
+            ideal_payments: None,
+            india_international_payments: None,
+            jcb_payments: None,
+            jp_bank_transfer_payments: None,
+            kakao_pay_payments: None,
+            klarna_payments: None,
+            konbini_payments: None,
+            kr_card_payments: None,
+            legacy_payments: None,
+            link_payments: None,
+            mb_way_payments: None,
+            mobilepay_payments: None,
+            multibanco_payments: None,
+            mx_bank_transfer_payments: None,
+            naver_pay_payments: None,
+            nz_bank_account_becs_debit_payments: None,
+            oxxo_payments: None,
+            p24_payments: None,
+            pay_by_bank_payments: None,
+            payco_payments: None,
+            paynow_payments: None,
+            payto_payments: None,
+            pix_payments: None,
+            promptpay_payments: None,
+            revolut_pay_payments: None,
+            samsung_pay_payments: None,
+            satispay_payments: None,
+            sepa_bank_transfer_payments: None,
+            sepa_debit_payments: None,
+            sofort_payments: None,
+            sunbit_payments: None,
+            swish_payments: None,
+            tax_reporting_us_1099_k: None,
+            tax_reporting_us_1099_misc: None,
+            transfers: None,
+            treasury: None,
+            twint_payments: None,
+            upi_payments: None,
+            us_bank_account_ach_payments: None,
+            us_bank_transfer_payments: None,
+            zip_payments: None,
+        }
+    }
+}
+impl Default for UpdateAccountCapabilities {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The acss_debit_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateAccountCapabilitiesAcssDebitPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateAccountCapabilitiesAcssDebitPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateAccountCapabilitiesAcssDebitPayments").finish_non_exhaustive()
+    }
+}
+impl UpdateAccountCapabilitiesAcssDebitPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for UpdateAccountCapabilitiesAcssDebitPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The affirm_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateAccountCapabilitiesAffirmPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateAccountCapabilitiesAffirmPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateAccountCapabilitiesAffirmPayments").finish_non_exhaustive()
+    }
+}
+impl UpdateAccountCapabilitiesAffirmPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for UpdateAccountCapabilitiesAffirmPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The afterpay_clearpay_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateAccountCapabilitiesAfterpayClearpayPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateAccountCapabilitiesAfterpayClearpayPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateAccountCapabilitiesAfterpayClearpayPayments").finish_non_exhaustive()
+    }
+}
+impl UpdateAccountCapabilitiesAfterpayClearpayPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for UpdateAccountCapabilitiesAfterpayClearpayPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The alma_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateAccountCapabilitiesAlmaPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateAccountCapabilitiesAlmaPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateAccountCapabilitiesAlmaPayments").finish_non_exhaustive()
+    }
+}
+impl UpdateAccountCapabilitiesAlmaPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for UpdateAccountCapabilitiesAlmaPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The amazon_pay_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateAccountCapabilitiesAmazonPayPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateAccountCapabilitiesAmazonPayPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateAccountCapabilitiesAmazonPayPayments").finish_non_exhaustive()
+    }
+}
+impl UpdateAccountCapabilitiesAmazonPayPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for UpdateAccountCapabilitiesAmazonPayPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The app_distribution capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateAccountCapabilitiesAppDistribution {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateAccountCapabilitiesAppDistribution {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateAccountCapabilitiesAppDistribution").finish_non_exhaustive()
+    }
+}
+impl UpdateAccountCapabilitiesAppDistribution {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for UpdateAccountCapabilitiesAppDistribution {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The au_becs_debit_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateAccountCapabilitiesAuBecsDebitPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateAccountCapabilitiesAuBecsDebitPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateAccountCapabilitiesAuBecsDebitPayments").finish_non_exhaustive()
+    }
+}
+impl UpdateAccountCapabilitiesAuBecsDebitPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for UpdateAccountCapabilitiesAuBecsDebitPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The bacs_debit_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateAccountCapabilitiesBacsDebitPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateAccountCapabilitiesBacsDebitPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateAccountCapabilitiesBacsDebitPayments").finish_non_exhaustive()
+    }
+}
+impl UpdateAccountCapabilitiesBacsDebitPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for UpdateAccountCapabilitiesBacsDebitPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The bancontact_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateAccountCapabilitiesBancontactPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateAccountCapabilitiesBancontactPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateAccountCapabilitiesBancontactPayments").finish_non_exhaustive()
+    }
+}
+impl UpdateAccountCapabilitiesBancontactPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for UpdateAccountCapabilitiesBancontactPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The bank_transfer_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateAccountCapabilitiesBankTransferPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateAccountCapabilitiesBankTransferPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateAccountCapabilitiesBankTransferPayments").finish_non_exhaustive()
+    }
+}
+impl UpdateAccountCapabilitiesBankTransferPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for UpdateAccountCapabilitiesBankTransferPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The billie_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateAccountCapabilitiesBilliePayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateAccountCapabilitiesBilliePayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateAccountCapabilitiesBilliePayments").finish_non_exhaustive()
+    }
+}
+impl UpdateAccountCapabilitiesBilliePayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for UpdateAccountCapabilitiesBilliePayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The blik_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateAccountCapabilitiesBlikPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateAccountCapabilitiesBlikPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateAccountCapabilitiesBlikPayments").finish_non_exhaustive()
+    }
+}
+impl UpdateAccountCapabilitiesBlikPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for UpdateAccountCapabilitiesBlikPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The boleto_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateAccountCapabilitiesBoletoPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateAccountCapabilitiesBoletoPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateAccountCapabilitiesBoletoPayments").finish_non_exhaustive()
+    }
+}
+impl UpdateAccountCapabilitiesBoletoPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for UpdateAccountCapabilitiesBoletoPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The card_issuing capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateAccountCapabilitiesCardIssuing {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateAccountCapabilitiesCardIssuing {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateAccountCapabilitiesCardIssuing").finish_non_exhaustive()
+    }
+}
+impl UpdateAccountCapabilitiesCardIssuing {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for UpdateAccountCapabilitiesCardIssuing {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The card_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateAccountCapabilitiesCardPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateAccountCapabilitiesCardPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateAccountCapabilitiesCardPayments").finish_non_exhaustive()
+    }
+}
+impl UpdateAccountCapabilitiesCardPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for UpdateAccountCapabilitiesCardPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The cartes_bancaires_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateAccountCapabilitiesCartesBancairesPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateAccountCapabilitiesCartesBancairesPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateAccountCapabilitiesCartesBancairesPayments").finish_non_exhaustive()
+    }
+}
+impl UpdateAccountCapabilitiesCartesBancairesPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for UpdateAccountCapabilitiesCartesBancairesPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The cashapp_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateAccountCapabilitiesCashappPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateAccountCapabilitiesCashappPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateAccountCapabilitiesCashappPayments").finish_non_exhaustive()
+    }
+}
+impl UpdateAccountCapabilitiesCashappPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for UpdateAccountCapabilitiesCashappPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The crypto_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateAccountCapabilitiesCryptoPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateAccountCapabilitiesCryptoPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateAccountCapabilitiesCryptoPayments").finish_non_exhaustive()
+    }
+}
+impl UpdateAccountCapabilitiesCryptoPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for UpdateAccountCapabilitiesCryptoPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The eps_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateAccountCapabilitiesEpsPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateAccountCapabilitiesEpsPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateAccountCapabilitiesEpsPayments").finish_non_exhaustive()
+    }
+}
+impl UpdateAccountCapabilitiesEpsPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for UpdateAccountCapabilitiesEpsPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The fpx_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateAccountCapabilitiesFpxPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateAccountCapabilitiesFpxPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateAccountCapabilitiesFpxPayments").finish_non_exhaustive()
+    }
+}
+impl UpdateAccountCapabilitiesFpxPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for UpdateAccountCapabilitiesFpxPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The gb_bank_transfer_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateAccountCapabilitiesGbBankTransferPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateAccountCapabilitiesGbBankTransferPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateAccountCapabilitiesGbBankTransferPayments").finish_non_exhaustive()
+    }
+}
+impl UpdateAccountCapabilitiesGbBankTransferPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for UpdateAccountCapabilitiesGbBankTransferPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The giropay_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateAccountCapabilitiesGiropayPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateAccountCapabilitiesGiropayPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateAccountCapabilitiesGiropayPayments").finish_non_exhaustive()
+    }
+}
+impl UpdateAccountCapabilitiesGiropayPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for UpdateAccountCapabilitiesGiropayPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The grabpay_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateAccountCapabilitiesGrabpayPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateAccountCapabilitiesGrabpayPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateAccountCapabilitiesGrabpayPayments").finish_non_exhaustive()
+    }
+}
+impl UpdateAccountCapabilitiesGrabpayPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for UpdateAccountCapabilitiesGrabpayPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The ideal_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateAccountCapabilitiesIdealPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateAccountCapabilitiesIdealPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateAccountCapabilitiesIdealPayments").finish_non_exhaustive()
+    }
+}
+impl UpdateAccountCapabilitiesIdealPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for UpdateAccountCapabilitiesIdealPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The india_international_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateAccountCapabilitiesIndiaInternationalPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateAccountCapabilitiesIndiaInternationalPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateAccountCapabilitiesIndiaInternationalPayments")
+            .finish_non_exhaustive()
+    }
+}
+impl UpdateAccountCapabilitiesIndiaInternationalPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for UpdateAccountCapabilitiesIndiaInternationalPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The jcb_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateAccountCapabilitiesJcbPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateAccountCapabilitiesJcbPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateAccountCapabilitiesJcbPayments").finish_non_exhaustive()
+    }
+}
+impl UpdateAccountCapabilitiesJcbPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for UpdateAccountCapabilitiesJcbPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The jp_bank_transfer_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateAccountCapabilitiesJpBankTransferPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateAccountCapabilitiesJpBankTransferPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateAccountCapabilitiesJpBankTransferPayments").finish_non_exhaustive()
+    }
+}
+impl UpdateAccountCapabilitiesJpBankTransferPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for UpdateAccountCapabilitiesJpBankTransferPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The kakao_pay_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateAccountCapabilitiesKakaoPayPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateAccountCapabilitiesKakaoPayPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateAccountCapabilitiesKakaoPayPayments").finish_non_exhaustive()
+    }
+}
+impl UpdateAccountCapabilitiesKakaoPayPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for UpdateAccountCapabilitiesKakaoPayPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The klarna_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateAccountCapabilitiesKlarnaPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateAccountCapabilitiesKlarnaPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateAccountCapabilitiesKlarnaPayments").finish_non_exhaustive()
+    }
+}
+impl UpdateAccountCapabilitiesKlarnaPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for UpdateAccountCapabilitiesKlarnaPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The konbini_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateAccountCapabilitiesKonbiniPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateAccountCapabilitiesKonbiniPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateAccountCapabilitiesKonbiniPayments").finish_non_exhaustive()
+    }
+}
+impl UpdateAccountCapabilitiesKonbiniPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for UpdateAccountCapabilitiesKonbiniPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The kr_card_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateAccountCapabilitiesKrCardPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateAccountCapabilitiesKrCardPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateAccountCapabilitiesKrCardPayments").finish_non_exhaustive()
+    }
+}
+impl UpdateAccountCapabilitiesKrCardPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for UpdateAccountCapabilitiesKrCardPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The legacy_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateAccountCapabilitiesLegacyPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateAccountCapabilitiesLegacyPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateAccountCapabilitiesLegacyPayments").finish_non_exhaustive()
+    }
+}
+impl UpdateAccountCapabilitiesLegacyPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for UpdateAccountCapabilitiesLegacyPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The link_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateAccountCapabilitiesLinkPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateAccountCapabilitiesLinkPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateAccountCapabilitiesLinkPayments").finish_non_exhaustive()
+    }
+}
+impl UpdateAccountCapabilitiesLinkPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for UpdateAccountCapabilitiesLinkPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The mb_way_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateAccountCapabilitiesMbWayPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateAccountCapabilitiesMbWayPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateAccountCapabilitiesMbWayPayments").finish_non_exhaustive()
+    }
+}
+impl UpdateAccountCapabilitiesMbWayPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for UpdateAccountCapabilitiesMbWayPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The mobilepay_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateAccountCapabilitiesMobilepayPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateAccountCapabilitiesMobilepayPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateAccountCapabilitiesMobilepayPayments").finish_non_exhaustive()
+    }
+}
+impl UpdateAccountCapabilitiesMobilepayPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for UpdateAccountCapabilitiesMobilepayPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The multibanco_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateAccountCapabilitiesMultibancoPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateAccountCapabilitiesMultibancoPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateAccountCapabilitiesMultibancoPayments").finish_non_exhaustive()
+    }
+}
+impl UpdateAccountCapabilitiesMultibancoPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for UpdateAccountCapabilitiesMultibancoPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The mx_bank_transfer_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateAccountCapabilitiesMxBankTransferPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateAccountCapabilitiesMxBankTransferPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateAccountCapabilitiesMxBankTransferPayments").finish_non_exhaustive()
+    }
+}
+impl UpdateAccountCapabilitiesMxBankTransferPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for UpdateAccountCapabilitiesMxBankTransferPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The naver_pay_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateAccountCapabilitiesNaverPayPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateAccountCapabilitiesNaverPayPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateAccountCapabilitiesNaverPayPayments").finish_non_exhaustive()
+    }
+}
+impl UpdateAccountCapabilitiesNaverPayPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for UpdateAccountCapabilitiesNaverPayPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The nz_bank_account_becs_debit_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateAccountCapabilitiesNzBankAccountBecsDebitPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateAccountCapabilitiesNzBankAccountBecsDebitPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateAccountCapabilitiesNzBankAccountBecsDebitPayments")
+            .finish_non_exhaustive()
+    }
+}
+impl UpdateAccountCapabilitiesNzBankAccountBecsDebitPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for UpdateAccountCapabilitiesNzBankAccountBecsDebitPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The oxxo_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateAccountCapabilitiesOxxoPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateAccountCapabilitiesOxxoPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateAccountCapabilitiesOxxoPayments").finish_non_exhaustive()
+    }
+}
+impl UpdateAccountCapabilitiesOxxoPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for UpdateAccountCapabilitiesOxxoPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The p24_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateAccountCapabilitiesP24Payments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateAccountCapabilitiesP24Payments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateAccountCapabilitiesP24Payments").finish_non_exhaustive()
+    }
+}
+impl UpdateAccountCapabilitiesP24Payments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for UpdateAccountCapabilitiesP24Payments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The pay_by_bank_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateAccountCapabilitiesPayByBankPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateAccountCapabilitiesPayByBankPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateAccountCapabilitiesPayByBankPayments").finish_non_exhaustive()
+    }
+}
+impl UpdateAccountCapabilitiesPayByBankPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for UpdateAccountCapabilitiesPayByBankPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The payco_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateAccountCapabilitiesPaycoPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateAccountCapabilitiesPaycoPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateAccountCapabilitiesPaycoPayments").finish_non_exhaustive()
+    }
+}
+impl UpdateAccountCapabilitiesPaycoPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for UpdateAccountCapabilitiesPaycoPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The paynow_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateAccountCapabilitiesPaynowPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateAccountCapabilitiesPaynowPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateAccountCapabilitiesPaynowPayments").finish_non_exhaustive()
+    }
+}
+impl UpdateAccountCapabilitiesPaynowPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for UpdateAccountCapabilitiesPaynowPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The payto_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateAccountCapabilitiesPaytoPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateAccountCapabilitiesPaytoPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateAccountCapabilitiesPaytoPayments").finish_non_exhaustive()
+    }
+}
+impl UpdateAccountCapabilitiesPaytoPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for UpdateAccountCapabilitiesPaytoPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The pix_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateAccountCapabilitiesPixPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateAccountCapabilitiesPixPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateAccountCapabilitiesPixPayments").finish_non_exhaustive()
+    }
+}
+impl UpdateAccountCapabilitiesPixPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for UpdateAccountCapabilitiesPixPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The promptpay_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateAccountCapabilitiesPromptpayPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateAccountCapabilitiesPromptpayPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateAccountCapabilitiesPromptpayPayments").finish_non_exhaustive()
+    }
+}
+impl UpdateAccountCapabilitiesPromptpayPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for UpdateAccountCapabilitiesPromptpayPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The revolut_pay_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateAccountCapabilitiesRevolutPayPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateAccountCapabilitiesRevolutPayPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateAccountCapabilitiesRevolutPayPayments").finish_non_exhaustive()
+    }
+}
+impl UpdateAccountCapabilitiesRevolutPayPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for UpdateAccountCapabilitiesRevolutPayPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The samsung_pay_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateAccountCapabilitiesSamsungPayPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateAccountCapabilitiesSamsungPayPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateAccountCapabilitiesSamsungPayPayments").finish_non_exhaustive()
+    }
+}
+impl UpdateAccountCapabilitiesSamsungPayPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for UpdateAccountCapabilitiesSamsungPayPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The satispay_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateAccountCapabilitiesSatispayPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateAccountCapabilitiesSatispayPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateAccountCapabilitiesSatispayPayments").finish_non_exhaustive()
+    }
+}
+impl UpdateAccountCapabilitiesSatispayPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for UpdateAccountCapabilitiesSatispayPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The sepa_bank_transfer_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateAccountCapabilitiesSepaBankTransferPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateAccountCapabilitiesSepaBankTransferPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateAccountCapabilitiesSepaBankTransferPayments").finish_non_exhaustive()
+    }
+}
+impl UpdateAccountCapabilitiesSepaBankTransferPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for UpdateAccountCapabilitiesSepaBankTransferPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The sepa_debit_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateAccountCapabilitiesSepaDebitPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateAccountCapabilitiesSepaDebitPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateAccountCapabilitiesSepaDebitPayments").finish_non_exhaustive()
+    }
+}
+impl UpdateAccountCapabilitiesSepaDebitPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for UpdateAccountCapabilitiesSepaDebitPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The sofort_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateAccountCapabilitiesSofortPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateAccountCapabilitiesSofortPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateAccountCapabilitiesSofortPayments").finish_non_exhaustive()
+    }
+}
+impl UpdateAccountCapabilitiesSofortPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for UpdateAccountCapabilitiesSofortPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The sunbit_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateAccountCapabilitiesSunbitPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateAccountCapabilitiesSunbitPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateAccountCapabilitiesSunbitPayments").finish_non_exhaustive()
+    }
+}
+impl UpdateAccountCapabilitiesSunbitPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for UpdateAccountCapabilitiesSunbitPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The swish_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateAccountCapabilitiesSwishPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateAccountCapabilitiesSwishPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateAccountCapabilitiesSwishPayments").finish_non_exhaustive()
+    }
+}
+impl UpdateAccountCapabilitiesSwishPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for UpdateAccountCapabilitiesSwishPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The tax_reporting_us_1099_k capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateAccountCapabilitiesTaxReportingUs1099K {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateAccountCapabilitiesTaxReportingUs1099K {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateAccountCapabilitiesTaxReportingUs1099K").finish_non_exhaustive()
+    }
+}
+impl UpdateAccountCapabilitiesTaxReportingUs1099K {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for UpdateAccountCapabilitiesTaxReportingUs1099K {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The tax_reporting_us_1099_misc capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateAccountCapabilitiesTaxReportingUs1099Misc {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateAccountCapabilitiesTaxReportingUs1099Misc {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateAccountCapabilitiesTaxReportingUs1099Misc").finish_non_exhaustive()
+    }
+}
+impl UpdateAccountCapabilitiesTaxReportingUs1099Misc {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for UpdateAccountCapabilitiesTaxReportingUs1099Misc {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The transfers capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateAccountCapabilitiesTransfers {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateAccountCapabilitiesTransfers {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateAccountCapabilitiesTransfers").finish_non_exhaustive()
+    }
+}
+impl UpdateAccountCapabilitiesTransfers {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for UpdateAccountCapabilitiesTransfers {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The treasury capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateAccountCapabilitiesTreasury {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateAccountCapabilitiesTreasury {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateAccountCapabilitiesTreasury").finish_non_exhaustive()
+    }
+}
+impl UpdateAccountCapabilitiesTreasury {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for UpdateAccountCapabilitiesTreasury {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The twint_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateAccountCapabilitiesTwintPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateAccountCapabilitiesTwintPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateAccountCapabilitiesTwintPayments").finish_non_exhaustive()
+    }
+}
+impl UpdateAccountCapabilitiesTwintPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for UpdateAccountCapabilitiesTwintPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The upi_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateAccountCapabilitiesUpiPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateAccountCapabilitiesUpiPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateAccountCapabilitiesUpiPayments").finish_non_exhaustive()
+    }
+}
+impl UpdateAccountCapabilitiesUpiPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for UpdateAccountCapabilitiesUpiPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The us_bank_account_ach_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateAccountCapabilitiesUsBankAccountAchPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateAccountCapabilitiesUsBankAccountAchPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateAccountCapabilitiesUsBankAccountAchPayments").finish_non_exhaustive()
+    }
+}
+impl UpdateAccountCapabilitiesUsBankAccountAchPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for UpdateAccountCapabilitiesUsBankAccountAchPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The us_bank_transfer_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateAccountCapabilitiesUsBankTransferPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateAccountCapabilitiesUsBankTransferPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateAccountCapabilitiesUsBankTransferPayments").finish_non_exhaustive()
+    }
+}
+impl UpdateAccountCapabilitiesUsBankTransferPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for UpdateAccountCapabilitiesUsBankTransferPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The zip_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateAccountCapabilitiesZipPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateAccountCapabilitiesZipPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateAccountCapabilitiesZipPayments").finish_non_exhaustive()
+    }
+}
+impl UpdateAccountCapabilitiesZipPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for UpdateAccountCapabilitiesZipPayments {
     fn default() -> Self {
         Self::new()
     }
@@ -4586,7 +8622,7 @@ impl UpdateAccount {
     ///
     /// Required when [account.controller.stripe_dashboard.type](/api/accounts/create#create_account-controller-dashboard-type).
     /// is `none`, which includes Custom accounts.
-    pub fn capabilities(mut self, capabilities: impl Into<CapabilitiesParam>) -> Self {
+    pub fn capabilities(mut self, capabilities: impl Into<UpdateAccountCapabilities>) -> Self {
         self.inner.capabilities = Some(capabilities.into());
         self
     }
@@ -4821,32 +8857,6 @@ impl std::fmt::Debug for MonthlyEstimatedRevenueSpecs {
 impl MonthlyEstimatedRevenueSpecs {
     pub fn new(amount: impl Into<i64>, currency: impl Into<stripe_types::Currency>) -> Self {
         Self { amount: amount.into(), currency: currency.into() }
-    }
-}
-#[derive(Copy, Clone, Eq, PartialEq)]
-#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
-#[derive(serde::Serialize)]
-pub struct CapabilityParam {
-    /// Passing true requests the capability for the account, if it is not already requested.
-    /// A requested capability may not immediately become active.
-    /// Any requirements to activate the capability are returned in the `requirements` arrays.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub requested: Option<bool>,
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CapabilityParam {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("CapabilityParam").finish_non_exhaustive()
-    }
-}
-impl CapabilityParam {
-    pub fn new() -> Self {
-        Self { requested: None }
-    }
-}
-impl Default for CapabilityParam {
-    fn default() -> Self {
-        Self::new()
     }
 }
 #[derive(Clone, Eq, PartialEq)]
@@ -5342,276 +9352,6 @@ impl TosAcceptanceSpecs {
     }
 }
 impl Default for TosAcceptanceSpecs {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-#[derive(Copy, Clone, Eq, PartialEq)]
-#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
-#[derive(serde::Serialize)]
-pub struct CapabilitiesParam {
-    /// The acss_debit_payments capability.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub acss_debit_payments: Option<CapabilityParam>,
-    /// The affirm_payments capability.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub affirm_payments: Option<CapabilityParam>,
-    /// The afterpay_clearpay_payments capability.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub afterpay_clearpay_payments: Option<CapabilityParam>,
-    /// The alma_payments capability.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub alma_payments: Option<CapabilityParam>,
-    /// The amazon_pay_payments capability.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub amazon_pay_payments: Option<CapabilityParam>,
-    /// The au_becs_debit_payments capability.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub au_becs_debit_payments: Option<CapabilityParam>,
-    /// The bacs_debit_payments capability.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub bacs_debit_payments: Option<CapabilityParam>,
-    /// The bancontact_payments capability.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub bancontact_payments: Option<CapabilityParam>,
-    /// The bank_transfer_payments capability.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub bank_transfer_payments: Option<CapabilityParam>,
-    /// The billie_payments capability.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub billie_payments: Option<CapabilityParam>,
-    /// The blik_payments capability.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub blik_payments: Option<CapabilityParam>,
-    /// The boleto_payments capability.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub boleto_payments: Option<CapabilityParam>,
-    /// The card_issuing capability.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub card_issuing: Option<CapabilityParam>,
-    /// The card_payments capability.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub card_payments: Option<CapabilityParam>,
-    /// The cartes_bancaires_payments capability.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub cartes_bancaires_payments: Option<CapabilityParam>,
-    /// The cashapp_payments capability.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub cashapp_payments: Option<CapabilityParam>,
-    /// The crypto_payments capability.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub crypto_payments: Option<CapabilityParam>,
-    /// The eps_payments capability.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub eps_payments: Option<CapabilityParam>,
-    /// The fpx_payments capability.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub fpx_payments: Option<CapabilityParam>,
-    /// The gb_bank_transfer_payments capability.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub gb_bank_transfer_payments: Option<CapabilityParam>,
-    /// The giropay_payments capability.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub giropay_payments: Option<CapabilityParam>,
-    /// The grabpay_payments capability.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub grabpay_payments: Option<CapabilityParam>,
-    /// The ideal_payments capability.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub ideal_payments: Option<CapabilityParam>,
-    /// The india_international_payments capability.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub india_international_payments: Option<CapabilityParam>,
-    /// The jcb_payments capability.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub jcb_payments: Option<CapabilityParam>,
-    /// The jp_bank_transfer_payments capability.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub jp_bank_transfer_payments: Option<CapabilityParam>,
-    /// The kakao_pay_payments capability.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub kakao_pay_payments: Option<CapabilityParam>,
-    /// The klarna_payments capability.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub klarna_payments: Option<CapabilityParam>,
-    /// The konbini_payments capability.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub konbini_payments: Option<CapabilityParam>,
-    /// The kr_card_payments capability.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub kr_card_payments: Option<CapabilityParam>,
-    /// The legacy_payments capability.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub legacy_payments: Option<CapabilityParam>,
-    /// The link_payments capability.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub link_payments: Option<CapabilityParam>,
-    /// The mb_way_payments capability.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub mb_way_payments: Option<CapabilityParam>,
-    /// The mobilepay_payments capability.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub mobilepay_payments: Option<CapabilityParam>,
-    /// The multibanco_payments capability.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub multibanco_payments: Option<CapabilityParam>,
-    /// The mx_bank_transfer_payments capability.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub mx_bank_transfer_payments: Option<CapabilityParam>,
-    /// The naver_pay_payments capability.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub naver_pay_payments: Option<CapabilityParam>,
-    /// The nz_bank_account_becs_debit_payments capability.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub nz_bank_account_becs_debit_payments: Option<CapabilityParam>,
-    /// The oxxo_payments capability.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub oxxo_payments: Option<CapabilityParam>,
-    /// The p24_payments capability.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub p24_payments: Option<CapabilityParam>,
-    /// The pay_by_bank_payments capability.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub pay_by_bank_payments: Option<CapabilityParam>,
-    /// The payco_payments capability.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub payco_payments: Option<CapabilityParam>,
-    /// The paynow_payments capability.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub paynow_payments: Option<CapabilityParam>,
-    /// The payto_payments capability.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub payto_payments: Option<CapabilityParam>,
-    /// The pix_payments capability.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub pix_payments: Option<CapabilityParam>,
-    /// The promptpay_payments capability.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub promptpay_payments: Option<CapabilityParam>,
-    /// The revolut_pay_payments capability.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub revolut_pay_payments: Option<CapabilityParam>,
-    /// The samsung_pay_payments capability.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub samsung_pay_payments: Option<CapabilityParam>,
-    /// The satispay_payments capability.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub satispay_payments: Option<CapabilityParam>,
-    /// The sepa_bank_transfer_payments capability.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub sepa_bank_transfer_payments: Option<CapabilityParam>,
-    /// The sepa_debit_payments capability.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub sepa_debit_payments: Option<CapabilityParam>,
-    /// The sofort_payments capability.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub sofort_payments: Option<CapabilityParam>,
-    /// The swish_payments capability.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub swish_payments: Option<CapabilityParam>,
-    /// The tax_reporting_us_1099_k capability.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_reporting_us_1099_k: Option<CapabilityParam>,
-    /// The tax_reporting_us_1099_misc capability.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub tax_reporting_us_1099_misc: Option<CapabilityParam>,
-    /// The transfers capability.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub transfers: Option<CapabilityParam>,
-    /// The treasury capability.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub treasury: Option<CapabilityParam>,
-    /// The twint_payments capability.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub twint_payments: Option<CapabilityParam>,
-    /// The upi_payments capability.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub upi_payments: Option<CapabilityParam>,
-    /// The us_bank_account_ach_payments capability.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub us_bank_account_ach_payments: Option<CapabilityParam>,
-    /// The us_bank_transfer_payments capability.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub us_bank_transfer_payments: Option<CapabilityParam>,
-    /// The zip_payments capability.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub zip_payments: Option<CapabilityParam>,
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for CapabilitiesParam {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("CapabilitiesParam").finish_non_exhaustive()
-    }
-}
-impl CapabilitiesParam {
-    pub fn new() -> Self {
-        Self {
-            acss_debit_payments: None,
-            affirm_payments: None,
-            afterpay_clearpay_payments: None,
-            alma_payments: None,
-            amazon_pay_payments: None,
-            au_becs_debit_payments: None,
-            bacs_debit_payments: None,
-            bancontact_payments: None,
-            bank_transfer_payments: None,
-            billie_payments: None,
-            blik_payments: None,
-            boleto_payments: None,
-            card_issuing: None,
-            card_payments: None,
-            cartes_bancaires_payments: None,
-            cashapp_payments: None,
-            crypto_payments: None,
-            eps_payments: None,
-            fpx_payments: None,
-            gb_bank_transfer_payments: None,
-            giropay_payments: None,
-            grabpay_payments: None,
-            ideal_payments: None,
-            india_international_payments: None,
-            jcb_payments: None,
-            jp_bank_transfer_payments: None,
-            kakao_pay_payments: None,
-            klarna_payments: None,
-            konbini_payments: None,
-            kr_card_payments: None,
-            legacy_payments: None,
-            link_payments: None,
-            mb_way_payments: None,
-            mobilepay_payments: None,
-            multibanco_payments: None,
-            mx_bank_transfer_payments: None,
-            naver_pay_payments: None,
-            nz_bank_account_becs_debit_payments: None,
-            oxxo_payments: None,
-            p24_payments: None,
-            pay_by_bank_payments: None,
-            payco_payments: None,
-            paynow_payments: None,
-            payto_payments: None,
-            pix_payments: None,
-            promptpay_payments: None,
-            revolut_pay_payments: None,
-            samsung_pay_payments: None,
-            satispay_payments: None,
-            sepa_bank_transfer_payments: None,
-            sepa_debit_payments: None,
-            sofort_payments: None,
-            swish_payments: None,
-            tax_reporting_us_1099_k: None,
-            tax_reporting_us_1099_misc: None,
-            transfers: None,
-            treasury: None,
-            twint_payments: None,
-            upi_payments: None,
-            us_bank_account_ach_payments: None,
-            us_bank_transfer_payments: None,
-            zip_payments: None,
-        }
-    }
-}
-impl Default for CapabilitiesParam {
     fn default() -> Self {
         Self::new()
     }

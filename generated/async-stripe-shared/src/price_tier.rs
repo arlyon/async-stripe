@@ -77,11 +77,11 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
-                flat_amount: Deserialize::default(),
-                flat_amount_decimal: Deserialize::default(),
-                unit_amount: Deserialize::default(),
-                unit_amount_decimal: Deserialize::default(),
-                up_to: Deserialize::default(),
+                flat_amount: Some(None),
+                flat_amount_decimal: Some(None),
+                unit_amount: Some(None),
+                unit_amount_decimal: Some(None),
+                up_to: Some(None),
             }
         }
 
