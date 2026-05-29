@@ -4,6 +4,8 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct SubscriptionScheduleAddInvoiceItem {
+    /// Controls whether discounts apply to this invoice item. Defaults to true if no value is provided.
+    pub discountable: Option<bool>,
     /// The stackable discounts that will be applied to the item.
     pub discounts: Vec<stripe_shared::DiscountsResourceStackableDiscountWithDiscountEnd>,
     /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
@@ -25,6 +27,7 @@ impl std::fmt::Debug for SubscriptionScheduleAddInvoiceItem {
 }
 #[doc(hidden)]
 pub struct SubscriptionScheduleAddInvoiceItemBuilder {
+    discountable: Option<Option<bool>>,
     discounts: Option<Vec<stripe_shared::DiscountsResourceStackableDiscountWithDiscountEnd>>,
     metadata: Option<Option<std::collections::HashMap<String, String>>>,
     period: Option<stripe_shared::SubscriptionScheduleAddInvoiceItemPeriod>,
@@ -73,6 +76,7 @@ const _: () = {
         type Out = SubscriptionScheduleAddInvoiceItem;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
+                "discountable" => Deserialize::begin(&mut self.discountable),
                 "discounts" => Deserialize::begin(&mut self.discounts),
                 "metadata" => Deserialize::begin(&mut self.metadata),
                 "period" => Deserialize::begin(&mut self.period),
@@ -85,6 +89,7 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
+                discountable: Some(None),
                 discounts: None,
                 metadata: Some(None),
                 period: None,
@@ -96,6 +101,7 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
+                Some(discountable),
                 Some(discounts),
                 Some(metadata),
                 Some(period),
@@ -103,6 +109,7 @@ const _: () = {
                 Some(quantity),
                 Some(tax_rates),
             ) = (
+                self.discountable,
                 self.discounts.take(),
                 self.metadata.take(),
                 self.period.take(),
@@ -113,7 +120,15 @@ const _: () = {
             else {
                 return None;
             };
-            Some(Self::Out { discounts, metadata, period, price, quantity, tax_rates })
+            Some(Self::Out {
+                discountable,
+                discounts,
+                metadata,
+                period,
+                price,
+                quantity,
+                tax_rates,
+            })
         }
     }
 
@@ -140,6 +155,7 @@ const _: () = {
             let mut b = SubscriptionScheduleAddInvoiceItemBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
+                    "discountable" => b.discountable = FromValueOpt::from_value(v),
                     "discounts" => b.discounts = FromValueOpt::from_value(v),
                     "metadata" => b.metadata = FromValueOpt::from_value(v),
                     "period" => b.period = FromValueOpt::from_value(v),

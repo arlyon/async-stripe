@@ -8,8 +8,16 @@ pub struct SubscriptionsResourcePendingUpdate {
     /// If the update is applied, determines the date of the first full invoice, and, for plans with `month` or `year` intervals, the day of the month for subsequent invoices.
     /// The timestamp is in UTC format.
     pub billing_cycle_anchor: Option<stripe_types::Timestamp>,
+    /// The pending subscription-level discount that will be applied when the pending update is applied.
+    pub discount: Option<stripe_shared::Discount>,
+    /// The discounts that will be applied to the subscription when the pending update is applied.
+    /// Use `expand[]=discounts` to expand each discount.
+    pub discounts: Option<Vec<stripe_types::Expandable<stripe_shared::Discount>>>,
     /// The point after which the changes reflected by this update will be discarded and no longer applied.
     pub expires_at: stripe_types::Timestamp,
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
+    /// This can be useful for storing additional information about the object in a structured format.
+    pub metadata: Option<std::collections::HashMap<String, String>>,
     /// List of subscription items, each with an attached plan, that will be set if the update is applied.
     pub subscription_items: Option<Vec<stripe_shared::SubscriptionItem>>,
     /// Unix timestamp representing the end of the trial period the customer will get before being charged for the first time, if the update is applied.
@@ -29,7 +37,10 @@ impl std::fmt::Debug for SubscriptionsResourcePendingUpdate {
 #[doc(hidden)]
 pub struct SubscriptionsResourcePendingUpdateBuilder {
     billing_cycle_anchor: Option<Option<stripe_types::Timestamp>>,
+    discount: Option<Option<stripe_shared::Discount>>,
+    discounts: Option<Option<Vec<stripe_types::Expandable<stripe_shared::Discount>>>>,
     expires_at: Option<stripe_types::Timestamp>,
+    metadata: Option<Option<std::collections::HashMap<String, String>>>,
     subscription_items: Option<Option<Vec<stripe_shared::SubscriptionItem>>>,
     trial_end: Option<Option<stripe_types::Timestamp>>,
     trial_from_plan: Option<Option<bool>>,
@@ -76,7 +87,10 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "billing_cycle_anchor" => Deserialize::begin(&mut self.billing_cycle_anchor),
+                "discount" => Deserialize::begin(&mut self.discount),
+                "discounts" => Deserialize::begin(&mut self.discounts),
                 "expires_at" => Deserialize::begin(&mut self.expires_at),
+                "metadata" => Deserialize::begin(&mut self.metadata),
                 "subscription_items" => Deserialize::begin(&mut self.subscription_items),
                 "trial_end" => Deserialize::begin(&mut self.trial_end),
                 "trial_from_plan" => Deserialize::begin(&mut self.trial_from_plan),
@@ -87,7 +101,10 @@ const _: () = {
         fn deser_default() -> Self {
             Self {
                 billing_cycle_anchor: Some(None),
+                discount: Some(None),
+                discounts: Some(None),
                 expires_at: None,
+                metadata: Some(None),
                 subscription_items: Some(None),
                 trial_end: Some(None),
                 trial_from_plan: Some(None),
@@ -97,13 +114,19 @@ const _: () = {
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
                 Some(billing_cycle_anchor),
+                Some(discount),
+                Some(discounts),
                 Some(expires_at),
+                Some(metadata),
                 Some(subscription_items),
                 Some(trial_end),
                 Some(trial_from_plan),
             ) = (
                 self.billing_cycle_anchor,
+                self.discount.take(),
+                self.discounts.take(),
                 self.expires_at,
+                self.metadata.take(),
                 self.subscription_items.take(),
                 self.trial_end,
                 self.trial_from_plan,
@@ -113,7 +136,10 @@ const _: () = {
             };
             Some(Self::Out {
                 billing_cycle_anchor,
+                discount,
+                discounts,
                 expires_at,
+                metadata,
                 subscription_items,
                 trial_end,
                 trial_from_plan,
@@ -145,7 +171,10 @@ const _: () = {
             for (k, v) in obj {
                 match k.as_str() {
                     "billing_cycle_anchor" => b.billing_cycle_anchor = FromValueOpt::from_value(v),
+                    "discount" => b.discount = FromValueOpt::from_value(v),
+                    "discounts" => b.discounts = FromValueOpt::from_value(v),
                     "expires_at" => b.expires_at = FromValueOpt::from_value(v),
+                    "metadata" => b.metadata = FromValueOpt::from_value(v),
                     "subscription_items" => b.subscription_items = FromValueOpt::from_value(v),
                     "trial_end" => b.trial_end = FromValueOpt::from_value(v),
                     "trial_from_plan" => b.trial_from_plan = FromValueOpt::from_value(v),

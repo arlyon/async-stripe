@@ -3,6 +3,7 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct SetupIntentNextAction {
+    pub blik_authorize: Option<stripe_shared::PaymentIntentNextActionBlikAuthorize>,
     pub cashapp_handle_redirect_or_display_qr_code:
         Option<stripe_shared::PaymentIntentNextActionCashappHandleRedirectOrDisplayQrCode>,
     pub pix_display_qr_code: Option<stripe_shared::SetupIntentNextActionPixDisplayQrCode>,
@@ -32,6 +33,7 @@ impl std::fmt::Debug for SetupIntentNextAction {
 }
 #[doc(hidden)]
 pub struct SetupIntentNextActionBuilder {
+    blik_authorize: Option<Option<stripe_shared::PaymentIntentNextActionBlikAuthorize>>,
     cashapp_handle_redirect_or_display_qr_code:
         Option<Option<stripe_shared::PaymentIntentNextActionCashappHandleRedirectOrDisplayQrCode>>,
     pix_display_qr_code: Option<Option<stripe_shared::SetupIntentNextActionPixDisplayQrCode>>,
@@ -84,6 +86,7 @@ const _: () = {
         type Out = SetupIntentNextAction;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
+                "blik_authorize" => Deserialize::begin(&mut self.blik_authorize),
                 "cashapp_handle_redirect_or_display_qr_code" => {
                     Deserialize::begin(&mut self.cashapp_handle_redirect_or_display_qr_code)
                 }
@@ -103,6 +106,7 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
+                blik_authorize: Some(None),
                 cashapp_handle_redirect_or_display_qr_code: Some(None),
                 pix_display_qr_code: Some(None),
                 redirect_to_url: Some(None),
@@ -115,6 +119,7 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
+                Some(blik_authorize),
                 Some(cashapp_handle_redirect_or_display_qr_code),
                 Some(pix_display_qr_code),
                 Some(redirect_to_url),
@@ -123,6 +128,7 @@ const _: () = {
                 Some(use_stripe_sdk),
                 Some(verify_with_microdeposits),
             ) = (
+                self.blik_authorize,
                 self.cashapp_handle_redirect_or_display_qr_code.take(),
                 self.pix_display_qr_code.take(),
                 self.redirect_to_url.take(),
@@ -135,6 +141,7 @@ const _: () = {
                 return None;
             };
             Some(Self::Out {
+                blik_authorize,
                 cashapp_handle_redirect_or_display_qr_code,
                 pix_display_qr_code,
                 redirect_to_url,
@@ -169,6 +176,7 @@ const _: () = {
             let mut b = SetupIntentNextActionBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
+                    "blik_authorize" => b.blik_authorize = FromValueOpt::from_value(v),
                     "cashapp_handle_redirect_or_display_qr_code" => {
                         b.cashapp_handle_redirect_or_display_qr_code = FromValueOpt::from_value(v)
                     }

@@ -6,6 +6,8 @@
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct SubscriptionItem {
+    /// The time period the subscription item has been billed for.
+    pub billed_until: Option<stripe_types::Timestamp>,
     /// Define thresholds at which an invoice will be sent, and the related subscription advanced to a new billing period.
     pub billing_thresholds: Option<stripe_shared::SubscriptionItemBillingThresholds>,
     /// Time at which the object was created. Measured in seconds since the Unix epoch.
@@ -41,6 +43,7 @@ impl std::fmt::Debug for SubscriptionItem {
 }
 #[doc(hidden)]
 pub struct SubscriptionItemBuilder {
+    billed_until: Option<Option<stripe_types::Timestamp>>,
     billing_thresholds: Option<Option<stripe_shared::SubscriptionItemBillingThresholds>>,
     created: Option<i64>,
     current_period_end: Option<stripe_types::Timestamp>,
@@ -95,6 +98,7 @@ const _: () = {
         type Out = SubscriptionItem;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
+                "billed_until" => Deserialize::begin(&mut self.billed_until),
                 "billing_thresholds" => Deserialize::begin(&mut self.billing_thresholds),
                 "created" => Deserialize::begin(&mut self.created),
                 "current_period_end" => Deserialize::begin(&mut self.current_period_end),
@@ -113,6 +117,7 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
+                billed_until: Some(None),
                 billing_thresholds: Some(None),
                 created: None,
                 current_period_end: None,
@@ -130,6 +135,7 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
+                Some(billed_until),
                 Some(billing_thresholds),
                 Some(created),
                 Some(current_period_end),
@@ -143,6 +149,7 @@ const _: () = {
                 Some(subscription),
                 Some(tax_rates),
             ) = (
+                self.billed_until,
                 self.billing_thresholds,
                 self.created,
                 self.current_period_end,
@@ -160,6 +167,7 @@ const _: () = {
                 return None;
             };
             Some(Self::Out {
+                billed_until,
                 billing_thresholds,
                 created,
                 current_period_end,
@@ -199,6 +207,7 @@ const _: () = {
             let mut b = SubscriptionItemBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
+                    "billed_until" => b.billed_until = FromValueOpt::from_value(v),
                     "billing_thresholds" => b.billing_thresholds = FromValueOpt::from_value(v),
                     "created" => b.created = FromValueOpt::from_value(v),
                     "current_period_end" => b.current_period_end = FromValueOpt::from_value(v),
@@ -222,7 +231,8 @@ const _: () = {
 impl serde::Serialize for SubscriptionItem {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("SubscriptionItem", 13)?;
+        let mut s = s.serialize_struct("SubscriptionItem", 14)?;
+        s.serialize_field("billed_until", &self.billed_until)?;
         s.serialize_field("billing_thresholds", &self.billing_thresholds)?;
         s.serialize_field("created", &self.created)?;
         s.serialize_field("current_period_end", &self.current_period_end)?;

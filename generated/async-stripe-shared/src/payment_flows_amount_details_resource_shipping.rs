@@ -7,10 +7,10 @@ pub struct PaymentFlowsAmountDetailsResourceShipping {
     /// An integer greater than or equal to 0.
     pub amount: Option<i64>,
     /// If a physical good is being shipped, the postal code of where it is being shipped from.
-    /// At most 10 alphanumeric characters long, hyphens are allowed.
+    /// At most 10 alphanumeric characters long, hyphens and spaces are allowed.
     pub from_postal_code: Option<String>,
     /// If a physical good is being shipped, the postal code of where it is being shipped to.
-    /// At most 10 alphanumeric characters long, hyphens are allowed.
+    /// At most 10 alphanumeric characters long, hyphens and spaces are allowed.
     pub to_postal_code: Option<String>,
 }
 #[cfg(feature = "redact-generated-debug")]

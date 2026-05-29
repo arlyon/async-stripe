@@ -52,6 +52,8 @@ pub struct Invoice {
     pub amount_overpaid: i64,
     /// The amount, in cents (or local equivalent), that was paid.
     pub amount_paid: i64,
+    /// Amount, in cents (or local equivalent), that was paid on the invoice outside of Stripe.
+    pub amount_paid_off_stripe: Option<i64>,
     /// The difference between amount_due and amount_paid, in cents (or local equivalent).
     pub amount_remaining: i64,
     /// This is the sum of all the shipping amounts.
@@ -274,6 +276,7 @@ pub struct InvoiceBuilder {
     amount_due: Option<i64>,
     amount_overpaid: Option<i64>,
     amount_paid: Option<i64>,
+    amount_paid_off_stripe: Option<Option<i64>>,
     amount_remaining: Option<i64>,
     amount_shipping: Option<i64>,
     application: Option<Option<stripe_types::Expandable<stripe_shared::Application>>>,
@@ -391,6 +394,7 @@ const _: () = {
                 "amount_due" => Deserialize::begin(&mut self.amount_due),
                 "amount_overpaid" => Deserialize::begin(&mut self.amount_overpaid),
                 "amount_paid" => Deserialize::begin(&mut self.amount_paid),
+                "amount_paid_off_stripe" => Deserialize::begin(&mut self.amount_paid_off_stripe),
                 "amount_remaining" => Deserialize::begin(&mut self.amount_remaining),
                 "amount_shipping" => Deserialize::begin(&mut self.amount_shipping),
                 "application" => Deserialize::begin(&mut self.application),
@@ -482,6 +486,7 @@ const _: () = {
                 amount_due: None,
                 amount_overpaid: None,
                 amount_paid: None,
+                amount_paid_off_stripe: Some(None),
                 amount_remaining: None,
                 amount_shipping: None,
                 application: Some(None),
@@ -564,6 +569,7 @@ const _: () = {
                 Some(amount_due),
                 Some(amount_overpaid),
                 Some(amount_paid),
+                Some(amount_paid_off_stripe),
                 Some(amount_remaining),
                 Some(amount_shipping),
                 Some(application),
@@ -642,6 +648,7 @@ const _: () = {
                 self.amount_due,
                 self.amount_overpaid,
                 self.amount_paid,
+                self.amount_paid_off_stripe,
                 self.amount_remaining,
                 self.amount_shipping,
                 self.application.take(),
@@ -724,6 +731,7 @@ const _: () = {
                 amount_due,
                 amount_overpaid,
                 amount_paid,
+                amount_paid_off_stripe,
                 amount_remaining,
                 amount_shipping,
                 application,
@@ -828,6 +836,9 @@ const _: () = {
                     "amount_due" => b.amount_due = FromValueOpt::from_value(v),
                     "amount_overpaid" => b.amount_overpaid = FromValueOpt::from_value(v),
                     "amount_paid" => b.amount_paid = FromValueOpt::from_value(v),
+                    "amount_paid_off_stripe" => {
+                        b.amount_paid_off_stripe = FromValueOpt::from_value(v)
+                    }
                     "amount_remaining" => b.amount_remaining = FromValueOpt::from_value(v),
                     "amount_shipping" => b.amount_shipping = FromValueOpt::from_value(v),
                     "application" => b.application = FromValueOpt::from_value(v),
@@ -928,13 +939,14 @@ const _: () = {
 impl serde::Serialize for Invoice {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("Invoice", 78)?;
+        let mut s = s.serialize_struct("Invoice", 79)?;
         s.serialize_field("account_country", &self.account_country)?;
         s.serialize_field("account_name", &self.account_name)?;
         s.serialize_field("account_tax_ids", &self.account_tax_ids)?;
         s.serialize_field("amount_due", &self.amount_due)?;
         s.serialize_field("amount_overpaid", &self.amount_overpaid)?;
         s.serialize_field("amount_paid", &self.amount_paid)?;
+        s.serialize_field("amount_paid_off_stripe", &self.amount_paid_off_stripe)?;
         s.serialize_field("amount_remaining", &self.amount_remaining)?;
         s.serialize_field("amount_shipping", &self.amount_shipping)?;
         s.serialize_field("application", &self.application)?;

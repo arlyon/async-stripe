@@ -383,6 +383,7 @@
       "payments": {
         "debit_negative_balances": null,
         "payouts": {
+          "automatic_transfer_rules_by_currency": null,
           "minimum_balance_by_currency": null,
           "schedule": {
             "interval": null
@@ -391,7 +392,12 @@
           "status": "disabled"
         },
         "settlement_timing": {
-          "delay_days": 1647351405
+          "delay_days": 1647351405,
+          "start_of_day": {
+            "hour": 3208676,
+            "minutes": 1064901855,
+            "timezone": "timezone"
+          }
         }
       }
     },
@@ -3885,6 +3891,15 @@
         "transfer_group": null
       },
       "payment_method_collection": "if_required",
+      "payment_method_options": {
+        "card": {
+          "restrictions": {
+            "brands_blocked": [
+              "discover_global_network"
+            ]
+          }
+        }
+      },
       "payment_method_types": null,
       "phone_number_collection": {
         "enabled": false
@@ -4786,6 +4801,7 @@
     },
     "radar.payment_evaluation": {
       "created_at": 1369680106,
+      "events": [],
       "id": "obj_123",
       "livemode": true,
       "metadata": null,
@@ -5268,6 +5284,21 @@
         "flexible": {},
         "type": "classic"
       },
+      "billing_schedules": [
+        {
+          "applies_to": null,
+          "bill_until": {
+            "computed_timestamp": 2082605468,
+            "duration": {
+              "interval": "month",
+              "interval_count": null
+            },
+            "timestamp": null,
+            "type": "duration"
+          },
+          "key": "key"
+        }
+      ],
       "billing_thresholds": {
         "amount_gte": null,
         "reset_billing_cycle_anchor": null
@@ -5422,7 +5453,27 @@
       "pending_setup_intent": null,
       "pending_update": {
         "billing_cycle_anchor": null,
+        "discount": {
+          "checkout_session": null,
+          "customer": null,
+          "customer_account": null,
+          "end": null,
+          "id": "obj_123",
+          "invoice": null,
+          "invoice_item": null,
+          "object": "discount",
+          "promotion_code": null,
+          "source": {
+            "coupon": null,
+            "type": "coupon"
+          },
+          "start": 109757538,
+          "subscription": null,
+          "subscription_item": null
+        },
+        "discounts": [],
         "expires_at": 833811170,
+        "metadata": null,
         "subscription_items": null,
         "trial_end": null,
         "trial_from_plan": null
@@ -5968,6 +6019,9 @@
     },
     "terminal.reader": {
       "action": {
+        "api_error": {
+          "type": "idempotency_error"
+        },
         "failure_code": null,
         "failure_message": null,
         "status": "failed",
@@ -5985,6 +6039,9 @@
       "object": "terminal.reader",
       "serial_number": "123-456-789",
       "status": "online"
+    },
+    "terminal.refund": {
+      "object": "terminal.refund"
     },
     "test_helpers.test_clock": {
       "created": 1234567890,
@@ -6634,5 +6691,5 @@
       "url": "https://example.com/my/webhook/endpoint"
     }
   },
-  "version": "v2274"
+  "version": "v2277"
 }

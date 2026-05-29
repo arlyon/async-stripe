@@ -375,6 +375,7 @@ pub enum ApiErrorsCode {
     PaymentMethodInvalidParameter,
     PaymentMethodInvalidParameterTestmode,
     PaymentMethodMicrodepositFailed,
+    PaymentMethodMicrodepositProcessingError,
     PaymentMethodMicrodepositVerificationAmountsInvalid,
     PaymentMethodMicrodepositVerificationAmountsMismatch,
     PaymentMethodMicrodepositVerificationAttemptsExceeded,
@@ -415,6 +416,7 @@ pub enum ApiErrorsCode {
     SetupIntentUnexpectedState,
     ShippingAddressInvalid,
     ShippingCalculationFailed,
+    SiretInvalid,
     SkuInactive,
     StateUnsupported,
     StatusTransitionInvalid,
@@ -584,6 +586,9 @@ impl ApiErrorsCode {
             PaymentMethodInvalidParameter => "payment_method_invalid_parameter",
             PaymentMethodInvalidParameterTestmode => "payment_method_invalid_parameter_testmode",
             PaymentMethodMicrodepositFailed => "payment_method_microdeposit_failed",
+            PaymentMethodMicrodepositProcessingError => {
+                "payment_method_microdeposit_processing_error"
+            }
             PaymentMethodMicrodepositVerificationAmountsInvalid => {
                 "payment_method_microdeposit_verification_amounts_invalid"
             }
@@ -636,6 +641,7 @@ impl ApiErrorsCode {
             SetupIntentUnexpectedState => "setup_intent_unexpected_state",
             ShippingAddressInvalid => "shipping_address_invalid",
             ShippingCalculationFailed => "shipping_calculation_failed",
+            SiretInvalid => "siret_invalid",
             SkuInactive => "sku_inactive",
             StateUnsupported => "state_unsupported",
             StatusTransitionInvalid => "status_transition_invalid",
@@ -820,6 +826,9 @@ impl std::str::FromStr for ApiErrorsCode {
                 Ok(PaymentMethodInvalidParameterTestmode)
             }
             "payment_method_microdeposit_failed" => Ok(PaymentMethodMicrodepositFailed),
+            "payment_method_microdeposit_processing_error" => {
+                Ok(PaymentMethodMicrodepositProcessingError)
+            }
             "payment_method_microdeposit_verification_amounts_invalid" => {
                 Ok(PaymentMethodMicrodepositVerificationAmountsInvalid)
             }
@@ -872,6 +881,7 @@ impl std::str::FromStr for ApiErrorsCode {
             "setup_intent_unexpected_state" => Ok(SetupIntentUnexpectedState),
             "shipping_address_invalid" => Ok(ShippingAddressInvalid),
             "shipping_calculation_failed" => Ok(ShippingCalculationFailed),
+            "siret_invalid" => Ok(SiretInvalid),
             "sku_inactive" => Ok(SkuInactive),
             "state_unsupported" => Ok(StateUnsupported),
             "status_transition_invalid" => Ok(StatusTransitionInvalid),

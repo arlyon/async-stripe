@@ -174,6 +174,7 @@ pub use stripe_shared::legal_entity_registration_date::*;
 pub use stripe_shared::legal_entity_representative_declaration::*;
 pub use stripe_shared::legal_entity_ubo_declaration::*;
 pub mod login_link;
+pub use stripe_shared::payment_data::*;
 pub mod person;
 pub use stripe_shared::person::*;
 pub use stripe_shared::person_additional_tos_acceptance::*;

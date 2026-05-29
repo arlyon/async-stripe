@@ -118,6 +118,10 @@ pub mod terminal_reader_reader_resource_email;
 #[doc(inline)]
 pub use terminal_reader_reader_resource_email::*;
 #[doc(hidden)]
+pub mod terminal_reader_reader_resource_file_metadata;
+#[doc(inline)]
+pub use terminal_reader_reader_resource_file_metadata::*;
+#[doc(hidden)]
 pub mod terminal_reader_reader_resource_input;
 #[doc(inline)]
 pub use terminal_reader_reader_resource_input::*;
@@ -133,6 +137,10 @@ pub use terminal_reader_reader_resource_numeric::*;
 pub mod terminal_reader_reader_resource_phone;
 #[doc(inline)]
 pub use terminal_reader_reader_resource_phone::*;
+#[doc(hidden)]
+pub mod terminal_reader_reader_resource_print_content;
+#[doc(inline)]
+pub use terminal_reader_reader_resource_print_content::*;
 #[doc(hidden)]
 pub mod terminal_reader_reader_resource_process_config;
 #[doc(inline)]

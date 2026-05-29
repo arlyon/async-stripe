@@ -3,6 +3,13 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct BalanceSettingsResourcePayouts {
+    /// Configures per-currency rules for automatically transferring funds from the payments balance to a FinancialAccount.
+    pub automatic_transfer_rules_by_currency: Option<
+        std::collections::HashMap<
+            String,
+            Vec<stripe_core::BalanceSettingsResourceAutomaticTransferRule>,
+        >,
+    >,
     /// The minimum balance amount to retain per currency after automatic payouts.
     /// Only funds that exceed these amounts are paid out.
     /// Learn more about the [minimum balances for automatic payouts](/payouts/minimum-balances-for-automatic-payouts).
@@ -24,6 +31,14 @@ impl std::fmt::Debug for BalanceSettingsResourcePayouts {
 }
 #[doc(hidden)]
 pub struct BalanceSettingsResourcePayoutsBuilder {
+    automatic_transfer_rules_by_currency: Option<
+        Option<
+            std::collections::HashMap<
+                String,
+                Vec<stripe_core::BalanceSettingsResourceAutomaticTransferRule>,
+            >,
+        >,
+    >,
     minimum_balance_by_currency: Option<Option<std::collections::HashMap<String, i64>>>,
     schedule: Option<Option<stripe_core::BalanceSettingsResourcePayoutSchedule>>,
     statement_descriptor: Option<Option<String>>,
@@ -70,6 +85,9 @@ const _: () = {
         type Out = BalanceSettingsResourcePayouts;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
+                "automatic_transfer_rules_by_currency" => {
+                    Deserialize::begin(&mut self.automatic_transfer_rules_by_currency)
+                }
                 "minimum_balance_by_currency" => {
                     Deserialize::begin(&mut self.minimum_balance_by_currency)
                 }
@@ -82,6 +100,7 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
+                automatic_transfer_rules_by_currency: Some(None),
                 minimum_balance_by_currency: Some(None),
                 schedule: Some(None),
                 statement_descriptor: Some(None),
@@ -91,11 +110,13 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
+                Some(automatic_transfer_rules_by_currency),
                 Some(minimum_balance_by_currency),
                 Some(schedule),
                 Some(statement_descriptor),
                 Some(status),
             ) = (
+                self.automatic_transfer_rules_by_currency.take(),
                 self.minimum_balance_by_currency.take(),
                 self.schedule.take(),
                 self.statement_descriptor.take(),
@@ -104,7 +125,13 @@ const _: () = {
             else {
                 return None;
             };
-            Some(Self::Out { minimum_balance_by_currency, schedule, statement_descriptor, status })
+            Some(Self::Out {
+                automatic_transfer_rules_by_currency,
+                minimum_balance_by_currency,
+                schedule,
+                statement_descriptor,
+                status,
+            })
         }
     }
 
@@ -131,6 +158,9 @@ const _: () = {
             let mut b = BalanceSettingsResourcePayoutsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
+                    "automatic_transfer_rules_by_currency" => {
+                        b.automatic_transfer_rules_by_currency = FromValueOpt::from_value(v)
+                    }
                     "minimum_balance_by_currency" => {
                         b.minimum_balance_by_currency = FromValueOpt::from_value(v)
                     }

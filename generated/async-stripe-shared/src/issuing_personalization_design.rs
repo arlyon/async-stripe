@@ -5,6 +5,9 @@
 pub struct IssuingPersonalizationDesign {
     /// The file for the card logo to use with physical bundles that support card logos.
     /// Must have a `purpose` value of `issuing_logo`.
+    /// Image must be in PNG format with dimensions of 1000px by 200px.
+    /// It must be a binary (black and white) image containing a black logo on a white background.
+    /// We don't accept grayscale.
     pub card_logo: Option<stripe_types::Expandable<stripe_shared::File>>,
     /// Hash containing carrier text, for use with physical bundles that support carrier text.
     pub carrier_text: Option<stripe_shared::IssuingPersonalizationDesignCarrierText>,

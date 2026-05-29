@@ -871,6 +871,9 @@ pub struct CreateAccountCapabilities {
     /// The billie_payments capability.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billie_payments: Option<CreateAccountCapabilitiesBilliePayments>,
+    /// The bizum_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bizum_payments: Option<CreateAccountCapabilitiesBizumPayments>,
     /// The blik_payments capability.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub blik_payments: Option<CreateAccountCapabilitiesBlikPayments>,
@@ -989,6 +992,9 @@ pub struct CreateAccountCapabilities {
     /// The satispay_payments capability.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub satispay_payments: Option<CreateAccountCapabilitiesSatispayPayments>,
+    /// The scalapay_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub scalapay_payments: Option<CreateAccountCapabilitiesScalapayPayments>,
     /// The sepa_bank_transfer_payments capability.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sepa_bank_transfer_payments: Option<CreateAccountCapabilitiesSepaBankTransferPayments>,
@@ -1052,6 +1058,7 @@ impl CreateAccountCapabilities {
             bancontact_payments: None,
             bank_transfer_payments: None,
             billie_payments: None,
+            bizum_payments: None,
             blik_payments: None,
             boleto_payments: None,
             card_issuing: None,
@@ -1091,6 +1098,7 @@ impl CreateAccountCapabilities {
             revolut_pay_payments: None,
             samsung_pay_payments: None,
             satispay_payments: None,
+            scalapay_payments: None,
             sepa_bank_transfer_payments: None,
             sepa_debit_payments: None,
             sofort_payments: None,
@@ -1406,6 +1414,33 @@ impl CreateAccountCapabilitiesBilliePayments {
     }
 }
 impl Default for CreateAccountCapabilitiesBilliePayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The bizum_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateAccountCapabilitiesBizumPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountCapabilitiesBizumPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountCapabilitiesBizumPayments").finish_non_exhaustive()
+    }
+}
+impl CreateAccountCapabilitiesBizumPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for CreateAccountCapabilitiesBizumPayments {
     fn default() -> Self {
         Self::new()
     }
@@ -2461,6 +2496,33 @@ impl CreateAccountCapabilitiesSatispayPayments {
     }
 }
 impl Default for CreateAccountCapabilitiesSatispayPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The scalapay_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateAccountCapabilitiesScalapayPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateAccountCapabilitiesScalapayPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateAccountCapabilitiesScalapayPayments").finish_non_exhaustive()
+    }
+}
+impl CreateAccountCapabilitiesScalapayPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for CreateAccountCapabilitiesScalapayPayments {
     fn default() -> Self {
         Self::new()
     }
@@ -5200,6 +5262,9 @@ pub struct UpdateAccountCapabilities {
     /// The billie_payments capability.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billie_payments: Option<UpdateAccountCapabilitiesBilliePayments>,
+    /// The bizum_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bizum_payments: Option<UpdateAccountCapabilitiesBizumPayments>,
     /// The blik_payments capability.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub blik_payments: Option<UpdateAccountCapabilitiesBlikPayments>,
@@ -5318,6 +5383,9 @@ pub struct UpdateAccountCapabilities {
     /// The satispay_payments capability.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub satispay_payments: Option<UpdateAccountCapabilitiesSatispayPayments>,
+    /// The scalapay_payments capability.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub scalapay_payments: Option<UpdateAccountCapabilitiesScalapayPayments>,
     /// The sepa_bank_transfer_payments capability.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sepa_bank_transfer_payments: Option<UpdateAccountCapabilitiesSepaBankTransferPayments>,
@@ -5381,6 +5449,7 @@ impl UpdateAccountCapabilities {
             bancontact_payments: None,
             bank_transfer_payments: None,
             billie_payments: None,
+            bizum_payments: None,
             blik_payments: None,
             boleto_payments: None,
             card_issuing: None,
@@ -5420,6 +5489,7 @@ impl UpdateAccountCapabilities {
             revolut_pay_payments: None,
             samsung_pay_payments: None,
             satispay_payments: None,
+            scalapay_payments: None,
             sepa_bank_transfer_payments: None,
             sepa_debit_payments: None,
             sofort_payments: None,
@@ -5735,6 +5805,33 @@ impl UpdateAccountCapabilitiesBilliePayments {
     }
 }
 impl Default for UpdateAccountCapabilitiesBilliePayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The bizum_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateAccountCapabilitiesBizumPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateAccountCapabilitiesBizumPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateAccountCapabilitiesBizumPayments").finish_non_exhaustive()
+    }
+}
+impl UpdateAccountCapabilitiesBizumPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for UpdateAccountCapabilitiesBizumPayments {
     fn default() -> Self {
         Self::new()
     }
@@ -6790,6 +6887,33 @@ impl UpdateAccountCapabilitiesSatispayPayments {
     }
 }
 impl Default for UpdateAccountCapabilitiesSatispayPayments {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The scalapay_payments capability.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateAccountCapabilitiesScalapayPayments {
+    /// Passing true requests the capability for the account, if it is not already requested.
+    /// A requested capability may not immediately become active.
+    /// Any requirements to activate the capability are returned in the `requirements` arrays.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub requested: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateAccountCapabilitiesScalapayPayments {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateAccountCapabilitiesScalapayPayments").finish_non_exhaustive()
+    }
+}
+impl UpdateAccountCapabilitiesScalapayPayments {
+    pub fn new() -> Self {
+        Self { requested: None }
+    }
+}
+impl Default for UpdateAccountCapabilitiesScalapayPayments {
     fn default() -> Self {
         Self::new()
     }

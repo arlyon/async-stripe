@@ -4,7 +4,7 @@
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentsPrimitivesPaymentRecordsResourcePaymentMethodAlmaDetailsResourceInstallments {
     /// The number of installments.
-    pub count: Option<u64>,
+    pub count: u64,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug
@@ -20,7 +20,7 @@ impl std::fmt::Debug
 #[doc(hidden)]
 pub struct PaymentsPrimitivesPaymentRecordsResourcePaymentMethodAlmaDetailsResourceInstallmentsBuilder
 {
-    count: Option<Option<u64>>,
+    count: Option<u64>,
 }
 
 #[allow(
@@ -75,7 +75,7 @@ const _: () = {
     }
 
     fn deser_default() -> Self {
-        Self { count: Some(None),
+        Self { count: None,
  }
     }
 

@@ -1000,7 +1000,7 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentIntentMandateDataCustomerAcce
     }
 }
 /// Set to `true` to indicate that the customer isn't in your checkout flow during this payment attempt and can't authenticate.
-/// Use this parameter in scenarios where you collect card details and [charge them later](https://docs.stripe.com/payments/cards/charging-saved-cards).
+/// Use this parameter in scenarios where you collect payment method details and [charge them later](https://docs.stripe.com/payments/save-during-payment).
 /// This parameter can only be used with [`confirm=true`](https://docs.stripe.com/api/payment_intents/create#create_payment_intent-confirm).
 #[derive(Copy, Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
@@ -1103,6 +1103,10 @@ pub struct CreatePaymentIntentPaymentMethodData {
     /// Billing information associated with the PaymentMethod that may be used or required by particular types of payment methods.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_details: Option<CreatePaymentIntentPaymentMethodDataBillingDetails>,
+    /// If this is a `bizum` PaymentMethod, this hash contains details about the Bizum payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub bizum: Option<miniserde::json::Value>,
     /// If this is a `blik` PaymentMethod, this hash contains details about the BLIK payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
@@ -1158,7 +1162,7 @@ pub struct CreatePaymentIntentPaymentMethodData {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
     pub kr_card: Option<miniserde::json::Value>,
-    /// If this is an `Link` PaymentMethod, this hash contains details about the Link payment method.
+    /// If this is an `Link` PaymentMethod, this hash contains details about the Link payment method (Link is also known as Onelink in the UK).
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
     pub link: Option<miniserde::json::Value>,
@@ -1236,6 +1240,10 @@ pub struct CreatePaymentIntentPaymentMethodData {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
     pub satispay: Option<miniserde::json::Value>,
+    /// If this is a Scalapay PaymentMethod, this hash contains details about the Scalapay payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub scalapay: Option<miniserde::json::Value>,
     /// If this is a `sepa_debit` PaymentMethod, this hash contains details about the SEPA debit bank account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sepa_debit: Option<CreatePaymentIntentPaymentMethodDataSepaDebit>,
@@ -1295,6 +1303,7 @@ impl CreatePaymentIntentPaymentMethodData {
             bancontact: None,
             billie: None,
             billing_details: None,
+            bizum: None,
             blik: None,
             boleto: None,
             cashapp: None,
@@ -1330,6 +1339,7 @@ impl CreatePaymentIntentPaymentMethodData {
             revolut_pay: None,
             samsung_pay: None,
             satispay: None,
+            scalapay: None,
             sepa_debit: None,
             sofort: None,
             sunbit: None,
@@ -2662,6 +2672,7 @@ pub enum CreatePaymentIntentPaymentMethodDataType {
     BacsDebit,
     Bancontact,
     Billie,
+    Bizum,
     Blik,
     Boleto,
     Cashapp,
@@ -2694,6 +2705,7 @@ pub enum CreatePaymentIntentPaymentMethodDataType {
     RevolutPay,
     SamsungPay,
     Satispay,
+    Scalapay,
     SepaDebit,
     Sofort,
     Sunbit,
@@ -2720,6 +2732,7 @@ impl CreatePaymentIntentPaymentMethodDataType {
             BacsDebit => "bacs_debit",
             Bancontact => "bancontact",
             Billie => "billie",
+            Bizum => "bizum",
             Blik => "blik",
             Boleto => "boleto",
             Cashapp => "cashapp",
@@ -2752,6 +2765,7 @@ impl CreatePaymentIntentPaymentMethodDataType {
             RevolutPay => "revolut_pay",
             SamsungPay => "samsung_pay",
             Satispay => "satispay",
+            Scalapay => "scalapay",
             SepaDebit => "sepa_debit",
             Sofort => "sofort",
             Sunbit => "sunbit",
@@ -2781,6 +2795,7 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodDataType {
             "bacs_debit" => Ok(BacsDebit),
             "bancontact" => Ok(Bancontact),
             "billie" => Ok(Billie),
+            "bizum" => Ok(Bizum),
             "blik" => Ok(Blik),
             "boleto" => Ok(Boleto),
             "cashapp" => Ok(Cashapp),
@@ -2813,6 +2828,7 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodDataType {
             "revolut_pay" => Ok(RevolutPay),
             "samsung_pay" => Ok(SamsungPay),
             "satispay" => Ok(Satispay),
+            "scalapay" => Ok(Scalapay),
             "sepa_debit" => Ok(SepaDebit),
             "sofort" => Ok(Sofort),
             "sunbit" => Ok(Sunbit),
@@ -3235,6 +3251,10 @@ pub struct CreatePaymentIntentPaymentMethodOptions {
     /// If this is a `billie` PaymentMethod, this sub-hash contains details about the Billie payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billie: Option<CreatePaymentIntentPaymentMethodOptionsBillie>,
+    /// If this is a `bizum` PaymentMethod, this sub-hash contains details about the Bizum payment method options.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub bizum: Option<miniserde::json::Value>,
     /// If this is a `blik` PaymentMethod, this sub-hash contains details about the BLIK payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub blik: Option<CreatePaymentIntentPaymentMethodOptionsBlik>,
@@ -3287,7 +3307,7 @@ pub struct CreatePaymentIntentPaymentMethodOptions {
     /// If this is a `kr_card` PaymentMethod, this sub-hash contains details about the KR Card payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub kr_card: Option<CreatePaymentIntentPaymentMethodOptionsKrCard>,
-    /// If this is a `link` PaymentMethod, this sub-hash contains details about the Link payment method options.
+    /// If this is a `link` PaymentMethod, this sub-hash contains details about the Link payment method options (Link is also known as Onelink in the UK).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub link: Option<CreatePaymentIntentPaymentMethodOptionsLink>,
     /// If this is a `mb_way` PaymentMethod, this sub-hash contains details about the MB WAY payment method options.
@@ -3342,6 +3362,9 @@ pub struct CreatePaymentIntentPaymentMethodOptions {
     /// If this is a `satispay` PaymentMethod, this sub-hash contains details about the Satispay payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub satispay: Option<CreatePaymentIntentPaymentMethodOptionsSatispay>,
+    /// If this is a `scalapay` PaymentMethod, this sub-hash contains details about the ScalaPay payment method options.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub scalapay: Option<CreatePaymentIntentPaymentMethodOptionsScalapay>,
     /// If this is a `sepa_debit` PaymentIntent, this sub-hash contains details about the SEPA Debit payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sepa_debit: Option<CreatePaymentIntentPaymentMethodOptionsSepaDebit>,
@@ -3386,6 +3409,7 @@ impl CreatePaymentIntentPaymentMethodOptions {
             bacs_debit: None,
             bancontact: None,
             billie: None,
+            bizum: None,
             blik: None,
             boleto: None,
             card: None,
@@ -3421,6 +3445,7 @@ impl CreatePaymentIntentPaymentMethodOptions {
             revolut_pay: None,
             samsung_pay: None,
             satispay: None,
+            scalapay: None,
             sepa_debit: None,
             sofort: None,
             swish: None,
@@ -10177,7 +10202,7 @@ impl<'de> serde::Deserialize<'de>
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-/// If this is a `link` PaymentMethod, this sub-hash contains details about the Link payment method options.
+/// If this is a `link` PaymentMethod, this sub-hash contains details about the Link payment method options (Link is also known as Onelink in the UK).
 #[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
@@ -13420,6 +13445,109 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodOptionsSat
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
+/// If this is a `scalapay` PaymentMethod, this sub-hash contains details about the ScalaPay payment method options.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreatePaymentIntentPaymentMethodOptionsScalapay {
+    /// Controls when the funds are captured from the customer's account.
+    ///
+    /// If provided, this parameter overrides the behavior of the top-level [capture_method](/api/payment_intents/update#update_payment_intent-capture_method) for this payment method type when finalizing the payment with this payment method type.
+    ///
+    /// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter unsets the stored value for this payment method type.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub capture_method: Option<CreatePaymentIntentPaymentMethodOptionsScalapayCaptureMethod>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsScalapay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentIntentPaymentMethodOptionsScalapay").finish_non_exhaustive()
+    }
+}
+impl CreatePaymentIntentPaymentMethodOptionsScalapay {
+    pub fn new() -> Self {
+        Self { capture_method: None }
+    }
+}
+impl Default for CreatePaymentIntentPaymentMethodOptionsScalapay {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Controls when the funds are captured from the customer's account.
+///
+/// If provided, this parameter overrides the behavior of the top-level [capture_method](/api/payment_intents/update#update_payment_intent-capture_method) for this payment method type when finalizing the payment with this payment method type.
+///
+/// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter unsets the stored value for this payment method type.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreatePaymentIntentPaymentMethodOptionsScalapayCaptureMethod {
+    Manual,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreatePaymentIntentPaymentMethodOptionsScalapayCaptureMethod {
+    pub fn as_str(&self) -> &str {
+        use CreatePaymentIntentPaymentMethodOptionsScalapayCaptureMethod::*;
+        match self {
+            Manual => "manual",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsScalapayCaptureMethod {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreatePaymentIntentPaymentMethodOptionsScalapayCaptureMethod::*;
+        match s {
+            "manual" => Ok(Manual),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePaymentIntentPaymentMethodOptionsScalapayCaptureMethod"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CreatePaymentIntentPaymentMethodOptionsScalapayCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsScalapayCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentIntentPaymentMethodOptionsScalapayCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentIntentPaymentMethodOptionsScalapayCaptureMethod))
+            .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for CreatePaymentIntentPaymentMethodOptionsScalapayCaptureMethod {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreatePaymentIntentPaymentMethodOptionsScalapayCaptureMethod {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
 /// If this is a `sepa_debit` PaymentIntent, this sub-hash contains details about the SEPA Debit payment method options.
 #[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
@@ -13954,6 +14082,7 @@ impl Default for CreatePaymentIntentPaymentMethodOptionsTwint {
 #[non_exhaustive]
 pub enum CreatePaymentIntentPaymentMethodOptionsTwintSetupFutureUsage {
     None,
+    OffSession,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
     Unknown(String),
 }
@@ -13962,6 +14091,7 @@ impl CreatePaymentIntentPaymentMethodOptionsTwintSetupFutureUsage {
         use CreatePaymentIntentPaymentMethodOptionsTwintSetupFutureUsage::*;
         match self {
             None => "none",
+            OffSession => "off_session",
             Unknown(v) => v,
         }
     }
@@ -13973,6 +14103,7 @@ impl std::str::FromStr for CreatePaymentIntentPaymentMethodOptionsTwintSetupFutu
         use CreatePaymentIntentPaymentMethodOptionsTwintSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
+            "off_session" => Ok(OffSession),
             v => {
                 tracing::warn!(
                     "Unknown value '{}' for enum '{}'",
@@ -15516,7 +15647,7 @@ impl Default for CreatePaymentIntentShippingAddress {
 }
 /// The parameters that you can use to automatically create a Transfer.
 /// Learn more about the [use case for connected accounts](https://docs.stripe.com/payments/connected-accounts).
-#[derive(Clone, Eq, PartialEq)]
+#[derive(Clone)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
 pub struct CreatePaymentIntentTransferData {
@@ -15529,11 +15660,21 @@ pub struct CreatePaymentIntentTransferData {
     /// might be a better fit for your integration.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount: Option<i64>,
+    /// An arbitrary string attached to the transfer. Often useful for displaying to users.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
     /// If specified, successful charges will be attributed to the destination
     /// account for tax reporting, and the funds from charges will be transferred
     /// to the destination account. The ID of the resulting transfer will be
     /// returned on the successful charge's `transfer` field.
     pub destination: String,
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
+    /// This can be useful for storing additional information about the object in a structured format.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<std::collections::HashMap<String, String>>,
+    /// The data with which to populate the destination payment.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payment_data: Option<TransferDataPaymentDataParams>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for CreatePaymentIntentTransferData {
@@ -15543,7 +15684,13 @@ impl std::fmt::Debug for CreatePaymentIntentTransferData {
 }
 impl CreatePaymentIntentTransferData {
     pub fn new(destination: impl Into<String>) -> Self {
-        Self { amount: None, destination: destination.into() }
+        Self {
+            amount: None,
+            description: None,
+            destination: destination.into(),
+            metadata: None,
+            payment_data: None,
+        }
     }
 }
 /// Creates a PaymentIntent object.
@@ -15702,7 +15849,7 @@ impl CreatePaymentIntent {
         self
     }
     /// Set to `true` to indicate that the customer isn't in your checkout flow during this payment attempt and can't authenticate.
-    /// Use this parameter in scenarios where you collect card details and [charge them later](https://docs.stripe.com/payments/cards/charging-saved-cards).
+    /// Use this parameter in scenarios where you collect payment method details and [charge them later](https://docs.stripe.com/payments/save-during-payment).
     /// This parameter can only be used with [`confirm=true`](https://docs.stripe.com/api/payment_intents/create#create_payment_intent-confirm).
     pub fn off_session(mut self, off_session: impl Into<CreatePaymentIntentOffSession>) -> Self {
         self.inner.off_session = Some(off_session.into());
@@ -16377,6 +16524,10 @@ pub struct UpdatePaymentIntentPaymentMethodData {
     /// Billing information associated with the PaymentMethod that may be used or required by particular types of payment methods.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_details: Option<UpdatePaymentIntentPaymentMethodDataBillingDetails>,
+    /// If this is a `bizum` PaymentMethod, this hash contains details about the Bizum payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub bizum: Option<miniserde::json::Value>,
     /// If this is a `blik` PaymentMethod, this hash contains details about the BLIK payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
@@ -16432,7 +16583,7 @@ pub struct UpdatePaymentIntentPaymentMethodData {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
     pub kr_card: Option<miniserde::json::Value>,
-    /// If this is an `Link` PaymentMethod, this hash contains details about the Link payment method.
+    /// If this is an `Link` PaymentMethod, this hash contains details about the Link payment method (Link is also known as Onelink in the UK).
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
     pub link: Option<miniserde::json::Value>,
@@ -16510,6 +16661,10 @@ pub struct UpdatePaymentIntentPaymentMethodData {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
     pub satispay: Option<miniserde::json::Value>,
+    /// If this is a Scalapay PaymentMethod, this hash contains details about the Scalapay payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub scalapay: Option<miniserde::json::Value>,
     /// If this is a `sepa_debit` PaymentMethod, this hash contains details about the SEPA debit bank account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sepa_debit: Option<UpdatePaymentIntentPaymentMethodDataSepaDebit>,
@@ -16569,6 +16724,7 @@ impl UpdatePaymentIntentPaymentMethodData {
             bancontact: None,
             billie: None,
             billing_details: None,
+            bizum: None,
             blik: None,
             boleto: None,
             cashapp: None,
@@ -16604,6 +16760,7 @@ impl UpdatePaymentIntentPaymentMethodData {
             revolut_pay: None,
             samsung_pay: None,
             satispay: None,
+            scalapay: None,
             sepa_debit: None,
             sofort: None,
             sunbit: None,
@@ -17936,6 +18093,7 @@ pub enum UpdatePaymentIntentPaymentMethodDataType {
     BacsDebit,
     Bancontact,
     Billie,
+    Bizum,
     Blik,
     Boleto,
     Cashapp,
@@ -17968,6 +18126,7 @@ pub enum UpdatePaymentIntentPaymentMethodDataType {
     RevolutPay,
     SamsungPay,
     Satispay,
+    Scalapay,
     SepaDebit,
     Sofort,
     Sunbit,
@@ -17994,6 +18153,7 @@ impl UpdatePaymentIntentPaymentMethodDataType {
             BacsDebit => "bacs_debit",
             Bancontact => "bancontact",
             Billie => "billie",
+            Bizum => "bizum",
             Blik => "blik",
             Boleto => "boleto",
             Cashapp => "cashapp",
@@ -18026,6 +18186,7 @@ impl UpdatePaymentIntentPaymentMethodDataType {
             RevolutPay => "revolut_pay",
             SamsungPay => "samsung_pay",
             Satispay => "satispay",
+            Scalapay => "scalapay",
             SepaDebit => "sepa_debit",
             Sofort => "sofort",
             Sunbit => "sunbit",
@@ -18055,6 +18216,7 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodDataType {
             "bacs_debit" => Ok(BacsDebit),
             "bancontact" => Ok(Bancontact),
             "billie" => Ok(Billie),
+            "bizum" => Ok(Bizum),
             "blik" => Ok(Blik),
             "boleto" => Ok(Boleto),
             "cashapp" => Ok(Cashapp),
@@ -18087,6 +18249,7 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodDataType {
             "revolut_pay" => Ok(RevolutPay),
             "samsung_pay" => Ok(SamsungPay),
             "satispay" => Ok(Satispay),
+            "scalapay" => Ok(Scalapay),
             "sepa_debit" => Ok(SepaDebit),
             "sofort" => Ok(Sofort),
             "sunbit" => Ok(Sunbit),
@@ -18509,6 +18672,10 @@ pub struct UpdatePaymentIntentPaymentMethodOptions {
     /// If this is a `billie` PaymentMethod, this sub-hash contains details about the Billie payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billie: Option<UpdatePaymentIntentPaymentMethodOptionsBillie>,
+    /// If this is a `bizum` PaymentMethod, this sub-hash contains details about the Bizum payment method options.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub bizum: Option<miniserde::json::Value>,
     /// If this is a `blik` PaymentMethod, this sub-hash contains details about the BLIK payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub blik: Option<UpdatePaymentIntentPaymentMethodOptionsBlik>,
@@ -18561,7 +18728,7 @@ pub struct UpdatePaymentIntentPaymentMethodOptions {
     /// If this is a `kr_card` PaymentMethod, this sub-hash contains details about the KR Card payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub kr_card: Option<UpdatePaymentIntentPaymentMethodOptionsKrCard>,
-    /// If this is a `link` PaymentMethod, this sub-hash contains details about the Link payment method options.
+    /// If this is a `link` PaymentMethod, this sub-hash contains details about the Link payment method options (Link is also known as Onelink in the UK).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub link: Option<UpdatePaymentIntentPaymentMethodOptionsLink>,
     /// If this is a `mb_way` PaymentMethod, this sub-hash contains details about the MB WAY payment method options.
@@ -18616,6 +18783,9 @@ pub struct UpdatePaymentIntentPaymentMethodOptions {
     /// If this is a `satispay` PaymentMethod, this sub-hash contains details about the Satispay payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub satispay: Option<UpdatePaymentIntentPaymentMethodOptionsSatispay>,
+    /// If this is a `scalapay` PaymentMethod, this sub-hash contains details about the ScalaPay payment method options.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub scalapay: Option<UpdatePaymentIntentPaymentMethodOptionsScalapay>,
     /// If this is a `sepa_debit` PaymentIntent, this sub-hash contains details about the SEPA Debit payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sepa_debit: Option<UpdatePaymentIntentPaymentMethodOptionsSepaDebit>,
@@ -18660,6 +18830,7 @@ impl UpdatePaymentIntentPaymentMethodOptions {
             bacs_debit: None,
             bancontact: None,
             billie: None,
+            bizum: None,
             blik: None,
             boleto: None,
             card: None,
@@ -18695,6 +18866,7 @@ impl UpdatePaymentIntentPaymentMethodOptions {
             revolut_pay: None,
             samsung_pay: None,
             satispay: None,
+            scalapay: None,
             sepa_debit: None,
             sofort: None,
             swish: None,
@@ -25451,7 +25623,7 @@ impl<'de> serde::Deserialize<'de>
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-/// If this is a `link` PaymentMethod, this sub-hash contains details about the Link payment method options.
+/// If this is a `link` PaymentMethod, this sub-hash contains details about the Link payment method options (Link is also known as Onelink in the UK).
 #[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
@@ -28694,6 +28866,109 @@ impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodOptionsSat
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
+/// If this is a `scalapay` PaymentMethod, this sub-hash contains details about the ScalaPay payment method options.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdatePaymentIntentPaymentMethodOptionsScalapay {
+    /// Controls when the funds are captured from the customer's account.
+    ///
+    /// If provided, this parameter overrides the behavior of the top-level [capture_method](/api/payment_intents/update#update_payment_intent-capture_method) for this payment method type when finalizing the payment with this payment method type.
+    ///
+    /// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter unsets the stored value for this payment method type.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub capture_method: Option<UpdatePaymentIntentPaymentMethodOptionsScalapayCaptureMethod>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsScalapay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentIntentPaymentMethodOptionsScalapay").finish_non_exhaustive()
+    }
+}
+impl UpdatePaymentIntentPaymentMethodOptionsScalapay {
+    pub fn new() -> Self {
+        Self { capture_method: None }
+    }
+}
+impl Default for UpdatePaymentIntentPaymentMethodOptionsScalapay {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Controls when the funds are captured from the customer's account.
+///
+/// If provided, this parameter overrides the behavior of the top-level [capture_method](/api/payment_intents/update#update_payment_intent-capture_method) for this payment method type when finalizing the payment with this payment method type.
+///
+/// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter unsets the stored value for this payment method type.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum UpdatePaymentIntentPaymentMethodOptionsScalapayCaptureMethod {
+    Manual,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl UpdatePaymentIntentPaymentMethodOptionsScalapayCaptureMethod {
+    pub fn as_str(&self) -> &str {
+        use UpdatePaymentIntentPaymentMethodOptionsScalapayCaptureMethod::*;
+        match self {
+            Manual => "manual",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsScalapayCaptureMethod {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdatePaymentIntentPaymentMethodOptionsScalapayCaptureMethod::*;
+        match s {
+            "manual" => Ok(Manual),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdatePaymentIntentPaymentMethodOptionsScalapayCaptureMethod"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for UpdatePaymentIntentPaymentMethodOptionsScalapayCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsScalapayCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentIntentPaymentMethodOptionsScalapayCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentIntentPaymentMethodOptionsScalapayCaptureMethod))
+            .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for UpdatePaymentIntentPaymentMethodOptionsScalapayCaptureMethod {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for UpdatePaymentIntentPaymentMethodOptionsScalapayCaptureMethod {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
 /// If this is a `sepa_debit` PaymentIntent, this sub-hash contains details about the SEPA Debit payment method options.
 #[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
@@ -29228,6 +29503,7 @@ impl Default for UpdatePaymentIntentPaymentMethodOptionsTwint {
 #[non_exhaustive]
 pub enum UpdatePaymentIntentPaymentMethodOptionsTwintSetupFutureUsage {
     None,
+    OffSession,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
     Unknown(String),
 }
@@ -29236,6 +29512,7 @@ impl UpdatePaymentIntentPaymentMethodOptionsTwintSetupFutureUsage {
         use UpdatePaymentIntentPaymentMethodOptionsTwintSetupFutureUsage::*;
         match self {
             None => "none",
+            OffSession => "off_session",
             Unknown(v) => v,
         }
     }
@@ -29247,6 +29524,7 @@ impl std::str::FromStr for UpdatePaymentIntentPaymentMethodOptionsTwintSetupFutu
         use UpdatePaymentIntentPaymentMethodOptionsTwintSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
+            "off_session" => Ok(OffSession),
             v => {
                 tracing::warn!(
                     "Unknown value '{}' for enum '{}'",
@@ -30764,13 +31042,23 @@ impl Default for UpdatePaymentIntentShippingAddress {
 }
 /// Use this parameter to automatically create a Transfer when the payment succeeds.
 /// Learn more about the [use case for connected accounts](https://docs.stripe.com/payments/connected-accounts).
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
 pub struct UpdatePaymentIntentTransferData {
     /// The amount that will be transferred automatically when a charge succeeds.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount: Option<i64>,
+    /// An arbitrary string attached to the transfer. Often useful for displaying to users.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
+    /// This can be useful for storing additional information about the object in a structured format.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<std::collections::HashMap<String, String>>,
+    /// The data with which to populate the destination payment.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub payment_data: Option<TransferDataPaymentDataParams>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for UpdatePaymentIntentTransferData {
@@ -30780,7 +31068,7 @@ impl std::fmt::Debug for UpdatePaymentIntentTransferData {
 }
 impl UpdatePaymentIntentTransferData {
     pub fn new() -> Self {
-        Self { amount: None }
+        Self { amount: None, description: None, metadata: None, payment_data: None }
     }
 }
 impl Default for UpdatePaymentIntentTransferData {
@@ -32579,7 +32867,7 @@ impl<'de> serde::Deserialize<'de> for ConfirmPaymentIntentClientKeyParamCustomer
     }
 }
 /// Set to `true` to indicate that the customer isn't in your checkout flow during this payment attempt and can't authenticate.
-/// Use this parameter in scenarios where you collect card details and [charge them later](https://docs.stripe.com/payments/cards/charging-saved-cards).
+/// Use this parameter in scenarios where you collect payment method details and [charge them later](https://docs.stripe.com/payments/save-during-payment).
 #[derive(Copy, Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
@@ -32681,6 +32969,10 @@ pub struct ConfirmPaymentIntentPaymentMethodData {
     /// Billing information associated with the PaymentMethod that may be used or required by particular types of payment methods.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_details: Option<ConfirmPaymentIntentPaymentMethodDataBillingDetails>,
+    /// If this is a `bizum` PaymentMethod, this hash contains details about the Bizum payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub bizum: Option<miniserde::json::Value>,
     /// If this is a `blik` PaymentMethod, this hash contains details about the BLIK payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
@@ -32736,7 +33028,7 @@ pub struct ConfirmPaymentIntentPaymentMethodData {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
     pub kr_card: Option<miniserde::json::Value>,
-    /// If this is an `Link` PaymentMethod, this hash contains details about the Link payment method.
+    /// If this is an `Link` PaymentMethod, this hash contains details about the Link payment method (Link is also known as Onelink in the UK).
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
     pub link: Option<miniserde::json::Value>,
@@ -32814,6 +33106,10 @@ pub struct ConfirmPaymentIntentPaymentMethodData {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
     pub satispay: Option<miniserde::json::Value>,
+    /// If this is a Scalapay PaymentMethod, this hash contains details about the Scalapay payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub scalapay: Option<miniserde::json::Value>,
     /// If this is a `sepa_debit` PaymentMethod, this hash contains details about the SEPA debit bank account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sepa_debit: Option<ConfirmPaymentIntentPaymentMethodDataSepaDebit>,
@@ -32873,6 +33169,7 @@ impl ConfirmPaymentIntentPaymentMethodData {
             bancontact: None,
             billie: None,
             billing_details: None,
+            bizum: None,
             blik: None,
             boleto: None,
             cashapp: None,
@@ -32908,6 +33205,7 @@ impl ConfirmPaymentIntentPaymentMethodData {
             revolut_pay: None,
             samsung_pay: None,
             satispay: None,
+            scalapay: None,
             sepa_debit: None,
             sofort: None,
             sunbit: None,
@@ -34241,6 +34539,7 @@ pub enum ConfirmPaymentIntentPaymentMethodDataType {
     BacsDebit,
     Bancontact,
     Billie,
+    Bizum,
     Blik,
     Boleto,
     Cashapp,
@@ -34273,6 +34572,7 @@ pub enum ConfirmPaymentIntentPaymentMethodDataType {
     RevolutPay,
     SamsungPay,
     Satispay,
+    Scalapay,
     SepaDebit,
     Sofort,
     Sunbit,
@@ -34299,6 +34599,7 @@ impl ConfirmPaymentIntentPaymentMethodDataType {
             BacsDebit => "bacs_debit",
             Bancontact => "bancontact",
             Billie => "billie",
+            Bizum => "bizum",
             Blik => "blik",
             Boleto => "boleto",
             Cashapp => "cashapp",
@@ -34331,6 +34632,7 @@ impl ConfirmPaymentIntentPaymentMethodDataType {
             RevolutPay => "revolut_pay",
             SamsungPay => "samsung_pay",
             Satispay => "satispay",
+            Scalapay => "scalapay",
             SepaDebit => "sepa_debit",
             Sofort => "sofort",
             Sunbit => "sunbit",
@@ -34360,6 +34662,7 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodDataType {
             "bacs_debit" => Ok(BacsDebit),
             "bancontact" => Ok(Bancontact),
             "billie" => Ok(Billie),
+            "bizum" => Ok(Bizum),
             "blik" => Ok(Blik),
             "boleto" => Ok(Boleto),
             "cashapp" => Ok(Cashapp),
@@ -34392,6 +34695,7 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodDataType {
             "revolut_pay" => Ok(RevolutPay),
             "samsung_pay" => Ok(SamsungPay),
             "satispay" => Ok(Satispay),
+            "scalapay" => Ok(Scalapay),
             "sepa_debit" => Ok(SepaDebit),
             "sofort" => Ok(Sofort),
             "sunbit" => Ok(Sunbit),
@@ -34817,6 +35121,10 @@ pub struct ConfirmPaymentIntentPaymentMethodOptions {
     /// If this is a `billie` PaymentMethod, this sub-hash contains details about the Billie payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billie: Option<ConfirmPaymentIntentPaymentMethodOptionsBillie>,
+    /// If this is a `bizum` PaymentMethod, this sub-hash contains details about the Bizum payment method options.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub bizum: Option<miniserde::json::Value>,
     /// If this is a `blik` PaymentMethod, this sub-hash contains details about the BLIK payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub blik: Option<ConfirmPaymentIntentPaymentMethodOptionsBlik>,
@@ -34869,7 +35177,7 @@ pub struct ConfirmPaymentIntentPaymentMethodOptions {
     /// If this is a `kr_card` PaymentMethod, this sub-hash contains details about the KR Card payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub kr_card: Option<ConfirmPaymentIntentPaymentMethodOptionsKrCard>,
-    /// If this is a `link` PaymentMethod, this sub-hash contains details about the Link payment method options.
+    /// If this is a `link` PaymentMethod, this sub-hash contains details about the Link payment method options (Link is also known as Onelink in the UK).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub link: Option<ConfirmPaymentIntentPaymentMethodOptionsLink>,
     /// If this is a `mb_way` PaymentMethod, this sub-hash contains details about the MB WAY payment method options.
@@ -34924,6 +35232,9 @@ pub struct ConfirmPaymentIntentPaymentMethodOptions {
     /// If this is a `satispay` PaymentMethod, this sub-hash contains details about the Satispay payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub satispay: Option<ConfirmPaymentIntentPaymentMethodOptionsSatispay>,
+    /// If this is a `scalapay` PaymentMethod, this sub-hash contains details about the ScalaPay payment method options.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub scalapay: Option<ConfirmPaymentIntentPaymentMethodOptionsScalapay>,
     /// If this is a `sepa_debit` PaymentIntent, this sub-hash contains details about the SEPA Debit payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sepa_debit: Option<ConfirmPaymentIntentPaymentMethodOptionsSepaDebit>,
@@ -34968,6 +35279,7 @@ impl ConfirmPaymentIntentPaymentMethodOptions {
             bacs_debit: None,
             bancontact: None,
             billie: None,
+            bizum: None,
             blik: None,
             boleto: None,
             card: None,
@@ -35003,6 +35315,7 @@ impl ConfirmPaymentIntentPaymentMethodOptions {
             revolut_pay: None,
             samsung_pay: None,
             satispay: None,
+            scalapay: None,
             sepa_debit: None,
             sofort: None,
             swish: None,
@@ -41763,7 +42076,7 @@ impl<'de> serde::Deserialize<'de>
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-/// If this is a `link` PaymentMethod, this sub-hash contains details about the Link payment method options.
+/// If this is a `link` PaymentMethod, this sub-hash contains details about the Link payment method options (Link is also known as Onelink in the UK).
 #[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
@@ -45033,6 +45346,111 @@ impl<'de> serde::Deserialize<'de>
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
+/// If this is a `scalapay` PaymentMethod, this sub-hash contains details about the ScalaPay payment method options.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct ConfirmPaymentIntentPaymentMethodOptionsScalapay {
+    /// Controls when the funds are captured from the customer's account.
+    ///
+    /// If provided, this parameter overrides the behavior of the top-level [capture_method](/api/payment_intents/update#update_payment_intent-capture_method) for this payment method type when finalizing the payment with this payment method type.
+    ///
+    /// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter unsets the stored value for this payment method type.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub capture_method: Option<ConfirmPaymentIntentPaymentMethodOptionsScalapayCaptureMethod>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsScalapay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("ConfirmPaymentIntentPaymentMethodOptionsScalapay").finish_non_exhaustive()
+    }
+}
+impl ConfirmPaymentIntentPaymentMethodOptionsScalapay {
+    pub fn new() -> Self {
+        Self { capture_method: None }
+    }
+}
+impl Default for ConfirmPaymentIntentPaymentMethodOptionsScalapay {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Controls when the funds are captured from the customer's account.
+///
+/// If provided, this parameter overrides the behavior of the top-level [capture_method](/api/payment_intents/update#update_payment_intent-capture_method) for this payment method type when finalizing the payment with this payment method type.
+///
+/// If `capture_method` is already set on the PaymentIntent, providing an empty value for this parameter unsets the stored value for this payment method type.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum ConfirmPaymentIntentPaymentMethodOptionsScalapayCaptureMethod {
+    Manual,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl ConfirmPaymentIntentPaymentMethodOptionsScalapayCaptureMethod {
+    pub fn as_str(&self) -> &str {
+        use ConfirmPaymentIntentPaymentMethodOptionsScalapayCaptureMethod::*;
+        match self {
+            Manual => "manual",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsScalapayCaptureMethod {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use ConfirmPaymentIntentPaymentMethodOptionsScalapayCaptureMethod::*;
+        match s {
+            "manual" => Ok(Manual),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "ConfirmPaymentIntentPaymentMethodOptionsScalapayCaptureMethod"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for ConfirmPaymentIntentPaymentMethodOptionsScalapayCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsScalapayCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for ConfirmPaymentIntentPaymentMethodOptionsScalapayCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(ConfirmPaymentIntentPaymentMethodOptionsScalapayCaptureMethod))
+            .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for ConfirmPaymentIntentPaymentMethodOptionsScalapayCaptureMethod {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for ConfirmPaymentIntentPaymentMethodOptionsScalapayCaptureMethod
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
 /// If this is a `sepa_debit` PaymentIntent, this sub-hash contains details about the SEPA Debit payment method options.
 #[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
@@ -45571,6 +45989,7 @@ impl Default for ConfirmPaymentIntentPaymentMethodOptionsTwint {
 #[non_exhaustive]
 pub enum ConfirmPaymentIntentPaymentMethodOptionsTwintSetupFutureUsage {
     None,
+    OffSession,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
     Unknown(String),
 }
@@ -45579,6 +45998,7 @@ impl ConfirmPaymentIntentPaymentMethodOptionsTwintSetupFutureUsage {
         use ConfirmPaymentIntentPaymentMethodOptionsTwintSetupFutureUsage::*;
         match self {
             None => "none",
+            OffSession => "off_session",
             Unknown(v) => v,
         }
     }
@@ -45590,6 +46010,7 @@ impl std::str::FromStr for ConfirmPaymentIntentPaymentMethodOptionsTwintSetupFut
         use ConfirmPaymentIntentPaymentMethodOptionsTwintSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
+            "off_session" => Ok(OffSession),
             v => {
                 tracing::warn!(
                     "Unknown value '{}' for enum '{}'",
@@ -47251,7 +47672,7 @@ impl ConfirmPaymentIntent {
         self
     }
     /// Set to `true` to indicate that the customer isn't in your checkout flow during this payment attempt and can't authenticate.
-    /// Use this parameter in scenarios where you collect card details and [charge them later](https://docs.stripe.com/payments/cards/charging-saved-cards).
+    /// Use this parameter in scenarios where you collect payment method details and [charge them later](https://docs.stripe.com/payments/save-during-payment).
     pub fn off_session(mut self, off_session: impl Into<ConfirmPaymentIntentOffSession>) -> Self {
         self.inner.off_session = Some(off_session.into());
         self
@@ -47848,7 +48269,9 @@ impl Default for IncrementAuthorizationPaymentIntentTransferData {
 /// Each PaymentIntent can have a maximum of 10 incremental authorization attempts, including declines.
 /// After it’s captured, a PaymentIntent can no longer be incremented.
 ///
-/// Learn more about [incremental authorizations](https://stripe.com/docs/terminal/features/incremental-authorizations).
+/// Learn more about incremental authorizations with
+/// [in-person payments](https://stripe.com/docs/terminal/features/incremental-authorizations) and
+/// [online payments](https://stripe.com/docs/payments/incremental-authorization?platform=web&ui=elements).
 #[derive(Clone)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
@@ -48120,11 +48543,11 @@ pub struct AmountDetailsShippingParam {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount: Option<i64>,
     /// If a physical good is being shipped, the postal code of where it is being shipped from.
-    /// At most 10 alphanumeric characters long, hyphens are allowed.
+    /// At most 10 alphanumeric characters long, hyphens and spaces are allowed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub from_postal_code: Option<String>,
     /// If a physical good is being shipped, the postal code of where it is being shipped to.
-    /// At most 10 alphanumeric characters long, hyphens are allowed.
+    /// At most 10 alphanumeric characters long, hyphens and spaces are allowed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub to_postal_code: Option<String>,
 }
@@ -48320,6 +48743,34 @@ impl std::fmt::Debug for SubscriptionNextBillingParam {
 impl SubscriptionNextBillingParam {
     pub fn new(amount: impl Into<i64>, date: impl Into<String>) -> Self {
         Self { amount: amount.into(), date: date.into() }
+    }
+}
+#[derive(Clone)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct TransferDataPaymentDataParams {
+    /// An arbitrary string attached to the destination payment. Often useful for displaying to users.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
+    /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.
+    /// This can be useful for storing additional information about the object in a structured format.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<std::collections::HashMap<String, String>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for TransferDataPaymentDataParams {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("TransferDataPaymentDataParams").finish_non_exhaustive()
+    }
+}
+impl TransferDataPaymentDataParams {
+    pub fn new() -> Self {
+        Self { description: None, metadata: None }
+    }
+}
+impl Default for TransferDataPaymentDataParams {
+    fn default() -> Self {
+        Self::new()
     }
 }
 #[derive(Clone, Eq, PartialEq)]

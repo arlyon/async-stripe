@@ -81,7 +81,7 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (Some(debit_negative_balances), Some(payouts), Some(settlement_timing)) =
-                (self.debit_negative_balances, self.payouts.take(), self.settlement_timing)
+                (self.debit_negative_balances, self.payouts.take(), self.settlement_timing.take())
             else {
                 return None;
             };

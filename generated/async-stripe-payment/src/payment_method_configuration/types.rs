@@ -38,6 +38,7 @@ pub struct PaymentMethodConfiguration {
     pub bacs_debit: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
     pub bancontact: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
     pub billie: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
+    pub bizum: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
     pub blik: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
     pub boleto: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
     pub card: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
@@ -87,6 +88,7 @@ pub struct PaymentMethodConfiguration {
     pub revolut_pay: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
     pub samsung_pay: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
     pub satispay: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
+    pub scalapay: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
     pub sepa_debit: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
     pub sofort: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
     pub sunbit: Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>,
@@ -120,6 +122,7 @@ pub struct PaymentMethodConfigurationBuilder {
     bacs_debit: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
     bancontact: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
     billie: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
+    bizum: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
     blik: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
     boleto: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
     card: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
@@ -164,6 +167,7 @@ pub struct PaymentMethodConfigurationBuilder {
     revolut_pay: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
     samsung_pay: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
     satispay: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
+    scalapay: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
     sepa_debit: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
     sofort: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
     sunbit: Option<Option<stripe_payment::PaymentMethodConfigResourcePaymentMethodProperties>>,
@@ -229,6 +233,7 @@ const _: () = {
                 "bacs_debit" => Deserialize::begin(&mut self.bacs_debit),
                 "bancontact" => Deserialize::begin(&mut self.bancontact),
                 "billie" => Deserialize::begin(&mut self.billie),
+                "bizum" => Deserialize::begin(&mut self.bizum),
                 "blik" => Deserialize::begin(&mut self.blik),
                 "boleto" => Deserialize::begin(&mut self.boleto),
                 "card" => Deserialize::begin(&mut self.card),
@@ -270,6 +275,7 @@ const _: () = {
                 "revolut_pay" => Deserialize::begin(&mut self.revolut_pay),
                 "samsung_pay" => Deserialize::begin(&mut self.samsung_pay),
                 "satispay" => Deserialize::begin(&mut self.satispay),
+                "scalapay" => Deserialize::begin(&mut self.scalapay),
                 "sepa_debit" => Deserialize::begin(&mut self.sepa_debit),
                 "sofort" => Deserialize::begin(&mut self.sofort),
                 "sunbit" => Deserialize::begin(&mut self.sunbit),
@@ -298,6 +304,7 @@ const _: () = {
                 bacs_debit: Some(None),
                 bancontact: Some(None),
                 billie: Some(None),
+                bizum: Some(None),
                 blik: Some(None),
                 boleto: Some(None),
                 card: Some(None),
@@ -339,6 +346,7 @@ const _: () = {
                 revolut_pay: Some(None),
                 samsung_pay: Some(None),
                 satispay: Some(None),
+                scalapay: Some(None),
                 sepa_debit: Some(None),
                 sofort: Some(None),
                 sunbit: Some(None),
@@ -366,6 +374,7 @@ const _: () = {
                 Some(bacs_debit),
                 Some(bancontact),
                 Some(billie),
+                Some(bizum),
                 Some(blik),
                 Some(boleto),
                 Some(card),
@@ -407,6 +416,7 @@ const _: () = {
                 Some(revolut_pay),
                 Some(samsung_pay),
                 Some(satispay),
+                Some(scalapay),
                 Some(sepa_debit),
                 Some(sofort),
                 Some(sunbit),
@@ -430,6 +440,7 @@ const _: () = {
                 self.bacs_debit.take(),
                 self.bancontact.take(),
                 self.billie.take(),
+                self.bizum.take(),
                 self.blik.take(),
                 self.boleto.take(),
                 self.card.take(),
@@ -471,6 +482,7 @@ const _: () = {
                 self.revolut_pay.take(),
                 self.samsung_pay.take(),
                 self.satispay.take(),
+                self.scalapay.take(),
                 self.sepa_debit.take(),
                 self.sofort.take(),
                 self.sunbit.take(),
@@ -498,6 +510,7 @@ const _: () = {
                 bacs_debit,
                 bancontact,
                 billie,
+                bizum,
                 blik,
                 boleto,
                 card,
@@ -539,6 +552,7 @@ const _: () = {
                 revolut_pay,
                 samsung_pay,
                 satispay,
+                scalapay,
                 sepa_debit,
                 sofort,
                 sunbit,
@@ -588,6 +602,7 @@ const _: () = {
                     "bacs_debit" => b.bacs_debit = FromValueOpt::from_value(v),
                     "bancontact" => b.bancontact = FromValueOpt::from_value(v),
                     "billie" => b.billie = FromValueOpt::from_value(v),
+                    "bizum" => b.bizum = FromValueOpt::from_value(v),
                     "blik" => b.blik = FromValueOpt::from_value(v),
                     "boleto" => b.boleto = FromValueOpt::from_value(v),
                     "card" => b.card = FromValueOpt::from_value(v),
@@ -629,6 +644,7 @@ const _: () = {
                     "revolut_pay" => b.revolut_pay = FromValueOpt::from_value(v),
                     "samsung_pay" => b.samsung_pay = FromValueOpt::from_value(v),
                     "satispay" => b.satispay = FromValueOpt::from_value(v),
+                    "scalapay" => b.scalapay = FromValueOpt::from_value(v),
                     "sepa_debit" => b.sepa_debit = FromValueOpt::from_value(v),
                     "sofort" => b.sofort = FromValueOpt::from_value(v),
                     "sunbit" => b.sunbit = FromValueOpt::from_value(v),
@@ -649,7 +665,7 @@ const _: () = {
 impl serde::Serialize for PaymentMethodConfiguration {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("PaymentMethodConfiguration", 64)?;
+        let mut s = s.serialize_struct("PaymentMethodConfiguration", 66)?;
         s.serialize_field("acss_debit", &self.acss_debit)?;
         s.serialize_field("active", &self.active)?;
         s.serialize_field("affirm", &self.affirm)?;
@@ -663,6 +679,7 @@ impl serde::Serialize for PaymentMethodConfiguration {
         s.serialize_field("bacs_debit", &self.bacs_debit)?;
         s.serialize_field("bancontact", &self.bancontact)?;
         s.serialize_field("billie", &self.billie)?;
+        s.serialize_field("bizum", &self.bizum)?;
         s.serialize_field("blik", &self.blik)?;
         s.serialize_field("boleto", &self.boleto)?;
         s.serialize_field("card", &self.card)?;
@@ -704,6 +721,7 @@ impl serde::Serialize for PaymentMethodConfiguration {
         s.serialize_field("revolut_pay", &self.revolut_pay)?;
         s.serialize_field("samsung_pay", &self.samsung_pay)?;
         s.serialize_field("satispay", &self.satispay)?;
+        s.serialize_field("scalapay", &self.scalapay)?;
         s.serialize_field("sepa_debit", &self.sepa_debit)?;
         s.serialize_field("sofort", &self.sofort)?;
         s.serialize_field("sunbit", &self.sunbit)?;

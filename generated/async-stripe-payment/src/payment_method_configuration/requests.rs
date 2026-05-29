@@ -7,6 +7,8 @@ use stripe_client_core::{
 #[derive(serde::Serialize)]
 struct ListPaymentMethodConfigurationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
+    active: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     application: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     ending_before: Option<String>,
@@ -26,6 +28,7 @@ impl std::fmt::Debug for ListPaymentMethodConfigurationBuilder {
 impl ListPaymentMethodConfigurationBuilder {
     fn new() -> Self {
         Self {
+            active: None,
             application: None,
             ending_before: None,
             expand: None,
@@ -51,6 +54,11 @@ impl ListPaymentMethodConfiguration {
     /// Construct a new `ListPaymentMethodConfiguration`.
     pub fn new() -> Self {
         Self { inner: ListPaymentMethodConfigurationBuilder::new() }
+    }
+    /// Whether the configuration is active.
+    pub fn active(mut self, active: impl Into<bool>) -> Self {
+        self.inner.active = Some(active.into());
+        self
     }
     /// The Connect application to filter by.
     pub fn application(mut self, application: impl Into<String>) -> Self {
@@ -226,6 +234,8 @@ struct CreatePaymentMethodConfigurationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     billie: Option<CreatePaymentMethodConfigurationBillie>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    bizum: Option<CreatePaymentMethodConfigurationBizum>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     blik: Option<CreatePaymentMethodConfigurationBlik>,
     #[serde(skip_serializing_if = "Option::is_none")]
     boleto: Option<CreatePaymentMethodConfigurationBoleto>,
@@ -306,6 +316,8 @@ struct CreatePaymentMethodConfigurationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     satispay: Option<CreatePaymentMethodConfigurationSatispay>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    scalapay: Option<CreatePaymentMethodConfigurationScalapay>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     sepa_debit: Option<CreatePaymentMethodConfigurationSepaDebit>,
     #[serde(skip_serializing_if = "Option::is_none")]
     sofort: Option<CreatePaymentMethodConfigurationSofort>,
@@ -345,6 +357,7 @@ impl CreatePaymentMethodConfigurationBuilder {
             bacs_debit: None,
             bancontact: None,
             billie: None,
+            bizum: None,
             blik: None,
             boleto: None,
             card: None,
@@ -385,6 +398,7 @@ impl CreatePaymentMethodConfigurationBuilder {
             revolut_pay: None,
             samsung_pay: None,
             satispay: None,
+            scalapay: None,
             sepa_debit: None,
             sofort: None,
             sunbit: None,
@@ -1990,6 +2004,136 @@ impl serde::Serialize for CreatePaymentMethodConfigurationBillieDisplayPreferenc
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de>
     for CreatePaymentMethodConfigurationBillieDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// To enable Bizum, buyers need a Spanish IBAN from a bank connected to Bizum.
+/// Within their banking app, they can enable Bizum and link their mobile number to their IBAN.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreatePaymentMethodConfigurationBizum {
+    /// Whether or not the payment method should be displayed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub display_preference: Option<CreatePaymentMethodConfigurationBizumDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationBizum {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationBizum").finish_non_exhaustive()
+    }
+}
+impl CreatePaymentMethodConfigurationBizum {
+    pub fn new() -> Self {
+        Self { display_preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationBizum {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Whether or not the payment method should be displayed.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreatePaymentMethodConfigurationBizumDisplayPreference {
+    /// The account's preference for whether or not to display this payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub preference: Option<CreatePaymentMethodConfigurationBizumDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationBizumDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationBizumDisplayPreference")
+            .finish_non_exhaustive()
+    }
+}
+impl CreatePaymentMethodConfigurationBizumDisplayPreference {
+    pub fn new() -> Self {
+        Self { preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationBizumDisplayPreference {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The account's preference for whether or not to display this payment method.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreatePaymentMethodConfigurationBizumDisplayPreferencePreference {
+    None,
+    Off,
+    On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreatePaymentMethodConfigurationBizumDisplayPreferencePreference {
+    pub fn as_str(&self) -> &str {
+        use CreatePaymentMethodConfigurationBizumDisplayPreferencePreference::*;
+        match self {
+            None => "none",
+            Off => "off",
+            On => "on",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePaymentMethodConfigurationBizumDisplayPreferencePreference {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreatePaymentMethodConfigurationBizumDisplayPreferencePreference::*;
+        match s {
+            "none" => Ok(None),
+            "off" => Ok(Off),
+            "on" => Ok(On),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePaymentMethodConfigurationBizumDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CreatePaymentMethodConfigurationBizumDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationBizumDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationBizumDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreatePaymentMethodConfigurationBizumDisplayPreferencePreference))
+            .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for CreatePaymentMethodConfigurationBizumDisplayPreferencePreference {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentMethodConfigurationBizumDisplayPreferencePreference
 {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
@@ -6780,7 +6924,7 @@ impl<'de> serde::Deserialize<'de>
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-/// Satispay is a [single-use](https://docs.stripe.com/payments/payment-methods#usage) payment method where customers are required to [authenticate](/payments/payment-methods#customer-actions) their payment.
+/// Satispay is a [single-use](/payments/payment-methods#usage) payment method where customers are required to [authenticate](/payments/payment-methods#customer-actions) their payment.
 /// Customers pay by being redirected from your website or app, authorizing the payment with Satispay, then returning to your website or app.
 /// You get [immediate notification](/payments/payment-methods#payment-notification) of whether the payment succeeded or failed.
 #[derive(Clone, Eq, PartialEq)]
@@ -6906,6 +7050,139 @@ impl serde::Serialize for CreatePaymentMethodConfigurationSatispayDisplayPrefere
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de>
     for CreatePaymentMethodConfigurationSatispayDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Scalapay is a [single-use](/payments/payment-methods#usage) payment method that lets customers pay in 3 or 4 installments.
+/// Customers are redirected from your website or app, authorize the payment with Scalapay, then return to your website or app.
+/// You get [immediate notification](/payments/payment-methods#payment-notification) of whether the payment succeeded or failed.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreatePaymentMethodConfigurationScalapay {
+    /// Whether or not the payment method should be displayed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub display_preference: Option<CreatePaymentMethodConfigurationScalapayDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationScalapay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationScalapay").finish_non_exhaustive()
+    }
+}
+impl CreatePaymentMethodConfigurationScalapay {
+    pub fn new() -> Self {
+        Self { display_preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationScalapay {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Whether or not the payment method should be displayed.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreatePaymentMethodConfigurationScalapayDisplayPreference {
+    /// The account's preference for whether or not to display this payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub preference: Option<CreatePaymentMethodConfigurationScalapayDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationScalapayDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentMethodConfigurationScalapayDisplayPreference")
+            .finish_non_exhaustive()
+    }
+}
+impl CreatePaymentMethodConfigurationScalapayDisplayPreference {
+    pub fn new() -> Self {
+        Self { preference: None }
+    }
+}
+impl Default for CreatePaymentMethodConfigurationScalapayDisplayPreference {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The account's preference for whether or not to display this payment method.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreatePaymentMethodConfigurationScalapayDisplayPreferencePreference {
+    None,
+    Off,
+    On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreatePaymentMethodConfigurationScalapayDisplayPreferencePreference {
+    pub fn as_str(&self) -> &str {
+        use CreatePaymentMethodConfigurationScalapayDisplayPreferencePreference::*;
+        match self {
+            None => "none",
+            Off => "off",
+            On => "on",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePaymentMethodConfigurationScalapayDisplayPreferencePreference {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreatePaymentMethodConfigurationScalapayDisplayPreferencePreference::*;
+        match s {
+            "none" => Ok(None),
+            "off" => Ok(Off),
+            "on" => Ok(On),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePaymentMethodConfigurationScalapayDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CreatePaymentMethodConfigurationScalapayDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationScalapayDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentMethodConfigurationScalapayDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePaymentMethodConfigurationScalapayDisplayPreferencePreference
+        ))
+        .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for CreatePaymentMethodConfigurationScalapayDisplayPreferencePreference {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentMethodConfigurationScalapayDisplayPreferencePreference
 {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
@@ -8217,6 +8494,12 @@ impl CreatePaymentMethodConfiguration {
         self.inner.billie = Some(billie.into());
         self
     }
+    /// To enable Bizum, buyers need a Spanish IBAN from a bank connected to Bizum.
+    /// Within their banking app, they can enable Bizum and link their mobile number to their IBAN.
+    pub fn bizum(mut self, bizum: impl Into<CreatePaymentMethodConfigurationBizum>) -> Self {
+        self.inner.bizum = Some(bizum.into());
+        self
+    }
     /// BLIK is a [single use](https://docs.stripe.com/payments/payment-methods#usage) payment method that requires customers to authenticate their payments.
     /// When customers want to pay online using BLIK, they request a six-digit code from their banking application and enter it into the payment collection form.
     /// Check this [page](https://docs.stripe.com/payments/blik) for more details.
@@ -8502,7 +8785,7 @@ impl CreatePaymentMethodConfiguration {
         self.inner.samsung_pay = Some(samsung_pay.into());
         self
     }
-    /// Satispay is a [single-use](https://docs.stripe.com/payments/payment-methods#usage) payment method where customers are required to [authenticate](/payments/payment-methods#customer-actions) their payment.
+    /// Satispay is a [single-use](/payments/payment-methods#usage) payment method where customers are required to [authenticate](/payments/payment-methods#customer-actions) their payment.
     /// Customers pay by being redirected from your website or app, authorizing the payment with Satispay, then returning to your website or app.
     /// You get [immediate notification](/payments/payment-methods#payment-notification) of whether the payment succeeded or failed.
     pub fn satispay(
@@ -8510,6 +8793,16 @@ impl CreatePaymentMethodConfiguration {
         satispay: impl Into<CreatePaymentMethodConfigurationSatispay>,
     ) -> Self {
         self.inner.satispay = Some(satispay.into());
+        self
+    }
+    /// Scalapay is a [single-use](/payments/payment-methods#usage) payment method that lets customers pay in 3 or 4 installments.
+    /// Customers are redirected from your website or app, authorize the payment with Scalapay, then return to your website or app.
+    /// You get [immediate notification](/payments/payment-methods#payment-notification) of whether the payment succeeded or failed.
+    pub fn scalapay(
+        mut self,
+        scalapay: impl Into<CreatePaymentMethodConfigurationScalapay>,
+    ) -> Self {
+        self.inner.scalapay = Some(scalapay.into());
         self
     }
     /// The [Single Euro Payments Area (SEPA)](https://en.wikipedia.org/wiki/Single_Euro_Payments_Area) is an initiative of the European Union to simplify payments within and across member countries.
@@ -8641,6 +8934,8 @@ struct UpdatePaymentMethodConfigurationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     billie: Option<UpdatePaymentMethodConfigurationBillie>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    bizum: Option<UpdatePaymentMethodConfigurationBizum>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     blik: Option<UpdatePaymentMethodConfigurationBlik>,
     #[serde(skip_serializing_if = "Option::is_none")]
     boleto: Option<UpdatePaymentMethodConfigurationBoleto>,
@@ -8719,6 +9014,8 @@ struct UpdatePaymentMethodConfigurationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     satispay: Option<UpdatePaymentMethodConfigurationSatispay>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    scalapay: Option<UpdatePaymentMethodConfigurationScalapay>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     sepa_debit: Option<UpdatePaymentMethodConfigurationSepaDebit>,
     #[serde(skip_serializing_if = "Option::is_none")]
     sofort: Option<UpdatePaymentMethodConfigurationSofort>,
@@ -8759,6 +9056,7 @@ impl UpdatePaymentMethodConfigurationBuilder {
             bacs_debit: None,
             bancontact: None,
             billie: None,
+            bizum: None,
             blik: None,
             boleto: None,
             card: None,
@@ -8798,6 +9096,7 @@ impl UpdatePaymentMethodConfigurationBuilder {
             revolut_pay: None,
             samsung_pay: None,
             satispay: None,
+            scalapay: None,
             sepa_debit: None,
             sofort: None,
             sunbit: None,
@@ -10403,6 +10702,136 @@ impl serde::Serialize for UpdatePaymentMethodConfigurationBillieDisplayPreferenc
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de>
     for UpdatePaymentMethodConfigurationBillieDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// To enable Bizum, buyers need a Spanish IBAN from a bank connected to Bizum.
+/// Within their banking app, they can enable Bizum and link their mobile number to their IBAN.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdatePaymentMethodConfigurationBizum {
+    /// Whether or not the payment method should be displayed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub display_preference: Option<UpdatePaymentMethodConfigurationBizumDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationBizum {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationBizum").finish_non_exhaustive()
+    }
+}
+impl UpdatePaymentMethodConfigurationBizum {
+    pub fn new() -> Self {
+        Self { display_preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationBizum {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Whether or not the payment method should be displayed.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdatePaymentMethodConfigurationBizumDisplayPreference {
+    /// The account's preference for whether or not to display this payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub preference: Option<UpdatePaymentMethodConfigurationBizumDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationBizumDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationBizumDisplayPreference")
+            .finish_non_exhaustive()
+    }
+}
+impl UpdatePaymentMethodConfigurationBizumDisplayPreference {
+    pub fn new() -> Self {
+        Self { preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationBizumDisplayPreference {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The account's preference for whether or not to display this payment method.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum UpdatePaymentMethodConfigurationBizumDisplayPreferencePreference {
+    None,
+    Off,
+    On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl UpdatePaymentMethodConfigurationBizumDisplayPreferencePreference {
+    pub fn as_str(&self) -> &str {
+        use UpdatePaymentMethodConfigurationBizumDisplayPreferencePreference::*;
+        match self {
+            None => "none",
+            Off => "off",
+            On => "on",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for UpdatePaymentMethodConfigurationBizumDisplayPreferencePreference {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdatePaymentMethodConfigurationBizumDisplayPreferencePreference::*;
+        match s {
+            "none" => Ok(None),
+            "off" => Ok(Off),
+            "on" => Ok(On),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdatePaymentMethodConfigurationBizumDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for UpdatePaymentMethodConfigurationBizumDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationBizumDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationBizumDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(UpdatePaymentMethodConfigurationBizumDisplayPreferencePreference))
+            .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for UpdatePaymentMethodConfigurationBizumDisplayPreferencePreference {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentMethodConfigurationBizumDisplayPreferencePreference
 {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
@@ -15193,7 +15622,7 @@ impl<'de> serde::Deserialize<'de>
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-/// Satispay is a [single-use](https://docs.stripe.com/payments/payment-methods#usage) payment method where customers are required to [authenticate](/payments/payment-methods#customer-actions) their payment.
+/// Satispay is a [single-use](/payments/payment-methods#usage) payment method where customers are required to [authenticate](/payments/payment-methods#customer-actions) their payment.
 /// Customers pay by being redirected from your website or app, authorizing the payment with Satispay, then returning to your website or app.
 /// You get [immediate notification](/payments/payment-methods#payment-notification) of whether the payment succeeded or failed.
 #[derive(Clone, Eq, PartialEq)]
@@ -15319,6 +15748,139 @@ impl serde::Serialize for UpdatePaymentMethodConfigurationSatispayDisplayPrefere
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de>
     for UpdatePaymentMethodConfigurationSatispayDisplayPreferencePreference
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Scalapay is a [single-use](/payments/payment-methods#usage) payment method that lets customers pay in 3 or 4 installments.
+/// Customers are redirected from your website or app, authorize the payment with Scalapay, then return to your website or app.
+/// You get [immediate notification](/payments/payment-methods#payment-notification) of whether the payment succeeded or failed.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdatePaymentMethodConfigurationScalapay {
+    /// Whether or not the payment method should be displayed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub display_preference: Option<UpdatePaymentMethodConfigurationScalapayDisplayPreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationScalapay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationScalapay").finish_non_exhaustive()
+    }
+}
+impl UpdatePaymentMethodConfigurationScalapay {
+    pub fn new() -> Self {
+        Self { display_preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationScalapay {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Whether or not the payment method should be displayed.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdatePaymentMethodConfigurationScalapayDisplayPreference {
+    /// The account's preference for whether or not to display this payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub preference: Option<UpdatePaymentMethodConfigurationScalapayDisplayPreferencePreference>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationScalapayDisplayPreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentMethodConfigurationScalapayDisplayPreference")
+            .finish_non_exhaustive()
+    }
+}
+impl UpdatePaymentMethodConfigurationScalapayDisplayPreference {
+    pub fn new() -> Self {
+        Self { preference: None }
+    }
+}
+impl Default for UpdatePaymentMethodConfigurationScalapayDisplayPreference {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The account's preference for whether or not to display this payment method.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum UpdatePaymentMethodConfigurationScalapayDisplayPreferencePreference {
+    None,
+    Off,
+    On,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl UpdatePaymentMethodConfigurationScalapayDisplayPreferencePreference {
+    pub fn as_str(&self) -> &str {
+        use UpdatePaymentMethodConfigurationScalapayDisplayPreferencePreference::*;
+        match self {
+            None => "none",
+            Off => "off",
+            On => "on",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for UpdatePaymentMethodConfigurationScalapayDisplayPreferencePreference {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdatePaymentMethodConfigurationScalapayDisplayPreferencePreference::*;
+        match s {
+            "none" => Ok(None),
+            "off" => Ok(Off),
+            "on" => Ok(On),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdatePaymentMethodConfigurationScalapayDisplayPreferencePreference"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for UpdatePaymentMethodConfigurationScalapayDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationScalapayDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentMethodConfigurationScalapayDisplayPreferencePreference {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdatePaymentMethodConfigurationScalapayDisplayPreferencePreference
+        ))
+        .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for UpdatePaymentMethodConfigurationScalapayDisplayPreferencePreference {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentMethodConfigurationScalapayDisplayPreferencePreference
 {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
@@ -16639,6 +17201,12 @@ impl UpdatePaymentMethodConfiguration {
         self.inner.billie = Some(billie.into());
         self
     }
+    /// To enable Bizum, buyers need a Spanish IBAN from a bank connected to Bizum.
+    /// Within their banking app, they can enable Bizum and link their mobile number to their IBAN.
+    pub fn bizum(mut self, bizum: impl Into<UpdatePaymentMethodConfigurationBizum>) -> Self {
+        self.inner.bizum = Some(bizum.into());
+        self
+    }
     /// BLIK is a [single use](https://docs.stripe.com/payments/payment-methods#usage) payment method that requires customers to authenticate their payments.
     /// When customers want to pay online using BLIK, they request a six-digit code from their banking application and enter it into the payment collection form.
     /// Check this [page](https://docs.stripe.com/payments/blik) for more details.
@@ -16919,7 +17487,7 @@ impl UpdatePaymentMethodConfiguration {
         self.inner.samsung_pay = Some(samsung_pay.into());
         self
     }
-    /// Satispay is a [single-use](https://docs.stripe.com/payments/payment-methods#usage) payment method where customers are required to [authenticate](/payments/payment-methods#customer-actions) their payment.
+    /// Satispay is a [single-use](/payments/payment-methods#usage) payment method where customers are required to [authenticate](/payments/payment-methods#customer-actions) their payment.
     /// Customers pay by being redirected from your website or app, authorizing the payment with Satispay, then returning to your website or app.
     /// You get [immediate notification](/payments/payment-methods#payment-notification) of whether the payment succeeded or failed.
     pub fn satispay(
@@ -16927,6 +17495,16 @@ impl UpdatePaymentMethodConfiguration {
         satispay: impl Into<UpdatePaymentMethodConfigurationSatispay>,
     ) -> Self {
         self.inner.satispay = Some(satispay.into());
+        self
+    }
+    /// Scalapay is a [single-use](/payments/payment-methods#usage) payment method that lets customers pay in 3 or 4 installments.
+    /// Customers are redirected from your website or app, authorize the payment with Scalapay, then return to your website or app.
+    /// You get [immediate notification](/payments/payment-methods#payment-notification) of whether the payment succeeded or failed.
+    pub fn scalapay(
+        mut self,
+        scalapay: impl Into<UpdatePaymentMethodConfigurationScalapay>,
+    ) -> Self {
+        self.inner.scalapay = Some(scalapay.into());
         self
     }
     /// The [Single Euro Payments Area (SEPA)](https://en.wikipedia.org/wiki/Single_Euro_Payments_Area) is an initiative of the European Union to simplify payments within and across member countries.

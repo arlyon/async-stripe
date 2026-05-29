@@ -64,6 +64,8 @@ pub struct PaymentLink {
     pub payment_intent_data: Option<stripe_shared::PaymentLinksResourcePaymentIntentData>,
     /// Configuration for collecting a payment method during checkout. Defaults to `always`.
     pub payment_method_collection: PaymentLinkPaymentMethodCollection,
+    /// Payment-method-specific configuration.
+    pub payment_method_options: Option<stripe_shared::PaymentLinksResourcePaymentMethodOptions>,
     /// The list of payment method types that customers can use.
     /// When `null`, Stripe will dynamically show relevant payment methods you've enabled in your [payment method settings](https://dashboard.stripe.com/settings/payment_methods).
     pub payment_method_types: Option<Vec<stripe_shared::PaymentLinkPaymentMethodTypes>>,
@@ -119,6 +121,7 @@ pub struct PaymentLinkBuilder {
     optional_items: Option<Option<Vec<stripe_shared::PaymentLinksResourceOptionalItem>>>,
     payment_intent_data: Option<Option<stripe_shared::PaymentLinksResourcePaymentIntentData>>,
     payment_method_collection: Option<PaymentLinkPaymentMethodCollection>,
+    payment_method_options: Option<Option<stripe_shared::PaymentLinksResourcePaymentMethodOptions>>,
     payment_method_types: Option<Option<Vec<stripe_shared::PaymentLinkPaymentMethodTypes>>>,
     phone_number_collection: Option<stripe_shared::PaymentLinksResourcePhoneNumberCollection>,
     restrictions: Option<Option<stripe_shared::PaymentLinksResourceRestrictions>>,
@@ -201,6 +204,7 @@ const _: () = {
                 "payment_method_collection" => {
                     Deserialize::begin(&mut self.payment_method_collection)
                 }
+                "payment_method_options" => Deserialize::begin(&mut self.payment_method_options),
                 "payment_method_types" => Deserialize::begin(&mut self.payment_method_types),
                 "phone_number_collection" => Deserialize::begin(&mut self.phone_number_collection),
                 "restrictions" => Deserialize::begin(&mut self.restrictions),
@@ -244,6 +248,7 @@ const _: () = {
                 optional_items: Some(None),
                 payment_intent_data: Some(None),
                 payment_method_collection: None,
+                payment_method_options: Some(None),
                 payment_method_types: Some(None),
                 phone_number_collection: None,
                 restrictions: Some(None),
@@ -284,6 +289,7 @@ const _: () = {
                 Some(optional_items),
                 Some(payment_intent_data),
                 Some(payment_method_collection),
+                Some(payment_method_options),
                 Some(payment_method_types),
                 Some(phone_number_collection),
                 Some(restrictions),
@@ -320,6 +326,7 @@ const _: () = {
                 self.optional_items.take(),
                 self.payment_intent_data.take(),
                 self.payment_method_collection.take(),
+                self.payment_method_options.take(),
                 self.payment_method_types.take(),
                 self.phone_number_collection,
                 self.restrictions,
@@ -360,6 +367,7 @@ const _: () = {
                 optional_items,
                 payment_intent_data,
                 payment_method_collection,
+                payment_method_options,
                 payment_method_types,
                 phone_number_collection,
                 restrictions,
@@ -432,6 +440,9 @@ const _: () = {
                     "payment_method_collection" => {
                         b.payment_method_collection = FromValueOpt::from_value(v)
                     }
+                    "payment_method_options" => {
+                        b.payment_method_options = FromValueOpt::from_value(v)
+                    }
                     "payment_method_types" => b.payment_method_types = FromValueOpt::from_value(v),
                     "phone_number_collection" => {
                         b.phone_number_collection = FromValueOpt::from_value(v)
@@ -457,7 +468,7 @@ const _: () = {
 impl serde::Serialize for PaymentLink {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("PaymentLink", 36)?;
+        let mut s = s.serialize_struct("PaymentLink", 37)?;
         s.serialize_field("active", &self.active)?;
         s.serialize_field("after_completion", &self.after_completion)?;
         s.serialize_field("allow_promotion_codes", &self.allow_promotion_codes)?;
@@ -483,6 +494,7 @@ impl serde::Serialize for PaymentLink {
         s.serialize_field("optional_items", &self.optional_items)?;
         s.serialize_field("payment_intent_data", &self.payment_intent_data)?;
         s.serialize_field("payment_method_collection", &self.payment_method_collection)?;
+        s.serialize_field("payment_method_options", &self.payment_method_options)?;
         s.serialize_field("payment_method_types", &self.payment_method_types)?;
         s.serialize_field("phone_number_collection", &self.phone_number_collection)?;
         s.serialize_field("restrictions", &self.restrictions)?;
@@ -782,6 +794,7 @@ pub enum PaymentLinkPaymentMethodTypes {
     BacsDebit,
     Bancontact,
     Billie,
+    Bizum,
     Blik,
     Boleto,
     Card,
@@ -830,6 +843,7 @@ impl PaymentLinkPaymentMethodTypes {
             BacsDebit => "bacs_debit",
             Bancontact => "bancontact",
             Billie => "billie",
+            Bizum => "bizum",
             Blik => "blik",
             Boleto => "boleto",
             Card => "card",
@@ -881,6 +895,7 @@ impl std::str::FromStr for PaymentLinkPaymentMethodTypes {
             "bacs_debit" => Ok(BacsDebit),
             "bancontact" => Ok(Bancontact),
             "billie" => Ok(Billie),
+            "bizum" => Ok(Bizum),
             "blik" => Ok(Blik),
             "boleto" => Ok(Boleto),
             "card" => Ok(Card),

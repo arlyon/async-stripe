@@ -227,6 +227,8 @@ impl StripeRequest for RetrieveTestHelpersTestClock {
 #[derive(serde::Serialize)]
 struct CreateTestHelpersTestClockBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
+    customer: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     expand: Option<Vec<String>>,
     frozen_time: stripe_types::Timestamp,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -240,7 +242,7 @@ impl std::fmt::Debug for CreateTestHelpersTestClockBuilder {
 }
 impl CreateTestHelpersTestClockBuilder {
     fn new(frozen_time: impl Into<stripe_types::Timestamp>) -> Self {
-        Self { expand: None, frozen_time: frozen_time.into(), name: None }
+        Self { customer: None, expand: None, frozen_time: frozen_time.into(), name: None }
     }
 }
 /// Creates a new test clock that can be attached to new customers and quotes.
@@ -260,6 +262,12 @@ impl CreateTestHelpersTestClock {
     /// Construct a new `CreateTestHelpersTestClock`.
     pub fn new(frozen_time: impl Into<stripe_types::Timestamp>) -> Self {
         Self { inner: CreateTestHelpersTestClockBuilder::new(frozen_time.into()) }
+    }
+    /// Existing customer this test clock will be attached to.
+    /// Once attached, customers can't be removed from a test clock.
+    pub fn customer(mut self, customer: impl Into<String>) -> Self {
+        self.inner.customer = Some(customer.into());
+        self
     }
     /// Specifies which fields in the response should be expanded.
     pub fn expand(mut self, expand: impl Into<Vec<String>>) -> Self {

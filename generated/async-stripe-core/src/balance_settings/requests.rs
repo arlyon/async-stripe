@@ -132,6 +132,14 @@ impl Default for UpdateBalanceSettingsPayments {
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
 pub struct UpdateBalanceSettingsPaymentsPayouts {
+    /// Configures per-currency rules for automatically transferring funds from the payments balance to a FinancialAccount.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub automatic_transfer_rules_by_currency: Option<
+        std::collections::HashMap<
+            String,
+            Vec<UpdateBalanceSettingsPaymentsPayoutsAutomaticTransferRulesByCurrency>,
+        >,
+    >,
     /// The minimum balance amount to retain per currency after automatic payouts.
     /// Only funds that exceed these amounts are paid out.
     /// Learn more about the [minimum balances for automatic payouts](/payouts/minimum-balances-for-automatic-payouts).
@@ -154,12 +162,132 @@ impl std::fmt::Debug for UpdateBalanceSettingsPaymentsPayouts {
 }
 impl UpdateBalanceSettingsPaymentsPayouts {
     pub fn new() -> Self {
-        Self { minimum_balance_by_currency: None, schedule: None, statement_descriptor: None }
+        Self {
+            automatic_transfer_rules_by_currency: None,
+            minimum_balance_by_currency: None,
+            schedule: None,
+            statement_descriptor: None,
+        }
     }
 }
 impl Default for UpdateBalanceSettingsPaymentsPayouts {
     fn default() -> Self {
         Self::new()
+    }
+}
+/// Configures per-currency rules for automatically transferring funds from the payments balance to a FinancialAccount.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateBalanceSettingsPaymentsPayoutsAutomaticTransferRulesByCurrency {
+    /// The ID of the FinancialAccount that funds will be transferred to during automatic transfers.
+    pub payout_method: String,
+    /// The maximum amount in minor units to transfer to the FinancialAccount.
+    /// Required and only applicable when `type` is `transfer_up_to_amount`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub transfer_up_to_amount: Option<i64>,
+    /// The type of automatic transfer rule.
+    #[serde(rename = "type")]
+    pub type_: UpdateBalanceSettingsPaymentsPayoutsAutomaticTransferRulesByCurrencyType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateBalanceSettingsPaymentsPayoutsAutomaticTransferRulesByCurrency {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateBalanceSettingsPaymentsPayoutsAutomaticTransferRulesByCurrency")
+            .finish_non_exhaustive()
+    }
+}
+impl UpdateBalanceSettingsPaymentsPayoutsAutomaticTransferRulesByCurrency {
+    pub fn new(
+        payout_method: impl Into<String>,
+        type_: impl Into<UpdateBalanceSettingsPaymentsPayoutsAutomaticTransferRulesByCurrencyType>,
+    ) -> Self {
+        Self {
+            payout_method: payout_method.into(),
+            transfer_up_to_amount: None,
+            type_: type_.into(),
+        }
+    }
+}
+/// The type of automatic transfer rule.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum UpdateBalanceSettingsPaymentsPayoutsAutomaticTransferRulesByCurrencyType {
+    TransferAll,
+    TransferUpToAmount,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl UpdateBalanceSettingsPaymentsPayoutsAutomaticTransferRulesByCurrencyType {
+    pub fn as_str(&self) -> &str {
+        use UpdateBalanceSettingsPaymentsPayoutsAutomaticTransferRulesByCurrencyType::*;
+        match self {
+            TransferAll => "transfer_all",
+            TransferUpToAmount => "transfer_up_to_amount",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr
+    for UpdateBalanceSettingsPaymentsPayoutsAutomaticTransferRulesByCurrencyType
+{
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdateBalanceSettingsPaymentsPayoutsAutomaticTransferRulesByCurrencyType::*;
+        match s {
+            "transfer_all" => Ok(TransferAll),
+            "transfer_up_to_amount" => Ok(TransferUpToAmount),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdateBalanceSettingsPaymentsPayoutsAutomaticTransferRulesByCurrencyType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display
+    for UpdateBalanceSettingsPaymentsPayoutsAutomaticTransferRulesByCurrencyType
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for UpdateBalanceSettingsPaymentsPayoutsAutomaticTransferRulesByCurrencyType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateBalanceSettingsPaymentsPayoutsAutomaticTransferRulesByCurrencyType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdateBalanceSettingsPaymentsPayoutsAutomaticTransferRulesByCurrencyType
+        ))
+        .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for UpdateBalanceSettingsPaymentsPayoutsAutomaticTransferRulesByCurrencyType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdateBalanceSettingsPaymentsPayoutsAutomaticTransferRulesByCurrencyType
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Details on when funds from charges are available, and when they are paid out to an external account.
@@ -365,7 +493,7 @@ impl<'de> serde::Deserialize<'de> for UpdateBalanceSettingsPaymentsPayoutsSchedu
     }
 }
 /// Settings related to the account's balance settlement timing.
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
 pub struct UpdateBalanceSettingsPaymentsSettlementTiming {
@@ -375,6 +503,10 @@ pub struct UpdateBalanceSettingsPaymentsSettlementTiming {
     /// [Learn more about controlling delay days](/connect/manage-payout-schedule).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub delay_days_override: Option<u32>,
+    /// Customized start of day configuration for automatic payouts to group and send payments in local timezones with a customized day starting time.
+    /// For details, see our [Customized start of day](/connect/customized-start-of-day) documentation.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub start_of_day: Option<UpdateBalanceSettingsPaymentsSettlementTimingStartOfDay>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for UpdateBalanceSettingsPaymentsSettlementTiming {
@@ -384,10 +516,46 @@ impl std::fmt::Debug for UpdateBalanceSettingsPaymentsSettlementTiming {
 }
 impl UpdateBalanceSettingsPaymentsSettlementTiming {
     pub fn new() -> Self {
-        Self { delay_days_override: None }
+        Self { delay_days_override: None, start_of_day: None }
     }
 }
 impl Default for UpdateBalanceSettingsPaymentsSettlementTiming {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Customized start of day configuration for automatic payouts to group and send payments in local timezones with a customized day starting time.
+/// For details, see our [Customized start of day](/connect/customized-start-of-day) documentation.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateBalanceSettingsPaymentsSettlementTimingStartOfDay {
+    /// Hour at which the customized start of day begins according to the given timezone.
+    /// Must be a [supported customized start of day hour](/connect/customized-start-of-day#available-timezones-and-cutoffs).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub hour: Option<i64>,
+    /// Minutes at which the customized start of day begins according to the given timezone.
+    /// Must be either 0 or 30.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub minutes: Option<i64>,
+    /// Timezone for the customized start of day.
+    /// Must be a [supported customized start of day timezone](/connect/customized-start-of-day#available-timezones-and-cutoffs).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub timezone: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateBalanceSettingsPaymentsSettlementTimingStartOfDay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateBalanceSettingsPaymentsSettlementTimingStartOfDay")
+            .finish_non_exhaustive()
+    }
+}
+impl UpdateBalanceSettingsPaymentsSettlementTimingStartOfDay {
+    pub fn new() -> Self {
+        Self { hour: None, minutes: None, timezone: None }
+    }
+}
+impl Default for UpdateBalanceSettingsPaymentsSettlementTimingStartOfDay {
     fn default() -> Self {
         Self::new()
     }

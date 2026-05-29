@@ -60,6 +60,7 @@ pub enum ListPaymentMethodType {
     BacsDebit,
     Bancontact,
     Billie,
+    Bizum,
     Blik,
     Boleto,
     Card,
@@ -94,6 +95,7 @@ pub enum ListPaymentMethodType {
     RevolutPay,
     SamsungPay,
     Satispay,
+    Scalapay,
     SepaDebit,
     Sofort,
     Sunbit,
@@ -120,6 +122,7 @@ impl ListPaymentMethodType {
             BacsDebit => "bacs_debit",
             Bancontact => "bancontact",
             Billie => "billie",
+            Bizum => "bizum",
             Blik => "blik",
             Boleto => "boleto",
             Card => "card",
@@ -154,6 +157,7 @@ impl ListPaymentMethodType {
             RevolutPay => "revolut_pay",
             SamsungPay => "samsung_pay",
             Satispay => "satispay",
+            Scalapay => "scalapay",
             SepaDebit => "sepa_debit",
             Sofort => "sofort",
             Sunbit => "sunbit",
@@ -183,6 +187,7 @@ impl std::str::FromStr for ListPaymentMethodType {
             "bacs_debit" => Ok(BacsDebit),
             "bancontact" => Ok(Bancontact),
             "billie" => Ok(Billie),
+            "bizum" => Ok(Bizum),
             "blik" => Ok(Blik),
             "boleto" => Ok(Boleto),
             "card" => Ok(Card),
@@ -217,6 +222,7 @@ impl std::str::FromStr for ListPaymentMethodType {
             "revolut_pay" => Ok(RevolutPay),
             "samsung_pay" => Ok(SamsungPay),
             "satispay" => Ok(Satispay),
+            "scalapay" => Ok(Scalapay),
             "sepa_debit" => Ok(SepaDebit),
             "sofort" => Ok(Sofort),
             "sunbit" => Ok(Sunbit),
@@ -481,6 +487,9 @@ struct CreatePaymentMethodBuilder {
     billing_details: Option<BillingDetailsInnerParams>,
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
+    bizum: Option<miniserde::json::Value>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(with = "stripe_types::with_serde_json_opt")]
     blik: Option<miniserde::json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
     boleto: Option<CreatePaymentMethodBoleto>,
@@ -584,6 +593,9 @@ struct CreatePaymentMethodBuilder {
     #[serde(with = "stripe_types::with_serde_json_opt")]
     satispay: Option<miniserde::json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    scalapay: Option<miniserde::json::Value>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     sepa_debit: Option<CreatePaymentMethodSepaDebit>,
     #[serde(skip_serializing_if = "Option::is_none")]
     sofort: Option<CreatePaymentMethodSofort>,
@@ -631,6 +643,7 @@ impl CreatePaymentMethodBuilder {
             bancontact: None,
             billie: None,
             billing_details: None,
+            bizum: None,
             blik: None,
             boleto: None,
             card: None,
@@ -671,6 +684,7 @@ impl CreatePaymentMethodBuilder {
             revolut_pay: None,
             samsung_pay: None,
             satispay: None,
+            scalapay: None,
             sepa_debit: None,
             sofort: None,
             sunbit: None,
@@ -2091,6 +2105,7 @@ pub enum CreatePaymentMethodType {
     BacsDebit,
     Bancontact,
     Billie,
+    Bizum,
     Blik,
     Boleto,
     Card,
@@ -2125,6 +2140,7 @@ pub enum CreatePaymentMethodType {
     RevolutPay,
     SamsungPay,
     Satispay,
+    Scalapay,
     SepaDebit,
     Sofort,
     Sunbit,
@@ -2151,6 +2167,7 @@ impl CreatePaymentMethodType {
             BacsDebit => "bacs_debit",
             Bancontact => "bancontact",
             Billie => "billie",
+            Bizum => "bizum",
             Blik => "blik",
             Boleto => "boleto",
             Card => "card",
@@ -2185,6 +2202,7 @@ impl CreatePaymentMethodType {
             RevolutPay => "revolut_pay",
             SamsungPay => "samsung_pay",
             Satispay => "satispay",
+            Scalapay => "scalapay",
             SepaDebit => "sepa_debit",
             Sofort => "sofort",
             Sunbit => "sunbit",
@@ -2214,6 +2232,7 @@ impl std::str::FromStr for CreatePaymentMethodType {
             "bacs_debit" => Ok(BacsDebit),
             "bancontact" => Ok(Bancontact),
             "billie" => Ok(Billie),
+            "bizum" => Ok(Bizum),
             "blik" => Ok(Blik),
             "boleto" => Ok(Boleto),
             "card" => Ok(Card),
@@ -2248,6 +2267,7 @@ impl std::str::FromStr for CreatePaymentMethodType {
             "revolut_pay" => Ok(RevolutPay),
             "samsung_pay" => Ok(SamsungPay),
             "satispay" => Ok(Satispay),
+            "scalapay" => Ok(Scalapay),
             "sepa_debit" => Ok(SepaDebit),
             "sofort" => Ok(Sofort),
             "sunbit" => Ok(Sunbit),
@@ -2718,6 +2738,11 @@ impl CreatePaymentMethod {
         self.inner.billing_details = Some(billing_details.into());
         self
     }
+    /// If this is a `bizum` PaymentMethod, this hash contains details about the Bizum payment method.
+    pub fn bizum(mut self, bizum: impl Into<miniserde::json::Value>) -> Self {
+        self.inner.bizum = Some(bizum.into());
+        self
+    }
     /// If this is a `blik` PaymentMethod, this hash contains details about the BLIK payment method.
     pub fn blik(mut self, blik: impl Into<miniserde::json::Value>) -> Self {
         self.inner.blik = Some(blik.into());
@@ -2816,7 +2841,7 @@ impl CreatePaymentMethod {
         self.inner.kr_card = Some(kr_card.into());
         self
     }
-    /// If this is an `Link` PaymentMethod, this hash contains details about the Link payment method.
+    /// If this is an `Link` PaymentMethod, this hash contains details about the Link payment method (Link is also known as Onelink in the UK).
     pub fn link(mut self, link: impl Into<miniserde::json::Value>) -> Self {
         self.inner.link = Some(link.into());
         self
@@ -2932,6 +2957,11 @@ impl CreatePaymentMethod {
     /// If this is a `satispay` PaymentMethod, this hash contains details about the Satispay payment method.
     pub fn satispay(mut self, satispay: impl Into<miniserde::json::Value>) -> Self {
         self.inner.satispay = Some(satispay.into());
+        self
+    }
+    /// If this is a Scalapay PaymentMethod, this hash contains details about the Scalapay payment method.
+    pub fn scalapay(mut self, scalapay: impl Into<miniserde::json::Value>) -> Self {
+        self.inner.scalapay = Some(scalapay.into());
         self
     }
     /// If this is a `sepa_debit` PaymentMethod, this hash contains details about the SEPA debit bank account.

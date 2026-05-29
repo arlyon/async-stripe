@@ -4,6 +4,7 @@
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentIntentNextAction {
     pub alipay_handle_redirect: Option<stripe_shared::PaymentIntentNextActionAlipayHandleRedirect>,
+    pub blik_authorize: Option<stripe_shared::PaymentIntentNextActionBlikAuthorize>,
     pub boleto_display_details: Option<stripe_shared::PaymentIntentNextActionBoleto>,
     pub card_await_notification:
         Option<stripe_shared::PaymentIntentNextActionCardAwaitNotification>,
@@ -56,6 +57,7 @@ impl std::fmt::Debug for PaymentIntentNextAction {
 pub struct PaymentIntentNextActionBuilder {
     alipay_handle_redirect:
         Option<Option<stripe_shared::PaymentIntentNextActionAlipayHandleRedirect>>,
+    blik_authorize: Option<Option<stripe_shared::PaymentIntentNextActionBlikAuthorize>>,
     boleto_display_details: Option<Option<stripe_shared::PaymentIntentNextActionBoleto>>,
     card_await_notification:
         Option<Option<stripe_shared::PaymentIntentNextActionCardAwaitNotification>>,
@@ -132,6 +134,7 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "alipay_handle_redirect" => Deserialize::begin(&mut self.alipay_handle_redirect),
+                "blik_authorize" => Deserialize::begin(&mut self.blik_authorize),
                 "boleto_display_details" => Deserialize::begin(&mut self.boleto_display_details),
                 "card_await_notification" => Deserialize::begin(&mut self.card_await_notification),
                 "cashapp_handle_redirect_or_display_qr_code" => {
@@ -179,6 +182,7 @@ const _: () = {
         fn deser_default() -> Self {
             Self {
                 alipay_handle_redirect: Some(None),
+                blik_authorize: Some(None),
                 boleto_display_details: Some(None),
                 card_await_notification: Some(None),
                 cashapp_handle_redirect_or_display_qr_code: Some(None),
@@ -205,6 +209,7 @@ const _: () = {
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
                 Some(alipay_handle_redirect),
+                Some(blik_authorize),
                 Some(boleto_display_details),
                 Some(card_await_notification),
                 Some(cashapp_handle_redirect_or_display_qr_code),
@@ -227,6 +232,7 @@ const _: () = {
                 Some(wechat_pay_redirect_to_ios_app),
             ) = (
                 self.alipay_handle_redirect.take(),
+                self.blik_authorize,
                 self.boleto_display_details.take(),
                 self.card_await_notification,
                 self.cashapp_handle_redirect_or_display_qr_code.take(),
@@ -253,6 +259,7 @@ const _: () = {
             };
             Some(Self::Out {
                 alipay_handle_redirect,
+                blik_authorize,
                 boleto_display_details,
                 card_await_notification,
                 cashapp_handle_redirect_or_display_qr_code,
@@ -303,6 +310,7 @@ const _: () = {
                     "alipay_handle_redirect" => {
                         b.alipay_handle_redirect = FromValueOpt::from_value(v)
                     }
+                    "blik_authorize" => b.blik_authorize = FromValueOpt::from_value(v),
                     "boleto_display_details" => {
                         b.boleto_display_details = FromValueOpt::from_value(v)
                     }

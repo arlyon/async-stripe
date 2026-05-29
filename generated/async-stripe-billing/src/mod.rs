@@ -76,6 +76,10 @@ pub use stripe_shared::credit_note_line_item::*;
 pub use stripe_shared::credit_note_refund::*;
 pub use stripe_shared::credit_notes_payment_record_refund::*;
 pub use stripe_shared::credit_notes_pretax_credit_amount::*;
+#[doc(hidden)]
+pub mod credited_items_invoice_line_items;
+#[doc(inline)]
+pub use credited_items_invoice_line_items::*;
 pub use stripe_shared::deleted_invoice::*;
 #[doc(hidden)]
 pub mod deleted_invoiceitem;
@@ -90,6 +94,10 @@ pub use stripe_shared::discounts_resource_stackable_discount_with_discount_end::
 pub mod invoice;
 pub use stripe_shared::invoice::*;
 pub use stripe_shared::invoice_installments_card::*;
+#[doc(hidden)]
+pub mod invoice_item_proration_credited_items;
+#[doc(inline)]
+pub use invoice_item_proration_credited_items::*;
 pub use stripe_shared::invoice_item_threshold_reason::*;
 pub use stripe_shared::invoice_line_item_period::*;
 pub use stripe_shared::invoice_mandate_options_card::*;
@@ -305,6 +313,10 @@ pub use stripe_shared::subscription_transfer_data::*;
 pub use stripe_shared::subscriptions_resource_billing_cycle_anchor_config::*;
 pub use stripe_shared::subscriptions_resource_billing_mode::*;
 pub use stripe_shared::subscriptions_resource_billing_mode_flexible::*;
+pub use stripe_shared::subscriptions_resource_billing_schedules::*;
+pub use stripe_shared::subscriptions_resource_billing_schedules_applies_to::*;
+pub use stripe_shared::subscriptions_resource_billing_schedules_bill_until::*;
+pub use stripe_shared::subscriptions_resource_billing_schedules_bill_until_duration::*;
 pub use stripe_shared::subscriptions_resource_pause_collection::*;
 pub use stripe_shared::subscriptions_resource_payment_method_options::*;
 pub use stripe_shared::subscriptions_resource_payment_settings::*;
