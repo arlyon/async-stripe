@@ -9,7 +9,8 @@ pub struct PaymentPagesCheckoutSessionConsentCollection {
     /// If set to `auto`, enables the collection of customer consent for promotional communications.
     /// The Checkout.
     /// Session will determine whether to display an option to opt into promotional communication
-    /// from the merchant depending on the customer's locale. Only available to US merchants.
+    /// from the merchant depending on the customer's locale.
+    /// Only available to US merchants and US customers.
     pub promotions: Option<PaymentPagesCheckoutSessionConsentCollectionPromotions>,
     /// If set to `required`, it requires customers to accept the terms of service before being able to pay.
     pub terms_of_service: Option<PaymentPagesCheckoutSessionConsentCollectionTermsOfService>,
@@ -135,7 +136,8 @@ const _: () = {
 /// If set to `auto`, enables the collection of customer consent for promotional communications.
 /// The Checkout.
 /// Session will determine whether to display an option to opt into promotional communication
-/// from the merchant depending on the customer's locale. Only available to US merchants.
+/// from the merchant depending on the customer's locale.
+/// Only available to US merchants and US customers.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum PaymentPagesCheckoutSessionConsentCollectionPromotions {

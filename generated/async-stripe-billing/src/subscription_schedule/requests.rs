@@ -1111,6 +1111,9 @@ impl CreateSubscriptionSchedulePhases {
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
 pub struct CreateSubscriptionSchedulePhasesAddInvoiceItems {
+    /// Controls whether discounts apply to this invoice item. Defaults to true if no value is provided.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub discountable: Option<bool>,
     /// The coupons to redeem into discounts for the item.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub discounts: Option<Vec<CreateSubscriptionSchedulePhasesAddInvoiceItemsDiscounts>>,
@@ -1147,6 +1150,7 @@ impl std::fmt::Debug for CreateSubscriptionSchedulePhasesAddInvoiceItems {
 impl CreateSubscriptionSchedulePhasesAddInvoiceItems {
     pub fn new() -> Self {
         Self {
+            discountable: None,
             discounts: None,
             metadata: None,
             period: None,
@@ -3316,6 +3320,9 @@ impl UpdateSubscriptionSchedulePhases {
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
 pub struct UpdateSubscriptionSchedulePhasesAddInvoiceItems {
+    /// Controls whether discounts apply to this invoice item. Defaults to true if no value is provided.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub discountable: Option<bool>,
     /// The coupons to redeem into discounts for the item.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub discounts: Option<Vec<UpdateSubscriptionSchedulePhasesAddInvoiceItemsDiscounts>>,
@@ -3352,6 +3359,7 @@ impl std::fmt::Debug for UpdateSubscriptionSchedulePhasesAddInvoiceItems {
 impl UpdateSubscriptionSchedulePhasesAddInvoiceItems {
     pub fn new() -> Self {
         Self {
+            discountable: None,
             discounts: None,
             metadata: None,
             period: None,

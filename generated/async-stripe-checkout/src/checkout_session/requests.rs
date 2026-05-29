@@ -573,7 +573,7 @@ impl Default for CreateCheckoutSessionAdaptivePricing {
     }
 }
 /// Configure actions after a Checkout Session has expired.
-/// You can't set this parameter if `ui_mode` is `custom`.
+/// You can't set this parameter if `ui_mode` is `elements`.
 #[derive(Copy, Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
@@ -747,7 +747,7 @@ impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionAutomaticTaxLiability
     }
 }
 /// The branding settings for the Checkout Session.
-/// This parameter is not allowed if ui_mode is `custom`.
+/// This parameter is not allowed if ui_mode is `elements`.
 #[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
@@ -1235,7 +1235,8 @@ pub struct CreateCheckoutSessionConsentCollection {
     /// If set to `auto`, enables the collection of customer consent for promotional communications.
     /// The Checkout.
     /// Session will determine whether to display an option to opt into promotional communication
-    /// from the merchant depending on the customer's locale. Only available to US merchants.
+    /// from the merchant depending on the customer's locale.
+    /// Only available to US merchants and US customers.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub promotions: Option<CreateCheckoutSessionConsentCollectionPromotions>,
     /// If set to `required`, it requires customers to check a terms of service checkbox before being able to pay.
@@ -1374,7 +1375,8 @@ impl<'de> serde::Deserialize<'de>
 /// If set to `auto`, enables the collection of customer consent for promotional communications.
 /// The Checkout.
 /// Session will determine whether to display an option to opt into promotional communication
-/// from the merchant depending on the customer's locale. Only available to US merchants.
+/// from the merchant depending on the customer's locale.
+/// Only available to US merchants and US customers.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum CreateCheckoutSessionConsentCollectionPromotions {
@@ -2267,6 +2269,7 @@ pub enum CreateCheckoutSessionExcludedPaymentMethodTypes {
     BacsDebit,
     Bancontact,
     Billie,
+    Bizum,
     Blik,
     Boleto,
     Card,
@@ -2299,6 +2302,7 @@ pub enum CreateCheckoutSessionExcludedPaymentMethodTypes {
     RevolutPay,
     SamsungPay,
     Satispay,
+    Scalapay,
     SepaDebit,
     Sofort,
     Sunbit,
@@ -2325,6 +2329,7 @@ impl CreateCheckoutSessionExcludedPaymentMethodTypes {
             BacsDebit => "bacs_debit",
             Bancontact => "bancontact",
             Billie => "billie",
+            Bizum => "bizum",
             Blik => "blik",
             Boleto => "boleto",
             Card => "card",
@@ -2357,6 +2362,7 @@ impl CreateCheckoutSessionExcludedPaymentMethodTypes {
             RevolutPay => "revolut_pay",
             SamsungPay => "samsung_pay",
             Satispay => "satispay",
+            Scalapay => "scalapay",
             SepaDebit => "sepa_debit",
             Sofort => "sofort",
             Sunbit => "sunbit",
@@ -2386,6 +2392,7 @@ impl std::str::FromStr for CreateCheckoutSessionExcludedPaymentMethodTypes {
             "bacs_debit" => Ok(BacsDebit),
             "bancontact" => Ok(Bancontact),
             "billie" => Ok(Billie),
+            "bizum" => Ok(Bizum),
             "blik" => Ok(Blik),
             "boleto" => Ok(Boleto),
             "card" => Ok(Card),
@@ -2418,6 +2425,7 @@ impl std::str::FromStr for CreateCheckoutSessionExcludedPaymentMethodTypes {
             "revolut_pay" => Ok(RevolutPay),
             "samsung_pay" => Ok(SamsungPay),
             "satispay" => Ok(Satispay),
+            "scalapay" => Ok(Scalapay),
             "sepa_debit" => Ok(SepaDebit),
             "sofort" => Ok(Sofort),
             "sunbit" => Ok(Sunbit),
@@ -3866,7 +3874,7 @@ impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionPaymentMethodDataAllo
 #[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptions {
     /// contains details about the ACSS Debit payment method options.
-    /// You can't set this parameter if `ui_mode` is `custom`.
+    /// You can't set this parameter if `ui_mode` is `elements`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub acss_debit: Option<CreateCheckoutSessionPaymentMethodOptionsAcssDebit>,
     /// contains details about the Affirm payment method options.
@@ -3941,7 +3949,7 @@ pub struct CreateCheckoutSessionPaymentMethodOptions {
     /// contains details about the Korean card payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub kr_card: Option<CreateCheckoutSessionPaymentMethodOptionsKrCard>,
-    /// contains details about the Link payment method options.
+    /// contains details about the Link payment method options (Link is also known as Onelink in the UK).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub link: Option<CreateCheckoutSessionPaymentMethodOptionsLink>,
     /// contains details about the Mobilepay payment method options.
@@ -3987,6 +3995,9 @@ pub struct CreateCheckoutSessionPaymentMethodOptions {
     /// contains details about the Satispay payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub satispay: Option<CreateCheckoutSessionPaymentMethodOptionsSatispay>,
+    /// contains details about the Scalapay payment method options.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub scalapay: Option<CreateCheckoutSessionPaymentMethodOptionsScalapay>,
     /// contains details about the Sepa Debit payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sepa_debit: Option<CreateCheckoutSessionPaymentMethodOptionsSepaDebit>,
@@ -4058,6 +4069,7 @@ impl CreateCheckoutSessionPaymentMethodOptions {
             revolut_pay: None,
             samsung_pay: None,
             satispay: None,
+            scalapay: None,
             sepa_debit: None,
             sofort: None,
             swish: None,
@@ -4074,7 +4086,7 @@ impl Default for CreateCheckoutSessionPaymentMethodOptions {
     }
 }
 /// contains details about the ACSS Debit payment method options.
-/// You can't set this parameter if `ui_mode` is `custom`.
+/// You can't set this parameter if `ui_mode` is `elements`.
 #[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
@@ -6672,8 +6684,8 @@ impl<'de> serde::Deserialize<'de>
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionPaymentMethodOptionsCardRestrictions {
-    /// Specify the card brands to block in the Checkout Session.
-    /// If a customer enters or selects a card belonging to a blocked brand, they can't complete the Session.
+    /// The card brands to block.
+    /// If a customer enters or selects a card belonging to a blocked brand, they can't complete the payment.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub brands_blocked:
         Option<Vec<CreateCheckoutSessionPaymentMethodOptionsCardRestrictionsBrandsBlocked>>,
@@ -6695,8 +6707,8 @@ impl Default for CreateCheckoutSessionPaymentMethodOptionsCardRestrictions {
         Self::new()
     }
 }
-/// Specify the card brands to block in the Checkout Session.
-/// If a customer enters or selects a card belonging to a blocked brand, they can't complete the Session.
+/// The card brands to block.
+/// If a customer enters or selects a card belonging to a blocked brand, they can't complete the payment.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum CreateCheckoutSessionPaymentMethodOptionsCardRestrictionsBrandsBlocked {
@@ -9114,7 +9126,7 @@ impl<'de> serde::Deserialize<'de>
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-/// contains details about the Link payment method options.
+/// contains details about the Link payment method options (Link is also known as Onelink in the UK).
 #[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
@@ -11942,6 +11954,103 @@ impl<'de> serde::Deserialize<'de>
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
+/// contains details about the Scalapay payment method options.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateCheckoutSessionPaymentMethodOptionsScalapay {
+    /// Controls when the funds will be captured from the customer's account.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub capture_method: Option<CreateCheckoutSessionPaymentMethodOptionsScalapayCaptureMethod>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsScalapay {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionPaymentMethodOptionsScalapay").finish_non_exhaustive()
+    }
+}
+impl CreateCheckoutSessionPaymentMethodOptionsScalapay {
+    pub fn new() -> Self {
+        Self { capture_method: None }
+    }
+}
+impl Default for CreateCheckoutSessionPaymentMethodOptionsScalapay {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Controls when the funds will be captured from the customer's account.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreateCheckoutSessionPaymentMethodOptionsScalapayCaptureMethod {
+    Manual,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreateCheckoutSessionPaymentMethodOptionsScalapayCaptureMethod {
+    pub fn as_str(&self) -> &str {
+        use CreateCheckoutSessionPaymentMethodOptionsScalapayCaptureMethod::*;
+        match self {
+            Manual => "manual",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsScalapayCaptureMethod {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateCheckoutSessionPaymentMethodOptionsScalapayCaptureMethod::*;
+        match s {
+            "manual" => Ok(Manual),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateCheckoutSessionPaymentMethodOptionsScalapayCaptureMethod"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsScalapayCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsScalapayCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsScalapayCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCheckoutSessionPaymentMethodOptionsScalapayCaptureMethod))
+            .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsScalapayCaptureMethod {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateCheckoutSessionPaymentMethodOptionsScalapayCaptureMethod
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
 /// contains details about the Sepa Debit payment method options.
 #[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
@@ -12280,6 +12389,7 @@ impl Default for CreateCheckoutSessionPaymentMethodOptionsTwint {
 #[non_exhaustive]
 pub enum CreateCheckoutSessionPaymentMethodOptionsTwintSetupFutureUsage {
     None,
+    OffSession,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
     Unknown(String),
 }
@@ -12288,6 +12398,7 @@ impl CreateCheckoutSessionPaymentMethodOptionsTwintSetupFutureUsage {
         use CreateCheckoutSessionPaymentMethodOptionsTwintSetupFutureUsage::*;
         match self {
             None => "none",
+            OffSession => "off_session",
             Unknown(v) => v,
         }
     }
@@ -12299,6 +12410,7 @@ impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsTwintSetupFu
         use CreateCheckoutSessionPaymentMethodOptionsTwintSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
+            "off_session" => Ok(OffSession),
             v => {
                 tracing::warn!(
                     "Unknown value '{}' for enum '{}'",
@@ -13223,6 +13335,7 @@ pub enum CreateCheckoutSessionPaymentMethodTypes {
     BacsDebit,
     Bancontact,
     Billie,
+    Bizum,
     Blik,
     Boleto,
     Card,
@@ -13256,6 +13369,7 @@ pub enum CreateCheckoutSessionPaymentMethodTypes {
     RevolutPay,
     SamsungPay,
     Satispay,
+    Scalapay,
     SepaDebit,
     Sofort,
     Sunbit,
@@ -13282,6 +13396,7 @@ impl CreateCheckoutSessionPaymentMethodTypes {
             BacsDebit => "bacs_debit",
             Bancontact => "bancontact",
             Billie => "billie",
+            Bizum => "bizum",
             Blik => "blik",
             Boleto => "boleto",
             Card => "card",
@@ -13315,6 +13430,7 @@ impl CreateCheckoutSessionPaymentMethodTypes {
             RevolutPay => "revolut_pay",
             SamsungPay => "samsung_pay",
             Satispay => "satispay",
+            Scalapay => "scalapay",
             SepaDebit => "sepa_debit",
             Sofort => "sofort",
             Sunbit => "sunbit",
@@ -13344,6 +13460,7 @@ impl std::str::FromStr for CreateCheckoutSessionPaymentMethodTypes {
             "bacs_debit" => Ok(BacsDebit),
             "bancontact" => Ok(Bancontact),
             "billie" => Ok(Billie),
+            "bizum" => Ok(Bizum),
             "blik" => Ok(Blik),
             "boleto" => Ok(Boleto),
             "card" => Ok(Card),
@@ -13377,6 +13494,7 @@ impl std::str::FromStr for CreateCheckoutSessionPaymentMethodTypes {
             "revolut_pay" => Ok(RevolutPay),
             "samsung_pay" => Ok(SamsungPay),
             "satispay" => Ok(Satispay),
+            "scalapay" => Ok(Scalapay),
             "sepa_debit" => Ok(SepaDebit),
             "sofort" => Ok(Sofort),
             "sunbit" => Ok(Sunbit),
@@ -15363,7 +15481,7 @@ pub struct CreateCheckoutSessionSubscriptionData {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub application_fee_percent: Option<f64>,
     /// A future timestamp to anchor the subscription's billing cycle for new subscriptions.
-    /// You can't set this parameter if `ui_mode` is `custom`.
+    /// You can't set this parameter if `ui_mode` is `elements`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_cycle_anchor: Option<stripe_types::Timestamp>,
     /// Controls how prorations and invoices for subscriptions are calculated and orchestrated.
@@ -16236,7 +16354,7 @@ impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionTaxIdCollectionRequir
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
 pub struct CreateCheckoutSessionWalletOptions {
-    /// contains details about the Link wallet options.
+    /// contains details about the Link wallet options (Link is also known as Onelink in the UK).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub link: Option<CreateCheckoutSessionWalletOptionsLink>,
 }
@@ -16256,7 +16374,7 @@ impl Default for CreateCheckoutSessionWalletOptions {
         Self::new()
     }
 }
-/// contains details about the Link wallet options.
+/// contains details about the Link wallet options (Link is also known as Onelink in the UK).
 #[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
@@ -16385,7 +16503,7 @@ impl CreateCheckoutSession {
         self
     }
     /// Configure actions after a Checkout Session has expired.
-    /// You can't set this parameter if `ui_mode` is `custom`.
+    /// You can't set this parameter if `ui_mode` is `elements`.
     pub fn after_expiration(
         mut self,
         after_expiration: impl Into<CreateCheckoutSessionAfterExpiration>,
@@ -16415,7 +16533,7 @@ impl CreateCheckoutSession {
         self
     }
     /// The branding settings for the Checkout Session.
-    /// This parameter is not allowed if ui_mode is `custom`.
+    /// This parameter is not allowed if ui_mode is `elements`.
     pub fn branding_settings(
         mut self,
         branding_settings: impl Into<CreateCheckoutSessionBrandingSettings>,
@@ -16424,7 +16542,7 @@ impl CreateCheckoutSession {
         self
     }
     /// If set, Checkout displays a back button and customers will be directed to this URL if they decide to cancel payment and return to your website.
-    /// This parameter is not allowed if ui_mode is `embedded` or `custom`.
+    /// This parameter is not allowed if ui_mode is `embedded_page` or `elements`.
     pub fn cancel_url(mut self, cancel_url: impl Into<String>) -> Self {
         self.inner.cancel_url = Some(cancel_url.into());
         self
@@ -16645,7 +16763,7 @@ impl CreateCheckoutSession {
     }
     /// Where the user is coming from.
     /// This informs the optimizations that are applied to the session.
-    /// You can't set this parameter if `ui_mode` is `custom`.
+    /// You can't set this parameter if `ui_mode` is `elements`.
     pub fn origin_context(
         mut self,
         origin_context: impl Into<stripe_shared::CheckoutSessionOriginContext>,
@@ -16737,7 +16855,7 @@ impl CreateCheckoutSession {
         self.inner.phone_number_collection = Some(phone_number_collection.into());
         self
     }
-    /// This parameter applies to `ui_mode: embedded`.
+    /// This parameter applies to `ui_mode: embedded_page`.
     /// Learn more about the [redirect behavior](https://docs.stripe.com/payments/checkout/custom-success-page?payment-ui=embedded-form) of embedded sessions.
     /// Defaults to `always`.
     pub fn redirect_on_completion(
@@ -16748,7 +16866,8 @@ impl CreateCheckoutSession {
         self
     }
     /// The URL to redirect your customer back to after they authenticate or cancel their payment on the
-    /// payment method's app or site. This parameter is required if `ui_mode` is `embedded` or `custom`
+    /// payment method's app or site.
+    /// This parameter is required if `ui_mode` is `embedded_page` or `elements`.
     /// and redirect-based payment methods are enabled on the session.
     pub fn return_url(mut self, return_url: impl Into<String>) -> Self {
         self.inner.return_url = Some(return_url.into());
@@ -16791,7 +16910,7 @@ impl CreateCheckoutSession {
     /// to customize relevant text on the page, such as the submit button.
     ///  `submit_type` can only be specified on Checkout Sessions in
     /// `payment` or `subscription` mode. If blank or `auto`, `pay` is used.
-    /// You can't set this parameter if `ui_mode` is `custom`.
+    /// You can't set this parameter if `ui_mode` is `elements`.
     pub fn submit_type(
         mut self,
         submit_type: impl Into<stripe_shared::CheckoutSessionSubmitType>,
@@ -16809,7 +16928,7 @@ impl CreateCheckoutSession {
     }
     /// The URL to which Stripe should send customers when payment or setup
     /// is complete.
-    /// This parameter is not allowed if ui_mode is `embedded` or `custom`. If you'd like to use
+    /// This parameter is not allowed if ui_mode is `embedded_page` or `elements`. If you'd like to use
     /// information from the successful Checkout Session on your page, read the
     /// guide on [customizing your success page](https://docs.stripe.com/payments/checkout/custom-success-page).
     pub fn success_url(mut self, success_url: impl Into<String>) -> Self {
@@ -16824,7 +16943,7 @@ impl CreateCheckoutSession {
         self.inner.tax_id_collection = Some(tax_id_collection.into());
         self
     }
-    /// The UI mode of the Session. Defaults to `hosted`.
+    /// The UI mode of the Session. Defaults to `hosted_page`.
     pub fn ui_mode(mut self, ui_mode: impl Into<stripe_shared::CheckoutSessionUiMode>) -> Self {
         self.inner.ui_mode = Some(ui_mode.into());
         self

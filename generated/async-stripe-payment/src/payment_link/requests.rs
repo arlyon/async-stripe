@@ -340,6 +340,8 @@ struct CreatePaymentLinkBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     payment_method_collection: Option<CreatePaymentLinkPaymentMethodCollection>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    payment_method_options: Option<CreatePaymentLinkPaymentMethodOptions>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     payment_method_types: Option<Vec<stripe_shared::PaymentLinkPaymentMethodTypes>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     phone_number_collection: Option<PhoneNumberCollectionParams>,
@@ -389,6 +391,7 @@ impl CreatePaymentLinkBuilder {
             optional_items: None,
             payment_intent_data: None,
             payment_method_collection: None,
+            payment_method_options: None,
             payment_method_types: None,
             phone_number_collection: None,
             restrictions: None,
@@ -636,7 +639,8 @@ pub struct CreatePaymentLinkConsentCollection {
     /// If set to `auto`, enables the collection of customer consent for promotional communications.
     /// The Checkout.
     /// Session will determine whether to display an option to opt into promotional communication
-    /// from the merchant depending on the customer's locale. Only available to US merchants.
+    /// from the merchant depending on the customer's locale.
+    /// Only available to US merchants and US customers.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub promotions: Option<CreatePaymentLinkConsentCollectionPromotions>,
     /// If set to `required`, it requires customers to check a terms of service checkbox before being able to pay.
@@ -769,7 +773,8 @@ impl<'de> serde::Deserialize<'de>
 /// If set to `auto`, enables the collection of customer consent for promotional communications.
 /// The Checkout.
 /// Session will determine whether to display an option to opt into promotional communication
-/// from the merchant depending on the customer's locale. Only available to US merchants.
+/// from the merchant depending on the customer's locale.
+/// Only available to US merchants and US customers.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum CreatePaymentLinkConsentCollectionPromotions {
@@ -2216,6 +2221,167 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentLinkPaymentMethodCollection {
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreatePaymentLinkPaymentMethodOptions {
+    /// Configuration for `card` payment methods.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub card: Option<CreatePaymentLinkPaymentMethodOptionsCard>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentLinkPaymentMethodOptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentLinkPaymentMethodOptions").finish_non_exhaustive()
+    }
+}
+impl CreatePaymentLinkPaymentMethodOptions {
+    pub fn new() -> Self {
+        Self { card: None }
+    }
+}
+impl Default for CreatePaymentLinkPaymentMethodOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Configuration for `card` payment methods.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreatePaymentLinkPaymentMethodOptionsCard {
+    /// Restrictions to apply to the card payment method. For example, you can block specific card brands.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub restrictions: Option<CreatePaymentLinkPaymentMethodOptionsCardRestrictions>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentLinkPaymentMethodOptionsCard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentLinkPaymentMethodOptionsCard").finish_non_exhaustive()
+    }
+}
+impl CreatePaymentLinkPaymentMethodOptionsCard {
+    pub fn new() -> Self {
+        Self { restrictions: None }
+    }
+}
+impl Default for CreatePaymentLinkPaymentMethodOptionsCard {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Restrictions to apply to the card payment method. For example, you can block specific card brands.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreatePaymentLinkPaymentMethodOptionsCardRestrictions {
+    /// The card brands to block.
+    /// If a customer enters or selects a card belonging to a blocked brand, they can't complete the payment.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub brands_blocked:
+        Option<Vec<CreatePaymentLinkPaymentMethodOptionsCardRestrictionsBrandsBlocked>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentLinkPaymentMethodOptionsCardRestrictions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePaymentLinkPaymentMethodOptionsCardRestrictions")
+            .finish_non_exhaustive()
+    }
+}
+impl CreatePaymentLinkPaymentMethodOptionsCardRestrictions {
+    pub fn new() -> Self {
+        Self { brands_blocked: None }
+    }
+}
+impl Default for CreatePaymentLinkPaymentMethodOptionsCardRestrictions {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The card brands to block.
+/// If a customer enters or selects a card belonging to a blocked brand, they can't complete the payment.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreatePaymentLinkPaymentMethodOptionsCardRestrictionsBrandsBlocked {
+    AmericanExpress,
+    DiscoverGlobalNetwork,
+    Mastercard,
+    Visa,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreatePaymentLinkPaymentMethodOptionsCardRestrictionsBrandsBlocked {
+    pub fn as_str(&self) -> &str {
+        use CreatePaymentLinkPaymentMethodOptionsCardRestrictionsBrandsBlocked::*;
+        match self {
+            AmericanExpress => "american_express",
+            DiscoverGlobalNetwork => "discover_global_network",
+            Mastercard => "mastercard",
+            Visa => "visa",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePaymentLinkPaymentMethodOptionsCardRestrictionsBrandsBlocked {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreatePaymentLinkPaymentMethodOptionsCardRestrictionsBrandsBlocked::*;
+        match s {
+            "american_express" => Ok(AmericanExpress),
+            "discover_global_network" => Ok(DiscoverGlobalNetwork),
+            "mastercard" => Ok(Mastercard),
+            "visa" => Ok(Visa),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePaymentLinkPaymentMethodOptionsCardRestrictionsBrandsBlocked"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CreatePaymentLinkPaymentMethodOptionsCardRestrictionsBrandsBlocked {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for CreatePaymentLinkPaymentMethodOptionsCardRestrictionsBrandsBlocked {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePaymentLinkPaymentMethodOptionsCardRestrictionsBrandsBlocked {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePaymentLinkPaymentMethodOptionsCardRestrictionsBrandsBlocked
+        ))
+        .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for CreatePaymentLinkPaymentMethodOptionsCardRestrictionsBrandsBlocked {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePaymentLinkPaymentMethodOptionsCardRestrictionsBrandsBlocked
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
 /// Configuration for collecting the customer's shipping address.
 #[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
@@ -3653,6 +3819,13 @@ impl CreatePaymentLink {
         self.inner.payment_method_collection = Some(payment_method_collection.into());
         self
     }
+    pub fn payment_method_options(
+        mut self,
+        payment_method_options: impl Into<CreatePaymentLinkPaymentMethodOptions>,
+    ) -> Self {
+        self.inner.payment_method_options = Some(payment_method_options.into());
+        self
+    }
     /// The list of payment method types that customers can use.
     /// If no value is passed, Stripe will dynamically show relevant payment methods from your [payment method settings](https://dashboard.stripe.com/settings/payment_methods) (20+ payment methods [supported](https://docs.stripe.com/payments/payment-methods/integration-options#payment-method-product-support)).
     pub fn payment_method_types(
@@ -3792,6 +3965,8 @@ struct UpdatePaymentLinkBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     payment_method_collection: Option<UpdatePaymentLinkPaymentMethodCollection>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    payment_method_options: Option<UpdatePaymentLinkPaymentMethodOptions>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     payment_method_types: Option<Vec<stripe_shared::PaymentLinkPaymentMethodTypes>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     phone_number_collection: Option<PhoneNumberCollectionParams>,
@@ -3832,6 +4007,7 @@ impl UpdatePaymentLinkBuilder {
             optional_items: None,
             payment_intent_data: None,
             payment_method_collection: None,
+            payment_method_options: None,
             payment_method_types: None,
             phone_number_collection: None,
             restrictions: None,
@@ -4866,6 +5042,168 @@ impl serde::Serialize for UpdatePaymentLinkPaymentMethodCollection {
 }
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for UpdatePaymentLinkPaymentMethodCollection {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Payment-method-specific configuration.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdatePaymentLinkPaymentMethodOptions {
+    /// Configuration for `card` payment methods.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub card: Option<UpdatePaymentLinkPaymentMethodOptionsCard>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentLinkPaymentMethodOptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentLinkPaymentMethodOptions").finish_non_exhaustive()
+    }
+}
+impl UpdatePaymentLinkPaymentMethodOptions {
+    pub fn new() -> Self {
+        Self { card: None }
+    }
+}
+impl Default for UpdatePaymentLinkPaymentMethodOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Configuration for `card` payment methods.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdatePaymentLinkPaymentMethodOptionsCard {
+    /// Restrictions to apply to the card payment method. For example, you can block specific card brands.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub restrictions: Option<UpdatePaymentLinkPaymentMethodOptionsCardRestrictions>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentLinkPaymentMethodOptionsCard {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentLinkPaymentMethodOptionsCard").finish_non_exhaustive()
+    }
+}
+impl UpdatePaymentLinkPaymentMethodOptionsCard {
+    pub fn new() -> Self {
+        Self { restrictions: None }
+    }
+}
+impl Default for UpdatePaymentLinkPaymentMethodOptionsCard {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Restrictions to apply to the card payment method. For example, you can block specific card brands.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdatePaymentLinkPaymentMethodOptionsCardRestrictions {
+    /// The card brands to block.
+    /// If a customer enters or selects a card belonging to a blocked brand, they can't complete the payment.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub brands_blocked:
+        Option<Vec<UpdatePaymentLinkPaymentMethodOptionsCardRestrictionsBrandsBlocked>>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentLinkPaymentMethodOptionsCardRestrictions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdatePaymentLinkPaymentMethodOptionsCardRestrictions")
+            .finish_non_exhaustive()
+    }
+}
+impl UpdatePaymentLinkPaymentMethodOptionsCardRestrictions {
+    pub fn new() -> Self {
+        Self { brands_blocked: None }
+    }
+}
+impl Default for UpdatePaymentLinkPaymentMethodOptionsCardRestrictions {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// The card brands to block.
+/// If a customer enters or selects a card belonging to a blocked brand, they can't complete the payment.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum UpdatePaymentLinkPaymentMethodOptionsCardRestrictionsBrandsBlocked {
+    AmericanExpress,
+    DiscoverGlobalNetwork,
+    Mastercard,
+    Visa,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl UpdatePaymentLinkPaymentMethodOptionsCardRestrictionsBrandsBlocked {
+    pub fn as_str(&self) -> &str {
+        use UpdatePaymentLinkPaymentMethodOptionsCardRestrictionsBrandsBlocked::*;
+        match self {
+            AmericanExpress => "american_express",
+            DiscoverGlobalNetwork => "discover_global_network",
+            Mastercard => "mastercard",
+            Visa => "visa",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for UpdatePaymentLinkPaymentMethodOptionsCardRestrictionsBrandsBlocked {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use UpdatePaymentLinkPaymentMethodOptionsCardRestrictionsBrandsBlocked::*;
+        match s {
+            "american_express" => Ok(AmericanExpress),
+            "discover_global_network" => Ok(DiscoverGlobalNetwork),
+            "mastercard" => Ok(Mastercard),
+            "visa" => Ok(Visa),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "UpdatePaymentLinkPaymentMethodOptionsCardRestrictionsBrandsBlocked"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for UpdatePaymentLinkPaymentMethodOptionsCardRestrictionsBrandsBlocked {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for UpdatePaymentLinkPaymentMethodOptionsCardRestrictionsBrandsBlocked {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdatePaymentLinkPaymentMethodOptionsCardRestrictionsBrandsBlocked {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            UpdatePaymentLinkPaymentMethodOptionsCardRestrictionsBrandsBlocked
+        ))
+        .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for UpdatePaymentLinkPaymentMethodOptionsCardRestrictionsBrandsBlocked {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for UpdatePaymentLinkPaymentMethodOptionsCardRestrictionsBrandsBlocked
+{
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
@@ -6226,6 +6564,14 @@ impl UpdatePaymentLink {
         payment_method_collection: impl Into<UpdatePaymentLinkPaymentMethodCollection>,
     ) -> Self {
         self.inner.payment_method_collection = Some(payment_method_collection.into());
+        self
+    }
+    /// Payment-method-specific configuration.
+    pub fn payment_method_options(
+        mut self,
+        payment_method_options: impl Into<UpdatePaymentLinkPaymentMethodOptions>,
+    ) -> Self {
+        self.inner.payment_method_options = Some(payment_method_options.into());
         self
     }
     /// The list of payment method types that customers can use.

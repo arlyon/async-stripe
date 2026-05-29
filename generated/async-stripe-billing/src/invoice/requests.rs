@@ -2565,6 +2565,7 @@ pub enum CreateInvoicePaymentSettingsPaymentMethodTypes {
     SepaDebit,
     Sofort,
     Swish,
+    Twint,
     Upi,
     UsBankAccount,
     WechatPay,
@@ -2616,6 +2617,7 @@ impl CreateInvoicePaymentSettingsPaymentMethodTypes {
             SepaDebit => "sepa_debit",
             Sofort => "sofort",
             Swish => "swish",
+            Twint => "twint",
             Upi => "upi",
             UsBankAccount => "us_bank_account",
             WechatPay => "wechat_pay",
@@ -2670,6 +2672,7 @@ impl std::str::FromStr for CreateInvoicePaymentSettingsPaymentMethodTypes {
             "sepa_debit" => Ok(SepaDebit),
             "sofort" => Ok(Sofort),
             "swish" => Ok(Swish),
+            "twint" => Ok(Twint),
             "upi" => Ok(Upi),
             "us_bank_account" => Ok(UsBankAccount),
             "wechat_pay" => Ok(WechatPay),
@@ -5974,6 +5977,7 @@ pub enum UpdateInvoicePaymentSettingsPaymentMethodTypes {
     SepaDebit,
     Sofort,
     Swish,
+    Twint,
     Upi,
     UsBankAccount,
     WechatPay,
@@ -6025,6 +6029,7 @@ impl UpdateInvoicePaymentSettingsPaymentMethodTypes {
             SepaDebit => "sepa_debit",
             Sofort => "sofort",
             Swish => "swish",
+            Twint => "twint",
             Upi => "upi",
             UsBankAccount => "us_bank_account",
             WechatPay => "wechat_pay",
@@ -6079,6 +6084,7 @@ impl std::str::FromStr for UpdateInvoicePaymentSettingsPaymentMethodTypes {
             "sepa_debit" => Ok(SepaDebit),
             "sofort" => Ok(Sofort),
             "swish" => Ok(Swish),
+            "twint" => Ok(Twint),
             "upi" => Ok(Upi),
             "us_bank_account" => Ok(UsBankAccount),
             "wechat_pay" => Ok(WechatPay),
@@ -11274,6 +11280,9 @@ impl CreatePreviewInvoiceScheduleDetailsPhases {
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
 pub struct CreatePreviewInvoiceScheduleDetailsPhasesAddInvoiceItems {
+    /// Controls whether discounts apply to this invoice item. Defaults to true if no value is provided.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub discountable: Option<bool>,
     /// The coupons to redeem into discounts for the item.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub discounts: Option<Vec<CreatePreviewInvoiceScheduleDetailsPhasesAddInvoiceItemsDiscounts>>,
@@ -11311,6 +11320,7 @@ impl std::fmt::Debug for CreatePreviewInvoiceScheduleDetailsPhasesAddInvoiceItem
 impl CreatePreviewInvoiceScheduleDetailsPhasesAddInvoiceItems {
     pub fn new() -> Self {
         Self {
+            discountable: None,
             discounts: None,
             metadata: None,
             period: None,
@@ -12828,6 +12838,9 @@ pub struct CreatePreviewInvoiceSubscriptionDetails {
     /// Controls how prorations and invoices for subscriptions are calculated and orchestrated.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_mode: Option<CreatePreviewInvoiceSubscriptionDetailsBillingMode>,
+    /// Sets the billing schedules for the subscription.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub billing_schedules: Option<Vec<CreatePreviewInvoiceSubscriptionDetailsBillingSchedules>>,
     /// A timestamp at which the subscription should cancel.
     /// If set to a date before the current period ends, this will cause a proration if prorations have been enabled using `proration_behavior`.
     /// If set during a future period, this will always cause a proration for that period.
@@ -12879,6 +12892,7 @@ impl CreatePreviewInvoiceSubscriptionDetails {
         Self {
             billing_cycle_anchor: None,
             billing_mode: None,
+            billing_schedules: None,
             cancel_at: None,
             cancel_at_period_end: None,
             cancel_now: None,
@@ -13129,6 +13143,366 @@ impl<'de> serde::Deserialize<'de> for CreatePreviewInvoiceSubscriptionDetailsBil
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
+/// Sets the billing schedules for the subscription.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreatePreviewInvoiceSubscriptionDetailsBillingSchedules {
+    /// Configure billing schedule differently for individual subscription items.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub applies_to: Option<Vec<CreatePreviewInvoiceSubscriptionDetailsBillingSchedulesAppliesTo>>,
+    /// The end date for the billing schedule.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bill_until: Option<CreatePreviewInvoiceSubscriptionDetailsBillingSchedulesBillUntil>,
+    /// Specify a key for the billing schedule.
+    /// Must be unique to this field, alphanumeric, and up to 200 characters.
+    /// If not provided, a unique key will be generated.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePreviewInvoiceSubscriptionDetailsBillingSchedules {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePreviewInvoiceSubscriptionDetailsBillingSchedules")
+            .finish_non_exhaustive()
+    }
+}
+impl CreatePreviewInvoiceSubscriptionDetailsBillingSchedules {
+    pub fn new() -> Self {
+        Self { applies_to: None, bill_until: None, key: None }
+    }
+}
+impl Default for CreatePreviewInvoiceSubscriptionDetailsBillingSchedules {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Configure billing schedule differently for individual subscription items.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreatePreviewInvoiceSubscriptionDetailsBillingSchedulesAppliesTo {
+    /// The ID of the price object.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub price: Option<String>,
+    /// Controls which subscription items the billing schedule applies to.
+    #[serde(rename = "type")]
+    pub type_: CreatePreviewInvoiceSubscriptionDetailsBillingSchedulesAppliesToType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePreviewInvoiceSubscriptionDetailsBillingSchedulesAppliesTo {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePreviewInvoiceSubscriptionDetailsBillingSchedulesAppliesTo")
+            .finish_non_exhaustive()
+    }
+}
+impl CreatePreviewInvoiceSubscriptionDetailsBillingSchedulesAppliesTo {
+    pub fn new(
+        type_: impl Into<CreatePreviewInvoiceSubscriptionDetailsBillingSchedulesAppliesToType>,
+    ) -> Self {
+        Self { price: None, type_: type_.into() }
+    }
+}
+/// Controls which subscription items the billing schedule applies to.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreatePreviewInvoiceSubscriptionDetailsBillingSchedulesAppliesToType {
+    Price,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreatePreviewInvoiceSubscriptionDetailsBillingSchedulesAppliesToType {
+    pub fn as_str(&self) -> &str {
+        use CreatePreviewInvoiceSubscriptionDetailsBillingSchedulesAppliesToType::*;
+        match self {
+            Price => "price",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePreviewInvoiceSubscriptionDetailsBillingSchedulesAppliesToType {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreatePreviewInvoiceSubscriptionDetailsBillingSchedulesAppliesToType::*;
+        match s {
+            "price" => Ok(Price),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePreviewInvoiceSubscriptionDetailsBillingSchedulesAppliesToType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CreatePreviewInvoiceSubscriptionDetailsBillingSchedulesAppliesToType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for CreatePreviewInvoiceSubscriptionDetailsBillingSchedulesAppliesToType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePreviewInvoiceSubscriptionDetailsBillingSchedulesAppliesToType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePreviewInvoiceSubscriptionDetailsBillingSchedulesAppliesToType
+        ))
+        .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for CreatePreviewInvoiceSubscriptionDetailsBillingSchedulesAppliesToType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePreviewInvoiceSubscriptionDetailsBillingSchedulesAppliesToType
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// The end date for the billing schedule.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreatePreviewInvoiceSubscriptionDetailsBillingSchedulesBillUntil {
+    /// Specifies the billing period.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub duration: Option<CreatePreviewInvoiceSubscriptionDetailsBillingSchedulesBillUntilDuration>,
+    /// The end date of the billing schedule.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub timestamp: Option<stripe_types::Timestamp>,
+    /// Describes how the billing schedule will determine the end date. Either `duration` or `timestamp`.
+    #[serde(rename = "type")]
+    pub type_: CreatePreviewInvoiceSubscriptionDetailsBillingSchedulesBillUntilType,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePreviewInvoiceSubscriptionDetailsBillingSchedulesBillUntil {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePreviewInvoiceSubscriptionDetailsBillingSchedulesBillUntil")
+            .finish_non_exhaustive()
+    }
+}
+impl CreatePreviewInvoiceSubscriptionDetailsBillingSchedulesBillUntil {
+    pub fn new(
+        type_: impl Into<CreatePreviewInvoiceSubscriptionDetailsBillingSchedulesBillUntilType>,
+    ) -> Self {
+        Self { duration: None, timestamp: None, type_: type_.into() }
+    }
+}
+/// Specifies the billing period.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreatePreviewInvoiceSubscriptionDetailsBillingSchedulesBillUntilDuration {
+    /// Specifies billing duration. Either `day`, `week`, `month` or `year`.
+    pub interval: CreatePreviewInvoiceSubscriptionDetailsBillingSchedulesBillUntilDurationInterval,
+    /// The multiplier applied to the interval.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub interval_count: Option<u64>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePreviewInvoiceSubscriptionDetailsBillingSchedulesBillUntilDuration {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreatePreviewInvoiceSubscriptionDetailsBillingSchedulesBillUntilDuration")
+            .finish_non_exhaustive()
+    }
+}
+impl CreatePreviewInvoiceSubscriptionDetailsBillingSchedulesBillUntilDuration {
+    pub fn new(
+        interval: impl Into<
+            CreatePreviewInvoiceSubscriptionDetailsBillingSchedulesBillUntilDurationInterval,
+        >,
+    ) -> Self {
+        Self { interval: interval.into(), interval_count: None }
+    }
+}
+/// Specifies billing duration. Either `day`, `week`, `month` or `year`.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreatePreviewInvoiceSubscriptionDetailsBillingSchedulesBillUntilDurationInterval {
+    Day,
+    Month,
+    Week,
+    Year,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreatePreviewInvoiceSubscriptionDetailsBillingSchedulesBillUntilDurationInterval {
+    pub fn as_str(&self) -> &str {
+        use CreatePreviewInvoiceSubscriptionDetailsBillingSchedulesBillUntilDurationInterval::*;
+        match self {
+            Day => "day",
+            Month => "month",
+            Week => "week",
+            Year => "year",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr
+    for CreatePreviewInvoiceSubscriptionDetailsBillingSchedulesBillUntilDurationInterval
+{
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreatePreviewInvoiceSubscriptionDetailsBillingSchedulesBillUntilDurationInterval::*;
+        match s {
+            "day" => Ok(Day),
+            "month" => Ok(Month),
+            "week" => Ok(Week),
+            "year" => Ok(Year),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePreviewInvoiceSubscriptionDetailsBillingSchedulesBillUntilDurationInterval"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display
+    for CreatePreviewInvoiceSubscriptionDetailsBillingSchedulesBillUntilDurationInterval
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug
+    for CreatePreviewInvoiceSubscriptionDetailsBillingSchedulesBillUntilDurationInterval
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug
+    for CreatePreviewInvoiceSubscriptionDetailsBillingSchedulesBillUntilDurationInterval
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePreviewInvoiceSubscriptionDetailsBillingSchedulesBillUntilDurationInterval
+        ))
+        .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize
+    for CreatePreviewInvoiceSubscriptionDetailsBillingSchedulesBillUntilDurationInterval
+{
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePreviewInvoiceSubscriptionDetailsBillingSchedulesBillUntilDurationInterval
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Describes how the billing schedule will determine the end date. Either `duration` or `timestamp`.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreatePreviewInvoiceSubscriptionDetailsBillingSchedulesBillUntilType {
+    Duration,
+    Timestamp,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreatePreviewInvoiceSubscriptionDetailsBillingSchedulesBillUntilType {
+    pub fn as_str(&self) -> &str {
+        use CreatePreviewInvoiceSubscriptionDetailsBillingSchedulesBillUntilType::*;
+        match self {
+            Duration => "duration",
+            Timestamp => "timestamp",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CreatePreviewInvoiceSubscriptionDetailsBillingSchedulesBillUntilType {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreatePreviewInvoiceSubscriptionDetailsBillingSchedulesBillUntilType::*;
+        match s {
+            "duration" => Ok(Duration),
+            "timestamp" => Ok(Timestamp),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreatePreviewInvoiceSubscriptionDetailsBillingSchedulesBillUntilType"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CreatePreviewInvoiceSubscriptionDetailsBillingSchedulesBillUntilType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for CreatePreviewInvoiceSubscriptionDetailsBillingSchedulesBillUntilType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreatePreviewInvoiceSubscriptionDetailsBillingSchedulesBillUntilType {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(
+            CreatePreviewInvoiceSubscriptionDetailsBillingSchedulesBillUntilType
+        ))
+        .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for CreatePreviewInvoiceSubscriptionDetailsBillingSchedulesBillUntilType {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreatePreviewInvoiceSubscriptionDetailsBillingSchedulesBillUntilType
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
 /// A timestamp at which the subscription should cancel.
 /// If set to a date before the current period ends, this will cause a proration if prorations have been enabled using `proration_behavior`.
 /// If set during a future period, this will always cause a proration for that period.
@@ -13137,6 +13511,7 @@ impl<'de> serde::Deserialize<'de> for CreatePreviewInvoiceSubscriptionDetailsBil
 #[derive(serde::Serialize)]
 #[serde(rename_all = "snake_case")]
 pub enum CreatePreviewInvoiceSubscriptionDetailsCancelAt {
+    MaxBilledUntil,
     MaxPeriodEnd,
     MinPeriodEnd,
     #[serde(untagged)]

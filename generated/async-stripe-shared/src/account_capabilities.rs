@@ -25,6 +25,8 @@ pub struct AccountCapabilities {
     pub bank_transfer_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
     /// The status of the Billie capability of the account, or whether the account can directly process Billie payments.
     pub billie_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    /// The status of the Bizum capability of the account, or whether the account can directly process Bizum payments.
+    pub bizum_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
     /// The status of the blik payments capability of the account, or whether the account can directly process blik charges.
     pub blik_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
     /// The status of the boleto payments capability of the account, or whether the account can directly process boleto charges.
@@ -103,6 +105,8 @@ pub struct AccountCapabilities {
     pub samsung_pay_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
     /// The status of the Satispay capability of the account, or whether the account can directly process Satispay payments.
     pub satispay_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
+    /// The status of the Scalapay capability of the account, or whether the account can directly process Scalapay payments.
+    pub scalapay_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
     /// The status of the SEPA customer_balance payments (EUR currency) capability of the account, or whether the account can directly process SEPA customer_balance charges.
     pub sepa_bank_transfer_payments: Option<stripe_shared::AccountCapabilitiesStatus>,
     /// The status of the SEPA Direct Debits payments capability of the account, or whether the account can directly process SEPA Direct Debits charges.
@@ -151,6 +155,7 @@ pub struct AccountCapabilitiesBuilder {
     bancontact_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
     bank_transfer_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
     billie_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
+    bizum_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
     blik_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
     boleto_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
     card_issuing: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
@@ -190,6 +195,7 @@ pub struct AccountCapabilitiesBuilder {
     revolut_pay_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
     samsung_pay_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
     satispay_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
+    scalapay_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
     sepa_bank_transfer_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
     sepa_debit_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
     sofort_payments: Option<Option<stripe_shared::AccountCapabilitiesStatus>>,
@@ -259,6 +265,7 @@ const _: () = {
                 "bancontact_payments" => Deserialize::begin(&mut self.bancontact_payments),
                 "bank_transfer_payments" => Deserialize::begin(&mut self.bank_transfer_payments),
                 "billie_payments" => Deserialize::begin(&mut self.billie_payments),
+                "bizum_payments" => Deserialize::begin(&mut self.bizum_payments),
                 "blik_payments" => Deserialize::begin(&mut self.blik_payments),
                 "boleto_payments" => Deserialize::begin(&mut self.boleto_payments),
                 "card_issuing" => Deserialize::begin(&mut self.card_issuing),
@@ -310,6 +317,7 @@ const _: () = {
                 "revolut_pay_payments" => Deserialize::begin(&mut self.revolut_pay_payments),
                 "samsung_pay_payments" => Deserialize::begin(&mut self.samsung_pay_payments),
                 "satispay_payments" => Deserialize::begin(&mut self.satispay_payments),
+                "scalapay_payments" => Deserialize::begin(&mut self.scalapay_payments),
                 "sepa_bank_transfer_payments" => {
                     Deserialize::begin(&mut self.sepa_bank_transfer_payments)
                 }
@@ -349,6 +357,7 @@ const _: () = {
                 bancontact_payments: Some(None),
                 bank_transfer_payments: Some(None),
                 billie_payments: Some(None),
+                bizum_payments: Some(None),
                 blik_payments: Some(None),
                 boleto_payments: Some(None),
                 card_issuing: Some(None),
@@ -388,6 +397,7 @@ const _: () = {
                 revolut_pay_payments: Some(None),
                 samsung_pay_payments: Some(None),
                 satispay_payments: Some(None),
+                scalapay_payments: Some(None),
                 sepa_bank_transfer_payments: Some(None),
                 sepa_debit_payments: Some(None),
                 sofort_payments: Some(None),
@@ -418,6 +428,7 @@ const _: () = {
                 Some(bancontact_payments),
                 Some(bank_transfer_payments),
                 Some(billie_payments),
+                Some(bizum_payments),
                 Some(blik_payments),
                 Some(boleto_payments),
                 Some(card_issuing),
@@ -457,6 +468,7 @@ const _: () = {
                 Some(revolut_pay_payments),
                 Some(samsung_pay_payments),
                 Some(satispay_payments),
+                Some(scalapay_payments),
                 Some(sepa_bank_transfer_payments),
                 Some(sepa_debit_payments),
                 Some(sofort_payments),
@@ -483,6 +495,7 @@ const _: () = {
                 self.bancontact_payments.take(),
                 self.bank_transfer_payments.take(),
                 self.billie_payments.take(),
+                self.bizum_payments.take(),
                 self.blik_payments.take(),
                 self.boleto_payments.take(),
                 self.card_issuing.take(),
@@ -522,6 +535,7 @@ const _: () = {
                 self.revolut_pay_payments.take(),
                 self.samsung_pay_payments.take(),
                 self.satispay_payments.take(),
+                self.scalapay_payments.take(),
                 self.sepa_bank_transfer_payments.take(),
                 self.sepa_debit_payments.take(),
                 self.sofort_payments.take(),
@@ -552,6 +566,7 @@ const _: () = {
                 bancontact_payments,
                 bank_transfer_payments,
                 billie_payments,
+                bizum_payments,
                 blik_payments,
                 boleto_payments,
                 card_issuing,
@@ -591,6 +606,7 @@ const _: () = {
                 revolut_pay_payments,
                 samsung_pay_payments,
                 satispay_payments,
+                scalapay_payments,
                 sepa_bank_transfer_payments,
                 sepa_debit_payments,
                 sofort_payments,
@@ -649,6 +665,7 @@ const _: () = {
                         b.bank_transfer_payments = FromValueOpt::from_value(v)
                     }
                     "billie_payments" => b.billie_payments = FromValueOpt::from_value(v),
+                    "bizum_payments" => b.bizum_payments = FromValueOpt::from_value(v),
                     "blik_payments" => b.blik_payments = FromValueOpt::from_value(v),
                     "boleto_payments" => b.boleto_payments = FromValueOpt::from_value(v),
                     "card_issuing" => b.card_issuing = FromValueOpt::from_value(v),
@@ -700,6 +717,7 @@ const _: () = {
                     "revolut_pay_payments" => b.revolut_pay_payments = FromValueOpt::from_value(v),
                     "samsung_pay_payments" => b.samsung_pay_payments = FromValueOpt::from_value(v),
                     "satispay_payments" => b.satispay_payments = FromValueOpt::from_value(v),
+                    "scalapay_payments" => b.scalapay_payments = FromValueOpt::from_value(v),
                     "sepa_bank_transfer_payments" => {
                         b.sepa_bank_transfer_payments = FromValueOpt::from_value(v)
                     }

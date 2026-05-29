@@ -33,7 +33,7 @@ pub struct IssuingDispute {
     pub status: stripe_shared::IssuingDisputeStatus,
     /// The transaction being disputed.
     pub transaction: stripe_types::Expandable<stripe_shared::IssuingTransaction>,
-    /// [Treasury](https://docs.stripe.com/api/treasury) details related to this dispute if it was created on a [FinancialAccount](/docs/api/treasury/financial_accounts.
+    /// [Treasury](https://docs.stripe.com/api/treasury) details related to this dispute if it was created on a [FinancialAccount](https://docs.stripe.com/api/treasury/financial_accounts).
     pub treasury: Option<stripe_shared::IssuingDisputeTreasury>,
 }
 #[cfg(feature = "redact-generated-debug")]

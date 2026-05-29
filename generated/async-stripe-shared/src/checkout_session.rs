@@ -39,9 +39,9 @@ pub struct CheckoutSession {
     /// Session with your internal systems.
     pub client_reference_id: Option<String>,
     /// The client secret of your Checkout Session.
-    /// Applies to Checkout Sessions with `ui_mode: embedded` or `ui_mode: custom`.
-    /// For `ui_mode: embedded`, the client secret is to be used when initializing Stripe.js embedded checkout.
-    /// For `ui_mode: custom`, use the client secret with [initCheckout](https://docs.stripe.com/js/custom_checkout/init) on your front end.
+    /// Applies to Checkout Sessions with `ui_mode: embedded_page` or `ui_mode: elements`.
+    /// For `ui_mode: embedded_page`, the client secret is to be used when initializing Stripe.js embedded checkout.
+    /// For `ui_mode: elements`, use the client secret with [initCheckout](https://docs.stripe.com/js/custom_checkout/init) on your front end.
     pub client_secret: Option<String>,
     /// Information about the customer collected within the Checkout Session.
     pub collected_information:
@@ -145,11 +145,11 @@ pub struct CheckoutSession {
     pub presentment_details: Option<stripe_shared::PaymentFlowsPaymentIntentPresentmentDetails>,
     /// The ID of the original expired Checkout Session that triggered the recovery flow.
     pub recovered_from: Option<String>,
-    /// This parameter applies to `ui_mode: embedded`.
+    /// This parameter applies to `ui_mode: embedded_page`.
     /// Learn more about the [redirect behavior](https://docs.stripe.com/payments/checkout/custom-success-page?payment-ui=embedded-form) of embedded sessions.
     /// Defaults to `always`.
     pub redirect_on_completion: Option<stripe_shared::CheckoutSessionRedirectOnCompletion>,
-    /// Applies to Checkout Sessions with `ui_mode: embedded` or `ui_mode: custom`.
+    /// Applies to Checkout Sessions with `ui_mode: embedded_page` or `ui_mode: elements`.
     /// The URL to redirect your customer back to after they authenticate or cancel their payment on the payment method's app or site.
     pub return_url: Option<String>,
     /// Controls saved payment method settings for the session.
@@ -184,7 +184,7 @@ pub struct CheckoutSession {
     /// The UI mode of the Session. Defaults to `hosted_page`.
     pub ui_mode: Option<stripe_shared::CheckoutSessionUiMode>,
     /// The URL to the Checkout Session.
-    /// Applies to Checkout Sessions with `ui_mode: hosted`.
+    /// Applies to Checkout Sessions with `ui_mode: hosted_page`.
     /// Redirect customers to this URL to take them to Checkout.
     /// If you’re using [Custom Domains](https://docs.stripe.com/payments/checkout/custom-domains), the URL will use your subdomain.
     /// Otherwise, it’ll use `checkout.stripe.com.`.

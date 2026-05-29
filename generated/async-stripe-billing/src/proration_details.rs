@@ -3,6 +3,8 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct ProrationDetails {
+    /// For a credit proration, links to the debit invoice line items or invoice item that the credit applies to.
+    pub credited_items: Option<stripe_billing::InvoiceItemProrationCreditedItems>,
     /// Discount amounts applied when the proration was created.
     pub discount_amounts: Vec<stripe_shared::DiscountsResourceDiscountAmount>,
 }
@@ -14,6 +16,7 @@ impl std::fmt::Debug for ProrationDetails {
 }
 #[doc(hidden)]
 pub struct ProrationDetailsBuilder {
+    credited_items: Option<Option<stripe_billing::InvoiceItemProrationCreditedItems>>,
     discount_amounts: Option<Vec<stripe_shared::DiscountsResourceDiscountAmount>>,
 }
 
@@ -57,20 +60,23 @@ const _: () = {
         type Out = ProrationDetails;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
+                "credited_items" => Deserialize::begin(&mut self.credited_items),
                 "discount_amounts" => Deserialize::begin(&mut self.discount_amounts),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { discount_amounts: None }
+            Self { credited_items: Some(None), discount_amounts: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(discount_amounts),) = (self.discount_amounts.take(),) else {
+            let (Some(credited_items), Some(discount_amounts)) =
+                (self.credited_items.take(), self.discount_amounts.take())
+            else {
                 return None;
             };
-            Some(Self::Out { discount_amounts })
+            Some(Self::Out { credited_items, discount_amounts })
         }
     }
 
@@ -97,6 +103,7 @@ const _: () = {
             let mut b = ProrationDetailsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
+                    "credited_items" => b.credited_items = FromValueOpt::from_value(v),
                     "discount_amounts" => b.discount_amounts = FromValueOpt::from_value(v),
                     _ => {}
                 }

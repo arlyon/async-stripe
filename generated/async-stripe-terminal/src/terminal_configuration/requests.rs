@@ -355,7 +355,15 @@ struct CreateTerminalConfigurationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     tipping: Option<Tipping>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    verifone_m425: Option<CreateTerminalConfigurationVerifoneM425>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     verifone_p400: Option<CreateTerminalConfigurationVerifoneP400>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    verifone_p630: Option<CreateTerminalConfigurationVerifoneP630>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    verifone_ux700: Option<CreateTerminalConfigurationVerifoneUx700>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    verifone_v660p: Option<CreateTerminalConfigurationVerifoneV660p>,
     #[serde(skip_serializing_if = "Option::is_none")]
     wifi: Option<CreateTerminalConfigurationWifi>,
 }
@@ -378,7 +386,11 @@ impl CreateTerminalConfigurationBuilder {
             stripe_s700: None,
             stripe_s710: None,
             tipping: None,
+            verifone_m425: None,
             verifone_p400: None,
+            verifone_p630: None,
+            verifone_ux700: None,
+            verifone_v660p: None,
             wifi: None,
         }
     }
@@ -458,6 +470,31 @@ impl Default for CreateTerminalConfigurationStripeS710 {
         Self::new()
     }
 }
+/// An object containing device type specific settings for Verifone M425 readers.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateTerminalConfigurationVerifoneM425 {
+    /// A File ID representing an image you want to display on the reader.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub splashscreen: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTerminalConfigurationVerifoneM425 {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTerminalConfigurationVerifoneM425").finish_non_exhaustive()
+    }
+}
+impl CreateTerminalConfigurationVerifoneM425 {
+    pub fn new() -> Self {
+        Self { splashscreen: None }
+    }
+}
+impl Default for CreateTerminalConfigurationVerifoneM425 {
+    fn default() -> Self {
+        Self::new()
+    }
+}
 /// An object containing device type specific settings for Verifone P400 readers.
 #[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
@@ -479,6 +516,81 @@ impl CreateTerminalConfigurationVerifoneP400 {
     }
 }
 impl Default for CreateTerminalConfigurationVerifoneP400 {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// An object containing device type specific settings for Verifone P630 readers.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateTerminalConfigurationVerifoneP630 {
+    /// A File ID representing an image you want to display on the reader.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub splashscreen: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTerminalConfigurationVerifoneP630 {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTerminalConfigurationVerifoneP630").finish_non_exhaustive()
+    }
+}
+impl CreateTerminalConfigurationVerifoneP630 {
+    pub fn new() -> Self {
+        Self { splashscreen: None }
+    }
+}
+impl Default for CreateTerminalConfigurationVerifoneP630 {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// An object containing device type specific settings for Verifone UX700 readers.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateTerminalConfigurationVerifoneUx700 {
+    /// A File ID representing an image you want to display on the reader.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub splashscreen: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTerminalConfigurationVerifoneUx700 {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTerminalConfigurationVerifoneUx700").finish_non_exhaustive()
+    }
+}
+impl CreateTerminalConfigurationVerifoneUx700 {
+    pub fn new() -> Self {
+        Self { splashscreen: None }
+    }
+}
+impl Default for CreateTerminalConfigurationVerifoneUx700 {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// An object containing device type specific settings for Verifone V660p readers.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateTerminalConfigurationVerifoneV660p {
+    /// A File ID representing an image you want to display on the reader.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub splashscreen: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTerminalConfigurationVerifoneV660p {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTerminalConfigurationVerifoneV660p").finish_non_exhaustive()
+    }
+}
+impl CreateTerminalConfigurationVerifoneV660p {
+    pub fn new() -> Self {
+        Self { splashscreen: None }
+    }
+}
+impl Default for CreateTerminalConfigurationVerifoneV660p {
     fn default() -> Self {
         Self::new()
     }
@@ -671,12 +783,44 @@ impl CreateTerminalConfiguration {
         self.inner.tipping = Some(tipping.into());
         self
     }
+    /// An object containing device type specific settings for Verifone M425 readers.
+    pub fn verifone_m425(
+        mut self,
+        verifone_m425: impl Into<CreateTerminalConfigurationVerifoneM425>,
+    ) -> Self {
+        self.inner.verifone_m425 = Some(verifone_m425.into());
+        self
+    }
     /// An object containing device type specific settings for Verifone P400 readers.
     pub fn verifone_p400(
         mut self,
         verifone_p400: impl Into<CreateTerminalConfigurationVerifoneP400>,
     ) -> Self {
         self.inner.verifone_p400 = Some(verifone_p400.into());
+        self
+    }
+    /// An object containing device type specific settings for Verifone P630 readers.
+    pub fn verifone_p630(
+        mut self,
+        verifone_p630: impl Into<CreateTerminalConfigurationVerifoneP630>,
+    ) -> Self {
+        self.inner.verifone_p630 = Some(verifone_p630.into());
+        self
+    }
+    /// An object containing device type specific settings for Verifone UX700 readers.
+    pub fn verifone_ux700(
+        mut self,
+        verifone_ux700: impl Into<CreateTerminalConfigurationVerifoneUx700>,
+    ) -> Self {
+        self.inner.verifone_ux700 = Some(verifone_ux700.into());
+        self
+    }
+    /// An object containing device type specific settings for Verifone V660p readers.
+    pub fn verifone_v660p(
+        mut self,
+        verifone_v660p: impl Into<CreateTerminalConfigurationVerifoneV660p>,
+    ) -> Self {
+        self.inner.verifone_v660p = Some(verifone_v660p.into());
         self
     }
     /// Configurations for connecting to a WiFi network.
@@ -740,7 +884,15 @@ struct UpdateTerminalConfigurationBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     tipping: Option<Tipping>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    verifone_m425: Option<UpdateTerminalConfigurationVerifoneM425>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     verifone_p400: Option<UpdateTerminalConfigurationVerifoneP400>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    verifone_p630: Option<UpdateTerminalConfigurationVerifoneP630>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    verifone_ux700: Option<UpdateTerminalConfigurationVerifoneUx700>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    verifone_v660p: Option<UpdateTerminalConfigurationVerifoneV660p>,
     #[serde(skip_serializing_if = "Option::is_none")]
     wifi: Option<UpdateTerminalConfigurationWifi>,
 }
@@ -763,7 +915,11 @@ impl UpdateTerminalConfigurationBuilder {
             stripe_s700: None,
             stripe_s710: None,
             tipping: None,
+            verifone_m425: None,
             verifone_p400: None,
+            verifone_p630: None,
+            verifone_ux700: None,
+            verifone_v660p: None,
             wifi: None,
         }
     }
@@ -843,6 +999,31 @@ impl Default for UpdateTerminalConfigurationStripeS710 {
         Self::new()
     }
 }
+/// An object containing device type specific settings for Verifone M425 readers.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateTerminalConfigurationVerifoneM425 {
+    /// A File ID representing an image you want to display on the reader.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub splashscreen: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateTerminalConfigurationVerifoneM425 {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateTerminalConfigurationVerifoneM425").finish_non_exhaustive()
+    }
+}
+impl UpdateTerminalConfigurationVerifoneM425 {
+    pub fn new() -> Self {
+        Self { splashscreen: None }
+    }
+}
+impl Default for UpdateTerminalConfigurationVerifoneM425 {
+    fn default() -> Self {
+        Self::new()
+    }
+}
 /// An object containing device type specific settings for Verifone P400 readers.
 #[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
@@ -864,6 +1045,81 @@ impl UpdateTerminalConfigurationVerifoneP400 {
     }
 }
 impl Default for UpdateTerminalConfigurationVerifoneP400 {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// An object containing device type specific settings for Verifone P630 readers.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateTerminalConfigurationVerifoneP630 {
+    /// A File ID representing an image you want to display on the reader.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub splashscreen: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateTerminalConfigurationVerifoneP630 {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateTerminalConfigurationVerifoneP630").finish_non_exhaustive()
+    }
+}
+impl UpdateTerminalConfigurationVerifoneP630 {
+    pub fn new() -> Self {
+        Self { splashscreen: None }
+    }
+}
+impl Default for UpdateTerminalConfigurationVerifoneP630 {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// An object containing device type specific settings for Verifone UX700 readers.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateTerminalConfigurationVerifoneUx700 {
+    /// A File ID representing an image you want to display on the reader.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub splashscreen: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateTerminalConfigurationVerifoneUx700 {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateTerminalConfigurationVerifoneUx700").finish_non_exhaustive()
+    }
+}
+impl UpdateTerminalConfigurationVerifoneUx700 {
+    pub fn new() -> Self {
+        Self { splashscreen: None }
+    }
+}
+impl Default for UpdateTerminalConfigurationVerifoneUx700 {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// An object containing device type specific settings for Verifone V660p readers.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateTerminalConfigurationVerifoneV660p {
+    /// A File ID representing an image you want to display on the reader.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub splashscreen: Option<String>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateTerminalConfigurationVerifoneV660p {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateTerminalConfigurationVerifoneV660p").finish_non_exhaustive()
+    }
+}
+impl UpdateTerminalConfigurationVerifoneV660p {
+    pub fn new() -> Self {
+        Self { splashscreen: None }
+    }
+}
+impl Default for UpdateTerminalConfigurationVerifoneV660p {
     fn default() -> Self {
         Self::new()
     }
@@ -1060,12 +1316,44 @@ impl UpdateTerminalConfiguration {
         self.inner.tipping = Some(tipping.into());
         self
     }
+    /// An object containing device type specific settings for Verifone M425 readers.
+    pub fn verifone_m425(
+        mut self,
+        verifone_m425: impl Into<UpdateTerminalConfigurationVerifoneM425>,
+    ) -> Self {
+        self.inner.verifone_m425 = Some(verifone_m425.into());
+        self
+    }
     /// An object containing device type specific settings for Verifone P400 readers.
     pub fn verifone_p400(
         mut self,
         verifone_p400: impl Into<UpdateTerminalConfigurationVerifoneP400>,
     ) -> Self {
         self.inner.verifone_p400 = Some(verifone_p400.into());
+        self
+    }
+    /// An object containing device type specific settings for Verifone P630 readers.
+    pub fn verifone_p630(
+        mut self,
+        verifone_p630: impl Into<UpdateTerminalConfigurationVerifoneP630>,
+    ) -> Self {
+        self.inner.verifone_p630 = Some(verifone_p630.into());
+        self
+    }
+    /// An object containing device type specific settings for Verifone UX700 readers.
+    pub fn verifone_ux700(
+        mut self,
+        verifone_ux700: impl Into<UpdateTerminalConfigurationVerifoneUx700>,
+    ) -> Self {
+        self.inner.verifone_ux700 = Some(verifone_ux700.into());
+        self
+    }
+    /// An object containing device type specific settings for Verifone V660p readers.
+    pub fn verifone_v660p(
+        mut self,
+        verifone_v660p: impl Into<UpdateTerminalConfigurationVerifoneV660p>,
+    ) -> Self {
+        self.inner.verifone_v660p = Some(verifone_v660p.into());
         self
     }
     /// Configurations for connecting to a WiFi network.

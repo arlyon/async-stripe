@@ -4,6 +4,13 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct TerminalReaderReaderResourceReaderAction {
+    /// The reader action failed due to an [API error](https://docs.stripe.com/api/errors).
+    /// Only present when `status` is `failed` and the underlying failure was an API error.
+    /// Avoid parsing the `message` field for programmatic logic; use `type` or `code` instead.
+    /// The `message` field is for display to humans only and may be updated at anytime.
+    /// Requires [reader version](https://docs.stripe.com/terminal/readers/stripe-reader-s700-s710#reader-software-version) 2.42 or later.
+    /// Readers on older versions always return null.
+    pub api_error: Option<Box<stripe_shared::ApiErrors>>,
     pub collect_inputs: Option<stripe_terminal::TerminalReaderReaderResourceCollectInputsAction>,
     pub collect_payment_method:
         Option<stripe_terminal::TerminalReaderReaderResourceCollectPaymentMethodAction>,
@@ -13,6 +20,7 @@ pub struct TerminalReaderReaderResourceReaderAction {
     pub failure_code: Option<String>,
     /// Detailed failure message, only set if status is `failed`.
     pub failure_message: Option<String>,
+    pub print_content: Option<stripe_terminal::TerminalReaderReaderResourcePrintContent>,
     pub process_payment_intent:
         Option<stripe_terminal::TerminalReaderReaderResourceProcessPaymentIntentAction>,
     pub process_setup_intent:
@@ -34,6 +42,7 @@ impl std::fmt::Debug for TerminalReaderReaderResourceReaderAction {
 }
 #[doc(hidden)]
 pub struct TerminalReaderReaderResourceReaderActionBuilder {
+    api_error: Option<Option<Box<stripe_shared::ApiErrors>>>,
     collect_inputs:
         Option<Option<stripe_terminal::TerminalReaderReaderResourceCollectInputsAction>>,
     collect_payment_method:
@@ -42,6 +51,7 @@ pub struct TerminalReaderReaderResourceReaderActionBuilder {
         Option<Option<stripe_terminal::TerminalReaderReaderResourceConfirmPaymentIntentAction>>,
     failure_code: Option<Option<String>>,
     failure_message: Option<Option<String>>,
+    print_content: Option<Option<stripe_terminal::TerminalReaderReaderResourcePrintContent>>,
     process_payment_intent:
         Option<Option<stripe_terminal::TerminalReaderReaderResourceProcessPaymentIntentAction>>,
     process_setup_intent:
@@ -94,11 +104,13 @@ const _: () = {
         type Out = TerminalReaderReaderResourceReaderAction;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
+                "api_error" => Deserialize::begin(&mut self.api_error),
                 "collect_inputs" => Deserialize::begin(&mut self.collect_inputs),
                 "collect_payment_method" => Deserialize::begin(&mut self.collect_payment_method),
                 "confirm_payment_intent" => Deserialize::begin(&mut self.confirm_payment_intent),
                 "failure_code" => Deserialize::begin(&mut self.failure_code),
                 "failure_message" => Deserialize::begin(&mut self.failure_message),
+                "print_content" => Deserialize::begin(&mut self.print_content),
                 "process_payment_intent" => Deserialize::begin(&mut self.process_payment_intent),
                 "process_setup_intent" => Deserialize::begin(&mut self.process_setup_intent),
                 "refund_payment" => Deserialize::begin(&mut self.refund_payment),
@@ -111,11 +123,13 @@ const _: () = {
 
         fn deser_default() -> Self {
             Self {
+                api_error: Some(None),
                 collect_inputs: Some(None),
                 collect_payment_method: Some(None),
                 confirm_payment_intent: Some(None),
                 failure_code: Some(None),
                 failure_message: Some(None),
+                print_content: Some(None),
                 process_payment_intent: Some(None),
                 process_setup_intent: Some(None),
                 refund_payment: Some(None),
@@ -127,11 +141,13 @@ const _: () = {
 
         fn take_out(&mut self) -> Option<Self::Out> {
             let (
+                Some(api_error),
                 Some(collect_inputs),
                 Some(collect_payment_method),
                 Some(confirm_payment_intent),
                 Some(failure_code),
                 Some(failure_message),
+                Some(print_content),
                 Some(process_payment_intent),
                 Some(process_setup_intent),
                 Some(refund_payment),
@@ -139,11 +155,13 @@ const _: () = {
                 Some(status),
                 Some(type_),
             ) = (
+                self.api_error.take(),
                 self.collect_inputs.take(),
                 self.collect_payment_method.take(),
                 self.confirm_payment_intent.take(),
                 self.failure_code.take(),
                 self.failure_message.take(),
+                self.print_content.take(),
                 self.process_payment_intent.take(),
                 self.process_setup_intent.take(),
                 self.refund_payment.take(),
@@ -155,11 +173,13 @@ const _: () = {
                 return None;
             };
             Some(Self::Out {
+                api_error,
                 collect_inputs,
                 collect_payment_method,
                 confirm_payment_intent,
                 failure_code,
                 failure_message,
+                print_content,
                 process_payment_intent,
                 process_setup_intent,
                 refund_payment,
@@ -193,6 +213,7 @@ const _: () = {
             let mut b = TerminalReaderReaderResourceReaderActionBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
+                    "api_error" => b.api_error = FromValueOpt::from_value(v),
                     "collect_inputs" => b.collect_inputs = FromValueOpt::from_value(v),
                     "collect_payment_method" => {
                         b.collect_payment_method = FromValueOpt::from_value(v)
@@ -202,6 +223,7 @@ const _: () = {
                     }
                     "failure_code" => b.failure_code = FromValueOpt::from_value(v),
                     "failure_message" => b.failure_message = FromValueOpt::from_value(v),
+                    "print_content" => b.print_content = FromValueOpt::from_value(v),
                     "process_payment_intent" => {
                         b.process_payment_intent = FromValueOpt::from_value(v)
                     }
@@ -317,6 +339,7 @@ pub enum TerminalReaderReaderResourceReaderActionType {
     CollectInputs,
     CollectPaymentMethod,
     ConfirmPaymentIntent,
+    PrintContent,
     ProcessPaymentIntent,
     ProcessSetupIntent,
     RefundPayment,
@@ -331,6 +354,7 @@ impl TerminalReaderReaderResourceReaderActionType {
             CollectInputs => "collect_inputs",
             CollectPaymentMethod => "collect_payment_method",
             ConfirmPaymentIntent => "confirm_payment_intent",
+            PrintContent => "print_content",
             ProcessPaymentIntent => "process_payment_intent",
             ProcessSetupIntent => "process_setup_intent",
             RefundPayment => "refund_payment",
@@ -348,6 +372,7 @@ impl std::str::FromStr for TerminalReaderReaderResourceReaderActionType {
             "collect_inputs" => Ok(CollectInputs),
             "collect_payment_method" => Ok(CollectPaymentMethod),
             "confirm_payment_intent" => Ok(ConfirmPaymentIntent),
+            "print_content" => Ok(PrintContent),
             "process_payment_intent" => Ok(ProcessPaymentIntent),
             "process_setup_intent" => Ok(ProcessSetupIntent),
             "refund_payment" => Ok(RefundPayment),

@@ -444,6 +444,9 @@ pub struct CreateChargeTransferData {
     /// By default, the entire charge amount is transferred to the destination account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub amount: Option<i64>,
+    /// An arbitrary string attached to the transfer. Often useful for displaying to users.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
     /// ID of an existing, connected Stripe account.
     pub destination: String,
 }
@@ -455,7 +458,7 @@ impl std::fmt::Debug for CreateChargeTransferData {
 }
 impl CreateChargeTransferData {
     pub fn new(destination: impl Into<String>) -> Self {
-        Self { amount: None, destination: destination.into() }
+        Self { amount: None, description: None, destination: destination.into() }
     }
 }
 /// This method is no longer recommended—use the [Payment Intents API](https://stripe.com/docs/api/payment_intents).

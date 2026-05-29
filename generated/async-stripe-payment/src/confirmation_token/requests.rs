@@ -163,6 +163,10 @@ pub struct CreateConfirmationTokenPaymentMethodData {
     /// Billing information associated with the PaymentMethod that may be used or required by particular types of payment methods.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_details: Option<CreateConfirmationTokenPaymentMethodDataBillingDetails>,
+    /// If this is a `bizum` PaymentMethod, this hash contains details about the Bizum payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub bizum: Option<miniserde::json::Value>,
     /// If this is a `blik` PaymentMethod, this hash contains details about the BLIK payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
@@ -218,7 +222,7 @@ pub struct CreateConfirmationTokenPaymentMethodData {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
     pub kr_card: Option<miniserde::json::Value>,
-    /// If this is an `Link` PaymentMethod, this hash contains details about the Link payment method.
+    /// If this is an `Link` PaymentMethod, this hash contains details about the Link payment method (Link is also known as Onelink in the UK).
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
     pub link: Option<miniserde::json::Value>,
@@ -296,6 +300,10 @@ pub struct CreateConfirmationTokenPaymentMethodData {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
     pub satispay: Option<miniserde::json::Value>,
+    /// If this is a Scalapay PaymentMethod, this hash contains details about the Scalapay payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub scalapay: Option<miniserde::json::Value>,
     /// If this is a `sepa_debit` PaymentMethod, this hash contains details about the SEPA debit bank account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sepa_debit: Option<CreateConfirmationTokenPaymentMethodDataSepaDebit>,
@@ -355,6 +363,7 @@ impl CreateConfirmationTokenPaymentMethodData {
             bancontact: None,
             billie: None,
             billing_details: None,
+            bizum: None,
             blik: None,
             boleto: None,
             cashapp: None,
@@ -390,6 +399,7 @@ impl CreateConfirmationTokenPaymentMethodData {
             revolut_pay: None,
             samsung_pay: None,
             satispay: None,
+            scalapay: None,
             sepa_debit: None,
             sofort: None,
             sunbit: None,
@@ -1780,6 +1790,7 @@ pub enum CreateConfirmationTokenPaymentMethodDataType {
     BacsDebit,
     Bancontact,
     Billie,
+    Bizum,
     Blik,
     Boleto,
     Cashapp,
@@ -1812,6 +1823,7 @@ pub enum CreateConfirmationTokenPaymentMethodDataType {
     RevolutPay,
     SamsungPay,
     Satispay,
+    Scalapay,
     SepaDebit,
     Sofort,
     Sunbit,
@@ -1838,6 +1850,7 @@ impl CreateConfirmationTokenPaymentMethodDataType {
             BacsDebit => "bacs_debit",
             Bancontact => "bancontact",
             Billie => "billie",
+            Bizum => "bizum",
             Blik => "blik",
             Boleto => "boleto",
             Cashapp => "cashapp",
@@ -1870,6 +1883,7 @@ impl CreateConfirmationTokenPaymentMethodDataType {
             RevolutPay => "revolut_pay",
             SamsungPay => "samsung_pay",
             Satispay => "satispay",
+            Scalapay => "scalapay",
             SepaDebit => "sepa_debit",
             Sofort => "sofort",
             Sunbit => "sunbit",
@@ -1899,6 +1913,7 @@ impl std::str::FromStr for CreateConfirmationTokenPaymentMethodDataType {
             "bacs_debit" => Ok(BacsDebit),
             "bancontact" => Ok(Bancontact),
             "billie" => Ok(Billie),
+            "bizum" => Ok(Bizum),
             "blik" => Ok(Blik),
             "boleto" => Ok(Boleto),
             "cashapp" => Ok(Cashapp),
@@ -1931,6 +1946,7 @@ impl std::str::FromStr for CreateConfirmationTokenPaymentMethodDataType {
             "revolut_pay" => Ok(RevolutPay),
             "samsung_pay" => Ok(SamsungPay),
             "satispay" => Ok(Satispay),
+            "scalapay" => Ok(Scalapay),
             "sepa_debit" => Ok(SepaDebit),
             "sofort" => Ok(Sofort),
             "sunbit" => Ok(Sunbit),

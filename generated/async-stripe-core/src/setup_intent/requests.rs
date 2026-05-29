@@ -602,6 +602,10 @@ pub struct CreateSetupIntentPaymentMethodData {
     /// Billing information associated with the PaymentMethod that may be used or required by particular types of payment methods.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_details: Option<BillingDetailsInnerParams>,
+    /// If this is a `bizum` PaymentMethod, this hash contains details about the Bizum payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub bizum: Option<miniserde::json::Value>,
     /// If this is a `blik` PaymentMethod, this hash contains details about the BLIK payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
@@ -657,7 +661,7 @@ pub struct CreateSetupIntentPaymentMethodData {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
     pub kr_card: Option<miniserde::json::Value>,
-    /// If this is an `Link` PaymentMethod, this hash contains details about the Link payment method.
+    /// If this is an `Link` PaymentMethod, this hash contains details about the Link payment method (Link is also known as Onelink in the UK).
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
     pub link: Option<miniserde::json::Value>,
@@ -735,6 +739,10 @@ pub struct CreateSetupIntentPaymentMethodData {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
     pub satispay: Option<miniserde::json::Value>,
+    /// If this is a Scalapay PaymentMethod, this hash contains details about the Scalapay payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub scalapay: Option<miniserde::json::Value>,
     /// If this is a `sepa_debit` PaymentMethod, this hash contains details about the SEPA debit bank account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sepa_debit: Option<CreateSetupIntentPaymentMethodDataSepaDebit>,
@@ -794,6 +802,7 @@ impl CreateSetupIntentPaymentMethodData {
             bancontact: None,
             billie: None,
             billing_details: None,
+            bizum: None,
             blik: None,
             boleto: None,
             cashapp: None,
@@ -829,6 +838,7 @@ impl CreateSetupIntentPaymentMethodData {
             revolut_pay: None,
             samsung_pay: None,
             satispay: None,
+            scalapay: None,
             sepa_debit: None,
             sofort: None,
             sunbit: None,
@@ -2056,6 +2066,7 @@ pub enum CreateSetupIntentPaymentMethodDataType {
     BacsDebit,
     Bancontact,
     Billie,
+    Bizum,
     Blik,
     Boleto,
     Cashapp,
@@ -2088,6 +2099,7 @@ pub enum CreateSetupIntentPaymentMethodDataType {
     RevolutPay,
     SamsungPay,
     Satispay,
+    Scalapay,
     SepaDebit,
     Sofort,
     Sunbit,
@@ -2114,6 +2126,7 @@ impl CreateSetupIntentPaymentMethodDataType {
             BacsDebit => "bacs_debit",
             Bancontact => "bancontact",
             Billie => "billie",
+            Bizum => "bizum",
             Blik => "blik",
             Boleto => "boleto",
             Cashapp => "cashapp",
@@ -2146,6 +2159,7 @@ impl CreateSetupIntentPaymentMethodDataType {
             RevolutPay => "revolut_pay",
             SamsungPay => "samsung_pay",
             Satispay => "satispay",
+            Scalapay => "scalapay",
             SepaDebit => "sepa_debit",
             Sofort => "sofort",
             Sunbit => "sunbit",
@@ -2175,6 +2189,7 @@ impl std::str::FromStr for CreateSetupIntentPaymentMethodDataType {
             "bacs_debit" => Ok(BacsDebit),
             "bancontact" => Ok(Bancontact),
             "billie" => Ok(Billie),
+            "bizum" => Ok(Bizum),
             "blik" => Ok(Blik),
             "boleto" => Ok(Boleto),
             "cashapp" => Ok(Cashapp),
@@ -2207,6 +2222,7 @@ impl std::str::FromStr for CreateSetupIntentPaymentMethodDataType {
             "revolut_pay" => Ok(RevolutPay),
             "samsung_pay" => Ok(SamsungPay),
             "satispay" => Ok(Satispay),
+            "scalapay" => Ok(Scalapay),
             "sepa_debit" => Ok(SepaDebit),
             "sofort" => Ok(Sofort),
             "sunbit" => Ok(Sunbit),
@@ -2607,6 +2623,10 @@ pub struct CreateSetupIntentPaymentMethodOptions {
     /// If this is a `bacs_debit` SetupIntent, this sub-hash contains details about the Bacs Debit payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bacs_debit: Option<CreateSetupIntentPaymentMethodOptionsBacsDebit>,
+    /// If this is a `bizum` SetupIntent, this sub-hash contains details about the Bizum payment method options.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub bizum: Option<miniserde::json::Value>,
     /// Configuration for any card setup attempted on this SetupIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub card: Option<CreateSetupIntentPaymentMethodOptionsCard>,
@@ -2617,7 +2637,7 @@ pub struct CreateSetupIntentPaymentMethodOptions {
     /// If this is a `klarna` PaymentMethod, this hash contains details about the Klarna payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub klarna: Option<CreateSetupIntentPaymentMethodOptionsKlarna>,
-    /// If this is a `link` PaymentMethod, this sub-hash contains details about the Link payment method options.
+    /// If this is a `link` PaymentMethod, this sub-hash contains details about the Link payment method options (Link is also known as Onelink in the UK).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub link: Option<SetupIntentPaymentMethodOptionsParam>,
     /// If this is a `paypal` PaymentMethod, this sub-hash contains details about the PayPal payment method options.
@@ -2651,6 +2671,7 @@ impl CreateSetupIntentPaymentMethodOptions {
             acss_debit: None,
             amazon_pay: None,
             bacs_debit: None,
+            bizum: None,
             card: None,
             card_present: None,
             klarna: None,
@@ -6759,6 +6780,10 @@ pub struct UpdateSetupIntentPaymentMethodData {
     /// Billing information associated with the PaymentMethod that may be used or required by particular types of payment methods.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_details: Option<BillingDetailsInnerParams>,
+    /// If this is a `bizum` PaymentMethod, this hash contains details about the Bizum payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub bizum: Option<miniserde::json::Value>,
     /// If this is a `blik` PaymentMethod, this hash contains details about the BLIK payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
@@ -6814,7 +6839,7 @@ pub struct UpdateSetupIntentPaymentMethodData {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
     pub kr_card: Option<miniserde::json::Value>,
-    /// If this is an `Link` PaymentMethod, this hash contains details about the Link payment method.
+    /// If this is an `Link` PaymentMethod, this hash contains details about the Link payment method (Link is also known as Onelink in the UK).
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
     pub link: Option<miniserde::json::Value>,
@@ -6892,6 +6917,10 @@ pub struct UpdateSetupIntentPaymentMethodData {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
     pub satispay: Option<miniserde::json::Value>,
+    /// If this is a Scalapay PaymentMethod, this hash contains details about the Scalapay payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub scalapay: Option<miniserde::json::Value>,
     /// If this is a `sepa_debit` PaymentMethod, this hash contains details about the SEPA debit bank account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sepa_debit: Option<UpdateSetupIntentPaymentMethodDataSepaDebit>,
@@ -6951,6 +6980,7 @@ impl UpdateSetupIntentPaymentMethodData {
             bancontact: None,
             billie: None,
             billing_details: None,
+            bizum: None,
             blik: None,
             boleto: None,
             cashapp: None,
@@ -6986,6 +7016,7 @@ impl UpdateSetupIntentPaymentMethodData {
             revolut_pay: None,
             samsung_pay: None,
             satispay: None,
+            scalapay: None,
             sepa_debit: None,
             sofort: None,
             sunbit: None,
@@ -8213,6 +8244,7 @@ pub enum UpdateSetupIntentPaymentMethodDataType {
     BacsDebit,
     Bancontact,
     Billie,
+    Bizum,
     Blik,
     Boleto,
     Cashapp,
@@ -8245,6 +8277,7 @@ pub enum UpdateSetupIntentPaymentMethodDataType {
     RevolutPay,
     SamsungPay,
     Satispay,
+    Scalapay,
     SepaDebit,
     Sofort,
     Sunbit,
@@ -8271,6 +8304,7 @@ impl UpdateSetupIntentPaymentMethodDataType {
             BacsDebit => "bacs_debit",
             Bancontact => "bancontact",
             Billie => "billie",
+            Bizum => "bizum",
             Blik => "blik",
             Boleto => "boleto",
             Cashapp => "cashapp",
@@ -8303,6 +8337,7 @@ impl UpdateSetupIntentPaymentMethodDataType {
             RevolutPay => "revolut_pay",
             SamsungPay => "samsung_pay",
             Satispay => "satispay",
+            Scalapay => "scalapay",
             SepaDebit => "sepa_debit",
             Sofort => "sofort",
             Sunbit => "sunbit",
@@ -8332,6 +8367,7 @@ impl std::str::FromStr for UpdateSetupIntentPaymentMethodDataType {
             "bacs_debit" => Ok(BacsDebit),
             "bancontact" => Ok(Bancontact),
             "billie" => Ok(Billie),
+            "bizum" => Ok(Bizum),
             "blik" => Ok(Blik),
             "boleto" => Ok(Boleto),
             "cashapp" => Ok(Cashapp),
@@ -8364,6 +8400,7 @@ impl std::str::FromStr for UpdateSetupIntentPaymentMethodDataType {
             "revolut_pay" => Ok(RevolutPay),
             "samsung_pay" => Ok(SamsungPay),
             "satispay" => Ok(Satispay),
+            "scalapay" => Ok(Scalapay),
             "sepa_debit" => Ok(SepaDebit),
             "sofort" => Ok(Sofort),
             "sunbit" => Ok(Sunbit),
@@ -8764,6 +8801,10 @@ pub struct UpdateSetupIntentPaymentMethodOptions {
     /// If this is a `bacs_debit` SetupIntent, this sub-hash contains details about the Bacs Debit payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bacs_debit: Option<UpdateSetupIntentPaymentMethodOptionsBacsDebit>,
+    /// If this is a `bizum` SetupIntent, this sub-hash contains details about the Bizum payment method options.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub bizum: Option<miniserde::json::Value>,
     /// Configuration for any card setup attempted on this SetupIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub card: Option<UpdateSetupIntentPaymentMethodOptionsCard>,
@@ -8774,7 +8815,7 @@ pub struct UpdateSetupIntentPaymentMethodOptions {
     /// If this is a `klarna` PaymentMethod, this hash contains details about the Klarna payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub klarna: Option<UpdateSetupIntentPaymentMethodOptionsKlarna>,
-    /// If this is a `link` PaymentMethod, this sub-hash contains details about the Link payment method options.
+    /// If this is a `link` PaymentMethod, this sub-hash contains details about the Link payment method options (Link is also known as Onelink in the UK).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub link: Option<SetupIntentPaymentMethodOptionsParam>,
     /// If this is a `paypal` PaymentMethod, this sub-hash contains details about the PayPal payment method options.
@@ -8808,6 +8849,7 @@ impl UpdateSetupIntentPaymentMethodOptions {
             acss_debit: None,
             amazon_pay: None,
             bacs_debit: None,
+            bizum: None,
             card: None,
             card_present: None,
             klarna: None,
@@ -13113,6 +13155,10 @@ pub struct ConfirmSetupIntentPaymentMethodData {
     /// Billing information associated with the PaymentMethod that may be used or required by particular types of payment methods.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_details: Option<BillingDetailsInnerParams>,
+    /// If this is a `bizum` PaymentMethod, this hash contains details about the Bizum payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub bizum: Option<miniserde::json::Value>,
     /// If this is a `blik` PaymentMethod, this hash contains details about the BLIK payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
@@ -13168,7 +13214,7 @@ pub struct ConfirmSetupIntentPaymentMethodData {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
     pub kr_card: Option<miniserde::json::Value>,
-    /// If this is an `Link` PaymentMethod, this hash contains details about the Link payment method.
+    /// If this is an `Link` PaymentMethod, this hash contains details about the Link payment method (Link is also known as Onelink in the UK).
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
     pub link: Option<miniserde::json::Value>,
@@ -13246,6 +13292,10 @@ pub struct ConfirmSetupIntentPaymentMethodData {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
     pub satispay: Option<miniserde::json::Value>,
+    /// If this is a Scalapay PaymentMethod, this hash contains details about the Scalapay payment method.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub scalapay: Option<miniserde::json::Value>,
     /// If this is a `sepa_debit` PaymentMethod, this hash contains details about the SEPA debit bank account.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sepa_debit: Option<ConfirmSetupIntentPaymentMethodDataSepaDebit>,
@@ -13305,6 +13355,7 @@ impl ConfirmSetupIntentPaymentMethodData {
             bancontact: None,
             billie: None,
             billing_details: None,
+            bizum: None,
             blik: None,
             boleto: None,
             cashapp: None,
@@ -13340,6 +13391,7 @@ impl ConfirmSetupIntentPaymentMethodData {
             revolut_pay: None,
             samsung_pay: None,
             satispay: None,
+            scalapay: None,
             sepa_debit: None,
             sofort: None,
             sunbit: None,
@@ -14567,6 +14619,7 @@ pub enum ConfirmSetupIntentPaymentMethodDataType {
     BacsDebit,
     Bancontact,
     Billie,
+    Bizum,
     Blik,
     Boleto,
     Cashapp,
@@ -14599,6 +14652,7 @@ pub enum ConfirmSetupIntentPaymentMethodDataType {
     RevolutPay,
     SamsungPay,
     Satispay,
+    Scalapay,
     SepaDebit,
     Sofort,
     Sunbit,
@@ -14625,6 +14679,7 @@ impl ConfirmSetupIntentPaymentMethodDataType {
             BacsDebit => "bacs_debit",
             Bancontact => "bancontact",
             Billie => "billie",
+            Bizum => "bizum",
             Blik => "blik",
             Boleto => "boleto",
             Cashapp => "cashapp",
@@ -14657,6 +14712,7 @@ impl ConfirmSetupIntentPaymentMethodDataType {
             RevolutPay => "revolut_pay",
             SamsungPay => "samsung_pay",
             Satispay => "satispay",
+            Scalapay => "scalapay",
             SepaDebit => "sepa_debit",
             Sofort => "sofort",
             Sunbit => "sunbit",
@@ -14686,6 +14742,7 @@ impl std::str::FromStr for ConfirmSetupIntentPaymentMethodDataType {
             "bacs_debit" => Ok(BacsDebit),
             "bancontact" => Ok(Bancontact),
             "billie" => Ok(Billie),
+            "bizum" => Ok(Bizum),
             "blik" => Ok(Blik),
             "boleto" => Ok(Boleto),
             "cashapp" => Ok(Cashapp),
@@ -14718,6 +14775,7 @@ impl std::str::FromStr for ConfirmSetupIntentPaymentMethodDataType {
             "revolut_pay" => Ok(RevolutPay),
             "samsung_pay" => Ok(SamsungPay),
             "satispay" => Ok(Satispay),
+            "scalapay" => Ok(Scalapay),
             "sepa_debit" => Ok(SepaDebit),
             "sofort" => Ok(Sofort),
             "sunbit" => Ok(Sunbit),
@@ -15120,6 +15178,10 @@ pub struct ConfirmSetupIntentPaymentMethodOptions {
     /// If this is a `bacs_debit` SetupIntent, this sub-hash contains details about the Bacs Debit payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bacs_debit: Option<ConfirmSetupIntentPaymentMethodOptionsBacsDebit>,
+    /// If this is a `bizum` SetupIntent, this sub-hash contains details about the Bizum payment method options.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(with = "stripe_types::with_serde_json_opt")]
+    pub bizum: Option<miniserde::json::Value>,
     /// Configuration for any card setup attempted on this SetupIntent.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub card: Option<ConfirmSetupIntentPaymentMethodOptionsCard>,
@@ -15130,7 +15192,7 @@ pub struct ConfirmSetupIntentPaymentMethodOptions {
     /// If this is a `klarna` PaymentMethod, this hash contains details about the Klarna payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub klarna: Option<ConfirmSetupIntentPaymentMethodOptionsKlarna>,
-    /// If this is a `link` PaymentMethod, this sub-hash contains details about the Link payment method options.
+    /// If this is a `link` PaymentMethod, this sub-hash contains details about the Link payment method options (Link is also known as Onelink in the UK).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub link: Option<SetupIntentPaymentMethodOptionsParam>,
     /// If this is a `paypal` PaymentMethod, this sub-hash contains details about the PayPal payment method options.
@@ -15164,6 +15226,7 @@ impl ConfirmSetupIntentPaymentMethodOptions {
             acss_debit: None,
             amazon_pay: None,
             bacs_debit: None,
+            bizum: None,
             card: None,
             card_present: None,
             klarna: None,

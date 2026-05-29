@@ -3,8 +3,8 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentPagesPrivateCardPaymentMethodOptionsResourceRestrictions {
-    /// Specify the card brands to block in the Checkout Session.
-    /// If a customer enters or selects a card belonging to a blocked brand, they can't complete the Session.
+    /// The card brands to block.
+    /// If a customer enters or selects a card belonging to a blocked brand, they can't complete the payment.
     pub brands_blocked:
         Option<Vec<PaymentPagesPrivateCardPaymentMethodOptionsResourceRestrictionsBrandsBlocked>>,
 }
@@ -110,8 +110,8 @@ const _: () = {
         }
     }
 };
-/// Specify the card brands to block in the Checkout Session.
-/// If a customer enters or selects a card belonging to a blocked brand, they can't complete the Session.
+/// The card brands to block.
+/// If a customer enters or selects a card belonging to a blocked brand, they can't complete the payment.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum PaymentPagesPrivateCardPaymentMethodOptionsResourceRestrictionsBrandsBlocked {

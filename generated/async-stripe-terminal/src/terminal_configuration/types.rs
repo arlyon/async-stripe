@@ -28,7 +28,15 @@ pub struct TerminalConfiguration {
     pub stripe_s710:
         Option<stripe_terminal::TerminalConfigurationConfigurationResourceDeviceTypeSpecificConfig>,
     pub tipping: Option<stripe_terminal::TerminalConfigurationConfigurationResourceTipping>,
+    pub verifone_m425:
+        Option<stripe_terminal::TerminalConfigurationConfigurationResourceDeviceTypeSpecificConfig>,
     pub verifone_p400:
+        Option<stripe_terminal::TerminalConfigurationConfigurationResourceDeviceTypeSpecificConfig>,
+    pub verifone_p630:
+        Option<stripe_terminal::TerminalConfigurationConfigurationResourceDeviceTypeSpecificConfig>,
+    pub verifone_ux700:
+        Option<stripe_terminal::TerminalConfigurationConfigurationResourceDeviceTypeSpecificConfig>,
+    pub verifone_v660p:
         Option<stripe_terminal::TerminalConfigurationConfigurationResourceDeviceTypeSpecificConfig>,
     pub wifi: Option<stripe_terminal::TerminalConfigurationConfigurationResourceWifiConfig>,
 }
@@ -63,7 +71,19 @@ pub struct TerminalConfigurationBuilder {
         Option<stripe_terminal::TerminalConfigurationConfigurationResourceDeviceTypeSpecificConfig>,
     >,
     tipping: Option<Option<stripe_terminal::TerminalConfigurationConfigurationResourceTipping>>,
+    verifone_m425: Option<
+        Option<stripe_terminal::TerminalConfigurationConfigurationResourceDeviceTypeSpecificConfig>,
+    >,
     verifone_p400: Option<
+        Option<stripe_terminal::TerminalConfigurationConfigurationResourceDeviceTypeSpecificConfig>,
+    >,
+    verifone_p630: Option<
+        Option<stripe_terminal::TerminalConfigurationConfigurationResourceDeviceTypeSpecificConfig>,
+    >,
+    verifone_ux700: Option<
+        Option<stripe_terminal::TerminalConfigurationConfigurationResourceDeviceTypeSpecificConfig>,
+    >,
+    verifone_v660p: Option<
         Option<stripe_terminal::TerminalConfigurationConfigurationResourceDeviceTypeSpecificConfig>,
     >,
     wifi: Option<Option<stripe_terminal::TerminalConfigurationConfigurationResourceWifiConfig>>,
@@ -121,7 +141,11 @@ const _: () = {
                 "stripe_s700" => Deserialize::begin(&mut self.stripe_s700),
                 "stripe_s710" => Deserialize::begin(&mut self.stripe_s710),
                 "tipping" => Deserialize::begin(&mut self.tipping),
+                "verifone_m425" => Deserialize::begin(&mut self.verifone_m425),
                 "verifone_p400" => Deserialize::begin(&mut self.verifone_p400),
+                "verifone_p630" => Deserialize::begin(&mut self.verifone_p630),
+                "verifone_ux700" => Deserialize::begin(&mut self.verifone_ux700),
+                "verifone_v660p" => Deserialize::begin(&mut self.verifone_v660p),
                 "wifi" => Deserialize::begin(&mut self.wifi),
                 _ => <dyn Visitor>::ignore(),
             })
@@ -141,7 +165,11 @@ const _: () = {
                 stripe_s700: Some(None),
                 stripe_s710: Some(None),
                 tipping: Some(None),
+                verifone_m425: Some(None),
                 verifone_p400: Some(None),
+                verifone_p630: Some(None),
+                verifone_ux700: Some(None),
+                verifone_v660p: Some(None),
                 wifi: Some(None),
             }
         }
@@ -160,7 +188,11 @@ const _: () = {
                 Some(stripe_s700),
                 Some(stripe_s710),
                 Some(tipping),
+                Some(verifone_m425),
                 Some(verifone_p400),
+                Some(verifone_p630),
+                Some(verifone_ux700),
+                Some(verifone_v660p),
                 Some(wifi),
             ) = (
                 self.bbpos_wisepad3.take(),
@@ -175,7 +207,11 @@ const _: () = {
                 self.stripe_s700.take(),
                 self.stripe_s710.take(),
                 self.tipping.take(),
+                self.verifone_m425.take(),
                 self.verifone_p400.take(),
+                self.verifone_p630.take(),
+                self.verifone_ux700.take(),
+                self.verifone_v660p.take(),
                 self.wifi.take(),
             )
             else {
@@ -194,7 +230,11 @@ const _: () = {
                 stripe_s700,
                 stripe_s710,
                 tipping,
+                verifone_m425,
                 verifone_p400,
+                verifone_p630,
+                verifone_ux700,
+                verifone_v660p,
                 wifi,
             })
         }
@@ -235,7 +275,11 @@ const _: () = {
                     "stripe_s700" => b.stripe_s700 = FromValueOpt::from_value(v),
                     "stripe_s710" => b.stripe_s710 = FromValueOpt::from_value(v),
                     "tipping" => b.tipping = FromValueOpt::from_value(v),
+                    "verifone_m425" => b.verifone_m425 = FromValueOpt::from_value(v),
                     "verifone_p400" => b.verifone_p400 = FromValueOpt::from_value(v),
+                    "verifone_p630" => b.verifone_p630 = FromValueOpt::from_value(v),
+                    "verifone_ux700" => b.verifone_ux700 = FromValueOpt::from_value(v),
+                    "verifone_v660p" => b.verifone_v660p = FromValueOpt::from_value(v),
                     "wifi" => b.wifi = FromValueOpt::from_value(v),
                     _ => {}
                 }
@@ -248,7 +292,7 @@ const _: () = {
 impl serde::Serialize for TerminalConfiguration {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("TerminalConfiguration", 15)?;
+        let mut s = s.serialize_struct("TerminalConfiguration", 19)?;
         s.serialize_field("bbpos_wisepad3", &self.bbpos_wisepad3)?;
         s.serialize_field("bbpos_wisepos_e", &self.bbpos_wisepos_e)?;
         s.serialize_field("cellular", &self.cellular)?;
@@ -261,7 +305,11 @@ impl serde::Serialize for TerminalConfiguration {
         s.serialize_field("stripe_s700", &self.stripe_s700)?;
         s.serialize_field("stripe_s710", &self.stripe_s710)?;
         s.serialize_field("tipping", &self.tipping)?;
+        s.serialize_field("verifone_m425", &self.verifone_m425)?;
         s.serialize_field("verifone_p400", &self.verifone_p400)?;
+        s.serialize_field("verifone_p630", &self.verifone_p630)?;
+        s.serialize_field("verifone_ux700", &self.verifone_ux700)?;
+        s.serialize_field("verifone_v660p", &self.verifone_v660p)?;
         s.serialize_field("wifi", &self.wifi)?;
 
         s.serialize_field("object", "terminal.configuration")?;

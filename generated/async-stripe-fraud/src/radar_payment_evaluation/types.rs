@@ -24,7 +24,7 @@ pub struct RadarPaymentEvaluation {
     pub outcome: Option<stripe_fraud::InsightsResourcesPaymentEvaluationOutcome>,
     pub payment_details: Option<stripe_fraud::InsightsResourcesPaymentEvaluationPaymentDetails>,
     /// Recommended action based on the score of the `fraudulent_payment` signal.
-    /// Possible values are `block` and `continue`.
+    /// Possible values are `block`, `continue` and `request_three_d_secure`.
     pub recommended_action: RadarPaymentEvaluationRecommendedAction,
     pub signals: stripe_fraud::InsightsResourcesPaymentEvaluationSignals,
 }
@@ -234,7 +234,7 @@ impl serde::Serialize for RadarPaymentEvaluation {
     }
 }
 /// Recommended action based on the score of the `fraudulent_payment` signal.
-/// Possible values are `block` and `continue`.
+/// Possible values are `block`, `continue` and `request_three_d_secure`.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum RadarPaymentEvaluationRecommendedAction {
