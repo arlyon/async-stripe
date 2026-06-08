@@ -13,6 +13,7 @@ mod blocking;
 
 mod deserialization_fixture;
 mod pagination_utils;
+mod serialization;
 
 pub const STRIPE_MOCK_LINK: &str = "http://localhost:12111";
 pub const SECRET: &str = "sk_test_123";
