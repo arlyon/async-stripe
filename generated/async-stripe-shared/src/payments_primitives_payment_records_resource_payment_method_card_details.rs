@@ -53,8 +53,6 @@ pub network_token: Option<stripe_shared::PaymentsPrimitivesPaymentRecordsResourc
     /// Visa calls this the Transaction ID, Mastercard calls this the Trace ID, and American Express calls this the Acquirer Reference Data.
     /// This value will be present if it is returned by the financial network in the authorization response, and null otherwise.
 pub network_transaction_id: Option<String>,
-        /// The transaction type that was passed for an off-session, Merchant-Initiated transaction, one of `recurring` or `unscheduled`.
-pub stored_credential_usage: Option<PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsStoredCredentialUsage>,
     /// Populated if this transaction used 3D Secure authentication.
 pub three_d_secure: Option<stripe_shared::PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceThreeDSecure>,
     /// If this Card is part of a card wallet, this contains the details of the card wallet.
@@ -90,7 +88,6 @@ network_advice_code: Option<Option<String>>,
 network_decline_code: Option<Option<String>>,
 network_token: Option<Option<stripe_shared::PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceNetworkToken>>,
 network_transaction_id: Option<Option<String>>,
-stored_credential_usage: Option<Option<PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsStoredCredentialUsage>>,
 three_d_secure: Option<Option<stripe_shared::PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceThreeDSecure>>,
 wallet: Option<Option<stripe_shared::PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsResourceWallet>>,
 
@@ -156,7 +153,6 @@ const _: () = {
                 "network_decline_code" => Deserialize::begin(&mut self.network_decline_code),
                 "network_token" => Deserialize::begin(&mut self.network_token),
                 "network_transaction_id" => Deserialize::begin(&mut self.network_transaction_id),
-                "stored_credential_usage" => Deserialize::begin(&mut self.stored_credential_usage),
                 "three_d_secure" => Deserialize::begin(&mut self.three_d_secure),
                 "wallet" => Deserialize::begin(&mut self.wallet),
                 _ => <dyn Visitor>::ignore(),
@@ -185,7 +181,6 @@ const _: () = {
                 network_decline_code: Some(None),
                 network_token: Some(None),
                 network_transaction_id: Some(None),
-                stored_credential_usage: Some(None),
                 three_d_secure: Some(None),
                 wallet: Some(None),
             }
@@ -213,7 +208,6 @@ const _: () = {
                 Some(network_decline_code),
                 Some(network_token),
                 Some(network_transaction_id),
-                Some(stored_credential_usage),
                 Some(three_d_secure),
                 Some(wallet),
             ) = (
@@ -237,7 +231,6 @@ const _: () = {
                 self.network_decline_code.take(),
                 self.network_token,
                 self.network_transaction_id.take(),
-                self.stored_credential_usage.take(),
                 self.three_d_secure.take(),
                 self.wallet.take(),
             )
@@ -265,7 +258,6 @@ const _: () = {
                 network_decline_code,
                 network_token,
                 network_transaction_id,
-                stored_credential_usage,
                 three_d_secure,
                 wallet,
             })
@@ -316,9 +308,6 @@ const _: () = {
                     "network_token" => b.network_token = FromValueOpt::from_value(v),
                     "network_transaction_id" => {
                         b.network_transaction_id = FromValueOpt::from_value(v)
-                    }
-                    "stored_credential_usage" => {
-                        b.stored_credential_usage = FromValueOpt::from_value(v)
                     }
                     "three_d_secure" => b.three_d_secure = FromValueOpt::from_value(v),
                     "wallet" => b.wallet = FromValueOpt::from_value(v),
@@ -699,117 +688,6 @@ stripe_types::impl_from_val_with_from_str!(
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de>
     for PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsNetwork
-{
-    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        use std::str::FromStr;
-        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
-        Ok(Self::from_str(&s).expect("infallible"))
-    }
-}
-/// The transaction type that was passed for an off-session, Merchant-Initiated transaction, one of `recurring` or `unscheduled`.
-#[derive(Clone, Eq, PartialEq)]
-#[non_exhaustive]
-pub enum PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsStoredCredentialUsage {
-    Recurring,
-    Unscheduled,
-    /// An unrecognized value from Stripe. Should not be used as a request parameter.
-    Unknown(String),
-}
-impl PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsStoredCredentialUsage {
-    pub fn as_str(&self) -> &str {
-        use PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsStoredCredentialUsage::*;
-        match self {
-            Recurring => "recurring",
-            Unscheduled => "unscheduled",
-            Unknown(v) => v,
-        }
-    }
-}
-
-impl std::str::FromStr
-    for PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsStoredCredentialUsage
-{
-    type Err = std::convert::Infallible;
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsStoredCredentialUsage::*;
-        match s {
-            "recurring" => Ok(Recurring),
-            "unscheduled" => Ok(Unscheduled),
-            v => {
-                tracing::warn!(
-                    "Unknown value '{}' for enum '{}'",
-                    v,
-                    "PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsStoredCredentialUsage"
-                );
-                Ok(Unknown(v.to_owned()))
-            }
-        }
-    }
-}
-impl std::fmt::Display
-    for PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsStoredCredentialUsage
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-
-#[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug
-    for PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsStoredCredentialUsage
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.write_str(self.as_str())
-    }
-}
-#[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug
-    for PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsStoredCredentialUsage
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(
-            PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsStoredCredentialUsage
-        ))
-        .finish_non_exhaustive()
-    }
-}
-#[cfg(feature = "serialize")]
-impl serde::Serialize
-    for PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsStoredCredentialUsage
-{
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        serializer.serialize_str(self.as_str())
-    }
-}
-impl miniserde::Deserialize
-    for PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsStoredCredentialUsage
-{
-    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
-        crate::Place::new(out)
-    }
-}
-
-impl miniserde::de::Visitor
-    for crate::Place<
-        PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsStoredCredentialUsage,
-    >
-{
-    fn string(&mut self, s: &str) -> miniserde::Result<()> {
-        use std::str::FromStr;
-        self.out = Some(PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsStoredCredentialUsage::from_str(s).expect("infallible"));
-        Ok(())
-    }
-}
-
-stripe_types::impl_from_val_with_from_str!(
-    PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsStoredCredentialUsage
-);
-#[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de>
-    for PaymentsPrimitivesPaymentRecordsResourcePaymentMethodCardDetailsStoredCredentialUsage
 {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;

@@ -295,6 +295,10 @@ struct CreateTopupBuilder {
     #[serde(skip_serializing_if = "Option::is_none")]
     metadata: Option<std::collections::HashMap<String, String>>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    payment_method: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    payment_method_options: Option<CreateTopupPaymentMethodOptions>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     source: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     statement_descriptor: Option<String>,
@@ -315,10 +319,122 @@ impl CreateTopupBuilder {
             description: None,
             expand: None,
             metadata: None,
+            payment_method: None,
+            payment_method_options: None,
             source: None,
             statement_descriptor: None,
             transfer_group: None,
         }
+    }
+}
+/// Payment method-specific configuration for this top-up.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateTopupPaymentMethodOptions {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub us_bank_account: Option<CreateTopupPaymentMethodOptionsUsBankAccount>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTopupPaymentMethodOptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTopupPaymentMethodOptions").finish_non_exhaustive()
+    }
+}
+impl CreateTopupPaymentMethodOptions {
+    pub fn new() -> Self {
+        Self { us_bank_account: None }
+    }
+}
+impl Default for CreateTopupPaymentMethodOptions {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateTopupPaymentMethodOptionsUsBankAccount {
+    pub network: CreateTopupPaymentMethodOptionsUsBankAccountNetwork,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTopupPaymentMethodOptionsUsBankAccount {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateTopupPaymentMethodOptionsUsBankAccount").finish_non_exhaustive()
+    }
+}
+impl CreateTopupPaymentMethodOptionsUsBankAccount {
+    pub fn new(network: impl Into<CreateTopupPaymentMethodOptionsUsBankAccountNetwork>) -> Self {
+        Self { network: network.into() }
+    }
+}
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreateTopupPaymentMethodOptionsUsBankAccountNetwork {
+    Ach,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreateTopupPaymentMethodOptionsUsBankAccountNetwork {
+    pub fn as_str(&self) -> &str {
+        use CreateTopupPaymentMethodOptionsUsBankAccountNetwork::*;
+        match self {
+            Ach => "ach",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CreateTopupPaymentMethodOptionsUsBankAccountNetwork {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateTopupPaymentMethodOptionsUsBankAccountNetwork::*;
+        match s {
+            "ach" => Ok(Ach),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateTopupPaymentMethodOptionsUsBankAccountNetwork"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CreateTopupPaymentMethodOptionsUsBankAccountNetwork {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for CreateTopupPaymentMethodOptionsUsBankAccountNetwork {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateTopupPaymentMethodOptionsUsBankAccountNetwork {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateTopupPaymentMethodOptionsUsBankAccountNetwork))
+            .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for CreateTopupPaymentMethodOptionsUsBankAccountNetwork {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateTopupPaymentMethodOptionsUsBankAccountNetwork {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
     }
 }
 /// Top up the balance of an account
@@ -358,6 +474,20 @@ impl CreateTopup {
         metadata: impl Into<std::collections::HashMap<String, String>>,
     ) -> Self {
         self.inner.metadata = Some(metadata.into());
+        self
+    }
+    /// The ID of a PaymentMethod representing the payment method to be used for the top-up.
+    /// A PaymentMethod of type `us_bank_account` can be used.
+    pub fn payment_method(mut self, payment_method: impl Into<String>) -> Self {
+        self.inner.payment_method = Some(payment_method.into());
+        self
+    }
+    /// Payment method-specific configuration for this top-up.
+    pub fn payment_method_options(
+        mut self,
+        payment_method_options: impl Into<CreateTopupPaymentMethodOptions>,
+    ) -> Self {
+        self.inner.payment_method_options = Some(payment_method_options.into());
         self
     }
     /// The ID of a source to transfer funds from.

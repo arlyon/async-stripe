@@ -2,19 +2,24 @@
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
-pub struct PaymentMethodBizum {
-    /// A unique identifier for the buyer as determined by the local payment processor.
-    pub buyer_id: Option<String>,
+pub struct BankConnectionsResourceAccountStatusDetails {
+    pub active: Option<
+        stripe_misc::BankConnectionsResourceAccountStatusDetailsApiResourceActiveStatusDetails,
+    >,
 }
 #[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for PaymentMethodBizum {
+impl std::fmt::Debug for BankConnectionsResourceAccountStatusDetails {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("PaymentMethodBizum").finish_non_exhaustive()
+        f.debug_struct("BankConnectionsResourceAccountStatusDetails").finish_non_exhaustive()
     }
 }
 #[doc(hidden)]
-pub struct PaymentMethodBizumBuilder {
-    buyer_id: Option<Option<String>>,
+pub struct BankConnectionsResourceAccountStatusDetailsBuilder {
+    active: Option<
+        Option<
+            stripe_misc::BankConnectionsResourceAccountStatusDetailsApiResourceActiveStatusDetails,
+        >,
+    >,
 }
 
 #[allow(
@@ -33,44 +38,44 @@ const _: () = {
 
     make_place!(Place);
 
-    impl Deserialize for PaymentMethodBizum {
+    impl Deserialize for BankConnectionsResourceAccountStatusDetails {
         fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
             Place::new(out)
         }
     }
 
     struct Builder<'a> {
-        out: &'a mut Option<PaymentMethodBizum>,
-        builder: PaymentMethodBizumBuilder,
+        out: &'a mut Option<BankConnectionsResourceAccountStatusDetails>,
+        builder: BankConnectionsResourceAccountStatusDetailsBuilder,
     }
 
-    impl Visitor for Place<PaymentMethodBizum> {
+    impl Visitor for Place<BankConnectionsResourceAccountStatusDetails> {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: PaymentMethodBizumBuilder::deser_default(),
+                builder: BankConnectionsResourceAccountStatusDetailsBuilder::deser_default(),
             }))
         }
     }
 
-    impl MapBuilder for PaymentMethodBizumBuilder {
-        type Out = PaymentMethodBizum;
+    impl MapBuilder for BankConnectionsResourceAccountStatusDetailsBuilder {
+        type Out = BankConnectionsResourceAccountStatusDetails;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "buyer_id" => Deserialize::begin(&mut self.buyer_id),
+                "active" => Deserialize::begin(&mut self.active),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { buyer_id: Some(None) }
+            Self { active: Some(None) }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(buyer_id),) = (self.buyer_id.take(),) else {
+            let (Some(active),) = (self.active.take(),) else {
                 return None;
             };
-            Some(Self::Out { buyer_id })
+            Some(Self::Out { active })
         }
     }
 
@@ -85,19 +90,19 @@ const _: () = {
         }
     }
 
-    impl ObjectDeser for PaymentMethodBizum {
-        type Builder = PaymentMethodBizumBuilder;
+    impl ObjectDeser for BankConnectionsResourceAccountStatusDetails {
+        type Builder = BankConnectionsResourceAccountStatusDetailsBuilder;
     }
 
-    impl FromValueOpt for PaymentMethodBizum {
+    impl FromValueOpt for BankConnectionsResourceAccountStatusDetails {
         fn from_value(v: Value) -> Option<Self> {
             let Value::Object(obj) = v else {
                 return None;
             };
-            let mut b = PaymentMethodBizumBuilder::deser_default();
+            let mut b = BankConnectionsResourceAccountStatusDetailsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "buyer_id" => b.buyer_id = FromValueOpt::from_value(v),
+                    "active" => b.active = FromValueOpt::from_value(v),
                     _ => {}
                 }
             }

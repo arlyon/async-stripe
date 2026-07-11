@@ -2,19 +2,19 @@
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
-pub struct VerificationSessionRedaction {
-    /// Indicates whether this object and its related objects have been redacted or not.
-    pub status: VerificationSessionRedactionStatus,
+pub struct DisputeEnhancedEligibilityMastercardCompliance {
+    /// Mastercard compliance eligibility status.
+    pub status: DisputeEnhancedEligibilityMastercardComplianceStatus,
 }
 #[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for VerificationSessionRedaction {
+impl std::fmt::Debug for DisputeEnhancedEligibilityMastercardCompliance {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("VerificationSessionRedaction").finish_non_exhaustive()
+        f.debug_struct("DisputeEnhancedEligibilityMastercardCompliance").finish_non_exhaustive()
     }
 }
 #[doc(hidden)]
-pub struct VerificationSessionRedactionBuilder {
-    status: Option<VerificationSessionRedactionStatus>,
+pub struct DisputeEnhancedEligibilityMastercardComplianceBuilder {
+    status: Option<DisputeEnhancedEligibilityMastercardComplianceStatus>,
 }
 
 #[allow(
@@ -33,28 +33,28 @@ const _: () = {
 
     make_place!(Place);
 
-    impl Deserialize for VerificationSessionRedaction {
+    impl Deserialize for DisputeEnhancedEligibilityMastercardCompliance {
         fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
             Place::new(out)
         }
     }
 
     struct Builder<'a> {
-        out: &'a mut Option<VerificationSessionRedaction>,
-        builder: VerificationSessionRedactionBuilder,
+        out: &'a mut Option<DisputeEnhancedEligibilityMastercardCompliance>,
+        builder: DisputeEnhancedEligibilityMastercardComplianceBuilder,
     }
 
-    impl Visitor for Place<VerificationSessionRedaction> {
+    impl Visitor for Place<DisputeEnhancedEligibilityMastercardCompliance> {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: VerificationSessionRedactionBuilder::deser_default(),
+                builder: DisputeEnhancedEligibilityMastercardComplianceBuilder::deser_default(),
             }))
         }
     }
 
-    impl MapBuilder for VerificationSessionRedactionBuilder {
-        type Out = VerificationSessionRedaction;
+    impl MapBuilder for DisputeEnhancedEligibilityMastercardComplianceBuilder {
+        type Out = DisputeEnhancedEligibilityMastercardCompliance;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "status" => Deserialize::begin(&mut self.status),
@@ -85,16 +85,16 @@ const _: () = {
         }
     }
 
-    impl ObjectDeser for VerificationSessionRedaction {
-        type Builder = VerificationSessionRedactionBuilder;
+    impl ObjectDeser for DisputeEnhancedEligibilityMastercardCompliance {
+        type Builder = DisputeEnhancedEligibilityMastercardComplianceBuilder;
     }
 
-    impl FromValueOpt for VerificationSessionRedaction {
+    impl FromValueOpt for DisputeEnhancedEligibilityMastercardCompliance {
         fn from_value(v: Value) -> Option<Self> {
             let Value::Object(obj) = v else {
                 return None;
             };
-            let mut b = VerificationSessionRedactionBuilder::deser_default();
+            let mut b = DisputeEnhancedEligibilityMastercardComplianceBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
                     "status" => b.status = FromValueOpt::from_value(v),
@@ -105,67 +105,65 @@ const _: () = {
         }
     }
 };
-/// Indicates whether this object and its related objects have been redacted or not.
+/// Mastercard compliance eligibility status.
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
-pub enum VerificationSessionRedactionStatus {
-    Processing,
-    Redacted,
-    Validated,
+pub enum DisputeEnhancedEligibilityMastercardComplianceStatus {
+    FeeAcknowledged,
+    RequiresFeeAcknowledgement,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
     Unknown(String),
 }
-impl VerificationSessionRedactionStatus {
+impl DisputeEnhancedEligibilityMastercardComplianceStatus {
     pub fn as_str(&self) -> &str {
-        use VerificationSessionRedactionStatus::*;
+        use DisputeEnhancedEligibilityMastercardComplianceStatus::*;
         match self {
-            Processing => "processing",
-            Redacted => "redacted",
-            Validated => "validated",
+            FeeAcknowledged => "fee_acknowledged",
+            RequiresFeeAcknowledgement => "requires_fee_acknowledgement",
             Unknown(v) => v,
         }
     }
 }
 
-impl std::str::FromStr for VerificationSessionRedactionStatus {
+impl std::str::FromStr for DisputeEnhancedEligibilityMastercardComplianceStatus {
     type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use VerificationSessionRedactionStatus::*;
+        use DisputeEnhancedEligibilityMastercardComplianceStatus::*;
         match s {
-            "processing" => Ok(Processing),
-            "redacted" => Ok(Redacted),
-            "validated" => Ok(Validated),
+            "fee_acknowledged" => Ok(FeeAcknowledged),
+            "requires_fee_acknowledgement" => Ok(RequiresFeeAcknowledgement),
             v => {
                 tracing::warn!(
                     "Unknown value '{}' for enum '{}'",
                     v,
-                    "VerificationSessionRedactionStatus"
+                    "DisputeEnhancedEligibilityMastercardComplianceStatus"
                 );
                 Ok(Unknown(v.to_owned()))
             }
         }
     }
 }
-impl std::fmt::Display for VerificationSessionRedactionStatus {
+impl std::fmt::Display for DisputeEnhancedEligibilityMastercardComplianceStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
 
 #[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for VerificationSessionRedactionStatus {
+impl std::fmt::Debug for DisputeEnhancedEligibilityMastercardComplianceStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
 #[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for VerificationSessionRedactionStatus {
+impl std::fmt::Debug for DisputeEnhancedEligibilityMastercardComplianceStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(VerificationSessionRedactionStatus)).finish_non_exhaustive()
+        f.debug_struct(stringify!(DisputeEnhancedEligibilityMastercardComplianceStatus))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
-impl serde::Serialize for VerificationSessionRedactionStatus {
+impl serde::Serialize for DisputeEnhancedEligibilityMastercardComplianceStatus {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,
@@ -173,23 +171,25 @@ impl serde::Serialize for VerificationSessionRedactionStatus {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for VerificationSessionRedactionStatus {
+impl miniserde::Deserialize for DisputeEnhancedEligibilityMastercardComplianceStatus {
     fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<VerificationSessionRedactionStatus> {
+impl miniserde::de::Visitor for crate::Place<DisputeEnhancedEligibilityMastercardComplianceStatus> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(VerificationSessionRedactionStatus::from_str(s).expect("infallible"));
+        self.out = Some(
+            DisputeEnhancedEligibilityMastercardComplianceStatus::from_str(s).expect("infallible"),
+        );
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(VerificationSessionRedactionStatus);
+stripe_types::impl_from_val_with_from_str!(DisputeEnhancedEligibilityMastercardComplianceStatus);
 #[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for VerificationSessionRedactionStatus {
+impl<'de> serde::Deserialize<'de> for DisputeEnhancedEligibilityMastercardComplianceStatus {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;

@@ -939,7 +939,9 @@ pub enum EventObject {
     /// Occurs whenever a customer's subscription is no longer paused.
     /// Only applies when a `status=paused` subscription is [resumed](https://docs.stripe.com/api/subscriptions/resume), not when [payment collection](https://docs.stripe.com/billing/subscriptions/pause) is resumed.
     CustomerSubscriptionResumed(Box<stripe_shared::Subscription>),
-    /// Occurs three days before a subscription's trial period is scheduled to end, or when a trial is ended immediately (using `trial_end=now`).
+    /// Occurs three days before a subscription's trial period is scheduled to end, or immediately when a trial is ended early (for example, with `trial_end=now` or when a Customer Portal plan change ends a trial).
+    /// If a trial is shortened so that fewer than three days remain, this event can fire immediately, including during the same transaction that collects payment.
+    /// Before sending payment-reminder communications from this webhook, check the subscription status and latest invoice to determine whether payment has already been collected.
     CustomerSubscriptionTrialWillEnd(Box<stripe_shared::Subscription>),
     /// Occurs whenever a subscription changes (e.g., switching from one plan to another, or changing the status from trial to active).
     CustomerSubscriptionUpdated(Box<stripe_shared::Subscription>),

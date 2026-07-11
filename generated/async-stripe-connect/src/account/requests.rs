@@ -9661,7 +9661,7 @@ pub struct DocumentsSpecs {
     /// One or more documents that demonstrate proof of a company's license to operate.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub company_license: Option<DocumentsParam>,
-    /// One or more documents showing the company's Memorandum of Association.
+    /// One or more documents showing the company's governing document (for example, a memorandum of association, constitution, or articles of association).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub company_memorandum_of_association: Option<DocumentsParam>,
     /// (Certain countries only) One or more documents showing the ministerial decree legalizing the company's establishment.

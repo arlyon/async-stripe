@@ -3,6 +3,8 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct PaymentMethodDetailsPaymentRecordBizum {
+    /// A unique identifier for the buyer as determined by the local payment processor.
+    pub buyer_id: Option<String>,
     /// The Bizum transaction ID associated with this payment.
     pub transaction_id: Option<String>,
 }
@@ -14,6 +16,7 @@ impl std::fmt::Debug for PaymentMethodDetailsPaymentRecordBizum {
 }
 #[doc(hidden)]
 pub struct PaymentMethodDetailsPaymentRecordBizumBuilder {
+    buyer_id: Option<Option<String>>,
     transaction_id: Option<Option<String>>,
 }
 
@@ -57,20 +60,23 @@ const _: () = {
         type Out = PaymentMethodDetailsPaymentRecordBizum;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
+                "buyer_id" => Deserialize::begin(&mut self.buyer_id),
                 "transaction_id" => Deserialize::begin(&mut self.transaction_id),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { transaction_id: Some(None) }
+            Self { buyer_id: Some(None), transaction_id: Some(None) }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(transaction_id),) = (self.transaction_id.take(),) else {
+            let (Some(buyer_id), Some(transaction_id)) =
+                (self.buyer_id.take(), self.transaction_id.take())
+            else {
                 return None;
             };
-            Some(Self::Out { transaction_id })
+            Some(Self::Out { buyer_id, transaction_id })
         }
     }
 
@@ -97,6 +103,7 @@ const _: () = {
             let mut b = PaymentMethodDetailsPaymentRecordBizumBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
+                    "buyer_id" => b.buyer_id = FromValueOpt::from_value(v),
                     "transaction_id" => b.transaction_id = FromValueOpt::from_value(v),
                     _ => {}
                 }

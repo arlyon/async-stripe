@@ -1,1 +1,1 @@
-pub const VERSION: crate::ApiVersion = crate::ApiVersion::V2026_05_27_dahlia;
+pub const VERSION: crate::ApiVersion = crate::ApiVersion::V2026_06_24_dahlia;

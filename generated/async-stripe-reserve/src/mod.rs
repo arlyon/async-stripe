@@ -24,6 +24,10 @@ pub mod reserve_release;
 #[doc(inline)]
 pub use reserve_release::*;
 #[doc(hidden)]
+pub mod reserves_reserve_holds_resources_release_detail;
+#[doc(inline)]
+pub use reserves_reserve_holds_resources_release_detail::*;
+#[doc(hidden)]
 pub mod reserves_reserve_holds_resources_release_schedule;
 #[doc(inline)]
 pub use reserves_reserve_holds_resources_release_schedule::*;

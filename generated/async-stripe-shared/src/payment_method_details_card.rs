@@ -65,6 +65,10 @@ pub overcapture: Option<stripe_shared::PaymentFlowsPrivatePaymentMethodsCardDeta
 pub regulated_status: Option<PaymentMethodDetailsCardRegulatedStatus>,
     /// Populated if this transaction used 3D Secure authentication.
 pub three_d_secure: Option<stripe_shared::ThreeDSecureDetailsCharge>,
+        /// Transaction Link ID (TLID) is a unique identifier for a transaction.
+    /// This is used by some card networks, such as Mastercard, for transaction linking, in addition to Network Transaction IDs.
+    /// This value will be present if it is returned by the financial network in the authorization response, and null otherwise.
+pub transaction_link_id: Option<String>,
     /// If this Card is part of a card wallet, this contains the details of the card wallet.
 pub wallet: Option<stripe_shared::PaymentMethodDetailsCardWallet>,
 
@@ -103,6 +107,7 @@ network_transaction_id: Option<Option<String>>,
 overcapture: Option<Option<stripe_shared::PaymentFlowsPrivatePaymentMethodsCardDetailsApiResourceEnterpriseFeaturesOvercaptureOvercapture>>,
 regulated_status: Option<Option<PaymentMethodDetailsCardRegulatedStatus>>,
 three_d_secure: Option<Option<stripe_shared::ThreeDSecureDetailsCharge>>,
+transaction_link_id: Option<Option<String>>,
 wallet: Option<Option<stripe_shared::PaymentMethodDetailsCardWallet>>,
 
 }
@@ -175,6 +180,7 @@ const _: () = {
                 "overcapture" => Deserialize::begin(&mut self.overcapture),
                 "regulated_status" => Deserialize::begin(&mut self.regulated_status),
                 "three_d_secure" => Deserialize::begin(&mut self.three_d_secure),
+                "transaction_link_id" => Deserialize::begin(&mut self.transaction_link_id),
                 "wallet" => Deserialize::begin(&mut self.wallet),
                 _ => <dyn Visitor>::ignore(),
             })
@@ -208,6 +214,7 @@ const _: () = {
                 overcapture: Some(None),
                 regulated_status: Some(None),
                 three_d_secure: Some(None),
+                transaction_link_id: Some(None),
                 wallet: Some(None),
             }
         }
@@ -240,6 +247,7 @@ const _: () = {
                 Some(overcapture),
                 Some(regulated_status),
                 Some(three_d_secure),
+                Some(transaction_link_id),
                 Some(wallet),
             ) = (
                 self.amount_authorized,
@@ -268,6 +276,7 @@ const _: () = {
                 self.overcapture.take(),
                 self.regulated_status.take(),
                 self.three_d_secure.take(),
+                self.transaction_link_id.take(),
                 self.wallet.take(),
             )
             else {
@@ -300,6 +309,7 @@ const _: () = {
                 overcapture,
                 regulated_status,
                 three_d_secure,
+                transaction_link_id,
                 wallet,
             })
         }
@@ -360,6 +370,7 @@ const _: () = {
                     "overcapture" => b.overcapture = FromValueOpt::from_value(v),
                     "regulated_status" => b.regulated_status = FromValueOpt::from_value(v),
                     "three_d_secure" => b.three_d_secure = FromValueOpt::from_value(v),
+                    "transaction_link_id" => b.transaction_link_id = FromValueOpt::from_value(v),
                     "wallet" => b.wallet = FromValueOpt::from_value(v),
                     _ => {}
                 }

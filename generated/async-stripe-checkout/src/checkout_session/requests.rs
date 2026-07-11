@@ -3166,8 +3166,6 @@ impl Default for CreateCheckoutSessionManagedPayments {
 /// Each name field can be either required or optional.
 ///
 /// If a [Customer](https://docs.stripe.com/api/customers) is created or provided, the names can be saved to the Customer object as well.
-///
-/// You can't set this parameter if `ui_mode` is `custom`.
 #[derive(Copy, Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
@@ -4004,6 +4002,9 @@ pub struct CreateCheckoutSessionPaymentMethodOptions {
     /// contains details about the Sofort payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sofort: Option<CreateCheckoutSessionPaymentMethodOptionsSofort>,
+    /// contains details about the Sunbit payment method options.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub sunbit: Option<CreateCheckoutSessionPaymentMethodOptionsSunbit>,
     /// contains details about the Swish payment method options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub swish: Option<CreateCheckoutSessionPaymentMethodOptionsSwish>,
@@ -4072,6 +4073,7 @@ impl CreateCheckoutSessionPaymentMethodOptions {
             scalapay: None,
             sepa_debit: None,
             sofort: None,
+            sunbit: None,
             swish: None,
             twint: None,
             upi: None,
@@ -12319,6 +12321,190 @@ impl<'de> serde::Deserialize<'de>
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
+/// contains details about the Sunbit payment method options.
+#[derive(Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateCheckoutSessionPaymentMethodOptionsSunbit {
+    /// Controls when the funds will be captured from the customer's account.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub capture_method: Option<CreateCheckoutSessionPaymentMethodOptionsSunbitCaptureMethod>,
+    /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+    ///
+    /// If you provide a Customer with the PaymentIntent, you can use this parameter to [attach the payment method](/payments/save-during-payment) to the Customer after the PaymentIntent is confirmed and the customer completes any required actions.
+    /// If you don't provide a Customer, you can still [attach](/api/payment_methods/attach) the payment method to a Customer after the transaction completes.
+    ///
+    /// If the payment method is `card_present` and isn't a digital wallet, Stripe creates and attaches a [generated_card](/api/charges/object#charge_object-payment_method_details-card_present-generated_card) payment method representing the card to the Customer instead.
+    ///
+    /// When processing card payments, Stripe uses `setup_future_usage` to help you comply with regional legislation and network rules, such as [SCA](/strong-customer-authentication).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub setup_future_usage: Option<CreateCheckoutSessionPaymentMethodOptionsSunbitSetupFutureUsage>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsSunbit {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionPaymentMethodOptionsSunbit").finish_non_exhaustive()
+    }
+}
+impl CreateCheckoutSessionPaymentMethodOptionsSunbit {
+    pub fn new() -> Self {
+        Self { capture_method: None, setup_future_usage: None }
+    }
+}
+impl Default for CreateCheckoutSessionPaymentMethodOptionsSunbit {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Controls when the funds will be captured from the customer's account.
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreateCheckoutSessionPaymentMethodOptionsSunbitCaptureMethod {
+    Manual,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreateCheckoutSessionPaymentMethodOptionsSunbitCaptureMethod {
+    pub fn as_str(&self) -> &str {
+        use CreateCheckoutSessionPaymentMethodOptionsSunbitCaptureMethod::*;
+        match self {
+            Manual => "manual",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsSunbitCaptureMethod {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateCheckoutSessionPaymentMethodOptionsSunbitCaptureMethod::*;
+        match s {
+            "manual" => Ok(Manual),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateCheckoutSessionPaymentMethodOptionsSunbitCaptureMethod"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsSunbitCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsSunbitCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsSunbitCaptureMethod {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCheckoutSessionPaymentMethodOptionsSunbitCaptureMethod))
+            .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsSunbitCaptureMethod {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for CreateCheckoutSessionPaymentMethodOptionsSunbitCaptureMethod {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+///
+/// If you provide a Customer with the PaymentIntent, you can use this parameter to [attach the payment method](/payments/save-during-payment) to the Customer after the PaymentIntent is confirmed and the customer completes any required actions.
+/// If you don't provide a Customer, you can still [attach](/api/payment_methods/attach) the payment method to a Customer after the transaction completes.
+///
+/// If the payment method is `card_present` and isn't a digital wallet, Stripe creates and attaches a [generated_card](/api/charges/object#charge_object-payment_method_details-card_present-generated_card) payment method representing the card to the Customer instead.
+///
+/// When processing card payments, Stripe uses `setup_future_usage` to help you comply with regional legislation and network rules, such as [SCA](/strong-customer-authentication).
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum CreateCheckoutSessionPaymentMethodOptionsSunbitSetupFutureUsage {
+    None,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl CreateCheckoutSessionPaymentMethodOptionsSunbitSetupFutureUsage {
+    pub fn as_str(&self) -> &str {
+        use CreateCheckoutSessionPaymentMethodOptionsSunbitSetupFutureUsage::*;
+        match self {
+            None => "none",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for CreateCheckoutSessionPaymentMethodOptionsSunbitSetupFutureUsage {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use CreateCheckoutSessionPaymentMethodOptionsSunbitSetupFutureUsage::*;
+        match s {
+            "none" => Ok(None),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "CreateCheckoutSessionPaymentMethodOptionsSunbitSetupFutureUsage"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for CreateCheckoutSessionPaymentMethodOptionsSunbitSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsSunbitSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionPaymentMethodOptionsSunbitSetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(CreateCheckoutSessionPaymentMethodOptionsSunbitSetupFutureUsage))
+            .finish_non_exhaustive()
+    }
+}
+impl serde::Serialize for CreateCheckoutSessionPaymentMethodOptionsSunbitSetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de>
+    for CreateCheckoutSessionPaymentMethodOptionsSunbitSetupFutureUsage
+{
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
 /// contains details about the Swish payment method options.
 #[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
@@ -15484,6 +15670,10 @@ pub struct CreateCheckoutSessionSubscriptionData {
     /// You can't set this parameter if `ui_mode` is `elements`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_cycle_anchor: Option<stripe_types::Timestamp>,
+    /// Configures when the subscription schedule's billing cycle anchors to a specific day of the week or month.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub billing_cycle_anchor_config:
+        Option<CreateCheckoutSessionSubscriptionDataBillingCycleAnchorConfig>,
     /// Controls how prorations and invoices for subscriptions are calculated and orchestrated.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub billing_mode: Option<CreateCheckoutSessionSubscriptionDataBillingMode>,
@@ -15544,6 +15734,7 @@ impl CreateCheckoutSessionSubscriptionData {
         Self {
             application_fee_percent: None,
             billing_cycle_anchor: None,
+            billing_cycle_anchor_config: None,
             billing_mode: None,
             default_tax_rates: None,
             description: None,
@@ -15562,6 +15753,44 @@ impl CreateCheckoutSessionSubscriptionData {
 impl Default for CreateCheckoutSessionSubscriptionData {
     fn default() -> Self {
         Self::new()
+    }
+}
+/// Configures when the subscription schedule's billing cycle anchors to a specific day of the week or month.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct CreateCheckoutSessionSubscriptionDataBillingCycleAnchorConfig {
+    /// The day of the month the anchor should be. Ranges from 1 to 31.
+    pub day_of_month: i64,
+    /// The hour of the day the anchor should be. Ranges from 0 to 23.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub hour: Option<i64>,
+    /// The minute of the hour the anchor should be. Ranges from 0 to 59.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub minute: Option<i64>,
+    /// The month to start full cycle periods. Ranges from 1 to 12.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub month: Option<i64>,
+    /// The second of the minute the anchor should be. Ranges from 0 to 59.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub second: Option<i64>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for CreateCheckoutSessionSubscriptionDataBillingCycleAnchorConfig {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("CreateCheckoutSessionSubscriptionDataBillingCycleAnchorConfig")
+            .finish_non_exhaustive()
+    }
+}
+impl CreateCheckoutSessionSubscriptionDataBillingCycleAnchorConfig {
+    pub fn new(day_of_month: impl Into<i64>) -> Self {
+        Self {
+            day_of_month: day_of_month.into(),
+            hour: None,
+            minute: None,
+            month: None,
+            second: None,
+        }
     }
 }
 /// Controls how prorations and invoices for subscriptions are calculated and orchestrated.
@@ -16735,8 +16964,6 @@ impl CreateCheckoutSession {
     /// Each name field can be either required or optional.
     ///
     /// If a [Customer](https://docs.stripe.com/api/customers) is created or provided, the names can be saved to the Customer object as well.
-    ///
-    /// You can't set this parameter if `ui_mode` is `custom`.
     pub fn name_collection(
         mut self,
         name_collection: impl Into<CreateCheckoutSessionNameCollection>,

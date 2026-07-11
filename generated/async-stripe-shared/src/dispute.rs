@@ -303,6 +303,7 @@ impl serde::Serialize for Dispute {
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
 pub enum DisputeEnhancedEligibilityTypes {
+    MastercardCompliance,
     VisaCompellingEvidence3,
     VisaCompliance,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
@@ -312,6 +313,7 @@ impl DisputeEnhancedEligibilityTypes {
     pub fn as_str(&self) -> &str {
         use DisputeEnhancedEligibilityTypes::*;
         match self {
+            MastercardCompliance => "mastercard_compliance",
             VisaCompellingEvidence3 => "visa_compelling_evidence_3",
             VisaCompliance => "visa_compliance",
             Unknown(v) => v,
@@ -324,6 +326,7 @@ impl std::str::FromStr for DisputeEnhancedEligibilityTypes {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         use DisputeEnhancedEligibilityTypes::*;
         match s {
+            "mastercard_compliance" => Ok(MastercardCompliance),
             "visa_compelling_evidence_3" => Ok(VisaCompellingEvidence3),
             "visa_compliance" => Ok(VisaCompliance),
             v => {

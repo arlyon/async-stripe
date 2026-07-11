@@ -517,6 +517,10 @@ pub mod checkout_sofort_payment_method_options;
 #[doc(inline)]
 pub use checkout_sofort_payment_method_options::*;
 #[doc(hidden)]
+pub mod checkout_sunbit_payment_method_options;
+#[doc(inline)]
+pub use checkout_sunbit_payment_method_options::*;
+#[doc(hidden)]
 pub mod checkout_swish_payment_method_options;
 #[doc(inline)]
 pub use checkout_swish_payment_method_options::*;
@@ -532,6 +536,10 @@ pub use checkout_upi_payment_method_options::*;
 pub mod checkout_us_bank_account_payment_method_options;
 #[doc(inline)]
 pub use checkout_us_bank_account_payment_method_options::*;
+#[doc(hidden)]
+pub mod checkout_wechat_pay_payment_method_options;
+#[doc(inline)]
+pub use checkout_wechat_pay_payment_method_options::*;
 #[doc(hidden)]
 pub mod connect_account_reference;
 #[doc(inline)]
@@ -745,6 +753,10 @@ pub mod dispute_enhanced_eligibility;
 #[doc(inline)]
 pub use dispute_enhanced_eligibility::*;
 #[doc(hidden)]
+pub mod dispute_enhanced_eligibility_mastercard_compliance;
+#[doc(inline)]
+pub use dispute_enhanced_eligibility_mastercard_compliance::*;
+#[doc(hidden)]
 pub mod dispute_enhanced_eligibility_visa_compelling_evidence3;
 #[doc(inline)]
 pub use dispute_enhanced_eligibility_visa_compelling_evidence3::*;
@@ -756,6 +768,10 @@ pub use dispute_enhanced_eligibility_visa_compliance::*;
 pub mod dispute_enhanced_evidence;
 #[doc(inline)]
 pub use dispute_enhanced_evidence::*;
+#[doc(hidden)]
+pub mod dispute_enhanced_evidence_mastercard_compliance;
+#[doc(inline)]
+pub use dispute_enhanced_evidence_mastercard_compliance::*;
 #[doc(hidden)]
 pub mod dispute_enhanced_evidence_visa_compelling_evidence3;
 #[doc(inline)]
@@ -1717,6 +1733,10 @@ pub mod payment_flows_private_payment_methods_samsung_pay_payment_method_options
 #[doc(inline)]
 pub use payment_flows_private_payment_methods_samsung_pay_payment_method_options::*;
 #[doc(hidden)]
+pub mod payment_flows_private_payment_methods_satispay_setup_attempt_details;
+#[doc(inline)]
+pub use payment_flows_private_payment_methods_satispay_setup_attempt_details::*;
+#[doc(hidden)]
 pub mod payment_intent;
 #[doc(inline)]
 pub use payment_intent::*;
@@ -2561,6 +2581,10 @@ pub mod payment_method_details_payment_record_sofort;
 #[doc(inline)]
 pub use payment_method_details_payment_record_sofort::*;
 #[doc(hidden)]
+pub mod payment_method_details_payment_record_sunbit;
+#[doc(inline)]
+pub use payment_method_details_payment_record_sunbit::*;
+#[doc(hidden)]
 pub mod payment_method_details_payment_record_swish;
 #[doc(inline)]
 pub use payment_method_details_payment_record_swish::*;
@@ -2896,6 +2920,10 @@ pub use payment_method_options_scalapay::*;
 pub mod payment_method_options_sofort;
 #[doc(inline)]
 pub use payment_method_options_sofort::*;
+#[doc(hidden)]
+pub mod payment_method_options_sunbit;
+#[doc(inline)]
+pub use payment_method_options_sunbit::*;
 #[doc(hidden)]
 pub mod payment_method_options_twint;
 #[doc(inline)]

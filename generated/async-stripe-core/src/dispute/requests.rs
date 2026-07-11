@@ -385,6 +385,9 @@ impl Default for UpdateDisputeEvidence {
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
 pub struct UpdateDisputeEvidenceEnhancedEvidence {
+    /// Evidence provided for Mastercard compliance evidence submission.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mastercard_compliance: Option<UpdateDisputeEvidenceEnhancedEvidenceMastercardCompliance>,
     /// Evidence provided for Visa Compelling Evidence 3.0 evidence submission.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub visa_compelling_evidence_3:
@@ -401,10 +404,41 @@ impl std::fmt::Debug for UpdateDisputeEvidenceEnhancedEvidence {
 }
 impl UpdateDisputeEvidenceEnhancedEvidence {
     pub fn new() -> Self {
-        Self { visa_compelling_evidence_3: None, visa_compliance: None }
+        Self {
+            mastercard_compliance: None,
+            visa_compelling_evidence_3: None,
+            visa_compliance: None,
+        }
     }
 }
 impl Default for UpdateDisputeEvidenceEnhancedEvidence {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+/// Evidence provided for Mastercard compliance evidence submission.
+#[derive(Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
+#[derive(serde::Serialize)]
+pub struct UpdateDisputeEvidenceEnhancedEvidenceMastercardCompliance {
+    /// A field acknowledging the fee incurred when countering a Mastercard compliance dispute.
+    /// If this field is set to true, evidence can be submitted for the compliance dispute.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub fee_acknowledged: Option<bool>,
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for UpdateDisputeEvidenceEnhancedEvidenceMastercardCompliance {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct("UpdateDisputeEvidenceEnhancedEvidenceMastercardCompliance")
+            .finish_non_exhaustive()
+    }
+}
+impl UpdateDisputeEvidenceEnhancedEvidenceMastercardCompliance {
+    pub fn new() -> Self {
+        Self { fee_acknowledged: None }
+    }
+}
+impl Default for UpdateDisputeEvidenceEnhancedEvidenceMastercardCompliance {
     fn default() -> Self {
         Self::new()
     }

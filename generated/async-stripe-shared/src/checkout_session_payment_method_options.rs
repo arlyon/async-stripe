@@ -43,10 +43,12 @@ pub struct CheckoutSessionPaymentMethodOptions {
     pub scalapay: Option<stripe_shared::CheckoutScalapayPaymentMethodOptions>,
     pub sepa_debit: Option<stripe_shared::CheckoutSepaDebitPaymentMethodOptions>,
     pub sofort: Option<stripe_shared::CheckoutSofortPaymentMethodOptions>,
+    pub sunbit: Option<stripe_shared::CheckoutSunbitPaymentMethodOptions>,
     pub swish: Option<stripe_shared::CheckoutSwishPaymentMethodOptions>,
     pub twint: Option<stripe_shared::CheckoutTwintPaymentMethodOptions>,
     pub upi: Option<stripe_shared::CheckoutUpiPaymentMethodOptions>,
     pub us_bank_account: Option<stripe_shared::CheckoutUsBankAccountPaymentMethodOptions>,
+    pub wechat_pay: Option<stripe_shared::CheckoutWechatPayPaymentMethodOptions>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for CheckoutSessionPaymentMethodOptions {
@@ -96,10 +98,12 @@ pub struct CheckoutSessionPaymentMethodOptionsBuilder {
     scalapay: Option<Option<stripe_shared::CheckoutScalapayPaymentMethodOptions>>,
     sepa_debit: Option<Option<stripe_shared::CheckoutSepaDebitPaymentMethodOptions>>,
     sofort: Option<Option<stripe_shared::CheckoutSofortPaymentMethodOptions>>,
+    sunbit: Option<Option<stripe_shared::CheckoutSunbitPaymentMethodOptions>>,
     swish: Option<Option<stripe_shared::CheckoutSwishPaymentMethodOptions>>,
     twint: Option<Option<stripe_shared::CheckoutTwintPaymentMethodOptions>>,
     upi: Option<Option<stripe_shared::CheckoutUpiPaymentMethodOptions>>,
     us_bank_account: Option<Option<stripe_shared::CheckoutUsBankAccountPaymentMethodOptions>>,
+    wechat_pay: Option<Option<stripe_shared::CheckoutWechatPayPaymentMethodOptions>>,
 }
 
 #[allow(
@@ -182,10 +186,12 @@ const _: () = {
                 "scalapay" => Deserialize::begin(&mut self.scalapay),
                 "sepa_debit" => Deserialize::begin(&mut self.sepa_debit),
                 "sofort" => Deserialize::begin(&mut self.sofort),
+                "sunbit" => Deserialize::begin(&mut self.sunbit),
                 "swish" => Deserialize::begin(&mut self.swish),
                 "twint" => Deserialize::begin(&mut self.twint),
                 "upi" => Deserialize::begin(&mut self.upi),
                 "us_bank_account" => Deserialize::begin(&mut self.us_bank_account),
+                "wechat_pay" => Deserialize::begin(&mut self.wechat_pay),
                 _ => <dyn Visitor>::ignore(),
             })
         }
@@ -232,10 +238,12 @@ const _: () = {
                 scalapay: Some(None),
                 sepa_debit: Some(None),
                 sofort: Some(None),
+                sunbit: Some(None),
                 swish: Some(None),
                 twint: Some(None),
                 upi: Some(None),
                 us_bank_account: Some(None),
+                wechat_pay: Some(None),
             }
         }
 
@@ -281,10 +289,12 @@ const _: () = {
                 Some(scalapay),
                 Some(sepa_debit),
                 Some(sofort),
+                Some(sunbit),
                 Some(swish),
                 Some(twint),
                 Some(upi),
                 Some(us_bank_account),
+                Some(wechat_pay),
             ) = (
                 self.acss_debit.take(),
                 self.affirm.take(),
@@ -326,10 +336,12 @@ const _: () = {
                 self.scalapay.take(),
                 self.sepa_debit.take(),
                 self.sofort.take(),
+                self.sunbit.take(),
                 self.swish.take(),
                 self.twint.take(),
                 self.upi.take(),
                 self.us_bank_account.take(),
+                self.wechat_pay.take(),
             )
             else {
                 return None;
@@ -375,10 +387,12 @@ const _: () = {
                 scalapay,
                 sepa_debit,
                 sofort,
+                sunbit,
                 swish,
                 twint,
                 upi,
                 us_bank_account,
+                wechat_pay,
             })
         }
     }
@@ -446,10 +460,12 @@ const _: () = {
                     "scalapay" => b.scalapay = FromValueOpt::from_value(v),
                     "sepa_debit" => b.sepa_debit = FromValueOpt::from_value(v),
                     "sofort" => b.sofort = FromValueOpt::from_value(v),
+                    "sunbit" => b.sunbit = FromValueOpt::from_value(v),
                     "swish" => b.swish = FromValueOpt::from_value(v),
                     "twint" => b.twint = FromValueOpt::from_value(v),
                     "upi" => b.upi = FromValueOpt::from_value(v),
                     "us_bank_account" => b.us_bank_account = FromValueOpt::from_value(v),
+                    "wechat_pay" => b.wechat_pay = FromValueOpt::from_value(v),
                     _ => {}
                 }
             }

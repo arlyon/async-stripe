@@ -2221,6 +2221,7 @@ impl<'de> serde::Deserialize<'de> for CreatePaymentLinkPaymentMethodCollection {
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
+/// Payment-method-specific configuration.
 #[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
@@ -3819,6 +3820,7 @@ impl CreatePaymentLink {
         self.inner.payment_method_collection = Some(payment_method_collection.into());
         self
     }
+    /// Payment-method-specific configuration.
     pub fn payment_method_options(
         mut self,
         payment_method_options: impl Into<CreatePaymentLinkPaymentMethodOptions>,

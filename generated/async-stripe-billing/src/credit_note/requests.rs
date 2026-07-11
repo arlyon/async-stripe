@@ -364,7 +364,7 @@ pub struct PreviewCreditNoteLines {
     /// The line item quantity to credit.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub quantity: Option<u64>,
-    /// A list of up to 10 tax amounts for the credit note line item.
+    /// A list of up to 20 tax amounts for the credit note line item.
     /// Not valid when `tax_rates` is used or if invoice is set up with `automatic_tax[enabled]=true`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_amounts: Option<Vec<TaxAmountWithTaxRateParam>>,
@@ -872,7 +872,7 @@ pub struct PreviewLinesCreditNoteLines {
     /// The line item quantity to credit.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub quantity: Option<u64>,
-    /// A list of up to 10 tax amounts for the credit note line item.
+    /// A list of up to 20 tax amounts for the credit note line item.
     /// Not valid when `tax_rates` is used or if invoice is set up with `automatic_tax[enabled]=true`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_amounts: Option<Vec<TaxAmountWithTaxRateParam>>,
@@ -1399,7 +1399,7 @@ pub struct CreateCreditNoteLines {
     /// The line item quantity to credit.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub quantity: Option<u64>,
-    /// A list of up to 10 tax amounts for the credit note line item.
+    /// A list of up to 20 tax amounts for the credit note line item.
     /// Not valid when `tax_rates` is used or if invoice is set up with `automatic_tax[enabled]=true`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tax_amounts: Option<Vec<TaxAmountWithTaxRateParam>>,
@@ -1637,6 +1637,10 @@ impl<'de> serde::Deserialize<'de> for CreateCreditNoteRefundsType {
 /// You may issue multiple credit notes for an invoice.
 /// Each credit note may increment the invoice’s `pre_payment_credit_notes_amount`,.
 /// `post_payment_credit_notes_amount`, or both, depending on the invoice’s `amount_remaining` at the time of credit note creation.
+///
+/// For invoices that also have refunds created through the [Refund API](https://stripe.com/docs/api/refunds), the credit note API subtracts those refund amounts from the maximum creditable amount.
+/// This prevents the combined credit notes and refunds from exceeding the invoice amount.
+/// If you use both, ensure the combined total does not exceed the invoice’s paid amount.
 #[derive(Clone)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]
