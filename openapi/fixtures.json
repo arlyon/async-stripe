@@ -622,6 +622,7 @@
       },
       "name": null,
       "object": "billing.credit_grant",
+      "priority": 50,
       "test_clock": null,
       "updated": 234430277,
       "voided_at": null
@@ -958,6 +959,7 @@
             "transaction_id": null,
             "version": null
           },
+          "transaction_link_id": null,
           "wallet": {
             "dynamic_last4": null,
             "type": "link"
@@ -5326,6 +5328,9 @@
       "id": "sub_1Pgc6rB7WZ01zgkWNy0Cn5nw",
       "invoice_settings": {
         "account_tax_ids": null,
+        "custom_fields": null,
+        "description": null,
+        "footer": null,
         "issuer": {
           "type": "self"
         }
@@ -6691,5 +6696,5 @@
       "url": "https://example.com/my/webhook/endpoint"
     }
   },
-  "version": "v2290"
+  "version": "v2343"
 }

@@ -2561,6 +2561,7 @@ pub enum CreateInvoicePaymentSettingsPaymentMethodTypes {
     Pix,
     Promptpay,
     RevolutPay,
+    Satispay,
     SepaCreditTransfer,
     SepaDebit,
     Sofort,
@@ -2613,6 +2614,7 @@ impl CreateInvoicePaymentSettingsPaymentMethodTypes {
             Pix => "pix",
             Promptpay => "promptpay",
             RevolutPay => "revolut_pay",
+            Satispay => "satispay",
             SepaCreditTransfer => "sepa_credit_transfer",
             SepaDebit => "sepa_debit",
             Sofort => "sofort",
@@ -2668,6 +2670,7 @@ impl std::str::FromStr for CreateInvoicePaymentSettingsPaymentMethodTypes {
             "pix" => Ok(Pix),
             "promptpay" => Ok(Promptpay),
             "revolut_pay" => Ok(RevolutPay),
+            "satispay" => Ok(Satispay),
             "sepa_credit_transfer" => Ok(SepaCreditTransfer),
             "sepa_debit" => Ok(SepaDebit),
             "sofort" => Ok(Sofort),
@@ -5973,6 +5976,7 @@ pub enum UpdateInvoicePaymentSettingsPaymentMethodTypes {
     Pix,
     Promptpay,
     RevolutPay,
+    Satispay,
     SepaCreditTransfer,
     SepaDebit,
     Sofort,
@@ -6025,6 +6029,7 @@ impl UpdateInvoicePaymentSettingsPaymentMethodTypes {
             Pix => "pix",
             Promptpay => "promptpay",
             RevolutPay => "revolut_pay",
+            Satispay => "satispay",
             SepaCreditTransfer => "sepa_credit_transfer",
             SepaDebit => "sepa_debit",
             Sofort => "sofort",
@@ -6080,6 +6085,7 @@ impl std::str::FromStr for UpdateInvoicePaymentSettingsPaymentMethodTypes {
             "pix" => Ok(Pix),
             "promptpay" => Ok(Promptpay),
             "revolut_pay" => Ok(RevolutPay),
+            "satispay" => Ok(Satispay),
             "sepa_credit_transfer" => Ok(SepaCreditTransfer),
             "sepa_debit" => Ok(SepaDebit),
             "sofort" => Ok(Sofort),
@@ -7291,7 +7297,7 @@ pub struct AddLinesInvoiceLines {
     /// Non-negative decimal with at most 12 decimal places. The quantity of units for the line item.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub quantity_decimal: Option<String>,
-    /// A list of up to 10 tax amounts for this line item.
+    /// A list of up to 20 tax amounts for this line item.
     /// This can be useful if you calculate taxes on your own or use a third-party to calculate them.
     /// You cannot set tax amounts if any line item has [tax_rates](https://docs.stripe.com/api/invoices/line_item#invoice_line_item_object-tax_rates) or if the invoice has [default_tax_rates](https://docs.stripe.com/api/invoices/object#invoice_object-default_tax_rates) or uses [automatic tax](https://docs.stripe.com/tax/invoicing).
     /// Pass an empty string to remove previously defined tax amounts.
@@ -7493,7 +7499,7 @@ impl<'de> serde::Deserialize<'de> for AddLinesInvoiceLinesPriceDataTaxBehavior {
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-/// A list of up to 10 tax amounts for this line item.
+/// A list of up to 20 tax amounts for this line item.
 /// This can be useful if you calculate taxes on your own or use a third-party to calculate them.
 /// You cannot set tax amounts if any line item has [tax_rates](https://docs.stripe.com/api/invoices/line_item#invoice_line_item_object-tax_rates) or if the invoice has [default_tax_rates](https://docs.stripe.com/api/invoices/object#invoice_object-default_tax_rates) or uses [automatic tax](https://docs.stripe.com/tax/invoicing).
 /// Pass an empty string to remove previously defined tax amounts.
@@ -8684,7 +8690,7 @@ pub struct UpdateLinesInvoiceLines {
     /// Non-negative decimal with at most 12 decimal places. The quantity of units for the line item.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub quantity_decimal: Option<String>,
-    /// A list of up to 10 tax amounts for this line item.
+    /// A list of up to 20 tax amounts for this line item.
     /// This can be useful if you calculate taxes on your own or use a third-party to calculate them.
     /// You cannot set tax amounts if any line item has [tax_rates](https://docs.stripe.com/api/invoices/line_item#invoice_line_item_object-tax_rates) or if the invoice has [default_tax_rates](https://docs.stripe.com/api/invoices/object#invoice_object-default_tax_rates) or uses [automatic tax](https://docs.stripe.com/tax/invoicing).
     /// Pass an empty string to remove previously defined tax amounts.
@@ -8882,7 +8888,7 @@ impl<'de> serde::Deserialize<'de> for UpdateLinesInvoiceLinesPriceDataTaxBehavio
         Ok(Self::from_str(&s).expect("infallible"))
     }
 }
-/// A list of up to 10 tax amounts for this line item.
+/// A list of up to 20 tax amounts for this line item.
 /// This can be useful if you calculate taxes on your own or use a third-party to calculate them.
 /// You cannot set tax amounts if any line item has [tax_rates](https://docs.stripe.com/api/invoices/line_item#invoice_line_item_object-tax_rates) or if the invoice has [default_tax_rates](https://docs.stripe.com/api/invoices/object#invoice_object-default_tax_rates) or uses [automatic tax](https://docs.stripe.com/tax/invoicing).
 /// Pass an empty string to remove previously defined tax amounts.
@@ -13544,6 +13550,8 @@ pub struct CreatePreviewInvoiceSubscriptionDetailsItems {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub discounts: Option<Vec<CreatePreviewInvoiceSubscriptionDetailsItemsDiscounts>>,
     /// Subscription item to update.
+    /// If you omit `id`, the API adds a new subscription item rather than updating the existing one.
+    /// See [Changing a subscription's price](https://docs.stripe.com/billing/subscriptions/change-price#changing).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
     /// Set of [key-value pairs](https://docs.stripe.com/api/metadata) that you can attach to an object.

@@ -138,6 +138,7 @@ pub enum PaymentMethodDetailsCryptoNetwork {
     Ethereum,
     Polygon,
     Solana,
+    Sui,
     Tempo,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
     Unknown(String),
@@ -150,6 +151,7 @@ impl PaymentMethodDetailsCryptoNetwork {
             Ethereum => "ethereum",
             Polygon => "polygon",
             Solana => "solana",
+            Sui => "sui",
             Tempo => "tempo",
             Unknown(v) => v,
         }
@@ -165,6 +167,7 @@ impl std::str::FromStr for PaymentMethodDetailsCryptoNetwork {
             "ethereum" => Ok(Ethereum),
             "polygon" => Ok(Polygon),
             "solana" => Ok(Solana),
+            "sui" => Ok(Sui),
             "tempo" => Ok(Tempo),
             v => {
                 tracing::warn!(
@@ -235,6 +238,7 @@ pub enum PaymentMethodDetailsCryptoTokenCurrency {
     Usdc,
     Usdg,
     Usdp,
+    Usdsui,
     Usdt,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
     Unknown(String),
@@ -247,6 +251,7 @@ impl PaymentMethodDetailsCryptoTokenCurrency {
             Usdc => "usdc",
             Usdg => "usdg",
             Usdp => "usdp",
+            Usdsui => "usdsui",
             Usdt => "usdt",
             Unknown(v) => v,
         }
@@ -262,6 +267,7 @@ impl std::str::FromStr for PaymentMethodDetailsCryptoTokenCurrency {
             "usdc" => Ok(Usdc),
             "usdg" => Ok(Usdg),
             "usdp" => Ok(Usdp),
+            "usdsui" => Ok(Usdsui),
             "usdt" => Ok(Usdt),
             v => {
                 tracing::warn!(

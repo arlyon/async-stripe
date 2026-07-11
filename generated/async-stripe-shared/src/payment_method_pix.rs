@@ -1,8 +1,12 @@
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
-pub struct PaymentMethodPix {}
+pub struct PaymentMethodPix {
+    /// Uniquely identifies this particular Pix account.
+    /// You can use this attribute to check whether two Pix accounts are the same.
+    pub fingerprint: Option<String>,
+}
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for PaymentMethodPix {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
@@ -10,7 +14,9 @@ impl std::fmt::Debug for PaymentMethodPix {
     }
 }
 #[doc(hidden)]
-pub struct PaymentMethodPixBuilder {}
+pub struct PaymentMethodPixBuilder {
+    fingerprint: Option<Option<String>>,
+}
 
 #[allow(
     unused_variables,
@@ -52,19 +58,20 @@ const _: () = {
         type Out = PaymentMethodPix;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
+                "fingerprint" => Deserialize::begin(&mut self.fingerprint),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self {}
+            Self { fingerprint: Some(None) }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let () = () else {
+            let (Some(fingerprint),) = (self.fingerprint.take(),) else {
                 return None;
             };
-            Some(Self::Out {})
+            Some(Self::Out { fingerprint })
         }
     }
 
@@ -91,6 +98,7 @@ const _: () = {
             let mut b = PaymentMethodPixBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
+                    "fingerprint" => b.fingerprint = FromValueOpt::from_value(v),
                     _ => {}
                 }
             }

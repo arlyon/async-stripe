@@ -1,8 +1,11 @@
-#[derive(Copy, Clone, Eq, PartialEq)]
+#[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
-pub struct PaymentMethodBlik {}
+pub struct PaymentMethodBlik {
+    /// A unique and immutable identifier assigned by BLIK to every buyer.
+    pub buyer_id: Option<String>,
+}
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for PaymentMethodBlik {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
@@ -10,7 +13,9 @@ impl std::fmt::Debug for PaymentMethodBlik {
     }
 }
 #[doc(hidden)]
-pub struct PaymentMethodBlikBuilder {}
+pub struct PaymentMethodBlikBuilder {
+    buyer_id: Option<Option<String>>,
+}
 
 #[allow(
     unused_variables,
@@ -52,19 +57,20 @@ const _: () = {
         type Out = PaymentMethodBlik;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
+                "buyer_id" => Deserialize::begin(&mut self.buyer_id),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self {}
+            Self { buyer_id: Some(None) }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let () = () else {
+            let (Some(buyer_id),) = (self.buyer_id.take(),) else {
                 return None;
             };
-            Some(Self::Out {})
+            Some(Self::Out { buyer_id })
         }
     }
 
@@ -91,6 +97,7 @@ const _: () = {
             let mut b = PaymentMethodBlikBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
+                    "buyer_id" => b.buyer_id = FromValueOpt::from_value(v),
                     _ => {}
                 }
             }

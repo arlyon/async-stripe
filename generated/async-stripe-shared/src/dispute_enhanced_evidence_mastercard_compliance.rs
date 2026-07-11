@@ -1,20 +1,21 @@
-#[derive(Clone, Eq, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
-pub struct PaymentMethodBizum {
-    /// A unique identifier for the buyer as determined by the local payment processor.
-    pub buyer_id: Option<String>,
+pub struct DisputeEnhancedEvidenceMastercardCompliance {
+    /// A field acknowledging the fee incurred when countering a Mastercard compliance dispute.
+    /// If this field is set to true, evidence can be submitted for the compliance dispute.
+    pub fee_acknowledged: bool,
 }
 #[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for PaymentMethodBizum {
+impl std::fmt::Debug for DisputeEnhancedEvidenceMastercardCompliance {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("PaymentMethodBizum").finish_non_exhaustive()
+        f.debug_struct("DisputeEnhancedEvidenceMastercardCompliance").finish_non_exhaustive()
     }
 }
 #[doc(hidden)]
-pub struct PaymentMethodBizumBuilder {
-    buyer_id: Option<Option<String>>,
+pub struct DisputeEnhancedEvidenceMastercardComplianceBuilder {
+    fee_acknowledged: Option<bool>,
 }
 
 #[allow(
@@ -33,44 +34,44 @@ const _: () = {
 
     make_place!(Place);
 
-    impl Deserialize for PaymentMethodBizum {
+    impl Deserialize for DisputeEnhancedEvidenceMastercardCompliance {
         fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
             Place::new(out)
         }
     }
 
     struct Builder<'a> {
-        out: &'a mut Option<PaymentMethodBizum>,
-        builder: PaymentMethodBizumBuilder,
+        out: &'a mut Option<DisputeEnhancedEvidenceMastercardCompliance>,
+        builder: DisputeEnhancedEvidenceMastercardComplianceBuilder,
     }
 
-    impl Visitor for Place<PaymentMethodBizum> {
+    impl Visitor for Place<DisputeEnhancedEvidenceMastercardCompliance> {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: PaymentMethodBizumBuilder::deser_default(),
+                builder: DisputeEnhancedEvidenceMastercardComplianceBuilder::deser_default(),
             }))
         }
     }
 
-    impl MapBuilder for PaymentMethodBizumBuilder {
-        type Out = PaymentMethodBizum;
+    impl MapBuilder for DisputeEnhancedEvidenceMastercardComplianceBuilder {
+        type Out = DisputeEnhancedEvidenceMastercardCompliance;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
-                "buyer_id" => Deserialize::begin(&mut self.buyer_id),
+                "fee_acknowledged" => Deserialize::begin(&mut self.fee_acknowledged),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { buyer_id: Some(None) }
+            Self { fee_acknowledged: None }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(buyer_id),) = (self.buyer_id.take(),) else {
+            let (Some(fee_acknowledged),) = (self.fee_acknowledged,) else {
                 return None;
             };
-            Some(Self::Out { buyer_id })
+            Some(Self::Out { fee_acknowledged })
         }
     }
 
@@ -85,19 +86,19 @@ const _: () = {
         }
     }
 
-    impl ObjectDeser for PaymentMethodBizum {
-        type Builder = PaymentMethodBizumBuilder;
+    impl ObjectDeser for DisputeEnhancedEvidenceMastercardCompliance {
+        type Builder = DisputeEnhancedEvidenceMastercardComplianceBuilder;
     }
 
-    impl FromValueOpt for PaymentMethodBizum {
+    impl FromValueOpt for DisputeEnhancedEvidenceMastercardCompliance {
         fn from_value(v: Value) -> Option<Self> {
             let Value::Object(obj) = v else {
                 return None;
             };
-            let mut b = PaymentMethodBizumBuilder::deser_default();
+            let mut b = DisputeEnhancedEvidenceMastercardComplianceBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
-                    "buyer_id" => b.buyer_id = FromValueOpt::from_value(v),
+                    "fee_acknowledged" => b.fee_acknowledged = FromValueOpt::from_value(v),
                     _ => {}
                 }
             }

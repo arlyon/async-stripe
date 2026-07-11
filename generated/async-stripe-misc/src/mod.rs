@@ -19,6 +19,14 @@ pub mod bank_connections_resource_account_number_details;
 #[doc(inline)]
 pub use bank_connections_resource_account_number_details::*;
 #[doc(hidden)]
+pub mod bank_connections_resource_account_status_details;
+#[doc(inline)]
+pub use bank_connections_resource_account_status_details::*;
+#[doc(hidden)]
+pub mod bank_connections_resource_account_status_details_api_resource_active_status_details;
+#[doc(inline)]
+pub use bank_connections_resource_account_status_details_api_resource_active_status_details::*;
+#[doc(hidden)]
 pub mod bank_connections_resource_accountholder;
 #[doc(inline)]
 pub use bank_connections_resource_accountholder::*;

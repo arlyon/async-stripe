@@ -28,6 +28,8 @@ pub struct ReserveHold {
     pub metadata: Option<std::collections::HashMap<String, String>>,
     /// The reason for the ReserveHold.
     pub reason: ReserveHoldReason,
+    /// List of ReserveReleases and the amounts released from this ReserveHold.
+    pub release_details: Option<Vec<stripe_reserve::ReservesReserveHoldsResourcesReleaseDetail>>,
     pub release_schedule: stripe_reserve::ReservesReserveHoldsResourcesReleaseSchedule,
     /// The ReservePlan which produced this ReserveHold (i.e., resplan_123)
     pub reserve_plan: Option<stripe_types::Expandable<stripe_reserve::ReservePlan>>,
@@ -55,6 +57,8 @@ pub struct ReserveHoldBuilder {
     livemode: Option<bool>,
     metadata: Option<Option<std::collections::HashMap<String, String>>>,
     reason: Option<ReserveHoldReason>,
+    release_details:
+        Option<Option<Vec<stripe_reserve::ReservesReserveHoldsResourcesReleaseDetail>>>,
     release_schedule: Option<stripe_reserve::ReservesReserveHoldsResourcesReleaseSchedule>,
     reserve_plan: Option<Option<stripe_types::Expandable<stripe_reserve::ReservePlan>>>,
     source_charge: Option<Option<stripe_types::Expandable<stripe_shared::Charge>>>,
@@ -111,6 +115,7 @@ const _: () = {
                 "livemode" => Deserialize::begin(&mut self.livemode),
                 "metadata" => Deserialize::begin(&mut self.metadata),
                 "reason" => Deserialize::begin(&mut self.reason),
+                "release_details" => Deserialize::begin(&mut self.release_details),
                 "release_schedule" => Deserialize::begin(&mut self.release_schedule),
                 "reserve_plan" => Deserialize::begin(&mut self.reserve_plan),
                 "source_charge" => Deserialize::begin(&mut self.source_charge),
@@ -131,6 +136,7 @@ const _: () = {
                 livemode: None,
                 metadata: Some(None),
                 reason: None,
+                release_details: Some(None),
                 release_schedule: None,
                 reserve_plan: Some(None),
                 source_charge: Some(None),
@@ -150,6 +156,7 @@ const _: () = {
                 Some(livemode),
                 Some(metadata),
                 Some(reason),
+                Some(release_details),
                 Some(release_schedule),
                 Some(reserve_plan),
                 Some(source_charge),
@@ -165,6 +172,7 @@ const _: () = {
                 self.livemode,
                 self.metadata.take(),
                 self.reason.take(),
+                self.release_details.take(),
                 self.release_schedule,
                 self.reserve_plan.take(),
                 self.source_charge.take(),
@@ -184,6 +192,7 @@ const _: () = {
                 livemode,
                 metadata,
                 reason,
+                release_details,
                 release_schedule,
                 reserve_plan,
                 source_charge,
@@ -225,6 +234,7 @@ const _: () = {
                     "livemode" => b.livemode = FromValueOpt::from_value(v),
                     "metadata" => b.metadata = FromValueOpt::from_value(v),
                     "reason" => b.reason = FromValueOpt::from_value(v),
+                    "release_details" => b.release_details = FromValueOpt::from_value(v),
                     "release_schedule" => b.release_schedule = FromValueOpt::from_value(v),
                     "reserve_plan" => b.reserve_plan = FromValueOpt::from_value(v),
                     "source_charge" => b.source_charge = FromValueOpt::from_value(v),
@@ -240,7 +250,7 @@ const _: () = {
 impl serde::Serialize for ReserveHold {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("ReserveHold", 15)?;
+        let mut s = s.serialize_struct("ReserveHold", 16)?;
         s.serialize_field("amount", &self.amount)?;
         s.serialize_field("amount_releasable", &self.amount_releasable)?;
         s.serialize_field("created", &self.created)?;
@@ -251,6 +261,7 @@ impl serde::Serialize for ReserveHold {
         s.serialize_field("livemode", &self.livemode)?;
         s.serialize_field("metadata", &self.metadata)?;
         s.serialize_field("reason", &self.reason)?;
+        s.serialize_field("release_details", &self.release_details)?;
         s.serialize_field("release_schedule", &self.release_schedule)?;
         s.serialize_field("reserve_plan", &self.reserve_plan)?;
         s.serialize_field("source_charge", &self.source_charge)?;

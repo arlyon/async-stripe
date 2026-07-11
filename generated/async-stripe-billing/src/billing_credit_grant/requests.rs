@@ -395,6 +395,7 @@ pub struct CreateBillingCreditGrantApplicabilityConfigScope {
     /// A list of prices that the credit grant can apply to.
     /// We currently only support the `metered` prices.
     /// Cannot be used in combination with `price_type`.
+    /// Limit 20 prices.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub prices: Option<Vec<CreateBillingCreditGrantApplicabilityConfigScopePrices>>,
 }
@@ -489,6 +490,7 @@ impl<'de> serde::Deserialize<'de> for CreateBillingCreditGrantApplicabilityConfi
 /// A list of prices that the credit grant can apply to.
 /// We currently only support the `metered` prices.
 /// Cannot be used in combination with `price_type`.
+/// Limit 20 prices.
 #[derive(Clone, Eq, PartialEq)]
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[derive(serde::Serialize)]

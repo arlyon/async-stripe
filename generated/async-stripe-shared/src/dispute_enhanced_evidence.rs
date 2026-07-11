@@ -3,6 +3,7 @@
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
 pub struct DisputeEnhancedEvidence {
+    pub mastercard_compliance: Option<stripe_shared::DisputeEnhancedEvidenceMastercardCompliance>,
     pub visa_compelling_evidence_3:
         Option<stripe_shared::DisputeEnhancedEvidenceVisaCompellingEvidence3>,
     pub visa_compliance: Option<stripe_shared::DisputeEnhancedEvidenceVisaCompliance>,
@@ -15,6 +16,8 @@ impl std::fmt::Debug for DisputeEnhancedEvidence {
 }
 #[doc(hidden)]
 pub struct DisputeEnhancedEvidenceBuilder {
+    mastercard_compliance:
+        Option<Option<stripe_shared::DisputeEnhancedEvidenceMastercardCompliance>>,
     visa_compelling_evidence_3:
         Option<Option<stripe_shared::DisputeEnhancedEvidenceVisaCompellingEvidence3>>,
     visa_compliance: Option<Option<stripe_shared::DisputeEnhancedEvidenceVisaCompliance>>,
@@ -60,6 +63,7 @@ const _: () = {
         type Out = DisputeEnhancedEvidence;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
+                "mastercard_compliance" => Deserialize::begin(&mut self.mastercard_compliance),
                 "visa_compelling_evidence_3" => {
                     Deserialize::begin(&mut self.visa_compelling_evidence_3)
                 }
@@ -69,16 +73,27 @@ const _: () = {
         }
 
         fn deser_default() -> Self {
-            Self { visa_compelling_evidence_3: Some(None), visa_compliance: Some(None) }
+            Self {
+                mastercard_compliance: Some(None),
+                visa_compelling_evidence_3: Some(None),
+                visa_compliance: Some(None),
+            }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(visa_compelling_evidence_3), Some(visa_compliance)) =
-                (self.visa_compelling_evidence_3.take(), self.visa_compliance)
+            let (
+                Some(mastercard_compliance),
+                Some(visa_compelling_evidence_3),
+                Some(visa_compliance),
+            ) = (
+                self.mastercard_compliance,
+                self.visa_compelling_evidence_3.take(),
+                self.visa_compliance,
+            )
             else {
                 return None;
             };
-            Some(Self::Out { visa_compelling_evidence_3, visa_compliance })
+            Some(Self::Out { mastercard_compliance, visa_compelling_evidence_3, visa_compliance })
         }
     }
 
@@ -105,6 +120,9 @@ const _: () = {
             let mut b = DisputeEnhancedEvidenceBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
+                    "mastercard_compliance" => {
+                        b.mastercard_compliance = FromValueOpt::from_value(v)
+                    }
                     "visa_compelling_evidence_3" => {
                         b.visa_compelling_evidence_3 = FromValueOpt::from_value(v)
                     }

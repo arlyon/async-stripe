@@ -5,6 +5,15 @@
 pub struct PaymentMethodOptionsSatispay {
     /// Controls when the funds will be captured from the customer's account.
     pub capture_method: Option<PaymentMethodOptionsSatispayCaptureMethod>,
+    /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+    ///
+    /// If you provide a Customer with the PaymentIntent, you can use this parameter to [attach the payment method](/payments/save-during-payment) to the Customer after the PaymentIntent is confirmed and the customer completes any required actions.
+    /// If you don't provide a Customer, you can still [attach](/api/payment_methods/attach) the payment method to a Customer after the transaction completes.
+    ///
+    /// If the payment method is `card_present` and isn't a digital wallet, Stripe creates and attaches a [generated_card](/api/charges/object#charge_object-payment_method_details-card_present-generated_card) payment method representing the card to the Customer instead.
+    ///
+    /// When processing card payments, Stripe uses `setup_future_usage` to help you comply with regional legislation and network rules, such as [SCA](/strong-customer-authentication).
+    pub setup_future_usage: Option<PaymentMethodOptionsSatispaySetupFutureUsage>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for PaymentMethodOptionsSatispay {
@@ -15,6 +24,7 @@ impl std::fmt::Debug for PaymentMethodOptionsSatispay {
 #[doc(hidden)]
 pub struct PaymentMethodOptionsSatispayBuilder {
     capture_method: Option<Option<PaymentMethodOptionsSatispayCaptureMethod>>,
+    setup_future_usage: Option<Option<PaymentMethodOptionsSatispaySetupFutureUsage>>,
 }
 
 #[allow(
@@ -58,19 +68,22 @@ const _: () = {
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "capture_method" => Deserialize::begin(&mut self.capture_method),
+                "setup_future_usage" => Deserialize::begin(&mut self.setup_future_usage),
                 _ => <dyn Visitor>::ignore(),
             })
         }
 
         fn deser_default() -> Self {
-            Self { capture_method: Some(None) }
+            Self { capture_method: Some(None), setup_future_usage: Some(None) }
         }
 
         fn take_out(&mut self) -> Option<Self::Out> {
-            let (Some(capture_method),) = (self.capture_method.take(),) else {
+            let (Some(capture_method), Some(setup_future_usage)) =
+                (self.capture_method.take(), self.setup_future_usage.take())
+            else {
                 return None;
             };
-            Some(Self::Out { capture_method })
+            Some(Self::Out { capture_method, setup_future_usage })
         }
     }
 
@@ -98,6 +111,7 @@ const _: () = {
             for (k, v) in obj {
                 match k.as_str() {
                     "capture_method" => b.capture_method = FromValueOpt::from_value(v),
+                    "setup_future_usage" => b.setup_future_usage = FromValueOpt::from_value(v),
                     _ => {}
                 }
             }
@@ -186,6 +200,106 @@ impl miniserde::de::Visitor for crate::Place<PaymentMethodOptionsSatispayCapture
 stripe_types::impl_from_val_with_from_str!(PaymentMethodOptionsSatispayCaptureMethod);
 #[cfg(feature = "deserialize")]
 impl<'de> serde::Deserialize<'de> for PaymentMethodOptionsSatispayCaptureMethod {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        use std::str::FromStr;
+        let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
+        Ok(Self::from_str(&s).expect("infallible"))
+    }
+}
+/// Indicates that you intend to make future payments with this PaymentIntent's payment method.
+///
+/// If you provide a Customer with the PaymentIntent, you can use this parameter to [attach the payment method](/payments/save-during-payment) to the Customer after the PaymentIntent is confirmed and the customer completes any required actions.
+/// If you don't provide a Customer, you can still [attach](/api/payment_methods/attach) the payment method to a Customer after the transaction completes.
+///
+/// If the payment method is `card_present` and isn't a digital wallet, Stripe creates and attaches a [generated_card](/api/charges/object#charge_object-payment_method_details-card_present-generated_card) payment method representing the card to the Customer instead.
+///
+/// When processing card payments, Stripe uses `setup_future_usage` to help you comply with regional legislation and network rules, such as [SCA](/strong-customer-authentication).
+#[derive(Clone, Eq, PartialEq)]
+#[non_exhaustive]
+pub enum PaymentMethodOptionsSatispaySetupFutureUsage {
+    None,
+    OffSession,
+    OnSession,
+    /// An unrecognized value from Stripe. Should not be used as a request parameter.
+    Unknown(String),
+}
+impl PaymentMethodOptionsSatispaySetupFutureUsage {
+    pub fn as_str(&self) -> &str {
+        use PaymentMethodOptionsSatispaySetupFutureUsage::*;
+        match self {
+            None => "none",
+            OffSession => "off_session",
+            OnSession => "on_session",
+            Unknown(v) => v,
+        }
+    }
+}
+
+impl std::str::FromStr for PaymentMethodOptionsSatispaySetupFutureUsage {
+    type Err = std::convert::Infallible;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        use PaymentMethodOptionsSatispaySetupFutureUsage::*;
+        match s {
+            "none" => Ok(None),
+            "off_session" => Ok(OffSession),
+            "on_session" => Ok(OnSession),
+            v => {
+                tracing::warn!(
+                    "Unknown value '{}' for enum '{}'",
+                    v,
+                    "PaymentMethodOptionsSatispaySetupFutureUsage"
+                );
+                Ok(Unknown(v.to_owned()))
+            }
+        }
+    }
+}
+impl std::fmt::Display for PaymentMethodOptionsSatispaySetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+
+#[cfg(not(feature = "redact-generated-debug"))]
+impl std::fmt::Debug for PaymentMethodOptionsSatispaySetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+#[cfg(feature = "redact-generated-debug")]
+impl std::fmt::Debug for PaymentMethodOptionsSatispaySetupFutureUsage {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        f.debug_struct(stringify!(PaymentMethodOptionsSatispaySetupFutureUsage))
+            .finish_non_exhaustive()
+    }
+}
+#[cfg(feature = "serialize")]
+impl serde::Serialize for PaymentMethodOptionsSatispaySetupFutureUsage {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        serializer.serialize_str(self.as_str())
+    }
+}
+impl miniserde::Deserialize for PaymentMethodOptionsSatispaySetupFutureUsage {
+    fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
+        crate::Place::new(out)
+    }
+}
+
+impl miniserde::de::Visitor for crate::Place<PaymentMethodOptionsSatispaySetupFutureUsage> {
+    fn string(&mut self, s: &str) -> miniserde::Result<()> {
+        use std::str::FromStr;
+        self.out =
+            Some(PaymentMethodOptionsSatispaySetupFutureUsage::from_str(s).expect("infallible"));
+        Ok(())
+    }
+}
+
+stripe_types::impl_from_val_with_from_str!(PaymentMethodOptionsSatispaySetupFutureUsage);
+#[cfg(feature = "deserialize")]
+impl<'de> serde::Deserialize<'de> for PaymentMethodOptionsSatispaySetupFutureUsage {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;

@@ -263,6 +263,7 @@ pub enum ApiErrorsCode {
     AlipayUpgradeRequired,
     AmountTooLarge,
     AmountTooSmall,
+    AnomalousMoneyMovementRequest,
     ApiKeyExpired,
     ApplicationFeesNotAllowed,
     ApprovalRequired,
@@ -302,6 +303,10 @@ pub enum ApiErrorsCode {
     DebitNotAuthorized,
     EmailInvalid,
     ExpiredCard,
+    FailedTaxCalculation,
+    FinancialAccountBalanceDoesNotSupportCurrency,
+    FinancialAccountCapabilityNotEnabled,
+    FinancialAccountCapabilityRestricted,
     FinancialConnectionsAccountInactive,
     FinancialConnectionsAccountPendingAccountNumbers,
     FinancialConnectionsAccountUnavailableAccountNumbers,
@@ -462,6 +467,7 @@ impl ApiErrorsCode {
             AlipayUpgradeRequired => "alipay_upgrade_required",
             AmountTooLarge => "amount_too_large",
             AmountTooSmall => "amount_too_small",
+            AnomalousMoneyMovementRequest => "anomalous_money_movement_request",
             ApiKeyExpired => "api_key_expired",
             ApplicationFeesNotAllowed => "application_fees_not_allowed",
             ApprovalRequired => "approval_required",
@@ -501,6 +507,12 @@ impl ApiErrorsCode {
             DebitNotAuthorized => "debit_not_authorized",
             EmailInvalid => "email_invalid",
             ExpiredCard => "expired_card",
+            FailedTaxCalculation => "failed_tax_calculation",
+            FinancialAccountBalanceDoesNotSupportCurrency => {
+                "financial_account_balance_does_not_support_currency"
+            }
+            FinancialAccountCapabilityNotEnabled => "financial_account_capability_not_enabled",
+            FinancialAccountCapabilityRestricted => "financial_account_capability_restricted",
             FinancialConnectionsAccountInactive => "financial_connections_account_inactive",
             FinancialConnectionsAccountPendingAccountNumbers => {
                 "financial_connections_account_pending_account_numbers"
@@ -696,6 +708,7 @@ impl std::str::FromStr for ApiErrorsCode {
             "alipay_upgrade_required" => Ok(AlipayUpgradeRequired),
             "amount_too_large" => Ok(AmountTooLarge),
             "amount_too_small" => Ok(AmountTooSmall),
+            "anomalous_money_movement_request" => Ok(AnomalousMoneyMovementRequest),
             "api_key_expired" => Ok(ApiKeyExpired),
             "application_fees_not_allowed" => Ok(ApplicationFeesNotAllowed),
             "approval_required" => Ok(ApprovalRequired),
@@ -735,6 +748,12 @@ impl std::str::FromStr for ApiErrorsCode {
             "debit_not_authorized" => Ok(DebitNotAuthorized),
             "email_invalid" => Ok(EmailInvalid),
             "expired_card" => Ok(ExpiredCard),
+            "failed_tax_calculation" => Ok(FailedTaxCalculation),
+            "financial_account_balance_does_not_support_currency" => {
+                Ok(FinancialAccountBalanceDoesNotSupportCurrency)
+            }
+            "financial_account_capability_not_enabled" => Ok(FinancialAccountCapabilityNotEnabled),
+            "financial_account_capability_restricted" => Ok(FinancialAccountCapabilityRestricted),
             "financial_connections_account_inactive" => Ok(FinancialConnectionsAccountInactive),
             "financial_connections_account_pending_account_numbers" => {
                 Ok(FinancialConnectionsAccountPendingAccountNumbers)

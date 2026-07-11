@@ -37,6 +37,7 @@ pub struct FinancialConnectionsAccount {
     pub permissions: Option<Vec<FinancialConnectionsAccountPermissions>>,
     /// The status of the link to the account.
     pub status: FinancialConnectionsAccountStatus,
+    pub status_details: Option<stripe_misc::BankConnectionsResourceAccountStatusDetails>,
     /// If `category` is `cash`, one of:
     ///
     ///  - `checking`
@@ -83,6 +84,7 @@ pub struct FinancialConnectionsAccountBuilder {
     ownership_refresh: Option<Option<stripe_misc::BankConnectionsResourceOwnershipRefresh>>,
     permissions: Option<Option<Vec<FinancialConnectionsAccountPermissions>>>,
     status: Option<FinancialConnectionsAccountStatus>,
+    status_details: Option<Option<stripe_misc::BankConnectionsResourceAccountStatusDetails>>,
     subcategory: Option<FinancialConnectionsAccountSubcategory>,
     subscriptions: Option<Option<Vec<FinancialConnectionsAccountSubscriptions>>>,
     supported_payment_method_types:
@@ -145,6 +147,7 @@ const _: () = {
                 "ownership_refresh" => Deserialize::begin(&mut self.ownership_refresh),
                 "permissions" => Deserialize::begin(&mut self.permissions),
                 "status" => Deserialize::begin(&mut self.status),
+                "status_details" => Deserialize::begin(&mut self.status_details),
                 "subcategory" => Deserialize::begin(&mut self.subcategory),
                 "subscriptions" => Deserialize::begin(&mut self.subscriptions),
                 "supported_payment_method_types" => {
@@ -172,6 +175,7 @@ const _: () = {
                 ownership_refresh: Some(None),
                 permissions: Some(None),
                 status: None,
+                status_details: Some(None),
                 subcategory: None,
                 subscriptions: Some(None),
                 supported_payment_method_types: None,
@@ -196,6 +200,7 @@ const _: () = {
                 Some(ownership_refresh),
                 Some(permissions),
                 Some(status),
+                Some(status_details),
                 Some(subcategory),
                 Some(subscriptions),
                 Some(supported_payment_method_types),
@@ -216,6 +221,7 @@ const _: () = {
                 self.ownership_refresh.take(),
                 self.permissions.take(),
                 self.status.take(),
+                self.status_details.take(),
                 self.subcategory.take(),
                 self.subscriptions.take(),
                 self.supported_payment_method_types.take(),
@@ -240,6 +246,7 @@ const _: () = {
                 ownership_refresh,
                 permissions,
                 status,
+                status_details,
                 subcategory,
                 subscriptions,
                 supported_payment_method_types,
@@ -286,6 +293,7 @@ const _: () = {
                     "ownership_refresh" => b.ownership_refresh = FromValueOpt::from_value(v),
                     "permissions" => b.permissions = FromValueOpt::from_value(v),
                     "status" => b.status = FromValueOpt::from_value(v),
+                    "status_details" => b.status_details = FromValueOpt::from_value(v),
                     "subcategory" => b.subcategory = FromValueOpt::from_value(v),
                     "subscriptions" => b.subscriptions = FromValueOpt::from_value(v),
                     "supported_payment_method_types" => {
@@ -303,7 +311,7 @@ const _: () = {
 impl serde::Serialize for FinancialConnectionsAccount {
     fn serialize<S: serde::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         use serde::ser::SerializeStruct;
-        let mut s = s.serialize_struct("FinancialConnectionsAccount", 20)?;
+        let mut s = s.serialize_struct("FinancialConnectionsAccount", 21)?;
         s.serialize_field("account_holder", &self.account_holder)?;
         s.serialize_field("account_numbers", &self.account_numbers)?;
         s.serialize_field("balance", &self.balance)?;
@@ -319,6 +327,7 @@ impl serde::Serialize for FinancialConnectionsAccount {
         s.serialize_field("ownership_refresh", &self.ownership_refresh)?;
         s.serialize_field("permissions", &self.permissions)?;
         s.serialize_field("status", &self.status)?;
+        s.serialize_field("status_details", &self.status_details)?;
         s.serialize_field("subcategory", &self.subcategory)?;
         s.serialize_field("subscriptions", &self.subscriptions)?;
         s.serialize_field("supported_payment_method_types", &self.supported_payment_method_types)?;

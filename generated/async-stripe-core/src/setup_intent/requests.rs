@@ -749,7 +749,7 @@ pub struct CreateSetupIntentPaymentMethodData {
     /// If this is a `sofort` PaymentMethod, this hash contains details about the SOFORT payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sofort: Option<CreateSetupIntentPaymentMethodDataSofort>,
-    /// If this is a Sunbit PaymentMethod, this hash contains details about the Sunbit payment method.
+    /// If this is a `sunbit` PaymentMethod, this hash contains details about the Sunbit payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
     pub sunbit: Option<miniserde::json::Value>,
@@ -6927,7 +6927,7 @@ pub struct UpdateSetupIntentPaymentMethodData {
     /// If this is a `sofort` PaymentMethod, this hash contains details about the SOFORT payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sofort: Option<UpdateSetupIntentPaymentMethodDataSofort>,
-    /// If this is a Sunbit PaymentMethod, this hash contains details about the Sunbit payment method.
+    /// If this is a `sunbit` PaymentMethod, this hash contains details about the Sunbit payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
     pub sunbit: Option<miniserde::json::Value>,
@@ -13302,7 +13302,7 @@ pub struct ConfirmSetupIntentPaymentMethodData {
     /// If this is a `sofort` PaymentMethod, this hash contains details about the SOFORT payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sofort: Option<ConfirmSetupIntentPaymentMethodDataSofort>,
-    /// If this is a Sunbit PaymentMethod, this hash contains details about the Sunbit payment method.
+    /// If this is a `sunbit` PaymentMethod, this hash contains details about the Sunbit payment method.
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(with = "stripe_types::with_serde_json_opt")]
     pub sunbit: Option<miniserde::json::Value>,

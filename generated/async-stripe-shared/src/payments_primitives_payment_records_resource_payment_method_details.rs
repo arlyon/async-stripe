@@ -65,7 +65,7 @@ pub struct PaymentsPrimitivesPaymentRecordsResourcePaymentMethodDetails {
     pub sepa_debit: Option<stripe_shared::PaymentMethodDetailsPaymentRecordSepaDebit>,
     pub sofort: Option<stripe_shared::PaymentMethodDetailsPaymentRecordSofort>,
     pub stripe_account: Option<stripe_shared::PaymentMethodDetailsStripeAccount>,
-    pub sunbit: Option<stripe_shared::PaymentMethodDetailsSunbit>,
+    pub sunbit: Option<stripe_shared::PaymentMethodDetailsPaymentRecordSunbit>,
     pub swish: Option<stripe_shared::PaymentMethodDetailsPaymentRecordSwish>,
     pub twint: Option<stripe_shared::PaymentMethodDetailsPaymentRecordTwint>,
     /// The type of transaction-specific details of the payment method used in the payment.
@@ -151,7 +151,7 @@ pub struct PaymentsPrimitivesPaymentRecordsResourcePaymentMethodDetailsBuilder {
     sepa_debit: Option<Option<stripe_shared::PaymentMethodDetailsPaymentRecordSepaDebit>>,
     sofort: Option<Option<stripe_shared::PaymentMethodDetailsPaymentRecordSofort>>,
     stripe_account: Option<Option<stripe_shared::PaymentMethodDetailsStripeAccount>>,
-    sunbit: Option<Option<stripe_shared::PaymentMethodDetailsSunbit>>,
+    sunbit: Option<Option<stripe_shared::PaymentMethodDetailsPaymentRecordSunbit>>,
     swish: Option<Option<stripe_shared::PaymentMethodDetailsPaymentRecordSwish>>,
     twint: Option<Option<stripe_shared::PaymentMethodDetailsPaymentRecordTwint>>,
     type_: Option<String>,

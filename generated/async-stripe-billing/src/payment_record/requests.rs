@@ -812,7 +812,8 @@ struct ReportRefundPaymentRecordBuilder {
     metadata: Option<std::collections::HashMap<String, String>>,
     outcome: ReportRefundPaymentRecordOutcome,
     processor_details: ReportRefundPaymentRecordProcessorDetails,
-    refunded: ReportRefundPaymentRecordRefunded,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    refunded: Option<ReportRefundPaymentRecordRefunded>,
 }
 #[cfg(feature = "redact-generated-debug")]
 impl std::fmt::Debug for ReportRefundPaymentRecordBuilder {
@@ -824,7 +825,6 @@ impl ReportRefundPaymentRecordBuilder {
     fn new(
         outcome: impl Into<ReportRefundPaymentRecordOutcome>,
         processor_details: impl Into<ReportRefundPaymentRecordProcessorDetails>,
-        refunded: impl Into<ReportRefundPaymentRecordRefunded>,
     ) -> Self {
         Self {
             amount: None,
@@ -833,7 +833,7 @@ impl ReportRefundPaymentRecordBuilder {
             metadata: None,
             outcome: outcome.into(),
             processor_details: processor_details.into(),
-            refunded: refunded.into(),
+            refunded: None,
         }
     }
 }
@@ -1062,15 +1062,10 @@ impl ReportRefundPaymentRecord {
         id: impl Into<stripe_shared::PaymentRecordId>,
         outcome: impl Into<ReportRefundPaymentRecordOutcome>,
         processor_details: impl Into<ReportRefundPaymentRecordProcessorDetails>,
-        refunded: impl Into<ReportRefundPaymentRecordRefunded>,
     ) -> Self {
         Self {
             id: id.into(),
-            inner: ReportRefundPaymentRecordBuilder::new(
-                outcome.into(),
-                processor_details.into(),
-                refunded.into(),
-            ),
+            inner: ReportRefundPaymentRecordBuilder::new(outcome.into(), processor_details.into()),
         }
     }
     /// A positive integer in the [smallest currency unit](https://docs.stripe.com/currencies#zero-decimal) representing how much of this payment to refund.
@@ -1098,6 +1093,11 @@ impl ReportRefundPaymentRecord {
         metadata: impl Into<std::collections::HashMap<String, String>>,
     ) -> Self {
         self.inner.metadata = Some(metadata.into());
+        self
+    }
+    /// Information about the payment attempt refund.
+    pub fn refunded(mut self, refunded: impl Into<ReportRefundPaymentRecordRefunded>) -> Self {
+        self.inner.refunded = Some(refunded.into());
         self
     }
 }

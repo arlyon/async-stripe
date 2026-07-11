@@ -2,11 +2,11 @@
 #[cfg_attr(not(feature = "redact-generated-debug"), derive(Debug))]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize))]
 #[cfg_attr(feature = "deserialize", derive(serde::Deserialize))]
-pub struct PaymentMethodOptionsWechatPay {
-    /// The app ID registered with WeChat Pay. Only required when client is ios, android, or mini_program.
+pub struct CheckoutWechatPayPaymentMethodOptions {
+    /// The app ID registered with WeChat Pay. Only required when client is iOS or Android.
     pub app_id: Option<String>,
     /// The client type that the end customer will pay from
-    pub client: Option<PaymentMethodOptionsWechatPayClient>,
+    pub client: Option<CheckoutWechatPayPaymentMethodOptionsClient>,
     /// Indicates that you intend to make future payments with this PaymentIntent's payment method.
     ///
     /// If you provide a Customer with the PaymentIntent, you can use this parameter to [attach the payment method](/payments/save-during-payment) to the Customer after the PaymentIntent is confirmed and the customer completes any required actions.
@@ -15,19 +15,19 @@ pub struct PaymentMethodOptionsWechatPay {
     /// If the payment method is `card_present` and isn't a digital wallet, Stripe creates and attaches a [generated_card](/api/charges/object#charge_object-payment_method_details-card_present-generated_card) payment method representing the card to the Customer instead.
     ///
     /// When processing card payments, Stripe uses `setup_future_usage` to help you comply with regional legislation and network rules, such as [SCA](/strong-customer-authentication).
-    pub setup_future_usage: Option<PaymentMethodOptionsWechatPaySetupFutureUsage>,
+    pub setup_future_usage: Option<CheckoutWechatPayPaymentMethodOptionsSetupFutureUsage>,
 }
 #[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for PaymentMethodOptionsWechatPay {
+impl std::fmt::Debug for CheckoutWechatPayPaymentMethodOptions {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct("PaymentMethodOptionsWechatPay").finish_non_exhaustive()
+        f.debug_struct("CheckoutWechatPayPaymentMethodOptions").finish_non_exhaustive()
     }
 }
 #[doc(hidden)]
-pub struct PaymentMethodOptionsWechatPayBuilder {
+pub struct CheckoutWechatPayPaymentMethodOptionsBuilder {
     app_id: Option<Option<String>>,
-    client: Option<Option<PaymentMethodOptionsWechatPayClient>>,
-    setup_future_usage: Option<Option<PaymentMethodOptionsWechatPaySetupFutureUsage>>,
+    client: Option<Option<CheckoutWechatPayPaymentMethodOptionsClient>>,
+    setup_future_usage: Option<Option<CheckoutWechatPayPaymentMethodOptionsSetupFutureUsage>>,
 }
 
 #[allow(
@@ -46,28 +46,28 @@ const _: () = {
 
     make_place!(Place);
 
-    impl Deserialize for PaymentMethodOptionsWechatPay {
+    impl Deserialize for CheckoutWechatPayPaymentMethodOptions {
         fn begin(out: &mut Option<Self>) -> &mut dyn Visitor {
             Place::new(out)
         }
     }
 
     struct Builder<'a> {
-        out: &'a mut Option<PaymentMethodOptionsWechatPay>,
-        builder: PaymentMethodOptionsWechatPayBuilder,
+        out: &'a mut Option<CheckoutWechatPayPaymentMethodOptions>,
+        builder: CheckoutWechatPayPaymentMethodOptionsBuilder,
     }
 
-    impl Visitor for Place<PaymentMethodOptionsWechatPay> {
+    impl Visitor for Place<CheckoutWechatPayPaymentMethodOptions> {
         fn map(&mut self) -> Result<Box<dyn Map + '_>> {
             Ok(Box::new(Builder {
                 out: &mut self.out,
-                builder: PaymentMethodOptionsWechatPayBuilder::deser_default(),
+                builder: CheckoutWechatPayPaymentMethodOptionsBuilder::deser_default(),
             }))
         }
     }
 
-    impl MapBuilder for PaymentMethodOptionsWechatPayBuilder {
-        type Out = PaymentMethodOptionsWechatPay;
+    impl MapBuilder for CheckoutWechatPayPaymentMethodOptionsBuilder {
+        type Out = CheckoutWechatPayPaymentMethodOptions;
         fn key(&mut self, k: &str) -> Result<&mut dyn Visitor> {
             Ok(match k {
                 "app_id" => Deserialize::begin(&mut self.app_id),
@@ -102,16 +102,16 @@ const _: () = {
         }
     }
 
-    impl ObjectDeser for PaymentMethodOptionsWechatPay {
-        type Builder = PaymentMethodOptionsWechatPayBuilder;
+    impl ObjectDeser for CheckoutWechatPayPaymentMethodOptions {
+        type Builder = CheckoutWechatPayPaymentMethodOptionsBuilder;
     }
 
-    impl FromValueOpt for PaymentMethodOptionsWechatPay {
+    impl FromValueOpt for CheckoutWechatPayPaymentMethodOptions {
         fn from_value(v: Value) -> Option<Self> {
             let Value::Object(obj) = v else {
                 return None;
             };
-            let mut b = PaymentMethodOptionsWechatPayBuilder::deser_default();
+            let mut b = CheckoutWechatPayPaymentMethodOptionsBuilder::deser_default();
             for (k, v) in obj {
                 match k.as_str() {
                     "app_id" => b.app_id = FromValueOpt::from_value(v),
@@ -127,16 +127,16 @@ const _: () = {
 /// The client type that the end customer will pay from
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
-pub enum PaymentMethodOptionsWechatPayClient {
+pub enum CheckoutWechatPayPaymentMethodOptionsClient {
     Android,
     Ios,
     Web,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
     Unknown(String),
 }
-impl PaymentMethodOptionsWechatPayClient {
+impl CheckoutWechatPayPaymentMethodOptionsClient {
     pub fn as_str(&self) -> &str {
-        use PaymentMethodOptionsWechatPayClient::*;
+        use CheckoutWechatPayPaymentMethodOptionsClient::*;
         match self {
             Android => "android",
             Ios => "ios",
@@ -146,10 +146,10 @@ impl PaymentMethodOptionsWechatPayClient {
     }
 }
 
-impl std::str::FromStr for PaymentMethodOptionsWechatPayClient {
+impl std::str::FromStr for CheckoutWechatPayPaymentMethodOptionsClient {
     type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use PaymentMethodOptionsWechatPayClient::*;
+        use CheckoutWechatPayPaymentMethodOptionsClient::*;
         match s {
             "android" => Ok(Android),
             "ios" => Ok(Ios),
@@ -158,33 +158,34 @@ impl std::str::FromStr for PaymentMethodOptionsWechatPayClient {
                 tracing::warn!(
                     "Unknown value '{}' for enum '{}'",
                     v,
-                    "PaymentMethodOptionsWechatPayClient"
+                    "CheckoutWechatPayPaymentMethodOptionsClient"
                 );
                 Ok(Unknown(v.to_owned()))
             }
         }
     }
 }
-impl std::fmt::Display for PaymentMethodOptionsWechatPayClient {
+impl std::fmt::Display for CheckoutWechatPayPaymentMethodOptionsClient {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
 
 #[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for PaymentMethodOptionsWechatPayClient {
+impl std::fmt::Debug for CheckoutWechatPayPaymentMethodOptionsClient {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
 #[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for PaymentMethodOptionsWechatPayClient {
+impl std::fmt::Debug for CheckoutWechatPayPaymentMethodOptionsClient {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(PaymentMethodOptionsWechatPayClient)).finish_non_exhaustive()
+        f.debug_struct(stringify!(CheckoutWechatPayPaymentMethodOptionsClient))
+            .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
-impl serde::Serialize for PaymentMethodOptionsWechatPayClient {
+impl serde::Serialize for CheckoutWechatPayPaymentMethodOptionsClient {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,
@@ -192,23 +193,24 @@ impl serde::Serialize for PaymentMethodOptionsWechatPayClient {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for PaymentMethodOptionsWechatPayClient {
+impl miniserde::Deserialize for CheckoutWechatPayPaymentMethodOptionsClient {
     fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<PaymentMethodOptionsWechatPayClient> {
+impl miniserde::de::Visitor for crate::Place<CheckoutWechatPayPaymentMethodOptionsClient> {
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out = Some(PaymentMethodOptionsWechatPayClient::from_str(s).expect("infallible"));
+        self.out =
+            Some(CheckoutWechatPayPaymentMethodOptionsClient::from_str(s).expect("infallible"));
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(PaymentMethodOptionsWechatPayClient);
+stripe_types::impl_from_val_with_from_str!(CheckoutWechatPayPaymentMethodOptionsClient);
 #[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for PaymentMethodOptionsWechatPayClient {
+impl<'de> serde::Deserialize<'de> for CheckoutWechatPayPaymentMethodOptionsClient {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;
@@ -225,14 +227,14 @@ impl<'de> serde::Deserialize<'de> for PaymentMethodOptionsWechatPayClient {
 /// When processing card payments, Stripe uses `setup_future_usage` to help you comply with regional legislation and network rules, such as [SCA](/strong-customer-authentication).
 #[derive(Clone, Eq, PartialEq)]
 #[non_exhaustive]
-pub enum PaymentMethodOptionsWechatPaySetupFutureUsage {
+pub enum CheckoutWechatPayPaymentMethodOptionsSetupFutureUsage {
     None,
     /// An unrecognized value from Stripe. Should not be used as a request parameter.
     Unknown(String),
 }
-impl PaymentMethodOptionsWechatPaySetupFutureUsage {
+impl CheckoutWechatPayPaymentMethodOptionsSetupFutureUsage {
     pub fn as_str(&self) -> &str {
-        use PaymentMethodOptionsWechatPaySetupFutureUsage::*;
+        use CheckoutWechatPayPaymentMethodOptionsSetupFutureUsage::*;
         match self {
             None => "none",
             Unknown(v) => v,
@@ -240,44 +242,44 @@ impl PaymentMethodOptionsWechatPaySetupFutureUsage {
     }
 }
 
-impl std::str::FromStr for PaymentMethodOptionsWechatPaySetupFutureUsage {
+impl std::str::FromStr for CheckoutWechatPayPaymentMethodOptionsSetupFutureUsage {
     type Err = std::convert::Infallible;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use PaymentMethodOptionsWechatPaySetupFutureUsage::*;
+        use CheckoutWechatPayPaymentMethodOptionsSetupFutureUsage::*;
         match s {
             "none" => Ok(None),
             v => {
                 tracing::warn!(
                     "Unknown value '{}' for enum '{}'",
                     v,
-                    "PaymentMethodOptionsWechatPaySetupFutureUsage"
+                    "CheckoutWechatPayPaymentMethodOptionsSetupFutureUsage"
                 );
                 Ok(Unknown(v.to_owned()))
             }
         }
     }
 }
-impl std::fmt::Display for PaymentMethodOptionsWechatPaySetupFutureUsage {
+impl std::fmt::Display for CheckoutWechatPayPaymentMethodOptionsSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
 
 #[cfg(not(feature = "redact-generated-debug"))]
-impl std::fmt::Debug for PaymentMethodOptionsWechatPaySetupFutureUsage {
+impl std::fmt::Debug for CheckoutWechatPayPaymentMethodOptionsSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         f.write_str(self.as_str())
     }
 }
 #[cfg(feature = "redact-generated-debug")]
-impl std::fmt::Debug for PaymentMethodOptionsWechatPaySetupFutureUsage {
+impl std::fmt::Debug for CheckoutWechatPayPaymentMethodOptionsSetupFutureUsage {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        f.debug_struct(stringify!(PaymentMethodOptionsWechatPaySetupFutureUsage))
+        f.debug_struct(stringify!(CheckoutWechatPayPaymentMethodOptionsSetupFutureUsage))
             .finish_non_exhaustive()
     }
 }
 #[cfg(feature = "serialize")]
-impl serde::Serialize for PaymentMethodOptionsWechatPaySetupFutureUsage {
+impl serde::Serialize for CheckoutWechatPayPaymentMethodOptionsSetupFutureUsage {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,
@@ -285,24 +287,27 @@ impl serde::Serialize for PaymentMethodOptionsWechatPaySetupFutureUsage {
         serializer.serialize_str(self.as_str())
     }
 }
-impl miniserde::Deserialize for PaymentMethodOptionsWechatPaySetupFutureUsage {
+impl miniserde::Deserialize for CheckoutWechatPayPaymentMethodOptionsSetupFutureUsage {
     fn begin(out: &mut Option<Self>) -> &mut dyn miniserde::de::Visitor {
         crate::Place::new(out)
     }
 }
 
-impl miniserde::de::Visitor for crate::Place<PaymentMethodOptionsWechatPaySetupFutureUsage> {
+impl miniserde::de::Visitor
+    for crate::Place<CheckoutWechatPayPaymentMethodOptionsSetupFutureUsage>
+{
     fn string(&mut self, s: &str) -> miniserde::Result<()> {
         use std::str::FromStr;
-        self.out =
-            Some(PaymentMethodOptionsWechatPaySetupFutureUsage::from_str(s).expect("infallible"));
+        self.out = Some(
+            CheckoutWechatPayPaymentMethodOptionsSetupFutureUsage::from_str(s).expect("infallible"),
+        );
         Ok(())
     }
 }
 
-stripe_types::impl_from_val_with_from_str!(PaymentMethodOptionsWechatPaySetupFutureUsage);
+stripe_types::impl_from_val_with_from_str!(CheckoutWechatPayPaymentMethodOptionsSetupFutureUsage);
 #[cfg(feature = "deserialize")]
-impl<'de> serde::Deserialize<'de> for PaymentMethodOptionsWechatPaySetupFutureUsage {
+impl<'de> serde::Deserialize<'de> for CheckoutWechatPayPaymentMethodOptionsSetupFutureUsage {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         use std::str::FromStr;
         let s: std::borrow::Cow<'de, str> = serde::Deserialize::deserialize(deserializer)?;

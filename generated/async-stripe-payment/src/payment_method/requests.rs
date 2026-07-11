@@ -2974,7 +2974,7 @@ impl CreatePaymentMethod {
         self.inner.sofort = Some(sofort.into());
         self
     }
-    /// If this is a Sunbit PaymentMethod, this hash contains details about the Sunbit payment method.
+    /// If this is a `sunbit` PaymentMethod, this hash contains details about the Sunbit payment method.
     pub fn sunbit(mut self, sunbit: impl Into<miniserde::json::Value>) -> Self {
         self.inner.sunbit = Some(sunbit.into());
         self
